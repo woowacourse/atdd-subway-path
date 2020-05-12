@@ -119,14 +119,13 @@ public class AcceptanceTest {
                         jsonPath().getList(".", LineResponse.class);
     }
 
-    List<LineDetailResponse> getDetailLines() {
+    WholeSubwayResponse getDetailLines() {
         return
                 given().when().
                         get("/lines/detail").
                 then().
                         log().all().
-                        extract().
-                        jsonPath().getList(".", LineDetailResponse.class);
+                        extract().as(WholeSubwayResponse.class);
     }
 
     void deleteLine(Long id) {

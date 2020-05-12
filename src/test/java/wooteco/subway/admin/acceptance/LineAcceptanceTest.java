@@ -70,7 +70,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         addLineStation(line2.getId(), sStation.getId(), jStation.getId());
 
         // When 지하철 노선도 전체 조회 요청을 한다
-        List<LineDetailResponse> lines = getDetailLines();
+        List<LineDetailResponse> lines = getDetailLines().getLineDetailResponses();
 
         // Then 지하철 노선도 전체를 응답 받는다
         assertThat(lines.size()).isEqualTo(2);

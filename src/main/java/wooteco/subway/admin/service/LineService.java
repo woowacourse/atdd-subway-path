@@ -13,6 +13,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -57,11 +58,11 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public List<LineDetailResponse> findAllLineWithStations() {
+    public WholeSubwayResponse findAllLineWithStations() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
                 .map(this::changeLineToLineDetailResponse)
-                .collect(toList());
+                .collect(collectingAndThen(toList(), WholeSubwayResponse::of));
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {

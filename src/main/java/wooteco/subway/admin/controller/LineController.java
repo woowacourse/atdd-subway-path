@@ -3,10 +3,7 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.*;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;
@@ -35,7 +32,7 @@ public class LineController {
     }
 
     @GetMapping("lines/detail")
-    public ResponseEntity<List<LineDetailResponse>> retrieveLines() {
+    public ResponseEntity<WholeSubwayResponse> retrieveLines() {
         return ResponseEntity.ok().body(lineService.findAllLineWithStations());
     }
 
