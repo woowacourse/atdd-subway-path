@@ -1,11 +1,21 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -13,15 +23,6 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -52,7 +53,7 @@ public class LineServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-yellow-600");
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -149,5 +150,29 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void wholeLines() {
+        // given
+        Line line2 = new Line(2L, "2호선", LocalTime.of(0, 5), LocalTime.of(10, 5), 5, "bg-yellow-600");
+        line2.addLineStation(new LineStation(null, 4L, 5, 5));
+        line2.addLineStation(new LineStation(4L, 5L, 5, 5));
+        line2.addLineStation(new LineStation(5L, 6L, 5, 5));
+        List<Station> stations = Arrays.asList(
+            new Station(4L, "4역"),
+            new Station(5L, "5역"),
+            new Station(6L, "6역")
+        );
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        // when
+        List<LineDetailResponse> responses = lineService.wholeLines().getLineDetailResponses();
+
+        // then
+        assertThat(responses).isNotNull();
+        assertThat(responses).hasSize(2);
+        assertThat(responses.get(1).getStations()).hasSize(3);
     }
 }
