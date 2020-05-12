@@ -1,5 +1,16 @@
 package wooteco.subway.admin.config;
 
-// TODO: ETag 관련 설정하기
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
+
 public class ETagHeaderFilter {
+    @Bean
+    public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
+        FilterRegistrationBean<ShallowEtagHeaderFilter> filter
+            = new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
+        filter.addUrlPatterns("/lines/*", "/stations/*");
+        filter.setName("EtagFilter");
+        return filter;
+    }
 }

@@ -75,6 +75,6 @@ public class LineController {
 
     @GetMapping("/lines/detail")
     public ResponseEntity<WholeSubwayResponse> getWholeSubwayResponse() {
-        return ResponseEntity.ok(lineService.showWholeSubwayResponse());
+        return ResponseEntity.ok(lineService.wholeLines());
     }
 }

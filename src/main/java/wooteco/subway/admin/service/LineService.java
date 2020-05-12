@@ -1,7 +1,8 @@
 package wooteco.subway.admin.service;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -64,16 +65,26 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    public WholeSubwayResponse showWholeSubwayResponse() {
-        List<LineDetailResponse> lineDetailResponses = new ArrayList<>();
+    public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
+        List<Long> wholeStationIds = getWholeStationIds(lines);
+        List<Station> wholeStations = stationRepository.findAllById(wholeStationIds);
 
-        for (Line line : lines) {
-            List<Long> lineStationsId = line.getLineStationsId();
-            List<Station> stations = stationRepository.findAllById(lineStationsId);
-            lineDetailResponses.add(LineDetailResponse.of(line, stations));
-        }
-
+        List<LineDetailResponse> lineDetailResponses = getLineDetailResponses(lines, wholeStations);
         return WholeSubwayResponse.of(lineDetailResponses);
+    }
+
+    private List<Long> getWholeStationIds(List<Line> lines) {
+        return lines.stream()
+            .map(Line::getLineStationsId)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
+    private List<LineDetailResponse> getLineDetailResponses(List<Line> lines,
+        List<Station> wholeStations) {
+        return lines.stream()
+            .map(line -> LineDetailResponse.of(line, line.getMatchingStations(wholeStations)))
+            .collect(Collectors.toList());
     }
 }

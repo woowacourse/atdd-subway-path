@@ -3,7 +3,10 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 
 public class WholeSubwayResponse {
-    private final List<LineDetailResponse> responses;
+    private List<LineDetailResponse> responses;
+
+    public WholeSubwayResponse() {
+    }
 
     public WholeSubwayResponse(List<LineDetailResponse> responses) {
         this.responses = responses;
