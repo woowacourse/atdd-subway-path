@@ -8,15 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.*;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -43,12 +38,11 @@ public class AcceptanceTest {
     }
 
     StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
+        StationCreateRequest stationCreateRequest = new StationCreateRequest(name);
 
         return
                 given().
-                        body(params).
+                        body(stationCreateRequest).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
@@ -77,15 +71,11 @@ public class AcceptanceTest {
     }
 
     LineResponse createLine(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        LineRequest lineRequest = new LineRequest(name, LocalTime.of(5, 30), LocalTime.of(23, 30), 10);
 
         return
                 given().
-                    body(params).
+                    body(lineRequest).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
@@ -106,13 +96,10 @@ public class AcceptanceTest {
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        LineRequest lineRequest = new LineRequest(null, startTime, endTime, 10);
 
         given().
-                body(params).
+                body(lineRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
         when().
@@ -154,14 +141,10 @@ public class AcceptanceTest {
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
+        LineStationCreateRequest lineStationCreateRequest = new LineStationCreateRequest(preStationId, stationId, distance, duration);
 
         given().
-                body(params).
+                body(lineStationCreateRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
@@ -181,6 +164,5 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
-
 }
 

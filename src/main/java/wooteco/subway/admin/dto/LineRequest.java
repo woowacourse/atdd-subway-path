@@ -13,6 +13,13 @@ public class LineRequest {
     public LineRequest() {
     }
 
+    public LineRequest(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
+    }
+
     public String getName() {
         return name;
     }
