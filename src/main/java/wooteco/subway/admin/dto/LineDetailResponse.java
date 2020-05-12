@@ -1,11 +1,11 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.Station;
 
 public class LineDetailResponse {
     private Long id;
@@ -13,6 +13,7 @@ public class LineDetailResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
+    private String bgColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
@@ -20,19 +21,24 @@ public class LineDetailResponse {
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime,
+        int intervalTime, String bgColor, LocalDateTime createdAt, LocalDateTime updatedAt,
+        List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.bgColor = bgColor;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.stations = StationResponse.listOf(stations);
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(),
+            line.getEndTime(), line.getIntervalTime(), line.getBgColor(), line.getCreatedAt(),
+            line.getUpdatedAt(), stations);
     }
 
     public Long getId() {
@@ -65,5 +71,9 @@ public class LineDetailResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public String getBgColor() {
+        return bgColor;
     }
 }

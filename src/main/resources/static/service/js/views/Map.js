@@ -7,7 +7,7 @@ function Map() {
 
   const initSubwayLinesSlider = () => {
     api.line.getAllDetail().then(data => {
-      const subwayLines = data.lineDetailResponse
+      const subwayLines = data.lineDetailResponses
       $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
     })
     tns({
