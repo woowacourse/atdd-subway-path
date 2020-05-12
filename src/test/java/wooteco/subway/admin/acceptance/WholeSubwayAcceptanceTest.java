@@ -2,14 +2,11 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
@@ -25,16 +22,16 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("삼성역");
-        addLineStation(lineResponse1, stationResponse1, null);
-        addLineStation(lineResponse1, stationResponse2, stationResponse1);
-        addLineStation(lineResponse1, stationResponse3, stationResponse2);
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
         LineResponse lineResponse2 = createLine("신분당선");
         StationResponse stationResponse5 = createStation("양재역");
         StationResponse stationResponse6 = createStation("양재시민의숲역");
-        addLineStation(lineResponse2, stationResponse1, null);
-        addLineStation(lineResponse2, stationResponse5, stationResponse1);
-        addLineStation(lineResponse2, stationResponse6, stationResponse5);
+        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse5.getId());
+        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
 
         List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponses();
         assertThat(response.size()).isEqualTo(2);
@@ -50,28 +47,5 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
             log().all().
             statusCode(HttpStatus.OK.value()).
             extract().as(WholeSubwayResponse.class);
-    }
-
-    private void addLineStation(LineResponse lineResponse, StationResponse stationResponse,
-        StationResponse preStationResponse) {
-        Long lineId = lineResponse.getId();
-        Long preStationId = preStationResponse == null ? null : preStationResponse.getId();
-        Long stationId = stationResponse.getId();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", "10");
-        params.put("duration", "10");
-
-        given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            post("/lines/" + lineId + "/stations").
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
     }
 }
