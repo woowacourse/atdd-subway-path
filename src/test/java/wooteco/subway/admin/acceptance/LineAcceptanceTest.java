@@ -36,7 +36,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         LocalTime startTime = LocalTime.of(8, 00);
         LocalTime endTime = LocalTime.of(22, 00);
-        updateLine(line.getId(), startTime, endTime);
+        updateLine(line.getId(), "3호선", "bg-green-500", startTime, endTime);
         //then
         LineDetailResponse updatedLine = getLine(line.getId());
         assertThat(updatedLine.getStartTime()).isEqualTo(startTime);

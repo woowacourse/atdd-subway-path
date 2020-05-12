@@ -71,7 +71,7 @@ public class AcceptanceTest {
     }
 
     LineResponse createLine(String name) {
-        LineRequest lineRequest = new LineRequest(name, LocalTime.of(5, 30), LocalTime.of(23, 30), 10);
+        LineRequest lineRequest = new LineRequest(name, "bg-green-500", LocalTime.of(5, 30), LocalTime.of(23, 30), 10);
 
         return
                 given().
@@ -95,8 +95,8 @@ public class AcceptanceTest {
                         extract().as(LineDetailResponse.class);
     }
 
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        LineRequest lineRequest = new LineRequest(null, startTime, endTime, 10);
+    void updateLine(Long id, String name, String color, LocalTime startTime, LocalTime endTime) {
+        LineRequest lineRequest = new LineRequest(name, color, startTime, endTime, 10);
 
         given().
                 body(lineRequest).
