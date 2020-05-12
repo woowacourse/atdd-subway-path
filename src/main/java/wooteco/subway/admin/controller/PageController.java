@@ -40,37 +40,37 @@ public class PageController {
         return "admin/admin-edge";
     }
 
-    @GetMapping(value = "/lines/detail", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/service", produces = MediaType.TEXT_HTML_VALUE)
     public String servicePage(Model model) {
         return "service/index";
     }
 
-    @GetMapping(value = "lines/map", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
     public String mapPage(Model model) {
         return "service/map";
     }
 
-    @GetMapping(value = "lines/search", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
     public String searchPage(Model model) {
         return "service/search";
     }
 
-    @GetMapping(value = "/lines/login", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
     public String loginPage(Model model) {
         return "service/login";
     }
 
-    @GetMapping(value = "/lines/join", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
     public String joinPage(Model model) {
         return "service/join";
     }
 
-    @GetMapping(value = "/lines/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
     public String myPage(Model model) {
         return "service/mypage";
     }
 
-    @GetMapping(value = "/lines/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
     public String myPageEditPage(Model model) {
         return "service/mypage-edit";
     }

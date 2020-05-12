@@ -18,6 +18,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 @RestController
@@ -72,5 +73,12 @@ public class LineController {
         @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<WholeSubwayResponse> showLinesDetail() {
+        WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
+        return ResponseEntity.ok()
+            .body(wholeSubwayResponse);
     }
 }
