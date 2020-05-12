@@ -46,7 +46,7 @@ function AdminEdge() {
     api.line
       .getAllDetail()
       .then(data => {
-        subwayLines = data.lineDetailResponse;
+        subwayLines = data.lineDetailResponses;
         if (subwayLines.length > 0) {
           $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join("");
           initSubwayLinesSlider();

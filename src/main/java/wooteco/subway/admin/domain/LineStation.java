@@ -2,9 +2,9 @@ package wooteco.subway.admin.domain;
 
 public class LineStation {
     private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+    private final Long stationId;
+    private final int distance;
+    private final int duration;
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
