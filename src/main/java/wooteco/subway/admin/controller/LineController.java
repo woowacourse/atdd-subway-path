@@ -3,14 +3,12 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.*;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class LineController {
@@ -30,8 +28,21 @@ public class LineController {
     }
 
     @GetMapping("/lines")
-    public ResponseEntity<List<LineResponse>> showLine() {
+    public ResponseEntity<List<LineResponse>> showLines() {
         return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+    }
+
+    @GetMapping("/lines/detail")
+    public ResponseEntity showLinesdetail() {
+        return ResponseEntity.ok().body(WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse())));
+    }
+
+    private LineDetailResponse createMockResponse() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station());
+        stations.add(new Station());
+        stations.add(new Station());
+        return LineDetailResponse.of(new Line(), stations);
     }
 
     @GetMapping("/lines/{id}")
