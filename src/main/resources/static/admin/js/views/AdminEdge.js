@@ -45,8 +45,7 @@ function AdminEdge() {
   const initSubwayLinesView = () => {
     api.line
         .getAllDetail()
-        .then(data => {
-          subwayLines = data.lineDetailResponse
+        .then(subwayLines => {
           if (subwayLines.length > 0) {
             $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
             initSubwayLinesSlider()
