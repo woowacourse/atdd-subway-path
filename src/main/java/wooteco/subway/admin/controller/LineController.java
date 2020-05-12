@@ -49,13 +49,7 @@ public class LineController {
 	@GetMapping("/lines/detail")
 	public ResponseEntity<WholeSubwayResponse> wholeLines() {
 		return ResponseEntity.ok()
-			.body(WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse())));
-	}
-
-	private LineDetailResponse createMockResponse() {
-		return new LineDetailResponse(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
-			5, LocalDateTime.now(), LocalDateTime.now(),
-			Arrays.asList(new Station("잠실"), new Station("잠실나루"), new Station("잠실새내")));
+			.body(lineService.wholeLines());
 	}
 
 	@GetMapping("/lines/{id}")

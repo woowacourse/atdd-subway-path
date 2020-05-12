@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import java.util.List;
+
 public class LineStation {
 	private Long preStationId;
 	private Long stationId;
@@ -31,5 +33,12 @@ public class LineStation {
 
 	public void updatePreLineStation(Long preStationId) {
 		this.preStationId = preStationId;
+	}
+
+	public Station findMatchingStation(List<Station> stations) {
+		return stations.stream()
+			.filter(station -> station.getId().equals(this.getStationId()))
+			.findFirst()
+			.orElseThrow(IllegalArgumentException::new);
 	}
 }

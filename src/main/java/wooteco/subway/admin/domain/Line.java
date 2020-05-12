@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import static java.util.stream.Collectors.*;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -137,5 +139,11 @@ public class Line {
 		}
 
 		return stationIds;
+	}
+
+	public List<Station> findStationsFrom(List<Station> stations) {
+		return this.stations.stream()
+			.map(lineStation -> lineStation.findMatchingStation(stations))
+			.collect(toList());
 	}
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -65,6 +66,15 @@ public class LineService {
 
 	// TODO: 구현하세요 :)
 	public WholeSubwayResponse wholeLines() {
-		return null;
+		List<LineDetailResponse> lineDetailResponses = new ArrayList<>();
+		List<Line> lines = lineRepository.findAll();
+
+		List<Station> stations = stationRepository.findAll();
+
+		for (Line line : lines) {
+			List<Station> lineStations = line.findStationsFrom(stations);
+			lineDetailResponses.add(LineDetailResponse.of(line, lineStations));
+		}
+		return WholeSubwayResponse.of(lineDetailResponses);
 	}
 }

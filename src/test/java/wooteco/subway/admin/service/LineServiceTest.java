@@ -5,10 +5,13 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -149,5 +152,24 @@ public class LineServiceTest {
 		LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
 		assertThat(lineDetailResponse.getStations()).hasSize(3);
+	}
+
+	@Test
+	void wholeLines() {
+		Line newLine = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		newLine.addLineStation(new LineStation(null, 4L, 10, 10));
+		newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
+		newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
+
+		List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+		when(stationRepository.findAll()).thenReturn(stations);
+
+		List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponses();
+
+		assertThat(lineDetails).isNotNull();
+		assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
+		assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
 	}
 }
