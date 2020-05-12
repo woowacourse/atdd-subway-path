@@ -1,6 +1,6 @@
 export const listItemTemplate = value =>
   `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800">
-  ${value}
+  ${value.name}
   <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
      <span class="mdi mdi-delete"></span>
   </button>
@@ -20,12 +20,12 @@ const navTemplate = () => `<nav class="flex items-center justify-between flex-wr
       </a>
     <div class="flex justify-start">
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/map.html" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/map" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           노선도
           </a>
       </div>
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/search.html" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/search" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           경로 조회
           </a>
       </div>
@@ -43,9 +43,9 @@ export const subwayLinesTemplate = line =>
 
 export const subwayLinesItemTemplate = line => {
   const stationsTemplate = line.stations.map(station => listItemTemplate(station)).join('')
-  return `<div class="inline-block w-1/2 px-2">
+  return `<div class="inline-block w-1/2 px-2" data-line-id=${line.id}>
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.bgColor} lint-title px-4 py-1">${line.title}</div>
+              <div class="border ${line.bgColor} lint-title px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stationsTemplate}
               </div>
