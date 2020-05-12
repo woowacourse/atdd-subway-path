@@ -15,6 +15,8 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -149,5 +151,17 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void wholeLines() {
+        List<Line> lines = Collections.singletonList(line);
+        when(lineRepository.findAll()).thenReturn(lines);
+        // 모든 호선은 꺼냈다.
+        // 호선안에 스테이션들을 넣어주자! 근데 순서도 중요한
+        // when(lineRepository.findStationsByLine()).thenReturn(Arrays.asList(station1));
+
+        assertThat(lineService.wholeLines().getLineDetailResponse()).hasSize(1);
+        assertThat(lineService.wholeLines().getLineDetailResponse().get(0).getStations()).hasSize(3);
     }
 }

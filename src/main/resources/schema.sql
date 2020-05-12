@@ -23,6 +23,7 @@ create table if not exists LINE_STATION
     line bigint not null,
     station_id bigint not null,
     pre_station_id bigint,
+    sequence int not null,
     distance int,
     duration int,
     created_at datetime,
