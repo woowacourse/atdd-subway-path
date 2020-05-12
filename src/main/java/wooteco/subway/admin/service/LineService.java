@@ -65,4 +65,8 @@ public class LineService {
     public WholeSubwayResponse wholeLines() {
         return null;
     }
+
+    public LineDetailResponse calculateShortestStationsPath() {
+        return null;
+    }
 }
