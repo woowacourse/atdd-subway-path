@@ -170,5 +170,14 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    SearchPathResponse searchPath(Long startStationId, Long targetStationId) {
+        return
+            given().
+            when().
+                    get("/stations/path/" + startStationId + "/" + targetStationId).
+            then().
+                    log().all().
+                    extract().as(SearchPathResponse.class);
+    }
 }
 
