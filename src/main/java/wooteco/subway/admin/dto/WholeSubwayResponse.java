@@ -1,12 +1,12 @@
 package wooteco.subway.admin.dto;
 
 import java.util.List;
+import java.util.UUID;
 
-// TODO 구현하세요 :)
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponses;
 
-    private WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
+    public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
         this.lineDetailResponses = lineDetailResponses;
     }
 

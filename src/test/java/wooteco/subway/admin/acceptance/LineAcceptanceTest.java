@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다")
     @Test
@@ -79,12 +78,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private WholeSubwayResponse retrieveWholeSubway() {
-        return given()
-                .when()
-                .get("/lines/detail")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(WholeSubwayResponse.class);
+        return given().
+                when().
+                get("/lines/detail").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(WholeSubwayResponse.class);
     }
 }

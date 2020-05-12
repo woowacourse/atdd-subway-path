@@ -64,7 +64,7 @@ public class LineService {
     }
 
     public WholeSubwayResponse wholeLines() {
-        List<Line> lines = lineRepository.findAll();
+        List<Line> lines = showLines();
         List<Long> wholeStationIds = getWholeStationIds(lines);
         List<Station> wholeStations = stationRepository.findAllById(wholeStationIds);
 
