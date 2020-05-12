@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,5 +50,21 @@ public class LineTest {
 		line.removeLineStationById(stationId);
 
 		assertThat(line.getStations()).hasSize(2);
+	}
+
+	@Test
+	void findStationsFrom() {
+		Station sampleStation1 = new Station(1L, "가역");
+		Station sampleStation2 = new Station(2L, "나역");
+		Station sampleStation3 = new Station(3L, "다역");
+		Station sampleStation4 = new Station(4L, "라역");
+		List<Station> stations = Arrays.asList(
+			sampleStation1,
+			sampleStation2,
+			sampleStation3,
+			sampleStation4
+		);
+		List<Station> matchingStations = line.findStationsFrom(stations);
+		assertThat(matchingStations).containsExactly(sampleStation1,sampleStation2,sampleStation3);
 	}
 }

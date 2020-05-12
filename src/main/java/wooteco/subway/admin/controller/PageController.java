@@ -39,4 +39,7 @@ public class PageController {
 	public String edgePage(Model model) {
 		return "admin/admin-edge";
 	}
+
+	@GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+	public String mapPage(Model model) {return "service/map";}
 }
