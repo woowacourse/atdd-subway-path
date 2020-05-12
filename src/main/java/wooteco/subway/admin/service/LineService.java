@@ -84,4 +84,13 @@ public class LineService {
                 .map(line -> LineDetailResponse.of(line, line.getMatchingStations(wholeStations)))
                 .collect(Collectors.toList());
     }
+
+    public Station findStationWithName(String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", name)));
+    }
+
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
+    }
 }

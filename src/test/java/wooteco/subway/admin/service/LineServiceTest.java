@@ -169,4 +169,13 @@ public class LineServiceTest {
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
         assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
     }
+
+    @Test
+    void findStationWithName() {
+        Station station = new Station(1L, "환-강남역");
+
+        when(stationRepository.findByName(station.getName())).thenReturn(Optional.of(station));
+
+        assertThat(lineService.findStationWithName("환-강남역")).isEqualTo(station);
+    }
 }

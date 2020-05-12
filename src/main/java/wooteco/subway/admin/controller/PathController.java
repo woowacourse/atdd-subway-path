@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.service.PathService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,6 +17,12 @@ import java.util.List;
 @RestController
 public class PathController {
 
+    private PathService pathService;
+
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
+    }
+
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> retrieve(@RequestParam(name = "source", defaultValue = "") String source,
                                                  @RequestParam(name = "target", defaultValue = "") String target) throws UnsupportedEncodingException {
@@ -23,19 +30,11 @@ public class PathController {
         String decodedSource = URLDecoder.decode(source, "UTF-8");
         String decodedTarget = URLDecoder.decode(target, "UTF-8");
 
-        List<Station> stations = createMock();
+        List<Station> stations = pathService.retrieve(decodedSource, decodedTarget);
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 
         PathResponse pathResponse = PathResponse.of(stationResponses, 40, 40);
 
         return ResponseEntity.ok(pathResponse);
-    }
-
-    private List<Station> createMock() {
-        return Arrays.asList(new Station("환-강남역"),
-                new Station("1-역삼역"),
-                new Station("환-삼성역"),
-                new Station("1-삼송역"),
-                new Station("환-지축역"));
     }
 }
