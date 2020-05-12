@@ -137,7 +137,7 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
+    void addLineStation(Long lineId, Long preStationId, Long stationId, int distance, int duration) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
