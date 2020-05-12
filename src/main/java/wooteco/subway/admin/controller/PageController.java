@@ -38,4 +38,14 @@ public class PageController {
     public String edgePage(Model model) {
         return "admin/admin-edge";
     }
+
+    @GetMapping(value = "/service", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceIndex() {
+        return "service/index";
+    }
+
+    @GetMapping(value = "/service/search", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceSearch() {
+        return "service/search";
+    }
 }
