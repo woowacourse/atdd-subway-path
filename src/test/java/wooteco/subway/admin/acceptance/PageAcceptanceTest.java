@@ -2,6 +2,9 @@ package wooteco.subway.admin.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,14 +46,14 @@ public class PageAcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    private void createLine(String name) {
+    public static LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        given().
+        return given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -58,7 +61,8 @@ public class PageAcceptanceTest {
                 post("/lines").
         then().
                 log().all().
-                statusCode(HttpStatus.CREATED.value());
+                statusCode(HttpStatus.CREATED.value()).
+                extract().as(LineResponse.class);
     }
 
 }

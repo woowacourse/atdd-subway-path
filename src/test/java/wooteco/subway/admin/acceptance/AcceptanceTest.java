@@ -40,7 +40,7 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    StationResponse createStation(String name) {
+    public static StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
@@ -137,11 +137,11 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
+    static void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    static void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
