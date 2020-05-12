@@ -4,7 +4,21 @@ import java.util.List;
 
 // TODO 구현하세요 :)
 public class WholeSubwayResponse {
-    public static WholeSubwayResponse of(List<LineDetailResponse> responses) {
-        return null;
+
+    private List<LineDetailResponse> lineDetailResponse;
+
+    private WholeSubwayResponse() {
+    }
+
+    private WholeSubwayResponse(List<LineDetailResponse> lineDetailResponse) {
+        this.lineDetailResponse = lineDetailResponse;
+    }
+
+    public static WholeSubwayResponse of(List<LineDetailResponse> lineDetailResponse) {
+        return new WholeSubwayResponse(lineDetailResponse);
+    }
+
+    public List<LineDetailResponse> getLineDetailResponse() {
+        return lineDetailResponse;
     }
 }

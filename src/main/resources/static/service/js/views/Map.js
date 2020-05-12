@@ -6,7 +6,8 @@ function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
   const initSubwayLinesSlider = () => {
-    $subwayLinesSlider.innerHTML = defaultSubwayLines.map(line => subwayLinesItemTemplate(line)).join('')
+    $subwayLinesSlider.innerHTML = defaultSubwayLines.map(line => subwayLinesItemTemplate(line))
+    .join('')
     tns({
       container: '.subway-lines-slider',
       loop: true,
@@ -23,7 +24,8 @@ function Map() {
   }
 
   const initSubwayLineOptions = () => {
-    const subwayLineOptionTemplate = defaultSubwayLines.map(line => optionTemplate(line.title)).join('')
+    const subwayLineOptionTemplate = defaultSubwayLines.map(line => optionTemplate(line.title))
+    .join('')
     const $stationSelectOptions = document.querySelector('#station-select-options')
     $stationSelectOptions.insertAdjacentHTML('afterbegin', subwayLineOptionTemplate)
   }
