@@ -162,10 +162,12 @@ public class LineServiceTest {
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
-        Set<Station> stations = Sets.newLinkedHashSet(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        Set<Station> stations1 = Sets.newLinkedHashSet(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
+        Set<Station> stations2 = Sets.newLinkedHashSet(new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
-        when(stationRepository.findAllById(anyList())).thenReturn(new ArrayList<>(stations));
+        when(stationRepository.findAllById(line.getLineStationsId())).thenReturn(new ArrayList<>(stations1));
+        when(stationRepository.findAllById(newLine.getLineStationsId())).thenReturn(new ArrayList<>(stations2));
 
         List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponse();
 
