@@ -1,17 +1,18 @@
 package wooteco.subway.admin.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
 
 @Service
 public class LineService {
@@ -57,12 +58,26 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        List<Station> stations = stationRepository.findAllById(line.getLineStationsIds());
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
+    public List<LineDetailResponse> wholeLines() {
+        List<Line> lines = lineRepository.findAll();
+
+        return lines.stream()
+            .map(line -> LineDetailResponse.of(line, sortBySubwayRule(line.getLineStationsIds())))
+            .collect(Collectors.toList());
+    }
+
+    public List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
+        List<Station> stations = stationRepository.findAllById(lineStationsIds);
+
+        return lineStationsIds.stream()
+            .map(lineStationsId -> stations.stream()
+                .filter(station -> station.getId().equals(lineStationsId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다!")))
+            .collect(Collectors.toList());
     }
 }

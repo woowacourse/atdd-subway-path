@@ -1,11 +1,20 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -13,15 +22,6 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -67,7 +67,7 @@ public class LineServiceTest {
 
         assertThat(line.getStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(4L);
         assertThat(stationIds.get(1)).isEqualTo(1L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -83,7 +83,7 @@ public class LineServiceTest {
 
         assertThat(line.getStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(4L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -99,7 +99,7 @@ public class LineServiceTest {
 
         assertThat(line.getStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
@@ -113,7 +113,7 @@ public class LineServiceTest {
 
         assertThat(line.getStations()).hasSize(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(2L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -123,7 +123,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 2L);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -135,7 +135,7 @@ public class LineServiceTest {
 
         assertThat(line.getStations()).hasSize(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getLineStationsIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }

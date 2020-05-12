@@ -1,10 +1,15 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.data.annotation.Id;
 
 public class Line {
     @Id
@@ -105,7 +110,7 @@ public class Line {
         stations.remove(targetLineStation);
     }
 
-    public List<Long> getLineStationsId() {
+    public List<Long> getLineStationsIds() {
         if (stations.isEmpty()) {
             return new ArrayList<>();
         }
