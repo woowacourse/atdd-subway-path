@@ -31,7 +31,7 @@ public class LineController {
 
     @GetMapping("/lines")
     public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().eTag(LineResponse.getVERSION()).body(LineResponse.listOf(lineService.showLines()));
+        return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
     }
 
     @GetMapping("/lines/{id}")
