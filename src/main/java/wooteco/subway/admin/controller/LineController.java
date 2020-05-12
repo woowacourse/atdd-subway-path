@@ -33,7 +33,7 @@ public class LineController {
 
     @GetMapping("lines/detail")
     public ResponseEntity<WholeSubwayResponse> retrieveLines() {
-        return ResponseEntity.ok().body(lineService.findAllLineWithStations());
+        return ResponseEntity.ok().body(lineService.findAllLinesWithStations());
     }
 
     @GetMapping("/lines/{id}")

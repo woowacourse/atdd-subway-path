@@ -58,7 +58,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public WholeSubwayResponse findAllLineWithStations() {
+    public WholeSubwayResponse findAllLinesWithStations() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
                 .map(this::changeLineToLineDetailResponse)
@@ -73,10 +73,5 @@ public class LineService {
     private LineDetailResponse changeLineToLineDetailResponse(Line line) {
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
-    }
-
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
     }
 }
