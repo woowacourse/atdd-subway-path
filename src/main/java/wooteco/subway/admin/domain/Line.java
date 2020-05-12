@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
     @Id
@@ -132,5 +133,15 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public List<Station> getMatchingStations(List<Station> wholeStations) {
+        List<Long> stationIds = stations.stream()
+                .map(LineStation::getStationId)
+                .collect(Collectors.toList());
+
+        return wholeStations.stream()
+                .filter(station -> stationIds.contains(station.getId()))
+                .collect(Collectors.toList());
     }
 }
