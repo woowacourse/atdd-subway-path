@@ -8,8 +8,6 @@ public class WholeSubwayResponse {
     public WholeSubwayResponse() {
     }
 
-    ;
-
     public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
         this.lineDetailResponses = lineDetailResponses;
     }

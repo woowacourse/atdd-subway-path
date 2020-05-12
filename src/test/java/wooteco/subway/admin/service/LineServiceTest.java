@@ -11,10 +11,12 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -149,5 +151,17 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void findWholeSubwayLine() {
+        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(new Line(), new Line()));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
+
+        assertThat(wholeSubwayResponse.getLineDetailResponses()).hasSize(2);
+        assertThat(wholeSubwayResponse.getLineDetailResponses().get(0).getStations()).hasSize(3);
     }
 }
