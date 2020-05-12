@@ -16,21 +16,21 @@ public class LineTest {
     @BeforeEach
     void setUp() {
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line.addEdge(new Edge(null, 1L, 10, 10));
+        line.addEdge(new Edge(1L, 2L, 10, 10));
+        line.addEdge(new Edge(2L, 3L, 10, 10));
     }
 
     @Test
     void addLineStation() {
-        line.addLineStation(new LineStation(null, 4L, 10, 10));
+        line.addEdge(new Edge(null, 4L, 10, 10));
 
-        assertThat(line.getStations()).hasSize(4);
-        LineStation lineStation = line.getStations().stream()
+        assertThat(line.getEdges()).hasSize(4);
+        Edge edge = line.getEdges().stream()
                 .filter(it -> it.getPreStationId() == 4L)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
-        assertThat(lineStation.getStationId()).isEqualTo(1L);
+        assertThat(edge.getStationId()).isEqualTo(1L);
     }
 
     @Test
@@ -48,6 +48,6 @@ public class LineTest {
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdges()).hasSize(2);
     }
 }

@@ -1,9 +1,11 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -43,8 +45,8 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
-        line.addLineStation(lineStation);
+        Edge edge = new Edge(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        line.addEdge(edge);
 
         lineRepository.save(line);
     }
@@ -61,8 +63,10 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        Lines lines = new Lines(lineRepository.findAll());
+        Stations stations = new Stations(stationRepository.findAllById(lines.getStationIds()));
+
+        return WholeSubwayResponse.of(LineDetailResponse.listOf(lines, stations));
     }
 }
