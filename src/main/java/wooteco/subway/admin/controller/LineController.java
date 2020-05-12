@@ -30,8 +30,13 @@ public class LineController {
     }
 
     @GetMapping("/lines")
-    public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+    public ResponseEntity<List<LineResponse>> findLines() {
+        return ResponseEntity.ok().body(LineResponse.listOf(lineService.findLines()));
+    }
+
+    @GetMapping("lines/detail")
+    public ResponseEntity<List<LineDetailResponse>> retrieveLines() {
+        return ResponseEntity.ok().body(lineService.findAllLineWithStations());
     }
 
     @GetMapping("/lines/{id}")

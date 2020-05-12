@@ -30,7 +30,7 @@ public class PageController {
 
     @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
     public String linePage(Model model) {
-        model.addAttribute("lines", lineService.showLines());
+        model.addAttribute("lines", lineService.findLines());
         return "admin/admin-line";
     }
 

@@ -8,7 +8,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -128,6 +130,16 @@ public class AcceptanceTest {
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
+    }
+
+    List<LineDetailResponse> getDetailLines() {
+        return
+                given().when().
+                        get("/lines/detail").
+                then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", LineDetailResponse.class);
     }
 
     void deleteLine(Long id) {

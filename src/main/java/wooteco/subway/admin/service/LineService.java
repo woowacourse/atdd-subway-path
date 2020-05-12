@@ -13,6 +13,8 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class LineService {
     private LineRepository lineRepository;
@@ -27,7 +29,7 @@ public class LineService {
         return lineRepository.save(line);
     }
 
-    public List<Line> showLines() {
+    public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
@@ -55,8 +57,19 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    public List<LineDetailResponse> findAllLineWithStations() {
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+                .map(this::changeLineToLineDetailResponse)
+                .collect(toList());
+    }
+
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return changeLineToLineDetailResponse(line);
+    }
+
+    private LineDetailResponse changeLineToLineDetailResponse(Line line) {
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
