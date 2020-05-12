@@ -1,6 +1,8 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -11,7 +13,12 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class LineService {
@@ -63,6 +70,22 @@ public class LineService {
 
     // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        Line line = lines.get(0);
+        Line newLine = lines.get(1);
+
+        List<Station> allStations = stationRepository.findAllById(new ArrayList());
+        List<Station> lineStations = stationRepository.findAllById(line.getLineStationsId());
+        List<Station> newLineStations = stationRepository.findAllById(newLine.getLineStationsId());
+
+        return WholeSubwayResponse.of(Arrays.asList(LineDetailResponse.of(line, lineStations), LineDetailResponse.of(newLine, newLineStations)));
+    }
+
+    private LineDetailResponse createMockResponse() {
+        Set<Station> stations = new HashSet();
+        stations.add(new Station());
+        stations.add(new Station());
+        stations.add(new Station());
+        return LineDetailResponse.of(new Line(), new ArrayList<>(stations));
     }
 }
