@@ -1,20 +1,23 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -130,6 +133,17 @@ public class AcceptanceTest {
                         jsonPath().getList(".", LineResponse.class);
     }
 
+    List<LineDetailResponse> getLineDetails() {
+        return
+            given().when()
+               .get("/lines/stations")
+            .then()
+                .log().all()
+                .extract()
+                .jsonPath()
+                .getList(".", LineDetailResponse.class);
+    }
+
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
@@ -169,6 +183,5 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
-
 }
 
