@@ -1,10 +1,20 @@
 package wooteco.subway.admin.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
-// TODO 구현하세요 :)
 public class WholeSubwayResponse {
-    public static WholeSubwayResponse of(List<LineDetailResponse> responses) {
-        return null;
+
+    private List<LineDetailResponse> lineDetails;
+
+    public WholeSubwayResponse() {
+    }
+
+    public WholeSubwayResponse(List<LineDetailResponse> lineDetails) {
+        this.lineDetails = new ArrayList<>(lineDetails);
+    }
+
+    public List<LineDetailResponse> getLineDetails() {
+        return lineDetails;
     }
 }
