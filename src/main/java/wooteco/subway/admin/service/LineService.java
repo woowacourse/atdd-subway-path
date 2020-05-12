@@ -7,11 +7,12 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -58,11 +59,28 @@ public class LineService {
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
+
+        // Station id
+        List<Station> orderedStations = new ArrayList<>();
+        for (Long stationId : line.getLineStationsId()) {
+            stations.stream()
+                    .filter(station -> station.getId().equals(stationId))
+                    .findAny()
+                    .ifPresent(orderedStations::add);
+        }
+        return LineDetailResponse.of(line, orderedStations);
     }
 
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
+    public List<LineDetailResponse> findDetailLines() {
+        List<Line> lines = lineRepository.findAll();
+        List<List<Station>> stations = lines.stream()
+                .map(line -> stationRepository.findAllById(line.getLineStationsId()))
+                .collect(Collectors.toList());
+
+        List<LineDetailResponse> response = new ArrayList<>();
+        for (int i = 0; i < lines.size(); i++) {
+            response.add(LineDetailResponse.of(lines.get(i), stations.get(i)));
+        }
+        return response;
     }
 }

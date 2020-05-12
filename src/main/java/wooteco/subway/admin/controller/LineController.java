@@ -34,6 +34,11 @@ public class LineController {
         return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
     }
 
+    @GetMapping("/lines/detail")
+    public ResponseEntity<List<LineDetailResponse>> showDetailLine() {
+        return ResponseEntity.ok().body(lineService.findDetailLines());
+    }
+
     @GetMapping("/lines/{id}")
     public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
         return ResponseEntity.ok().body(lineService.findLineWithStationsById(id));

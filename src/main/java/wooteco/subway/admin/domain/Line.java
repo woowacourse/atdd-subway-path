@@ -5,8 +5,10 @@ import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
+    public static final int FIRST = 0;
     @Id
     private Long id;
     private String name;
@@ -15,7 +17,7 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
+    private List<LineStation> stations = new LinkedList<>();
 
     public Line() {
     }
@@ -53,7 +55,7 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
+    public List<LineStation> getStations() {
         return stations;
     }
 
@@ -83,33 +85,73 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+        if (lineStation.isFirst()) {
+            addFirst(lineStation);
+            return;
+        }
+
+        if (hasNoSuchPreStation(lineStation)) {
+            throw new NoSuchElementException("이전 역이 등록되지 않았습니다.");
+        }
+
+        Optional<LineStation> nextStation = findNextStationBy(lineStation.getPreStationId());
+        if (nextStation.isPresent()) {
+            addBetweenTwo(lineStation, nextStation.get());
+            return;
+        }
 
         stations.add(lineStation);
     }
 
-    public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
+    private void addFirst(LineStation lineStation) {
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
                 .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+                .ifPresent(station -> station.updatePreLineStation(lineStation.getStationId()));
+        stations.add(FIRST, lineStation);
+    }
 
-        stations.remove(targetLineStation);
+    private void addBetweenTwo(LineStation lineStation, LineStation nextStation) {
+        nextStation.updatePreLineStation(lineStation.getStationId());
+        int position = stations.indexOf(nextStation);
+        stations.add(position, lineStation);
+    }
+
+    private boolean hasNoSuchPreStation(LineStation lineStation) {
+        return stations.stream()
+                .map(LineStation::getStationId)
+                .noneMatch(id -> lineStation.getPreStationId().equals(id));
+    }
+
+    private Optional<LineStation> findNextStationBy(Long stationId) {
+        return stations.stream()
+                .filter(station -> stationId.equals(station.getPreStationId()))
+                .findFirst();
+    }
+
+    public void removeLineStationById(Long stationId) {
+        LineStation station = findStationBy(stationId);
+        findNextStationBy(stationId)
+                .ifPresent(nextStation -> nextStation.updatePreLineStation(station.getPreStationId()));
+        stations.remove(station);
+    }
+
+    private LineStation findStationBy(Long stationId) {
+        return stations.stream()
+                .filter(lineStation -> lineStation.getStationId().equals(stationId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("해당 노선에 등록되지 않은 역입니다."));
+    }
+
+    public List<Long> getStationIds() {
+        return stations.stream()
+                .map(LineStation::getStationId)
+                .collect(Collectors.toList());
     }
 
     public List<Long> getLineStationsId() {
         if (stations.isEmpty()) {
             return new ArrayList<>();
         }
-
         LineStation firstLineStation = stations.stream()
                 .filter(it -> it.getPreStationId() == null)
                 .findFirst()
