@@ -33,16 +33,8 @@ public class LineController {
     }
 
     @GetMapping("/lines/detail")
-    public ResponseEntity showLinesdetail() {
-        return ResponseEntity.ok().body(WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse())));
-    }
-
-    private LineDetailResponse createMockResponse() {
-        List<Station> stations = new ArrayList<>();
-        stations.add(new Station());
-        stations.add(new Station());
-        stations.add(new Station());
-        return LineDetailResponse.of(new Line(), stations);
+    public ResponseEntity<WholeSubwayResponse> showLinesDetail() {
+        return ResponseEntity.ok().body(lineService.showLinesDetail());
     }
 
     @GetMapping("/lines/{id}")

@@ -5,6 +5,9 @@ import java.util.List;
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponses;
 
+    public WholeSubwayResponse() {
+    }
+
     public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
         this.lineDetailResponses = lineDetailResponses;
     }

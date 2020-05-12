@@ -2,7 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.to.LineDetailResponse;
+import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
@@ -42,7 +42,7 @@ public class WholeLineAcceptanceTest extends AcceptanceTest {
 
 //		When 지하철 노선도 전체 조회 요청을 한다.
 //		Then 지하철 노선도 전체를 응답 받는다.
-		List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponse();
+		List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponses();
 		assertThat(response.size()).isEqualTo(2);
 		assertThat(response.get(0).getStations().size()).isEqualTo(3);
 		assertThat(response.get(1).getStations().size()).isEqualTo(3);

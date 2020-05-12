@@ -130,6 +130,15 @@ public class AcceptanceTest {
                         jsonPath().getList(".", LineResponse.class);
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        return
+                given().when().
+                        get("/lines/detail").
+                        then().
+                        log().all().
+                        extract().as(WholeSubwayResponse.class);
+    }
+
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
