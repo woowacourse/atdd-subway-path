@@ -8,6 +8,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.domain.LineDto;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -24,12 +25,14 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line save(Line line) {
-        return lineRepository.save(line);
+    public LineDto save(Line line) {
+        return LineDto.of(lineRepository.save(line));
     }
 
-    public List<Line> showLines() {
-        return lineRepository.findAll();
+    public List<LineDto> showLines() {
+        return lineRepository.findAll().stream()
+                .map(LineDto::of)
+                .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest request) {

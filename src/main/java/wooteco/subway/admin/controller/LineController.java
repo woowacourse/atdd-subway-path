@@ -2,8 +2,8 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.domain.LineDto;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;
@@ -19,7 +19,7 @@ public class LineController {
 
     @PostMapping(value = "/lines")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
-        Line persistLine = lineService.save(view.toLine());
+        LineDto persistLine = lineService.save(view.toLine());
 
         return ResponseEntity
                 .created(URI.create("/lines/" + persistLine.getId()))
