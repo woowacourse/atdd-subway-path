@@ -55,7 +55,7 @@ public class LineServiceTest {
 		station3 = new Station(3L, STATION_NAME3);
 		station4 = new Station(4L, STATION_NAME4);
 
-		line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+		line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "red");
 		line.addLineStation(new LineStation(null, 1L, 10, 10));
 		line.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -157,7 +157,7 @@ public class LineServiceTest {
 	@Test
 	@DisplayName("전체 노선과 노선의 역들을 가져오는 기능")
 	void wholeLinesTest() {
-		Line line2 = new Line(2L, "25호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+		Line line2 = new Line(2L, "25호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "red");
 		line2.addLineStation(new LineStation(null, 4L, 10, 10));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
