@@ -8,11 +8,11 @@ import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.LineService;
 
 @Controller
-public class PageController {
+public class AdminPageController {
     private LineService lineService;
     private StationRepository stationRepository;
 
-    public PageController(LineService lineService, StationRepository stationRepository) {
+    public AdminPageController(LineService lineService, StationRepository stationRepository) {
         this.lineService = lineService;
         this.stationRepository = stationRepository;
     }
