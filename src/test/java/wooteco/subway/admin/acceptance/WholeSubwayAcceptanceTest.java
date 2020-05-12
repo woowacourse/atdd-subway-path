@@ -42,7 +42,7 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
     private WholeSubwayResponse retrieveWholeSubway() {
         return given().
             when().
-            get("/lines/stations").
+            get("/lines/detail").
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).

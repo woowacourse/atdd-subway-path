@@ -16,7 +16,7 @@ public class SubwayController {
         this.lineService = lineService;
     }
 
-    @GetMapping("/lines/stations")
+    @GetMapping("/lines/detail")
     public ResponseEntity<WholeSubwayResponse> showSubways() {
         return ResponseEntity.ok().body(lineService.wholeLines());
     }
