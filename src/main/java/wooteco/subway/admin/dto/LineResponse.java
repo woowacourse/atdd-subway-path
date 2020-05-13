@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class LineResponse {
     private Long id;
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -19,9 +20,10 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public LineResponse(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
+        this.color = color;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -30,7 +32,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(LineDto lineDto) {
-        return new LineResponse(lineDto.getId(), lineDto.getName(), lineDto.getStartTime(), lineDto.getEndTime(), lineDto.getIntervalTime(), lineDto.getCreatedAt(), lineDto.getUpdatedAt());
+        return new LineResponse(lineDto.getId(), lineDto.getName(), lineDto.getColor(), lineDto.getStartTime(), lineDto.getEndTime(), lineDto.getIntervalTime(), lineDto.getCreatedAt(), lineDto.getUpdatedAt());
     }
 
     public static List<LineResponse> listOf(List<LineDto> lines) {
@@ -45,6 +47,10 @@ public class LineResponse {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public LocalTime getStartTime() {

@@ -10,6 +10,7 @@ import java.util.Set;
 public class LineDto {
     private Long id;
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -17,9 +18,10 @@ public class LineDto {
     private LocalDateTime updatedAt;
     private Set<LineStation> stations;
 
-    public LineDto(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, Set<LineStation> stations) {
+    public LineDto(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, Set<LineStation> stations) {
         this.id = id;
         this.name = name;
+        this.color = color;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -29,7 +31,7 @@ public class LineDto {
     }
 
     public static LineDto of(Line line) {
-        return new LineDto(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(),
+        return new LineDto(line.getId(), line.getName(), line.getColor(), line.getStartTime(), line.getEndTime(),
                 line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), line.getStations());
     }
 
@@ -39,6 +41,10 @@ public class LineDto {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public LocalTime getStartTime() {
