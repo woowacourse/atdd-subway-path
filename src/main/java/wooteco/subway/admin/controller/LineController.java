@@ -1,11 +1,7 @@
 package wooteco.subway.admin.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineResponse;
@@ -49,17 +44,7 @@ public class LineController {
 
 	@GetMapping("/lines/detail")
 	public ResponseEntity<WholeSubwayResponse> retrieveWholeLines() {
-		WholeSubwayResponse wholeSubwayResponse = WholeSubwayResponse.of(
-			Arrays.asList(createMockLineDetailResponse(), createMockLineDetailResponse()));
-		return ResponseEntity.ok().body(wholeSubwayResponse);
-	}
-
-	private LineDetailResponse createMockLineDetailResponse() {
-		Set<Station> stations = new HashSet<>();
-		stations.add(new Station());
-		stations.add(new Station());
-		stations.add(new Station());
-		return LineDetailResponse.of(new Line(), new ArrayList<>(stations));
+		return ResponseEntity.ok().body(lineService.wholeLines());
 	}
 
 	@GetMapping("/lines/{id}")
