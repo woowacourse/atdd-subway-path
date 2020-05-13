@@ -48,4 +48,12 @@ public class StationService {
 
         return new PathRequestWithId(sourceId,targetId);
     }
+
+    public Station findByName(String name) {
+        return stationRepository.findByName(name).orElse(null);
+    }
+
+    public List<Station> findAllById(List<Long> lineStationsId) {
+        return stationRepository.findAllById(lineStationsId);
+    }
 }

@@ -9,6 +9,7 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.StationService;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -17,9 +18,12 @@ import java.util.List;
 @RestController
 public class LineController {
     private LineService lineService;
+    private StationService stationService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService,
+        StationService stationService) {
         this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     @PostMapping(value = "/lines")
@@ -32,8 +36,8 @@ public class LineController {
     }
 
     @GetMapping("/lines")
-    public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+    public ResponseEntity<List<LineDetailResponse>> showLine() {
+        return ResponseEntity.ok().body(lineService.wholeLines().getLineDetailResponse());
     }
 
     @GetMapping("/lines/{id}")

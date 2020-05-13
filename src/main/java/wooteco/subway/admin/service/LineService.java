@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -13,16 +14,16 @@ import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class LineService {
     private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private StationService stationService;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository,
+        StationService stationService) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     public Line save(Line line) {
@@ -44,8 +45,17 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
+        Station preStation = stationService.findByName(request.getPreStationName());
+        Long preStationId;
+        if(Objects.isNull(preStation)){
+            preStationId=null;
+        } else{
+            preStationId = preStation.getId();
+        }
+
+        Long stationId = stationService.findByName(request.getStationName()).getId();
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+        LineStation lineStation = new LineStation(preStationId, stationId,
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
@@ -60,16 +70,15 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        List<Station> stations = stationService.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
         List<LineDetailResponse> lineDetailResponses = lines.stream()
             .map(line ->
-                LineDetailResponse.of(line, stationRepository.findAllById(line.getLineStationsId())))
+                LineDetailResponse.of(line, stationService.findAllById(line.getLineStationsId())))
             .collect(Collectors.toList());
         return WholeSubwayResponse.of(lineDetailResponses);
     }

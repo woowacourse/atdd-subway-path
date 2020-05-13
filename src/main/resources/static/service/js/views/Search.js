@@ -17,10 +17,21 @@ function Search() {
   const onSearch = event => {
     event.preventDefault()
     const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value
+      sourceName: $departureStationName.value,
+      targetName: $arrivalStationName.value
     }
-    console.log(searchInput)
+    console.log(searchInput);
+    fetch('/path', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(searchInput)
+    }).then(response=>response.json())
+    .then(jsonResponse=>{
+      console.log(jsonResponse);
+    });
+
     showSearchResult(searchInput)
   }
 

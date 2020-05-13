@@ -3,7 +3,6 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 import java.util.Map;
 
-// TODO 구현하세요 :)
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponse;
 
