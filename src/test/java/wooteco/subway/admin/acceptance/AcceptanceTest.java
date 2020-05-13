@@ -25,6 +25,8 @@ public class AcceptanceTest {
 	static final String STATION_NAME_KANGNAM = "강남역";
 	static final String STATION_NAME_YEOKSAM = "역삼역";
 	static final String STATION_NAME_SEOLLEUNG = "선릉역";
+	static final String STATION_NAME_SADANG = "사당역";
+	static final String STATION_NAME_JAMSIL = "잠실역";
 
 	static final String LINE_NAME_2 = "2호선";
 	static final String LINE_NAME_3 = "3호선";
@@ -34,13 +36,13 @@ public class AcceptanceTest {
 	@LocalServerPort
 	int port;
 
+	public static RequestSpecification given() {
+		return RestAssured.given().log().all();
+	}
+
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
-	}
-
-	public static RequestSpecification given() {
-		return RestAssured.given().log().all();
 	}
 
 	StationResponse createStation(String name) {
@@ -142,6 +144,10 @@ public class AcceptanceTest {
 
 	void addLineStation(Long lineId, Long preStationId, Long stationId) {
 		addLineStation(lineId, preStationId, stationId, 10, 10);
+	}
+
+	void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance) {
+		addLineStation(lineId, preStationId, stationId, distance, 10);
 	}
 
 	void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {

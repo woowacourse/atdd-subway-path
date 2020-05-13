@@ -2,6 +2,7 @@ package wooteco.subway.admin.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import wooteco.subway.admin.domain.Station;
@@ -40,5 +41,21 @@ public class StationResponse {
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		StationResponse that = (StationResponse)o;
+		return Objects.equals(id, that.id) &&
+			Objects.equals(name, that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
 	}
 }

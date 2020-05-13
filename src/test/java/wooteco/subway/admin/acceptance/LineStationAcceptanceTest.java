@@ -20,9 +20,9 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
 
 		LineResponse lineResponse = createLine("2호선");
 
-		addLineStation(lineResponse.getId(), null, stationResponse1.getId());
-		addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-		addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+		addLineStation(lineResponse.getId(), null, stationResponse1.getId(), 10);
+		addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 10);
+		addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId(), 10);
 
 		LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
 		assertThat(lineDetailResponse.getStations()).hasSize(3);
