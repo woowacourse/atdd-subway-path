@@ -1,18 +1,11 @@
 package wooteco.subway.admin.acceptance;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,12 +69,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.getTotalDuration()).isEqualTo(3);
     }
 
-    private PathResponse findPath(Long start, Long end) {
+    private PathResponse findPath(Long source, Long target) {
         return given().
                 when().
-                get("/paths" + "?source=" + start.toString() + "&target=" + end.toString()).
+                get("/paths?source=" + source + "&target=" + target).
                 then().
                 log().all().
+                statusCode(HttpStatus.OK.value()).
                 extract().as(PathResponse.class);
     }
 }
