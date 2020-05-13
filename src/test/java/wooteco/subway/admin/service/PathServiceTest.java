@@ -1,8 +1,10 @@
 package wooteco.subway.admin.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import wooteco.subway.admin.api.JgraphtdApiTest;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -44,7 +45,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        PathService pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -55,18 +56,21 @@ public class PathServiceTest {
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
 
-        line1.addLineStation(new LineStation(null, 1L, 0, 0));
-        line1.addLineStation(new LineStation(1L, 2L, 15, 15));
-        line1.addLineStation(new LineStation(2L, 3L, 5, 5));
+        line1.addLineStation(new LineStation(null, 5L, 0, 0));
+        line1.addLineStation(new LineStation(5L, 4L, 15, 15));
+        line1.addLineStation(new LineStation(4L, 3L, 5, 5));
 
-        line2.addLineStation(new LineStation(null, 1L, 0, 0));
-        line2.addLineStation(new LineStation(1L, 4L, 15, 15));
-        line2.addLineStation(new LineStation(4L, 5L, 5, 5));
+        line2.addLineStation(new LineStation(null, 5L, 0, 0));
+        line2.addLineStation(new LineStation(5L, 2L, 15, 15));
+        line2.addLineStation(new LineStation(2L, 1L, 5, 5));
     }
 
     @Test
     void findShortestPathByDistanceTest() {
-        PathResponse pathResponse = pathService.findShortestPathByDistance();
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+
+        PathResponse pathResponse = pathService.findShortestPathByDistance(station1.getId(), station3.getId());
 
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
         assertThat(pathResponse.getDistance()).isEqualTo(40);
