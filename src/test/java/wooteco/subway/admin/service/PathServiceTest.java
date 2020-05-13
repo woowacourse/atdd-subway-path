@@ -45,7 +45,6 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
@@ -66,7 +65,6 @@ public class PathServiceTest {
         bundangLine.addLineStation(new LineStation(5L, 6L, 10, 10));
         bundangLine.addLineStation(new LineStation(6L, 3L, 10, 10));
         bundangLine.addLineStation(new LineStation(3L, 7L, 10, 10));
-
     }
 
     @Test
