@@ -1,6 +1,7 @@
 export const EVENT_TYPE = {
-  CLICK: "click",
-  KEY_PRESS: "keypress"
+    CLICK: "click",
+    CHANGE: "change",
+    KEY_PRESS: "keypress"
 };
 
 export const ERROR_MESSAGE = {

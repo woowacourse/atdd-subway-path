@@ -9,9 +9,9 @@ function AdminEdge() {
   const $createEdgeButton = document.querySelector('#create-edge-button')
   const $lineSelectOptions = document.querySelector('#line-select-options')
   const $subwayLineAddButton = document.querySelector('#subway-line-add-btn')
+  const $previousStationSelectOption = document.querySelector('#previous-select-options')
   const $nextStationSelectOptions = document.querySelector('#next-station-select-options')
   const createSubwayEdgeModal = new Modal()
-  let subwayLines = []
 
   const initSubwayLinesSlider = () => {
     tns({
@@ -76,17 +76,18 @@ function AdminEdge() {
 
   const initCreateEdgeForm = event => {
     event.preventDefault()
-    initPreviousStationOptions()
+    initPreviousStationOptions(event)
     initNextStationOptions()
-    initLineOptions(subwayLines)
+    initLineOptions()
   }
 
-  const initPreviousStationOptions = () => {
+  const initPreviousStationOptions = (event) => {
+    event.preventDefault();
+    $previousStationSelectOption.innerHTML = "";
     api.line.get($lineSelectOptions.value).then(data => {
       const stations = data.stations ? data.stations : []
       if (stations.length > 0) {
-        const $stationSelectOption = document.querySelector('#previous-select-options')
-        $stationSelectOption.innerHTML = stations.map(station => optionTemplate(station)).join('')
+        $previousStationSelectOption.innerHTML = stations.map(station => optionTemplate(station)).join('')
       }
     })
   }
@@ -101,12 +102,22 @@ function AdminEdge() {
   }
 
   const initLineOptions = subwayLines => {
-    const subwayLineOptionTemplate = subwayLines.map(line => optionTemplate(line)).join('')
-    const $lineSelectOption = document.querySelector('#line-select-options')
-    $lineSelectOption.innerHTML = subwayLineOptionTemplate
+    api.line
+        .getAllDetail()
+        .then(subwayLines => {
+          if (subwayLines.length > 0) {
+            const subwayLineOptionTemplate = subwayLines.map(line => optionTemplate(line)).join('')
+            const $lineSelectOption = document.querySelector('#line-select-options')
+            $lineSelectOption.innerHTML = subwayLineOptionTemplate
+          }
+        })
+        .catch(error => {
+          alert('데이터를 불러오는데 실패했습니다.')
+        })
   }
 
   const initEventListeners = () => {
+    $lineSelectOptions.addEventListener(EVENT_TYPE.CHANGE, initPreviousStationOptions)
     $subwayLinesSlider.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler)
     $createEdgeButton.addEventListener(EVENT_TYPE.CLICK, onCreateEdgeHandler)
     $subwayLineAddButton.addEventListener(EVENT_TYPE.CLICK, initCreateEdgeForm)
