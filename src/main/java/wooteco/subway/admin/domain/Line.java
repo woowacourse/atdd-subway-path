@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 
@@ -119,32 +119,43 @@ public class Line {
         stations.remove(targetLineStation);
     }
 
+    public List<LineStation> getLineStations() {
+        if (stations.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return sortedLineStations();
+    }
+
     public List<Long> getLineStationsId() {
         if (stations.isEmpty()) {
             return new ArrayList<>();
         }
 
+        return sortedLineStations().stream()
+            .map(LineStation::getStationId)
+            .collect(Collectors.toList());
+    }
+
+    private List<LineStation> sortedLineStations() {
         LineStation firstLineStation = stations.stream()
             .filter(it -> it.getPreStationId() == null)
             .findFirst()
             .orElseThrow(RuntimeException::new);
 
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
+        List<LineStation> lineStations = new ArrayList<>();
+        lineStations.add(firstLineStation);
 
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+        while (lineStations.size() != stations.size()) {
+            Long lastStationId = lineStations.get(lineStations.size() - 1).getStationId();
+            LineStation nextLineStation = stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                .findFirst();
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+            lineStations.add(nextLineStation);
         }
 
-        return stationIds;
+        return lineStations;
     }
+
 }

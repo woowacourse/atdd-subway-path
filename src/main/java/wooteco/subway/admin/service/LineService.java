@@ -1,5 +1,7 @@
 package wooteco.subway.admin.service;
 
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.ShortestDistanceResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -70,5 +73,18 @@ public class LineService {
             .map(line -> findLineWithStationsById(line.getId()))
             .collect(Collectors.toList());
         return WholeSubwayResponse.of(lineDetailResponses);
+    }
+
+    // todo: 기능 구현
+    public ShortestDistanceResponse searchShortestDistancePath(String source, String target) {
+        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5,
+            "bg-green-600");
+        List<Station> stations = Arrays.asList(new Station(1L, "잠실역"), new Station(2L, "삼성역"),
+            new Station(3L, "선릉역"));
+        line.addLineStation(new LineStation(null, 1L, 10, 10));
+        line.addLineStation(new LineStation(1L, 2L, 10, 10));
+        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        List<LineStation> lineStations = line.getLineStations();
+        return ShortestDistanceResponse.of(stations, lineStations);
     }
 }
