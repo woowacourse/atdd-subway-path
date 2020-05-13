@@ -77,6 +77,7 @@ public class AcceptanceTest {
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("backgroundColor", "white");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");

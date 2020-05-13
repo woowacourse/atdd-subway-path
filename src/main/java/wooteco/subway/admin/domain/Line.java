@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +11,7 @@ public class Line {
     @Id
     private Long id;
     private String name;
+    private String backgroundColor;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,8 +22,23 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, String backgroundColor, LocalTime startTime,
+        LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
+        Set<LineStation> stations) {
         this.name = name;
+        this.backgroundColor = backgroundColor;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.stations = stations;
+    }
+
+    public Line(String name, String backgroundColor, LocalTime startTime, LocalTime endTime,
+        int intervalTime) {
+        this.name = name;
+        this.backgroundColor = backgroundColor;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -29,8 +46,16 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(Long id, String name, String backgroundColor, LocalTime startTime,
+        LocalTime endTime, int intervalTime) {
+        this.id = id;
+        this.name = name;
+        this.backgroundColor = backgroundColor;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -47,6 +72,10 @@ public class Line {
 
     public LocalTime getEndTime() {
         return endTime;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public int getIntervalTime() {
@@ -69,6 +98,11 @@ public class Line {
         if (line.getName() != null) {
             this.name = line.getName();
         }
+
+        if (line.getBackgroundColor() != null) {
+            this.intervalTime = line.getIntervalTime();
+        }
+
         if (line.getStartTime() != null) {
             this.startTime = line.getStartTime();
         }
