@@ -63,7 +63,8 @@ public class LineController {
 
     @GetMapping("/lines/detail")
     public ResponseEntity<WholeSubwayResponse> retrieveWholeSubway() {
-        return ResponseEntity.ok(lineService.wholeLines());
+        WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
+        return ResponseEntity.ok().body(wholeSubwayResponse);
     }
 
     @PostMapping("/lines/{lineId}/stations")
