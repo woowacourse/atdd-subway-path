@@ -25,11 +25,10 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
         LineResponse lineResponse2 = createLine(LINE_NAME_SINBUNDANG);
-        StationResponse stationResponse4 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse5 = createStation(STATION_NAME_YANGJAE);
         StationResponse stationResponse6 = createStation(STATION_NAME_YANGJAECITIZEN);
-        addLineStation(lineResponse2.getId(), null, stationResponse4.getId());
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
+        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse5.getId());
         addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
 
         List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponse();
