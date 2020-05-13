@@ -53,7 +53,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                        post("/stations").
+                        post("/api/stations").
                 then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
@@ -63,7 +63,7 @@ public class AcceptanceTest {
     List<StationResponse> getStations() {
         return
                 given().when().
-                        get("/stations").
+                        get("/api/stations").
                 then().
                         log().all().
                         extract().
@@ -72,7 +72,7 @@ public class AcceptanceTest {
 
     void deleteStation(Long id) {
         given().when().
-                delete("/stations/" + id).
+                delete("/api/stations/" + id).
         then().
                 log().all();
     }

@@ -39,34 +39,39 @@ public class LineController {
 
     @GetMapping()
     public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .body(lineService.showLines());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .body(lineService.findLineWithStationsById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
         lineService.updateLine(id, view);
-        return ResponseEntity.noContent()
+        return ResponseEntity
+            .noContent()
             .build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
-        return ResponseEntity.noContent()
+        return ResponseEntity
+            .noContent()
             .build();
     }
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
         lineService.addLineStation(lineId, view);
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .build();
     }
 
@@ -74,14 +79,16 @@ public class LineController {
     public ResponseEntity<List<LineDetailResponse>> showLineDetails() {
         final List<LineDetailResponse> wholeLineResponse = lineService.wholeLines();
 
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .body(wholeLineResponse);
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.noContent()
+        return ResponseEntity
+            .noContent()
             .build();
     }
 }
