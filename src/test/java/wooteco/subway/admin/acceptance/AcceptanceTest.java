@@ -17,6 +17,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.RouteResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -182,6 +183,20 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    RouteResponse findShortestRoute(String source, String target) {
+        return given().
+            log().all().
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            get("/api/routes?source=" + source + "&target=" + target).
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract().
+            as(RouteResponse.class);
     }
 }
 

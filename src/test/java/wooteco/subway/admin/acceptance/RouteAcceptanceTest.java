@@ -2,9 +2,14 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.RouteResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class RouteAcceptanceTest extends AcceptanceTest {
@@ -27,14 +32,12 @@ public class RouteAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse2.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        RouteResponse routeResponse = showRoute();
+        RouteResponse routeResponse = findShortestRoute("양재시민의숲역", "선릉역");
 
-        // assertThat(routeResponse.getStations().size()).isEquals(5);
-        // assertThat(routeResponse.getDistance()).isEquals(40);
-        // assertThat(routeResponse.getDuration()).isEquals(40);
+        assertThat(routeResponse.getStations().size()).isEqualTo(5);
+        assertThat(routeResponse.getDistance()).isEqualTo(40);
+        assertThat(routeResponse.getDuration()).isEqualTo(40);
     }
 
-    private RouteResponse showRoute() {
-        return null;
-    }
+
 }
