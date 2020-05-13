@@ -1,12 +1,14 @@
 package wooteco.subway.admin.controller;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.List;
 
-import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
@@ -25,4 +27,14 @@ public class ClientController {
             .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
             .body(wholeSubwayResponse);
     }
+
+    @GetMapping("/path")
+    public ResponseEntity<PathResponse> searchPathByShortestDistance() {
+        List<StationResponse> stations = Arrays.asList(new StationResponse(),
+            new StationResponse(), new StationResponse());
+        PathResponse pathResponse = new PathResponse(stations, 10, 10);
+
+        return ResponseEntity.ok().body(pathResponse);
+    }
+
 }
