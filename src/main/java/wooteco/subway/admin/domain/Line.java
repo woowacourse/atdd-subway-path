@@ -133,4 +133,19 @@ public class Line {
 
         return stationIds;
     }
+
+    public boolean containStation(Long stationId){
+        return getLineStationsId().stream()
+                .anyMatch(o->o.equals(stationId));
+    }
+
+    public int getLineStationIndex(Long startStationId) {
+        List<Long> lineStationsIds = getLineStationsId();
+        for(int i=0;i<lineStationsIds.size();i++){
+            if(lineStationsIds.get(i).equals(startStationId)){
+                return i;
+            }
+        }
+        return -1;
+    }
 }

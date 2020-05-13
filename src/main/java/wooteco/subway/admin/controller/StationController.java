@@ -3,19 +3,24 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.StationService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 public class StationController {
     private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public StationController(StationRepository stationRepository) {
+    public StationController(StationRepository stationRepository, StationService stationService) {
         this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     @PostMapping("/stations")

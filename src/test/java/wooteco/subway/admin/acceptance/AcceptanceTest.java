@@ -8,7 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.SearchPathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -168,6 +171,15 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    SearchPathResponse searchPath(Long startStationId, Long targetStationId) {
+        return  given().
+                when().
+                        get("/stations/path?startStationId=" + startStationId + "&targetStationId=" + targetStationId).
+                then().
+                        log().all().
+                        extract().as(SearchPathResponse.class);
     }
 
 }
