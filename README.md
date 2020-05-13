@@ -76,3 +76,101 @@ Feature: 전체 지하철 노선도 정보 조회
 - 아래의 링크를 참고
   - [A Guide To Caching in Spring](https://www.baeldung.com/spring-cache-tutorial)
 
+
+
+## 2단계 : 지하철 경로 조회 1
+
+### 요구사항
+
+- 출발역과 도착역의 최단 경로를 조회하는 기능 구현
+- 기본적인 기능 구현(Happy Case)을 목표로 하고 예외 상황(Side Case)에 대한 처리는 다음 단계에서 고려
+- TDD 프로세스를 따라서 개발 진행
+- 인수 조건 & 인수 테스트 작성
+- 기능 구현시 필요한 단위 테스트 작성
+- 중복 코드를 제거(테스트 코드도 마찬가지로 중복 제거)
+- 객체지향 생활체조 준수
+
+
+
+### 기능 목록
+
+#### 경로 조회 API
+
+- 출발역과 도착역을 입력
+- 최단 거리 기준으로 경로와 기타 정보를 응답
+  - 총 소요시간, 총 거리 등
+- 최단 경로가 하나가 아닐 경우 어느 경로든 하나만 응답
+
+
+
+#### 경로 조회 화면
+
+- 출발역과 도착역의 경로 정보 노출
+  - 총 소요시간, 정차역 등
+- 즐겨찾기 버튼과 최소 시간 기준 조회는 다른 미션이므로 무시
+  - 최소시간 기준은 3단계 미션
+  - 즐겨찾기(별)은 3주차 미션
+
+
+
+#### 미션 수행 순서
+
+1. 인수 조건 작성 및 인수 테스트 작성하기
+
+   - Gherkin 문법을 활용하여 인수 조건 작성
+
+   >  https://cucumber.io/docs/gherkin/reference
+
+2. 인수 테스트 성공 시키기
+
+   - mock 서버와 dto를 정의하여 인수 테스트 성공 시키기
+
+3. 기능 구현
+   - 컨트롤러 레이어 구현 이후 서비스 레이어 구현 시 서비스 테스트 우선 작성 후 기능 구현
+   - 서비스 테스트 내부에서 도메인들간의 로직의 흐름을 검증, 이 때 사용되는 도메인은 mock 객체를 활용
+   - 외부 라이브러리를 활용한 로직을 검증할 때는 가급적 실제 객체를 활용
+   - Happy 케이스에 대한 부분만 구현(Side 케이스에 대한 구현은 다음 단계에서 진행)
+4. API를 활용하여 페이지 연동하기
+   - 정상적인 기능에 대한 처리 우선 적용
+
+
+
+#### 최단 경로 라이브러리
+
+- jgrapht 라이브러리를 활용하면 간편하게 최단거리를 조회할 수 있음
+- 정점(vertext)과 간선(edge), 그리고 가중치 개념을 이용
+  - 정점: 지하철역(Station)
+  - 간선: 지하철역 연결정보(LineStaion)
+  - 가중치: 거리 or 소요시간
+- 최단 거리 기준 조회 시 가중치를 `거리`로 설정
+
+``` java
+@Test
+public void getDijkstraShortestPath() {
+    WeightedMultigraph<String, DefaultWeightedEdge> graph
+            = new WeightedMultigraph(DefaultWeightedEdge.class);
+    graph.addVertex("v1");
+    graph.addVertex("v2");
+    graph.addVertex("v3");
+    graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+    graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
+    graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+
+    DijkstraShortestPath dijkstraShortestPath
+            = new DijkstraShortestPath(graph);
+    List<String> shortestPath 
+            = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
+
+    assertThat(shortestPath.size()).isEqualTo(3);
+}
+```
+
+> [jgrapht graph-algorithms](https://jgrapht.org/guide/UserOverview#graph-algorithms)
+
+
+
+#### 외부 라이브러리 테스트
+
+- 외부 라이브러리의 구현을 수정할 수 없기 때문에 단위 테스트를 하지 않음
+- 외부 라이브러리를 사용하는 직접 구현하는 로직을 검증해야 함
+- 직접 구현하는 로직 검증 시 외부 라이브러리 부분은 실제 객체를 활용
