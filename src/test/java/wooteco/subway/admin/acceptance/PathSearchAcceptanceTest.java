@@ -2,10 +2,13 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.PathResponses;
 
 public class PathSearchAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회 서비스를 제공한다.")
@@ -27,18 +30,22 @@ public class PathSearchAcceptanceTest extends AcceptanceTest {
 
         // When  경로에 필요한 출발역과 도착역을 입력한 후, 조회 요청을 보낸다.
         // Then  경로를 응답 받는다.
-        PathResponse response = getPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG);
-        assertThat(response.getStationResponses().size()).isEqualTo(3);
-        // And   소요시간, 경로 길이, 역 목록을 응답 받는다.
-        assertThat(response.getTotalDistance()).isEqualTo(20);
-        assertThat(response.getTotalDuration()).isEqualTo(20);
+        PathResponses response = getPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG);
+        Map<String, PathResponse> paths = response.getResponse();
+        paths.forEach((edgeWeight, pathResponse) -> {
+            assertThat(pathResponse.getStationResponses().size()).isEqualTo(3);
+            // And   소요시간, 경로 길이, 역 목록을 응답 받는다.
+            assertThat(pathResponse.getTotalDistance()).isEqualTo(20);
+            assertThat(pathResponse.getTotalDuration()).isEqualTo(20);
+        });
+
     }
 
-    private PathResponse getPath(String departure, String arrival) {
+    private PathResponses getPath(String departure, String arrival) {
         return given().when()
-            .get("/paths/" + departure + "/" + arrival)
+            .get("/lines/path/" + departure + "/" + arrival)
             .then()
             .log().all()
-            .extract().as(PathResponse.class);
+            .extract().as(PathResponses.class);
     }
 }

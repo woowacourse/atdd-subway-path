@@ -1,27 +1,32 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import wooteco.subway.admin.domain.EdgeWeightType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathRequest;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.PathResponses;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -38,6 +43,7 @@ public class LineServiceTest {
     private LineService lineService;
 
     private Line line;
+    private List<Station> stations;
     private Station station1;
     private Station station2;
     private Station station3;
@@ -46,11 +52,12 @@ public class LineServiceTest {
     @BeforeEach
     void setUp() {
         lineService = new LineService(lineRepository, stationRepository);
-
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
+
+        stations = Arrays.asList(station1, station2, station3, station4);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -149,5 +156,19 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void findPath() {
+        line.addLineStation(new LineStation(3L, 4L, 10, 10));
+        when(lineRepository.findAllLineStations()).thenReturn(line.getStations());
+        when(stationRepository.findAll()).thenReturn(stations);
+        when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
+        PathResponses response = lineService.findPaths(new PathRequest(station1.getName(), station4.getName()));
+        PathResponse pathResponse = response.getResponse().get(EdgeWeightType.DISTANCE.getName());
+        assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
+        assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
+        assertThat(pathResponse.getStationResponses().size()).isEqualTo(4);
     }
 }
