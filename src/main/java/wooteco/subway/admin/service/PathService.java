@@ -8,9 +8,11 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +50,9 @@ public class PathService {
 
         // 모든 간선 추가
         for (LineStation lineStation : lineStations) {
-            graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
+            if (lineStation.getPreStationId() != null) {
+                graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
+            }
         }
 
         List<Station> allStations = stationRepository.findAll();
@@ -66,10 +70,24 @@ public class PathService {
         DijkstraShortestPath dijkstraShortestPath
                 = new DijkstraShortestPath(graph);
 
-        List<Long> shortestPath
+        List<Long> shortestPathIds
                 = dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
 
-        return null;
+        List<Station> shortestPath = new ArrayList<>();
+        Long distance = 0L;
+        Long duration = 0L;
+
+        Long preStationId = sourceStation.getId();
+
+        for (Long stationId : shortestPathIds) {
+            shortestPath.add(findStationBy(stationId, allStations));
+            LineStation lineStation = findLineStation(preStationId, stationId, lineStations);
+            if (lineStation != null) {
+                distance += lineStation.getDistance();
+                duration += lineStation.getDuration();
+            }
+        }
+        return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
     public Station findStationBy(Long id, List<Station> stations) {
@@ -84,5 +102,14 @@ public class PathService {
                 .filter(station -> station.is(name))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public LineStation findLineStation(Long preStationId, Long stationId, List<LineStation> lineStations) {
+        for (LineStation lineStation : lineStations) {
+            if (lineStation.is(preStationId, stationId)) {
+                return lineStation;
+            }
+        }
+        return null;
     }
 }

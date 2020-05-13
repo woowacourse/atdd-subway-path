@@ -10,6 +10,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
+import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -29,6 +30,8 @@ public class PathServiceTest {
 
     @Mock
     private LineRepository lineRepository;
+    @Mock
+    private StationRepository stationRepository;
 
     private PathService pathService;
 
@@ -45,13 +48,14 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
+        pathService = new PathService(lineRepository, stationRepository);
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(2L, STATION_NAME5);
-        station6 = new Station(3L, STATION_NAME6);
-        station7 = new Station(4L, STATION_NAME7);
+        station5 = new Station(5L, STATION_NAME5);
+        station6 = new Station(6L, STATION_NAME6);
+        station7 = new Station(7L, STATION_NAME7);
 
         line2 = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         bundangLine = new Line(2L, "분당선", "bg-gray-300", LocalTime.of(05, 00), LocalTime.of(23, 30), 7);
@@ -70,8 +74,10 @@ public class PathServiceTest {
     @Test
     void findShortestDistancePath() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
 
         PathResponse response = pathService.calculatePath(STATION_NAME1, STATION_NAME7, "DISTANCE");
+        assertThat(response.getStations().size()).isEqualTo(4);
         assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME1);
         assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME2);
         assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME3);

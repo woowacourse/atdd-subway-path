@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Objects;
+
 public class LineStation {
     private Long preStationId;
     private Long stationId;
@@ -31,5 +33,9 @@ public class LineStation {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
+    }
+
+    public boolean is(long preStationId, long stationId) {
+        return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
     }
 }
