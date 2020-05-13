@@ -61,5 +61,4 @@ public class PageAcceptanceTest {
 			log().all().
 			statusCode(HttpStatus.CREATED.value());
 	}
-
 }

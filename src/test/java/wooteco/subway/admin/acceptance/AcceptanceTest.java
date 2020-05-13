@@ -17,6 +17,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
@@ -188,6 +189,20 @@ public class AcceptanceTest {
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
 			.extract().as(WholeSubwayResponse.class);
+	}
+
+	public List<PathResponse> retrievePaths() {
+		return given()
+			.log().all()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.get("/search?startId=" + 1L + "&endId=" + 2L)
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract()
+			.jsonPath()
+			.getList(".", PathResponse.class);
 	}
 }
 
