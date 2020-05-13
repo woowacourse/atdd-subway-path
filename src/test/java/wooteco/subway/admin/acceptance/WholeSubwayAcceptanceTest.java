@@ -41,7 +41,7 @@ public class WholeSubwayAcceptanceTest {
 		assertThat(response.get(0).getStations().size()).isEqualTo(3);
 	}
 
-	private WholeSubwayResponse retrieveWholeSubway() {
+	public static WholeSubwayResponse retrieveWholeSubway() {
 		return RestAssured.given().when().
 			get("/lineDetails").
 			then().

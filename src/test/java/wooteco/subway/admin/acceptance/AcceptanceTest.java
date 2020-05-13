@@ -94,7 +94,7 @@ public class AcceptanceTest {
                     extract().as(LineResponse.class);
     }
 
-    LineDetailResponse getLine(Long id) {
+    public static LineDetailResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).

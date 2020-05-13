@@ -3,20 +3,20 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 
 public class WholeSubwayResponse {
-    private List<LineDetailResponse> lineDetailResponses;
+	private List<LineDetailResponse> lineDetailResponses;
 
-    public WholeSubwayResponse() {
-    }
+	public WholeSubwayResponse() {
+	}
 
-    private WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
-        this.lineDetailResponses = lineDetailResponses;
-    }
+	private WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
+		this.lineDetailResponses = lineDetailResponses;
+	}
 
-    public static WholeSubwayResponse of(List<LineDetailResponse> responses) {
-        return new WholeSubwayResponse(responses);
-    }
+	public static WholeSubwayResponse of(List<LineDetailResponse> responses) {
+		return new WholeSubwayResponse(responses);
+	}
 
-    public List<LineDetailResponse> getLineDetailResponses() {
-        return lineDetailResponses;
-    }
+	public List<LineDetailResponse> getLineDetailResponses() {
+		return lineDetailResponses;
+	}
 }
