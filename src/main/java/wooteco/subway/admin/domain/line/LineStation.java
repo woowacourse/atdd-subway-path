@@ -1,4 +1,6 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line;
+
+import wooteco.subway.admin.domain.line.path.RouteEdge;
 
 public class LineStation {
     private Long preStationId;

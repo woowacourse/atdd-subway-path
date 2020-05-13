@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line.path;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Sets;
+import wooteco.subway.admin.domain.line.LineStation;
+import wooteco.subway.admin.domain.line.LineStations;
 
 class SubwayRouteTest {
 

@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line.path;
 
 import java.util.Objects;
 
@@ -6,6 +6,9 @@ import org.jgrapht.Graphs;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleWeightedGraph;
+
+import wooteco.subway.admin.domain.line.LineStation;
+import wooteco.subway.admin.domain.line.LineStations;
 
 public class SubwayRouteFactory {
     private EdgeWeightStrategy edgeWeightStrategy;

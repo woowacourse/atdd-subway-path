@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line.path;
 
 import org.jgrapht.WeightedGraph;
 

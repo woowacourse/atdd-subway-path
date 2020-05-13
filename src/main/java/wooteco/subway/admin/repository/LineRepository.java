@@ -6,8 +6,8 @@ import java.util.Set;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.line.Line;
+import wooteco.subway.admin.domain.line.LineStation;
 
 public interface LineRepository extends CrudRepository<Line, Long> {
     @Query("select * from line_station")

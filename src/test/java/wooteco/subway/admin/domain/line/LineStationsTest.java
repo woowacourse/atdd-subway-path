@@ -1,7 +1,6 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 

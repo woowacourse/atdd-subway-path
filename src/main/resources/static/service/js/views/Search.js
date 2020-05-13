@@ -1,4 +1,5 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
+import api from '../../api/index.js';
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -14,12 +15,16 @@ function Search() {
     }
   }
 
-  const onSearch = event => {
+  const onSearch = async event => {
     event.preventDefault()
+
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value
     }
+
+    const response = await api.path.find(searchInput);
+    console.log(response);
     console.log(searchInput)
     showSearchResult(searchInput)
   }

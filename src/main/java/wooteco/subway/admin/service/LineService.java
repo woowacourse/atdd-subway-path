@@ -9,12 +9,12 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.admin.domain.EdgeWeightType;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.LineStations;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.domain.SubwayRoute;
+import wooteco.subway.admin.domain.line.Line;
+import wooteco.subway.admin.domain.line.LineStation;
+import wooteco.subway.admin.domain.line.LineStations;
+import wooteco.subway.admin.domain.line.path.EdgeWeightType;
+import wooteco.subway.admin.domain.line.path.SubwayRoute;
+import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
