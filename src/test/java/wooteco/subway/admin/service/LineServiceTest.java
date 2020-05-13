@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,10 +16,12 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -149,5 +152,26 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @DisplayName("전체 노선 조회 테스트")
+    @Test
+    void wholeLinesTest() {
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        newLine.addLineStation(new LineStation(null, 4L, 10, 10));
+        newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
+        newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
+
+        List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
+                new Station(3L, "삼성역"), new Station(4L, "양재역")
+                , new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        List<LineDetailResponse> responses = lineService.wholeLines().getLineDetailResponses();
+
+        assertThat(responses).isNotNull();
+        assertThat(responses.get(0).getStations().size()).isEqualTo(3);
+        assertThat(responses.get(1).getStations().size()).isEqualTo(3);
     }
 }

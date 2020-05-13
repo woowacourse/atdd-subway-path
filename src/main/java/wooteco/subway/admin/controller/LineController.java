@@ -64,16 +64,6 @@ public class LineController {
     @GetMapping("/lines/detail")
     public ResponseEntity wholeLines() {
         return ResponseEntity.ok()
-                .body(WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse())));
-    }
-
-    private LineDetailResponse createMockResponse() {
-        List<Station> stations = new ArrayList<>();
-
-        stations.add(new Station());
-        stations.add(new Station());
-        stations.add(new Station());
-
-        return LineDetailResponse.of(new Line(), stations);
+                .body(lineService.wholeLines());
     }
 }
