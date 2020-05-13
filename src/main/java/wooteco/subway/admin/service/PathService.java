@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -10,12 +11,9 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.NotFoundLineStationException;
-import wooteco.subway.admin.exception.NotFoundStationException;
-import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,32 +24,54 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class PathService {
     private final LineService lineService;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public PathService(LineService lineService, StationRepository stationRepository) {
+    public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> generateGraph(List<Line> lines, Map<Long, Station> stations) {
+    public PathResponse generatePathResponse(String sourceName, String targetName) {
+        Station source = stationService.findByName(sourceName);
+        Station target = stationService.findByName(targetName);
+        List<Line> lines = lineService.findLines();
+
+        Map<Long, Station> stations = stationService.findAll()
+                .stream()
+                .collect(toMap(Station::getId, Function.identity()));
+
+        DijkstraShortestPath path = shortestPath(lines, stations, LineStation::getDistance);
+        GraphPath graphPath = path.getPath(source, target);
+
+        List<Station> shortestPath = graphPath.getVertexList();
+        int shortestDistance = (int)graphPath.getWeight();
+        int shortestDuration = calculateCost(shortestPath, lines, LineStation::getDuration);
+
+        return new PathResponse(StationResponse.listOf(shortestPath), shortestDistance, shortestDuration);
+    }
+
+    private DijkstraShortestPath shortestPath(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         List<LineStation> lineStations = linesToLineStations(lines);
 
-        for (Station station : stations.values()) {
-            graph.addVertex(station);
-        }
+        stations.values()
+                .forEach(graph::addVertex);
 
-        for (LineStation lineStation : lineStations) {
-            graph.setEdgeWeight(graph.addEdge(stations.get(lineStation.getPreStationId()), stations.get(lineStation.getStationId())), lineStation.getDistance());
-        }
+        lineStations.forEach(lineStation ->
+                graph.setEdgeWeight(graph.addEdge(stations.get(lineStation.getPreStationId()),
+                        stations.get(lineStation.getStationId())),
+                        weightStrategy.apply(lineStation)));
 
-        return graph;
+        return new DijkstraShortestPath(graph);
     }
 
-    private List<Station> findPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    private List<LineStation> linesToLineStations(List<Line> lines) {
+        return lines.stream()
+                .map(Line::getStations)
+                .flatMap(Set::stream)
+                .filter(LineStation::isNotStarting)
+                .collect(Collectors.toList());
     }
 
     private int calculateCost(List<Station> stations, List<Line> lines, Function<LineStation, Integer> costStrategy) {
@@ -63,35 +83,11 @@ public class PathService {
                 .sum();
     }
 
-    private List<LineStation> linesToLineStations(List<Line> lines) {
-        return lines.stream()
-                .map(Line::getStations)
-                .flatMap(Set::stream)
-                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
-                .collect(Collectors.toList());
-    }
-
     private LineStation findLineStation(List<LineStation> lineStations, Station preStation, Station station) {
         return lineStations.stream()
-                .filter(lineStation -> Objects.equals(lineStation.getPreStationId(), preStation.getId())
-                        && Objects.equals(lineStation.getStationId(), station.getId()))
+                .filter(lineStation -> lineStation.hasPreStationId(preStation.getId())
+                        && lineStation.hasStationId(station.getId()))
                 .findAny()
                 .orElseThrow(() -> new NotFoundLineStationException(preStation.getName(), station.getName()));
-    }
-
-    public PathResponse generatePathResponse(String sourceName, String targetName) {
-        Station source = stationRepository.findByName(sourceName)
-                .orElseThrow(() -> new NotFoundStationException(sourceName));
-        Station target = stationRepository.findByName(targetName)
-                .orElseThrow(() -> new NotFoundStationException(targetName));
-        List<Line> lines = lineService.findLines();
-        Map<Long, Station> stations = stationRepository.findAll()
-                .stream()
-                .collect(toMap(Station::getId, Function.identity()));
-        List<Station> shortestPath = findPath(generateGraph(lines, stations), source, target);
-        int shortestDistance = calculateCost(shortestPath, lines, LineStation::getDistance);
-        int shortestDuration = calculateCost(shortestPath, lines, LineStation::getDuration);
-
-        return new PathResponse(StationResponse.listOf(shortestPath), shortestDistance, shortestDuration);
     }
 }

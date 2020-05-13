@@ -8,8 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import wooteco.subway.admin.dto.*;
 
+import javax.servlet.Filter;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -173,8 +175,12 @@ public class AcceptanceTest {
         params.put("source", source);
         params.put("target", target);
 
+
         return given().
-                params(params).
+                queryParam("source",source).
+                queryParam("target",target).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
             when().
                 get("/paths").
             then().

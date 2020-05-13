@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.exception.NotFoundLineStationException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -89,9 +90,15 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
+        if (lineStation.isNotStarting()) {
+            stations.stream()
+                    .filter(it -> it.isStarting())
+                    .findAny()
+                    .orElseThrow(NotFoundLineStationException::new);
+        }
+
         stations.stream()
-                .filter(it -> Objects.nonNull(lineStation.getPreStationId()))
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+                .filter(it -> it.hasPreStationId(lineStation.getPreStationId()))
                 .findAny()
                 .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
@@ -100,12 +107,12 @@ public class Line {
 
     public void removeLineStationById(Long stationId) {
         LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
+                .filter(it -> it.hasStationId(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
+                .filter(it -> it.hasPreStationId(stationId))
                 .findFirst()
                 .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
@@ -118,7 +125,7 @@ public class Line {
         }
 
         LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
+                .filter(LineStation::isStarting)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
@@ -128,7 +135,7 @@ public class Line {
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
             Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                    .filter(it -> it.hasPreStationId(lastStationId))
                     .findFirst();
 
             if (!nextLineStation.isPresent()) {
