@@ -151,8 +151,7 @@ public class LineServiceTest {
         List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
-        when(stationRepository.findAllById(Arrays.asList(1L, 2L, 3L))).thenReturn(stations.subList(0, 3));
-        when(stationRepository.findAllById(Arrays.asList(4L, 5L, 6L))).thenReturn(stations.subList(3, 6));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
         List<LineDetailResponse> lineDetails = lineService.findAllLinesWithStations().getLineDetailResponses();
 
@@ -163,7 +162,7 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
