@@ -17,6 +17,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
@@ -183,6 +184,16 @@ public class AcceptanceTest {
             .log().all()
             .statusCode(HttpStatus.OK.value())
             .extract().as(WholeSubwayResponse.class);
+    }
+
+    PathResponse retrievePath(String departure, String arrival) {
+        return given().when()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .get("/paths?source=" + departure + "&target=" + arrival)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(PathResponse.class);
     }
 }
 
