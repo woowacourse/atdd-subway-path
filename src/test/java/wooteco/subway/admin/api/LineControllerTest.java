@@ -49,7 +49,6 @@ public class LineControllerTest {
 
 		String eTag = mvcResult.getResponse().getHeader("ETag");
 
-		System.out.println(eTag + ">>>>");
 		mockMvc.perform(get(uri).header("If-None-Match", eTag))
 			.andDo(print())
 			.andExpect(status().isNotModified())
