@@ -65,14 +65,14 @@ public class LineService {
     public WholeSubwayResponse showLinesDetail() {
         List<Line> lines = lineRepository.findAll();
         List<Long> stationIds = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .map(it -> it.getStationId())
+                .flatMap(line -> line.getStations().stream())
+                .map(LineStation::getStationId)
                 .collect(Collectors.toList());
 
         List<Station> stations = stationRepository.findAllById(stationIds);
 
         List<LineDetailResponse> lineDetailResponses = lines.stream()
-                .map(it -> LineDetailResponse.of(it, mapStations(it.getLineStationsId(), stations)))
+                .map(line -> LineDetailResponse.of(line, mapStations(line.getLineStationsId(), stations)))
                 .collect(Collectors.toList());
 
         return WholeSubwayResponse.of(lineDetailResponses);
@@ -80,7 +80,7 @@ public class LineService {
 
     private List<Station> mapStations(List<Long> lineStationsId, List<Station> stations) {
         return stations.stream()
-                .filter(it -> lineStationsId.contains(it.getId()))
+                .filter(station -> lineStationsId.contains(station.getId()))
                 .collect(Collectors.toList());
     }
 }
