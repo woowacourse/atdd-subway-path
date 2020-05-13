@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -12,6 +13,7 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -43,7 +45,8 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
@@ -61,8 +64,10 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+            .map(line -> findLineWithStationsById(line.getId()))
+            .collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
     }
 }

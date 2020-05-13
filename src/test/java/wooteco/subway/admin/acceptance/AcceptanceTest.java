@@ -40,7 +40,7 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    StationResponse createStation(String name) {
+    protected StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
@@ -74,12 +74,13 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    LineResponse createLine(String name) {
+    protected LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("bgColor", "bg-green-200");
 
         return
                 given().
@@ -137,7 +138,7 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
+    protected void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
