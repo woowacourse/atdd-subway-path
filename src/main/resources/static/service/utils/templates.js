@@ -1,3 +1,5 @@
+export const optionTemplate = value => `<option>${value}</option>`
+
 export const listItemTemplate = data =>
     `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}
@@ -24,7 +26,7 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
 
 export const subwayLinesItemTemplate = line => {
     const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
-  return `<div class="inline-block w-1/2 px-2">
+    return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
               <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">

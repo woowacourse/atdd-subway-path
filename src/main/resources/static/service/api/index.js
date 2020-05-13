@@ -28,10 +28,10 @@ const api = (() => {
 
     const line = {
         getAll() {
-            return request(`/lines/detail`)
+            return request(`/lines/details`)
         },
         getAllDetail() {
-            return requestWithJsonData(`/lines/detail`)
+            return requestWithJsonData(`/lines/details`)
         }
     }
 
