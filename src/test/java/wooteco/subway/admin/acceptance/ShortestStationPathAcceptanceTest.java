@@ -4,13 +4,25 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.aggregator.ArgumentAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.repository.StationRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql("/truncate.sql")
 public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
@@ -22,6 +34,8 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAME8 = "압구정";
     private static final String STATION_NAME9 = "홍대입구";
 
+    @Autowired
+    StationRepository stationRepository;
     @LocalServerPort
     int port;
 
@@ -63,19 +77,22 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(2L, 8L, 9L);
 
         //When 출발역과 종착역의 최단경로를 요청한다.
-        LineDetailResponse shortedStationPath = getShortestStationPath();
+        PathResponse shortedStationPath = getShortestStationPath();
+
 
         //Then 최단 경로와 최단 거리가 나온다.
-        assertThat(shortedStationPath.getName()).isEqualTo("1호선");
-
+        System.out.println(shortedStationPath.getDistance());
+        assertThat(shortedStationPath.getStations().size()).isEqualTo(5);
     }
 
-    private LineDetailResponse getShortestStationPath() {
-        return given().when().
-                    get("/stations/shortest-path").
+    private PathResponse getShortestStationPath() {
+        return given().
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                    get("/stations/shortest-path?source=강남역&target=홍대입구").
                 then().
                     log().all().
-                    extract().as(LineDetailResponse.class);
+                    extract().as(PathResponse.class);
     }
 }
 

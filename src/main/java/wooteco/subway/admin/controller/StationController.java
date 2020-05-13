@@ -2,28 +2,26 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.StationCreateRequest;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.*;
 import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.PathService;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 public class StationController {
     private final LineService lineService;
+    private final PathService pathService;
 
     private final StationRepository stationRepository;
 
-    public StationController(LineService lineService, StationRepository stationRepository) {
+    public StationController(LineService lineService, PathService pathService, StationRepository stationRepository) {
         this.lineService = lineService;
+        this.pathService = pathService;
         this.stationRepository = stationRepository;
     }
 
@@ -49,9 +47,8 @@ public class StationController {
     }
 
     @GetMapping("/stations/shortest-path")
-    public ResponseEntity<LineDetailResponse> showShortestStationPath() {
-        List<Station> stations = Arrays.asList(new Station("강남역"),new Station("역삼역"), new Station("선릉역"), new Station("삼성역"), new Station("홍대입구"));
-        LineDetailResponse lineDetailResponse = new LineDetailResponse(1L, "1호선", LocalTime.of(02,30), LocalTime.of(23,30),10, LocalDateTime.now(), LocalDateTime.now(), stations);
-        return ResponseEntity.ok().body(lineDetailResponse);
+    public ResponseEntity<PathResponse> showShortestStationPath(@RequestParam String source, @RequestParam String target) {
+        PathResponse path = pathService.findPath(source, target, PathType.DISTANCE);
+        return ResponseEntity.ok().body(path);
     }
 }
