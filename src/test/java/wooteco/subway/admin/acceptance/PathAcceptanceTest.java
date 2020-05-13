@@ -3,6 +3,7 @@ package wooteco.subway.admin.acceptance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.ShortestPath;
 
 import java.util.List;
 
@@ -14,9 +15,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("최단거리 경로를 조회")
 	@Test
 	void getShortestPath() {
-	//	Feature: 최단거리 경로를 구한다.
+		//	Feature: 최단거리 경로를 구한다.
 
-	//		Given 지하철 노선에 지하철역이 추가되어있다.
+		//		Given 지하철 노선들이 추가되어있다.
+		createLine("1호선");
+		createLine("2호선");
+		createLine("4호선");
+		createLine("5호선");
+		createLine("9호선");
+
+		//		And 지하철 역들이 추가되어있다.
+		createStation("구로");
+		createStation("신도림");
+		createStation("신길");
+		createStation("용산");
+		createStation("서울역");
+		createStation("충정로");
+		createStation("당산");
+		createStation("영등포구청");
+		createStation("대림");
+		createStation("여의도");
+		createStation("동작");
+		createStation("삼각지");
+		createStation("시청");
+
+		//		And	지하철 노선들에 지하철역들이 추가되어있다.
 		addLineStation(1L, null, 1L, 10, 10);
 		addLineStation(1L, 1L, 2L, 10, 10);
 		addLineStation(1L, 2L, 3L, 10, 10);
@@ -44,14 +67,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(5L, 7L, 10L, 10, 10);
 		addLineStation(5L, 10L, 11L, 10, 10);
 
-	//		When A역부터 B역까지 최단거리 경로를 구하고 싶다.
-		ShortestPath shortestPath = findShortestDistancePath();
+		//		When 시청역부터 신도림역까지 최단거리 경로를 구하고 싶다.
+		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림");
 
-	//		Then A역부터 B역까지 최단거리 경로가 구해졌다.
+		//		Then 시청역부터 신도림역까지 최단거리 경로가 구해졌다.
 		List<Station> path = shortestPath.getPath();
 		int distance = shortestPath.getDistance();
 		int duration = shortestPath.getDuration();
 
+		assertEquals(path.size(), 5);
 		assertThat(path.get(0).getName()).isEqualTo("시청");
 		assertThat(path.get(1).getName()).isEqualTo("충정로");
 		assertThat(path.get(2).getName()).isEqualTo("당산");

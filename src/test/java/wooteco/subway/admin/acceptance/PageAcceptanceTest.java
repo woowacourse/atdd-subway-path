@@ -32,7 +32,7 @@ public class PageAcceptanceTest {
 
     @Test
     void linePage() {
-        createLine("신분당선");
+        createLine("2호선");
 
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
@@ -49,6 +49,7 @@ public class PageAcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("color", "hot-pink");
 
         given().
                 body(params).
