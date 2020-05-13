@@ -31,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line.getId(), station2.getId(), station3.getId(), 10, 5);
 
         // when
-        PathResponse response = calculateShortestPath(station1.getName(), station3.getName());
+        PathResponse response = calculatePath(station1.getName(), station3.getName(), "DISTANCE");
 
         // then
         assertThat(response.getDistance()).isEqualTo(20);

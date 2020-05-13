@@ -52,9 +52,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+                        when().
                         post("/stations").
-                then().
+                        then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -64,7 +64,7 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/stations").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
@@ -73,7 +73,7 @@ public class AcceptanceTest {
     void deleteStation(Long id) {
         given().when().
                 delete("/stations/" + id).
-        then().
+                then().
                 log().all();
     }
 
@@ -86,22 +86,22 @@ public class AcceptanceTest {
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/lines").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
-                then().
+                        then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -116,9 +116,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
+                when().
                 put("/lines/" + id).
-        then().
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -183,17 +183,12 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    PathResponse calculateShortestPath(String sourceName, String targetName) {
-        Map<String, String> params = new HashMap<>();
-        params.put("sourceName", sourceName);
-        params.put("targetName", targetName);
-
+    PathResponse calculatePath(String sourceName, String targetName, String type) {
         return given().
-                body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/path").
+                get("/paths?source=" + sourceName + "&target=" + targetName + "&type=" + type).
                 then().
                 log().all().
                 extract().as(PathResponse.class);

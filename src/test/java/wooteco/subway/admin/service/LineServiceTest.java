@@ -11,7 +11,6 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -149,7 +148,7 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L,"삼성역"));
+        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line1));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -191,9 +190,7 @@ public class LineServiceTest {
         when(stationRepository.findIdByName(station3.getName())).thenReturn(Optional.of(station3.getId()));
         when(stationRepository.findAllNameById(anyList())).thenReturn(names);
 
-
-        PathRequest request = new PathRequest(station1.getName(), station3.getName());
-        PathResponse response = lineService.findShortestDistancePath(request);
+        PathResponse response = lineService.findShortestDistancePath(station1.getName(), station3.getName());
 
         assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getDuration()).isEqualTo(10);

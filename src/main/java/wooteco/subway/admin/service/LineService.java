@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineRequest;
+import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -87,7 +90,7 @@ public class LineService {
         return response;
     }
 
-    public PathResponse findShortestDistancePath(PathRequest request) {
+    public PathResponse findShortestDistancePath(String sourceName, String targetName) {
         WeightedMultigraph<Long, DefaultWeightedEdge> totalGraph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
@@ -95,9 +98,9 @@ public class LineService {
         lines.forEach(line ->
                 Graphs.addGraph(totalGraph, line.createDistanceGraph()));
 
-        Long sourceId = stationRepository.findIdByName(request.getSourceName())
+        Long sourceId = stationRepository.findIdByName(sourceName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
-        Long targetId = stationRepository.findIdByName(request.getTargetName())
+        Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         DijkstraShortestPath shortestPath = new DijkstraShortestPath(totalGraph);
 
