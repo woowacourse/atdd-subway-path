@@ -1,8 +1,6 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
-public class LineStation extends DefaultWeightedEdge {
+public class LineStation {
 
     private Long preStationId;
     private final Long stationId;
@@ -14,11 +12,6 @@ public class LineStation extends DefaultWeightedEdge {
         this.stationId = stationId;
         this.distance = distance;
         this.duration = duration;
-    }
-
-    @Override
-    protected double getWeight() {
-        return distance;
     }
 
     public Long getPreStationId() {
@@ -39,15 +32,5 @@ public class LineStation extends DefaultWeightedEdge {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
-    }
-
-    @Override
-    protected Object getSource() {
-        return super.getSource();
-    }
-
-    @Override
-    protected Object getTarget() {
-        return this;
     }
 }
