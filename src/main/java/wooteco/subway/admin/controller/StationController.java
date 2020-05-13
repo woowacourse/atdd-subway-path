@@ -48,7 +48,7 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/stations/shortest-pathsss")
+    @GetMapping("/stations/shortest-path")
     public ResponseEntity<LineDetailResponse> showShortestStationPath() {
         List<Station> stations = Arrays.asList(new Station("강남역"),new Station("역삼역"), new Station("선릉역"), new Station("삼성역"), new Station("홍대입구"));
         LineDetailResponse lineDetailResponse = new LineDetailResponse(1L, "1호선", LocalTime.of(02,30), LocalTime.of(23,30),10, LocalDateTime.now(), LocalDateTime.now(), stations);
