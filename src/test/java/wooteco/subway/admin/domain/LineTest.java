@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,5 +51,17 @@ public class LineTest {
         line.removeLineStationById(stationId);
 
         assertThat(line.getStations()).hasSize(2);
+    }
+
+    @Test
+    public void createDistanceGraph() {
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = line.createDistanceGraph();
+
+        assertThat(graph.containsVertex(1L)).isTrue();
+        assertThat(graph.containsVertex(2L)).isTrue();
+        assertThat(graph.containsVertex(3L)).isTrue();
+        assertThat(graph.containsEdge(1L, 2L)).isTrue();
+        assertThat(graph.containsEdge(2L, 3L)).isTrue();
+        assertThat(graph.containsEdge(1L, 3L)).isFalse();
     }
 }

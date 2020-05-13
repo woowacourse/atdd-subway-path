@@ -4,14 +4,13 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.*;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,5 +81,17 @@ public class LineService {
             response.add(LineDetailResponse.of(lines.get(i), stations.get(i)));
         }
         return response;
+    }
+
+    public PathResponse findShortestDistancePath(PathRequest request) {
+        Station source = stationRepository.findById(request.getSourceId())
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 역이 없습니다."));
+        Station target = stationRepository.findById(request.getTargetId())
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 역이 없습니다."));
+
+        // 1. Line 다 찾는다.
+        // 2. source
+
+        return new PathResponse();
     }
 }

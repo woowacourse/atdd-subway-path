@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
@@ -180,6 +181,30 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    // 네이밍?
+    /*
+    1. parameter를 어떻게 보내는 게 좋을 지 ~ path variable, RequestBody(-> 통으로), RequestParam (=Query) - 명시한 데이터
+    2. url 명명
+    3. controller 분리 기준
+    4. 캐싱
+    5. 최단 경로 라이브러리
+     */
+    PathResponse calculateShortestPath(Long sourceId, Long targetId) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("sourceId", sourceId);
+        params.put("targetId", targetId);
+
+        return given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/path").
+                then().
+                log().all().
+                extract().as(PathResponse.class);
     }
 
 }

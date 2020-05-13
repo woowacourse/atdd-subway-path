@@ -1,6 +1,11 @@
 package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
+import org.jgrapht.GraphPath;
+import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +16,8 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathRequest;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -55,7 +62,7 @@ public class LineServiceTest {
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2 = new Line(2L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 10, 10));
+        line1.addLineStation(new LineStation(null, 1L, 0, 0));
         line1.addLineStation(new LineStation(1L, 2L, 10, 10));
         line1.addLineStation(new LineStation(2L, 3L, 10, 10));
         line2.addLineStation(new LineStation(null, 4L, 10, 10));
@@ -174,5 +181,13 @@ public class LineServiceTest {
         assertThat(response.get(0).getStations().get(1).getId()).isEqualTo(station2.getId());
         assertThat(response.get(0).getStations().get(2).getId()).isEqualTo(station3.getId());
         assertThat(response.get(1).getStations().get(0).getId()).isEqualTo(station4.getId());
+    }
+
+    @Test
+    void findShortestDistancePath() {
+        PathRequest request = new PathRequest(station1.getId(), station2.getId());
+        PathResponse response = lineService.findShortestDistancePath(request);
+        assertThat(response.getDistance()).isEqualTo(10);
+        assertThat(response.getDuration()).isEqualTo(10);
     }
 }
