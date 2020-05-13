@@ -28,7 +28,7 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Lines::new));
     }
 
-    public SubwayGraph getShortestPath(Long sourceStationId, Long targetStationId) {
+    public SubwayGraph getShortestGraph(Long sourceStationId, Long targetStationId) {
         SubwayGraphs subwayGraphs = lines.stream()
                 .map(line -> new SubwayGraph(line.getEdges()))
                 .collect(Collectors.collectingAndThen(Collectors.toList(), SubwayGraphs::new));

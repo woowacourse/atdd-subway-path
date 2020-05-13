@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.SubwayGraph;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -24,7 +25,8 @@ public class PathService {
         Lines lines = new Lines(lineRepository.findAll());
         //입력받은 역들을 구간으로 갖고 있는 노선들 반환
         Lines pathLine = lines.findByStationIdIn(Arrays.asList(sourceId, targetId));
-
+        //최단 경로를 가져온다.
+        SubwayGraph subwayGraph = pathLine.getShortestGraph(sourceId, targetId);
 
         return new PathResponse();
     }
