@@ -1,22 +1,22 @@
 package wooteco.subway.admin.dto;
 
 public class PathRequest {
-    private Long sourceId;
-    private Long targetId;
+    private String sourceName;
+    private String targetName;
 
     public PathRequest() {
     }
 
-    public PathRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public PathRequest(String sourceName, String targetName) {
+        this.sourceName = sourceName;
+        this.targetName = targetName;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public String getSourceName() {
+        return sourceName;
     }
 
-    public Long getTargetId() {
-        return targetId;
+    public String getTargetName() {
+        return targetName;
     }
 }

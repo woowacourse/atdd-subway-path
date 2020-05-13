@@ -149,11 +149,11 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L,"삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line1));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
+        LineDetailResponse lineDetailResponse = lineService.findDetailLineById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
@@ -183,14 +183,16 @@ public class LineServiceTest {
     @Test
     void findShortestDistancePath() {
         List<Line> lines = Lists.newArrayList(line1);
-        when(lineRepository.findAll()).thenReturn(lines);
-
         List<Station> stations = Lists.newArrayList(station1, station2, station3);
-        when(stationRepository.findAllById(anyList())).thenReturn(stations);
-
         List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
 
-        PathRequest request = new PathRequest(station1.getId(), station3.getId());
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findIdByName(station1.getName())).thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station3.getName())).thenReturn(Optional.of(station3.getId()));
+        when(stationRepository.findAllNameById(anyList())).thenReturn(names);
+
+
+        PathRequest request = new PathRequest(station1.getName(), station3.getName());
         PathResponse response = lineService.findShortestDistancePath(request);
 
         assertThat(response.getDistance()).isEqualTo(20);

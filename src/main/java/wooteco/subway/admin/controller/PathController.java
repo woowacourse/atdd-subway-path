@@ -9,8 +9,6 @@ import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.LineService;
 
-import java.util.ArrayList;
-
 @RestController
 @RequestMapping("/path")
 public class PathController {
@@ -22,8 +20,7 @@ public class PathController {
 
     @PostMapping
     public ResponseEntity<PathResponse> findShortestDistancePath(@RequestBody PathRequest request) {
-        PathResponse response = new PathResponse(20, 10, new ArrayList<>());
         return ResponseEntity.ok()
-                .body(response);
+                .body(lineService.findShortestDistancePath(request));
     }
 }

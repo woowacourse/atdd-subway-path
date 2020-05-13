@@ -1,8 +1,6 @@
 package wooteco.subway.admin.acceptance;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -33,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line.getId(), station2.getId(), station3.getId(), 10, 5);
 
         // when
-        PathResponse response = calculateShortestPath(station1.getId(), station3.getId());
+        PathResponse response = calculateShortestPath(station1.getName(), station3.getName());
 
         // then
         assertThat(response.getDistance()).isEqualTo(20);

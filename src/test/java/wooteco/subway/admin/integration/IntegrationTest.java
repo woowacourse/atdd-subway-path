@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql("/truncate.sql")
 public class IntegrationTest {
     @Autowired
     StationRepository stationRepository;

@@ -183,18 +183,10 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    // 네이밍?
-    /*
-    1. parameter를 어떻게 보내는 게 좋을 지 ~ path variable, RequestBody(-> 통으로), RequestParam (=Query) - 명시한 데이터
-    2. url 명명
-    3. controller 분리 기준
-    4. 캐싱
-    5. 최단 경로 라이브러리
-     */
-    PathResponse calculateShortestPath(Long sourceId, Long targetId) {
-        Map<String, Long> params = new HashMap<>();
-        params.put("sourceId", sourceId);
-        params.put("targetId", targetId);
+    PathResponse calculateShortestPath(String sourceName, String targetName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", sourceName);
+        params.put("targetName", targetName);
 
         return given().
                 body(params).

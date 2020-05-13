@@ -14,6 +14,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +59,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public LineDetailResponse findLineWithStationsById(Long id) {
+    public LineDetailResponse findDetailLineById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 
@@ -94,8 +95,10 @@ public class LineService {
         lines.forEach(line ->
                 Graphs.addGraph(totalGraph, line.createDistanceGraph()));
 
-        Long sourceId = request.getSourceId();
-        Long targetId = request.getTargetId();
+        Long sourceId = stationRepository.findIdByName(request.getSourceName())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+        Long targetId = stationRepository.findIdByName(request.getTargetName())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         DijkstraShortestPath shortestPath = new DijkstraShortestPath(totalGraph);
 
         List<Long> pathStationIds = shortestPath.getPath(sourceId, targetId).getVertexList(); // stationId
