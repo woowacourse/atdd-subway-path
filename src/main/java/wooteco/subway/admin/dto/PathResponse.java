@@ -3,6 +3,8 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 import java.util.Objects;
 
+import wooteco.subway.admin.domain.Station;
+
 public class PathResponse {
     private List<StationResponse> stations;
     private Long distance;
@@ -11,10 +13,15 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, Long distance, Long duration) {
+    private PathResponse(List<StationResponse> stations, Long distance, Long duration) {
         this.stations = stations;
         this.distance = distance;
         this.duration = duration;
+    }
+
+    public static PathResponse of(List<Station> stations, Long distance, Long duration) {
+        List<StationResponse> stationResponses = StationResponse.listOf(stations);
+        return new PathResponse(stationResponses, distance, duration);
     }
 
     public List<StationResponse> getStations() {
