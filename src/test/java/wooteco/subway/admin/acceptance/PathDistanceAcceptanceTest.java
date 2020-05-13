@@ -9,26 +9,21 @@ import java.util.Map;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.MockPassInstance;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 // @Sql("../resource/truncate.sql")
 public class PathDistanceAcceptanceTest extends AcceptanceTest {
-    private String sourceStationId;
-    private String targetStationId;
 
-    @Override
-    @BeforeEach
-    void setUp() {
-        super.setUp();
-
+    @DisplayName("최단경로를 조회한다")
+    @Test
+    void findPathByDistance() {
         LineResponse line1 = createLine(LINE_NAME_1);
         StationResponse bupoeng = createStation("부평");
         StationResponse bugae = createStation("부개");
@@ -59,25 +54,21 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         addLineStation(line2.getId(), yongdungpo.getId(), dangsan.getId(), 10, 10);
         addLineStation(line2.getId(), dangsan.getId(), hapjung.getId(), 5, 10);
 
-        sourceStationId = String.valueOf(sindorim.getId());
-        targetStationId = String.valueOf(dangsan.getId());
-    }
-
-    @DisplayName("최단경로를 조회한다")
-    @Test
-    void findPathByDistance() {
+        String sourceStationId = String.valueOf(sindorim.getId());
+        String targetStationId = String.valueOf(dangsan.getId());
         /*  Given 노선별로 지하철역이 여러 개 추가되어있다.
 
         when 최단 거리를 기준으로 경로를 조회를 요청한다
 
         then 최단거리와 경로상에 존재하는 역을 응답받는다.
         * */
-        MockPassInstance mockPassInstance = getPathByDistance();
-        assertThat(mockPassInstance.getStations()).hasSize(6);
-        assertThat(mockPassInstance.getDistance()).isEqualTo(24);
+        PathResponse pathResponse = getPathByDistance(sourceStationId, targetStationId);
+        assertThat(pathResponse.getStations()).containsExactly(sindorim, monrae, bugae, yongdungpo,
+            dangsan);
+        assertThat(pathResponse.getDistance()).isEqualTo(24);
     }
 
-    private MockPassInstance getPathByDistance() {
+    private PathResponse getPathByDistance(String sourceStationId, String targetStationId) {
         Map<String, String> params = new HashMap<>();
         params.put("source", sourceStationId);
         params.put("target", targetStationId);
@@ -91,7 +82,7 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).
-            extract().as(MockPassInstance.class);
+            extract().as(PathResponse.class);
     }
 
     @Test

@@ -2,14 +2,14 @@ package wooteco.subway.admin.dto;
 
 import java.util.List;
 
-public class MockPassInstance {
+public class PathResponse {
     List<StationResponse> stations;
     Long distance;
 
-    public MockPassInstance() {
+    public PathResponse() {
     }
 
-    public MockPassInstance(List<StationResponse> stations, Long distance) {
+    public PathResponse(List<StationResponse> stations, Long distance) {
         this.stations = stations;
         this.distance = distance;
     }
