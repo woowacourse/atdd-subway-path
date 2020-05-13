@@ -20,12 +20,12 @@ const navTemplate = () => `<nav class="flex items-center justify-between flex-wr
       </a>
     <div class="flex justify-start">
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/map.html" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/map" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           노선도
           </a>
       </div>
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/search.html" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/search" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           경로 조회
           </a>
       </div>
