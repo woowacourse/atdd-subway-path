@@ -21,7 +21,7 @@ public class Line {
     private String bgColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private final Set<LineStation> stations = new HashSet<>();
+    private Set<LineStation> stations = new HashSet<>();
 
     public Line() {
     }
