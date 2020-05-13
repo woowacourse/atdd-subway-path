@@ -55,7 +55,7 @@ public class PageAcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-                post("/lines").
+                post("/api/lines").
         then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value());

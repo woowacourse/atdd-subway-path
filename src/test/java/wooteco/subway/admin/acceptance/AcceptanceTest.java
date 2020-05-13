@@ -90,7 +90,7 @@ public class AcceptanceTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                    post("/lines").
+                    post("/api/lines").
                 then().
                     log().all().
                     statusCode(HttpStatus.CREATED.value()).
@@ -100,7 +100,7 @@ public class AcceptanceTest {
     LineDetailResponse getLine(Long id) {
         return
                 given().when().
-                        get("/lines/" + id).
+                        get("/api/lines/" + id).
                 then().
                         log().all().
                         extract().as(LineDetailResponse.class);
@@ -117,16 +117,16 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-                put("/lines/" + id).
+                put("/api/lines/" + id).
         then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     List<LineResponse> getLines() {
         return
                 given().when().
-                        get("/lines").
+                        get("/api/lines").
                 then().
                         log().all().
                         extract().
@@ -136,7 +136,7 @@ public class AcceptanceTest {
     List<LineDetailResponse> getLineDetails() {
         return
             given().when()
-               .get("/lines/stations")
+               .get("/api/lines/stations")
             .then()
                 .log().all()
                 .extract()
@@ -146,7 +146,7 @@ public class AcceptanceTest {
 
     void deleteLine(Long id) {
         given().when().
-                delete("/lines/" + id).
+                delete("/api/lines/" + id).
         then().
                 log().all();
     }
@@ -167,7 +167,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/lines/" + lineId + "/stations").
+                post("/api/lines/" + lineId + "/stations").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -178,7 +178,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
+                delete("/api/lines/" + lineId + "/stations/" + stationId).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
