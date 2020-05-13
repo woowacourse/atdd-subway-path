@@ -1,11 +1,11 @@
 package wooteco.subway.admin.dto.response;
 
-import wooteco.subway.admin.domain.Line;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import wooteco.subway.admin.domain.Line;
 
 public class LineResponse {
     private Long id;
@@ -18,20 +18,20 @@ public class LineResponse {
 
     public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getStartTime(),
-                line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt());
+            line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt());
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {
         return lines.stream()
-                .map(it -> LineResponse.of(it))
-                .collect(Collectors.toList());
+            .map(it -> LineResponse.of(it))
+            .collect(Collectors.toList());
     }
 
     public LineResponse() {
     }
 
     public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime,
-                        int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
