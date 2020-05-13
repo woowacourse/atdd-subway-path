@@ -1,0 +1,64 @@
+package wooteco.subway.admin.service;
+
+import org.apache.tomcat.jni.Local;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.repository.LineRepository;
+import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalTime;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class PathServiceTest {
+
+    @Mock
+    private StationRepository stationRepository;
+
+    @Mock
+    private LineRepository lineRepository;
+
+    @Mock
+    private GraphService graphService;
+
+    @Test
+    void findPath() {
+        //given
+        Station source = new Station("강남역");
+        Station target = new Station("홍대입구");
+
+        List<Long> path = Arrays.asList(1L, 2L, 5L);
+
+        Line line = new Line(1L, "1호선", LocalTime.now(), LocalTime.now(), 10);
+        line.addLineStation(new LineStation(null, 1L, 10,10));
+        line.addLineStation(new LineStation(1L, 2L, 10,10));
+        line.addLineStation(new LineStation(2L, 5L, 10,10));
+
+        List<Line> lines = Collections.singletonList(line);
+
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findByName(source.getName())).thenReturn(Optional.of(source));
+        when(stationRepository.findByName(target.getName())).thenReturn(Optional.of(target));
+        when(graphService.findPath(lines, source.getId(), target.getId(), PathType.DISTANCE)).thenReturn(path);
+        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L,"강남역"),new Station(2L,"역삼역"),new Station(5L, "홍대입구")));
+
+        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+
+        //when
+        PathResponse pathResponse = pathService.findPath(source.getName(), target.getName(), PathType.DISTANCE);
+
+        //then
+        assertThat(pathResponse.getStations().size()).isEqualTo(3);
+        assertThat(pathResponse.getDistance()).isEqualTo(20);
+    }
+}
