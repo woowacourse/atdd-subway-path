@@ -1,19 +1,22 @@
 package wooteco.subway.admin.service;
 
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.ShortestDistanceResponse;
+import wooteco.subway.admin.dto.StationCreateRequest;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -22,10 +25,12 @@ import wooteco.subway.admin.repository.StationRepository;
 public class LineService {
     private LineRepository lineRepository;
     private StationRepository stationRepository;
+    private Path path;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.path = new Path();
     }
 
     public Line save(Line line) {
@@ -52,11 +57,35 @@ public class LineService {
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
+        if (Objects.isNull(request.getPreStationId())) {
+            lineRepository.save(line);
+            return;
+        }
+
+        List<Station> stations = stationRepository.findAllById(
+            Arrays.asList(request.getPreStationId(), request.getStationId()));
+        Station preStation = stations.get(0);
+        Station station = stations.get(1);
+        path.setDistanceWeight(preStation, station, request.getDistance());
+        path.setDurationWeight(preStation, station, request.getDuration());
+
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+
+        LineStation targetLineStation = line.getStations().stream()
+            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+        List<Station> stations = stationRepository.findAllById(
+            Arrays.asList(targetLineStation.getPreStationId(), targetLineStation.getStationId()));
+        Station preStation = stations.get(0);
+        Station station = stations.get(1);
+        path.removeDistanceEdge(preStation, station);
+        path.removeDurationEdge(preStation, station);
+
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
@@ -75,16 +104,31 @@ public class LineService {
         return WholeSubwayResponse.of(lineDetailResponses);
     }
 
-    // todo: 기능 구현
     public ShortestDistanceResponse searchShortestDistancePath(String source, String target) {
-        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5,
-            "bg-green-600");
-        List<Station> stations = Arrays.asList(new Station(1L, "잠실역"), new Station(2L, "삼성역"),
-            new Station(3L, "선릉역"));
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
-        List<LineStation> lineStations = line.getLineStations();
-        return ShortestDistanceResponse.of(stations, lineStations);
+        Station sourceStation = stationRepository.findByName(source)
+            .orElseThrow(RuntimeException::new);
+        Station targetStation = stationRepository.findByName(target)
+            .orElseThrow(RuntimeException::new);
+        List<Station> stations = path.searchShortestDistancePath(sourceStation, targetStation);
+        int distance = path.calculateDistance();
+        int duration = path.calculateDuration();
+        return new ShortestDistanceResponse(StationResponse.listOf(stations), distance, duration);
+    }
+
+    public Station addStation(StationCreateRequest view) {
+        Station station = view.toStation();
+        Station persistStation = stationRepository.save(station);
+        path.addStation(persistStation);
+        return persistStation;
+    }
+
+    public List<Station> showStations() {
+        return stationRepository.findAll();
+    }
+
+    public void deleteStationById(Long id) {
+        Station station = stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        path.deleteStation(station);
+        stationRepository.deleteById(id);
     }
 }
