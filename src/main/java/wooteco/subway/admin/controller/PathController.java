@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.RouteResponse;
+import wooteco.subway.admin.dto.PathResponse;
 
-@RequestMapping("/api/routes")
+@RequestMapping("/api/paths")
 @RestController
-public class RouteController {
+public class PathController {
 
     @GetMapping()
-    public ResponseEntity<RouteResponse> findShortestRoute() {
+    public ResponseEntity<PathResponse> findShortestPath() {
 
         List<Station> stations = Arrays.asList(new Station("양재시민숲역"),
             new Station("양재역"),
@@ -29,6 +29,6 @@ public class RouteController {
 
         return ResponseEntity
             .ok()
-            .body(new RouteResponse(stations, distance, duration));
+            .body(new PathResponse(stations, distance, duration));
     }
 }

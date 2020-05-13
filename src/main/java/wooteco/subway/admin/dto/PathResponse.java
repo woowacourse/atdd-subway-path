@@ -4,15 +4,15 @@ import java.util.List;
 
 import wooteco.subway.admin.domain.Station;
 
-public class RouteResponse {
+public class PathResponse {
     List<Station> stations;
     int distance;
     int duration;
 
-    public RouteResponse() {
+    public PathResponse() {
     }
 
-    public RouteResponse(final List<Station> stations, final int distance, final int duration) {
+    public PathResponse(final List<Station> stations, final int distance, final int duration) {
         this.stations = stations;
         this.distance = distance;
         this.duration = duration;

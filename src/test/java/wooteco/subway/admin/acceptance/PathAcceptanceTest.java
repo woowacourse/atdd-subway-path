@@ -2,19 +2,15 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.RouteResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
-public class RouteAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
     @Test
-    void findRoute() {
+    void findPath() {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("선릉역");
@@ -32,12 +28,10 @@ public class RouteAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse2.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        RouteResponse routeResponse = findShortestRoute("양재시민의숲역", "선릉역");
+        PathResponse pathResponse = findShortestPath("양재시민의숲역", "선릉역");
 
-        assertThat(routeResponse.getStations().size()).isEqualTo(5);
-        assertThat(routeResponse.getDistance()).isEqualTo(40);
-        assertThat(routeResponse.getDuration()).isEqualTo(40);
+        assertThat(pathResponse.getStations().size()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(40);
+        assertThat(pathResponse.getDuration()).isEqualTo(40);
     }
-
-
 }
