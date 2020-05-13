@@ -29,7 +29,7 @@ create table if not exists LINE_STATION
     created_at datetime,
     updated_at datetime
 );
-
+--
 -- INSERT INTO LINE (name, start_time, end_time, interval_time, bg_color)
 -- VALUES
 -- ('1호선', '10:10', '10:20', 10, 'bg-gray-200'),

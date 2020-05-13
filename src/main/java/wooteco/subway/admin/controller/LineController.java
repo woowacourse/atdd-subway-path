@@ -39,16 +39,22 @@ public class LineController {
 
     @GetMapping("/lines")
     public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+        List<LineResponse> lineResponses = LineResponse.listOf(lineService.showLines());
+        return ResponseEntity.ok()
+                .eTag(String.valueOf(lineResponses.hashCode()))
+                .body(lineResponses);
     }
 
     @GetMapping("/lines/{id}")
     public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-        return ResponseEntity.ok().body(lineService.findLineWithStationsById(id));
+        LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(id);
+        return ResponseEntity.ok()
+                .eTag(String.valueOf(lineDetailResponse.hashCode()))
+                .body(lineDetailResponse);
     }
 
     @PutMapping("/lines/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
         lineService.updateLine(id, view);
         return ResponseEntity.ok().build();
     }
@@ -60,13 +66,13 @@ public class LineController {
     }
 
     @PostMapping("/lines/{lineId}/stations")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
+    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
         lineService.addLineStation(lineId, view);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
@@ -74,6 +80,8 @@ public class LineController {
     @GetMapping("/lines/details")
     public ResponseEntity<WholeSubwayResponse> getWholeSubway() {
         WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
-        return ResponseEntity.ok(wholeSubwayResponse);
+        return ResponseEntity.ok()
+                .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
+                .body(wholeSubwayResponse);
     }
 }
