@@ -87,38 +87,22 @@ public class LineService {
     }
 
     public PathResponse findShortestDistancePath(PathRequest request) {
-        // 모든 라인을 찾는다.
-        List<Line> lines = lineRepository.findAll();
-
-        // 모든 라인에 해당하는 그래프를 만든다.
         WeightedMultigraph<Long, DefaultWeightedEdge> totalGraph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        List<Line> lines = lineRepository.findAll();
         lines.forEach(line ->
                 Graphs.addGraph(totalGraph, line.createDistanceGraph()));
 
-        // 모든 라인에서 sourceId -> targetId에 해당하는 경로를 찾는다. 거리도 찾는다.
         Long sourceId = request.getSourceId();
         Long targetId = request.getTargetId();
+        DijkstraShortestPath shortestPath = new DijkstraShortestPath(totalGraph);
 
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(totalGraph);
-        List<Long> shortestPath
-                = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList(); // stationId
-        // a id -> b id -> c id
-
-        List<Station> pathStations = stationRepository.findAllById(shortestPath);
-        List<String> names = new ArrayList<>();
-
-        for (Long id : shortestPath) {
-            pathStations.stream()
-                    .filter(station -> station.getId().equals(id))
-                    .map(Station::getName)
-                    .findAny()
-                    .ifPresent(names::add);
-        }
+        List<Long> pathStationIds = shortestPath.getPath(sourceId, targetId).getVertexList(); // stationId
+        List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
 
         // 최단 거리 구하기
-        double distance = dijkstraShortestPath.getPath(sourceId, targetId).getWeight();
+        double distance = shortestPath.getPath(sourceId, targetId).getWeight();
 
         // 최단 거리의 경로에 따른 최소 시간 구하기
         // preStationId, stationId, distance --> duration
@@ -128,21 +112,18 @@ public class LineService {
                 .collect(Collectors.toList());
 
         int timeSum = 0;
-        for (LineStation lineStation : lineStations) {
-            for (int i = 0; i < shortestPath.size() - 1; i++) {
-                Long preStationId = shortestPath.get(i);
-                Long stationId = shortestPath.get(i + 1);
 
-                if (preStationId.equals(lineStation.getPreStationId())
-                        && stationId.equals(lineStation.getStationId())) {
-                    timeSum += lineStation.getDuration();
-                }
-            }
+        for (int i = 0; i < pathStationIds.size() - 1; i++) {
+            Long preStationId = pathStationIds.get(i);
+            Long stationId = pathStationIds.get(i + 1);
+
+            timeSum += lineStations.stream()
+                    .filter(lineStation -> preStationId.equals(lineStation.getPreStationId()))
+                    .filter(lineStation -> stationId.equals(lineStation.getStationId()))
+                    .mapToInt(LineStation::getDuration)
+                    .sum();
         }
-//        lineStations.stream()
-//                .filter(lineStation -> sourceId.equals(lineStation.getPreStationId()))
-//                .filter(lineStation -> targetId.equals(lineStation.getStationId()))
-//                .filter(lineStation -> )
-        return new PathResponse((int) distance, timeSum, names);
+
+        return new PathResponse((int) distance, timeSum, pathStationNames);
     }
 }
