@@ -11,7 +11,6 @@ import wooteco.subway.admin.service.PathService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,7 +29,7 @@ public class PathController {
         String decodedSource = URLDecoder.decode(source, "UTF-8");
         String decodedTarget = URLDecoder.decode(target, "UTF-8");
 
-        List<Station> stations = pathService.retrieve(decodedSource, decodedTarget);
+        List<Station> stations = pathService.retrieveShortestPath(decodedSource, decodedTarget);
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 
         PathResponse pathResponse = PathResponse.of(stationResponses, 40, 40);

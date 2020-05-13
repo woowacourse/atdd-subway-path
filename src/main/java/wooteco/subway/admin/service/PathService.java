@@ -4,6 +4,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.Graph;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -22,7 +23,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public List<Station> retrieve(String decodedSource, String decodedTarget) {
+    public List<Station> retrieveShortestPath(String decodedSource, String decodedTarget) {
         Station source = lineService.findStationWithName(decodedSource);
         Station target = lineService.findStationWithName(decodedTarget);
 
@@ -36,22 +37,8 @@ public class PathService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
+        Graph graph = Graph.of(stationCache, edges);
 
-        for (LineStation edge : edges) {
-            if (edge.getPreStationId() == null) {
-                continue;
-            }
-            graph.setEdgeWeight(graph.addEdge(stationCache.get(edge.getPreStationId()), stationCache.get(edge.getStationId())), edge.getDistance());
-        }
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-
-        return shortestPath;
+        return graph.findShortestPath(source, target);
     }
 }
