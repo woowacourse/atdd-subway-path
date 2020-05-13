@@ -1,5 +1,9 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -10,7 +14,6 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,14 +87,62 @@ public class LineService {
     }
 
     public PathResponse findShortestDistancePath(PathRequest request) {
-        Station source = stationRepository.findById(request.getSourceId())
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 역이 없습니다."));
-        Station target = stationRepository.findById(request.getTargetId())
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 역이 없습니다."));
+        // 모든 라인을 찾는다.
+        List<Line> lines = lineRepository.findAll();
 
-        // 1. Line 다 찾는다.
-        // 2. source
+        // 모든 라인에 해당하는 그래프를 만든다.
+        WeightedMultigraph<Long, DefaultWeightedEdge> totalGraph
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        lines.forEach(line ->
+                Graphs.addGraph(totalGraph, line.createDistanceGraph()));
 
-        return new PathResponse();
+        // 모든 라인에서 sourceId -> targetId에 해당하는 경로를 찾는다. 거리도 찾는다.
+        Long sourceId = request.getSourceId();
+        Long targetId = request.getTargetId();
+
+        DijkstraShortestPath dijkstraShortestPath
+                = new DijkstraShortestPath(totalGraph);
+        List<Long> shortestPath
+                = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList(); // stationId
+        // a id -> b id -> c id
+
+        List<Station> pathStations = stationRepository.findAllById(shortestPath);
+        List<String> names = new ArrayList<>();
+
+        for (Long id : shortestPath) {
+            pathStations.stream()
+                    .filter(station -> station.getId().equals(id))
+                    .map(Station::getName)
+                    .findAny()
+                    .ifPresent(names::add);
+        }
+
+        // 최단 거리 구하기
+        double distance = dijkstraShortestPath.getPath(sourceId, targetId).getWeight();
+
+        // 최단 거리의 경로에 따른 최소 시간 구하기
+        // preStationId, stationId, distance --> duration
+        List<LineStation> lineStations = lines.stream()
+                .map(Line::getStations)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        int timeSum = 0;
+        for (LineStation lineStation : lineStations) {
+            for (int i = 0; i < shortestPath.size() - 1; i++) {
+                Long preStationId = shortestPath.get(i);
+                Long stationId = shortestPath.get(i + 1);
+
+                if (preStationId.equals(lineStation.getPreStationId())
+                        && stationId.equals(lineStation.getStationId())) {
+                    timeSum += lineStation.getDuration();
+                }
+            }
+        }
+//        lineStations.stream()
+//                .filter(lineStation -> sourceId.equals(lineStation.getPreStationId()))
+//                .filter(lineStation -> targetId.equals(lineStation.getStationId()))
+//                .filter(lineStation -> )
+        return new PathResponse((int) distance, timeSum, names);
     }
 }

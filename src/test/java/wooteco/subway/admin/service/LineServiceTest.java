@@ -1,11 +1,6 @@
 package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
-import org.jgrapht.GraphPath;
-import org.jgrapht.Graphs;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +19,7 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -63,8 +59,9 @@ public class LineServiceTest {
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2 = new Line(2L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 0, 0));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line1.addLineStation(new LineStation(1L, 2L, 10, 5));
+        line1.addLineStation(new LineStation(2L, 3L, 10, 5));
+
         line2.addLineStation(new LineStation(null, 4L, 10, 10));
     }
 
@@ -185,9 +182,19 @@ public class LineServiceTest {
 
     @Test
     void findShortestDistancePath() {
-        PathRequest request = new PathRequest(station1.getId(), station2.getId());
+        List<Line> lines = Lists.newArrayList(line1);
+        when(lineRepository.findAll()).thenReturn(lines);
+
+        List<Station> stations = Lists.newArrayList(station1, station2, station3);
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
+
+        PathRequest request = new PathRequest(station1.getId(), station3.getId());
         PathResponse response = lineService.findShortestDistancePath(request);
-        assertThat(response.getDistance()).isEqualTo(10);
+
+        assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getDuration()).isEqualTo(10);
+        assertThat(response.getPath()).containsAll(names);
     }
 }
