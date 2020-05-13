@@ -54,3 +54,26 @@ Feature: 전체 지하철 노선도 정보 조회
 3. 컨트롤러 구현
 4. 서비스 구현 - TDD로 진행
 5. 인수 테스트 검증 후 확인
+
+
+
+## 1단계 : 캐시 적용
+
+### 요구 사항
+
+#### HTTP 캐시 적용하기
+
+- HTTP Cache의 종류를 학습
+- 지하철 노선도 조회시 ETag를 통해 캐시를 적용
+- LineControllerTest의 ETag 테스트를 성공시키기
+
+
+
+### 추가로 생각해보기
+
+#### 서버 캐시 적용
+
+- 서버의 리소스를 줄이기 위해서는 서버쪽에도 캐시 설정이 필요
+- 아래의 링크를 참고
+  - [A Guide To Caching in Spring](https://www.baeldung.com/spring-cache-tutorial)
+
