@@ -1,6 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -29,13 +28,11 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Lines::new));
     }
 
-    public Object getShortestPath() {
-        List<SubwayPath> subwayPaths = new ArrayList<>();
-        for (Line line : lines) {
-            subwayPaths.add(new SubwayPath(line));
-        }
-
-        return null;
+    public SubwayGraph getShortestPath(Long sourceStationId, Long targetStationId) {
+        SubwayGraphs subwayGraphs = lines.stream()
+                .map(line -> new SubwayGraph(line.getEdges()))
+                .collect(Collectors.collectingAndThen(Collectors.toList(), SubwayGraphs::new));
+        return subwayGraphs.getShortestPath(sourceStationId, targetStationId);
     }
 
     @Override

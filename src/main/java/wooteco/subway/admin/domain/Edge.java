@@ -1,8 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 public class Edge {
     private Long preStationId;
     private Long stationId;
@@ -14,6 +11,10 @@ public class Edge {
         this.stationId = stationId;
         this.distance = distance;
         this.duration = duration;
+    }
+
+    public boolean isNotFirst() {
+        return preStationId != null;
     }
 
     public boolean isSameStationId(Long stationId) {
