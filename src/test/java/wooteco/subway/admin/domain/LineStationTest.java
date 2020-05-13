@@ -5,13 +5,10 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("NonAsciiCharacters")
 class LineStationTest {
 
-	@DisplayName("displayName")
 	@Test
 	void findMatchingStation() {
 		LineStation lineStation = new LineStation(null, 1L, 10, 10);

@@ -11,7 +11,7 @@ public class Station {
 	private String name;
 	private LocalDateTime createdAt;
 
-	public Station() {
+	private Station() {
 	}
 
 	public Station(String name) {
@@ -51,5 +51,14 @@ public class Station {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name);
+	}
+
+	@Override
+	public String toString() {
+		return "Station{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			", createdAt=" + createdAt +
+			'}';
 	}
 }

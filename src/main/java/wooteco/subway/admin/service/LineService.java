@@ -17,8 +17,8 @@ import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class LineService {
-	private LineRepository lineRepository;
-	private StationRepository stationRepository;
+	private final LineRepository lineRepository;
+	private final StationRepository stationRepository;
 
 	public LineService(LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineRepository = lineRepository;
@@ -64,7 +64,6 @@ public class LineService {
 		return LineDetailResponse.of(line, stations);
 	}
 
-	// TODO: 구현하세요 :)
 	public WholeSubwayResponse wholeLines() {
 		List<LineDetailResponse> lineDetailResponses = new ArrayList<>();
 		List<Line> lines = lineRepository.findAll();

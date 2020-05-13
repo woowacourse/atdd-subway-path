@@ -10,8 +10,8 @@ import wooteco.subway.admin.service.LineService;
 
 @Controller
 public class PageController {
-	private LineService lineService;
-	private StationRepository stationRepository;
+	private final LineService lineService;
+	private final StationRepository stationRepository;
 
 	public PageController(LineService lineService, StationRepository stationRepository) {
 		this.lineService = lineService;
@@ -41,5 +41,7 @@ public class PageController {
 	}
 
 	@GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
-	public String mapPage(Model model) {return "service/map";}
+	public String mapPage(Model model) {
+		return "service/map";
+	}
 }

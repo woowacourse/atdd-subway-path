@@ -65,6 +65,6 @@ public class LineTest {
 			sampleStation4
 		);
 		List<Station> matchingStations = line.findStationsFrom(stations);
-		assertThat(matchingStations).containsExactly(sampleStation1,sampleStation2,sampleStation3);
+		assertThat(matchingStations).containsExactly(sampleStation1, sampleStation2, sampleStation3);
 	}
 }

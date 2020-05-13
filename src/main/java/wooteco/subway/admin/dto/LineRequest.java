@@ -10,7 +10,11 @@ public class LineRequest {
 	private LocalTime endTime;
 	private int intervalTime;
 
-	public LineRequest() {
+	private LineRequest() {
+	}
+
+	public Line toLine() {
+		return new Line(name, startTime, endTime, intervalTime);
 	}
 
 	public String getName() {
@@ -27,9 +31,5 @@ public class LineRequest {
 
 	public int getIntervalTime() {
 		return intervalTime;
-	}
-
-	public Line toLine() {
-		return new Line(name, startTime, endTime, intervalTime);
 	}
 }

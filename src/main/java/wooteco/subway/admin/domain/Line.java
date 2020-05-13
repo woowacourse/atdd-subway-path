@@ -40,38 +40,6 @@ public class Line {
 		this(null, name, startTime, endTime, intervalTime);
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-
-	public int getIntervalTime() {
-		return intervalTime;
-	}
-
-	public Set<LineStation> getStations() {
-		return stations;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
 	public void update(Line line) {
 		if (line.getName() != null) {
 			this.name = line.getName();
@@ -145,5 +113,37 @@ public class Line {
 		return this.stations.stream()
 			.map(lineStation -> lineStation.findMatchingStation(stations))
 			.collect(toList());
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	public Set<LineStation> getStations() {
+		return stations;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 }

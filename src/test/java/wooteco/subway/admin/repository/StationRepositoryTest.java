@@ -1,6 +1,9 @@
 package wooteco.subway.admin.repository;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +23,14 @@ public class StationRepositoryTest {
 		stationRepository.save(new Station(stationName));
 
 		assertThrows(DbActionExecutionException.class, () -> stationRepository.save(new Station(stationName)));
+	}
+
+	@Test
+	void findAllById() {
+		Station station1 = stationRepository.save(new Station("강남역"));
+		Station station4 = stationRepository.save(new Station("방배역"));
+
+		assertThat(stationRepository.findAllById(Arrays.asList(station1.getId(), station4.getId()))).isEqualTo(
+			Arrays.asList(station1, station4));
 	}
 }

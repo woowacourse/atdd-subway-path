@@ -8,10 +8,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -161,7 +159,8 @@ public class LineServiceTest {
 		newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
 		newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
-		List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+		List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"),
+			new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
 		when(stationRepository.findAll()).thenReturn(stations);

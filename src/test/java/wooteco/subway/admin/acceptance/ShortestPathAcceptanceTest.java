@@ -7,15 +7,19 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
+@Sql("/truncate.sql")
 public class ShortestPathAcceptanceTest extends AcceptanceTest {
 	@Test
 	void name() {
 		//given
+		List<StationResponse> stations = getStations();
+
 		StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
 		StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
 		StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
