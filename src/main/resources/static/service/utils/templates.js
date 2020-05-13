@@ -3,6 +3,13 @@ export const listItemTemplate = station =>
   ${station.name}
 </div>`
 
+export const container = station =>
+    `<span class="text-gray-600">${station.name}</span>
+        <span class="mdi mdi-arrow-right-bold text-gray-500"></span>`
+
+export const lastContainer = station =>
+    `<span class="text-gray-600">${station}</span>`
+
 export const optionTemplate = value => `<option>${value}</option>`
 
 const navItemTemplate = navigation =>

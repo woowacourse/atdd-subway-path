@@ -1,5 +1,5 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
-import api from "../../../admin/api/index.js";
+import {container, lastContainer} from "../../utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -7,6 +7,9 @@ function Search() {
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
+  const $durationContainer = document.querySelector('#duration-container');
+  const $distanceContainer = document.querySelector('#distance-container');
+  const $shortPathContainer = document.querySelector('#short-path-container');
 
   const showSearchResult = () => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -22,8 +25,14 @@ function Search() {
       target: $arrivalStationName.value
     }
     let pathDetail = await fetch(`/path?source=${searchInput.source}&target=${searchInput.target}`).then(data => data.json());
-    console.log(pathDetail);
-    console.log(pathDetail.duration);
+    $durationContainer.textContent = pathDetail.duration + "분";
+    $distanceContainer.textContent = pathDetail.distance + "m";
+
+    $shortPathContainer.innerHTML = pathDetail.stations
+        .filter(station => station.name !== $arrivalStationName.value)
+        .map(station => container(station))
+        .join("")
+        .concat(lastContainer($arrivalStationName.value));
     showSearchResult(searchInput)
   }
 
