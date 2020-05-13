@@ -7,9 +7,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StationTest {
 
     @Test
-    void is() {
+    void isIdTest() {
         Station station = new Station(1L, "강남");
 
         assertThat(station.is(1L)).isTrue();
+    }
+
+    @Test
+    void isNameTest() {
+        Station station = new Station(1L, "강남");
+
+        assertThat(station.is("강남")).isTrue();
     }
 }
