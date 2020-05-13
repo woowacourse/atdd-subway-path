@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -67,9 +68,14 @@ public class LineService {
 	}
 
 	public LineDetailResponse findLineWithStationsById(Long id) {
-		Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-		return LineDetailResponse.of(line, stations);
+		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		List<Station> stations = persistLine.getLineStationsId()
+			.stream()
+			.map(stationId -> stationRepository.findById(stationId))
+			.map(station -> station.orElseThrow(NoSuchElementException::new))
+			.collect(Collectors.toList());
+
+		return LineDetailResponse.of(persistLine, StationResponse.listOf(stations));
 	}
 
 	public WholeSubwayResponse wholeLines() {
@@ -83,28 +89,61 @@ public class LineService {
 	public PathResponse findPath(String departStationName, String arrivalStationName) {
 		WeightedMultigraph<Long, DefaultWeightedEdge> graph
 			= new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		Station departStation = stationRepository.findByName(departStationName).orElseThrow(NoSuchElementException::new);
-		Station arrivalStation = stationRepository.findByName(arrivalStationName).orElseThrow(NoSuchElementException::new);
+		Station departStation = stationRepository.findByName(departStationName)
+			.orElseThrow(NoSuchElementException::new);
+		Station arrivalStation = stationRepository.findByName(arrivalStationName)
+			.orElseThrow(NoSuchElementException::new);
 		List<Station> stations = stationRepository.findAll();
 		stations.forEach(station -> graph.addVertex(station.getId()));
 		List<Line> lines = lineRepository.findAll();
 		lines.stream()
 			.flatMap(line -> line.getStations().stream())
-			.forEach(lineStation -> setGraph(graph, lineStation));
+			.forEach(lineStation -> setDistanceGraph(graph, lineStation));
 
 		DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-		GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(departStation.getId(), arrivalStation.getId());
+		GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(departStation.getId(),
+			arrivalStation.getId());
 		List<Long> shortestPath = path.getVertexList();
+
 		List<StationResponse> stationResponses = shortestPath.stream()
 			.map(id -> stationRepository.findById(id).orElseThrow(NoSuchElementException::new))
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
-		int weight = (int)path.getWeight();
-		return PathResponse.of(stationResponses, weight, 0);
+
+		int duration = IntStream.range(0, shortestPath.size() - 1)
+			.map(index -> findPathLineStationDuration(lines, shortestPath, index))
+			.sum();
+
+		return PathResponse.of(stationResponses, (int)path.getWeight(), duration);
 	}
 
-	private void setGraph(WeightedMultigraph<Long, DefaultWeightedEdge> graph, LineStation lineStation) {
+	private int findPathLineStationDuration(List<Line> lines, List<Long> shortestPath, int index) {
+		return lines.stream()
+			.flatMap(line -> line.getStations().stream())
+			.filter(lineStation -> isPathLineStation(lineStation, shortestPath, index))
+			.mapToInt(LineStation::getDuration)
+			.sum();
+	}
+
+	private void setDistanceGraph(WeightedMultigraph<Long, DefaultWeightedEdge> graph, LineStation lineStation) {
+		Long preStationId = lineStation.getPreStationId();
+		Long stationId = lineStation.getStationId();
+		int distance = lineStation.getDistance();
+
+		if (Objects.nonNull(preStationId)) {
+			graph.setEdgeWeight(graph.addEdge(preStationId, stationId), distance);
+		}
+	}
+
+	private boolean isPathLineStation(LineStation lineStation, List<Long> shortestPath, int index) {
+		if (Objects.isNull(lineStation.getPreStationId())) {
+			return false;
+		}
+		return lineStation.getPreStationId().equals(shortestPath.get(index))
+			&& lineStation.getStationId().equals(shortestPath.get((index + 1)));
+	}
+
+	private void setDurationGraph(WeightedMultigraph<Long, DefaultWeightedEdge> graph, LineStation lineStation) {
 		Long preStationId = lineStation.getPreStationId();
 		Long stationId = lineStation.getStationId();
 		int distance = lineStation.getDistance();

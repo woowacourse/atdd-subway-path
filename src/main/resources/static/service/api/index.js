@@ -33,7 +33,7 @@ const api = (() => {
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return request(`/path?source=${params.source}&target=${params.target}`)
     }
   }
 

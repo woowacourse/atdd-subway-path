@@ -12,6 +12,7 @@ import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
@@ -56,7 +57,7 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+        List<StationResponse> stations = Arrays.asList(new StationResponse(), new StationResponse(), new StationResponse());
         return LineDetailResponse.of(new Line(), stations);
     }
 }
