@@ -41,17 +41,13 @@ public class Path {
         }
     }
 
-    public List<Long> searchShortestDistancePath(Station source, Station target) {
-        dijkstraShortestPath = new DijkstraShortestPath(distanceGraph);
-        return searchShortestPath(source, target);
-    }
-
-    public List<Long> searchShortestDurationPath(Station source, Station target) {
-        dijkstraShortestPath = new DijkstraShortestPath(durationGraph);
-        return searchShortestPath(source, target);
-    }
-
-    private List<Long> searchShortestPath(Station source, Station target) {
+    public List<Long> searchShortestPath(Station source, Station target, String type) {
+        if ("DISTANCE".equals(type)) {
+            dijkstraShortestPath = new DijkstraShortestPath(distanceGraph);
+        }
+        if ("DURATION".equals(type)) {
+            dijkstraShortestPath = new DijkstraShortestPath(durationGraph);
+        }
         return dijkstraShortestPath.getPath(source.getId(), target.getId()).getVertexList();
     }
 

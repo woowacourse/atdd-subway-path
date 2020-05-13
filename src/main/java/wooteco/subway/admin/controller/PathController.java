@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.dto.ShortestDistanceResponse;
 import wooteco.subway.admin.service.LineService;
 
-@RequestMapping("/path")
+@RequestMapping("/paths")
 @RestController
 public class PathController {
     private LineService lineService;
@@ -18,12 +18,13 @@ public class PathController {
         this.lineService = lineService;
     }
 
-    @GetMapping("/distance")
+    @GetMapping
     public ResponseEntity<ShortestDistanceResponse> findShortestDistancePath(
         @RequestParam("source") String source,
-        @RequestParam("target") String target) {
+        @RequestParam("target") String target,
+        @RequestParam("type") String type) {
         ShortestDistanceResponse shortestDistanceResponse = lineService.searchShortestDistancePath(
-            source, target);
+            source, target, type);
         return ResponseEntity.ok().body(shortestDistanceResponse);
     }
 }

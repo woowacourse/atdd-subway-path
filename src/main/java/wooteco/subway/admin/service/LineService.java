@@ -3,11 +3,14 @@ package wooteco.subway.admin.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Path;
+import wooteco.subway.admin.domain.PathEdge;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -75,20 +78,25 @@ public class LineService {
         return WholeSubwayResponse.of(lineDetailResponses);
     }
 
-    public ShortestDistanceResponse searchShortestDistancePath(String source, String target) {
+    public ShortestDistanceResponse searchShortestDistancePath(String source, String target,
+        String type) {
         Station sourceStation = stationRepository.findByName(source)
             .orElseThrow(RuntimeException::new);
         Station targetStation = stationRepository.findByName(target)
             .orElseThrow(RuntimeException::new);
+        PathType pathType = PathType.findPathType(type);
 
+        Path path = new Path();
+        List<Station> stations = stationRepository.findAll();
+        path.addVertexes(stations);
         List<Line> lines = lineRepository.findAll();
-        Path path = new Path(lines);
+        path.setEdges(lines, pathType);
 
-        List<Long> stationIds = path.searchShortestDistancePath(sourceStation, targetStation);
-        int distance = path.calculateDistance(stationIds);
-        int duration = path.calculateDuration(stationIds);
+        GraphPath<Long, PathEdge> shortestPath = path.searchShortestPath(sourceStation,
+            targetStation);
+        List<Long> stationIds = shortestPath.getVertexList();
         return new ShortestDistanceResponse(StationResponse.listOf(toStations(stationIds)),
-            distance, duration);
+            path.calculateDistance(shortestPath), path.calculateDuration(shortestPath));
     }
 
     private List<Station> toStations(List<Long> stationIds) {

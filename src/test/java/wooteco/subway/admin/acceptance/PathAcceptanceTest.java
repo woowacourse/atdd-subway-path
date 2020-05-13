@@ -41,9 +41,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return given().
             queryParam("source", source).
             queryParam("target", target).
+            queryParam("type", "DISTANCE").
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            get("/path/distance").
+            get("/paths").
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).

@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Objects;
+
 public class LineStation {
     private Long preStationId;
     private Long stationId;
@@ -13,8 +15,8 @@ public class LineStation {
         this.duration = duration;
     }
 
-    public boolean isFirstLineStation() {
-        return preStationId == null;
+    public boolean isNotFirstLineStation() {
+        return Objects.nonNull(preStationId);
     }
 
     public Long getPreStationId() {
