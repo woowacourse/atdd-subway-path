@@ -1,5 +1,6 @@
 package wooteco.subway.admin.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,5 +38,11 @@ public class PageController {
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String edgePage(Model model) {
         return "admin/admin-edge";
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+    public String searchPage(Model model) {
+        return "service/search";
+
     }
 }

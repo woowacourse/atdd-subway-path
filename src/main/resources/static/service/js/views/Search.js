@@ -1,4 +1,6 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
+import api from "../../api/index.js"
+import {searchResultTemplate} from "../../../admin/utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -7,11 +9,11 @@ function Search() {
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
 
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
-    }
+  const showSearchResult = (searchInput) => {
+    api.path.findByDistance(searchInput).then(pathResponse =>
+        $searchResultContainer.innerHTML = searchResultTemplate(pathResponse)
+    ).catch(error => alert("하하하"))
+
   }
 
   const onSearch = event => {
@@ -20,7 +22,6 @@ function Search() {
       source: $departureStationName.value,
       target: $arrivalStationName.value
     }
-    console.log(searchInput)
     showSearchResult(searchInput)
   }
 
@@ -43,7 +44,7 @@ function Search() {
   }
 
   const initEventListener = () => {
-    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+    // $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
   }
 
