@@ -1,9 +1,9 @@
-import {optionTemplate, subwayLinesItemTemplate} from '../../utils/templates.js'
+import {subwayLinesItemTemplate} from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
 import api from '../../api/index.js'
 
 function Map() {
-	const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
+	const $subwayLinesSlider = document.querySelector('.subway-lines-slider');
 	let subwayLines = null;
 
 	const initSubwayLinesSlider = () => {
@@ -22,22 +22,11 @@ function Map() {
 			items: 3,
 			edgePadding: 25
 		})
-	}
-
-	const initSubwayLineOptions = () => {
-		const subwayLineOptionTemplate = subwayLines
-		.map(line => optionTemplate(line.name))
-		.join('');
-		const $stationSelectOptions = document.querySelector(
-			'#station-select-options')
-		$stationSelectOptions.insertAdjacentHTML('afterbegin',
-			subwayLineOptionTemplate)
-	}
+	};
 
 	this.init = async () => {
-		subwayLines = await api.line.getAll();
+		subwayLines = await api.line.getAll().then(res => res.lineDetails);
 		initSubwayLinesSlider();
-		initSubwayLineOptions();
 	}
 }
 

@@ -1,136 +1,149 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import org.springframework.data.annotation.Id;
 
 public class Line {
-    @Id
-    private Long id;
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
 
-    public Line() {
-    }
+	@Id
+	private Long id;
+	private String name;
+	private String color;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private int intervalTime;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private Set<LineStation> stations = new HashSet<>();
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+	public Line() {
+	}
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
-    }
+	public Line(Long id, String name, String color, LocalTime startTime,
+		LocalTime endTime, int intervalTime) {
+		this.name = name;
+		this.color = color;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.intervalTime = intervalTime;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Line(String name, String color, LocalTime startTime, LocalTime endTime,
+		int intervalTime) {
+		this(null, name, color, startTime, endTime, intervalTime);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public String getColor() {
+		return color;
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public Set<LineStation> getStations() {
-        return stations;
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public Set<LineStation> getStations() {
+		return stations;
+	}
 
-    public void update(Line line) {
-        if (line.getName() != null) {
-            this.name = line.getName();
-        }
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
-        }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
-        }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
-        }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-        this.updatedAt = LocalDateTime.now();
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+	public void update(Line line) {
+		if (line.getName() != null) {
+			this.name = line.getName();
+		}
+		if (line.getStartTime() != null) {
+			this.startTime = line.getStartTime();
+		}
+		if (line.getEndTime() != null) {
+			this.endTime = line.getEndTime();
+		}
+		if (line.getIntervalTime() != 0) {
+			this.intervalTime = line.getIntervalTime();
+		}
 
-        stations.add(lineStation);
-    }
+		this.updatedAt = LocalDateTime.now();
+	}
 
-    public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+	public void addLineStation(LineStation lineStation) {
+		stations.stream()
+			.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+			.findAny()
+			.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+		stations.add(lineStation);
+	}
 
-        stations.remove(targetLineStation);
-    }
+	public void removeLineStationById(Long stationId) {
+		LineStation targetLineStation = stations.stream()
+			.filter(it -> Objects.equals(it.getStationId(), stationId))
+			.findFirst()
+			.orElseThrow(RuntimeException::new);
 
-    public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
-            return new ArrayList<>();
-        }
+		stations.stream()
+			.filter(it -> Objects.equals(it.getPreStationId(), stationId))
+			.findFirst()
+			.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+		stations.remove(targetLineStation);
+	}
 
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
+	public List<Long> getLineStationsId() {
+		if (stations.isEmpty()) {
+			return new ArrayList<>();
+		}
 
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+		LineStation firstLineStation = stations.stream()
+			.filter(it -> it.getPreStationId() == null)
+			.findFirst()
+			.orElseThrow(RuntimeException::new);
 
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+		List<Long> stationIds = new ArrayList<>();
+		stationIds.add(firstLineStation.getStationId());
 
-            stationIds.add(nextLineStation.get().getStationId());
-        }
+		while (true) {
+			Long lastStationId = stationIds.get(stationIds.size() - 1);
+			Optional<LineStation> nextLineStation = stations.stream()
+				.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+				.findFirst();
 
-        return stationIds;
-    }
+			if (!nextLineStation.isPresent()) {
+				break;
+			}
+
+			stationIds.add(nextLineStation.get().getStationId());
+		}
+
+		return stationIds;
+	}
 }

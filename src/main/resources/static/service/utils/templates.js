@@ -1,17 +1,17 @@
 export const listItemTemplate = value =>
-  `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800">
+    `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800">
   ${value.name}
   <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
      <span class="mdi mdi-delete"></span>
   </button>
-</div>`
+</div>`;
 
-export const optionTemplate = value => `<option>${value}</option>`
+export const optionTemplate = value => `<option>${value}</option>`;
 
 const navItemTemplate = navigation =>
-  `<a href="${navigation.link}" class="block mt-4 lg:inline-block lg:mt-0 text-gray-800 hover:text-white mr-4">
+    `<a href="${navigation.link}" class="block mt-4 lg:inline-block lg:mt-0 text-gray-800 hover:text-white mr-4">
   ${navigation.title}
- </a>`
+ </a>`;
 
 const navTemplate = () => `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4 relative">
   <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
@@ -30,28 +30,29 @@ const navTemplate = () => `<nav class="flex items-center justify-between flex-wr
           </a>
       </div>
     </div>
-</nav>`
+</nav>`;
 
 export const subwayLinesTemplate = line =>
-  `<div class="border border-gray-200 py-2 px-4 text-gray-800 ">
+    `<div class="border border-gray-200 py-2 px-4 text-gray-800 ">
   <span class="${line.bgColor} w-3 h-3 rounded-full inline-block mr-1"></span>
   ${line.title}
   <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
      <span class="mdi mdi-delete"></span>
   </button>
-</div>`
+</div>`;
 
 export const subwayLinesItemTemplate = line => {
-  const stationsTemplate = line.stations.map(station => listItemTemplate(station)).join('')
+  const stationsTemplate = line.stations.map(
+      station => listItemTemplate(station)).join('');
   return `<div class="inline-block w-1/2 px-2" data-line-id=${line.id}>
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.bgColor} lint-title px-4 py-1">${line.name}</div>
+              <div class="border ${line.color} lint-title px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stationsTemplate}
               </div>
             </div>
           </div>`
-}
+};
 
 export const edgeItemTemplate = edge => {
   return `<li class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
@@ -63,11 +64,11 @@ export const edgeItemTemplate = edge => {
               <span class="mdi mdi-delete"></span>
             </button>
           </li>`
-}
+};
 
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate())
-}
+};
 
 export const ErrorAlertTemplate = message => {
   return `<div class="flex justify-center error-alert-container">
@@ -75,4 +76,4 @@ export const ErrorAlertTemplate = message => {
                <strong class="font-bold">${message}</strong>
             </div>
           </div>`
-}
+};

@@ -1,69 +1,79 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.Station;
 
 public class LineDetailResponse {
-    private Long id;
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private List<StationResponse> stations;
 
-    public LineDetailResponse() {
-    }
+	private Long id;
+	private String name;
+	private String color;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private int intervalTime;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private List<StationResponse> stations;
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
-        this.id = id;
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.stations = StationResponse.listOf(stations);
-    }
+	public LineDetailResponse() {
+	}
 
-    public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
-    }
+	public LineDetailResponse(Long id, String name, String color, LocalTime startTime,
+		LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
+		List<Station> stations) {
+		this.id = id;
+		this.name = name;
+		this.color = color;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.intervalTime = intervalTime;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.stations = StationResponse.listOf(stations);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public static LineDetailResponse of(Line line, List<Station> stations) {
+		return new LineDetailResponse(line.getId(), line.getName(), line.getColor(),
+			line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(),
+			line.getUpdatedAt(), stations);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public String getColor() {
+		return color;
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 
-    public List<StationResponse> getStations() {
-        return stations;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public List<StationResponse> getStations() {
+		return stations;
+	}
 }

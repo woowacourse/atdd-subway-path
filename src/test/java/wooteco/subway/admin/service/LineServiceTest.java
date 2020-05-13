@@ -53,7 +53,7 @@ public class LineServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", "color", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -155,7 +155,7 @@ public class LineServiceTest {
 
     @Test
     void wholeLines() {
-        Line newLine = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        Line newLine = new Line(2L, "신분당선", "color", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         newLine.addLineStation(new LineStation(null, 2L, 10, 10));
         newLine.addLineStation(new LineStation(2L, 3L, 10, 10));
         newLine.addLineStation(new LineStation(3L, 4L, 10, 10));
