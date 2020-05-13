@@ -63,10 +63,9 @@ Feature: 전체 지하철 노선도 정보 조회
 
 #### HTTP 캐시 적용하기
 
-- HTTP Cache의 종류를 학습
-- 지하철 노선도 조회시 ETag를 통해 캐시를 적용
-- LineControllerTest의 ETag 테스트를 성공시키기
-
+- HTTP Cache의 종류를 학습 - fin
+- 지하철 노선도 조회시 ETag를 통해 캐시를 적용 - fin
+- LineControllerTest의 ETag 테스트를 성공시키기 - fin
 
 
 ### 추가로 생각해보기
