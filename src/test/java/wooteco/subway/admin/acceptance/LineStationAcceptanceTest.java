@@ -1,16 +1,15 @@
 package wooteco.subway.admin.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
+import wooteco.subway.admin.dto.response.LineResponse;
+import wooteco.subway.admin.dto.response.StationResponse;
+import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
@@ -63,11 +62,11 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
 
     private WholeSubwayResponse retrieveWholeSubway() {
         return given().
-            when().
-            get("/lines/detail").
-            then().
-            extract().
-            body().
-            as(WholeSubwayResponse.class);
+                when().
+                get("/lines/detail").
+                then().
+                extract().
+                body().
+                as(WholeSubwayResponse.class);
     }
 }
