@@ -13,10 +13,12 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,11 +46,11 @@ class PathServiceTest {
                 new Station(7L, "2-삼송역"),
                 new Station(8L, "3-역삼역"),
                 new Station(9L, "3-삼송역")
-                );
+        );
 
-        Line line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        Line line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        Line line3 = new Line(3L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line1 = new Line(1L, "1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        Line line2 = new Line(2L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        Line line3 = new Line(3L, "3호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
 
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
         line1.addLineStation(new LineStation(1L, 2L, 10, 10));
@@ -100,5 +102,51 @@ class PathServiceTest {
         List<Station> paths = pathService.retrieveShortestPath("환-강남역", "환-지축역");
         List<Station> expected = stations.subList(0, 5);
         assertThat(paths).isEqualTo(expected);
+    }
+
+    @Test
+    void sameSourceAndTarget() {
+        when(lineService.findAllStations()).thenReturn(stations);
+        when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
+        when(lineService.showLines()).thenReturn(lines);
+
+        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "환-강남역");
+        List<Station> expected = stations.subList(0, 1);
+        assertThat(paths).isEqualTo(expected);
+    }
+
+    @Test
+    void notConnectedEdges() {
+        List<Station> stations = new ArrayList<>(this.stations);
+        stations.add(new Station(10L, "4-충무로역"));
+        stations.add(new Station(11L, "4-오이도역"));
+
+        Line line4 = new Line(4L, "4호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        line4.addLineStation(new LineStation(null, 10L, 10, 10));
+        line4.addLineStation(new LineStation(10L, 11L, 10, 10));
+        List<Line> lines = new ArrayList<>(this.lines);
+        lines.add(line4);
+
+        when(lineService.findAllStations()).thenReturn(stations);
+        when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
+        when(lineService.findStationWithName(stations.get(10).getName())).thenReturn(stations.get(10));
+        when(lineService.showLines()).thenReturn(lines);
+
+        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "4-오이도역");
+        List<Station> expected = new ArrayList<>();
+        assertThat(paths).isEqualTo(expected);
+    }
+
+    @Test
+    void notExistSourceOrTarget() {
+        String invalidStationName = "없는 역";
+        when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
+        when(lineService.findStationWithName(invalidStationName))
+                .thenThrow(new IllegalArgumentException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", invalidStationName)));
+
+        assertThatThrownBy(() -> {
+            pathService.retrieveShortestPath("환-강남역", invalidStationName);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("없는 역 이름을 가진 역이 존재하지 않습니다.");
     }
 }

@@ -18,8 +18,10 @@ public class PathService {
     }
 
     public List<Station> retrieveShortestPath(String decodedSource, String decodedTarget) {
-        Station source = lineService.findStationWithName(decodedSource);
-        Station target = lineService.findStationWithName(decodedTarget);
+        Station source;
+        Station target;
+        source = lineService.findStationWithName(decodedSource);
+        target = lineService.findStationWithName(decodedTarget);
 
         Stations stations = Stations.of(lineService.findAllStations());
         Map<Long, Station> stationCache = stations.convertMap();

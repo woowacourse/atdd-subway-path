@@ -1,13 +1,17 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Graph {
+    public static final ArrayList<Station> EMPTY_PATH = new ArrayList<>();
+
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     private Graph(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
@@ -32,7 +36,11 @@ public class Graph {
     }
 
     public List<Station> findShortestPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source,target).getVertexList();
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        if (path == null) {
+            return EMPTY_PATH;
+        }
+        return path.getVertexList();
     }
 
 }
