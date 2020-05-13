@@ -1,8 +1,10 @@
 package wooteco.subway.admin.acceptance;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,9 @@ public class AcceptanceTest {
 
     @LocalServerPort
     int port;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {

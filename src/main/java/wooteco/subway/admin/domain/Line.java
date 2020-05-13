@@ -1,5 +1,8 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -137,5 +140,15 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public boolean containsAll(final List<Long> stationIds) {
+        Edges edges1 = new Edges(edges);
+        return edges1.containsStationIdAll(stationIds);
+    }
+
+    public int getPath() {
+
+        return 0;
     }
 }

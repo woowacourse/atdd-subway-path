@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,21 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.toList());
     }
 
+    public Lines findByStationIdIn(final List<Long> stationIds) {
+        return lines.stream()
+                .filter(line -> line.containsAll(stationIds))
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Lines::new));
+    }
+
+    public Object getShortestPath() {
+        List<SubwayPath> subwayPaths = new ArrayList<>();
+        for (Line line : lines) {
+            subwayPaths.add(new SubwayPath(line));
+        }
+
+        return null;
+    }
+
     @Override
     public void forEach(final Consumer<? super Line> action) {
         lines.forEach(action);
@@ -36,4 +52,5 @@ public class Lines implements Iterable<Line> {
     public Iterator<Line> iterator() {
         return lines.iterator();
     }
+
 }

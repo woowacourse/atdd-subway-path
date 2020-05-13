@@ -16,4 +16,17 @@ public class Edges {
                 .map(Edge::getStationId)
                 .collect(Collectors.toList());
     }
+
+    public boolean containsStationIdAll(final List<Long> stationIds) {
+        boolean contain = true;
+        for (Long stationId : stationIds) {
+            contain = contain && containStationId(stationId);
+        }
+        return contain;
+    }
+
+    private boolean containStationId(Long stationId) {
+        return edges.stream()
+                .anyMatch(edge -> edge.isSameStationId(stationId));
+    }
 }
