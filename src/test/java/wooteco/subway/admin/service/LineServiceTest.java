@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,6 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -58,12 +56,6 @@ public class LineServiceTest {
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
 
-        when(stationRepository.save(any())).thenReturn(station1);
-        StationCreateRequest request = new StationCreateRequest(STATION_NAME1);
-        lineService.addStation(request);
-        when(stationRepository.save(any())).thenReturn(station2);
-        lineService.addStation(request);
-
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
     }
 
@@ -84,8 +76,6 @@ public class LineServiceTest {
 
     @Test
     void addLineStationBetweenTwo() {
-        when(stationRepository.findAllById(any())).thenReturn(Arrays.asList(station1, station2));
-
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
             station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
@@ -101,8 +91,6 @@ public class LineServiceTest {
 
     @Test
     void addLineStationAtTheEndOfLine() {
-        when(stationRepository.findAllById(any())).thenReturn(Arrays.asList(station1, station2));
-
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
             station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
@@ -118,7 +106,6 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationAtTheFirstOfLine() {
-        when(stationRepository.findAllById(any())).thenReturn(Arrays.asList(station1, station2));
         lineService.removeLineStation(line.getId(), 1L);
 
         assertThat(line.getStations()).hasSize(2);
@@ -130,7 +117,6 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationBetweenTwo() {
-        when(stationRepository.findAllById(any())).thenReturn(Arrays.asList(station1, station2));
         lineService.removeLineStation(line.getId(), 2L);
 
         List<Long> stationIds = line.getLineStationsId();
@@ -140,7 +126,6 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationAtTheEndOfLine() {
-        when(stationRepository.findAllById(any())).thenReturn(Arrays.asList(station1, station2));
         lineService.removeLineStation(line.getId(), 3L);
 
         assertThat(line.getStations()).hasSize(2);

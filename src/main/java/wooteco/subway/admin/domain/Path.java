@@ -8,69 +8,67 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> distanceGraph;
-    private WeightedMultigraph<Station, DefaultWeightedEdge> durationGraph;
-    private DijkstraShortestPath<Station, Integer> dijkstraShortestPath;
-    private List<Station> path;
+    private WeightedMultigraph<Long, DefaultWeightedEdge> distanceGraph;
+    private WeightedMultigraph<Long, DefaultWeightedEdge> durationGraph;
+    private DijkstraShortestPath<Long, Integer> dijkstraShortestPath;
+    private List<Line> lines;
 
-    public Path() {
+    public Path(List<Line> lines) {
+        this.lines = lines;
         distanceGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         durationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        init();
     }
 
-    public void addStation(Station station) {
-        distanceGraph.addVertex(station);
-        durationGraph.addVertex(station);
+    private void init() {
+        for (Line line : lines) {
+            List<LineStation> stations = line.getLineStations();
+            setVertexesAndEdges(stations);
+        }
     }
 
-    public void deleteStation(Station station) {
-        distanceGraph.removeVertex(station);
-        durationGraph.removeVertex(station);
+    private void setVertexesAndEdges(List<LineStation> stations) {
+        for (LineStation lineStation : stations) {
+            distanceGraph.addVertex(lineStation.getStationId());
+            durationGraph.addVertex(lineStation.getStationId());
+            if (lineStation.isFirstLineStation()) {
+                continue;
+            }
+            distanceGraph.setEdgeWeight(distanceGraph.addEdge(lineStation.getPreStationId(),
+                lineStation.getStationId()), lineStation.getDistance());
+            durationGraph.setEdgeWeight(durationGraph.addEdge(lineStation.getPreStationId(),
+                lineStation.getStationId()), lineStation.getDuration());
+        }
     }
 
-    public void setDistanceWeight(Station preStation, Station station, int distance) {
-        distanceGraph.setEdgeWeight(distanceGraph.addEdge(preStation, station), distance);
-    }
-
-    public void removeDistanceEdge(Station preStation, Station station) {
-        distanceGraph.removeEdge(preStation, station);
-    }
-
-    public void setDurationWeight(Station preStation, Station station, int duration) {
-        durationGraph.setEdgeWeight(durationGraph.addEdge(preStation, station), duration);
-    }
-
-    public void removeDurationEdge(Station preStation, Station station) {
-        durationGraph.removeEdge(preStation, station);
-    }
-
-    public List<Station> searchShortestDistancePath(Station source, Station target) {
+    public List<Long> searchShortestDistancePath(Station source, Station target) {
         dijkstraShortestPath = new DijkstraShortestPath(distanceGraph);
         return searchShortestPath(source, target);
     }
 
-    public List<Station> searchShortestDurationPath(Station source, Station target) {
+    public List<Long> searchShortestDurationPath(Station source, Station target) {
         dijkstraShortestPath = new DijkstraShortestPath(durationGraph);
         return searchShortestPath(source, target);
     }
 
-    private List<Station> searchShortestPath(Station source, Station target) {
-        path = dijkstraShortestPath.getPath(source, target).getVertexList();
-        return path;
+    private List<Long> searchShortestPath(Station source, Station target) {
+        return dijkstraShortestPath.getPath(source.getId(), target.getId()).getVertexList();
     }
 
-    public int calculateDistance() {
+    public int calculateDistance(List<Long> stationIds) {
         int sum = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            sum += distanceGraph.getEdgeWeight(distanceGraph.getEdge(path.get(i), path.get(i + 1)));
+        for (int i = 0; i < stationIds.size() - 1; i++) {
+            sum += distanceGraph.getEdgeWeight(
+                distanceGraph.getEdge(stationIds.get(i), stationIds.get(i + 1)));
         }
         return sum;
     }
 
-    public int calculateDuration() {
+    public int calculateDuration(List<Long> stationIds) {
         int sum = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            sum += durationGraph.getEdgeWeight(durationGraph.getEdge(path.get(i), path.get(i + 1)));
+        for (int i = 0; i < stationIds.size() - 1; i++) {
+            sum += durationGraph.getEdgeWeight(
+                durationGraph.getEdge(stationIds.get(i), stationIds.get(i + 1)));
         }
         return sum;
     }

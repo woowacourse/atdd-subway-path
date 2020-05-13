@@ -13,6 +13,10 @@ public class LineStation {
         this.duration = duration;
     }
 
+    public boolean isFirstLineStation() {
+        return preStationId == null;
+    }
+
     public Long getPreStationId() {
         return preStationId;
     }

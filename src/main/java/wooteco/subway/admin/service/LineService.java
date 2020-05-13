@@ -1,8 +1,6 @@
 package wooteco.subway.admin.service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -25,12 +23,10 @@ import wooteco.subway.admin.repository.StationRepository;
 public class LineService {
     private LineRepository lineRepository;
     private StationRepository stationRepository;
-    private Path path;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.path = new Path();
     }
 
     public Line save(Line line) {
@@ -56,36 +52,11 @@ public class LineService {
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
-
-        if (Objects.isNull(request.getPreStationId())) {
-            lineRepository.save(line);
-            return;
-        }
-
-        List<Station> stations = stationRepository.findAllById(
-            Arrays.asList(request.getPreStationId(), request.getStationId()));
-        Station preStation = stations.get(0);
-        Station station = stations.get(1);
-        path.setDistanceWeight(preStation, station, request.getDistance());
-        path.setDurationWeight(preStation, station, request.getDuration());
-
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
-
-        LineStation targetLineStation = line.getStations().stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(
-            Arrays.asList(targetLineStation.getPreStationId(), targetLineStation.getStationId()));
-        Station preStation = stations.get(0);
-        Station station = stations.get(1);
-        path.removeDistanceEdge(preStation, station);
-        path.removeDurationEdge(preStation, station);
-
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
@@ -109,17 +80,24 @@ public class LineService {
             .orElseThrow(RuntimeException::new);
         Station targetStation = stationRepository.findByName(target)
             .orElseThrow(RuntimeException::new);
-        List<Station> stations = path.searchShortestDistancePath(sourceStation, targetStation);
-        int distance = path.calculateDistance();
-        int duration = path.calculateDuration();
-        return new ShortestDistanceResponse(StationResponse.listOf(stations), distance, duration);
+
+        List<Line> lines = lineRepository.findAll();
+        Path path = new Path(lines);
+
+        List<Long> stationIds = path.searchShortestDistancePath(sourceStation, targetStation);
+        int distance = path.calculateDistance(stationIds);
+        int duration = path.calculateDuration(stationIds);
+        return new ShortestDistanceResponse(StationResponse.listOf(toStations(stationIds)),
+            distance, duration);
+    }
+
+    private List<Station> toStations(List<Long> stationIds) {
+        return stationRepository.findAllById(stationIds);
     }
 
     public Station addStation(StationCreateRequest view) {
         Station station = view.toStation();
-        Station persistStation = stationRepository.save(station);
-        path.addStation(persistStation);
-        return persistStation;
+        return stationRepository.save(station);
     }
 
     public List<Station> showStations() {
@@ -127,8 +105,6 @@ public class LineService {
     }
 
     public void deleteStationById(Long id) {
-        Station station = stationRepository.findById(id).orElseThrow(RuntimeException::new);
-        path.deleteStation(station);
         stationRepository.deleteById(id);
     }
 }
