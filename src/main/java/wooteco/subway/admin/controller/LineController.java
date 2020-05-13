@@ -28,7 +28,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping()
+    @PostMapping("/api/lines")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         LineResponse line = lineService.save(view);
 
