@@ -10,9 +10,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WholeSubwayLineAcceptanceTest extends AcceptanceTest {
-
-    //    Feature: 전체 지하철 노선도 정보 조회
-//    Scenario: 지하철 노선도 정보 조회를 한다.
     @Test
     void wholeSubway() {
 
@@ -26,7 +23,7 @@ public class WholeSubwayLineAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
         //and
         LineResponse lineResponse2 = createLine("2호선");
-        StationResponse stationResponse4 = createStation("강남역");
+        StationResponse stationResponse4 = createStation("잠실역");
         StationResponse stationResponse5 = createStation("양재역");
         StationResponse stationResponse6 = createStation("양재시민의숲역");
         addLineStation(lineResponse2.getId(), null, stationResponse4.getId());
