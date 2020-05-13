@@ -5,28 +5,33 @@ import api from '../../api/index.js'
 function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
-  const initSubwayLinesSlider = () => {
+  const initSubwayLinesView = () => {
     api.line.getAllDetail().then(data => {
       const subwayLines = data.lineDetailResponses
-      $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
+      if (subwayLines.length > 0) {
+        $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
+        initSubwayLinesSlider();
+      }
     })
+  }
+
+  const initSubwayLinesSlider = () => {
     tns({
       container: '.subway-lines-slider',
       loop: true,
       slideBy: 'page',
       speed: 400,
-      fixedWidth: 300,
       autoplayButtonOutput: false,
       mouseDrag: true,
       lazyload: true,
       controlsContainer: '#slider-controls',
-      items: 3,
+      items: 1,
       edgePadding: 25
     })
   }
 
   this.init = () => {
-    initSubwayLinesSlider()
+    initSubwayLinesView()
   }
 }
 

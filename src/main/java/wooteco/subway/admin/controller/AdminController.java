@@ -19,7 +19,7 @@ public class AdminController {
         this.stationRepository = stationRepository;
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
     public String index(Model model) {
         return "admin/index";
     }

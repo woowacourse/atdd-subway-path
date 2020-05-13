@@ -23,7 +23,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        PathResponse response = getPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, "distance");
+        PathResponse response = getPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, "DISTANCE");
 
         assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
         assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME_YEOKSAM);
