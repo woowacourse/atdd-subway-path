@@ -90,6 +90,7 @@ public class Line {
 
     public void addLineStation(LineStation lineStation) {
         stations.stream()
+                .filter(it -> Objects.nonNull(lineStation.getPreStationId()))
                 .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
                 .findAny()
                 .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));

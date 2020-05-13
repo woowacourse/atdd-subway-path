@@ -11,7 +11,9 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.*;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -19,6 +21,8 @@ public class AcceptanceTest {
     static final String STATION_NAME_KANGNAM = "강남역";
     static final String STATION_NAME_YEOKSAM = "역삼역";
     static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    static final String STATION_NAME_START = "출발역";
+    static final String STATION_NAME_END = "도착역";
 
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";
@@ -162,6 +166,21 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    PathResponse getShortestPath(String source, String target) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+
+        return given().
+                params(params).
+            when().
+                get("/paths").
+            then().
+                log().all().
+                statusCode(HttpStatus.OK.value())
+                .extract().as(PathResponse.class);
     }
 }
 
