@@ -38,16 +38,16 @@ public class SearchAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse9 = createStation("3-삼송역");
 
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 10, 10);
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 10, 10);
-        addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId(), 10, 10);
-        addLineStation(lineResponse1.getId(), stationResponse4.getId(), stationResponse5.getId(), 10, 10);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 10, 30);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 10, 30);
+        addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId(), 10, 30);
+        addLineStation(lineResponse1.getId(), stationResponse4.getId(), stationResponse5.getId(), 10, 30);
 
         addLineStation(lineResponse2.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse6.getId(), 20, 20);
-        addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse3.getId(), 20, 20);
-        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse7.getId(), 20, 20);
-        addLineStation(lineResponse2.getId(), stationResponse7.getId(), stationResponse5.getId(), 20, 20);
+        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse6.getId(), 30, 20);
+        addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse3.getId(), 30, 20);
+        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse7.getId(), 30, 20);
+        addLineStation(lineResponse2.getId(), stationResponse7.getId(), stationResponse5.getId(), 30, 20);
 
         addLineStation(lineResponse3.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse3.getId(), stationResponse1.getId(), stationResponse8.getId(), 50, 50);
@@ -55,20 +55,25 @@ public class SearchAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponse9.getId(), 50, 50);
         addLineStation(lineResponse3.getId(), stationResponse9.getId(), stationResponse5.getId(), 50, 50);
 
-        PathResponse pathResponse = retrieveShortestDistancePath("환-강남역", "환-지축역");
+        PathResponse pathResponse1 = retrieveShortestDistancePath("환-강남역", "환-지축역", "DISTANCE");
+        PathResponse pathResponse2 = retrieveShortestDistancePath("환-강남역", "환-지축역", "DURATION");
 
-        assertThat(pathResponse.getDuration()).isEqualTo(40);
-        assertThat(pathResponse.getDistance()).isEqualTo(40);
-        assertThat(pathResponse.getStations().get(1).getName()).isEqualTo("1-역삼역");
+        assertThat(pathResponse1.getDuration()).isEqualTo(120);
+        assertThat(pathResponse1.getDistance()).isEqualTo(40);
+        assertThat(pathResponse1.getStations().get(1).getName()).isEqualTo("1-역삼역");
+
+        assertThat(pathResponse2.getDuration()).isEqualTo(80);
+        assertThat(pathResponse2.getDistance()).isEqualTo(120);
+        assertThat(pathResponse2.getStations().get(1).getName()).isEqualTo("2-역삼역");
 
     }
 
-    private PathResponse retrieveShortestDistancePath(String source, String target) throws UnsupportedEncodingException {
+    private PathResponse retrieveShortestDistancePath(String source, String target, String type) throws UnsupportedEncodingException {
         String encodedSource = URLEncoder.encode(source, "UTF-8");
         String encodedTarget = URLEncoder.encode(target, "UTF-8");
         return given()
                 .when()
-                    .get("/paths?source=" + encodedSource + "&target=" + encodedTarget)
+                    .get("/paths?source=" + encodedSource + "&target=" + encodedTarget + "&type=" + type)
                 .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value())

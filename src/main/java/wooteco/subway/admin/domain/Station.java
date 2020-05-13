@@ -43,8 +43,7 @@ public class Station {
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
         return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name) &&
-                Objects.equals(createdAt, station.createdAt);
+                Objects.equals(name, station.name);
     }
 
     @Override
