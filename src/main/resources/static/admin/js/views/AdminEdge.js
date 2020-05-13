@@ -1,6 +1,6 @@
-import { optionTemplate, subwayLinesItemTemplate, subwayLinesTemplate } from '../../utils/templates.js'
+import {optionTemplate, subwayLinesItemTemplate} from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
-import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
 
@@ -46,7 +46,7 @@ function AdminEdge() {
     api.line
       .getAllDetail()
       .then(data => {
-        subwayLines = data.lineDetailResponse
+        subwayLines = data.lineDetailResponses
         if (subwayLines.length > 0) {
           $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
           initSubwayLinesSlider()
@@ -83,7 +83,9 @@ function AdminEdge() {
   }
 
   const initPreviousStationOptions = () => {
+    console.log($lineSelectOptions.value);
     api.line.get($lineSelectOptions.value).then(data => {
+      console.log(data);
       const stations = data.stations ? data.stations : []
       if (stations.length > 0) {
         const $stationSelectOption = document.querySelector('#previous-select-options')

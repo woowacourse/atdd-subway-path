@@ -1,12 +1,13 @@
-import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
-import { colorSelectOptionTemplate, subwayLinesTemplate } from '../../utils/templates.js'
-import { subwayLineColorOptions } from '../../utils/defaultSubwayData.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {colorSelectOptionTemplate, subwayLinesTemplate} from '../../utils/templates.js'
+import {subwayLineColorOptions} from '../../utils/defaultSubwayData.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
 
 function AdminLine() {
   const $subwayLineList = document.querySelector('#subway-line-list')
   const $subwayLineNameInput = document.querySelector('#subway-line-name')
+  const $subwayLineColorInput = document.querySelector("#subway-line-color")
   const $subwayLineStartTime = document.querySelector('#subway-start-time')
   const $subwayLineEndTime = document.querySelector('#subway-end-time')
   const $subwayIntervalTime = document.querySelector('#subway-interval-time')
@@ -20,6 +21,7 @@ function AdminLine() {
   const createSubwayLine = () => {
     const newSubwayLine = {
       name: $subwayLineNameInput.value,
+      color: $subwayLineColorInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
       intervalTime: $subwayIntervalTime.value
@@ -66,6 +68,7 @@ function AdminLine() {
       .get(lineId)
       .then(line => {
         $subwayLineNameInput.value = line.name
+        $subwayLineColorInput.value = line.color
         $subwayLineStartTime.value = line.startTime
         $subwayLineEndTime.value = line.endTime
         $subwayIntervalTime.value = line.intervalTime
@@ -80,6 +83,7 @@ function AdminLine() {
   const updateSubwayLine = () => {
     const updatedSubwayLine = {
       name: $subwayLineNameInput.value,
+      color: $subwayLineColorInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
       intervalTime: $subwayIntervalTime.value
@@ -106,6 +110,7 @@ function AdminLine() {
     $subwayLineStartTime.value = ''
     $subwayLineEndTime.value = ''
     $subwayIntervalTime.value = ''
+    $subwayLineColorInput.value = ''
   }
 
   const onSelectColorHandler = event => {
@@ -118,7 +123,10 @@ function AdminLine() {
 
   const initCreateSubwayLineForm = () => {
     const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
-    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
+    const colorSelectTemplate = subwayLineColorOptions
+        .map((option, index) => colorSelectOptionTemplate(option, index))
+        .join("");
+    $colorSelectContainer.insertAdjacentHTML("beforeend", colorSelectTemplate);
     $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
   }
 
