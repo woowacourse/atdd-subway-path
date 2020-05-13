@@ -1,6 +1,7 @@
 package wooteco.subway.admin.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PathResponse {
     private List<StationResponse> path;
@@ -26,5 +27,20 @@ public class PathResponse {
 
     public int getTotalDistance() {
         return totalDistance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PathResponse that = (PathResponse) o;
+        return totalDuration == that.totalDuration &&
+                totalDistance == that.totalDistance &&
+                Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, totalDuration, totalDistance);
     }
 }
