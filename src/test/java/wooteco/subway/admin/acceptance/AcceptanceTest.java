@@ -170,5 +170,24 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    PathResponse findPath(String source, String target) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", source);
+        params.put("targetName", target);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/path").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(PathResponse.class);
+
+    }
+
 }
 
