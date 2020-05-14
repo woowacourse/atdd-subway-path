@@ -64,7 +64,7 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        PathResponse path = getPathByDistance(jamsil.getName(), samjun.getName());
+        PathResponse path = getPath(jamsil.getName(), samjun.getName(), "distance");
 
         //then
         assertThat(path.getStations()).hasSize(4);
@@ -74,11 +74,35 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         assertThat(path.getDuration()).isEqualTo(30);
     }
 
-    private PathResponse getPathByDistance(String source, String target) {
+    @DisplayName("경로를 최단거리와 최소시간으로 조회단다")
+    @Test
+    void findPathByDistanceAndDuration() {
+        //when
+        PathResponse pathByDistance = getPath(jamsil.getName(), sukchongobun.getName(), "distance");
+
+        //then
+        assertThat(pathByDistance.getStations()).hasSize(3);
+        assertThat(pathByDistance.getStations()).extracting(StationResponse::getName)
+            .containsExactly("잠실", "석촌", "석촌고분");
+        assertThat(pathByDistance.getDistance()).isEqualTo(2);
+        assertThat(pathByDistance.getDuration()).isEqualTo(20);
+
+        //when
+        PathResponse pathByDuration = getPath(jamsil.getName(), sukchongobun.getName(), "duration");
+
+        //then
+        assertThat(pathByDuration.getStations()).hasSize(5);
+        assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
+            .containsExactly("잠실", "잠실새내", "종합운동장", "삼전", "석촌고분");
+        assertThat(pathByDuration.getDistance()).isEqualTo(31);
+        assertThat(pathByDuration.getDuration()).isEqualTo(13);
+    }
+
+    private PathResponse getPath(String source, String target, String CriteriaType) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
-        params.put("criteria", "distance");
+        params.put("criteria", CriteriaType);
 
         return given().
             body(params).
