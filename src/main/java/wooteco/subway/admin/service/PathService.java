@@ -37,8 +37,7 @@ public class PathService {
         Station to = stationRepository.findByName(target)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
 
-        List<Long> path = graphService.findPath(lines, from.getId(), to.getId(), criteria)
-            .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 이어져있지 않습니다."));
+        List<Long> path = graphService.findPath(lines, from.getId(), to.getId(), criteria);
         List<Station> stations = stationRepository.findAllById(path);
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 

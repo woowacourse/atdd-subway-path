@@ -32,7 +32,8 @@ class PathServiceTest {
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
     private static final String STATION_NAME4 = "삼성역";
-    private static final String STATION_NAME5 = "대구역";
+    private static final String STATION_NAME6 = "대구역";
+    private static final String STATION_NAME7 = "동대구역";
 
     @MockBean
     private LineRepository lineRepository;
@@ -44,10 +45,13 @@ class PathServiceTest {
     private PathService pathService;
 
     private Line line;
+    private Line line3;
     private Station station1;
     private Station station2;
     private Station station3;
     private Station station4;
+    private Station station6;
+    private Station station7;
 
     @BeforeEach
     void setUp() {
@@ -56,12 +60,17 @@ class PathServiceTest {
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
+        station6 = new Station(6L, STATION_NAME6);
+        station7 = new Station(7L, STATION_NAME7);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line3 = new Line(3L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
         line.addLineStation(new LineStation(3L, 4L, 10, 10));
+        line3.addLineStation(new LineStation(null, 6L, 10, 10));
+        line3.addLineStation(new LineStation(6L, 7L, 10, 10));
     }
 
     @Test
@@ -106,4 +115,19 @@ class PathServiceTest {
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("존재하지 않는 역입니다.");
     }
+
+    @Test
+    void notConnectedPath() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line3));
+        when(stationRepository.findAllById(anyList())).thenReturn(
+            Arrays.asList(station1, station2, station3, station4));
+        when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName(station6.getName())).thenReturn(Optional.of(station6));
+
+        assertThatThrownBy(() -> {
+            pathService.showPaths(station1.getName(), station6.getName(), CriteriaType.DISTANCE);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("갈 수 없는 경로입니다.");
+    }
+
 }
