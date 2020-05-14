@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain.line;
 
+import java.util.Objects;
+
 import wooteco.subway.admin.domain.line.path.RouteEdge;
 
 public class LineStation {
@@ -37,5 +39,9 @@ public class LineStation {
 
     public RouteEdge toEdge() {
         return new RouteEdge(distance, duration);
+    }
+
+    public boolean isNotStart() {
+        return Objects.nonNull(preStationId);
     }
 }

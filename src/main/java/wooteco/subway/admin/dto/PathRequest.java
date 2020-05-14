@@ -1,6 +1,6 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.line.vo.PathInfo;
+import wooteco.subway.admin.domain.line.path.vo.PathInfo;
 
 public class PathRequest {
     private final String departureStationName;

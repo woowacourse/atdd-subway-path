@@ -6,10 +6,14 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.PathResponses;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql("/truncate.sql")
 public class PathSearchAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회 서비스를 제공한다.")
     @Test

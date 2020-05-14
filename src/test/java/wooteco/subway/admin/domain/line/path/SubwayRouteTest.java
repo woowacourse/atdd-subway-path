@@ -21,13 +21,9 @@ class SubwayRouteTest {
         LineStations lineStations = new LineStations(
             Sets.newHashSet(lineStation, lineStation1, lineStation2));
 
-        distanceRoute = new SubwayRouteFactory(
-            ((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()))).create(lineStations,
-            1L, 3L);
+        distanceRoute = lineStations.findShortestPath(EdgeWeightType.DISTANCE.getEdgeWeightStrategy(), 1L, 3L);
 
-        durationRoute = new SubwayRouteFactory(
-            ((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()))).create(lineStations,
-            1L, 3L);
+        durationRoute = lineStations.findShortestPath(EdgeWeightType.DURATION.getEdgeWeightStrategy(), 1L, 3L);
     }
 
     @Test

@@ -14,7 +14,7 @@ import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
 import wooteco.subway.admin.domain.line.path.EdgeWeightType;
 import wooteco.subway.admin.domain.line.path.SubwayRoute;
-import wooteco.subway.admin.domain.line.vo.PathInfo;
+import wooteco.subway.admin.domain.line.path.vo.PathInfo;
 import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -92,7 +92,7 @@ public class LineService {
         Map<String, PathResponse> responses = Arrays.stream(EdgeWeightType.values())
             .collect(toMap(EdgeWeightType::getName, edgeWeightType ->
                 getPathResponse(getStationMap(),
-                    getSubwayRoute(departureId, arrivalId, lineStations, edgeWeightType)))
+                    lineStations.findShortestPath(edgeWeightType.getEdgeWeightStrategy(), departureId, arrivalId)))
             );
 
         return new PathResponses(responses);
@@ -112,11 +112,6 @@ public class LineService {
             .collect(toList());
         return new PathResponse(responses, subwayRoute.calculateTotalDuration(),
             subwayRoute.calculateTotalDistance());
-    }
-
-    private SubwayRoute getSubwayRoute(Long departureId, Long arrivalId, LineStations lineStations,
-        EdgeWeightType edgeWeightType) {
-        return edgeWeightType.getFactory().create(lineStations, departureId, arrivalId);
     }
 
     public WholeSubwayResponse wholeLines() {

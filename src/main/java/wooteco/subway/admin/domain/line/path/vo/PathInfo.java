@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain.line.vo;
+package wooteco.subway.admin.domain.line.path.vo;
 
 public class PathInfo {
     private final String departureStationName;

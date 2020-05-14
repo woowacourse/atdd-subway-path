@@ -1,24 +1,22 @@
 package wooteco.subway.admin.domain.line.path;
 
 public enum EdgeWeightType {
-    DISTANCE("distance",
-        new SubwayRouteFactory(((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance())))),
-    DURATION("duration",
-        new SubwayRouteFactory(((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()))));
+    DISTANCE("distance", ((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()))),
+    DURATION("duration", ((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration())));
 
     private final String name;
-    private final SubwayRouteFactory factory;
+    private final EdgeWeightStrategy edgeWeightStrategy;
 
-    EdgeWeightType(String name, SubwayRouteFactory factory) {
+    EdgeWeightType(String name, EdgeWeightStrategy edgeWeightStrategy) {
         this.name = name;
-        this.factory = factory;
+        this.edgeWeightStrategy = edgeWeightStrategy;
     }
 
     public String getName() {
         return name;
     }
 
-    public SubwayRouteFactory getFactory() {
-        return factory;
+    public EdgeWeightStrategy getEdgeWeightStrategy() {
+        return edgeWeightStrategy;
     }
 }
