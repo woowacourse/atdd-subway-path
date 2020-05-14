@@ -1,30 +1,55 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathInfoResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
-	/**
+	/*
 	 * Feature: 지하철 노선 경로 검색
-	 * <p>
-	 * Scenario: 지하철 노선 최단 거리 검색 Given 지하철역이 여러 개 추가되어 있다. And   지하철 노선이 여러 개 추가되어 있다. And   지하철 노선에
-	 * 구간 정보가 여러 개 추가되어 있다.
-	 * <p>
-	 * When 지하철 노선 최단 거리 검색을 한다. Then 최단 거리 기준으로 경로와 거리 정보를 응답한다. And  거리 정보에는 총 소요시간, 총 거리가 포함되어
-	 * 있다.
-	 * <p>
-	 * When 지하철 노선 최단 거리 검색을 한다. And  최단 거리 경로가 여러 개 존재한다. Then 최단 거리 경로를 하나만 응답한다.
+	 *
+	 * Scenario: 지하철 노선 최단 거리 검색
+	 * Given 지하철역이 여러 개 추가되어 있다.
+	 * And   지하철 노선이 여러 개 추가되어 있다.
+	 * And   지하철 노선에 구간 정보가 여러 개 추가되어 있다.
+	 *
+	 * When 지하철 노선 최단 거리 검색을 한다.
+	 * Then 최단 거리 기준으로 경로와 거리 정보를 응답한다.
+	 * And  거리 정보에는 총 소요시간, 총 거리가 포함되어있다.
+	 *
+	 * When 지하철 노선 최단 거리 검색을 한다.
+	 * And  최단 거리 경로가 여러 개 존재한다.
+	 * Then 최단 거리 경로를 하나만 응답한다.
 	 */
 	@Test
 	void searchPath() {
+		// given
 		Map<String, StationResponse> stationAll = createStationAll();
 		Map<String, LineResponse> lineAll = createLineAll();
 		addLineStation(lineAll, stationAll);
 
+		// when
+		PathResponse pathResponse = searchShortestDistancePath(stationAll.get("교대"),
+			stationAll.get("양재"));
+		// then
+		assertThat(pathResponse.getStations()).hasSize(3);
+		assertThat(pathResponse.getDistance()).isEqualTo(4);
+		assertThat(pathResponse.getDuration()).isEqualTo(2);
+
+		// when
+		pathResponse = searchShortestDistancePath(stationAll.get("교대"),
+			stationAll.get("종합운동장"));
+		// then
+		assertThat(pathResponse.getStations()).isNotNull();
+		assertThat(pathResponse.getDistance()).isEqualTo(16);
+		assertThat(pathResponse.getDuration()).isNotNull();
 	}
 
 	private Map<String, StationResponse> createStationAll() {
@@ -96,6 +121,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			return;
 		}
 		addLineStation(line.getId(), preStation.getId(), station.getId(), distance, duration);
+	}
+
+	private PathResponse searchShortestDistancePath(StationResponse source,
+		StationResponse target) {
+
+		return
+			given().
+				when().
+				get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
+				then().
+				log().all().
+				extract().as(PathInfoResponse.class)
+				.getShortestDistancePath();
 	}
 }
 

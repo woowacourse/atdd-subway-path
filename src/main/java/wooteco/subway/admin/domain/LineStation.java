@@ -1,10 +1,19 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Objects;
+import org.springframework.data.annotation.Id;
+
 public class LineStation {
+
+    @Id
+    private Long id;
     private Long preStationId;
     private Long stationId;
     private int distance;
     private int duration;
+
+    public LineStation() {
+    }
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
@@ -31,5 +40,26 @@ public class LineStation {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LineStation that = (LineStation) o;
+        return distance == that.distance &&
+            duration == that.duration &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(preStationId, that.preStationId) &&
+            Objects.equals(stationId, that.stationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, preStationId, stationId, distance, duration);
     }
 }
