@@ -20,7 +20,7 @@ public class LineService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -31,6 +31,10 @@ public class LineService {
 
     public List<Line> showLines() {
         return lineRepository.findAll();
+    }
+
+    public List<Station> showStations() {
+        return stationRepository.findAll();
     }
 
     public void updateLine(Long id, LineRequest request) {
@@ -45,10 +49,13 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
-            request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(
+            request.getPreStationId(),
+            request.getStationId(),
+            request.getDistance(),
+            request.getDuration()
+        );
         line.addLineStation(lineStation);
-
         lineRepository.save(line);
     }
 

@@ -35,13 +35,15 @@ public class PageAcceptanceTest {
     void linePage() {
         createLine("신분당선");
 
+        // @formatter:off
         given().
             accept(MediaType.TEXT_HTML_VALUE).
-            when().
+        when().
             get("/lines").
-            then().
+        then().
             log().all().
             statusCode(HttpStatus.OK.value());
+        // @formatter:on
     }
 
     private void createLine(String name) {
@@ -52,15 +54,17 @@ public class PageAcceptanceTest {
         params.put("intervalTime", "10");
         params.put("bgColor", "bg-teal-500");
 
+        // @formatter:off
         given().
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
+        when().
             post("/lines").
-            then().
+        then().
             log().all().
             statusCode(HttpStatus.CREATED.value());
+        // @formatter:on
     }
 
 }

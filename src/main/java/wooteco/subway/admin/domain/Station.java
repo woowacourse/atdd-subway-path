@@ -13,12 +13,12 @@ public class Station {
     public Station() {
     }
 
-    public Station(String name) {
+    public Station(final String name) {
         this.name = name;
         this.createdAt = LocalDateTime.now();
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
         this.createdAt = LocalDateTime.now();

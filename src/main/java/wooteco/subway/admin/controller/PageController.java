@@ -5,17 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.LineService;
 
 @Controller
 public class PageController {
     private final LineService lineService;
-    private final StationRepository stationRepository;
 
-    public PageController(LineService lineService, StationRepository stationRepository) {
+    public PageController(final LineService lineService) {
         this.lineService = lineService;
-        this.stationRepository = stationRepository;
     }
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
@@ -24,24 +21,24 @@ public class PageController {
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
-    public String stationPage(Model model) {
-        model.addAttribute("stations", stationRepository.findAll());
+    public String stationPage(final Model model) {
+        model.addAttribute("stations", lineService.showStations());
         return "admin/admin-station";
     }
 
     @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
+    public String linePage(final Model model) {
         model.addAttribute("lines", lineService.showLines());
         return "admin/admin-line";
     }
 
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage(Model model) {
+    public String edgePage() {
         return "admin/admin-edge";
     }
 
     @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
-    public String pathPage(Model model) {
+    public String searchPage() {
         return "service/search";
     }
 }

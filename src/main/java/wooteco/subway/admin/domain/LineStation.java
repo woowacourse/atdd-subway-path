@@ -7,7 +7,7 @@ public class LineStation {
     private final int distance;
     private final int duration;
 
-    public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+    public LineStation(final Long preStationId, final Long stationId, final int distance, final int duration) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;

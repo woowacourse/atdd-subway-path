@@ -11,9 +11,9 @@ import wooteco.subway.admin.service.PathService;
 
 @RestController
 public class PathController {
-    private PathService pathService;
+    private final PathService pathService;
 
-    public PathController(PathService pathService) {
+    public PathController(final PathService pathService) {
         this.pathService = pathService;
     }
 

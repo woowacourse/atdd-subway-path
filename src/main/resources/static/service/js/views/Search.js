@@ -1,6 +1,7 @@
-import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE } from "../../utils/constants.js";
+import { EVENT_TYPE, PATH_TYPE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import { searchResultTemplate } from "../../utils/templates.js";
+import { ERROR_MESSAGE } from "../../../admin/utils/constants.js";
 
 function Search() {
   const $departureStationName = document.querySelector("#departure-station-name");

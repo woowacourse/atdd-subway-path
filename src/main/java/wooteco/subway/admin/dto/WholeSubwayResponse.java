@@ -9,11 +9,11 @@ public class WholeSubwayResponse {
         return new WholeSubwayResponse(lineDetailResponse);
     }
 
-    public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponse) {
-        this.lineDetailResponses = lineDetailResponse;
+    public WholeSubwayResponse() {
     }
 
-    public WholeSubwayResponse() {
+    public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponse) {
+        this.lineDetailResponses = lineDetailResponse;
     }
 
     public List<LineDetailResponse> getLineDetailResponses() {

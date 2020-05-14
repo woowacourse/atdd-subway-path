@@ -20,15 +20,13 @@ import wooteco.subway.admin.repository.StationRepository;
 public class StationController {
     private final StationRepository stationRepository;
 
-    public StationController(StationRepository stationRepository) {
+    public StationController(final StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station station = view.toStation();
-        Station persistStation = stationRepository.save(station);
-
+        Station persistStation = stationRepository.save(view.toStation());
         return ResponseEntity
             .created(URI.create("/stations/" + persistStation.getId()))
             .body(StationResponse.of(persistStation));

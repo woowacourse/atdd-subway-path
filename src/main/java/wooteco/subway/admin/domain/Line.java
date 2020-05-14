@@ -77,22 +77,21 @@ public class Line {
     }
 
     public void update(Line line) {
-        if (line.getName() != null) {
-            this.name = line.getName();
+        if (Objects.nonNull(line.name)) {
+            this.name = line.name;
         }
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
+        if (Objects.nonNull(line.startTime)) {
+            this.startTime = line.startTime;
         }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
+        if (Objects.nonNull(line.endTime)) {
+            this.endTime = line.endTime;
         }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
+        if (line.intervalTime != 0) {
+            this.intervalTime = line.intervalTime;
         }
-        if (line.bgColor != null) {
+        if (Objects.nonNull(line.bgColor)) {
             this.bgColor = line.getBgColor();
         }
-
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -101,7 +100,6 @@ public class Line {
             .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
             .findAny()
             .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
-
         stations.add(lineStation);
     }
 
@@ -125,7 +123,7 @@ public class Line {
         }
 
         LineStation firstLineStation = stations.stream()
-            .filter(it -> it.getPreStationId() == null)
+            .filter(it -> Objects.isNull(it.getPreStationId()))
             .findFirst()
             .orElseThrow(RuntimeException::new);
 
@@ -137,11 +135,9 @@ public class Line {
             Optional<LineStation> nextLineStation = stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
                 .findFirst();
-
             if (!nextLineStation.isPresent()) {
                 break;
             }
-
             stationIds.add(nextLineStation.get().getStationId());
         }
 

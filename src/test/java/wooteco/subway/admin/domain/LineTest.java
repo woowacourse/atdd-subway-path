@@ -25,7 +25,6 @@ public class LineTest {
     @Test
     void addLineStation() {
         line.addLineStation(new LineStation(null, 4L, 10, 10));
-
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
             .filter(it -> Objects.equals(it.getPreStationId(), 4L))
@@ -37,7 +36,6 @@ public class LineTest {
     @Test
     void getLineStations() {
         List<Long> stationIds = line.getLineStationsId();
-
         assertThat(stationIds.size()).isEqualTo(3);
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
@@ -48,7 +46,6 @@ public class LineTest {
     @ValueSource(longs = {1L, 2L, 3L})
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);
-
         assertThat(line.getStations()).hasSize(2);
     }
 }

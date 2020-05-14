@@ -5,12 +5,8 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,14 +67,21 @@ class PathServiceTest {
     @DisplayName("최단거리 경로 조회 테스트")
     @Test
     void getShortestDistancePath() {
+        // mock repository methods
         when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
         when(stationRepository.findByName("3역")).thenReturn(Optional.of(station3));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5)
+        );
         when(stationRepository.findAllById(anyList())).thenReturn(
-            Arrays.asList(station1, station2, station4, station5, station3));
+            Arrays.asList(station1, station2, station4, station5, station3)
+        );
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
+        // when
         PathResponse path = pathService.getPath("1역", "3역", PathType.DISTANCE);
+
+        // then
         assertThat(path.getStations()).hasSize(5);
         assertThat(path.getDistance()).isEqualTo(16);
         assertThat(path.getDuration()).isEqualTo(4);
@@ -87,63 +90,62 @@ class PathServiceTest {
     @DisplayName("최단시간 경로 조회 테스트")
     @Test
     void getShortestDurationPath() {
+        // mock repository methods
         when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
         when(stationRepository.findByName("3역")).thenReturn(Optional.of(station3));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5)
+        );
         when(stationRepository.findAllById(anyList())).thenReturn(
-            Arrays.asList(station1, station2, station3));
+            Arrays.asList(station1, station2, station3)
+        );
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
+        // when
         PathResponse path = pathService.getPath("1역", "3역", PathType.DURATION);
+
+        // then
         assertThat(path.getStations()).hasSize(3);
         assertThat(path.getDistance()).isEqualTo(20);
         assertThat(path.getDuration()).isEqualTo(2);
     }
 
+    @DisplayName("출발역이나 도착역이 존재하지 않는 경우")
     @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.addVertex("v4");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-        assertThat(shortestPath.size()).isEqualTo(3);
-        assertThat(dijkstraShortestPath.getPath("v3", "v4")).isNull();
+    public void sourceOrTargetDoesNotExist() {
+        assertThatThrownBy(() ->
+            pathService.getPath("존재하지 않는 역", "1역", PathType.DISTANCE)
+        ).isInstanceOf(StationNotFoundException.class);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 예외 처리 테스트")
     @Test
     public void sameSourceTargetTest() {
-        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
-        assertThatThrownBy(() -> pathService.getPath("1역", "1역", PathType.DISTANCE))
-            .isInstanceOf(InvalidSubwayPathException.class);
+        // mock repository methods
+        when(stationRepository.findByName(anyString())).thenReturn(Optional.of(station1));
+
+        assertThatThrownBy(() ->
+            pathService.getPath("1역", "1역", PathType.DISTANCE)
+        ).isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     @Test
     public void sourceTargetNotConnected() {
+        // given
         Line line3 = new Line(3L, "3호선", LocalTime.of(5, 30), LocalTime.of(5, 30), 10, "bg-blue-300");
         Station station6 = new Station(6L, "6역");
         line3.addLineStation(new LineStation(null, station6.getId(), 10, 10));
+
+        // mock repository methods
         when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
         when(stationRepository.findByName("6역")).thenReturn(Optional.of(station6));
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(station1, station2, station3, station4, station5, station6));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
-        assertThatThrownBy(() -> pathService.getPath("1역", "6역", PathType.DISTANCE))
-            .isInstanceOf(InvalidSubwayPathException.class);
-    }
 
-    @DisplayName("출발역이나 도착역이 존재하지 않는 경우")
-    @Test
-    public void sourceOrTargetDoesNotExist() {
-        assertThatThrownBy(() -> pathService.getPath("존재하지 않는 역", "1역", PathType.DISTANCE))
-            .isInstanceOf(StationNotFoundException.class);
+        assertThatThrownBy(() ->
+            pathService.getPath("1역", "6역", PathType.DISTANCE)
+        ).isInstanceOf(InvalidSubwayPathException.class);
     }
 }
