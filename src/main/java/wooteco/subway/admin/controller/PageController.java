@@ -2,33 +2,20 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import wooteco.subway.admin.repository.StationRepository;
-import wooteco.subway.admin.service.LineService;
-import wooteco.subway.admin.service.StationService;
 
 @Controller
 @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
 public class PageController {
-    private LineService lineService;
-    private StationService stationService;
-
-    public PageController(LineService lineService,
-        StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
-    }
 
     @GetMapping
     public String index() {
         return "index";
     }
 
-    @GetMapping(value="/service")
-    public String serviceIndex(){
+    @GetMapping(value = "/service")
+    public String serviceIndex() {
         return "service/index";
     }
 
@@ -43,7 +30,7 @@ public class PageController {
     }
 
     @GetMapping(value = "/admin")
-    public String adminIndex(){
+    public String adminIndex() {
         return "admin/index";
     }
 
@@ -61,6 +48,4 @@ public class PageController {
     public String edgePage() {
         return "admin/admin-edge";
     }
-
-
 }
