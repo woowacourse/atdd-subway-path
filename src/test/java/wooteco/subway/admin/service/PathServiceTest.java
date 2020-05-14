@@ -19,6 +19,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.NotConnectEdgeException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -29,6 +30,8 @@ public class PathServiceTest {
     private static final String STATION_NAME3 = "선릉역";
     private static final String STATION_NAME4 = "역삼역";
     private static final String STATION_NAME5 = "강남역";
+    private static final String STATION_NAME6 = "중계역";
+    private static final String STATION_NAME7 = "하계역";
 
     @Mock
     private LineRepository lineRepository;
@@ -68,6 +71,7 @@ public class PathServiceTest {
         line2.addLineStation(new LineStation(2L, 1L, 5, 5));
     }
 
+    @DisplayName("최단 거리 경로를 조회하는 메서드 테스트")
     @Test
     void findShortestPathByDistanceTest() {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
@@ -80,6 +84,28 @@ public class PathServiceTest {
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);
         assertThat(pathResponse.getDuration()).isEqualTo(35);
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어있지 않은 경우 테스트")
+    @Test
+    void notConnectStationTest() {
+        Station station6 = new Station(6L, STATION_NAME6);
+        Station station7 = new Station(7L, STATION_NAME7);
+
+        Line line3 = new Line(3L, "7호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-300");
+
+        line3.addLineStation(new LineStation(null, 6L, 0, 0));
+        line3.addLineStation(new LineStation(6L, 7L, 15, 15));
+
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
+
+        PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), "distance");
+
+        assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
+            .isInstanceOf(NotConnectEdgeException.class)
+            .hasMessage("출발 지점으로부터 도착 지점까지 갈 수 없습니다!");
+
     }
 
     @DisplayName("존재하지 않은 역이 들어왔을 경우 예외 처리")

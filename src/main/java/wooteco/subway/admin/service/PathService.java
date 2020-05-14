@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.NotConnectEdgeException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -42,8 +44,14 @@ public class PathService {
         DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
             new DijkstraShortestPath<>(makeGraph(stations, lines));
 
-        final List<Edge> edgeList = dijkstraShortestPath.getPath(startStation, endStation).getEdgeList();
-        final List<Station> shortestPath = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
+        final GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, endStation);
+
+        if (Objects.isNull(path)) {
+            throw new NotConnectEdgeException();
+        }
+
+        List<Station> shortestPath = path.getVertexList();;
+        List<Edge> edgeList = path.getEdgeList();
 
         final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
         final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();

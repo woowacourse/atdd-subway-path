@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.admin.dto.ExceptionResponse;
+import wooteco.subway.admin.exception.NotConnectEdgeException;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
@@ -18,6 +19,12 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ExceptionResponse> handleNoSuchElement(NoSuchElementException e){
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(NotConnectEdgeException.class)
+    public ResponseEntity<ExceptionResponse> handleNotConnectEdge(NotConnectEdgeException e){
         return ResponseEntity.badRequest()
             .body(new ExceptionResponse(e.getMessage()));
     }
