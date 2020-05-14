@@ -24,6 +24,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.InvalidSubwayPathException;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -137,5 +138,12 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
         assertThatThrownBy(() -> pathService.getPath("1역", "6역", PathType.DISTANCE))
             .isInstanceOf(InvalidSubwayPathException.class);
+    }
+
+    @DisplayName("출발역이나 도착역이 존재하지 않는 경우")
+    @Test
+    public void sourceOrTargetDoesNotExist() {
+        assertThatThrownBy(() -> pathService.getPath("존재하지 않는 역", "1역", PathType.DISTANCE))
+            .isInstanceOf(StationNotFoundException.class);
     }
 }
