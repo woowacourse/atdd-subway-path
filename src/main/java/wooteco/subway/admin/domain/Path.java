@@ -1,71 +1,84 @@
 package wooteco.subway.admin.domain;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
+    private WeightedMultigraph<Long, PathEdge> graph;
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> distanceGraph;
-    private WeightedMultigraph<Long, DefaultWeightedEdge> durationGraph;
-    private DijkstraShortestPath<Long, Integer> dijkstraShortestPath;
-    private List<Line> lines;
-
-    public Path(List<Line> lines) {
-        this.lines = lines;
-        distanceGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        durationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        init();
+    public Path() {
+        graph = new WeightedMultigraph(PathEdge.class);
     }
 
-    private void init() {
+    public void addVertexes(List<Station> stations) {
+        for (Station station : stations) {
+            graph.addVertex(station.getId());
+        }
+    }
+
+    public void setEdges(List<Line> lines, PathType pathType) {
         for (Line line : lines) {
             List<LineStation> stations = line.getLineStations();
-            setVertexesAndEdges(stations);
+            List<LineStation> edgeStations = filterValidEdgeStations(stations);
+            addEdgesWithWeight(edgeStations, pathType);
         }
     }
 
-    private void setVertexesAndEdges(List<LineStation> stations) {
-        for (LineStation lineStation : stations) {
-            distanceGraph.addVertex(lineStation.getStationId());
-            durationGraph.addVertex(lineStation.getStationId());
-            if (lineStation.isFirstLineStation()) {
-                continue;
-            }
-            distanceGraph.setEdgeWeight(distanceGraph.addEdge(lineStation.getPreStationId(),
-                lineStation.getStationId()), lineStation.getDistance());
-            durationGraph.setEdgeWeight(durationGraph.addEdge(lineStation.getPreStationId(),
-                lineStation.getStationId()), lineStation.getDuration());
+    private List<LineStation> filterValidEdgeStations(List<LineStation> lineStations) {
+        return lineStations.stream()
+            .filter(LineStation::isNotFirstLineStation)
+            .collect(Collectors.toList());
+    }
+
+    private void addEdgesWithWeight(List<LineStation> lineStations, PathType pathType) {
+        for (LineStation lineStation : lineStations) {
+            PathEdge pathEdge = PathEdge.of(lineStation, pathType);
+            graph.addEdge(pathEdge.getPreStationId(), pathEdge.getStationId(), pathEdge);
+            graph.setEdgeWeight(pathEdge, pathEdge.getWeight());
         }
     }
 
-    public List<Long> searchShortestPath(Station source, Station target, String type) {
-        if ("DISTANCE".equals(type)) {
-            dijkstraShortestPath = new DijkstraShortestPath(distanceGraph);
-        }
-        if ("DURATION".equals(type)) {
-            dijkstraShortestPath = new DijkstraShortestPath(durationGraph);
-        }
-        return dijkstraShortestPath.getPath(source.getId(), target.getId()).getVertexList();
+    public GraphPath<Long, PathEdge> searchShortestPath(Station source, Station target) {
+        validateSourceTarget(source, target);
+
+        GraphPath<Long, PathEdge> shortestPath = DijkstraShortestPath.findPathBetween(graph,
+            source.getId(), target.getId());
+
+        validatePath(shortestPath);
+        return shortestPath;
     }
 
-    public int calculateDistance(List<Long> stationIds) {
-        int sum = 0;
-        for (int i = 0; i < stationIds.size() - 1; i++) {
-            sum += distanceGraph.getEdgeWeight(
-                distanceGraph.getEdge(stationIds.get(i), stationIds.get(i + 1)));
+    private void validatePath(GraphPath<Long, PathEdge> shortestPath) {
+        if (Objects.isNull(shortestPath)) {
+            throw new RuntimeException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
-        return sum;
     }
 
-    public int calculateDuration(List<Long> stationIds) {
-        int sum = 0;
-        for (int i = 0; i < stationIds.size() - 1; i++) {
-            sum += durationGraph.getEdgeWeight(
-                durationGraph.getEdge(stationIds.get(i), stationIds.get(i + 1)));
+    private void validateSourceTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
         }
-        return sum;
+        if (!(graph.containsVertex(source.getId()) && graph.containsVertex(target.getId()))) {
+            throw new RuntimeException("존재하지 않는 역입니다.");
+        }
+    }
+
+    public int calculateDistance(GraphPath<Long, PathEdge> path) {
+        return path.getEdgeList()
+            .stream()
+            .mapToInt(PathEdge::getDistance)
+            .sum();
+    }
+
+    public int calculateDuration(GraphPath<Long, PathEdge> path) {
+        return path.getEdgeList()
+            .stream()
+            .mapToInt(PathEdge::getDuration)
+            .sum();
     }
 }
