@@ -1,17 +1,18 @@
 package wooteco.subway.admin.domain.path;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShortestPathTest {
     private Line line1;
@@ -37,7 +38,7 @@ public class ShortestPathTest {
                 .map(Line::getStations)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        ShortestPath shortestPath = ShortestPath.createDistancePath(lineStations);
+        ShortestPath shortestPath = ShortestPath.of(lineStations, Type.DURATION);
         assertThat(shortestPath.getPath()).isInstanceOf(DijkstraShortestPath.class);
     }
 }
