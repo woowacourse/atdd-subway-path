@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.GraphResponse;
@@ -15,6 +16,7 @@ import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.IllegalStationNameException;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationService stationService;

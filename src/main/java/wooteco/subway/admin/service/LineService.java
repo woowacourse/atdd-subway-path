@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -17,6 +18,7 @@ import wooteco.subway.admin.exception.NotFoundLineException;
 import wooteco.subway.admin.repository.LineRepository;
 
 @Service
+@Transactional
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -31,22 +33,26 @@ public class LineService {
         return LineResponse.of(lineRepository.save(line));
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return LineResponse.listOf(lineRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLine(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException(id));
 
         return LineResponse.of(line);
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findDetailLine(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException(id));
         List<Station> stations = stationService.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse findDetailLines() {
         List<Line> lines = lineRepository.findAll();
         List<LineDetailResponse> lineDetailResponses = lines.stream()
@@ -83,6 +89,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findAll() {
         return lineRepository.findAll();
     }

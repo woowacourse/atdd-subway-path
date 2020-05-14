@@ -3,7 +3,10 @@ package wooteco.subway.admin.dto;
 
 public class ErrorResponse {
 
-    private final String errorMessage;
+    private String errorMessage;
+
+    public ErrorResponse() {
+    }
 
     public ErrorResponse(String errorMessage) {
         this.errorMessage = errorMessage;

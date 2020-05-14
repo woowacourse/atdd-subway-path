@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -213,7 +214,25 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(PathResponse.class);
+    }
 
+    ErrorResponse findPathByWrongType(String source, String target, String type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", source);
+        params.put("targetName", target);
+        params.put("type", type);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/path").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                extract().as(ErrorResponse.class);
     }
 
 }

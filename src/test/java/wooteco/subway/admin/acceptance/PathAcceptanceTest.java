@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.IllegalTypeNameException;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -39,14 +41,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 1, 10);
 
         //when
-        PathResponse path = findPath(jamsil.getName(), samjun.getName(), "distance");
+        PathResponse pathByDistance = findPath(jamsil.getName(), samjun.getName(), "distance");
 
         //then
-        assertThat(path.getStations()).hasSize(4);
-        assertThat(path.getStations()).extracting(StationResponse::getName)
+        assertThat(pathByDistance.getStations()).hasSize(4);
+        assertThat(pathByDistance.getStations()).extracting(StationResponse::getName)
             .containsExactly("잠실", "석촌", "석촌고분", "삼전");
-        assertThat(path.getTotalDistance()).isEqualTo(3);
-        assertThat(path.getTotalDuration()).isEqualTo(30);
+        assertThat(pathByDistance.getTotalDistance()).isEqualTo(3);
+        assertThat(pathByDistance.getTotalDuration()).isEqualTo(30);
 
+        //when
+        PathResponse pathByDuration = findPath(jamsil.getName(), samjun.getName(), "duration");
+
+        //then
+        assertThat(pathByDuration.getStations()).hasSize(4);
+        assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
+            .containsExactly("잠실", "잠실새내", "종합운동장", "삼전");
+        assertThat(pathByDuration.getTotalDistance()).isEqualTo(30);
+        assertThat(pathByDuration.getTotalDuration()).isEqualTo(3);
+
+        //when
+        assertThat(findPathByWrongType(jamsil.getName(), samjun.getName(), "transfer"))
+            .isInstanceOf(ErrorResponse.class).extracting(ErrorResponse::getErrorMessage)
+            .isEqualTo("transfer방식의 경로는 지원하지 않습니다.");
     }
 }
