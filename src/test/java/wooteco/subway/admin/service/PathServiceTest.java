@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -9,6 +10,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.CanNotCreateGraphException;
 import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -39,7 +41,6 @@ public class PathServiceTest {
     private PathService pathService;
 
     private Line line2;
-    private Line line4;
     private Line bundangLine;
 
     private Station gangnam;
@@ -49,7 +50,6 @@ public class PathServiceTest {
     private Station gangnamOffice;
     private Station seonjeonglung;
     private Station hanti;
-    private Station beomgye;
 
     @BeforeEach
     void setUp() {
@@ -61,10 +61,8 @@ public class PathServiceTest {
         gangnamOffice = new Station(5L, STATION_NAME_GANGNAM_OFFICE);
         seonjeonglung = new Station(6L, STATION_NAME_SEONJEONGLUNG);
         hanti = new Station(7L, STATION_NAME_HANTI);
-        beomgye = new Station(8L, STATION_NAME_BEOMGYE);
 
         line2 = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line4 = new Line(1L, "4호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         bundangLine = new Line(2L, "분당선", "bg-gray-300", LocalTime.of(05, 00), LocalTime.of(23, 30), 7);
 
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -76,8 +74,6 @@ public class PathServiceTest {
         bundangLine.addLineStation(new LineStation(5L, 6L, 10, 10));
         bundangLine.addLineStation(new LineStation(6L, 3L, 10, 10));
         bundangLine.addLineStation(new LineStation(3L, 7L, 10, 10));
-
-        line4.addLineStation(new LineStation(null, 8L, 10, 10));
     }
 
     @Test
@@ -111,12 +107,33 @@ public class PathServiceTest {
     }
 
     @Test
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경로찾기 테스트")
     void lineNotConnectedExceptionTest() {
+        Station beomgye = new Station(8L, STATION_NAME_BEOMGYE);
+        Line line4 = new Line(1L, "4호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line4.addLineStation(new LineStation(null, 8L, 10, 10));
+
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine, line4));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti, beomgye));
 
         assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_BEOMGYE, "DISTANCE"))
                 .isInstanceOf(LineNotConnectedException.class)
                 .hasMessageContaining("연결되어 있지 않습니다");
+    }
+
+    @Test
+    @DisplayName("preStation이 null인 시작 간선이 없을 때 경로찾기 테스트")
+    void noInitialStationExceptionTest() {
+        Station beomgye = new Station(8L, STATION_NAME_BEOMGYE);
+        Station gumjung = new Station(9L, "금정");
+        Line line4 = new Line(1L, "4호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line4.addLineStation(new LineStation(8L, 9L, 10, 10));
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine, line4));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti, beomgye, gumjung));
+
+        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_BEOMGYE, "금정", "DISTANCE"))
+                .isInstanceOf(CanNotCreateGraphException.class)
+                .hasMessageContaining("그래프를 만들 수 없습니다.");
     }
 }

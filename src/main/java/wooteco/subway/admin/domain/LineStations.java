@@ -21,6 +21,7 @@ public class LineStations {
         return lineStations;
     }
 
+    // todo : 이거 리팩토링
     public LineStation findLineStation(Long preStationId, Long stationId) {
         for (LineStation lineStation : lineStations) {
             if (lineStation.is(preStationId, stationId)) {

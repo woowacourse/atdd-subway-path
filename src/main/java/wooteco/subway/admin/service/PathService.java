@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.CanNotCreateGraphException;
 import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -36,7 +37,13 @@ public class PathService {
         Station sourceStation = stations.findStationByName(source);
         Station targetStation = stations.findStationByName(target);
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = initGraph(lineStations);
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+
+        try {
+            graph = initGraph(lineStations);
+        } catch (IllegalArgumentException e) {
+            throw new CanNotCreateGraphException();
+        }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
