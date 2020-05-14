@@ -86,9 +86,7 @@ public class PathService {
 
     private LineStation findLineStation(List<LineStation> lineStations, Station preStation, Station station) {
         return lineStations.stream()
-                .filter(lineStation -> (lineStation.hasPreStationId(preStation.getId())
-                        && lineStation.hasStationId(station.getId())) || (lineStation.hasPreStationId(station.getId())
-                        && lineStation.hasStationId(preStation.getId())))
+                .filter(lineStation -> lineStation.isConnected(preStation.getId(), station.getId()))
                 .findAny()
                 .orElseThrow(() -> new NotFoundLineStationException(preStation.getName(), station.getName()));
     }
