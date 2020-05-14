@@ -1,7 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -176,22 +174,5 @@ public class Line {
         }
 
         return stationIds;
-    }
-
-    public WeightedMultigraph<Long, DefaultWeightedEdge> createDistanceGraph() {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (LineStation station : stations) {
-            graph.addVertex(station.getStationId());
-            if (station.isFirst()) {
-                continue;
-            }
-            graph.setEdgeWeight(
-                    graph.addEdge(station.getPreStationId(), station.getStationId()),
-                    station.getDistance()
-            );
-        }
-        return graph;
     }
 }

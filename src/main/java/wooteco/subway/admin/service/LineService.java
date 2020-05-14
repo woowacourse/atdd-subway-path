@@ -1,12 +1,9 @@
 package wooteco.subway.admin.service;
 
-import org.jgrapht.Graphs;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -91,34 +88,21 @@ public class LineService {
     }
 
     public PathResponse findShortestDistancePath(String sourceName, String targetName) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> totalGraph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        List<Line> lines = lineRepository.findAll();
-        lines.forEach(line ->
-                Graphs.addGraph(totalGraph, line.createDistanceGraph()));
+        List<LineStation> lineStations = lineRepository.findAll()
+                .stream()
+                .map(Line::getStations)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        ShortestPath shortestPath = ShortestPath.createDistancePath(lineStations);
 
         Long sourceId = stationRepository.findIdByName(sourceName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
-        DijkstraShortestPath shortestPath = new DijkstraShortestPath(totalGraph);
+        int distance = shortestPath.getWeight(sourceId, targetId);
 
-        List<Long> pathStationIds = shortestPath.getPath(sourceId, targetId).getVertexList(); // stationId
-        List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
-
-        // 최단 거리 구하기
-        double distance = shortestPath.getPath(sourceId, targetId).getWeight();
-
-        // 최단 거리의 경로에 따른 최소 시간 구하기
-        // preStationId, stationId, distance --> duration
-        List<LineStation> lineStations = lines.stream()
-                .map(Line::getStations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
+        List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
         int timeSum = 0;
-
         for (int i = 0; i < pathStationIds.size() - 1; i++) {
             Long preStationId = pathStationIds.get(i);
             Long stationId = pathStationIds.get(i + 1);
@@ -130,6 +114,8 @@ public class LineService {
                     .sum();
         }
 
-        return new PathResponse((int) distance, timeSum, pathStationNames);
+        List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
+
+        return new PathResponse(distance, timeSum, pathStationNames);
     }
 }

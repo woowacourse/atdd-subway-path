@@ -3,24 +3,25 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 
 public class PathResponse {
-    private Integer distance;
-    private Integer duration;
+    private int distance;
+    private int duration;
     private List<String> path;
 
     public PathResponse() {
+
     }
 
-    public PathResponse(Integer distance, Integer duration, List<String> path) {
+    public PathResponse(int distance, int duration, List<String> path) {
         this.distance = distance;
         this.duration = duration;
         this.path = path;
     }
 
-    public Integer getDistance() {
+    public int getDistance() {
         return distance;
     }
 
-    public Integer getDuration() {
+    public int getDuration() {
         return duration;
     }
 

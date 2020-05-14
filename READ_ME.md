@@ -12,3 +12,5 @@ Feature: 출발역과 도착역의 최단 경로를 조회
 
 ### To do
 [] (예외) Admin 구간 추가 시, modal 재접속하면 이전역 로딩 오류
+[] Shortest Path interface화
+[] WeightedEdge 상속받는 클래스 구현
