@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,20 +20,32 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class PathDistanceAcceptanceTest extends AcceptanceTest {
+    private StationResponse jamsil;
+    private StationResponse jamsilsaenae;
+    private StationResponse playgound;
+    private StationResponse samjun;
+    private StationResponse sukchongobun;
+    private StationResponse sukchon;
 
-    @DisplayName("최단경로를 조회한다")
-    @Test
-    void findPathByDistance() {
-        StationResponse jamsil = createStation("잠실");
-        StationResponse jamsilsaenae = createStation("잠실새내");
-        StationResponse playgound = createStation("종합운동장");
-        StationResponse samjun = createStation("삼전");
-        StationResponse sukchongobun = createStation("석촌고분");
-        StationResponse sukchon = createStation("석촌");
+    private LineResponse line2;
+    private LineResponse line8;
+    private LineResponse line9;
 
-        LineResponse line2 = createLine("2호선");
-        LineResponse line8 = createLine("8호선");
-        LineResponse line9 = createLine("9호선");
+    @Override
+    @BeforeEach
+    void setUp() {
+        super.setUp();
+
+        jamsil = createStation("잠실");
+        jamsilsaenae = createStation("잠실새내");
+        playgound = createStation("종합운동장");
+        samjun = createStation("삼전");
+        sukchongobun = createStation("석촌고분");
+        sukchon = createStation("석촌");
+
+        line2 = createLine("2호선");
+        line8 = createLine("8호선");
+        line9 = createLine("9호선");
 
         addLineStation(line2.getId(), null, jamsil.getId(), 0, 0);
         addLineStation(line2.getId(), jamsil.getId(), jamsilsaenae.getId(), 10, 1);
@@ -45,7 +58,11 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
 
         addLineStation(line8.getId(), null, jamsil.getId(), 0, 0);
         addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 1, 10);
+    }
 
+    @DisplayName("최단경로를 조회한다")
+    @Test
+    void findPathByDistance() {
         //when
         PathResponse path = getPathByDistance(jamsil.getName(), samjun.getName());
 
