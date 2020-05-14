@@ -1,8 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -29,6 +26,7 @@ public class Line {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;

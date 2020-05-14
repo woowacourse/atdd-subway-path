@@ -28,12 +28,6 @@ public class PageController {
         return "admin/admin-station";
     }
 
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
-        model.addAttribute("lines", lineService.showLines());
-        return "admin/admin-line";
-    }
-
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String edgePage(Model model) {
         return "admin/admin-edge";

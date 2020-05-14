@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +28,7 @@ public class LineTest {
 
         assertThat(line.getEdges()).hasSize(4);
         Edge edge = line.getEdges().stream()
-                .filter(it -> it.getPreStationId() == 4L)
+                .filter(it -> Objects.equals(it.getPreStationId(), 4L))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
         assertThat(edge.getStationId()).isEqualTo(1L);

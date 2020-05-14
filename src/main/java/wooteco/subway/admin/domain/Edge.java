@@ -39,7 +39,6 @@ public class Edge {
         this.preStationId = preStationId;
     }
 
-
     public Long getPreStationId() {
         return preStationId;
     }
