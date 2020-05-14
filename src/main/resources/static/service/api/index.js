@@ -32,10 +32,10 @@ const api = (() => {
   }
 
   const path = {
-    findByDistance(params) {
-      return request(`/stations/shortest-path?source=${params.source}&target=${params.target}`)
-    }
-  }
+    find(params) {
+      return request(`/stations/shortest-path?source=${params.source}&target=${params.target}&pathType=${params.pathType}`)
+    },
+  };
 
   return {
     line,

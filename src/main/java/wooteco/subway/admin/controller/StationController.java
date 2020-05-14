@@ -10,6 +10,7 @@ import wooteco.subway.admin.service.LineService;
 import wooteco.subway.admin.service.PathService;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -47,8 +48,8 @@ public class StationController {
     }
 
     @GetMapping("/stations/shortest-path")
-    public ResponseEntity<PathResponse> showShortestStationPath(@RequestParam String source, @RequestParam String target) {
-        PathResponse path = pathService.findPath(source, target, PathType.DISTANCE);
+    public ResponseEntity<PathResponse> showShortestStationPath(@RequestParam String source, @RequestParam String target, @RequestParam String pathType) {
+        PathResponse path = pathService.findPath(source, target, PathType.valueOf(pathType));
         return ResponseEntity.ok().body(path);
     }
 }
