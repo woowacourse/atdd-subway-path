@@ -16,15 +16,15 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line.addLineStation(LineStation.of(null, 1L, 10, 10));
+        line.addLineStation(LineStation.of(1L, 2L, 10, 10));
+        line.addLineStation(LineStation.of(2L, 3L, 10, 10));
     }
 
     @Test
     void addLineStation() {
-        line.addLineStation(new LineStation(null, 4L, 10, 10));
+        line.addLineStation(LineStation.of(null, 4L, 10, 10));
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()

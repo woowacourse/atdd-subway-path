@@ -10,18 +10,14 @@ public class Station {
     private String name;
     private LocalDateTime createdAt;
 
-    public Station() {
-    }
-
-    public Station(String name) {
-        this.name = name;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public Station(Long id, String name) {
+    public Station(Long id, String name, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
+    }
+
+    public static Station of(String name) {
+        return new Station(null, name, LocalDateTime.now());
     }
 
     public Long getId() {

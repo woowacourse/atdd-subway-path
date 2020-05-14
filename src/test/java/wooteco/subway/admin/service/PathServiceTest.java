@@ -16,6 +16,7 @@ import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -43,26 +44,26 @@ class PathServiceTest {
     void setUp() {
         pathService = new PathService(lineRepository, stationRepository);
 
-        seolleung = new Station(2L, "선릉역");
-        yeoksam = new Station(3L, "역삼역");
-        kangnam = new Station(1L, "강남역");
-        gyodae = new Station(4L, "교대역");
-        jamwon = new Station(5L, "잠원역");
-        sinsa = new Station(6L, "신사역");
+        seolleung = new Station(2L, "선릉역", LocalDateTime.now());
+        yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
+        kangnam = new Station(1L, "강남역", LocalDateTime.now());
+        gyodae = new Station(4L, "교대역", LocalDateTime.now());
+        jamwon = new Station(5L, "잠원역", LocalDateTime.now());
+        sinsa = new Station(6L, "신사역", LocalDateTime.now());
     }
 
     @DisplayName("source stationId와 target stationId를 받아서 최단 경로를 구한다.")
     @Test
     void findPathTest() {
-        Line firstLine = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(23, 00), 10);
-        firstLine.addLineStation(new LineStation(null, seolleung.getId(), 10, 10));
-        firstLine.addLineStation(new LineStation(seolleung.getId(), yeoksam.getId(), 20, 10));
-        firstLine.addLineStation(new LineStation(yeoksam.getId(), kangnam.getId(), 20, 10));
-        firstLine.addLineStation(new LineStation(kangnam.getId(), gyodae.getId(), 20, 10));
-        Line secondLine = new Line(2L, "2호선", LocalTime.of(06, 30), LocalTime.of(23, 00), 10);
-        secondLine.addLineStation(new LineStation(null, gyodae.getId(), 10, 10));
-        secondLine.addLineStation(new LineStation(gyodae.getId(), jamwon.getId(), 40, 30));
-        secondLine.addLineStation(new LineStation(jamwon.getId(), sinsa.getId(), 30, 10));
+        Line firstLine = new Line(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(23, 00), 10);
+        firstLine.addLineStation(LineStation.of(null, seolleung.getId(), 10, 10));
+        firstLine.addLineStation(LineStation.of(seolleung.getId(), yeoksam.getId(), 20, 10));
+        firstLine.addLineStation(LineStation.of(yeoksam.getId(), kangnam.getId(), 20, 10));
+        firstLine.addLineStation(LineStation.of(kangnam.getId(), gyodae.getId(), 20, 10));
+        Line secondLine = new Line(2L, "2호선", "bg-green-500", LocalTime.of(06, 30), LocalTime.of(23, 00), 10);
+        secondLine.addLineStation(LineStation.of(null, gyodae.getId(), 10, 10));
+        secondLine.addLineStation(LineStation.of(gyodae.getId(), jamwon.getId(), 40, 30));
+        secondLine.addLineStation(LineStation.of(jamwon.getId(), sinsa.getId(), 30, 10));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine, secondLine));
         when(stationRepository.findAll()).thenReturn(

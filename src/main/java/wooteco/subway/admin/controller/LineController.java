@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.request.LineRequest;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
@@ -19,7 +18,6 @@ import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -80,13 +78,5 @@ public class LineController {
                                             @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
-    }
-
-    private LineDetailResponse createMockResponse() {
-        List<Station> stations = new ArrayList<>();
-        stations.add(new Station());
-        stations.add(new Station());
-        stations.add(new Station());
-        return LineDetailResponse.of(new Line(), stations);
     }
 }

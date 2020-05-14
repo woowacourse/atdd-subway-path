@@ -83,6 +83,7 @@ public class AcceptanceTest {
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("color", "bg-green-500");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -111,6 +112,7 @@ public class AcceptanceTest {
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
+        params.put("color", "bg-green-500");
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");

@@ -11,29 +11,29 @@ function AdminStation() {
         if (event.key && event.key !== KEY_TYPE.ENTER) {
             return
         }
-        event.preventDefault()
-        const stationName = $stationInput.value
+        event.preventDefault();
+        const stationName = $stationInput.value;
         if (!stationName) {
-            alert(ERROR_MESSAGE.NOT_EMPTY)
+            alert(ERROR_MESSAGE.NOT_EMPTY);
             return
         }
         const newStation = {
             name: stationName
-        }
+        };
         api.station
             .create(newStation)
             .then(data => {
-                $stationInput.value = ''
+                $stationInput.value = '';
                 $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
             })
             .catch(() => {
                 alert('에러가 발생했습니다.')
             })
-    }
+    };
 
     const onDeleteStationHandler = event => {
-        const $target = event.target
-        const isDeleteButton = $target.classList.contains('mdi-delete')
+        const $target = event.target;
+        const isDeleteButton = $target.classList.contains('mdi-delete');
         if (!isDeleteButton) {
             return
         }
@@ -43,38 +43,32 @@ function AdminStation() {
                 $target.closest('.list-item').remove()
             })
             .catch(() => alert(ERROR_MESSAGE.COMMON))
-    }
+    };
 
     const initStations = () => {
-        console.log("HEEEE2")
-
         api.station
             .getAll()
             .then(stations => {
-                console.log(stations);
                 $stationList.innerHTML = stations.map(station => listItemTemplate(station)).join('')
             })
             .catch(() => alert(ERROR_MESSAGE.COMMON))
-        console.log("HEEEE")
-
-    }
+    };
 
     const initEventListeners = () => {
-        $stationAddButton.addEventListener(EVENT_TYPE.CLICK, onAddStationHandler)
-        $stationInput.addEventListener(EVENT_TYPE.KEY_PRESS, onAddStationHandler)
-        $stationList.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler)
-    }
+        $stationAddButton.addEventListener(EVENT_TYPE.CLICK, onAddStationHandler);
+        $stationInput.addEventListener(EVENT_TYPE.KEY_PRESS, onAddStationHandler);
+        $stationList.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler);
+    };
 
     const init = () => {
-        initEventListeners()
-        console.log("HEEEE")
-        initStations()
-    }
+        initEventListeners();
+        initStations();
+    };
 
     return {
         init
     }
 }
 
-const adminStation = new AdminStation()
-adminStation.init()
+const adminStation = new AdminStation();
+adminStation.init();
