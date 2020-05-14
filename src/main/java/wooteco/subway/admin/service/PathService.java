@@ -15,6 +15,7 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -27,15 +28,6 @@ public class PathService {
     }
 
     public PathResponse calculatePath(String source, String target) {
-//        List<Station> stations = new ArrayList<>();
-//        stations.add(new Station(1L, "양재시민의숲역"));
-//        stations.add(new Station(2L, "양재역"));
-//        stations.add(new Station(3L, "강남역"));
-//        stations.add(new Station(4L, "역삼역"));
-//        stations.add(new Station(5L, "선릉역"));
-//        PathResponse pathResponse = new PathResponse(stations, 40, 40);
-//        return pathResponse;
-
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
         Long sourceId = stations
@@ -50,16 +42,17 @@ public class PathService {
                 .map(Station::getId)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
+
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for(Station station : stations) {
+        for (Station station : stations) {
             graph.addVertex(station.getId());
         }
-        for(Line line : lines) {
-            for(LineStation lineStation : line.getStations()) {
-                if(Objects.isNull(lineStation.getPreStationId())) {
+        for (Line line : lines) {
+            for (LineStation lineStation : line.getStations()) {
+                if (Objects.isNull(lineStation.getPreStationId())) {
                     continue;
                 }
-                graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(),lineStation.getStationId()), lineStation.getDistance());
+                graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
             }
         }
         //----
@@ -70,16 +63,38 @@ public class PathService {
 
         List<Station> result = new ArrayList<>();
 
-        for(Long id : shortestPath) {
-            for(Station station : stations) {
-                if(station.getId() == id) {
+        for (Long id : shortestPath) {
+            for (Station station : stations) {
+                if (station.getId() == id) {
                     result.add(station);
                     break;
                 }
             }
         }
 
-        PathResponse pathResponse = new PathResponse(result, 40, 40);
+        List<LineStation> lineStations = lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .collect(Collectors.toList());
+
+        List<LineStation> pathLineStations = new ArrayList<>();
+        for (int i = 1; i < shortestPath.size(); i++) {
+            Long preStationId = shortestPath.get(i - 1);
+            Long stationId = shortestPath.get(i);
+
+            pathLineStations.add(lineStations.stream()
+                    .filter(lineStation ->
+                            (lineStation.getPreStationId() == preStationId && lineStation.getStationId() == stationId)
+                                    || (lineStation.getPreStationId() == stationId && lineStation.getStationId() == preStationId))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new));
+        }
+        int distance = pathLineStations.stream()
+                .mapToInt(LineStation::getDistance)
+                .sum();
+        int duration = pathLineStations.stream()
+                .mapToInt(LineStation::getDuration)
+                .sum();
+        PathResponse pathResponse = new PathResponse(result, distance, duration);
         return pathResponse;
     }
 }

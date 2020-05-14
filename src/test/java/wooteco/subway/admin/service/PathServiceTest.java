@@ -14,8 +14,10 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
@@ -64,6 +66,9 @@ public class PathServiceTest {
     @DisplayName("같은 호선 내에서의 경로 찾기 수행")
     @Test
     void findPathInSameLine() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
         PathResponse pathResponse = pathService.calculatePath("강남역", "선릉역");
 
         assertThat(pathResponse.getDistance()).isEqualTo(15);
@@ -76,6 +81,9 @@ public class PathServiceTest {
     @DisplayName("다른 호선 내에서의 경로 찾기 수행")
     @Test
     void findPathInDifferentLine() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
         PathResponse pathResponse = pathService.calculatePath("선릉역", "양재시민의숲역");
 
         assertThat(pathResponse.getDistance()).isEqualTo(35);
