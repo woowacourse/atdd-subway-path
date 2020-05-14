@@ -9,9 +9,6 @@ import wooteco.subway.admin.dto.station.StationResponse;
 import static org.assertj.core.api.Assertions.*;
 
 public class PathAcceptanceTest extends AcceptanceTest {
-
-
-
     @DisplayName("경로 조회 API")
     @Test
     void findPath() {
@@ -22,6 +19,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse samjun = createStation("삼전");
         StationResponse sukchongobun = createStation("석촌고분");
         StationResponse sukchon = createStation("석촌");
+        StationResponse bongensa = createStation("봉은사");
 
         LineResponse line2 = createLine("2호선");
         LineResponse line8 = createLine("8호선");
@@ -31,7 +29,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line2.getId(), jamsil.getId(), jamsilsaenae.getId(), 10, 1);
         addLineStation(line2.getId(), jamsilsaenae.getId(), playgound.getId(), 10, 1);
 
-        addLineStation(line9.getId(), null, playgound.getId(), 0, 0);
+
+        addLineStation(line9.getId(), null, bongensa.getId(), 0, 0);
+        addLineStation(line9.getId(), bongensa.getId(), playgound.getId(), 0, 0);
         addLineStation(line9.getId(), playgound.getId(), samjun.getId(), 10, 1);
         addLineStation(line9.getId(), samjun.getId(), sukchongobun.getId(), 1, 10);
         addLineStation(line9.getId(), sukchongobun.getId(), sukchon.getId(), 1, 10);
@@ -40,14 +40,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 1, 10);
 
         //when
-        PathResponse path = findPath(jamsil.getName(), samjun.getName(),"distance");
+        PathResponse pathByDistance = findPath(jamsil.getName(), samjun.getName(),"distance");
+        PathResponse pathByDuration = findPath(jamsil.getName(), samjun.getName(),"duration");
 
         //then
-        assertThat(path.getStations()).hasSize(4);
-        assertThat(path.getStations()).extracting(StationResponse::getName)
+        assertThat(pathByDistance.getStations()).hasSize(4);
+        assertThat(pathByDistance.getStations()).extracting(StationResponse::getName)
             .containsExactly("잠실", "석촌", "석촌고분", "삼전");
-        assertThat(path.getTotalDistance()).isEqualTo(3);
-        assertThat(path.getTotalDuration()).isEqualTo(30);
+        assertThat(pathByDistance.getTotalDistance()).isEqualTo(3);
+        assertThat(pathByDistance.getTotalDuration()).isEqualTo(30);
+
+        assertThat(pathByDuration.getStations()).hasSize(4);
+        assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
+                .containsExactly("잠실", "잠실새내", "종합운동장", "삼전");
+        assertThat(pathByDuration.getTotalDistance()).isEqualTo(30);
+        assertThat(pathByDuration.getTotalDuration()).isEqualTo(3);
 
     }
 }

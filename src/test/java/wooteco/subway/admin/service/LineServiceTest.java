@@ -175,7 +175,7 @@ public class LineServiceTest {
         when(stationService.findAllById(newLine.getLineStationsId())).thenReturn(
             new ArrayList<>(stations2));
 
-        List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponse();
+        List<LineDetailResponse> lineDetails = lineService.findWholeLines().getLineDetailResponse();
 
         assertThat(lineDetails).isNotNull();
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);

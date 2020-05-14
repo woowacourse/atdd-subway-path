@@ -23,7 +23,7 @@ public class PathService {
     private final GraphService graphService;
 
     public PathService(StationRepository stationRepository,
-        LineRepository lineRepository, GraphService graphService) {
+                       LineRepository lineRepository, GraphService graphService) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.graphService = graphService;
@@ -31,23 +31,22 @@ public class PathService {
 
     public PathResponse findPath(PathRequestWithId pathRequestWithId) {
         List<Line> lines = lineRepository.findAll();
-        List<Long> path = graphService.findPath(lines, pathRequestWithId.getSourceId(),
-            pathRequestWithId.getTargetId(),pathRequestWithId.getPathType());
-        List<Station> stations = stationRepository.findAllById(path);
+        List<Long> pathFormedId = graphService.findPath(lines, pathRequestWithId.getSourceId(),
+                pathRequestWithId.getTargetId(), pathRequestWithId.getPathType());
 
-        List<StationResponse> stationResponses = StationResponse.listOf(stations);
+        List<Station> stations = stationRepository.findAllById(pathFormedId);
+        List<StationResponse> pathFormedStationResponse = StationResponse.listOf(stations);
 
         List<LineStation> lineStations = lines.stream()
-            .flatMap(line -> line.getStations().stream())
-            .filter(lineStation -> path.contains(lineStation.getStationId()))
-            .filter(lineStation -> Objects.isNull(lineStation.getPreStationId()) || path.contains(lineStation.getPreStationId()))
-            .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
-            .collect(Collectors.toList());
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> pathFormedId.contains(lineStation.getStationId()))
+                .filter(lineStation -> Objects.isNull(lineStation.getPreStationId()) || pathFormedId.contains(lineStation.getPreStationId()))
+                .collect(Collectors.toList());
 
         int totalDistance = lineStations.stream().mapToInt(LineStation::getDistance).sum();
         int totalDuration = lineStations.stream().mapToInt(LineStation::getDuration).sum();
 
-        List<StationResponse> sortedStationResponses = sort(path,stationResponses);
+        List<StationResponse> sortedStationResponses = sort(pathFormedId, pathFormedStationResponse);
 
         return new PathResponse(sortedStationResponses, totalDistance, totalDuration);
     }
@@ -57,8 +56,8 @@ public class PathService {
 
         for (Long stationId : path) {
             StationResponse response = stationResponses.stream()
-                .filter(stationResponse -> stationResponse.getId().equals(stationId))
-                .findAny().orElseThrow(IllegalArgumentException::new);
+                    .filter(stationResponse -> stationResponse.getId().equals(stationId))
+                    .findAny().orElseThrow(IllegalArgumentException::new);
             result.add(response);
         }
         return result;

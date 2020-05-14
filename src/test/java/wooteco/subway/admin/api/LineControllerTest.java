@@ -35,7 +35,7 @@ public class LineControllerTest {
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
-        given(lineService.wholeLines()).willReturn(response);
+        given(lineService.findWholeLines()).willReturn(response);
 
         String uri = "/lines/detail";
 

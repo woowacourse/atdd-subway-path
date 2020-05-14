@@ -37,7 +37,8 @@ public class LineController {
 
     @GetMapping("/lines")
     public ResponseEntity<List<LineDetailResponse>> showLine() {
-        return ResponseEntity.ok().body(lineService.wholeLines().getLineDetailResponse());
+        WholeSubwayResponse wholeSubwayResponse = lineService.findWholeLines();
+        return ResponseEntity.ok().body(wholeSubwayResponse.getLineDetailResponse());
     }
 
     @GetMapping("/lines/{id}")
@@ -71,7 +72,9 @@ public class LineController {
 
     @GetMapping("/lines/detail")
     public ResponseEntity<WholeSubwayResponse> wholeLines() {
-        WholeSubwayResponse response = lineService.wholeLines();
-        return ResponseEntity.ok().eTag(String.valueOf(response.hashCode())).body(response);
+        WholeSubwayResponse wholeSubwayResponse = lineService.findWholeLines();
+        return ResponseEntity.ok()
+                .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
+                .body(wholeSubwayResponse);
     }
 }
