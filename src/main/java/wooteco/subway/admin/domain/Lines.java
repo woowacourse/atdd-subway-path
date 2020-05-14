@@ -7,6 +7,10 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.admin.exception.DisconnectedPathException;
+import wooteco.subway.admin.exception.NullStationIdException;
+import wooteco.subway.admin.exception.SameSourceAndDestinationException;
+
 public class Lines {
 	private final List<Line> lines;
 	private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
@@ -45,11 +49,34 @@ public class Lines {
 	}
 
 	public GraphPath<Long, DefaultWeightedEdge> getPath(Long source, Long target) {
-		return dijkstraShortestPath.getPath(source, target);
+		validateNotNull(source, target);
+		validateDifferentSourceAndDestination(source, target);
+		GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+		validateConnectedPath(path);
+		return path;
+	}
+
+	private void validateConnectedPath(GraphPath<Long, DefaultWeightedEdge> path) {
+		if (path == null) {
+			throw new DisconnectedPathException();
+		}
+	}
+
+	private void validateDifferentSourceAndDestination(Long source, Long target) {
+		if (source.equals(target)) {
+			throw new SameSourceAndDestinationException();
+		}
+	}
+
+	private void validateNotNull(Long source, Long target) {
+		if (source == null || target == null) {
+			throw new NullStationIdException();
+		}
 	}
 
 	public List<Long> findShortestPath(Long source, Long target) {
-		return getPath(source, target).getVertexList();
+		return getPath(source, target)
+			.getVertexList();
 	}
 
 	public int calculateDistance(Long source, Long target) {
@@ -65,5 +92,4 @@ public class Lines {
 		}
 		return wholeDuration;
 	}
-
 }

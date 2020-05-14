@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class LinesTest {
@@ -47,9 +51,9 @@ class LinesTest {
 		lineOne.addLineStation(new LineStation(1L, 2L, 5, 10));
 		lineOne.addLineStation(new LineStation(2L, 3L, 5, 10));
 		lineOne.addLineStation(new LineStation(3L, 4L, 3, 10));
-
 	}
 
+	@DisplayName("최단경로속에 포함되는 역의 ID를 순서대로 정확히 반환한다.")
 	@ParameterizedTest
 	@MethodSource("distancePathSets")
 	void findShortestPath(int distance, List<Long> shortestPath) {
@@ -62,6 +66,7 @@ class LinesTest {
 		assertThat(lines.findShortestPath(1L, 4L)).isEqualTo(shortestPath);
 	}
 
+	@DisplayName("최단경로를 이동하는데 걸리는 총 거리를 정확히 반환한다.")
 	@ParameterizedTest
 	@MethodSource("distance")
 	void calculateDistance(int distance, int expected) {
@@ -74,6 +79,7 @@ class LinesTest {
 		assertThat(lines.calculateDistance(1L, 4L)).isEqualTo(expected);
 	}
 
+	@DisplayName("최단경로를 이동하는데 걸리는 총 소요시간을 정확히 반환한다.")
 	@ParameterizedTest
 	@MethodSource("duration")
 	void calculateDuration(int distance, int expected) {
@@ -86,4 +92,43 @@ class LinesTest {
 		assertThat(lines.calculateDuration(1L, 4L)).isEqualTo(expected);
 	}
 
+	@DisplayName("최단 경로 조회시 출발역과 도착역이 같은 경우, 예외를 발생시킨다.")
+	@Test
+	void findShortestPathWithSameSourceAndDestination() {
+		lines = new Lines(Arrays.asList(lineOne, lineTwo));
+		assertThatThrownBy(() -> lines.findShortestPath(1L, 1L)).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("최단 경로 조회시 출발역과 도착역이 연결되어있지 않은 경우, 예외를 발생시킨다.")
+	@Test
+	void findShortestPathBetweenDisconnectedSourceAndDestination() {
+		lineTwo.addLineStation(new LineStation(null, 100L, 3, 10));
+
+		lines = new Lines(Arrays.asList(lineOne, lineTwo));
+		assertThatThrownBy(() -> lines.findShortestPath(1L, 100L)).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("최단 경로 조회시 출발역이나 도착역이 없는 경우, 예외를 발생시킨다.")
+	@ParameterizedTest
+	@CsvSource({"100,1","1,100", "100,100"})
+	void findShortestPathWithNonExistentSourceOrDestination(Long source, Long target) {
+		lines = new Lines(Collections.singletonList(lineOne));
+		assertThatThrownBy(() -> lines.findShortestPath(source, target)).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("최단 경로 조회시 출발역이나 도착역이 없는 경우, 예외를 발생시킨다.")
+	@ParameterizedTest
+	@MethodSource("sourceAndTargetIncludeNull")
+	void findShortestPathWithNullSourceOrDestination(Long source, Long target) {
+		lines = new Lines(Collections.singletonList(lineOne));
+		assertThatThrownBy(() -> lines.findShortestPath(source, target)).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	private static Stream<Arguments> sourceAndTargetIncludeNull() {
+		return Stream.of(
+			Arguments.of(null, 1L),
+			Arguments.of(1L, null),
+			Arguments.of(null, null)
+		);
+	}
 }
