@@ -14,7 +14,7 @@ public class WholeSubwayLineAcceptanceTest extends AcceptanceTest {
     void wholeSubway() {
 
         //given
-        LineResponse lineResponse1 = createLine("2호선");
+        LineResponse lineResponse1 = createLine("1호선");
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("삼성역");
