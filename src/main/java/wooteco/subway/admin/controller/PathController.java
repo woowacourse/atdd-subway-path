@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.error.ErrorResponse;
+import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.exception.OverlappedStationException;
 import wooteco.subway.admin.service.LineService;
 import wooteco.subway.admin.service.PathService;
@@ -42,7 +43,7 @@ public class PathController {
         }
     }
 
-    @ExceptionHandler(OverlappedStationException.class)
+    @ExceptionHandler({OverlappedStationException.class, LineNotConnectedException.class})
     public ResponseEntity<ErrorResponse> overlappedStationExceptionHandler(OverlappedStationException exception) {
         final ErrorResponse response = ErrorResponse.of(BAD_REQUEST.value(), exception.getMessage());
         return ResponseEntity

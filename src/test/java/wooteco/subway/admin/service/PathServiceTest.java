@@ -9,6 +9,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +29,7 @@ public class PathServiceTest {
     private static final String STATION_NAME_GANGNAM_OFFICE = "강남구쳥역";
     private static final String STATION_NAME_SEONJEONGLUNG = "선정릉역";
     private static final String STATION_NAME_HANTI = "한티역";
+    private static final String STATION_NAME_BEOMGYE = "범계역";
 
     @Mock
     private LineRepository lineRepository;
@@ -36,6 +39,7 @@ public class PathServiceTest {
     private PathService pathService;
 
     private Line line2;
+    private Line line4;
     private Line bundangLine;
 
     private Station gangnam;
@@ -45,6 +49,7 @@ public class PathServiceTest {
     private Station gangnamOffice;
     private Station seonjeonglung;
     private Station hanti;
+    private Station beomgye;
 
     @BeforeEach
     void setUp() {
@@ -56,8 +61,10 @@ public class PathServiceTest {
         gangnamOffice = new Station(5L, STATION_NAME_GANGNAM_OFFICE);
         seonjeonglung = new Station(6L, STATION_NAME_SEONJEONGLUNG);
         hanti = new Station(7L, STATION_NAME_HANTI);
+        beomgye = new Station(8L, STATION_NAME_BEOMGYE);
 
         line2 = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line4 = new Line(1L, "4호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         bundangLine = new Line(2L, "분당선", "bg-gray-300", LocalTime.of(05, 00), LocalTime.of(23, 30), 7);
 
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -69,6 +76,8 @@ public class PathServiceTest {
         bundangLine.addLineStation(new LineStation(5L, 6L, 10, 10));
         bundangLine.addLineStation(new LineStation(6L, 3L, 10, 10));
         bundangLine.addLineStation(new LineStation(3L, 7L, 10, 10));
+
+        line4.addLineStation(new LineStation(null, 8L, 10, 10));
     }
 
     @Test
@@ -99,5 +108,15 @@ public class PathServiceTest {
         assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME_GANGNAM);
         assertThat(response.getDistance()).isEqualTo(30L);
         assertThat(response.getDuration()).isEqualTo(30L);
+    }
+
+    @Test
+    void lineNotConnectedExceptionTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine, line4));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti, beomgye));
+
+        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_BEOMGYE, "DISTANCE"))
+                .isInstanceOf(LineNotConnectedException.class)
+                .hasMessageContaining("연결되어 있지 않습니다");
     }
 }

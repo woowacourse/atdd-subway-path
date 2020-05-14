@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -38,7 +39,13 @@ public class PathService {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = initGraph(lineStations);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<Long> shortestPathIds = dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
+
+        List<Long> shortestPathIds;
+        try {
+            shortestPathIds = dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
+        } catch (NullPointerException e) {
+            throw new LineNotConnectedException();
+        }
 
         List<Station> shortestPath = new ArrayList<>();
         int distance = 0;
