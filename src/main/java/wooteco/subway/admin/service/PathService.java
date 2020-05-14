@@ -3,7 +3,6 @@ package wooteco.subway.admin.service;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -30,50 +29,20 @@ public class PathService {
     public PathResponse calculatePath(String source, String target) {
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
-        Long sourceId = stations
+        List<LineStation> lineStations = lines
                 .stream()
-                .filter(station -> station.getName().equals(source))
-                .map(Station::getId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        Long targetId = stations
-                .stream()
-                .filter(station -> station.getName().equals(target))
-                .map(Station::getId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .flatMap(line -> line.getStations()
+                        .stream()
+                        .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId())))
+                .collect(Collectors.toList());
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-        for (Line line : lines) {
-            for (LineStation lineStation : line.getStations()) {
-                if (Objects.isNull(lineStation.getPreStationId())) {
-                    continue;
-                }
-                graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
-            }
-        }
-        //----
+        Long sourceId = findStationIdByName(stations, source);
+        Long targetId = findStationIdByName(stations, target);
 
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<Long> shortestPath = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
-        System.out.println(shortestPath);
+        List<Long> shortestPath = createShortestPath(lines, sourceId, targetId);
 
-        List<Station> result = new ArrayList<>();
-
-        for (Long id : shortestPath) {
-            for (Station station : stations) {
-                if (station.getId() == id) {
-                    result.add(station);
-                    break;
-                }
-            }
-        }
-
-        List<LineStation> lineStations = lines.stream()
-                .flatMap(line -> line.getStations().stream())
+        List<Station> pathStations = shortestPath.stream()
+                .map(id -> findStationById(stations, id))
                 .collect(Collectors.toList());
 
         List<LineStation> pathLineStations = new ArrayList<>();
@@ -94,7 +63,35 @@ public class PathService {
         int duration = pathLineStations.stream()
                 .mapToInt(LineStation::getDuration)
                 .sum();
-        PathResponse pathResponse = new PathResponse(result, distance, duration);
-        return pathResponse;
+        return new PathResponse(pathStations, distance, duration);
+    }
+
+    private Station findStationById(List<Station> stations, Long id) {
+        return stations.stream()
+                .filter(station -> station.getId().equals(id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    private List<Long> createShortestPath(List<Line> lines, Long source, Long target) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        lines.stream()
+                .flatMap(it -> it.getLineStationsId().stream())
+                .forEach(graph::addVertex);
+        lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), it.getDistance()));
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    }
+
+    private Long findStationIdByName(List<Station> stations, String name) {
+        return stations
+                .stream()
+                .filter(station -> station.getName().equals(name))
+                .map(Station::getId)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }
