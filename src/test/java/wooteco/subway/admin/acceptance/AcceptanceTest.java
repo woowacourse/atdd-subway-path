@@ -188,7 +188,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/paths").
+                        get("/paths").
                         then().
                         log().all().
                         extract().as(PathResponse.class);
