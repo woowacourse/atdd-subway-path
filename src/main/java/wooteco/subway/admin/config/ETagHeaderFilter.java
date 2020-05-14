@@ -9,7 +9,7 @@ public class ETagHeaderFilter {
     public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
         FilterRegistrationBean<ShallowEtagHeaderFilter> filter
                 = new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
-        filter.addUrlPatterns("/admin/*");
+        filter.addUrlPatterns("/*");
         filter.setName("etagFilter");
         return filter;
     }

@@ -43,7 +43,6 @@ public class LineController {
     public ResponseEntity<List<LineResponse>> showLine() {
         List<LineResponse> lineResponses = LineResponse.listOf(lineService.showLines());
         return ResponseEntity.ok()
-                .eTag(String.valueOf(lineResponses.hashCode()))
                 .body(lineResponses);
     }
 
@@ -51,7 +50,7 @@ public class LineController {
     public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(id);
         return ResponseEntity.ok()
-                .eTag(String.valueOf(lineDetailResponse.hashCode()))
+                // .eTag(String.valueOf(lineDetailResponse.hashCode()))
                 .body(lineDetailResponse);
     }
 
@@ -84,7 +83,6 @@ public class LineController {
     public ResponseEntity<WholeSubwayResponse> getWholeSubway() {
         WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
         return ResponseEntity.ok()
-                .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
                 .body(wholeSubwayResponse);
     }
 }

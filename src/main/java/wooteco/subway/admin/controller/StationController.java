@@ -47,7 +47,6 @@ public class StationController {
     public ResponseEntity<List<StationResponse>> findStations() {
         List<StationResponse> stationResponses = stationService.findAll();
         return ResponseEntity.ok()
-                .eTag(String.valueOf(stationResponses.hashCode()))
                 .body(stationResponses);
     }
 

@@ -24,7 +24,6 @@ public class PathController {
             @RequestParam PathType pathType) {
         PathResponse pathResponse = pathService.findShortestPath(source, target, pathType);
         return ResponseEntity.ok()
-                .eTag(String.valueOf(pathResponse.hashCode()))
                 .body(pathResponse);
     }
 }
