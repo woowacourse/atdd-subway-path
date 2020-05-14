@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.jgrapht.Graphs;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
@@ -18,7 +18,7 @@ public class SubwayRouteFactory {
     }
 
     public SubwayRoute create(LineStations lineStations, Long departureId, Long arrivalId) {
-        WeightedGraph<Long, RouteEdge> graph = new SimpleWeightedGraph<>(RouteEdge.class);
+        WeightedGraph<Long, RouteEdge> graph = new WeightedMultigraph<>(RouteEdge.class);
         Graphs.addAllVertices(graph, lineStations.getStationIds());
 
         for (LineStation lineStation : lineStations.getStations()) {
