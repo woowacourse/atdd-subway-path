@@ -149,6 +149,69 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @DisplayName("2개의 노선에 같은 환승역이 존재하고 환승역은 또다른 노선을 가지고 있을 때 최단 경로를 찾는다")
+    @Test
+    void findShortestStationPathWhenTransferStationHasAnotherLine() {
+        //Given 출발역부 종착역사이의 역들이 저장돼있다.
+        createStation(STATION_NAME1);
+        createStation(STATION_NAME2);
+        createStation(STATION_NAME3);
+        createStation(STATION_NAME4);
+        createStation(STATION_NAME5);
+        createStation(STATION_NAME6);
+        createStation(STATION_NAME7);
+
+        createStation(STATION_NAME8);
+        createStation(STATION_NAME9);
+        createStation(STATION_NAME10);
+        createStation(STATION_NAME11);
+        createStation(STATION_NAME12);
+        createStation(STATION_NAME13);
+        createStation(STATION_NAME14);
+        createStation(STATION_NAME15);
+        createStation(STATION_NAME16);
+        createStation(STATION_NAME17);
+        createStation(STATION_NAME18);
+        createStation(STATION_NAME19);
+        createStation(STATION_NAME20);
+        createStation(STATION_NAME21);
+        //And 출발역부터 종착역사이의 노선이 2개가 있다.
+        createLine("1호선");
+        createLine("2호선");
+        createLine("신분당선");
+        //And 2개의 노선은 같은 환승역이 존재 한다.
+        addLineStation(1L, null, 1L,10,10);
+        addLineStation(1L, 1L, 2L,10,10);
+        addLineStation(1L, 2L, 3L,10,10);
+        addLineStation(1L, 3L, 4L,10,10);
+        addLineStation(1L, 4L, 5L,10,10);
+        addLineStation(1L, 5L, 6L,10,10);
+        addLineStation(1L, 6L, 7L,10,10);
+
+        addLineStation(2L, null, 1L, 1,1);
+        addLineStation(2L, 1L, 8L,1,1);
+        addLineStation(2L, 8L, 3L,1,1);
+        addLineStation(2L, 3L, 9L,1,1);
+        addLineStation(2L, 9L, 10L,1,1);
+        addLineStation(2L, 10L, 11L,1,1);
+        addLineStation(2L, 11L, 12L,1,1);
+        addLineStation(2L, 12L, 13L,1,1);
+        addLineStation(2L, 13L, 14L,1,1);
+        addLineStation(2L, 14L, 15L,1,1);
+        addLineStation(2L, 15L, 16L,1,1);
+        addLineStation(2L, 16L, 17L,1,1);
+        addLineStation(2L, 17L, 7L,1,1);
+
+        addLineStation(3L, null, 1L, 1, 1);
+        addLineStation(3L, 1L, 18L, 1, 1);
+        addLineStation(3L, 18L, 19L, 1, 1);
+        addLineStation(3L, 19L, 20L, 1, 1);
+        addLineStation(3L, 20L, 21L, 1, 1);
+
+        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역");
+        assertThat(shortestStationPath.getStations()).hasSize(13);
+    }
+
 
     private PathResponse getShortestStationPath(String source, String target) {
         return given().
