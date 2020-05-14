@@ -1,15 +1,15 @@
 package wooteco.subway.admin.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class LineTest {
     private Line line;
@@ -25,7 +25,6 @@ public class LineTest {
     @Test
     void addLineStation() {
         line.addLineStation(LineStation.of(null, 4L, 10, 10));
-
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), 4L))
