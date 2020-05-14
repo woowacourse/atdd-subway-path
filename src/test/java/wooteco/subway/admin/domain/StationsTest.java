@@ -3,11 +3,13 @@ package wooteco.subway.admin.domain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.exception.NoSuchStationException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StationsTest {
 
@@ -40,5 +42,21 @@ public class StationsTest {
         assertThat(stations.findStationByName("역삼").getId()).isEqualTo(2L);
         assertThat(stations.findStationByName("선릉").getId()).isEqualTo(3L);
         assertThat(stations.findStationByName("삼성").getId()).isEqualTo(4L);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역을 이름으로 찾을 경우 테스트")
+    void findStationThatIsNotExistByName() {
+        assertThatThrownBy(() -> stations.findStationByName("모란"))
+                .isInstanceOf(NoSuchStationException.class)
+                .hasMessageContaining("역을 찾을 수 없습니다");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역을 ID로 찾을 경우 테스트")
+    void findStationThatIsNotExistById() {
+        assertThatThrownBy(() -> stations.findStationById(5L))
+                .isInstanceOf(NoSuchStationException.class)
+                .hasMessageContaining("역을 찾을 수 없습니다");
     }
 }

@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import wooteco.subway.admin.exception.NoSuchStationException;
+
 import java.util.List;
 
 public class Stations {
@@ -13,13 +15,13 @@ public class Stations {
         return stations.stream()
                 .filter(station -> station.is(id))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchStationException::new);
     }
 
     public Station findStationByName(String name) {
         return stations.stream()
                 .filter(station -> station.is(name))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchStationException::new);
     }
 }
