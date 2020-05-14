@@ -2,9 +2,10 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
@@ -18,8 +19,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(
-            @RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
-        return ResponseEntity.ok(pathService.findPath(sourceId, targetId));
+    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
+        return ResponseEntity.ok(pathService.findPath(pathRequest));
     }
 }

@@ -1,49 +1,37 @@
 package wooteco.subway.admin.domain;
 
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SubwayGraphTest {
 
-    @DisplayName("최단 거리 경로에 있는 모든 역의 아이디를 순서대로 반환한다.")
+    @DisplayName("최단 경로를 찾는다")
     @Test
     void getShortestPath() {
         //given
-        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(11, 30), 10);
-        line.addEdge(new Edge(4L, 1L, 100, 10));
-        line.addEdge(new Edge(1L, 2L, 10, 10));
-        line.addEdge(new Edge(2L, 3L, 11, 10));
-        line.addEdge(new Edge(3L, 4L, 12, 10));
-        SubwayGraph subwayGraph = new SubwayGraph(line.getEdges());
+        Line line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(11, 30), 10);
+        line1.addEdge(new Edge(null, 1L, 1, 1));
+        line1.addEdge(new Edge(1L, 2L, 1, 1));
+        line1.addEdge(new Edge(2L, 3L, 10, 1));
+
+        Line line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(11, 30), 10);
+        line2.addEdge(new Edge(2L, 3L, 1, 10));
+        SubwayGraph subwayGraph = new SubwayGraph(Sets.union(line1.getEdges(), line2.getEdges()), Edge::getDistance);
 
         //when
-        List<Long> shortestPath = subwayGraph.getShortestPath(1L, 4L);
+        SubwayPath path = subwayGraph.getPath(1L, 3L);
+
+        Integer totalDistance = path.sumOfEdge(Edge::getDistance);
+        Integer totalDuration = path.sumOfEdge(Edge::getDuration);
 
         //then
-        assertThat(shortestPath).containsExactly(1L, 2L, 3L, 4L);
-    }
-
-    @DisplayName("찾은 최단 거리의 값을 구한다.")
-    @Test
-    void sumOfEdgeWeights() {
-        //given
-        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(11, 30), 10);
-        line.addEdge(new Edge(4L, 1L, 100, 10));
-        line.addEdge(new Edge(1L, 2L, 10, 10));
-        line.addEdge(new Edge(2L, 3L, 11, 10));
-        line.addEdge(new Edge(3L, 4L, 12, 10));
-        SubwayGraph subwayGraph = new SubwayGraph(line.getEdges());
-
-        //when
-        List<Long> shortestPath = subwayGraph.getShortestPath(1L, 4L);
-        double totalDistance = subwayGraph.sumOfEdgeWeights(shortestPath);
-
-        //then
-        assertThat(totalDistance).isEqualTo(33);
+        assertThat(path.getPaths()).containsExactly(1L, 2L, 3L);
+        assertThat(totalDistance).isEqualTo(2);
+        assertThat(totalDuration).isEqualTo(11);
     }
 }

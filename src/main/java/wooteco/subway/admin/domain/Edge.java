@@ -1,10 +1,24 @@
 package wooteco.subway.admin.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+
 public class Edge {
+    @Id
+    private Long id;
     private Long preStationId;
     private Long stationId;
     private int distance;
     private int duration;
+
+    @PersistenceConstructor
+    public Edge(final Long id, final Long preStationId, final Long stationId, final int distance, final int duration) {
+        this.id = id;
+        this.preStationId = preStationId;
+        this.stationId = stationId;
+        this.distance = distance;
+        this.duration = duration;
+    }
 
     public Edge(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;

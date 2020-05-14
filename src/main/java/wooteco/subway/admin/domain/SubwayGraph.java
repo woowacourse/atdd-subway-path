@@ -3,54 +3,40 @@ package wooteco.subway.admin.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 public class SubwayGraph {
     private WeightedMultigraph<Long, SubwayWeightEdge> graph;
 
-    public SubwayGraph(Set<Edge> edges) {
+    public SubwayGraph(Set<Edge> edges, Function<Edge, Integer> edgeIntegerFunction) {
         WeightedMultigraph<Long, SubwayWeightEdge> graph = new WeightedMultigraph<>(SubwayWeightEdge.class);
         for (Edge edge : edges) {
-            addEdge(graph, edge);
+            addEdge(graph, edge, edgeIntegerFunction);
         }
         this.graph = graph;
     }
 
-    public static Comparator<SubwayGraph> weightComparator(final Long sourceStationId, final Long targetStationId) {
-        return Comparator.comparingDouble(o -> o.sumOfEdgeWeights(o.getShortestPath(sourceStationId, targetStationId)));
-    }
-
-    private void addEdge(final WeightedMultigraph<Long, SubwayWeightEdge> graph, final Edge edge) {
+    private void addEdge(final WeightedMultigraph<Long, SubwayWeightEdge> graph, final Edge edge, final Function<Edge, Integer> edgeIntegerFunction) {
         graph.addVertex(edge.getStationId());
         if (edge.isNotFirst()) {
             graph.addVertex(edge.getPreStationId());
-            graph.setEdgeWeight(graph.addEdge(edge.getPreStationId(), edge.getStationId()), edge.getDistance());
+            graph.addEdge(edge.getPreStationId(), edge.getStationId(), new SubwayWeightEdge(edge, edgeIntegerFunction));
         }
     }
 
-    public List<Long> getShortestPath(Long sourceStationId, Long targetStationId) {
+    public SubwayPath getPath(Long sourceStationId, Long targetStationId) {
         if (!containAllVertexes(sourceStationId, targetStationId)) {
             throw new IllegalArgumentException(String.format("%d - %d : 존재하지 않는 경로입니다.", sourceStationId, targetStationId));
         }
-        DijkstraShortestPath<Long, SubwayWeightEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
-        return dijkstraShortestPath.getPath(sourceStationId, targetStationId)
-                .getVertexList();
+        return new SubwayPath(DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId));
     }
 
     public boolean containAllVertexes(final Long sourceStationId, final Long targetStationId) {
         return graph.containsVertex(sourceStationId) && graph.containsVertex(targetStationId);
     }
 
-    public double sumOfEdgeWeights(List<Long> stationIds) {
-        double sum = 0;
-        for (int idx = 0; idx < stationIds.size() - 1; idx++) {
-            sum += graph.getEdge(stationIds.get(idx), stationIds.get(idx + 1)).getValue();
-        }
-        return sum;
-    }
 
     @Override
     public boolean equals(final Object o) {

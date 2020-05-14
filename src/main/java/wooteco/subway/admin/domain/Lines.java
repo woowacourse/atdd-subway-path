@@ -28,11 +28,11 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Lines::new));
     }
 
-    public SubwayGraph getShortestGraph(Long sourceStationId, Long targetStationId) {
-        SubwayGraphs subwayGraphs = lines.stream()
-                .map(line -> new SubwayGraph(line.getEdges()))
-                .collect(Collectors.collectingAndThen(Collectors.toList(), SubwayGraphs::new));
-        return subwayGraphs.getShortestPath(sourceStationId, targetStationId);
+    public SubwayGraphs makeSubwayGraphs(Long sourceStationId, Long targetStationId) {
+        return lines.stream()
+                .map(Line::getEdges)
+                .flatMap(Collection::stream)
+                .collect(Collectors.collectingAndThen(Collectors.toSet(), SubwayGraphs::new));
     }
 
     @Override
