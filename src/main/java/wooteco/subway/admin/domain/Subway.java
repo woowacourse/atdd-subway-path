@@ -5,20 +5,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Subway {
     private final List<Line> lines;
     private final List<Station> stations;
-    private final WeightType weightType;
 
-    public Subway(List<Line> lines, List<Station> stations, WeightType weightType) {
+    public Subway(List<Line> lines, List<Station> stations) {
         validateNull(lines, stations);
         this.lines = lines;
         this.stations = stations;
-        this.weightType = weightType;
     }
 
     private void validateNull(List<Line> lines, List<Station> stations) {
@@ -27,20 +24,20 @@ public class Subway {
         }
     }
 
-    public GraphPath<Station, SubwayEdge> findShortestPath(String source, String target) {
+    public ShortestPath findShortestPath(String source, String target, PathType pathType) {
         Map<Long, Station> stationMapper = generateStationMapper();
 
         WeightedMultigraph<Station, SubwayEdge> subwayGraph = new WeightedMultigraph<>(
                 SubwayEdge.class);
         addVertices(subwayGraph);
-        addEdges(subwayGraph, stationMapper);
+        addEdges(subwayGraph, stationMapper, pathType);
 
         DijkstraShortestPath<Station, SubwayEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
                 subwayGraph);
         Station sourceId = findStationByName(source);
         Station targetId = findStationByName(target);
 
-        return dijkstraShortestPath.getPath(sourceId, targetId);
+        return new ShortestPath(dijkstraShortestPath.getPath(sourceId, targetId));
     }
 
     private Station findStationByName(String source) {
@@ -56,12 +53,13 @@ public class Subway {
         }
     }
 
-    private void addEdges(WeightedMultigraph<Station, SubwayEdge> subwayGraph, Map<Long, Station> stationMapper) {
-        List<LineStation> lineStations = generateLineStations(lines);
+    private void addEdges(WeightedMultigraph<Station, SubwayEdge> subwayGraph, Map<Long, Station> stationMapper,
+            PathType pathType) {
+        List<LineStation> lineStations = generateLineStations();
         for (LineStation lineStation : lineStations) {
             SubwayEdge lineStationEdge = subwayGraph.addEdge(stationMapper.get(lineStation.getPreStationId()),
                     stationMapper.get(lineStation.getStationId()));
-            subwayGraph.setEdgeWeight(lineStationEdge, weightType.getWeight(lineStation));
+            subwayGraph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
             lineStationEdge.setLineStation(lineStation);
         }
     }
@@ -73,7 +71,7 @@ public class Subway {
                         station -> station));
     }
 
-    private List<LineStation> generateLineStations(List<Line> lines) {
+    private List<LineStation> generateLineStations() {
         return lines.stream()
                 .flatMap(line -> line.getLineStations().stream())
                 .filter(LineStation::hasPreStation)

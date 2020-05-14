@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -77,11 +78,23 @@ public class PathServiceTest {
     }
 
     @Test
-    public void findShortestPathTest() {
+    public void findShortestDistancePathTest() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
-        PathResponse shortestPath = pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5);
+        PathResponse shortestPath = pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DISTANCE);
+
+        assertThat(shortestPath.getStations().size()).isEqualTo(5);
+        assertThat(shortestPath.getDistance()).isEqualTo(40);
+        assertThat(shortestPath.getDuration()).isEqualTo(40);
+    }
+
+    @Test
+    public void findShortestDurationPathTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        PathResponse shortestPath = pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DURATION);
 
         assertThat(shortestPath.getStations().size()).isEqualTo(5);
         assertThat(shortestPath.getDistance()).isEqualTo(40);

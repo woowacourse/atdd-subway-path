@@ -2,14 +2,13 @@ package wooteco.subway.admin.service;
 
 import java.util.List;
 
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.Subway;
-import wooteco.subway.admin.domain.SubwayEdge;
-import wooteco.subway.admin.domain.WeightType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -24,29 +23,13 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(String source, String target) {
+    public PathResponse findShortestPath(String source, String target, PathType pathType) {
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
 
-        Subway subway = new Subway(lines, stations, WeightType.DISTANCE);
+        Subway subway = new Subway(lines, stations);
+        ShortestPath shortestDurationPath = subway.findShortestPath(source, target, pathType);
 
-        GraphPath<Station, SubwayEdge> path = subway.findShortestPath(source, target);
-
-        Long totalDistance = calculateTotalDistance(path);
-        Long totalDuration = calculateTotalDuration(path);
-
-        return PathResponse.of(path.getVertexList(), totalDistance, totalDuration);
-    }
-
-    private long calculateTotalDistance(GraphPath<Station, SubwayEdge> path) {
-        return path.getEdgeList().stream()
-                .mapToLong(SubwayEdge::getDistance)
-                .sum();
-    }
-
-    private Long calculateTotalDuration(GraphPath<Station, SubwayEdge> path) {
-        return path.getEdgeList().stream()
-                .mapToLong(SubwayEdge::getDuration)
-                .sum();
+        return PathResponse.of(shortestDurationPath);
     }
 }

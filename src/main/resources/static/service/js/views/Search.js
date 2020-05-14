@@ -38,7 +38,7 @@ function Search() {
         const searchInput = {
             source: $departureStationName.value,
             target: $arrivalStationName.value,
-            type: pathType
+            pathType: pathType
         }
         api.path
             .find(searchInput)

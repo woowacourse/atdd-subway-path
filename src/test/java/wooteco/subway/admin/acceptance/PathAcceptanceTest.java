@@ -26,11 +26,12 @@ public class PathAcceptanceTest {
     }
 
     @Test
-    public void findShortestPath() {
+    public void findShortestDistancePath() {
         PathResponse pathResponse =
                 given().
-                        param("source", "양재시민의숲").
-                        param("target", "선릉").
+                        param("source", "포비").
+                        param("target", "브라운").
+                        param("pathType", "DISTANCE").
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
@@ -41,7 +42,28 @@ public class PathAcceptanceTest {
                         extract().as(PathResponse.class);
 
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
-        assertThat(pathResponse.getDistance()).isEqualTo(40);
         assertThat(pathResponse.getDuration()).isEqualTo(40);
+        assertThat(pathResponse.getDistance()).isEqualTo(11);
+    }
+
+    @Test
+    public void findShortestDurationPath() {
+        PathResponse pathResponse =
+                given().
+                        param("source", "포비").
+                        param("target", "브라운").
+                        param("pathType", "DURATION").
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/paths").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(PathResponse.class);
+
+        assertThat(pathResponse.getStations().size()).isEqualTo(4);
+        assertThat(pathResponse.getDuration()).isEqualTo(30);
+        assertThat(pathResponse.getDistance()).isEqualTo(15);
     }
 }
