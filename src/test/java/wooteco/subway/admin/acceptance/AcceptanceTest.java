@@ -189,7 +189,7 @@ public class AcceptanceTest {
 
     PathResponse retrievePath(String departure, String arrival, PathCriteria criteria) {
         return given().when()
-            .get("/paths?source=" + departure + "&target=" + arrival + "&criteria=" + criteria.name())
+            .get("/paths?source=" + departure + "&target=" + arrival + "&type=" + criteria.name())
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value())

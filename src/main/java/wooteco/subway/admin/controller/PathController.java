@@ -21,7 +21,7 @@ public class PathController {
     public ResponseEntity<PathResponse> getPath(
         @RequestParam("source") String source,
         @RequestParam("target") String target,
-        @RequestParam("criteria") PathCriteria criteria
+        @RequestParam("type") PathCriteria criteria
     ) {
         return ResponseEntity.ok(pathService.getPath(source, target, criteria));
     }

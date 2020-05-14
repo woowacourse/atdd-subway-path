@@ -24,7 +24,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역의 최단거리 경를 조회한다.")
     @Test
-    void getPath() {
+    void getShortestDistancePath() {
         // given 지하철역이 여러 개 추가되어있다.
         StationResponse station1 = createStation("1역");
         StationResponse station2 = createStation("2역");
@@ -61,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역의 최단시간 경로를 조회한다.")
     @Test
-    void getShortestTimePath() {
+    void getShortestDurationPath() {
         // given 지하철역이 여러 개 추가되어있다.
         StationResponse station1 = createStation("1역");
         StationResponse station2 = createStation("2역");
