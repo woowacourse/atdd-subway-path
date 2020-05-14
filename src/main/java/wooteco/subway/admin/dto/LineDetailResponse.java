@@ -41,6 +41,7 @@ public class LineDetailResponse {
         return new LineDetailResponse(line.getId(), line.getName(), line.getBackgroundColor(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
+
     public Long getId() {
         return id;
     }

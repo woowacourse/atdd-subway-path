@@ -1,9 +1,9 @@
 package wooteco.subway.admin.dto;
 
 public class PathRequestWithId {
-    private Long sourceId;
-    private Long targetId;
-    private PathType pathType;
+    private final Long sourceId;
+    private final Long targetId;
+    private final PathType pathType;
 
     public PathRequestWithId(Long sourceId, Long targetId, PathType pathType) {
         this.sourceId = sourceId;

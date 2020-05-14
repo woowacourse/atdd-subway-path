@@ -19,11 +19,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         List<StationResponse> stations = getStations();
         assertThat(stations.size()).isEqualTo(3);
+        assertThat(stations).extracting(StationResponse::getName)
+            .containsExactly(STATION_NAME_KANGNAM, STATION_NAME_YEOKSAM, STATION_NAME_SEOLLEUNG);
 
         // when
         deleteStation(stations.get(0).getId());
         // then
         List<StationResponse> stationsAfterDelete = getStations();
         assertThat(stationsAfterDelete.size()).isEqualTo(2);
+        assertThat(stationsAfterDelete).extracting(StationResponse::getName)
+            .containsExactly(STATION_NAME_YEOKSAM, STATION_NAME_SEOLLEUNG);
     }
 }

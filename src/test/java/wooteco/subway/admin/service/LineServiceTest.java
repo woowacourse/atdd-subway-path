@@ -25,7 +25,6 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -154,7 +153,7 @@ public class LineServiceTest {
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationService.findAllById(anyList())).thenReturn(stations);
 
-        LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
+        LineDetailResponse lineDetailResponse = lineService.findDetailLine(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
@@ -177,7 +176,7 @@ public class LineServiceTest {
         when(stationService.findAllById(newLine.getLineStationsId())).thenReturn(
             new ArrayList<>(stations2));
 
-        List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponse();
+        List<LineDetailResponse> lineDetails = lineService.findDetailLines().getLineDetailResponse();
 
         assertThat(lineDetails).isNotNull();
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);

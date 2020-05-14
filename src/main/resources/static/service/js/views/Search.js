@@ -73,7 +73,6 @@ function Search() {
       targetName: $arrivalStationName.value,
       type: $type
     }
-    console.log(searchInput);
     fetch('/path', {
       method: 'POST',
       headers: {
@@ -85,7 +84,6 @@ function Search() {
         throw response;
       }
       response.json().then(jsonResponse => {
-        console.log(jsonResponse);
         showSearchResult(jsonResponse);
       });
     }).catch(error => error.json().then(json => {

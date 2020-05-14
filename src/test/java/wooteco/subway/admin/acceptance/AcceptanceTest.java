@@ -100,10 +100,19 @@ public class AcceptanceTest {
                 extract().as(LineResponse.class);
     }
 
-    LineDetailResponse getLine(Long id) {
+    LineResponse getLine(Long id) {
         return
             given().when().
                 get("/lines/" + id).
+                then().
+                log().all().
+                extract().as(LineResponse.class);
+    }
+
+    LineDetailResponse getDetailLine(Long id) {
+        return
+            given().when().
+                get("/lines/detail/" + id).
                 then().
                 log().all().
                 extract().as(LineDetailResponse.class);
@@ -126,7 +135,17 @@ public class AcceptanceTest {
             statusCode(HttpStatus.OK.value());
     }
 
-    WholeSubwayResponse getLines() {
+    List<LineResponse> getLines() {
+        return
+            given().when().
+                get("/lines").
+                then().
+                log().all().
+                extract().
+                jsonPath().getList(".", LineResponse.class);
+    }
+
+    WholeSubwayResponse getDetailLines() {
         return
             given().when().
                 get("/lines/detail").

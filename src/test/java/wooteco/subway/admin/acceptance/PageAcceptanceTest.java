@@ -2,6 +2,8 @@ package wooteco.subway.admin.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,5 +43,53 @@ public class PageAcceptanceTest extends AcceptanceTest{
         then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void stationPage() {
+        createStation("강남");
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/admin/station").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void edgePage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/admin/edge").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void mapPage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/service/map").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void searchPage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/service/search").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
     }
 }

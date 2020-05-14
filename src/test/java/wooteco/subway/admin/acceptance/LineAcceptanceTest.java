@@ -20,11 +20,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createLine(LINE_NAME_2);
         createLine(LINE_NAME_3);
         // then
-        List<LineDetailResponse> lines = getLines().getLineDetailResponse();
+        List<LineResponse> lines = getLines();
         assertThat(lines.size()).isEqualTo(4);
 
         // when
-        LineDetailResponse line = getLine(lines.get(0).getId());
+        LineResponse line = getLine(lines.get(0).getId());
         // then
         assertThat(line.getId()).isNotNull();
         assertThat(line.getName()).isNotNull();
@@ -37,14 +37,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LocalTime endTime = LocalTime.of(22, 00);
         updateLine(line.getId(), startTime, endTime);
         //then
-        LineDetailResponse updatedLine = getLine(line.getId());
+        LineResponse updatedLine = getLine(line.getId());
         assertThat(updatedLine.getStartTime()).isEqualTo(startTime);
         assertThat(updatedLine.getEndTime()).isEqualTo(endTime);
 
         // when
         deleteLine(line.getId());
         // then
-        List<LineDetailResponse> linesAfterDelete = getLines().getLineDetailResponse();
+        List<LineResponse> linesAfterDelete = getLines();
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }
 }

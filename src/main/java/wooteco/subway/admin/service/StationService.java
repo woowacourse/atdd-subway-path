@@ -10,6 +10,7 @@ import wooteco.subway.admin.dto.PathRequestWithId;
 import wooteco.subway.admin.dto.PathType;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.IllegalStationNameException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 import wooteco.subway.admin.repository.StationRepository;
@@ -39,26 +40,10 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public PathRequestWithId toPathRequestWithId(PathRequest pathRequest) {
-        String sourceName = pathRequest.getSourceName();
-        String targetName = pathRequest.getTargetName();
-        PathType pathType = PathType.of(pathRequest.getType());
 
-        if (sourceName.equals(targetName)) {
-            throw new NotFoundPathException();
-        }
-
-        Long sourceId = stationRepository.findByName(sourceName).map(station -> station.getId())
-            .orElseThrow(NotFoundStationException::new);
-        Long targetId = stationRepository.findByName(targetName).map(station -> station.getId())
-            .orElseThrow(NotFoundStationException::new);
-
-
-        return new PathRequestWithId(sourceId,targetId,pathType);
-    }
-
-    public Station findByName(String name) {
-        return stationRepository.findByName(name).orElse(null);
+    public Long findIdByName(String name) {
+        return stationRepository.findByName(name)
+            .orElseThrow(() -> new NotFoundStationException(name)).getId();
     }
 
     public List<Station> findAllById(List<Long> lineStationsId) {

@@ -31,8 +31,29 @@ public class LineService {
         return LineResponse.of(lineRepository.save(line));
     }
 
-    public List<LineResponse> showLines() {
+    public List<LineResponse> findLines() {
         return LineResponse.listOf(lineRepository.findAll());
+    }
+
+    public LineResponse findLine(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException(id));
+
+        return LineResponse.of(line);
+    }
+
+    public LineDetailResponse findDetailLine(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException(id));
+        List<Station> stations = stationService.findAllById(line.getLineStationsId());
+        return LineDetailResponse.of(line, stations);
+    }
+
+    public WholeSubwayResponse findDetailLines() {
+        List<Line> lines = lineRepository.findAll();
+        List<LineDetailResponse> lineDetailResponses = lines.stream()
+            .map(line ->
+                LineDetailResponse.of(line, stationService.findAllById(line.getLineStationsId())))
+            .collect(Collectors.toList());
+        return WholeSubwayResponse.of(lineDetailResponses);
     }
 
     public void updateLine(Long id, LineRequest request) {
@@ -56,23 +77,13 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId)
+            .orElseThrow(() -> new NotFoundLineException(lineId));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationService.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
-    }
-
-    public WholeSubwayResponse wholeLines() {
-        List<Line> lines = lineRepository.findAll();
-        List<LineDetailResponse> lineDetailResponses = lines.stream()
-            .map(line ->
-                LineDetailResponse.of(line, stationService.findAllById(line.getLineStationsId())))
-            .collect(Collectors.toList());
-        return WholeSubwayResponse.of(lineDetailResponses);
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
 }

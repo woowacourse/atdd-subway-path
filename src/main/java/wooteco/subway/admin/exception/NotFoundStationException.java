@@ -1,10 +1,10 @@
 package wooteco.subway.admin.exception;
 
-public class NotFoundStationException extends RuntimeException {
+import org.springframework.dao.DataAccessException;
 
-    public static final String ERROR_MESSAGE = "존재하지 않는 역 입니다.";
+public class NotFoundStationException extends DataAccessException {
 
-    public NotFoundStationException() {
-        super(ERROR_MESSAGE);
+    public NotFoundStationException(String name) {
+        super(name + "역을 찾을 수 없습니다.");
     }
 }

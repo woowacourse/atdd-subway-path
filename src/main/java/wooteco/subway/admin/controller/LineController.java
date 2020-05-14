@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,13 +42,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(lineService.showLines());
+    public ResponseEntity<List<LineResponse>> retrieveLines() {
+        return ResponseEntity.ok().body(lineService.findLines());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-        return ResponseEntity.ok().body(lineService.findLineWithStationsById(id));
+    public ResponseEntity<LineResponse> retrieveLine(@PathVariable Long id) {
+        return ResponseEntity.ok().body(lineService.findLine(id));
     }
 
     @PutMapping("/{id}")
@@ -78,8 +79,15 @@ public class LineController {
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<WholeSubwayResponse> wholeLines() {
-        WholeSubwayResponse response = lineService.wholeLines();
+    public ResponseEntity<WholeSubwayResponse> retrieveDetailLines() {
+        WholeSubwayResponse response = lineService.findDetailLines();
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<LineDetailResponse> retrieveDetailLine(@PathVariable Long id) {
+        LineDetailResponse response = lineService.findDetailLine(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
