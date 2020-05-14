@@ -11,7 +11,10 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -61,8 +64,22 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
+    public WholeSubwayResponse findWholeLines() {
+        List<Line> lines = lineRepository.findAll();
+        List<Station> stations = stationRepository.findAll();
+
+        Map<Long, Station> stationMap = new HashMap<>(); //key = stationId, value = Station
+        for (Station station : stations) {
+            stationMap.put(station.getId(), station);
+        }
+
+        return WholeSubwayResponse.of(
+                lines.stream()
+                        .map(line -> LineDetailResponse.of(line,
+                                line.getLineStationsId()
+                                        .stream()
+                                        .map(stationId -> stationMap.get(stationId))
+                                        .collect(Collectors.toList())))
+                        .collect(Collectors.toList()));
     }
 }

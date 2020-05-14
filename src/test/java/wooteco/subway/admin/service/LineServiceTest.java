@@ -11,6 +11,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -149,5 +150,16 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void findWholeLineService() {
+        List<Line> lines = Lists.newArrayList(new Line(), new Line(), new Line());
+        when(lineRepository.findAll()).thenReturn(lines);
+
+        WholeSubwayResponse wholeSubwayResponse = lineService.findWholeLines();
+
+        assertThat(wholeSubwayResponse.getLineDetailResponses()).hasSize(3);
+
     }
 }
