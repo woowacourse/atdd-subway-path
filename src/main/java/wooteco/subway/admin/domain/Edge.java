@@ -5,12 +5,12 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 public class Edge extends DefaultWeightedEdge {
 	private int duration;
 	private int distance;
-	private String criteria;
+	private Criteria criteria;
 
 	public Edge() {
 	}
 
-	public Edge(int duration, int distance, String criteria) {
+	public Edge(int duration, int distance, Criteria criteria) {
 		this.duration = duration;
 		this.distance = distance;
 		this.criteria = criteria;
@@ -24,8 +24,8 @@ public class Edge extends DefaultWeightedEdge {
 		return distance;
 	}
 
-	public String getCriteria() {
-		return criteria;
+	public double getWeight() {
+		return criteria.getWeight(duration, distance);
 	}
 
 

@@ -1,0 +1,59 @@
+package wooteco.subway.admin.domain;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.dto.ShortestPath;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class PathTest {
+	private Subway subway;
+	private List<Line> lines = new ArrayList<>();
+	private Line line1;
+
+	private Station station1;
+	private Station station2;
+	private Station station3;
+	private Station station4;
+	private List<Station> sourceStations;
+	private Stations stations;
+
+	@BeforeEach
+	void setUp() {
+		line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+		line1.addLineStation(new LineStation(null, 1L, 10, 10));
+		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
+		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+		line1.addLineStation(new LineStation(3L, 4L, 10, 10));
+		lines.add(line1);
+
+		subway = new Subway(lines);
+
+		station1 = new Station(1L, "구로");
+		station2 = new Station(2L, "신도림");
+		station3 = new Station(3L, "신길");
+		station4 = new Station(4L, "용산");
+		sourceStations = Arrays.asList(station1, station2, station3, station4);
+		stations = new Stations(sourceStations);
+	}
+
+	@DisplayName("인자를 주면 ShortestPath를 반환")
+	@Test
+	void findShortestPath() {
+		Path path = new Path(subway, stations);
+
+
+		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of("distance"));
+
+		assertEquals(shortestPath.getPath().get(0), station1);
+		assertEquals(shortestPath.getPath().get(1), station2);
+		assertEquals(shortestPath.getPath().get(2), station3);
+		assertEquals(shortestPath.getPath().get(3), station4);
+	}
+}

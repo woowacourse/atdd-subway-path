@@ -17,9 +17,11 @@ public class PathController {
 	}
 
 	@GetMapping("/path/distance")
-	public ResponseEntity<ShortestPath> findShortestDistancePath(@PathParam("sourceName") String sourceName, @PathParam("targetName") String targetName) {
+	public ResponseEntity<ShortestPath> findShortestDistancePath(@PathParam("sourceName") String sourceName,
+																 @PathParam("targetName") String targetName,
+																 @PathParam("criteria") String criteria) {
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName);
+		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
 		return ResponseEntity.ok()
 				.body(shortestPath);

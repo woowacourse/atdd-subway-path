@@ -42,14 +42,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		//		And	지하철 노선들에 지하철역들이 추가되어있다.
 		addLineStation(1L, null, 1L, 10, 10);
 		addLineStation(1L, 1L, 2L, 10, 10);
-		addLineStation(1L, 2L, 3L, 10, 10);
+		addLineStation(1L, 2L, 3L, 10, 20);
 		addLineStation(1L, 3L, 4L, 20, 20);
 		addLineStation(1L, 4L, 5L, 10, 10);
 		addLineStation(1L, 5L, 13L, 10, 10);
 
 		addLineStation(2L, null, 13L, 10, 10);
 		addLineStation(2L, 13L, 6L, 10, 10);
-		addLineStation(2L, 6L, 7L, 10, 10);
+		addLineStation(2L, 6L, 7L, 10, 50);
 		addLineStation(2L, 7L, 8L, 10, 10);
 		addLineStation(2L, 8L, 2L, 10, 10);
 		addLineStation(2L, 2L, 9L, 10, 10);
@@ -59,8 +59,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(3L, 12L, 5L, 10, 10);
 
 		addLineStation(4L, null, 8L, 10, 10);
-		addLineStation(4L, 8L, 3L, 10, 10);
-		addLineStation(4L, 3L, 10L, 10, 10);
+		addLineStation(4L, 8L, 3L, 20, 10);
+		addLineStation(4L, 3L, 10L, 20, 10);
 		addLineStation(4L, 10L, 6L, 20, 10);
 
 		addLineStation(5L, null, 7L, 30, 10);
@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(5L, 10L, 11L, 30, 10);
 
 		//		When 시청역부터 신도림역까지 최단거리 경로를 구하고 싶다.
-		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림");
+		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림", "distance");
 
 		//		Then 시청역부터 신도림역까지 최단거리 경로가 구해졌다.
 		List<Station> path = shortestPath.getPath();

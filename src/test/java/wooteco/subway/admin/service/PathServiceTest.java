@@ -83,6 +83,7 @@ class PathServiceTest {
   	void getShortestDistancePath() {
 		String sourceName = "시청";
 		String targetName = "신도림";
+		String criteria = "distance";
 
 		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
 		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
@@ -91,7 +92,7 @@ class PathServiceTest {
 		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
 				station5, station6, station7, station8, station9, station10));
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName);
+		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
 
 		assertEquals(shortestPath.getPath().get(0), station6);
@@ -102,6 +103,5 @@ class PathServiceTest {
 
 		assertEquals(shortestPath.getDistance(), 40);
 		assertEquals(shortestPath.getDuration(), 40);
-  	  }
-  	// @formatter:on
+	}// @formatter:on
 }

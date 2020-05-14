@@ -181,12 +181,13 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    ShortestPath findShortestDistancePath(String sourceName, String targetName) {
+    ShortestPath findShortestDistancePath(String sourceName, String targetName, String criteria) {
         return given().
                 contentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8").
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                queryParam("sourceName", sourceName)
-                .queryParam("targetName", targetName).
+                queryParam("sourceName", sourceName).
+                queryParam("targetName", targetName).
+                queryParam("criteria", criteria).
             when().
                     get("/path/distance").
             then().
