@@ -1,8 +1,7 @@
 package wooteco.subway.admin.domain.path;
 
-import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.List;
@@ -16,8 +15,8 @@ public class ShortestPath {
     }
 
     public static ShortestPath createDistancePath(List<LineStation> lineStations) {
-        WeightedGraph<Long, WeightedEdge> graph
-            = new WeightedMultigraph<>(WeightedEdge.class);
+        SimpleDirectedWeightedGraph<Long, WeightedEdge> graph
+                = new SimpleDirectedWeightedGraph<>(WeightedEdge.class);
 
         for (LineStation station : lineStations) {
             graph.addVertex(station.getStationId());
@@ -25,7 +24,7 @@ public class ShortestPath {
                 continue;
             }
             WeightedEdge weightedEdge
-                = graph.addEdge(station.getPreStationId(), station.getStationId());
+                    = graph.addEdge(station.getPreStationId(), station.getStationId());
             weightedEdge.setSubWeight(station.getDuration());
 
             graph.setEdgeWeight(weightedEdge, station.getDistance());

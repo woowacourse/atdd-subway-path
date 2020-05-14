@@ -245,4 +245,20 @@ public class LineServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 경로입니다.");
     }
+
+    @DisplayName("(예외) 역방향인 경로일 때")
+    @Test
+    void findShortestDistancePath_ReversedPath() {
+        List<Line> lines = Lists.newArrayList(line1);
+
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findIdByName(station1.getName()))
+                .thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station3.getName()))
+                .thenReturn(Optional.of(station3.getId()));
+
+        assertThatThrownBy(() -> lineService.findShortestDistancePath(STATION_NAME3, STATION_NAME1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 경로입니다.");
+    }
 }
