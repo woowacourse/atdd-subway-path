@@ -2,22 +2,17 @@ package wooteco.subway.admin.service;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.exception.NotFoundLineStationException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -31,7 +26,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse generatePathResponse(String sourceName, String targetName) {
+    public PathResponse findPath(String sourceName, String targetName, String type) {
         Station source = stationService.findByName(sourceName);
         Station target = stationService.findByName(targetName);
         List<Line> lines = lineService.findLines();
@@ -40,18 +35,21 @@ public class PathService {
                 .stream()
                 .collect(toMap(Station::getId, Function.identity()));
 
-        DijkstraShortestPath path = shortestPath(lines, stations, LineStation::getDistance);
-        GraphPath graphPath = path.getPath(source, target);
+        PathType pathType = PathType.of(type);
+
+        DijkstraShortestPath<Station, LineStationEdge> path = shortestPath(lines, stations, pathType.getStrategy());
+        GraphPath<Station, LineStationEdge> graphPath = path.getPath(source, target);
 
         List<Station> shortestPath = graphPath.getVertexList();
-        int shortestDistance = (int)graphPath.getWeight();
-        int shortestDuration = calculateCost(shortestPath, lines, LineStation::getDuration);
+
+        int shortestDistance = pathType.calculateDistance(graphPath);
+        int shortestDuration = pathType.calculateDuration(graphPath);
 
         return new PathResponse(StationResponse.listOf(shortestPath), shortestDistance, shortestDuration);
     }
 
-    private DijkstraShortestPath shortestPath(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private DijkstraShortestPath<Station, LineStationEdge> shortestPath(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {
+        WeightedMultigraph<Station, LineStationEdge> graph = new WeightedMultigraph<>(LineStationEdge.class);
 
         List<LineStation> lineStations = linesToLineStations(lines);
 
@@ -59,12 +57,12 @@ public class PathService {
                 .forEach(graph::addVertex);
 
         lineStations.forEach(lineStation -> {
-            graph.setEdgeWeight(graph.addEdge(stations.get(lineStation.getPreStationId()),
-                    stations.get(lineStation.getStationId())),
-                    weightStrategy.apply(lineStation));
+            graph.addEdge(stations.get(lineStation.getPreStationId()),
+                    stations.get(lineStation.getStationId()),
+                    new LineStationEdge(lineStation, weightStrategy));
         });
 
-        return new DijkstraShortestPath(graph);
+        return new DijkstraShortestPath<>(graph);
     }
 
     private List<LineStation> linesToLineStations(List<Line> lines) {
@@ -73,21 +71,5 @@ public class PathService {
                 .flatMap(Set::stream)
                 .filter(LineStation::isNotStarting)
                 .collect(Collectors.toList());
-    }
-
-    private int calculateCost(List<Station> stations, List<Line> lines, Function<LineStation, Integer> costStrategy) {
-        List<LineStation> lineStations = linesToLineStations(lines);
-
-        return IntStream.range(1, stations.size())
-                .mapToObj(i -> findLineStation(lineStations, stations.get(i - 1), stations.get(i)))
-                .mapToInt(costStrategy::apply)
-                .sum();
-    }
-
-    private LineStation findLineStation(List<LineStation> lineStations, Station preStation, Station station) {
-        return lineStations.stream()
-                .filter(lineStation -> lineStation.isConnected(preStation.getId(), station.getId()))
-                .findAny()
-                .orElseThrow(() -> new NotFoundLineStationException(preStation.getName(), station.getName()));
     }
 }

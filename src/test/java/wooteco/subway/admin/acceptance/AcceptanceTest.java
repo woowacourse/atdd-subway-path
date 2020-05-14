@@ -8,10 +8,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.filter.CharacterEncodingFilter;
 import wooteco.subway.admin.dto.*;
 
-import javax.servlet.Filter;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -170,15 +168,14 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    PathResponse getShortestPath(String source, String target) {
+    PathResponse getShortestPath(String source, String target, String type) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
-
+        params.put("type", type);
 
         return given().
-                queryParam("source",source).
-                queryParam("target",target).
+                queryParams(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
             when().

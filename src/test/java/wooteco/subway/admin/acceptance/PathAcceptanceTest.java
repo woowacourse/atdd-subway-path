@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponseEnd.getId(), 10, 10);
 
         // When
-        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END);
+        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, "distance");
 
         // Then
         List<StationResponse> stations = pathResponse.getStations();
@@ -55,5 +55,46 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stations.get(2).getId()).isEqualTo(stationResponseEnd.getId());
         assertThat(pathResponse.getDistance()).isEqualTo(20);
         assertThat(pathResponse.getDuration()).isEqualTo(20);
+    }
+
+    @DisplayName("최소 시간을 구한다")
+    @Test
+    void shortestPath2() {
+        // Given
+        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
+        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponseStart = createStation(STATION_NAME_START);
+        StationResponse stationResponseEnd = createStation(STATION_NAME_END);
+
+        // And
+        LineResponse lineResponse1 = createLine(LINE_NAME_2);
+        LineResponse lineResponse2 = createLine(LINE_NAME_3);
+        LineResponse lineResponse3 = createLine(LINE_NAME_BUNDANG);
+
+        // And
+        addLineStation(lineResponse1.getId(), null, stationResponseStart.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponseStart.getId(), stationResponse1.getId(), 10, 1);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 10, 1);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponseEnd.getId(), 10, 1);
+
+        addLineStation(lineResponse2.getId(), null, stationResponseStart.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), stationResponseStart.getId(), stationResponse3.getId(), 10, 10);
+
+        addLineStation(lineResponse3.getId(), null, stationResponse3.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponseEnd.getId(), 10, 10);
+
+        // When
+        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, "duration");
+
+        // Then
+        List<StationResponse> stations = pathResponse.getStations();
+        assertThat(stations.size()).isEqualTo(4);
+        assertThat(stations.get(0).getId()).isEqualTo(stationResponseStart.getId());
+        assertThat(stations.get(1).getId()).isEqualTo(stationResponse1.getId());
+        assertThat(stations.get(2).getId()).isEqualTo(stationResponse2.getId());
+        assertThat(stations.get(3).getId()).isEqualTo(stationResponseEnd.getId());
+        assertThat(pathResponse.getDistance()).isEqualTo(30);
+        assertThat(pathResponse.getDuration()).isEqualTo(3);
     }
 }
