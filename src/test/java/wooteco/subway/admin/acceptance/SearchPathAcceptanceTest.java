@@ -3,7 +3,10 @@ package wooteco.subway.admin.acceptance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SearchPathAcceptanceTest extends AcceptanceTest {
 //    Feature: 출발역과 도착역의 최단 경로를 조회하는 기능 구현
@@ -25,7 +28,8 @@ public class SearchPathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
 //        When 출발역과 도착역을 입력하여 조회 요청을 한다.
-        searchPath(stationResponse1.getId(), stationResponse2.getId());
 //        Then 최단 거리 기준으로 경로와 기타 정보를 응답한다.
+        SearchPathResponse searchPathResponse = searchPath(stationResponse1.getName(), stationResponse2.getName(), "distance");
+        assertThat(searchPathResponse.getPathStationNames().size()).isEqualTo(2);
     }
 }

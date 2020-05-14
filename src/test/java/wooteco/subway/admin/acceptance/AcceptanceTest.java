@@ -8,10 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.SearchPathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -155,9 +152,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -166,21 +163,24 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    SearchPathResponse searchPath(Long startStationId, Long targetStationId) {
+    SearchPathResponse searchPath(String startStationName, String targetStationName, String type) {
+        SearchPathRequest searchPathRequest = new SearchPathRequest(startStationName, targetStationName, type);
         return  given().
+                        body(searchPathRequest).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                        get("/stations/path?startStationId=" + startStationId + "&targetStationId=" + targetStationId).
+                        post("/paths").
                 then().
                         log().all().
                         extract().as(SearchPathResponse.class);
     }
-
 }
 

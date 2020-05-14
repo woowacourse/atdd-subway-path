@@ -2,10 +2,8 @@ package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

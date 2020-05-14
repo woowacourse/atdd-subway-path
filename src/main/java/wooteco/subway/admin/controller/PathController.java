@@ -1,12 +1,14 @@
 package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import wooteco.subway.admin.dto.SearchPathRequest;
 import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.service.PathService;
 
-import javax.servlet.http.HttpServletRequest;
-
+@Controller
 public class PathController {
     private PathService pathService;
 
@@ -14,11 +16,11 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/paths")
-    public ResponseEntity<SearchPathResponse> searchPath(HttpServletRequest request) {
-        String startStationName = request.getParameter("startStationName");
-        String targetStationName = request.getParameter("targetStationName");
-        String type = request.getParameter("type");
+    @PostMapping("/paths")
+    public ResponseEntity<SearchPathResponse> searchPath(@RequestBody SearchPathRequest searchPathRequest) {
+        String startStationName = searchPathRequest.getStartStationName();
+        String targetStationName = searchPathRequest.getTargetStationName();
+        String type = searchPathRequest.getType();
 
         return ResponseEntity.ok().body(pathService.searchPath(startStationName, targetStationName, type));
     }

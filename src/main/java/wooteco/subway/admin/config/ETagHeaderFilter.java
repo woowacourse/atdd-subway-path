@@ -9,7 +9,7 @@ public class ETagHeaderFilter {
     public FilterRegistrationBean<ShallowEtagHeaderFilter>
     shallowEtagHeaderFilter() {
         FilterRegistrationBean<ShallowEtagHeaderFilter> filter
-                = new FilterRegistrationBean<>( new ShallowEtagHeaderFilter());
+                = new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
         filter.addUrlPatterns("/lines/*");
         filter.setName("etagFilter");
         return filter;

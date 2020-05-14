@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -37,8 +38,16 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
         Station targetStation = stationRepository.findByName(targetStationName)
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
-        List<Station> shortestPath
-                = dijkstraShortestPath.getPath(startStation, targetStation).getVertexList();
+
+        GraphPath path = dijkstraShortestPath.getPath(startStation, targetStation);
+        if (path == null) {
+            throw new IllegalArgumentException("두 역이 연결되어있지 않습니다.");
+        }
+
+        List<Station> shortestPath = path.getVertexList();
+        if (shortestPath.size() == 1) {
+            throw new IllegalArgumentException("시작역과 도착역이 같습니다.");
+        }
 
         int durationSum = calculateValueSum(shortestPath, "duration");
         int distanceSum = calculateValueSum(shortestPath, "distance");
@@ -61,8 +70,7 @@ public class PathService {
                 System.out.println(lineStation.getStationId());
                 Iterator<Station> a = stationRepository.findAll().iterator();
                 Station b = a.next();
-                System.out.println(b.getName() +": "+b.getId());
-
+                System.out.println(b.getName() + ": " + b.getId());
 
 
                 Station station = stationRepository.findById(lineStation.getStationId())
@@ -88,16 +96,16 @@ public class PathService {
 
     private int calculateValueSum(List<Station> shortestPath, String type) {
         int valueSum = 0;
-        for(int i=1;i<shortestPath.size();i++){
+        for (int i = 1; i < shortestPath.size(); i++) {
             Station preStation = shortestPath.get(i - 1);
             Station Station = shortestPath.get(i);
             int value = 0;
 
-            if(type.equals("duration")){
-                value = lineStationRepository.findById(preStation.getId(),Station.getId()).getDuration();
+            if (type.equals("duration")) {
+                value = lineStationRepository.findById(preStation.getId(), Station.getId()).getDuration();
             }
-            if(type.equals("distance")){
-                value = lineStationRepository.findById(preStation.getId(),Station.getId()).getDistance();
+            if (type.equals("distance")) {
+                value = lineStationRepository.findById(preStation.getId(), Station.getId()).getDistance();
             }
             valueSum += value;
         }
