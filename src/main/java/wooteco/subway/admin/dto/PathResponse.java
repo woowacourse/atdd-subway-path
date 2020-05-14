@@ -10,7 +10,7 @@ public class PathResponse {
     private Long distance;
     private Long duration;
 
-    public PathResponse() {
+    private PathResponse() {
     }
 
     private PathResponse(List<StationResponse> stations, Long distance, Long duration) {

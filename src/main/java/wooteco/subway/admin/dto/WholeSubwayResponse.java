@@ -6,7 +6,7 @@ import java.util.Objects;
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponses;
 
-    public WholeSubwayResponse() {
+    private WholeSubwayResponse() {
     }
 
     public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
