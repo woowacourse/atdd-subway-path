@@ -4,8 +4,8 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -13,7 +13,6 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,9 +29,9 @@ public class PathService {
 
     public PathResponse calculatePath(String source, String target, String type) {
 
-        List<Line> allLines = lineRepository.findAll();
+        Lines allLines = new Lines(lineRepository.findAll());
 
-        List<LineStation> lineStations = getAllLineStation(allLines);
+        List<LineStation> lineStations = allLines.getAllLineStation();
 
         List<Station> allStations = stationRepository.findAll();
 
@@ -93,13 +92,6 @@ public class PathService {
         return lineStations.stream()
                 .map(LineStation::getStationId)
                 .collect(Collectors.toSet());
-    }
-
-    private List<LineStation> getAllLineStation(List<Line> allLines) {
-        return allLines.stream()
-                .map(Line::getStations)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
     }
 
     public Station findStationById(Long id, List<Station> stations) {
