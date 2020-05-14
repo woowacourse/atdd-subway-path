@@ -14,6 +14,7 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.StationService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,9 @@ public class LineControllerTest {
 
     @MockBean
     private LineService lineService;
+
+    @MockBean
+    private StationService stationService;
 
     @Test
     void ETag() throws Exception {

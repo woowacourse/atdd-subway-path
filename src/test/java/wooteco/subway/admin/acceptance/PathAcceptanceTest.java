@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 1, 10);
 
         //when
-        PathResponse path = findPath(jamsil.getName(), samjun.getName());
+        PathResponse path = findPath(jamsil.getName(), samjun.getName(),"distance");
 
         //then
         assertThat(path.getStations()).hasSize(4);

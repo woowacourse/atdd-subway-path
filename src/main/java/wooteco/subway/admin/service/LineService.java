@@ -45,17 +45,8 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Station preStation = stationService.findByName(request.getPreStationName());
-        Long preStationId;
-        if(Objects.isNull(preStation)){
-            preStationId=null;
-        } else{
-            preStationId = preStation.getId();
-        }
-
-        Long stationId = stationService.findByName(request.getStationName()).getId();
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(preStationId, stationId,
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 

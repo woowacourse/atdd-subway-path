@@ -37,7 +37,7 @@ public class LineServiceTest {
     @Mock
     private LineRepository lineRepository;
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     private LineService lineService;
 
@@ -49,7 +49,7 @@ public class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineRepository, stationRepository);
+        lineService = new LineService(lineRepository, stationService);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -152,7 +152,7 @@ public class LineServiceTest {
         List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"),
             new Station("삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
-        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+        when(stationService.findAllById(anyList())).thenReturn(stations);
 
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
@@ -172,9 +172,9 @@ public class LineServiceTest {
             new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
-        when(stationRepository.findAllById(line.getLineStationsId())).thenReturn(
+        when(stationService.findAllById(line.getLineStationsId())).thenReturn(
             new ArrayList<>(stations1));
-        when(stationRepository.findAllById(newLine.getLineStationsId())).thenReturn(
+        when(stationService.findAllById(newLine.getLineStationsId())).thenReturn(
             new ArrayList<>(stations2));
 
         List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponse();

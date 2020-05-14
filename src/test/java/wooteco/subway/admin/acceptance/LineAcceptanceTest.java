@@ -20,7 +20,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createLine(LINE_NAME_2);
         createLine(LINE_NAME_3);
         // then
-        List<LineResponse> lines = getLines();
+        List<LineDetailResponse> lines = getLines().getLineDetailResponse();
         assertThat(lines.size()).isEqualTo(4);
 
         // when
@@ -44,7 +44,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         deleteLine(line.getId());
         // then
-        List<LineResponse> linesAfterDelete = getLines();
+        List<LineDetailResponse> linesAfterDelete = getLines().getLineDetailResponse();
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }
 }

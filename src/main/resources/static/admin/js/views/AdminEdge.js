@@ -52,10 +52,10 @@ function AdminEdge() {
       const subwayLineOptionTemplate = jsonResponse
       .map(line => optionTemplate(line))
       .join("");
-      const $stationSelectOptions = document.querySelector(
-        "#station-select-options"
+      const $lineSelectOptions = document.querySelector(
+        "#line-select-options"
       );
-      $stationSelectOptions.insertAdjacentHTML(
+      $lineSelectOptions.insertAdjacentHTML(
         "afterbegin",
         subwayLineOptionTemplate
       );
@@ -67,17 +67,19 @@ function AdminEdge() {
       return;
     }
     let statusCode;
-    const selectLines = document.querySelector("#station-select-options");
+    const selectLines = document.querySelector("#line-select-options");
+    const selectPreStation = document.querySelector("#pre-station-select-options");
+    const selectStation = document.querySelector("#station-select-options");
 
     const data = {
       lineId: selectLines.options[selectLines.selectedIndex].value,
-      preStationName: document.querySelector("#depart-station-name").value.trim(),
-      stationName: document.querySelector("#arrival-station-name").value.trim(),
+      preStationId: selectPreStation.value.trim(),
+      stationId: selectStation.value.trim(),
       distance: document.querySelector("#distance").value,
       duration: document.querySelector("#duration").value
     }
 
-    validate(data);
+    // validate(data);
 
     fetch('/lines/' + data.lineId+'/stations', {
       method: 'POST',
@@ -180,9 +182,40 @@ function AdminEdge() {
     );
   };
 
+  function initSubwayStationOptions() {
+    fetch('/stations', {
+      method: 'GET',
+    }).then(response => response.json())
+    .then(stations=>{
+      const stationsTemplate = stations.map(optionTemplate).join('');
+
+      const $preStationSelectOptions = document.querySelector(
+        "#pre-station-select-options"
+      );
+      const $stationSelectOptions = document.querySelector(
+        "#station-select-options"
+      );
+      $stationSelectOptions.insertAdjacentHTML(
+        "afterbegin",
+        stationsTemplate
+      );
+
+      $preStationSelectOptions.insertAdjacentHTML(
+        "afterbegin",
+        '<option value=null>없음</option>'
+      );
+
+      $preStationSelectOptions.insertAdjacentHTML(
+        "afterbegin",
+        stationsTemplate
+      );
+    })
+  }
+
   this.init = () => {
     initSubwayLinesSlider();
     initSubwayLineOptions();
+    initSubwayStationOptions();
     initEventListeners();
   };
 }
