@@ -29,10 +29,12 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(String sourceName, String targetName) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         List<Station> stations = stationRepository.findAll();
+        Long source = findStationIdWithStationName(sourceName, stations);
+        Long target = findStationIdWithStationName(targetName, stations);
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
@@ -52,18 +54,33 @@ public class PathService {
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
         List<Long> shortestPath
-                = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
-        int distance = (int) dijkstraShortestPath.getPathWeight(sourceId, targetId);
-        List<Station> pathStations = stations.stream()
-                .filter(station -> shortestPath.contains(station.getId()))
+                = dijkstraShortestPath.getPath(source, target).getVertexList();
+        int distance = (int) dijkstraShortestPath.getPathWeight(source, target);
+
+        List<Station> pathStations = shortestPath.stream()
+                .map(id -> findStation(stations, id))
                 .collect(Collectors.toList());
 
         int duration = lineStations.stream()
                 .filter(lineStation -> shortestPath.contains(lineStation.getStationId()))
                 .filter(lineStation -> shortestPath.contains(lineStation.getPreStationId()))
-                .mapToInt(lineStation -> lineStation.getDuration())
+                .mapToInt(LineStation::getDuration)
                 .sum();
 
         return new PathResponse(StationResponse.listOf(pathStations), duration, distance);
+    }
+
+    private Long findStationIdWithStationName(String sourceName, List<Station> stations) {
+        return stations.stream()
+                .filter(station -> station.getName().equals(sourceName))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new).getId();
+    }
+
+    private Station findStation(List<Station> stations, Long id) {
+        return stations.stream()
+                .filter(station -> station.getId().equals(id))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

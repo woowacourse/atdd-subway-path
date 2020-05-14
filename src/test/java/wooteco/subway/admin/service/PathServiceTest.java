@@ -67,9 +67,9 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, line7, lineB));
         when(stationRepository.findAll()).thenReturn(stations);
         PathService pathService = new PathService(lineRepository, stationRepository);
-        PathResponse path = pathService.findPath(1L, 8L);
+        PathResponse path = pathService.findPath("왕십리", "강남구청");
 
-        System.out.println(path.getTotalDuration());
-        assertThat(path.getPath().size()).isEqualTo(4);
+        System.out.println(path.getDuration());
+        assertThat(path.getStations().size()).isEqualTo(4);
     }
 }

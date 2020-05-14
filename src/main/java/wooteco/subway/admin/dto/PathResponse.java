@@ -4,29 +4,29 @@ import java.util.List;
 import java.util.Objects;
 
 public class PathResponse {
-    private List<StationResponse> path;
-    private int totalDuration;
-    private int totalDistance;
+    private List<StationResponse> stations;
+    private int duration;
+    private int distance;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> path, int totalDuration, int totalDistance) {
-        this.path = path;
-        this.totalDuration = totalDuration;
-        this.totalDistance = totalDistance;
+    public PathResponse(List<StationResponse> stations, int duration, int distance) {
+        this.stations = stations;
+        this.duration = duration;
+        this.distance = distance;
     }
 
-    public List<StationResponse> getPath() {
-        return path;
+    public List<StationResponse> getStations() {
+        return stations;
     }
 
-    public int getTotalDuration() {
-        return totalDuration;
+    public int getDuration() {
+        return duration;
     }
 
-    public int getTotalDistance() {
-        return totalDistance;
+    public int getDistance() {
+        return distance;
     }
 
     @Override
@@ -34,13 +34,13 @@ public class PathResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PathResponse that = (PathResponse) o;
-        return totalDuration == that.totalDuration &&
-                totalDistance == that.totalDistance &&
-                Objects.equals(path, that.path);
+        return duration == that.duration &&
+                distance == that.distance &&
+                Objects.equals(stations, that.stations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(path, totalDuration, totalDistance);
+        return Objects.hash(stations, duration, distance);
     }
 }

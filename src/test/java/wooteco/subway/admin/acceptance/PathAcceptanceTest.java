@@ -26,23 +26,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given: 지하철역, 지하철 노선, 지하철 경로 추가
         setSubwayInformation();
         // when: 출발역과 도착역을 입력하여 최단 경로를 조회 요청
-        PathResponse path = findPath(1L, 8L);
+        PathResponse path = findPath("왕십리", "강남구청");
 
-        assertThat(path.getPath().size()).isEqualTo(4);
-        assertThat(path.getPath().get(3).getName()).isEqualTo("서울숲");
-        assertThat(path.getPath().get(2).getName()).isEqualTo("압구정로데오");
-        assertThat(path.getPath().get(1).getName()).isEqualTo("강남구청");
+        assertThat(path.getStations().size()).isEqualTo(4);
+        assertThat(path.getStations().get(1).getName()).isEqualTo("서울숲");
+        assertThat(path.getStations().get(2).getName()).isEqualTo("압구정로데오");
+        assertThat(path.getStations().get(3).getName()).isEqualTo("강남구청");
 
         //then
-        assertThat(path.getTotalDuration()).isEqualTo(3);
-        assertThat(path.getTotalDistance()).isEqualTo(9);
+        assertThat(path.getDuration()).isEqualTo(3);
+        assertThat(path.getDistance()).isEqualTo(9);
     }
 
-    private PathResponse findPath(Long source, Long target) {
+    private PathResponse findPath(String source, String target) {
         return given().
-         when().
-                get("/paths?source=" + source + "&target=" + target).
-         then().
+                when().
+                get("/paths?source=" + source + "&target=" + target + "&type=distance").
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(PathResponse.class);
