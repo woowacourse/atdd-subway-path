@@ -4,20 +4,13 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.aggregator.ArgumentAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.domain.PathType;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,13 +19,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
+    private static final String STATION_NAME3 = "선릉역"; //환승역
     private static final String STATION_NAME4 = "삼성역";
-    private static final String STATION_NAME5 = "신촌";
-    private static final String STATION_NAME6 = "합정";
-    private static final String STATION_NAME7 = "을지로3가";
-    private static final String STATION_NAME8 = "압구정";
-    private static final String STATION_NAME9 = "홍대입구";
+    private static final String STATION_NAME5 = "종합운동장역";
+    private static final String STATION_NAME6 = "잠실새내역";
+    private static final String STATION_NAME7 = "잠실역";
+    private static final String STATION_NAME8 = "양재역";
+    private static final String STATION_NAME9 = "매봉역";
+    private static final String STATION_NAME10 = "도곡역";
+    private static final String STATION_NAME11 = "대치역";
+    private static final String STATION_NAME12 = "학여울역";
+    private static final String STATION_NAME13 = "대청역";
+    private static final String STATION_NAME14 = "수서역";
+    private static final String STATION_NAME15 = "가락시장역";
+    private static final String STATION_NAME16 = "송파역";
+    private static final String STATION_NAME17 = "석촌역";
+    private static final String STATION_NAME18 = "양재시민의숲역";
+    private static final String STATION_NAME19 = "청계산입구역";
+    private static final String STATION_NAME20 = "판교역";
+    private static final String STATION_NAME21 = "정자역";
+
 
     @Autowired
     StationRepository stationRepository;
@@ -59,6 +65,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         createStation(STATION_NAME7);
         createStation(STATION_NAME8);
         createStation(STATION_NAME9);
+
         //And 출발역과 종착역이 같은 경로가 2개 저장돼있다.
         createLine("1호선");
         createLine("2호선");
@@ -77,7 +84,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(2L, 8L, 9L);
 
         //When 출발역과 종착역의 최단경로를 요청한다.
-        PathResponse shortedStationPath = getShortestStationPath();
+        PathResponse shortedStationPath = getShortestStationPath("강남역", "매봉역");
 
 
         //Then 최단 경로와 최단 거리가 나온다.
@@ -85,14 +92,72 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         assertThat(shortedStationPath.getStations().size()).isEqualTo(5);
     }
 
-    private PathResponse getShortestStationPath() {
+    @DisplayName("2개의 노선에 같은 환승역이 존재 할때 최단 경로를 찾는다")
+    @Test
+    void findShortestStationPathWhenTransferStation() {
+        //Given 출발역부 종착역사이의 역들이 저장돼있다.
+        createStation(STATION_NAME1);
+        createStation(STATION_NAME2);
+        createStation(STATION_NAME3);
+        createStation(STATION_NAME4);
+        createStation(STATION_NAME5);
+        createStation(STATION_NAME6);
+        createStation(STATION_NAME7);
+
+        createStation(STATION_NAME8);
+        createStation(STATION_NAME9);
+        createStation(STATION_NAME10);
+        createStation(STATION_NAME11);
+        createStation(STATION_NAME12);
+        createStation(STATION_NAME13);
+        createStation(STATION_NAME14);
+        createStation(STATION_NAME15);
+        createStation(STATION_NAME16);
+        createStation(STATION_NAME17);
+        createStation(STATION_NAME18);
+        //And 출발역부터 종착역사이의 노선이 2개가 있다.
+        createLine("1호선");
+        createLine("2호선");
+        //And 2개의 노선은 같은 환승역이 존재 한다.
+        addLineStation(1L, null, 1L,10,10);
+        addLineStation(1L, 1L, 2L,10,10);
+        addLineStation(1L, 2L, 3L,10,10);
+        addLineStation(1L, 3L, 4L,10,10);
+        addLineStation(1L, 4L, 5L,10,10);
+        addLineStation(1L, 5L, 6L,10,10);
+        addLineStation(1L, 6L, 7L,10,10);
+
+        addLineStation(2L, null, 1L, 1,1);
+        addLineStation(2L, 1L, 8L,1,1);
+        addLineStation(2L, 8L, 3L,1,1);
+        addLineStation(2L, 3L, 9L,1,1);
+        addLineStation(2L, 9L, 10L,1,1);
+        addLineStation(2L, 10L, 11L,1,1);
+        addLineStation(2L, 11L, 12L,1,1);
+        addLineStation(2L, 12L, 13L,1,1);
+        addLineStation(2L, 13L, 14L,1,1);
+        addLineStation(2L, 14L, 15L,1,1);
+        addLineStation(2L, 15L, 16L,1,1);
+        addLineStation(2L, 16L, 17L,1,1);
+        addLineStation(2L, 17L, 7L,1,1);
+
+        //when 출발역과 종착역의 최단 경로를 요청한다.
+        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역");
+
+        //then 최단 경로와 최단 거리가 나온다.
+        assertThat(shortestStationPath.getStations()).hasSize(13);
+
+    }
+
+
+    private PathResponse getShortestStationPath(String source, String target) {
         return given().
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                    get("/stations/shortest-path?source=강남역&target=홍대입구").
+                get(String.format("/stations/shortest-path?source=%s&target=%s",source, target)).
                 then().
-                    log().all().
-                    extract().as(PathResponse.class);
+                log().all().
+                extract().as(PathResponse.class);
     }
 }
 
