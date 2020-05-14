@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -13,7 +14,8 @@ import wooteco.subway.admin.domain.Line;
 
 @Service
 public class GraphService {
-    public List<Long> findPath(List<Line> lines, Long source, Long target, CriteriaType type) {
+    public Optional<List<Long>> findPath(List<Line> lines, Long source, Long target,
+        CriteriaType type) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
         lines.stream()
@@ -27,6 +29,6 @@ public class GraphService {
                     type.get(it)));
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target).getVertexList());
     }
 }

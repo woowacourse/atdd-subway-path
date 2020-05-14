@@ -32,6 +32,7 @@ class PathServiceTest {
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
     private static final String STATION_NAME4 = "삼성역";
+    private static final String STATION_NAME5 = "대구역";
 
     @MockBean
     private LineRepository lineRepository;
@@ -74,11 +75,35 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.showPaths(station1.getName(), station3.getName(),
             CriteriaType.DISTANCE);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
-        final List<StationResponse> stations = pathResponse.getStations();
-        final List<Long> ids = stations.stream()
+        List<StationResponse> stations = pathResponse.getStations();
+        List<Long> ids = stations.stream()
             .map(StationResponse::getId)
             .collect(Collectors.toList());
         assertThat(stations.size()).isEqualTo(3);
         assertThat(ids).containsExactly(station1.getId(), station2.getId(), station3.getId());
+    }
+
+    @Test
+    void sameSourceAndTarget() {
+        assertThatThrownBy(() -> {
+            pathService.showPaths(station1.getName(), station1.getName(), CriteriaType.DISTANCE);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("동일역으로는 조회할 수 없습니다.");
+    }
+
+    @Test
+    void notExistSourceName() {
+        assertThatThrownBy(() -> {
+            pathService.showPaths("존재하지 않는 역", station1.getName(), CriteriaType.DISTANCE);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("존재하지 않는 역입니다.");
+    }
+
+    @Test
+    void notExistTargetName() {
+        assertThatThrownBy(() -> {
+            pathService.showPaths(station1.getName(), "존재하지 않는 역", CriteriaType.DISTANCE);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("존재하지 않는 역입니다.");
     }
 }
