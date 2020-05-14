@@ -1,9 +1,5 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
-import {
-  endSearchResultTemplate,
-  firstSearchResultTemplate,
-  searchResultTemplate
-} from '../../utils/templates.js';
+import {EVENT_TYPE} from '../../utils/constants.js'
+import {endSearchResultTemplate, firstSearchResultTemplate, searchResultTemplate} from '../../utils/templates.js';
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name');
@@ -73,7 +69,6 @@ function Search() {
       targetName: $arrivalStationName.value,
       type: $type
     }
-    console.log(searchInput);
     fetch('/path', {
       method: 'POST',
       headers: {
@@ -85,7 +80,6 @@ function Search() {
         throw response;
       }
       response.json().then(jsonResponse => {
-        console.log(jsonResponse);
         showSearchResult(jsonResponse);
       });
     }).catch(error => error.json().then(json => {
