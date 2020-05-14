@@ -60,7 +60,7 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        List<Station> stations = stationRepository.findAllById(line.getStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
@@ -76,7 +76,7 @@ public class LineService {
         return WholeSubwayResponse.of(
                 lines.stream()
                         .map(line -> LineDetailResponse.of(line,
-                                line.getLineStationsId()
+                                line.getStationsId()
                                         .stream()
                                         .map(stationId -> stationMap.get(stationId))
                                         .collect(Collectors.toList())))

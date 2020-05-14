@@ -170,14 +170,14 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    SearchPathResponse searchPath(Long startStationId, Long targetStationId) {
+    PathSearchResponse searchPath(String startStation, String targetStation) {
         return
             given().
             when().
-                    get("/stations/path/" + startStationId + "/" + targetStationId).
+                    get("/path/" + startStation + "/" + targetStation).
             then().
                     log().all().
-                    extract().as(SearchPathResponse.class);
+                    extract().as(PathSearchResponse.class);
     }
 }
 

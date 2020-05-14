@@ -1,12 +1,14 @@
 package wooteco.subway.admin.acceptance;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.SearchPathResponse;
+import wooteco.subway.admin.dto.PathSearchResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SearchPathAcceptanceTest extends AcceptanceTest{
+public class PathAcceptanceTest extends AcceptanceTest{
     /*
     Feature: 출발역과 도착역의 최단 경로를 조회하는 기능 구현
     Scenario: 두 역의 최단 경로를 조회한다.
@@ -17,6 +19,8 @@ public class SearchPathAcceptanceTest extends AcceptanceTest{
     Then 최단 거리 기준으로 경로와 기타 정보를 응답한다.
      */
 
+    @DisplayName("지하철 경로 찾기 테스트")
+    @Test
     void searchPath() {
         //given
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
@@ -33,9 +37,9 @@ public class SearchPathAcceptanceTest extends AcceptanceTest{
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
         //when
-        SearchPathResponse searchPathResponse = searchPath(stationResponse1.getId(), stationResponse3.getId());
+        PathSearchResponse pathSearchResponse = searchPath(stationResponse1.getName(), stationResponse3.getName());
 
         //then
-        assertThat(searchPathResponse.getStationNames().size()).isEqualTo(3);
+        assertThat(pathSearchResponse.getStations().size()).isEqualTo(3);
     }
 }
