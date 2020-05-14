@@ -1,4 +1,4 @@
-import {EVENT_TYPE} from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {PathStationTemplate} from "../../utils/templates.js";
 
@@ -41,64 +41,68 @@ function Search() {
 
   const onShortestDistanceResult = event => {
     $typeName = 'distance';
-    highlightButton();
-    onSearch(event).then(data => {
-      console.log(data)
-    });
+      highlightButton();
+      onSearch(event)
   }
 
   const onShortestDurationResult = event => {
     $typeName = 'duration';
-    highlightButton();
-    onSearch(event).then(data => {
-      console.log(data)
-    });
+      highlightButton();
+      onSearch(event)
   }
 
-  const onSearch = async event => {
-    event.preventDefault()
+    const onSearch = event => {
+        event.preventDefault()
 
-    $sourceStation.innerText = '';
-    $middleStations.innerHTML = '';
-    $targetStations.innerText = '';
+        $sourceStation.innerText = '';
+        $middleStations.innerHTML = '';
+        $targetStations.innerText = '';
 
-    const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value,
-      type: $typeName
+        const searchInput = {
+            source: $departureStationName.value,
+            target: $arrivalStationName.value,
+            type: $typeName
     }
 
-    await findPathResult(searchInput, $typeName)
-    showSearchResult()
+        findPathResult(searchInput, $typeName)
   }
 
   const findPathResult = (searchInput, typeName) => {
-    searchInput.type = typeName;
+      searchInput.type = typeName;
 
-    api.path.find(searchInput).then(data => {
-      document.querySelector('#distance').innerText = data['totalDistance'] + 'km';
-      document.querySelector('#duration').innerText = data['totalDuration'] + '분';
-
-      const stations = data['stations'];
-      $sourceStation.innerText =
-          stations[0].name;
-      for (let i = 1; i < stations.length - 1; i++) {
-        $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i].name));
-      }
-      $targetStations.innerText =
-          stations[stations.length - 1].name;
-    })
+      api.path.find(searchInput).then(response => {
+          if (response.status === 404 || response.status === 400) {
+              response.json().then(data => {
+                  alert(ERROR_MESSAGE[data.frontMessageKey]);
+              });
+          } else if (response.status === 200) {
+              response.json().then(data => onShowResult(data))
+          }
+      })
   }
 
-  const onToggleFavorite = event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+    const onShowResult = async data => {
+        document.querySelector('#distance').innerText = data['totalDistance'] + 'km';
+        document.querySelector('#duration').innerText = data['totalDuration'] + '분';
 
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.remove('mdi-star')
+        const stations = data['stations'];
+        $sourceStation.innerText = stations[0].name;
+        for (let i = 1; i < stations.length - 1; i++) {
+            $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i].name));
+        }
+        $targetStations.innerText = await stations[stations.length - 1].name;
+        showSearchResult()
+    }
+
+    const onToggleFavorite = event => {
+        event.preventDefault()
+        const isFavorite = $favoriteButton.classList.contains('mdi-star')
+        const classList = $favoriteButton.classList
+
+        if (isFavorite) {
+            classList.add('mdi-star-outline')
+            classList.add('text-gray-600')
+            classList.remove('mdi-star')
       classList.remove('text-yellow-500')
     } else {
       classList.remove('mdi-star-outline')

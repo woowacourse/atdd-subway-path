@@ -20,11 +20,16 @@ create table if not exists LINE
 
 create table if not exists LINE_STATION
 (
-    line bigint not null,
-    station_id bigint not null,
+    line           bigint not null,
+    station_id     bigint not null,
     pre_station_id bigint,
-    distance int,
-    duration int,
-    created_at datetime,
-    updated_at datetime
+    distance       int,
+    duration       int,
+    created_at     datetime,
+    updated_at     datetime
 );
+
+ALTER TABLE LINE
+    ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE STATION
+    ALTER COLUMN id RESTART WITH 1;
