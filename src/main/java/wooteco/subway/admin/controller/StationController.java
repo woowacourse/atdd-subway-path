@@ -11,43 +11,50 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.StationService;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public StationController(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
+    public StationController(StationService stationService) {
+        this.stationService = stationService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<StationResponse> createStation(
             @RequestBody @Valid StationCreateRequest stationCreateRequest) {
-        Station station = stationCreateRequest.toStation();
-        Station persistStation = stationRepository.save(station);
-
+        StationResponse stationResponse = stationService.createStation(stationCreateRequest);
         return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
+                .created(URI.create("/stations/" + stationResponse.getId()))
+                .body(stationResponse);
     }
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<StationResponse>> showStations() {
-        List<StationResponse> stationResponses = StationResponse.listOf(stationRepository.findAll());
+    @GetMapping("/{id}")
+    public ResponseEntity<StationResponse> findStationById(@PathVariable Long id) {
+        StationResponse stationResponse = stationService.findStationById(id);
+        return ResponseEntity
+                .ok(stationResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<StationResponse>> findStations() {
+        List<StationResponse> stationResponses = stationService.findAll();
         return ResponseEntity.ok()
                 .eTag(String.valueOf(stationResponses.hashCode()))
                 .body(stationResponses);
     }
 
-    @DeleteMapping("/stations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        stationService.deleteById(id);
+        return ResponseEntity.noContent()
+                .build();
     }
 }
