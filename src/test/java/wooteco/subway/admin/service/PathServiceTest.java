@@ -20,13 +20,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "삼성역";
-    private static final String STATION_NAME5 = "강남구쳥역";
-    private static final String STATION_NAME6 = "선정릉역";
-    private static final String STATION_NAME7 = "한티역";
+    private static final String STATION_NAME_GANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLUNG = "선릉역";
+    private static final String STATION_NAME_SAMSEONG = "삼성역";
+    private static final String STATION_NAME_GANGNAM_OFFICE = "강남구쳥역";
+    private static final String STATION_NAME_SEONJEONGLUNG = "선정릉역";
+    private static final String STATION_NAME_HANTI = "한티역";
 
     @Mock
     private LineRepository lineRepository;
@@ -38,24 +38,24 @@ public class PathServiceTest {
     private Line line2;
     private Line bundangLine;
 
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-    private Station station5;
-    private Station station6;
-    private Station station7;
+    private Station gangnam;
+    private Station yeoksam;
+    private Station seollung;
+    private Station samsong;
+    private Station gangnamOffice;
+    private Station seonjeonglung;
+    private Station hanti;
 
     @BeforeEach
     void setUp() {
         pathService = new PathService(lineRepository, stationRepository);
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
-        station7 = new Station(7L, STATION_NAME7);
+        gangnam = new Station(1L, STATION_NAME_GANGNAM);
+        yeoksam = new Station(2L, STATION_NAME_YEOKSAM);
+        seollung = new Station(3L, STATION_NAME_SEOLLUNG);
+        samsong = new Station(4L, STATION_NAME_SAMSEONG);
+        gangnamOffice = new Station(5L, STATION_NAME_GANGNAM_OFFICE);
+        seonjeonglung = new Station(6L, STATION_NAME_SEONJEONGLUNG);
+        hanti = new Station(7L, STATION_NAME_HANTI);
 
         line2 = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         bundangLine = new Line(2L, "분당선", "bg-gray-300", LocalTime.of(05, 00), LocalTime.of(23, 30), 7);
@@ -74,14 +74,14 @@ public class PathServiceTest {
     @Test
     void findShortestDistancePath() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
 
-        PathResponse response = pathService.calculatePath(STATION_NAME1, STATION_NAME7, "DISTANCE");
+        PathResponse response = pathService.calculatePath(STATION_NAME_GANGNAM, STATION_NAME_HANTI, "DISTANCE");
         assertThat(response.getStations().size()).isEqualTo(4);
-        assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME1);
-        assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME2);
-        assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME3);
-        assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME7);
+        assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME_GANGNAM);
+        assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME_YEOKSAM);
+        assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME_SEOLLUNG);
+        assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME_HANTI);
         assertThat(response.getDistance()).isEqualTo(30L);
         assertThat(response.getDuration()).isEqualTo(30L);
     }
@@ -89,14 +89,14 @@ public class PathServiceTest {
     @Test
     void findShortestDistancePath2() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
 
-        PathResponse response = pathService.calculatePath(STATION_NAME7, STATION_NAME1, "DISTANCE");
+        PathResponse response = pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_GANGNAM, "DISTANCE");
         assertThat(response.getStations().size()).isEqualTo(4);
-        assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME7);
-        assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME3);
-        assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME2);
-        assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME1);
+        assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME_HANTI);
+        assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME_SEOLLUNG);
+        assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME_YEOKSAM);
+        assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME_GANGNAM);
         assertThat(response.getDistance()).isEqualTo(30L);
         assertThat(response.getDuration()).isEqualTo(30L);
     }
