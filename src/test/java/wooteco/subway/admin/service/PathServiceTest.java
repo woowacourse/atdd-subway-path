@@ -85,4 +85,19 @@ public class PathServiceTest {
         assertThat(response.getDistance()).isEqualTo(30L);
         assertThat(response.getDuration()).isEqualTo(30L);
     }
+
+    @Test
+    void findShortestDistancePath2() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
+
+        PathResponse response = pathService.calculatePath(STATION_NAME7, STATION_NAME1, "DISTANCE");
+        assertThat(response.getStations().size()).isEqualTo(4);
+        assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME7);
+        assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME3);
+        assertThat(response.getStations().get(2).getName()).isEqualTo(STATION_NAME2);
+        assertThat(response.getStations().get(3).getName()).isEqualTo(STATION_NAME1);
+        assertThat(response.getDistance()).isEqualTo(30L);
+        assertThat(response.getDuration()).isEqualTo(30L);
+    }
 }

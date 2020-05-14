@@ -82,10 +82,9 @@ public class PathService {
         for (Long stationId : shortestPathIds) {
             shortestPath.add(findStationBy(stationId, allStations));
             LineStation lineStation = findLineStation(preStationId, stationId, lineStations);
-            if (lineStation != null) {
-                distance += lineStation.getDistance();
-                duration += lineStation.getDuration();
-            }
+            distance += lineStation.getDistance();
+            duration += lineStation.getDuration();
+            preStationId = stationId;
         }
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
@@ -109,7 +108,10 @@ public class PathService {
             if (lineStation.is(preStationId, stationId)) {
                 return lineStation;
             }
+            if (lineStation.is(stationId, preStationId)) {
+                return lineStation;
+            }
         }
-        return null;
+        return LineStation.empty();
     }
 }
