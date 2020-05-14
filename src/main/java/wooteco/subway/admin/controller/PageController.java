@@ -39,6 +39,6 @@ public class PageController {
         return "admin/admin-edge";
     }
 
-    @GetMapping(value = "/path", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/paths", produces = MediaType.TEXT_HTML_VALUE)
     public String searchPage(Model model) { return "service/search"; }
 }
