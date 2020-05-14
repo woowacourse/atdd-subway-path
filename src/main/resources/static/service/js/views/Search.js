@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -29,6 +28,7 @@ function Search() {
   }
 
   const onSearchMinimumTime = event => {
+    this.flag = false;
     event.preventDefault()
     $minimumTimeTab.classList.add('active-tab')
     $shortestDistanceTab.classList.remove('active-tab')
@@ -39,12 +39,12 @@ function Search() {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
-      type: pathType
+      criteria: pathType,
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .find(searchInput)
+    .then(data => showSearchResult(data))
+    .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onToggleFavorite = event => {
