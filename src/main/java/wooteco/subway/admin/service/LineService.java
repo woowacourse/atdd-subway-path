@@ -1,19 +1,17 @@
 package wooteco.subway.admin.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.dto.line.LineRequest;
 import wooteco.subway.admin.repository.LineRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {

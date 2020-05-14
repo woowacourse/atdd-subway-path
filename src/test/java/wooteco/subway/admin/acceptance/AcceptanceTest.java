@@ -8,11 +8,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.dto.line.LineResponse;
+import wooteco.subway.admin.dto.path.PathResponse;
+import wooteco.subway.admin.dto.station.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

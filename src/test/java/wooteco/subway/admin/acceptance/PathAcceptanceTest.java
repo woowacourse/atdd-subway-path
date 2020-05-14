@@ -1,17 +1,12 @@
 package wooteco.subway.admin.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.dto.line.LineResponse;
+import wooteco.subway.admin.dto.path.PathResponse;
+import wooteco.subway.admin.dto.station.StationResponse;
 
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import static org.assertj.core.api.Assertions.*;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 

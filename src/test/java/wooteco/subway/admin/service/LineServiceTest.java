@@ -1,8 +1,18 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.repository.LineRepository;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -11,21 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {

@@ -1,7 +1,8 @@
 package wooteco.subway.admin.dto;
 
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+
 import java.util.List;
-import java.util.Map;
 
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponse;

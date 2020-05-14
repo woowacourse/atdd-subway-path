@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.dto.line.LineRequest;
+import wooteco.subway.admin.dto.line.LineResponse;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;

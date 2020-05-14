@@ -1,17 +1,16 @@
 package wooteco.subway.admin.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.dto.line.LineResponse;
+import wooteco.subway.admin.dto.station.StationResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class WholeSubwayAcceptanceTest extends AcceptanceTest {
 

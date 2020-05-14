@@ -11,8 +11,8 @@ import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
 import wooteco.subway.admin.service.LineService;
 
 import java.util.Arrays;

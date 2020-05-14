@@ -2,11 +2,11 @@ package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathRequestWithId;
-import wooteco.subway.admin.dto.PathType;
-import wooteco.subway.admin.dto.StationCreateRequest;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.path.PathRequest;
+import wooteco.subway.admin.dto.path.PathRequestWithId;
+import wooteco.subway.admin.dto.path.PathType;
+import wooteco.subway.admin.dto.station.StationCreateRequest;
+import wooteco.subway.admin.dto.station.StationResponse;
 import wooteco.subway.admin.exception.NotFoundInputValueException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
@@ -62,7 +62,7 @@ public class StationService {
 
     private Long findStationIdByName(String sourceName) {
         return stationRepository.findByName(sourceName).map(Station::getId)
-                .orElseThrow(NotFoundStationException::new);
+                .orElseThrow(() -> new NotFoundStationException(sourceName));
     }
 
     public List<Station> findAllById(List<Long> lineStationsId) {
