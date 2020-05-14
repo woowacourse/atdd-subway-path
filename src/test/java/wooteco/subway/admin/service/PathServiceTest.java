@@ -93,4 +93,14 @@ class PathServiceTest {
 
 
     }
+
+    @Test
+    void sourceAndTargetNotfound() {
+        String source = "강남역";
+        String target = "잠실역";
+        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+                .isInstanceOf(PathException.class)
+                .hasMessage("해당 역을 찾을 수 없습니다.");
+    }
 }
