@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathCriteria;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -76,7 +76,7 @@ class PathServiceTest {
             Arrays.asList(station1, station2, station4, station5, station3));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathResponse path = pathService.getPath("1역", "3역", PathCriteria.DISTANCE);
+        PathResponse path = pathService.getPath("1역", "3역", PathType.DISTANCE);
         assertThat(path.getStations()).hasSize(5);
         assertThat(path.getDistance()).isEqualTo(16);
         assertThat(path.getDuration()).isEqualTo(4);
@@ -92,7 +92,7 @@ class PathServiceTest {
             Arrays.asList(station1, station2, station3));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathResponse path = pathService.getPath("1역", "3역", PathCriteria.DURATION);
+        PathResponse path = pathService.getPath("1역", "3역", PathType.DURATION);
         assertThat(path.getStations()).hasSize(3);
         assertThat(path.getDistance()).isEqualTo(20);
         assertThat(path.getDuration()).isEqualTo(2);

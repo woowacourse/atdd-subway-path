@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.admin.domain.PathCriteria;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -51,7 +51,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         String arrival = station3.getName();
 
         // when 출발역과 도착역의 최단 경로 조회 요청을 한다.
-        PathResponse pathResponse = retrievePath(departure, arrival, PathCriteria.DISTANCE);
+        PathResponse pathResponse = retrievePath(departure, arrival, PathType.DISTANCE);
 
         // then 출발역과 도착역의 최단 경로 정보를 응답 받는다.
         assertThat(pathResponse.getStations()).hasSize(5);
@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         String arrival = station3.getName();
 
         // when 출발역과 도착역의 최단 시간 조회 요청을 한다.
-        PathResponse pathResponse = retrievePath(departure, arrival, PathCriteria.DURATION);
+        PathResponse pathResponse = retrievePath(departure, arrival, PathType.DURATION);
 
         // then 출발역과 도착역의 최단 시간 정보를 응답 받는다.
         assertThat(pathResponse.getStations()).hasSize(3);

@@ -10,8 +10,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.PathCriteria;
 import wooteco.subway.admin.domain.PathEdge;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -30,7 +30,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse getPath(final String sourceName, final String targetName, final PathCriteria pathCriteria) {
+    public PathResponse getPath(final String sourceName, final String targetName, final PathType pathType) {
         WeightedMultigraph<Long, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
 
         Station source = stationRepository.findByName(sourceName)
@@ -47,7 +47,7 @@ public class PathService {
             .stream()
             .map(Line::getStations)
             .flatMap(Collection::stream)
-            .map(lineStation -> new PathEdge(lineStation, pathCriteria))
+            .map(lineStation -> new PathEdge(lineStation, pathType))
             .filter(PathEdge::isNotFirst)
             .forEach(edge -> {
                     graph.addEdge(edge.getPreStationId(), edge.getStationId(), edge);
@@ -70,16 +70,16 @@ public class PathService {
         return new PathResponse(stations, getDistance(path), getDuration(path));
     }
 
-    private Integer getDistance(final GraphPath<Long, PathEdge> shortestPath) {
-        return shortestPath.getEdgeList()
+    private Integer getDistance(final GraphPath<Long, PathEdge> path) {
+        return path.getEdgeList()
             .stream()
             .map(PathEdge::getDistance)
             .reduce(Integer::sum)
             .orElse(0);
     }
 
-    private Integer getDuration(final GraphPath<Long, PathEdge> shortestPath) {
-        return shortestPath.getEdgeList()
+    private Integer getDuration(final GraphPath<Long, PathEdge> path) {
+        return path.getEdgeList()
             .stream()
             .map(PathEdge::getDuration)
             .reduce(Integer::sum)

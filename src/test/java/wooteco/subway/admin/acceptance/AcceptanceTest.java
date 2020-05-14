@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
-import wooteco.subway.admin.domain.PathCriteria;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -187,9 +187,9 @@ public class AcceptanceTest {
             .extract().as(WholeSubwayResponse.class);
     }
 
-    PathResponse retrievePath(String departure, String arrival, PathCriteria criteria) {
+    PathResponse retrievePath(String departure, String arrival, PathType type) {
         return given().when()
-            .get("/paths?source=" + departure + "&target=" + arrival + "&type=" + criteria.name())
+            .get("/paths?source=" + departure + "&target=" + arrival + "&type=" + type.name())
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value())

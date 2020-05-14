@@ -9,14 +9,14 @@ public class PathEdge extends DefaultWeightedEdge {
     private final Long stationId;
     private final Integer distance;
     private final Integer duration;
-    private final PathCriteria criteria;
+    private final PathType type;
 
-    public PathEdge(final LineStation lineStation, PathCriteria criteria) {
+    public PathEdge(final LineStation lineStation, PathType type) {
         preStationId = lineStation.getPreStationId();
         stationId = lineStation.getStationId();
         distance = lineStation.getDistance();
         duration = lineStation.getDuration();
-        this.criteria = criteria;
+        this.type = type;
     }
 
     public boolean isNotFirst() {
@@ -41,7 +41,7 @@ public class PathEdge extends DefaultWeightedEdge {
 
     @Override
     public double getWeight() {
-        if (criteria == PathCriteria.DISTANCE) {
+        if (type == PathType.DISTANCE) {
             return distance;
         }
         return duration;
