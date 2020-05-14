@@ -45,18 +45,7 @@ public class PathService {
                 .map(id -> findStationById(stations, id))
                 .collect(Collectors.toList());
 
-        List<LineStation> pathLineStations = new ArrayList<>();
-        for (int i = 1; i < shortestPath.size(); i++) {
-            Long preStationId = shortestPath.get(i - 1);
-            Long stationId = shortestPath.get(i);
-
-            pathLineStations.add(lineStations.stream()
-                    .filter(lineStation ->
-                            (lineStation.getPreStationId() == preStationId && lineStation.getStationId() == stationId)
-                                    || (lineStation.getPreStationId() == stationId && lineStation.getStationId() == preStationId))
-                    .findFirst()
-                    .orElseThrow(RuntimeException::new));
-        }
+        List<LineStation> pathLineStations = extractPathLineStations(lineStations, shortestPath);
         int distance = pathLineStations.stream()
                 .mapToInt(LineStation::getDistance)
                 .sum();
@@ -64,6 +53,20 @@ public class PathService {
                 .mapToInt(LineStation::getDuration)
                 .sum();
         return new PathResponse(pathStations, distance, duration);
+    }
+
+    private List<LineStation> extractPathLineStations(List<LineStation> lineStations, List<Long> shortestPath) {
+        List<LineStation> pathLineStations = new ArrayList<>();
+        for (int i = 1; i < shortestPath.size(); i++) {
+            Long preStationId = shortestPath.get(i - 1);
+            Long stationId = shortestPath.get(i);
+
+            pathLineStations.add(lineStations.stream()
+                    .filter(lineStation -> lineStation.isLineStationOf(preStationId, stationId))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new));
+        }
+        return pathLineStations;
     }
 
     private Station findStationById(List<Station> stations, Long id) {
