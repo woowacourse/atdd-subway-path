@@ -64,3 +64,64 @@ export const ErrorAlertTemplate = message => {
             </div>
           </div>`
 }
+
+export const pathTemplate = ({ stations, distance, duration }) => {
+  return `${pathSelectorTemplate()}
+          ${pathInfoTemplate(distance, duration)}
+          ${edgeTemplate(stations)}`
+}
+
+
+export const pathSelectorTemplate = data => {
+  return `<button
+                      id="favorite-button"
+                      class="favorite-button bg-yellow-500 mdi mdi-star-outline absolute text-white bg-transparent d-inline-block hover:bg-yellow-500 font-semibold hover:text-white py-2 px-3 hover:border-transparent rounded-full z-10"
+              >
+              </button>
+              <ul class="flex border-b w-full">
+                <li class="-mb-px w-2/4">
+                  <a class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">최단거리</a>
+                </li>
+                <li class="w-2/4">
+                  <a class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#"
+                  >최소시간</a
+                  >
+                </li>
+              </ul>`;
+}
+
+
+export const pathInfoTemplate = (distance, duration) => {
+  return `<div class="px-2 py-4 border-b">
+                <div class="w-full flex mb-3">
+                  <div class="inline-block w-1/2 border-r text-center">
+                    <div class="text-gray-600 text-sm">소요시간</div>
+                    <div>${distance}분</div>
+                  </div>
+                  <div class="inline-block w-1/2 text-center">
+                    <div class="text-gray-600 text-sm">거리</div>
+                    <div>${duration}km</div>
+                  </div>
+                </div>
+              </div>`
+}
+
+export const edgeTemplate = stations => {
+  return `<div class="relative pt-3 pb-10">
+                <div class="px-2 py-1 w-full flex">
+                  <div class="w-10/12 inline-block">
+                    ${stations.map(({ name }, i) => {
+                      if (i == 0) {
+                        return `<span class="font-bold">${name}</span>`
+                      }
+                      if (i == stations.length - 1) {
+                        return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+                                <span class="font-bold">${name}</span>`
+                      }
+                      return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+                              <span class="text-gray-600">${name}</span>`
+                    }).join("")}
+                  </div>
+                </div>
+              </div>`
+}

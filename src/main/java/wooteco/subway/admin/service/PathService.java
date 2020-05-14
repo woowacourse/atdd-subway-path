@@ -58,10 +58,11 @@ public class PathService {
         stations.values()
                 .forEach(graph::addVertex);
 
-        lineStations.forEach(lineStation ->
-                graph.setEdgeWeight(graph.addEdge(stations.get(lineStation.getPreStationId()),
-                        stations.get(lineStation.getStationId())),
-                        weightStrategy.apply(lineStation)));
+        lineStations.forEach(lineStation -> {
+            graph.setEdgeWeight(graph.addEdge(stations.get(lineStation.getPreStationId()),
+                    stations.get(lineStation.getStationId())),
+                    weightStrategy.apply(lineStation));
+        });
 
         return new DijkstraShortestPath(graph);
     }
@@ -85,8 +86,9 @@ public class PathService {
 
     private LineStation findLineStation(List<LineStation> lineStations, Station preStation, Station station) {
         return lineStations.stream()
-                .filter(lineStation -> lineStation.hasPreStationId(preStation.getId())
-                        && lineStation.hasStationId(station.getId()))
+                .filter(lineStation -> (lineStation.hasPreStationId(preStation.getId())
+                        && lineStation.hasStationId(station.getId())) || (lineStation.hasPreStationId(station.getId())
+                        && lineStation.hasStationId(preStation.getId())))
                 .findAny()
                 .orElseThrow(() -> new NotFoundLineStationException(preStation.getName(), station.getName()));
     }

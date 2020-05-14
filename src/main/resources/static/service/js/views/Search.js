@@ -1,4 +1,6 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
+import { pathTemplate } from '../../utils/templates.js'
+import api from "../../api/index.js"
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -7,11 +9,19 @@ function Search() {
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
 
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
-    }
+  const showSearchResult = async () => {
+      const data = await api.path.find({
+        source: $departureStationName.value,
+        target: $arrivalStationName.value,
+        type: null
+      })
+
+      $searchResultContainer.innerHTML = pathTemplate(data)
+
+      const isHidden = $searchResultContainer.classList.contains('hidden')
+      if (isHidden) {
+        $searchResultContainer.classList.remove('hidden')
+      }
   }
 
   const onSearch = event => {
