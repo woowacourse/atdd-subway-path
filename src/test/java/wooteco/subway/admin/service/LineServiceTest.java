@@ -22,6 +22,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -174,5 +175,42 @@ public class LineServiceTest {
 		LineDetailResponse secondLineDetailResponse = response.getLineDetailResponses().get(1);
 		assertThat(firstLineDetailResponse.getStations()).hasSize(3);
 		assertThat(secondLineDetailResponse.getStations()).hasSize(1);
+	}
+
+	@Test
+	void findPathTest() {
+		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(station1));
+		when(stationRepository.findByName("선릉역")).thenReturn(Optional.of(station3));
+		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
+		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
+		PathResponse pathResponse = lineService.findPath("강남역", "선릉역");
+
+		assertThat(pathResponse.getStations()).hasSize(3);
+		assertThat(pathResponse.getDistance()).isEqualTo(20);
+		assertThat(pathResponse.getDuration()).isEqualTo(20);
+	}
+
+	@Test
+	@DisplayName("출발역과 도착역이 같은경우")
+	void findSamePathTest() {
+		assertThatThrownBy(() -> lineService.findPath("강남역", "강남역"))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("같을");
+	}
+
+	@Test
+	@DisplayName("길이 연결되어있지 않은 경우")
+	void findInaccessiblePathTest() {
+		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(station1));
+		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(station4));
+		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
+
+		assertThatThrownBy(() -> lineService.findPath("강남역", "삼성역"))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("갈 수 없는 역");
 	}
 }

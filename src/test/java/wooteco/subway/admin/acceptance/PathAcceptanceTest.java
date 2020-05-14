@@ -5,12 +5,8 @@ import static wooteco.subway.admin.acceptance.AcceptanceTest.*;
 import static wooteco.subway.admin.acceptance.PageAcceptanceTest.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,23 +51,25 @@ public class PathAcceptanceTest {
 		//assertThat(path.getDuration()).isEqualTo(13);
 	}
 
-	@Test
-	public void getDijkstraShortestPath() {
-		WeightedMultigraph<Long, DefaultWeightedEdge> graph
-			= new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		graph.addVertex(1L);
-		graph.addVertex(2L);
-		graph.addVertex(3L);
-		graph.setEdgeWeight(graph.addEdge(1L, 2L), 2);
-		graph.setEdgeWeight(graph.addEdge(2L, 3L), 4);
-		graph.setEdgeWeight(graph.addEdge(1L, 3L), 10);
-		DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
-			= new DijkstraShortestPath<>(graph);
-		List<Long> shortestPath
-			= dijkstraShortestPath.getPath(1L, 3L).getVertexList();
-
-		assertThat(shortestPath.size()).isEqualTo(3);
-	}
+	// @Test
+	// public void getDijkstraShortestPath() {
+	// 	WeightedMultigraph<Long, DefaultWeightedEdge> graph
+	// 		= new WeightedMultigraph<>(DefaultWeightedEdge.class);
+	// 	graph.addVertex(1L);
+	// 	graph.addVertex(2L);
+	// 	graph.addVertex(3L);
+	// 	graph.setEdgeWeight(graph.addEdge(1L, 2L), 2);
+	// 	graph.setEdgeWeight(graph.addEdge(2L, 3L), 4);
+	// 	graph.setEdgeWeight(graph.addEdge(1L, 3L), 10);
+	// 	DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
+	// 		= new DijkstraShortestPath<>(graph);
+	// 	List<Long> shortestPath
+	// 		= dijkstraShortestPath.getPath(1L, 1L).getVertexList();
+	//
+	// 	System.out.println(shortestPath);
+	// 	System.out.println(dijkstraShortestPath.getPath(1L, 1L).getWeight());
+	// 	//assertThat(shortestPath.size()).isEqualTo(3);
+	// }
 
 	public static PathResponse getPath(String source, String target) {
 		Map<String, String> params = new HashMap<>();
