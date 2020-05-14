@@ -18,10 +18,11 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity findPath(@RequestParam("source") String source, @RequestParam("target") String target, @RequestParam("type") String type) {
-        if(source.equals(target)){
-            return ResponseEntity.badRequest().body(new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다."));
+        try {
+            pathService.findPath(source, target);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e);
         }
-        pathService.findPath(source, target);
         return ResponseEntity.ok().body(pathService.findPath(source, target));
     }
 }

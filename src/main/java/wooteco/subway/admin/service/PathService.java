@@ -30,6 +30,7 @@ public class PathService {
     }
 
     public PathResponse findPath(String sourceName, String targetName) {
+        checkDuplicateName(sourceName, targetName);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         List<Station> stations = stationRepository.findAll();
@@ -70,17 +71,23 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(pathStations), duration, distance);
     }
 
+    private void checkDuplicateName(String sourceName, String targetName) {
+        if(sourceName.equals(targetName)) {
+            throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다.");
+        }
+    }
+
     private Long findStationIdWithStationName(String sourceName, List<Station> stations) {
         return stations.stream()
                 .filter(station -> station.getName().equals(sourceName))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new).getId();
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역은 입력할 수 없습니다.")).getId();
     }
 
     private Station findStation(List<Station> stations, Long id) {
         return stations.stream()
                 .filter(station -> station.getId().equals(id))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역은 입력할 수 없습니다."));
     }
 }

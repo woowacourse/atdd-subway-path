@@ -1,6 +1,5 @@
 package wooteco.subway.admin.acceptance;
 
-import jdk.vm.ci.meta.ExceptionHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *      When 같은 출발역과 도착역을 입력하여 최단 경로를 조회하는 요청을 한다.
      *      Then 이름이 중복된다는 예외를 발생시킨다.
+     *
+     *      When 존재하지 않는 역을 입력하여 최단 경로를 조회하는 요청을 한다.
+     *      Then 역이 존재하지 않는다는 예외를 발생시킨다.
      */
 
     @DisplayName("지하철 최단 경로 조회")
@@ -42,13 +44,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.getDistance()).isEqualTo(9);
 
         //when
-        String errorMessage = findPathWithSameName("왕십리", "왕십리").getMessage();
+        String duplicationErrorMessage = findPathError("왕십리", "왕십리").getMessage();
 
         //then
-        assertThat(errorMessage).isEqualTo("출발역과 도착역은 동일할 수 없습니다.");
+        assertThat(duplicationErrorMessage).isEqualTo("출발역과 도착역은 동일할 수 없습니다.");
+
+        //when
+        String noExistErrorMessage = findPathError("작은곰", "오렌지").getMessage();
+
+        //then
+        assertThat(noExistErrorMessage).isEqualTo("존재하지 않는 역은 입력할 수 없습니다.");
     }
 
-    private Exception findPathWithSameName(String source, String target) {
+    private Exception findPathError(String source, String target) {
         return given().
                 when().
                 get("/paths?source=" + source + "&target=" + target + "&type=distance").
