@@ -45,4 +45,13 @@ public class ShortestPathResponse {
 	public int hashCode() {
 		return Objects.hash(stations, distance, duration);
 	}
+
+	@Override
+	public String toString() {
+		return "ShortestPathResponse{" +
+			"stations=" + stations +
+			", distance=" + distance +
+			", duration=" + duration +
+			'}';
+	}
 }

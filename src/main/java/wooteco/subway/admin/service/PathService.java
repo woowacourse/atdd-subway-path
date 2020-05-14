@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.PathSearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -23,20 +24,27 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public ShortestPathResponse getShortestPath(String source, String target) {
+	public ShortestPathResponse getShortestPath(String source, String target, PathSearchType type) {
 		Station sourceStation = stationRepository.findByName(source).orElseThrow(IllegalArgumentException::new);
 		Station targetStation = stationRepository.findByName(target).orElseThrow(IllegalArgumentException::new);
 
 		Long targetStationId = targetStation.getId();
 		Long sourceStationId = sourceStation.getId();
 		Lines graphLines = new Lines(lineRepository.findAll());
-
-		List<Long> shortestPath = graphLines.findShortestPath(sourceStationId, targetStationId);
+		List<Long> shortestPath = graphLines.findShortestPath(sourceStationId, targetStationId, type);
 		List<StationResponse> stationResponses = StationResponse.listOf(findStationsByIds(shortestPath));
-		int shortestDistance = graphLines.calculateDistance(sourceStationId, targetStationId);
-		int duration = graphLines.calculateDuration(sourceStationId, targetStationId);
+		int distance = 0;
+		int duration = 0;
 
-		return new ShortestPathResponse(stationResponses, shortestDistance, duration);
+		if (type == PathSearchType.DISTANCE) {
+			distance = graphLines.calculateShortestDistance(sourceStationId, targetStationId);
+			duration = graphLines.calculateDurationForShortestDistancePath(sourceStationId, targetStationId);
+		}
+		if (type == PathSearchType.DURATION) {
+			duration = graphLines.calculateShortestDuration(sourceStationId, targetStationId);
+			distance = graphLines.calculateDistanceForShortestDurationPath(sourceStationId, targetStationId);
+		}
+		return new ShortestPathResponse(stationResponses, distance, duration);
 	}
 
 	private List<Station> findStationsByIds(List<Long> shortestPath) {

@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static wooteco.subway.admin.domain.PathSearchType.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -58,19 +59,19 @@ public class PathServiceTest {
 		lineOne = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
 		lineTwo = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
 
-		lineOne.addLineStation(new LineStation(null, 1L, 0, 10));
-		lineOne.addLineStation(new LineStation(1L, 2L, 5, 10));
-		lineOne.addLineStation(new LineStation(2L, 3L, 5, 10));
-		lineOne.addLineStation(new LineStation(3L, 4L, 3, 10));
+		lineOne.addLineStation(new LineStation(null, 1L, 0, 0));
+		lineOne.addLineStation(new LineStation(1L, 2L, 5, 3));
+		lineOne.addLineStation(new LineStation(2L, 3L, 5, 2));
+		lineOne.addLineStation(new LineStation(3L, 4L, 3, 4));
 
-		lineTwo.addLineStation(new LineStation(null, 4L, 0, 10));
-		lineTwo.addLineStation(new LineStation(4L, 2L, 9, 10));
-		lineTwo.addLineStation(new LineStation(2L, 5L, 3, 10));
+		lineTwo.addLineStation(new LineStation(null, 4L, 0, 0));
+		lineTwo.addLineStation(new LineStation(4L, 2L, 9, 1));
+		lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 	}
 
-	@DisplayName("최단 경로를 잘 찾아내는지 확인")
+	@DisplayName("최단거리 경로를 잘 찾아내는지 확인")
 	@Test
-	void shortestPath() {
+	void shortestDistancePath() {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(lineOne, lineTwo));
 		when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
 		when(stationRepository.findByName(STATION_NAME4)).thenReturn(Optional.of(station4));
@@ -80,8 +81,24 @@ public class PathServiceTest {
 		when(stationRepository.findById(4L)).thenReturn(Optional.of(station4));
 
 		ShortestPathResponse expected = new ShortestPathResponse(
-			StationResponse.listOf(Arrays.asList(station1, station2, station3, station4)), 13, 30
+			StationResponse.listOf(Arrays.asList(station1, station2, station3, station4)), 13, 9
 		);
-		assertThat(pathService.getShortestPath(STATION_NAME1, STATION_NAME4)).isEqualTo(expected);
+		assertThat(pathService.getShortestPath(STATION_NAME1, STATION_NAME4, DISTANCE)).isEqualTo(expected);
+	}
+
+	@DisplayName("최단시간 경로를 잘 찾아내는지 확인")
+	@Test
+	void shortestDurationPath() {
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(lineOne, lineTwo));
+		when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
+		when(stationRepository.findByName(STATION_NAME4)).thenReturn(Optional.of(station4));
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
+		when(stationRepository.findById(4L)).thenReturn(Optional.of(station4));
+
+		ShortestPathResponse expected = new ShortestPathResponse(
+			StationResponse.listOf(Arrays.asList(station1, station2, station4)), 14, 4
+		);
+		assertThat(pathService.getShortestPath(STATION_NAME1, STATION_NAME4, DURATION)).isEqualTo(expected);
 	}
 }

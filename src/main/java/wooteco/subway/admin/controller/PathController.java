@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.admin.domain.PathSearchType;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.service.PathService;
 
@@ -19,7 +20,8 @@ public class PathController {
 	}
 
 	@GetMapping
-	ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam String source, @RequestParam String target, @RequestParam(required = false) String type) {
-		return ResponseEntity.ok(pathService.getShortestPath(source, target));
+	ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam String source, @RequestParam String target,
+		@RequestParam(required = false, defaultValue = "distance") String type) {
+		return ResponseEntity.ok(pathService.getShortestPath(source, target, PathSearchType.of(type)));
 	}
 }
