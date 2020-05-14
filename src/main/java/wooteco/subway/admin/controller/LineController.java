@@ -75,7 +75,7 @@ public class LineController {
             .build();
     }
 
-    @GetMapping("/stations")
+    @GetMapping("/detail")
     public ResponseEntity<List<LineDetailResponse>> showLineDetails() {
         final List<LineDetailResponse> wholeLineResponse = lineService.wholeLines();
 

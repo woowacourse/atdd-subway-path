@@ -18,6 +18,7 @@ import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -32,13 +33,13 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPathByDistance(Long startId, Long endId) {
+    public PathResponse findShortestPathByDistance(PathRequest pathRequest) {
         final Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, station -> station));
         final List<Line> lines = lineRepository.findAll();
-        final Station startStation = stations.get(startId);
-        final Station endStation = stations.get(endId);
+        final Station startStation = stations.get(pathRequest.getSource());
+        final Station endStation = stations.get(pathRequest.getTarget());
 
         DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
             new DijkstraShortestPath<>(makeGraph(stations, lines));
