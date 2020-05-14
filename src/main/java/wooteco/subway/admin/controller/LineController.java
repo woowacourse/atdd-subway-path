@@ -19,6 +19,7 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponses;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 @RestController
@@ -75,5 +76,10 @@ public class LineController {
     @GetMapping("/lines/path/{departure}/{arrival}")
     public PathResponses showPaths(@PathVariable String departure, @PathVariable String arrival) {
         return lineService.findPaths(new PathRequest(departure, arrival));
+    }
+
+    @GetMapping("/lines/detail")
+    public ResponseEntity<WholeSubwayResponse> wholeLines() {
+        return ResponseEntity.ok().body(lineService.wholeLines());
     }
 }

@@ -117,8 +117,10 @@ public class LineService {
         return edgeWeightType.getFactory().create(lineStations, departureId, arrivalId);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+            .map(line -> LineDetailResponse.of(line, stationRepository.findAllById(line.getLineStationsId())))
+            .collect(collectingAndThen(toList(), WholeSubwayResponse::new));
     }
 }
