@@ -39,6 +39,14 @@ public class PageController {
         return "admin/admin-edge";
     }
 
+    @GetMapping(value = "/maps", produces = MediaType.TEXT_HTML_VALUE)
+    public String mapsPage(Model model) {
+        model.addAttribute("lines", lineService.wholeLines().getLineDetailResponse());
+        return "service/map";
+    }
+
     @GetMapping(value = "/paths", produces = MediaType.TEXT_HTML_VALUE)
-    public String searchPage(Model model) { return "service/search"; }
+    public String searchPage(Model model) {
+        return "service/search";
+    }
 }
