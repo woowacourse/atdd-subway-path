@@ -13,6 +13,8 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.NotExistPathException;
+import wooteco.subway.admin.exception.NotFoundException;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -135,7 +137,7 @@ class PathServiceTest {
 
         assertThatThrownBy(() -> {
             pathService.retrieveShortestPath("환-강남역", "4-오이도역", PathType.DISTANCE);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(NotExistPathException.class)
                 .hasMessage("(환-강남역, 4-오이도역) 구간이 존재하지 않습니다.");
     }
 
@@ -144,11 +146,11 @@ class PathServiceTest {
         String invalidStationName = "없는 역";
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(invalidStationName))
-                .thenThrow(new IllegalArgumentException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", invalidStationName)));
+                .thenThrow(new NotFoundException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", invalidStationName)));
 
         assertThatThrownBy(() -> {
             pathService.retrieveShortestPath("환-강남역", invalidStationName, PathType.DISTANCE);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(NotFoundException.class)
                 .hasMessage("없는 역 이름을 가진 역이 존재하지 않습니다.");
     }
 

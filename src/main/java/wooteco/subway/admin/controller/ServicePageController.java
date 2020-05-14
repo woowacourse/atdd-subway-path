@@ -11,6 +11,11 @@ public class ServicePageController {
         return "service/index";
     }
 
+    @GetMapping(value = "/service/map", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMap() {
+        return "service/map";
+    }
+
     @GetMapping(value = "/service/search", produces = MediaType.TEXT_HTML_VALUE)
     public String serviceSearch() {
         return "service/search";

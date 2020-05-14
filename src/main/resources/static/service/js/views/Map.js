@@ -5,9 +5,9 @@ import api from '../../api/index.js'
 function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
-  const initSubwayLinesSlider = () => {
-    api.line.getAllDetail().then(data => {
-      const subwayLines = data.lineDetailResponse
+  const initSubwayLinesSlider = async () => {
+    await api.line.getAllDetail().then(data => {
+      const subwayLines = data.lineDetailResponses
       $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('')
     })
     tns({
