@@ -23,6 +23,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -111,5 +112,12 @@ class PathServiceTest {
         DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
         assertThat(shortestPath.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void sameSourceTargetTest() {
+        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
+        assertThatThrownBy(() -> pathService.getPath("1역", "1역", PathType.DISTANCE))
+            .isInstanceOf(InvalidSubwayPathException.class);
     }
 }

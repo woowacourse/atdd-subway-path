@@ -15,6 +15,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -38,6 +39,10 @@ public class PathService {
         Station target = stationRepository.findByName(targetName)
             .orElseThrow(() -> new StationNotFoundException(targetName));
 
+        if (source.is(target)) {
+            throw new InvalidSubwayPathException("출발역과 도착역은 같을 수 없습니다.");
+        }
+        
         stationRepository.findAll()
             .stream()
             .map(Station::getId)
