@@ -83,6 +83,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(path.get(4).getName()).isEqualTo("신도림");
 
 		assertEquals(distance, 40);
-		assertEquals(duration, 40);
+		assertEquals(duration, 80);
 	}
 }
