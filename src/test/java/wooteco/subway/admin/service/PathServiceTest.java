@@ -77,4 +77,20 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
                 .isInstanceOf(PathException.class).hasMessage("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
     }
+
+    @Test
+    void sourceAndTargetNotLinked() {
+        String source = "강남역";
+        String target = "잠실역";
+        Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
+        when(stationRepository.findByName(source)).thenReturn(Optional.of(new Station(source)));
+        when(stationRepository.findByName(target)).thenReturn(Optional.of(new Station(target)));
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(line));
+        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+                .isInstanceOf(PathException.class)
+                .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
+
+
+    }
 }

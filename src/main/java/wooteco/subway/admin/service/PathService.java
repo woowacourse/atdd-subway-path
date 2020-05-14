@@ -34,8 +34,8 @@ public class PathService {
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Station sourceStation = stationRepository.findByName(source).orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
+        Station targetStation = stationRepository.findByName(target).orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
@@ -46,6 +46,9 @@ public class PathService {
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
+        if (paths.isEmpty()) {
+            throw new PathException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
         int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
         int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
 
