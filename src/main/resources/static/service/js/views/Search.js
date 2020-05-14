@@ -1,12 +1,21 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {EVENT_TYPE} from '../../utils/constants.js'
+import api from '../../api/index.js'
+import {PathStationTemplate} from "../../utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
   const $arrivalStationName = document.querySelector('#arrival-station-name')
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
+  const $shortestDistanceButton = document.querySelector('#shortest-distance-button')
+  const $shortestDurationButton = document.querySelector('#shortest-duration-button')
+  const $shortestDistanceHighlight = document.querySelector('#shortest-distance-highlight')
+  const $shortestDurationHighlight = document.querySelector('#shortest-duration-highlight')
+  const $sourceStation = document.querySelector('#source-station');
+  const $middleStations = document.querySelector('#middle-stations');
+  const $targetStations = document.querySelector('#target-station');
   const $favoriteButton = document.querySelector('#favorite-button')
-
+  let $typeName = 'distance';
   const showSearchResult = () => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
@@ -14,14 +23,71 @@ function Search() {
     }
   }
 
-  const onSearch = event => {
+  const highlightButton = () => {
+    if ($typeName === 'distance') {
+      $shortestDistanceHighlight.classList.add('border-l', 'border-t', 'border-r');
+      $shortestDistanceHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+      $shortestDurationHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+      $shortestDurationHighlight.classList.remove('border-l', 'border-t', 'border-r');
+    }
+
+    if ($typeName === 'duration') {
+      $shortestDurationHighlight.classList.add('border-l', 'border-t', 'border-r');
+      $shortestDurationHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+      $shortestDistanceHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+      $shortestDistanceHighlight.classList.remove('border-l', 'border-t', 'border-r');
+    }
+  }
+
+  const onShortestDistanceResult = event => {
+    $typeName = 'distance';
+    highlightButton();
+    onSearch(event).then(data => {
+      console.log(data)
+    });
+  }
+
+  const onShortestDurationResult = event => {
+    $typeName = 'duration';
+    highlightButton();
+    onSearch(event).then(data => {
+      console.log(data)
+    });
+  }
+
+  const onSearch = async event => {
     event.preventDefault()
+
+    $sourceStation.innerText = '';
+    $middleStations.innerHTML = '';
+    $targetStations.innerText = '';
+
     const searchInput = {
       source: $departureStationName.value,
-      target: $arrivalStationName.value
+      target: $arrivalStationName.value,
+      type: $typeName
     }
-    console.log(searchInput)
-    showSearchResult(searchInput)
+
+    await findPathResult(searchInput, $typeName)
+    showSearchResult()
+  }
+
+  const findPathResult = (searchInput, typeName) => {
+    searchInput.type = typeName;
+
+    api.path.find(searchInput).then(data => {
+      document.querySelector('#distance').innerText = data['totalDistance'] + 'km';
+      document.querySelector('#duration').innerText = data['totalDuration'] + '분';
+
+      const stations = data['stations'];
+      $sourceStation.innerText =
+          stations[0].name;
+      for (let i = 1; i < stations.length - 1; i++) {
+        $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i].name));
+      }
+      $targetStations.innerText =
+          stations[stations.length - 1].name;
+    })
   }
 
   const onToggleFavorite = event => {
@@ -45,6 +111,8 @@ function Search() {
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+    $shortestDistanceButton.addEventListener(EVENT_TYPE.CLICK, onShortestDistanceResult)
+    $shortestDurationButton.addEventListener(EVENT_TYPE.CLICK, onShortestDurationResult)
   }
 
   this.init = () => {

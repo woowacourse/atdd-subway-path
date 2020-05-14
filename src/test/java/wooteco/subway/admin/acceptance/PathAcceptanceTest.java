@@ -36,20 +36,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 		addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId());
 
-		PathResponse pathResponse = searchPath(stationResponse1.getName(), stationResponse4.getName());
+		PathResponse pathResponse = searchPath(stationResponse1.getName(), stationResponse4.getName(), "distance");
 
 		assertThat(pathResponse.getStations().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
 	}
 
-	private PathResponse searchPath(String source, String target) {
+	private PathResponse searchPath(String source, String target, String type) {
 		return given().
 				when().
-					get("/path" + "?source=" + source + "&target=" + target).
+				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
 				then().
-					log().all().
-					statusCode(HttpStatus.OK.value()).
-					extract().as(PathResponse.class);
+				log().all().
+				statusCode(HttpStatus.OK.value()).
+				extract().as(PathResponse.class);
 	}
 }
