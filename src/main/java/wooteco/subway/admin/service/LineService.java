@@ -1,9 +1,5 @@
 package wooteco.subway.admin.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -15,6 +11,11 @@ import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -87,15 +88,19 @@ public class LineService {
     }
 
     public PathResponse findShortestDistancePath(String sourceName, String targetName) {
+        if (sourceName.equals(targetName)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+
         List<LineStation> lineStations = lineRepository.findAll()
-            .stream()
-            .map(Line::getStations)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+                .stream()
+                .map(Line::getStations)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
         ShortestPath shortestPath = ShortestPath.createDistancePath(lineStations);
 
         Long sourceId = stationRepository.findIdByName(sourceName)
-            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
             .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);

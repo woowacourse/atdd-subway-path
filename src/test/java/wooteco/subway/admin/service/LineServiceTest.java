@@ -261,4 +261,12 @@ public class LineServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 경로입니다.");
     }
+
+    @DisplayName("(예외) 시작점과 도착점이 같은 경로일 때")
+    @Test
+    void findShortestDistancePath_EqualStation() {
+        assertThatThrownBy(() -> lineService.findShortestDistancePath(STATION_NAME1, STATION_NAME1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 같습니다.");
+    }
 }
