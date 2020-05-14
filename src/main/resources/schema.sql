@@ -28,6 +28,7 @@ create table if not exists LINE_STATION
     created_at datetime,
     updated_at datetime
 );
+
 --web 프론트 테스트시 사용
 --insert into station values(1,'강남역',null);
 --insert into station values(2,'역삼역',null);

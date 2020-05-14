@@ -63,14 +63,9 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         for (Line line : lines) {
             Set<LineStation> stations = line.getStations();
-            Iterator<LineStation> iterator = stations.iterator();
-            while (iterator.hasNext()) {
-                LineStation lineStation = iterator.next();
-
-                //todo: 리팩토링
-                Iterator<Station> a = stationRepository.findAll().iterator();
-                Station b = a.next();
-
+            Iterator<LineStation> lineStationIterator = stations.iterator();
+            while (lineStationIterator.hasNext()) {
+                LineStation lineStation = lineStationIterator.next();
                 Station station = stationRepository.findById(lineStation.getStationId())
                         .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
                 graph.addVertex(station);
@@ -78,6 +73,7 @@ public class PathService {
                 if (lineStation.getPreStationId() == null) {
                     continue;
                 }
+
                 Station preStation = stationRepository.findById(lineStation.getPreStationId())
                         .orElseThrow(() -> new IllegalArgumentException("이전역이 존재하지 않습니다."));
                 graph.addVertex(preStation);
@@ -115,6 +111,4 @@ public class PathService {
         }
         return valueSum;
     }
-
 }
-

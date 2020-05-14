@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +34,11 @@ public class PathServiceTest {
 
     private PathService pathService;
 
-    @Autowired
+    @Mock
     private LineRepository lineRepository;
-    @Autowired
+    @Mock
     private StationRepository stationRepository;
-    @Autowired
+    @Mock
     private LineStationRepository lineStationRepository;
 
     private Line line;
@@ -94,9 +94,6 @@ public class PathServiceTest {
         SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "distance");
         assertThat(searchPathResponse.getPathStationNames()).contains("가깝고느린역");
 
-        searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "duration");
-        assertThat(searchPathResponse.getPathStationNames()).contains("선릉역");
-
 ////    출발역과 도착역이 같은 경우
 //        searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME1, "duration");
 //        System.out.println("-----------------");
@@ -117,5 +114,12 @@ public class PathServiceTest {
 //        System.out.println(searchPathResponse.getPathStationNames());
 //        System.out.println(searchPathResponse.getDistanceSum());
 //        System.out.println(searchPathResponse.getDurationSum());
+    }
+
+    @DisplayName("최소 시간 조회 테스트")
+    @Test
+    public void shortestDuration() {
+        SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "duration");
+        assertThat(searchPathResponse.getPathStationNames()).contains("선릉역");
     }
 }
