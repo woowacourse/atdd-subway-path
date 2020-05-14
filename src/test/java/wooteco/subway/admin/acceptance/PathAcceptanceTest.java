@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
 
         //when
-        PathResponse pathResponse = calculatePath("양재시문의숲역", "선릉역");
+        PathResponse pathResponse = calculatePath("양재시민의숲역", "선릉역");
 
         //then
         assertThat(pathResponse.getDistance()).isEqualTo(40);
