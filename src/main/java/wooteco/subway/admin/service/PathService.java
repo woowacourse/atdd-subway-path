@@ -42,7 +42,7 @@ public class PathService {
         final Station endStation = getStationWithValidation(stations, pathRequest.getTarget());
 
         DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
-            new DijkstraShortestPath<>(makeGraph(stations, lines));
+            new DijkstraShortestPath<>(makeGraph(stations, lines, pathRequest.getType()));
 
         final GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, endStation);
 
@@ -67,7 +67,7 @@ public class PathService {
         return stations.get(stationId);
     }
 
-    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines) {
+    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines, PathType pathType) {
         WeightedMultigraph<Station, Edge> graph
             = new WeightedMultigraph<>(Edge.class);
 
@@ -84,7 +84,7 @@ public class PathService {
                 Edge edge = lineStation.toEdge();
 
                 graph.addEdge(preStation, currentStation, edge);
-                graph.setEdgeWeight(edge, lineStation.getDistance());
+                graph.setEdgeWeight(edge, pathType.getValue(lineStation));
             });
         return graph;
     }

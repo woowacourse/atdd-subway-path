@@ -77,7 +77,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(), "distance");
+        PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(), PathType.DISTANCE);
 
         PathResponse pathResponse = pathService.findShortestPathByDistance(pathRequest);
 
@@ -100,7 +100,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
 
-        PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), "distance");
+        PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
             .isInstanceOf(NotConnectEdgeException.class)
@@ -114,7 +114,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathRequest pathRequest = new PathRequest(6L, station4.getId(), "distance");
+        PathRequest pathRequest = new PathRequest(6L, station4.getId(), PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
             .isInstanceOf(NoSuchElementException.class)

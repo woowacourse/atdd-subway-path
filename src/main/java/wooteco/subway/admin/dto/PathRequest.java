@@ -1,14 +1,16 @@
 package wooteco.subway.admin.dto;
 
+import wooteco.subway.admin.service.PathType;
+
 public class PathRequest {
     private Long source;
     private Long target;
-    private String type;
+    private PathType type;
 
     public PathRequest() {
     }
 
-    public PathRequest(final Long source, final Long target, final String type) {
+    public PathRequest(final Long source, final Long target, final PathType type) {
         this.source = source;
         this.target = target;
         this.type = type;
@@ -22,7 +24,7 @@ public class PathRequest {
         return target;
     }
 
-    public String getType() {
+    public PathType getType() {
         return type;
     }
 
@@ -34,7 +36,7 @@ public class PathRequest {
         this.target = target;
     }
 
-    public void setType(final String type) {
+    public void setType(PathType type) {
         this.type = type;
     }
 }

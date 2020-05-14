@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.controller.validator.PathValidator;
 import wooteco.subway.admin.dto.PathRequest;
+import wooteco.subway.admin.service.PathType;
 
 @ExtendWith(MockitoExtension.class)
 public class PathValidatorTest {
@@ -17,7 +18,7 @@ public class PathValidatorTest {
     @DisplayName("출발역과 도착역을 같은 역으로 입력했을 경우 예외처리")
     @Test
     void sameStationTest() {
-        PathRequest pathRequest = new PathRequest(1L, 1L, "DISTANCE");
+        PathRequest pathRequest = new PathRequest(1L, 1L, PathType.DISTANCE);
         pathValidator.valid(pathRequest);
     }
 }
