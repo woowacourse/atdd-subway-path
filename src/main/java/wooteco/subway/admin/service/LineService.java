@@ -3,21 +3,15 @@ package wooteco.subway.admin.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Path;
-import wooteco.subway.admin.domain.PathEdge;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.ShortestDistanceResponse;
 import wooteco.subway.admin.dto.StationCreateRequest;
-import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -83,31 +77,6 @@ public class LineService {
         return WholeSubwayResponse.of(lineDetailResponses);
     }
 
-    public ShortestDistanceResponse searchShortestDistancePath(String source, String target,
-        String type) {
-        Station sourceStation = stationRepository.findByName(source)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 출발역입니다."));
-        Station targetStation = stationRepository.findByName(target)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 도착역입니다."));
-        PathType pathType = PathType.findPathType(type);
-
-        Path path = new Path();
-        List<Station> stations = stationRepository.findAll();
-        path.addVertexes(stations);
-        List<Line> lines = lineRepository.findAll();
-        path.setEdges(lines, pathType);
-
-        GraphPath<Long, PathEdge> shortestPath = path.searchShortestPath(sourceStation,
-            targetStation);
-        List<Long> stationIds = shortestPath.getVertexList();
-        return new ShortestDistanceResponse(StationResponse.listOf(toStations(stationIds)),
-            path.calculateDistance(shortestPath), path.calculateDuration(shortestPath));
-    }
-
-    private List<Station> toStations(List<Long> stationIds) {
-        return stationRepository.findAllById(stationIds);
-    }
-
     public Station addStation(StationCreateRequest view) {
         Station station = view.toStation();
         return stationRepository.save(station);
@@ -115,6 +84,15 @@ public class LineService {
 
     public List<Station> showStations() {
         return stationRepository.findAll();
+    }
+
+    public Station findStationByName(String name) {
+        return stationRepository.findByName(name)
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 역입니다."));
+    }
+
+    public List<Station> findAllStationsByIds(List<Long> stationIds) {
+        return stationRepository.findAllById(stationIds);
     }
 
     public void deleteStationById(Long id) {
