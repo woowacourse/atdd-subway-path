@@ -26,13 +26,13 @@ public class LinesTest {
         bundangLineStations.add(new LineStation(6L, 3L, 10, 10));
         bundangLineStations.add(new LineStation(3L, 7L, 10, 10));
 
-        List<Line> lines = new ArrayList<>();
-        lines.add(new Line(1L, "2호선", "bg-gray-300", LocalTime.of(5, 30), LocalTime.of(23, 30), 10, secondLineStations));
-        lines.add(new Line(2L, "분당선", "bg-gray-300", LocalTime.of(5, 30), LocalTime.of(23, 30), 10, bundangLineStations));
+        List<Line> tempLines = new ArrayList<>();
+        tempLines.add(new Line(1L, "2호선", "bg-gray-300", LocalTime.of(5, 30), LocalTime.of(23, 30), 10, secondLineStations));
+        tempLines.add(new Line(2L, "분당선", "bg-gray-300", LocalTime.of(5, 30), LocalTime.of(23, 30), 10, bundangLineStations));
 
-        Lines lines1 = new Lines(lines);
+        Lines lines = new Lines(tempLines);
 
-        List<LineStation> allLineStation = lines1.getAllLineStation();
+        List<LineStation> allLineStation = lines.getAllLineStation();
 
         assertThat(allLineStation.size()).isEqualTo(8);
     }

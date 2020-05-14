@@ -5,6 +5,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.LineStations;
 import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
@@ -15,7 +16,6 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -31,7 +31,7 @@ public class PathService {
 
         Lines allLines = new Lines(lineRepository.findAll());
 
-        List<LineStation> lineStations = allLines.getAllLineStation();
+        LineStations lineStations = new LineStations(allLines.getAllLineStation());
 
         List<Station> allStations = stationRepository.findAll();
 
@@ -40,7 +40,8 @@ public class PathService {
 
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = initGraph(lineStations);
 
-        List<Long> shortestPathIds = computeShortestPath(graph, sourceStation, targetStation);
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<Long> shortestPathIds = dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
 
         List<Station> shortestPath = new ArrayList<>();
         int distance = 0;
@@ -49,7 +50,7 @@ public class PathService {
 
         for (Long stationId : shortestPathIds) {
             shortestPath.add(findStationById(stationId, allStations));
-            LineStation lineStation = findLineStation(preStationId, stationId, lineStations);
+            LineStation lineStation = lineStations.findLineStation(preStationId, stationId);
             distance += lineStation.getDistance();
             duration += lineStation.getDuration();
             preStationId = stationId;
@@ -58,40 +59,22 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
-    private List<Long> computeShortestPath(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Station sourceStation, Station targetStation) {
-        // 다익스트라 초기화
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        // 가중치 최소 경로 구하기
-        return (List<Long>) dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
-    }
-
-    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(List<LineStation> lineStations) {
-        // 그래프 초기화
+    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        // 모든 라인 스테이션 아이디 가져오기
-        Set<Long> allStationIds = getAllLineStationId(lineStations);
+        Set<Long> allStationIds = lineStations.getAllLineStationId();
 
-        // 모든 점 추가
         for (Long stationId : allStationIds) {
             graph.addVertex(stationId);
         }
 
-        // 모든 간선 추가
-        for (LineStation lineStation : lineStations) {
+        for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
                 graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
             }
         }
         return graph;
-    }
-
-    private Set<Long> getAllLineStationId(List<LineStation> lineStations) {
-        return lineStations.stream()
-                .map(LineStation::getStationId)
-                .collect(Collectors.toSet());
     }
 
     public Station findStationById(Long id, List<Station> stations) {
@@ -106,17 +89,5 @@ public class PathService {
                 .filter(station -> station.is(name))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public LineStation findLineStation(Long preStationId, Long stationId, List<LineStation> lineStations) {
-        for (LineStation lineStation : lineStations) {
-            if (lineStation.is(preStationId, stationId)) {
-                return lineStation;
-            }
-            if (lineStation.is(stationId, preStationId)) {
-                return lineStation;
-            }
-        }
-        return LineStation.empty();
     }
 }

@@ -35,7 +35,7 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
-    public boolean is(long preStationId, long stationId) {
+    public boolean is(Long preStationId, Long stationId) {
         return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
     }
 

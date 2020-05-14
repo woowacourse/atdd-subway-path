@@ -1,7 +1,7 @@
 package wooteco.subway.admin.domain;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LineStations {
@@ -11,10 +11,25 @@ public class LineStations {
         this.lineStations = lineStations;
     }
 
-    private List<LineStation> getAllLineStation(List<Line> allLines) {
-        return allLines.stream()
-                .map(Line::getStations)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+    public Set<Long> getAllLineStationId() {
+        return lineStations.stream()
+                .map(LineStation::getStationId)
+                .collect(Collectors.toSet());
+    }
+
+    public List<LineStation> getLineStations() {
+        return lineStations;
+    }
+
+    public LineStation findLineStation(Long preStationId, Long stationId) {
+        for (LineStation lineStation : lineStations) {
+            if (lineStation.is(preStationId, stationId)) {
+                return lineStation;
+            }
+            if (lineStation.is(stationId, preStationId)) {
+                return lineStation;
+            }
+        }
+        return LineStation.empty();
     }
 }
