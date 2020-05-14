@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
@@ -34,7 +35,7 @@ public class PathService {
     }
 
     @Transactional
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(Long sourceId, Long targetId, PathType pathType) {
         try {
             validate(sourceId, targetId);
             List<Line> lines = lineRepository.findAll();
@@ -55,11 +56,13 @@ public class PathService {
                     LineStationEdge lineStationEdge = LineStationEdge.of(lineStation);
                     graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
                         lineStationEdge);
-                    graph.setEdgeWeight(lineStationEdge, lineStationEdge.getDistance());
+                    graph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
                 }
             }
-            DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-            GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(sourceId, targetId);
+            DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+                graph);
+            GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(sourceId,
+                targetId);
             List<Long> stationIds = path.getVertexList();
             List<StationResponse> responses = stationIds.stream()
                 .map(stations::get)

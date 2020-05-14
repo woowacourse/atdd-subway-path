@@ -10,7 +10,8 @@ public class LineStation {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private LineStation(Long preStationId, Long stationId, int distance, int duration, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private LineStation(Long preStationId, Long stationId, int distance, int duration,
+        LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
@@ -20,7 +21,8 @@ public class LineStation {
     }
 
     public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
-        return new LineStation(preStationId, stationId, distance, duration, LocalDateTime.now(), LocalDateTime.now());
+        return new LineStation(preStationId, stationId, distance, duration, LocalDateTime.now(),
+            LocalDateTime.now());
     }
 
     public void updatePreLineStation(Long preStationId) {

@@ -1,12 +1,13 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /*
 Feature: 지하철 경로 조회
@@ -57,14 +58,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private PathResponse findPath(Long source, Long target) {
         return given()
-                .queryParam("source", source)
-                .queryParam("target", target)
-                .queryParam("type", "타입")
-                .when()
-                .get("/paths")
-                .then()
-                .log().all()
-                .extract()
-                .as(PathResponse.class);
+            .queryParam("source", source)
+            .queryParam("target", target)
+            .queryParam("type", "distance")
+            .when()
+            .get("/paths")
+            .then()
+            .log().all()
+            .extract()
+            .as(PathResponse.class);
     }
 }
