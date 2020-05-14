@@ -6,7 +6,6 @@ public class WeightedEdge extends DefaultWeightedEdge {
 
     private int subWeight;
 
-
     public void setSubWeight(int subWeight) {
         this.subWeight = subWeight;
     }

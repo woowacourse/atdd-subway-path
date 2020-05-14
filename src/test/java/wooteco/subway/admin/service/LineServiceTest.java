@@ -1,14 +1,5 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +15,17 @@ import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -207,10 +209,9 @@ public class LineServiceTest {
 
     @DisplayName("소요시간 계산 시 중복되는 경로의 duration 선택 문제")
     @Test
-    void findShortestDistancePath_When_EdgeDuplication() {
+    void findShortestDistancePath_EdgeDuplication() {
         List<Line> lines = Lists.newArrayList(line1, line2);
         line2.addLineStation(new LineStation(4L, 1L, 10, 5));
-        ;
         line2.addLineStation(new LineStation(1L, 2L, 5, 10));
 
         List<Station> stations = Lists.newArrayList(station1, station2);
@@ -218,14 +219,30 @@ public class LineServiceTest {
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findIdByName(station1.getName()))
-            .thenReturn(Optional.of(station1.getId()));
+                .thenReturn(Optional.of(station1.getId()));
         when(stationRepository.findIdByName(station2.getName()))
-            .thenReturn(Optional.of(station2.getId()));
+                .thenReturn(Optional.of(station2.getId()));
         when(stationRepository.findAllNameById(anyList())).thenReturn(names);
 
         PathResponse response = lineService.findShortestDistancePath(STATION_NAME1, STATION_NAME2);
         int expectedDuration = 10;
 
         assertThat(response.getDuration()).isEqualTo(expectedDuration);
+    }
+
+    @DisplayName("(예외) 연결되지 않은 경로일 때")
+    @Test
+    void findShortestDistancePath_NotConnectedPath() {
+        List<Line> lines = Lists.newArrayList(line1, line2);
+
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findIdByName(station1.getName()))
+                .thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station4.getName()))
+                .thenReturn(Optional.of(station4.getId()));
+
+        assertThatThrownBy(() -> lineService.findShortestDistancePath(STATION_NAME1, STATION_NAME4))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 경로입니다.");
     }
 }

@@ -1,10 +1,11 @@
 package wooteco.subway.admin.domain.path;
 
-import java.util.List;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.domain.LineStation;
+
+import java.util.List;
 
 public class ShortestPath {
 
@@ -39,7 +40,11 @@ public class ShortestPath {
     }
 
     public List<Long> getVertexList(Long source, Long target) {
-        return path.getPath(source, target).getVertexList();
+        try {
+            return path.getPath(source, target).getVertexList();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("존재하지 않는 경로입니다.");
+        }
     }
 
     public int getWeight(Long source, Long target) {
