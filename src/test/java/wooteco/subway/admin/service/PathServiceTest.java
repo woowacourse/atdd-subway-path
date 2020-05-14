@@ -14,8 +14,12 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -80,9 +84,24 @@ class PathServiceTest {
 		String sourceName = "시청";
 		String targetName = "신도림";
 
+		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
+		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
+
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
+				station5, station6, station7, station8, station9, station10));
+
 		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName);
 
-		assertThat(shortestPath.getPath().get(0)).isEqualTo(station6);
+
+		assertEquals(shortestPath.getPath().get(0), station6);
+		assertEquals(shortestPath.getPath().get(1), station5);
+		assertEquals(shortestPath.getPath().get(2), station4);
+		assertEquals(shortestPath.getPath().get(3), station3);
+		assertEquals(shortestPath.getPath().get(4), station2);
+
+		assertEquals(shortestPath.getDistance(), 40);
+		assertEquals(shortestPath.getDuration(), 40);
   	  }
   	// @formatter:on
 }
