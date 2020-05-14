@@ -1,17 +1,14 @@
 package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class PathController {
@@ -22,7 +19,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> calculatePath(@RequestBody PathRequest view) {
-        return ResponseEntity.ok().body(pathService.calculatePath(view.getSource(), view.getTarget()));
+    public ResponseEntity<PathResponse> calculatePath(@RequestParam String source,
+                                                      @RequestParam String target,
+                                                      @RequestParam PathType type) {
+        System.out.println(source + " " + target + " " + type);
+        return ResponseEntity.ok().body(pathService.calculatePath(new PathRequest(source, target, type)));
     }
 }

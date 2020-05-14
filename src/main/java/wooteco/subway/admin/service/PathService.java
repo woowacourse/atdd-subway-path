@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -26,7 +27,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse calculatePath(String source, String target) {
+    public PathResponse calculatePath(PathRequest request) {
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
         List<LineStation> lineStations = lines
@@ -36,8 +37,8 @@ public class PathService {
                         .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId())))
                 .collect(Collectors.toList());
 
-        Long sourceId = findStationIdByName(stations, source);
-        Long targetId = findStationIdByName(stations, target);
+        Long sourceId = findStationIdByName(stations, request.getSource());
+        Long targetId = findStationIdByName(stations, request.getTarget());
 
         List<Long> shortestPath = createShortestPath(lines, sourceId, targetId);
 
