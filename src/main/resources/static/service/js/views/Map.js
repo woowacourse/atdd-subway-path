@@ -25,7 +25,8 @@ function Map() {
 	};
 
 	this.init = async () => {
-		subwayLines = await api.line.getAll().then(res => res.lineDetails);
+		subwayLines = await api.line.getAllDetail().then(
+			res => res.lineDetails);
 		initSubwayLinesSlider();
 	}
 }
