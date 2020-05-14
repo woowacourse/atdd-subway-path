@@ -30,30 +30,45 @@ public class PathService {
     }
 
     public PathResponse showPaths(String source, String target, CriteriaType criteria) {
+        validateSameStations(source, target);
         List<Line> lines = lineRepository.findAll();
-        final Station from = stationRepository.findByName(source)
-            .orElseThrow(IllegalArgumentException::new);
-        final Station to = stationRepository.findByName(target)
-            .orElseThrow(IllegalArgumentException::new);
+        Station from = stationRepository.findByName(source)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        Station to = stationRepository.findByName(target)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+
         List<Long> path = graphService.findPath(lines, from.getId(), to.getId(), criteria);
         List<Station> stations = stationRepository.findAllById(path);
-
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 
-        List<LineStation> lineStations = lines.stream()
+        List<LineStation> lineStations = lineStationsWithCriteria(lines, path);
+        int totalDistance = sum(lineStations, CriteriaType.DISTANCE);
+        int totalDuration = sum(lineStations, CriteriaType.DURATION);
+        List<StationResponse> sortedStationResponses = sort(path, stationResponses);
+
+        return new PathResponse(sortedStationResponses, totalDistance, totalDuration);
+    }
+
+    private List<LineStation> lineStationsWithCriteria(List<Line> lines, List<Long> path) {
+        return lines.stream()
             .flatMap(line -> line.getStations().stream())
             .filter(lineStation -> path.contains(lineStation.getStationId()))
             .filter(lineStation -> Objects.isNull(lineStation.getPreStationId()) || path.contains(
                 lineStation.getPreStationId()))
             .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
             .collect(Collectors.toList());
+    }
 
-        int totalDistance = lineStations.stream().mapToInt(LineStation::getDistance).sum();
-        int totalDuration = lineStations.stream().mapToInt(LineStation::getDuration).sum();
+    private int sum(List<LineStation> lineStations, CriteriaType type) {
+        return lineStations.stream()
+            .mapToInt(type::get)
+            .sum();
+    }
 
-        List<StationResponse> sortedStationResponses = sort(path, stationResponses);
-
-        return new PathResponse(sortedStationResponses, totalDistance, totalDuration);
+    private void validateSameStations(String source, String target) {
+        if (source.equalsIgnoreCase(target)) {
+            throw new IllegalArgumentException("동일역으로는 조회할 수 없습니다.");
+        }
     }
 
     private List<StationResponse> sort(List<Long> path, List<StationResponse> stationResponses) {

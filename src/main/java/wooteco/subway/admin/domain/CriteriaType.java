@@ -23,7 +23,7 @@ public enum CriteriaType {
             .orElseThrow(AssertionError::new);
     }
 
-    public double get(LineStation it) {
+    public int get(LineStation it) {
         return this.expression.apply(it);
     }
 }
