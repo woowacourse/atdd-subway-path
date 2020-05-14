@@ -1,7 +1,6 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NotFoundLineException;
 import wooteco.subway.admin.repository.LineRepository;
 
 @Service
@@ -36,7 +36,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+            .orElseThrow(() -> new NotFoundLineException(id));
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }

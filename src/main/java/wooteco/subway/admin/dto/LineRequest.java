@@ -11,16 +11,16 @@ import javax.validation.constraints.NotNull;
 
 public class LineRequest {
 
-    @NotBlank(message = "이름은 필수 입력 요소입니다.")
+    @NotBlank(message = "노선 이름은 필수 입력 요소입니다.")
     private String name;
 
-    @NotBlank(message = "이름은 필수 입력 요소입니다.")
+    @NotBlank(message = "노선 색상은 필수 입력 요소입니다.")
     private String backgroundColor;
 
-    @NotNull(message = "이름은 필수 입력 요소입니다.")
+    @NotNull(message = "첫차 시간은 필수 입력 요소입니다.")
     private LocalTime startTime;
 
-    @NotNull(message = "이름은 필수 입력 요소입니다.")
+    @NotNull(message = "막차 시간은 필수 입력 요소입니다.")
     private LocalTime endTime;
 
     @Min(value = 1, message = "간격은 1 이상만 입력 가능합니다.")

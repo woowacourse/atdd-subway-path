@@ -25,6 +25,7 @@ public class Line {
     public Line(Long id, String name, String backgroundColor, LocalTime startTime,
         LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
         Set<LineStation> stations) {
+        this.id = id;
         this.name = name;
         this.backgroundColor = backgroundColor;
         this.startTime = startTime;
