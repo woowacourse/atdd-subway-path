@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -28,13 +29,13 @@ public class PathService {
         this.graphService = graphService;
     }
 
-    public PathResponse showPaths(String source, String target) {
+    public PathResponse showPaths(String source, String target, CriteriaType criteria) {
         List<Line> lines = lineRepository.findAll();
         final Station from = stationRepository.findByName(source)
             .orElseThrow(IllegalArgumentException::new);
         final Station to = stationRepository.findByName(target)
             .orElseThrow(IllegalArgumentException::new);
-        List<Long> path = graphService.findPath(lines, from.getId(), to.getId());
+        List<Long> path = graphService.findPath(lines, from.getId(), to.getId(), criteria);
         List<Station> stations = stationRepository.findAllById(path);
 
         List<StationResponse> stationResponses = StationResponse.listOf(stations);

@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -70,7 +71,8 @@ class PathServiceTest {
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station3.getName())).thenReturn(Optional.of(station3));
 
-        PathResponse pathResponse = pathService.showPaths(station1.getName(), station3.getName());
+        PathResponse pathResponse = pathService.showPaths(station1.getName(), station3.getName(),
+            CriteriaType.DISTANCE);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
         final List<StationResponse> stations = pathResponse.getStations();
         final List<Long> ids = stations.stream()

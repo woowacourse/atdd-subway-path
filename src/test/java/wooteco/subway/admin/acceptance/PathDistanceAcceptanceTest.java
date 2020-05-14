@@ -61,6 +61,8 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
+        params.put("criteria", "distance");
+
         return given().
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).

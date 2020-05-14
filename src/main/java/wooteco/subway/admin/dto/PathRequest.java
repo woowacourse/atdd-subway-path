@@ -1,15 +1,17 @@
 package wooteco.subway.admin.dto;
 
-public class pathRequestDto {
+public class PathRequest {
     private String source;
     private String target;
+    private String criteria;
 
-    public pathRequestDto() {
+    public PathRequest() {
     }
 
-    public pathRequestDto(String source, String target) {
+    public PathRequest(String source, String target, String criteria) {
         this.source = source;
         this.target = target;
+        this.criteria = criteria;
     }
 
     public String getSource() {
@@ -18,5 +20,9 @@ public class pathRequestDto {
 
     public String getTarget() {
         return target;
+    }
+
+    public String getCriteria() {
+        return criteria;
     }
 }
