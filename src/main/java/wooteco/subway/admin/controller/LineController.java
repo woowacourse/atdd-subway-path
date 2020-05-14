@@ -70,7 +70,7 @@ public class LineController {
     }
 
     @GetMapping("/lines/detail")
-    public ResponseEntity wholeLines() {
+    public ResponseEntity<WholeSubwayResponse>wholeLines() {
         WholeSubwayResponse response = lineService.wholeLines();
         return ResponseEntity.ok().eTag(String.valueOf(response.hashCode())).body(response);
     }

@@ -1,6 +1,6 @@
 export const listItemTemplate = value =>
   `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800">
-  ${value}
+  ${value.name}
   <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
      <span class="mdi mdi-delete"></span>
   </button>
@@ -45,7 +45,7 @@ export const subwayLinesItemTemplate = line => {
   const stationsTemplate = line.stations.map(station => listItemTemplate(station)).join('')
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.backgroundColor} lint-title px-4 py-1">${line.title}</div>
+              <div class="border ${line.backgroundColor} lint-title px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stationsTemplate}
               </div>
@@ -75,4 +75,18 @@ export const ErrorAlertTemplate = message => {
                <strong class="font-bold">${message}</strong>
             </div>
           </div>`
+}
+
+export const searchResultTemplate = (station) =>{
+  return `<span class="text-gray-600" data-station-id='${station.id}'>${station.name}</span>
+<span class="mdi mdi-arrow-right-bold text-gray-500"></span>`
+}
+
+export const firstSearchResultTemplate = (station) => {
+  return `<span class="font-bold" data-station-id='${station.id}'>${station.name}</span>
+<span class="mdi mdi-arrow-right-bold text-gray-500"></span>`
+}
+
+export const endSearchResultTemplate = (station) => {
+  return `<span class="font-bold" data-station-id='${station.id}'>${station.name}</span>`
 }
