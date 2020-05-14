@@ -9,6 +9,7 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.errors.PathException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class PathService {
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new PathException("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
         }
 
         List<Line> lines = lineRepository.findAll();

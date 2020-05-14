@@ -1,6 +1,5 @@
 package wooteco.subway.admin.service;
 
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -12,11 +11,16 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.errors.PathException;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,9 +44,9 @@ class PathServiceTest {
         List<Long> path = Arrays.asList(1L, 2L, 5L);
 
         Line line = new Line(1L, "1호선", LocalTime.now(), LocalTime.now(), 10);
-        line.addLineStation(new LineStation(null, 1L, 10,10));
-        line.addLineStation(new LineStation(1L, 2L, 10,10));
-        line.addLineStation(new LineStation(2L, 5L, 10,10));
+        line.addLineStation(new LineStation(null, 1L, 10, 10));
+        line.addLineStation(new LineStation(1L, 2L, 10, 10));
+        line.addLineStation(new LineStation(2L, 5L, 10, 10));
 
         List<Line> lines = Collections.singletonList(line);
 
@@ -50,7 +54,7 @@ class PathServiceTest {
         when(stationRepository.findByName(source.getName())).thenReturn(Optional.of(source));
         when(stationRepository.findByName(target.getName())).thenReturn(Optional.of(target));
         when(graphService.findPath(lines, source.getId(), target.getId(), PathType.DISTANCE)).thenReturn(path);
-        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L,"강남역"),new Station(2L,"역삼역"),new Station(5L, "홍대입구")));
+        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
 
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
 
@@ -60,5 +64,17 @@ class PathServiceTest {
         //then
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
+    }
+
+    @Test
+    void sameStationNameTest() {
+        //given
+        String source = "강남역";
+        String target = "강남역";
+        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        //when
+        //then
+        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+                .isInstanceOf(PathException.class).hasMessage("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
     }
 }
