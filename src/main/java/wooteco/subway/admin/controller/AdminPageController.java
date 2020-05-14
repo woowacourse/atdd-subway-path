@@ -29,7 +29,7 @@ public class AdminPageController {
         return "admin/admin-station";
     }
 
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin-lines", produces = MediaType.TEXT_HTML_VALUE)
     public String linePage(Model model) {
         model.addAttribute("lines", lineService.showLines());
         return "admin/admin-line";

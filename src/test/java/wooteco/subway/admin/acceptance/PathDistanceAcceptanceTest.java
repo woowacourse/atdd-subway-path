@@ -109,7 +109,7 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/path").
+            post("/paths").
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).
