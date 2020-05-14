@@ -29,8 +29,12 @@ public class PathService {
     }
 
     public PathResponse findPath(String source, String target, PathType type) {
+        String regExp = "^[가-힣]*$";
         if (Objects.equals(source, target)) {
             throw new PathException("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
+        }
+        if (!source.matches(regExp) || !target.matches(regExp)) {
+            throw new PathException("출발역과 도착역은 한글만 입력가능합니다.");
         }
 
         List<Line> lines = lineRepository.findAll();

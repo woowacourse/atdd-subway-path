@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -102,5 +103,17 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
                 .isInstanceOf(PathException.class)
                 .hasMessage("해당 역을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("한글이외의 값이 입력될경우 익셉션이 발생한다")
+    @Test
+    void wrongInputExceptionTest() {
+        String source = "gangNamyeok";
+        String target = "잠실역";
+
+        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+                .isInstanceOf(PathException.class)
+                .hasMessage("출발역과 도착역은 한글만 입력가능합니다.");
     }
 }
