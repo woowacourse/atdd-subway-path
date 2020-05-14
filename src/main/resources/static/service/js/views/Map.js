@@ -6,7 +6,7 @@ function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
   const initSubwayLinesSlider = () => {
-      api.line.getAllDetail().then(data => {
+      api.line.getAllDetails().then(data => {
           const subwayLines = data.lineDetailResponses;
           $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('');
           tns({

@@ -13,6 +13,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
 public class Line {
+    private static final String LINE_STATION_NOT_FOUND_MESSAGE = "노선에 속한 역이 존재하지 않습니다.";
     @Id
     private Long id;
     private String name;
@@ -23,7 +24,7 @@ public class Line {
     private String backgroundColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
+    private Set<LineStation> lineStations = new HashSet<>();
 
     public Line() {
     }
@@ -67,8 +68,8 @@ public class Line {
         return backgroundColor;
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public Set<LineStation> getLineStations() {
+        return lineStations;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -99,44 +100,44 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        stations.stream()
+        lineStations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
                 .findAny()
                 .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
-        stations.add(lineStation);
+        lineStations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
+        LineStation targetLineStation = lineStations.stream()
                 .filter(it -> Objects.equals(it.getStationId(), stationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException(LINE_STATION_NOT_FOUND_MESSAGE));
 
-        stations.stream()
+        lineStations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), stationId))
                 .findFirst()
                 .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
-        stations.remove(targetLineStation);
+        lineStations.remove(targetLineStation);
     }
 
     public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
+        if (lineStations.isEmpty()) {
             return new ArrayList<>();
         }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
+        LineStation firstLineStation = lineStations.stream()
+                .filter(it -> !it.hasPreStation())
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException(LINE_STATION_NOT_FOUND_MESSAGE));
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+            Optional<LineStation> nextLineStation = lineStations.stream()
                     .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
                     .findFirst();
 

@@ -1,17 +1,15 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.Subway;
+import wooteco.subway.admin.domain.SubwayEdge;
+import wooteco.subway.admin.domain.WeightType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -30,30 +28,25 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
 
-        Subway subway = new Subway(lines, stations);
+        Subway subway = new Subway(lines, stations, WeightType.DISTANCE);
 
-        GraphPath<Station, DefaultWeightedEdge> path = subway.findShortestPath(source, target);
+        GraphPath<Station, SubwayEdge> path = subway.findShortestPath(source, target);
 
-        Long totalDistance = Double.valueOf(path.getWeight()).longValue();
-        Long totalDuration = calculateTotalDuration(lines, path);
+        Long totalDistance = calculateTotalDistance(path);
+        Long totalDuration = calculateTotalDuration(path);
 
         return PathResponse.of(path.getVertexList(), totalDistance, totalDuration);
     }
 
-    private Long calculateTotalDuration(List<Line> lines, GraphPath<Station, DefaultWeightedEdge> path) {
-        Map<Long, LineStation> lineStationMapper = generateLineStationMapper(lines);
-        return path.getVertexList()
-                .stream()
-                .skip(1)
-                .mapToLong(station -> lineStationMapper.get(station.getId()).getDuration())
+    private long calculateTotalDistance(GraphPath<Station, SubwayEdge> path) {
+        return path.getEdgeList().stream()
+                .mapToLong(SubwayEdge::getDistance)
                 .sum();
     }
 
-    private Map<Long, LineStation> generateLineStationMapper(List<Line> lines) {
-        return lines.stream()
-                .flatMap(line -> line.getStations().stream())
-                .collect(Collectors.toMap(
-                        LineStation::getStationId,
-                        lineStation -> lineStation));
+    private Long calculateTotalDuration(GraphPath<Station, SubwayEdge> path) {
+        return path.getEdgeList().stream()
+                .mapToLong(SubwayEdge::getDuration)
+                .sum();
     }
 }

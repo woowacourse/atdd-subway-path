@@ -40,6 +40,7 @@ INSERT into line_station (line, station_id, pre_station_id, duration, distance)
 values
 (2, 1, null, 10, 10),
 (2, 2, 1, 10, 10),
+(9, 10, null, 10, 10),
 (9, 3, 2, 10, 10),
 (9, 4, 3, 10, 10),
 (9, 5, 4, 10, 10);

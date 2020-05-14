@@ -27,10 +27,7 @@ const api = (() => {
     const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
 
     const line = {
-        getAll() {
-            return request(`/lines/details`)
-        },
-        getAllDetail() {
+        getAllDetails() {
             return requestWithJsonData(`/lines/details`)
         }
     }
