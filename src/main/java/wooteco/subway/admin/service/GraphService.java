@@ -14,8 +14,7 @@ import wooteco.subway.admin.domain.Line;
 
 @Service
 public class GraphService {
-    public List<Long> findPath(List<Line> lines, Long source, Long target,
-        CriteriaType type) {
+    public List<Long> findPath(List<Line> lines, Long source, Long target, CriteriaType type) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(
             DefaultWeightedEdge.class);
         lines.stream()
@@ -27,10 +26,10 @@ public class GraphService {
             .forEach(
                 it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()),
                     type.get(it)));
+
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         final GraphPath path = dijkstraShortestPath.getPath(source, target);
         validateNoConnection(path);
-
         return path.getVertexList();
     }
 

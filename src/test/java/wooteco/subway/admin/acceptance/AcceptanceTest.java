@@ -26,7 +26,6 @@ public class AcceptanceTest {
     static final String STATION_NAME_YEOKSAM = "역삼역";
     static final String STATION_NAME_SEOLLEUNG = "선릉역";
 
-    static final String LINE_NAME_1 = "1호선";
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";
     static final String LINE_NAME_BUNDANG = "분당선";
