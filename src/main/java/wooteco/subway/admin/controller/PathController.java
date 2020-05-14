@@ -4,11 +4,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.dto.SearchPathRequest;
 import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.service.PathService;
 
-@Controller
+@RestController
 public class PathController {
     private PathService pathService;
 

@@ -98,19 +98,17 @@ public class PathService {
         int valueSum = 0;
         for (int i = 1; i < shortestPath.size(); i++) {
             Station preStation = shortestPath.get(i - 1);
-            Station Station = shortestPath.get(i);
+            Station station = shortestPath.get(i);
             int value = 0;
 
             if (type.equals("duration")) {
-                value = lineStationRepository.findById(preStation.getId(), Station.getId())
-                        .orElse(lineStationRepository.findById(Station.getId(), preStation.getId())
-                                .orElseThrow(IllegalArgumentException::new))
+                value = lineStationRepository.findById(preStation.getId(), station.getId())
+                        .orElseThrow(IllegalArgumentException::new)
                         .getDuration();
             }
             if (type.equals("distance")) {
-                value = lineStationRepository.findById(preStation.getId(), Station.getId())
-                        .orElse(lineStationRepository.findById(Station.getId(), preStation.getId())
-                                .orElseThrow(IllegalArgumentException::new))
+                value = lineStationRepository.findById(preStation.getId(), station.getId())
+                        .orElseThrow(IllegalArgumentException::new)
                         .getDistance();
             }
             valueSum += value;
