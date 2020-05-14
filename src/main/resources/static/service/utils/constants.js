@@ -7,6 +7,6 @@ export const ERROR_MESSAGE = {
 }
 
 export const PATH_TYPE = {
-  DISTANCE: 'DISTANCE',
-  DURATION: 'DURATION'
+  DISTANCE: 'distance',
+  DURATION: 'duration'
 }
