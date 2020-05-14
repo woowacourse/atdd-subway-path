@@ -5,7 +5,6 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.ShortestPath;
@@ -24,7 +23,7 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Transactional()
 	public ShortestPath findShortestDistancePath(String sourceName, String targetName) {
 		Station sourceStation = stationRepository.findByName(sourceName)
 				.orElseThrow(() -> new IllegalArgumentException("해당 이름의 역이 없습니다."));

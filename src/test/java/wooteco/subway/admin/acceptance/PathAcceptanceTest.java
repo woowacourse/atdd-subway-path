@@ -61,11 +61,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(4L, null, 8L, 10, 10);
 		addLineStation(4L, 8L, 3L, 10, 10);
 		addLineStation(4L, 3L, 10L, 10, 10);
-		addLineStation(4L, 10L, 6L, 10, 10);
+		addLineStation(4L, 10L, 6L, 20, 10);
 
-		addLineStation(5L, null, 7L, 10, 10);
-		addLineStation(5L, 7L, 10L, 10, 10);
-		addLineStation(5L, 10L, 11L, 10, 10);
+		addLineStation(5L, null, 7L, 30, 10);
+		addLineStation(5L, 7L, 10L, 30, 10);
+		addLineStation(5L, 10L, 11L, 30, 10);
 
 		//		When 시청역부터 신도림역까지 최단거리 경로를 구하고 싶다.
 		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림");
