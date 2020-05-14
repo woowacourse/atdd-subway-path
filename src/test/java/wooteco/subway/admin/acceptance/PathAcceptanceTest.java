@@ -27,6 +27,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *      When 연결되어 있지 않은 출발역과 도착역으로 최단 경로를 조회하는 요청을 한다.
      *      Then 경로를 찾을 수 없다는 예외를 발생시킨다.
+     *
+     *      When 건대입구와 강남구청의 최단 경로를 조회하는 요청을 한다.
+     *      Then 최소 거리 기준 경로의 응답을 받는다.
+     *      And 최단 시간 기준 경로의 응답을 받는다.
      */
 
     @DisplayName("지하철 최단 경로 조회")
@@ -35,7 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given: 지하철역, 지하철 노선, 지하철 경로 추가
         setSubwayInformation();
         // when: 출발역과 도착역을 입력하여 최단 경로를 조회 요청
-        PathResponse path = findPath("왕십리", "강남구청");
+        PathResponse path = findPath("왕십리", "강남구청", "DISTANCE");
 
         assertThat(path.getStations().size()).isEqualTo(4);
         assertThat(path.getStations().get(1).getName()).isEqualTo("서울숲");
@@ -64,23 +68,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(noPathErrorMessage).isEqualTo("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
 
+        //when
+        PathResponse minimumDistancePath = findPath("건대입구", "강남구청", "DISTANCE");
+        PathResponse minimumDurationPath = findPath("건대입구", "강남구청", "DURATION");
 
+        //then
+        assertThat(minimumDistancePath.getDuration()).isEqualTo(12);
+        assertThat(minimumDistancePath.getDistance()).isEqualTo(21);
+
+        assertThat(minimumDurationPath.getDuration()).isEqualTo(11);
+        assertThat(minimumDurationPath.getDistance()).isEqualTo(29);
     }
 
     private Exception findPathError(String source, String target) {
         return given().
                 when().
-                get("/paths?source=" + source + "&target=" + target + "&type=distance").
+                get("/paths?source=" + source + "&target=" + target + "&type=DISTANCE").
                 then().
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
                 extract().as(IllegalArgumentException.class);
     }
 
-    private PathResponse findPath(String source, String target) {
+    private PathResponse findPath(String source, String target, String type) {
         return given().
                 when().
-                get("/paths?source=" + source + "&target=" + target + "&type=distance").
+                get("/paths?source=" + source + "&target=" + target + "&type=" + type).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).

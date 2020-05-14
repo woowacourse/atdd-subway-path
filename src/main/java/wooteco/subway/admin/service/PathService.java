@@ -7,6 +7,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -29,7 +30,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(String sourceName, String targetName) {
+    public PathResponse findPath(String sourceName, String targetName, PathType type) {
         checkDuplicateName(sourceName, targetName);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -49,25 +50,28 @@ public class PathService {
             if (Objects.isNull(station.getPreStationId())) {
                 continue;
             }
-            graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), station.getDistance());
+            graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), (double) type.getGetWeight(station));
         }
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
         List<Long> shortestPath = findShortestPath(source, target, dijkstraShortestPath);
-        int distance = (int) dijkstraShortestPath.getPathWeight(source, target);
+        int weight = (int) dijkstraShortestPath.getPathWeight(source, target);
 
         List<Station> pathStations = shortestPath.stream()
                 .map(id -> findStation(stations, id))
                 .collect(Collectors.toList());
 
-        int duration = lineStations.stream()
+        int information = lineStations.stream()
                 .filter(lineStation -> shortestPath.contains(lineStation.getStationId()))
                 .filter(lineStation -> shortestPath.contains(lineStation.getPreStationId()))
-                .mapToInt(LineStation::getDuration)
+                .mapToInt(type::getGetInformation)
                 .sum();
 
-        return new PathResponse(StationResponse.listOf(pathStations), duration, distance);
+        if (type.equals(PathType.DISTANCE)) {
+            return new PathResponse(StationResponse.listOf(pathStations), information, weight);
+        }
+        return new PathResponse(StationResponse.listOf(pathStations), weight, information);
     }
 
     private List<Long> findShortestPath(Long source, Long target, DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {

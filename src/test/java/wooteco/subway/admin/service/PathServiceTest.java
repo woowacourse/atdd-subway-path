@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -67,9 +68,10 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, line7, lineB));
         when(stationRepository.findAll()).thenReturn(stations);
         PathService pathService = new PathService(lineRepository, stationRepository);
-        PathResponse path = pathService.findPath("왕십리", "강남구청");
+        PathResponse minimumDistancePath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DISTANCE"));
+        PathResponse minimumDurationPath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DURATION"));
 
-        System.out.println(path.getDuration());
-        assertThat(path.getStations().size()).isEqualTo(4);
+        assertThat(minimumDistancePath.getStations().size()).isEqualTo(4);
+        assertThat(minimumDurationPath.getStations().size()).isEqualTo(4);
     }
 }
