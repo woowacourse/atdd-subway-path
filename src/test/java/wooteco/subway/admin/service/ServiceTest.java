@@ -21,7 +21,6 @@ public class ServiceTest {
 
     List<Line> lines;
     List<Station> stations;
-    List<LineStation> lineStations;
 
     @BeforeEach
     void setUp() {

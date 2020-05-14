@@ -12,6 +12,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathResponse;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.InstanceOfAssertFactories.PATH;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,9 +101,8 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
         when(lineService.showLines()).thenReturn(lines);
 
-        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
-        List<Station> expected = stations.subList(0, 5);
-        assertThat(paths).isEqualTo(expected);
+        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
+        assertThat(paths.getDistance()).isEqualTo(40);
     }
 
     @Test
@@ -112,9 +111,9 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.showLines()).thenReturn(lines);
 
-        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
-        List<Station> expected = stations.subList(0, 1);
-        assertThat(paths).isEqualTo(expected);
+        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
+        assertThat(paths.getStations()).hasSize(1);
+        assertThat(paths.getStations().get(0).getName()).isEqualTo("환-강남역");
     }
 
     @Test
@@ -134,9 +133,10 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(10).getName())).thenReturn(stations.get(10));
         when(lineService.showLines()).thenReturn(lines);
 
-        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "4-오이도역", PathType.DISTANCE);
-        List<Station> expected = new ArrayList<>();
-        assertThat(paths).isEqualTo(expected);
+        assertThatThrownBy(() -> {
+            pathService.retrieveShortestPath("환-강남역", "4-오이도역", PathType.DISTANCE);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("(환-강남역, 4-오이도역) 구간이 존재하지 않습니다.");
     }
 
     @Test
@@ -159,14 +159,9 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
         when(lineService.showLines()).thenReturn(lines);
 
-        List<Station> paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
-        List<Station> expected = Arrays.asList(
-                new Station(1L, "환-강남역"),
-                new Station(6L, "2-역삼역"),
-                new Station(3L, "환-삼성역"),
-                new Station(7L, "2-삼송역"),
-                new Station(5L, "환-지축역")
-        );
-        assertThat(paths).isEqualTo(expected);
+        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
+        assertThat(paths.getStations()).hasSize(5);
+        assertThat(paths.getDistance()).isEqualTo(80);
+        assertThat(paths.getDuration()).isEqualTo(41);
     }
 }

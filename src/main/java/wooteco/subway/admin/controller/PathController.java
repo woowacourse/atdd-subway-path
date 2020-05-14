@@ -5,14 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.PathType;
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.service.PathService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.List;
 
 @RestController
 public class PathController {
@@ -31,12 +28,7 @@ public class PathController {
         String decodedSource = URLDecoder.decode(source, "UTF-8");
         String decodedTarget = URLDecoder.decode(target, "UTF-8");
 
-        List<Station> stations = pathService.retrieveShortestPath(decodedSource, decodedTarget, pathType);
-        int duration = pathService.retrieveDuration(decodedSource, decodedTarget, pathType);
-        int distance = pathService.retrieveDistance(decodedSource, decodedTarget, pathType);
-        List<StationResponse> stationResponses = StationResponse.listOf(stations);
-
-        PathResponse pathResponse = PathResponse.of(stationResponses, duration, distance);
+        PathResponse pathResponse = pathService.retrieveShortestPath(decodedSource, decodedTarget, pathType);
 
         return ResponseEntity.ok(pathResponse);
     }
