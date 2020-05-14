@@ -66,8 +66,7 @@ export const ErrorAlertTemplate = message => {
 }
 
 export const pathTemplate = ({ stations, distance, duration }) => {
-  return `${pathSelectorTemplate()}
-          ${pathInfoTemplate(distance, duration)}
+  return `${pathInfoTemplate(distance, duration)}
           ${edgeTemplate(stations)}`
 }
 
@@ -80,10 +79,10 @@ export const pathSelectorTemplate = data => {
               </button>
               <ul class="flex border-b w-full">
                 <li class="-mb-px w-2/4">
-                  <a class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">최단거리</a>
+                  <a id="min" class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">최단거리</a>
                 </li>
                 <li class="w-2/4">
-                  <a class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#"
+                  <a onclick="onPathSearch('duration')" class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#"
                   >최소시간</a
                   >
                 </li>
