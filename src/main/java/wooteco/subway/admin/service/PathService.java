@@ -14,6 +14,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -39,18 +40,21 @@ public class PathService {
         final Station startStation = stations.get(startId);
         final Station endStation = stations.get(endId);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
+        DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
             new DijkstraShortestPath<>(makeGraph(stations, lines));
 
-        List<Station> shortestPath = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
-        double distance = dijkstraShortestPath.getPath(startStation, endStation).getWeight();
+        final List<Edge> edgeList = dijkstraShortestPath.getPath(startStation, endStation).getEdgeList();
+        final List<Station> shortestPath = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
 
-        return new PathResponse(shortestPath, (int) distance, 40);
+        final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
+        final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();
+
+        return new PathResponse(shortestPath, distance, duration);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph(Map<Long, Station> stations, List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines) {
+        WeightedMultigraph<Station, Edge> graph
+            = new WeightedMultigraph<>(Edge.class);
 
         stations.values()
             .forEach(graph::addVertex);
@@ -63,7 +67,9 @@ public class PathService {
                 Station preStation = stations.get(lineStation.getPreStationId());
                 Station currentStation = stations.get(lineStation.getStationId());
 
-                graph.setEdgeWeight(graph.addEdge(preStation, currentStation), lineStation.getDistance());
+                Edge edge = lineStation.toEdge();
+                graph.addEdge(preStation, currentStation, edge);
+                graph.setEdgeWeight(edge, lineStation.getDistance());
             });
         return graph;
     }

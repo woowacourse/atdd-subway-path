@@ -70,10 +70,10 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathResponse pathResponse = pathService.findShortestPathByDistance(station1.getId(), station3.getId());
+        PathResponse pathResponse = pathService.findShortestPathByDistance(station1.getId(), station4.getId());
 
-        assertThat(pathResponse.getStations().size()).isEqualTo(5);
-        assertThat(pathResponse.getDistance()).isEqualTo(40);
-        assertThat(pathResponse.getDuration()).isEqualTo(40);
+        assertThat(pathResponse.getStations().size()).isEqualTo(4);
+        assertThat(pathResponse.getDistance()).isEqualTo(35);
+        assertThat(pathResponse.getDuration()).isEqualTo(35);
     }
 }

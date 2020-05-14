@@ -32,4 +32,8 @@ public class LineStation {
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
     }
+
+    public Edge toEdge() {
+        return new Edge(distance, duration);
+    }
 }
