@@ -31,13 +31,17 @@ class PathTest {
             "bg-orange-600");
 
         stations = Arrays.asList(new Station(1L, "잠실역"), new Station(3L, "선릉역"),
-            new Station(2L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "매봉역"));
+            new Station(2L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "매봉역"),
+            new Station(6L, "강변역"));
 
         line2.addLineStation(new LineStation(null, 1L, 10, 5));
         line2.addLineStation(new LineStation(1L, 3L, 10, 5));
         line2.addLineStation(new LineStation(3L, 2L, 10, 5));
-        line3.addLineStation(new LineStation(null, 4L, 10, 5));
-        line3.addLineStation(new LineStation(4L, 5L, 10, 5));
+        line3.addLineStation(new LineStation(null, 4L, 15, 1));
+        line3.addLineStation(new LineStation(4L, 5L, 15, 1));
+        line3.addLineStation(new LineStation(4L, 1L, 15, 1));
+        line3.addLineStation(new LineStation(5L, 6L, 15, 1));
+        line3.addLineStation(new LineStation(6L, 2L, 15, 1));
         path = new Path();
         path.addVertexes(stations);
     }
@@ -60,6 +64,26 @@ class PathTest {
         assertThat(pathStations.getVertexList().get(2)).isEqualTo(stations.get(2).getId());
         assertThat(distance).isEqualTo(20);
         assertThat(duration).isEqualTo(10);
+    }
+
+    @Test
+    void getShortestDurationPath() {
+        //given
+        path.setEdges(Collections.singletonList(line3), PathType.DURATION);
+        //when
+        GraphPath<Long, PathEdge> shortestPath = path.searchShortestPath(stations.get(0),
+            stations.get(2));
+
+        int distance = path.calculateDistance(shortestPath);
+        int duration = path.calculateDuration(shortestPath);
+        //then
+        assertThat(shortestPath.getVertexList().size()).isEqualTo(4);
+        assertThat(shortestPath.getVertexList().get(0)).isEqualTo(stations.get(0).getId());
+        assertThat(shortestPath.getVertexList().get(1)).isEqualTo(stations.get(4).getId());
+        assertThat(shortestPath.getVertexList().get(2)).isEqualTo(stations.get(5).getId());
+        assertThat(shortestPath.getVertexList().get(3)).isEqualTo(stations.get(2).getId());
+        assertThat(distance).isEqualTo(45);
+        assertThat(duration).isEqualTo(3);
     }
 
     @ParameterizedTest
