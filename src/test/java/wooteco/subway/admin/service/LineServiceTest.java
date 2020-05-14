@@ -1,21 +1,11 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -23,6 +13,16 @@ import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -64,7 +64,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
-            10);
+                10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -81,7 +81,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
-            station4.getId(), 10, 10);
+                station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -98,7 +98,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
-            station4.getId(), 10, 10);
+                station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -147,7 +147,7 @@ public class LineServiceTest {
     @Test
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"),
-            new Station("삼성역"));
+                new Station("삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -164,8 +164,8 @@ public class LineServiceTest {
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
         List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
-            new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
-            new Station(6L, "청계산입구역"));
+                new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
+                new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAll()).thenReturn(stations);

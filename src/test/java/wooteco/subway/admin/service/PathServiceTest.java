@@ -1,12 +1,5 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -16,13 +9,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -67,7 +66,7 @@ class PathServiceTest {
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine, secondLine));
         when(stationRepository.findAll()).thenReturn(
-            Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
+                Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
 
         PathResponse pathResponse = pathService.findPath(2L, 6L);
         assertThat(pathResponse.getStations()).size().isEqualTo(6);
@@ -78,7 +77,7 @@ class PathServiceTest {
     @Test
     public void getDijkstraShortestPath() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+                = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");

@@ -11,7 +11,7 @@ public class ETagHeaderFilter {
     @Bean
     public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
         FilterRegistrationBean<ShallowEtagHeaderFilter> filter = new FilterRegistrationBean<>(
-            new ShallowEtagHeaderFilter());
+                new ShallowEtagHeaderFilter());
         filter.addUrlPatterns("/lines/detail");
         filter.setName("etagFilter");
         return filter;

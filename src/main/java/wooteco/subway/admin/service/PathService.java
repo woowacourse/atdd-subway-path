@@ -1,18 +1,11 @@
 package wooteco.subway.admin.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -21,6 +14,12 @@ import wooteco.subway.admin.dto.response.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 public class PathService {
 
@@ -28,7 +27,7 @@ public class PathService {
     private final StationRepository stationRepository;
 
     public PathService(LineRepository lineRepository,
-        StationRepository stationRepository) {
+                       StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -37,10 +36,10 @@ public class PathService {
     public PathResponse findPath(Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Map<Long, Station> stations = stationRepository.findAll()
-            .stream()
-            .collect(Collectors.toMap(Station::getId, station -> station));
+                .stream()
+                .collect(Collectors.toMap(Station::getId, station -> station));
         WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph<>(
-            LineStationEdge.class);
+                LineStationEdge.class);
         for (Station station : stations.values()) {
             graph.addVertex(station.getId());
         }
@@ -52,7 +51,7 @@ public class PathService {
                 }
                 LineStationEdge lineStationEdge = LineStationEdge.of(lineStation);
                 graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
-                    lineStationEdge);
+                        lineStationEdge);
                 graph.setEdgeWeight(lineStationEdge, lineStationEdge.getDistance());
             }
         }
@@ -60,16 +59,16 @@ public class PathService {
         GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(sourceId, targetId);
         List<Long> stationIds = path.getVertexList();
         List<StationResponse> responses = stationIds.stream()
-            .map(stations::get)
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
+                .map(stations::get)
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
         List<LineStationEdge> edges = path.getEdgeList();
         int distance = edges.stream()
-            .mapToInt(LineStationEdge::getDistance)
-            .sum();
+                .mapToInt(LineStationEdge::getDistance)
+                .sum();
         int duration = edges.stream()
-            .mapToInt(LineStationEdge::getDuration)
-            .sum();
+                .mapToInt(LineStationEdge::getDuration)
+                .sum();
         return new PathResponse(responses, duration, distance);
     }
 
