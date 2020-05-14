@@ -200,7 +200,7 @@ public class LineServiceTest {
 
 		PathResponse pathResponse = lineService.searchPath("청계산입구역", "삼성역", PathType.DISTANCE);
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(6);
+		assertThat(pathResponse.getStations().size()).isEqualTo(5);
 		assertThat(pathResponse.getDistance()).isEqualTo(50);
 		assertThat(pathResponse.getDuration()).isEqualTo(50);
 	}

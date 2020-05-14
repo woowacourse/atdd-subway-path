@@ -1,6 +1,9 @@
 package wooteco.subway.admin.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -84,9 +87,18 @@ public class LineService {
 
 		List<Edge> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), pathType);
 
+		List<Long> ids = lines.stream()
+			.map(Line::getLineStationsId)
+			.flatMap(Collection::stream)
+			.collect(Collectors.toList());
+		Map<Long, Station> map = stationRepository.findAllById(ids)
+			.stream()
+			.collect(Collectors.toMap(Station::getId, Function
+				.identity()));
 		List<Station> stations = path.stream()
 			.map(Edge::getStationId)
-			.collect(Collectors.collectingAndThen(Collectors.toList(), ids -> stationRepository.findAllById(ids)));
+			.map(map::get)
+			.collect(Collectors.toList());
 		int distance = path.stream()
 			.mapToInt(Edge::getDistance)
 			.sum();

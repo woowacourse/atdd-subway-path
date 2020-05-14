@@ -13,6 +13,7 @@ function Search() {
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
   const showSearchResult = data => {
+    console.log(data);
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
