@@ -106,10 +106,7 @@ public class Line {
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
+        LineStation targetLineStation = findTargetLineStation(stationId);
 
         stations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), stationId))
@@ -117,6 +114,13 @@ public class Line {
             .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
         stations.remove(targetLineStation);
+    }
+
+    private LineStation findTargetLineStation(Long stationId) {
+        return stations.stream()
+            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     public List<LineStation> getLineStations() {
@@ -138,24 +142,28 @@ public class Line {
     }
 
     private List<LineStation> sortedLineStations() {
-        LineStation firstLineStation = stations.stream()
-            .filter(it -> it.getPreStationId() == null)
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
-
         List<LineStation> lineStations = new ArrayList<>();
-        lineStations.add(firstLineStation);
+        lineStations.add(findFirstLineStation());
 
         while (lineStations.size() != stations.size()) {
             Long lastStationId = lineStations.get(lineStations.size() - 1).getStationId();
-            LineStation nextLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-            lineStations.add(nextLineStation);
+            lineStations.add(findNextLineStation(lastStationId));
         }
 
         return lineStations;
     }
 
+    private LineStation findFirstLineStation() {
+        return stations.stream()
+            .filter(it -> !it.isNotFirstLineStation())
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
+    private LineStation findNextLineStation(Long lastStationId) {
+        return stations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
 }
