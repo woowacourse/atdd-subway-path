@@ -99,9 +99,11 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+
         int distance = shortestPath.getWeight(sourceId, targetId);
 
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
+
         int timeSum = 0;
         for (int i = 0; i < pathStationIds.size() - 1; i++) {
             Long preStationId = pathStationIds.get(i);
@@ -110,8 +112,10 @@ public class LineService {
             timeSum += lineStations.stream()
                     .filter(lineStation -> preStationId.equals(lineStation.getPreStationId()))
                     .filter(lineStation -> stationId.equals(lineStation.getStationId()))
+//                    .filter(lineStation -> x.equals(lineStation.getDistance()))
                     .mapToInt(LineStation::getDuration)
-                    .sum();
+                    .findFirst()
+                    .orElseThrow(() -> new NoSuchElementException("경로가 존재하지 않습니다."));
         }
 
         List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);

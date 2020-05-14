@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -195,5 +196,28 @@ public class LineServiceTest {
         assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getDuration()).isEqualTo(10);
         assertThat(response.getPath()).containsAll(names);
+    }
+
+    @DisplayName("소요시간 계산 시 중복되는 경로의 duration 선택 문제")
+    @Test
+    void findShortestDistancePath_When_EdgeDuplication() {
+        List<Line> lines = Lists.newArrayList(line1, line2);
+        line2.addLineStation(new LineStation(4L, 1L, 10, 5));
+        ;
+        line2.addLineStation(new LineStation(1L, 2L, 5, 10));
+
+        List<Station> stations = Lists.newArrayList(station1, station2);
+        List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
+
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findIdByName(station1.getName())).thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station2.getName())).thenReturn(Optional.of(station2.getId()));
+        when(stationRepository.findAllNameById(anyList())).thenReturn(names);
+
+        PathResponse response = lineService.findShortestDistancePath(STATION_NAME1, STATION_NAME2);
+        int expectedDuration = 10;
+
+        assertThat(response.getDuration())
+                .isEqualTo(expectedDuration);
     }
 }
