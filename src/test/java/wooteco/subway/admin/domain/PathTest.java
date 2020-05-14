@@ -32,7 +32,7 @@ class PathTest {
 
         stations = Arrays.asList(new Station(1L, "잠실역"), new Station(3L, "선릉역"),
             new Station(2L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "매봉역"),
-            new Station(6L, "강변역"));
+            new Station(6L, "강변역"), new Station(7L, "서울역"));
 
         line2.addLineStation(new LineStation(null, 1L, 10, 5));
         line2.addLineStation(new LineStation(1L, 3L, 10, 5));
@@ -98,7 +98,7 @@ class PathTest {
 
     private static Stream<Arguments> provideInvalidInput() {
         Station station = new Station(1L, "잠실역");
-        Station station2 = new Station(5L, "매봉역");
+        Station station2 = new Station(7L, "서울역");
         return Stream.of(
             Arguments.of(station, station, PathType.DISTANCE, "출발역과 도착역은 같을 수 없습니다."),
             Arguments.of(station, station2, PathType.DISTANCE, "출발역과 도착역이 연결되어 있지 않습니다.")
