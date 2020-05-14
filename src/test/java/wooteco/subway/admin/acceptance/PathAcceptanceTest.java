@@ -2,9 +2,6 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +39,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse2.getId(), 잠실역.getId(), 석촌역.getId());
 
 		PathResponse shortestPath = findShortestPath(신정역, 잠실역);
-		List<StationResponse> expect = Arrays.asList(신정역, 여의도역, 천호역, 잠실역);
 
 		assertThat(shortestPath.getStations().size()).isEqualTo(4);
 	}
@@ -51,7 +47,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return
 			given().
 				when().
-				get(String.format("/paths?source=%s&target=%s", source.getName(), target.getName())).
+				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
 				then().
 				log().all().
 				extract().as(PathResponse.class);
