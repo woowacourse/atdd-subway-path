@@ -1,4 +1,7 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
+import api from '../../api/index.js';
+import { ERROR_MESSAGE } from '../../../admin/utils/constants.js';
+import { searchResultTemplate } from '../../utils/templates.js';
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -6,22 +9,25 @@ function Search() {
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
+  const $searchResult = document.querySelector('#search-result')
 
-  const showSearchResult = () => {
+  const showSearchResult = (data) => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
+    $searchResult.innerHTML = searchResultTemplate(data)
   }
 
   const onSearch = event => {
     event.preventDefault()
     const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value
+      source: $departureStationName.value.trim(),
+      target: $arrivalStationName.value.trim()
     }
-    console.log(searchInput)
-    showSearchResult(searchInput)
+    api.path.find(searchInput)
+    .then(data => showSearchResult(data))
+    .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onToggleFavorite = event => {
