@@ -1,21 +1,20 @@
 package wooteco.subway.admin.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.path.ShortestPath;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -89,37 +88,22 @@ public class LineService {
 
     public PathResponse findShortestDistancePath(String sourceName, String targetName) {
         List<LineStation> lineStations = lineRepository.findAll()
-                .stream()
-                .map(Line::getStations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+            .stream()
+            .map(Line::getStations)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
         ShortestPath shortestPath = ShortestPath.createDistancePath(lineStations);
 
         Long sourceId = stationRepository.findIdByName(sourceName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
-
-        int distance = shortestPath.getWeight(sourceId, targetId);
-
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
 
-        int timeSum = 0;
-        for (int i = 0; i < pathStationIds.size() - 1; i++) {
-            Long preStationId = pathStationIds.get(i);
-            Long stationId = pathStationIds.get(i + 1);
-
-            timeSum += lineStations.stream()
-                    .filter(lineStation -> preStationId.equals(lineStation.getPreStationId()))
-                    .filter(lineStation -> stationId.equals(lineStation.getStationId()))
-//                    .filter(lineStation -> x.equals(lineStation.getDistance()))
-                    .mapToInt(LineStation::getDuration)
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("경로가 존재하지 않습니다."));
-        }
-
+        int distance = shortestPath.getWeight(sourceId, targetId);
+        int duration = shortestPath.getSubWeight(sourceId, targetId);
         List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
 
-        return new PathResponse(distance, timeSum, pathStationNames);
+        return new PathResponse(distance, duration, pathStationNames);
     }
 }

@@ -1,5 +1,14 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,18 +25,9 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
+
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
@@ -69,7 +69,8 @@ public class LineServiceTest {
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
+            10);
         lineService.addLineStation(line1.getId(), request);
 
         assertThat(line1.getStations()).hasSize(4);
@@ -85,7 +86,8 @@ public class LineServiceTest {
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line1.getId(), request);
 
         assertThat(line1.getStations()).hasSize(4);
@@ -101,7 +103,8 @@ public class LineServiceTest {
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line1.getId(), request);
 
         assertThat(line1.getStations()).hasSize(4);
@@ -149,7 +152,8 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
+        List<Station> stations = Lists
+            .newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line1));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -187,11 +191,14 @@ public class LineServiceTest {
         List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
 
         when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findIdByName(station1.getName())).thenReturn(Optional.of(station1.getId()));
-        when(stationRepository.findIdByName(station3.getName())).thenReturn(Optional.of(station3.getId()));
+        when(stationRepository.findIdByName(station1.getName()))
+            .thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station3.getName()))
+            .thenReturn(Optional.of(station3.getId()));
         when(stationRepository.findAllNameById(anyList())).thenReturn(names);
 
-        PathResponse response = lineService.findShortestDistancePath(station1.getName(), station3.getName());
+        PathResponse response = lineService
+            .findShortestDistancePath(station1.getName(), station3.getName());
 
         assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getDuration()).isEqualTo(10);
@@ -210,14 +217,15 @@ public class LineServiceTest {
         List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
 
         when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findIdByName(station1.getName())).thenReturn(Optional.of(station1.getId()));
-        when(stationRepository.findIdByName(station2.getName())).thenReturn(Optional.of(station2.getId()));
+        when(stationRepository.findIdByName(station1.getName()))
+            .thenReturn(Optional.of(station1.getId()));
+        when(stationRepository.findIdByName(station2.getName()))
+            .thenReturn(Optional.of(station2.getId()));
         when(stationRepository.findAllNameById(anyList())).thenReturn(names);
 
         PathResponse response = lineService.findShortestDistancePath(STATION_NAME1, STATION_NAME2);
         int expectedDuration = 10;
 
-        assertThat(response.getDuration())
-                .isEqualTo(expectedDuration);
+        assertThat(response.getDuration()).isEqualTo(expectedDuration);
     }
 }
