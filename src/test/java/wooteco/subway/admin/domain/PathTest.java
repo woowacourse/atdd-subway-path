@@ -75,12 +75,9 @@ class PathTest {
     private static Stream<Arguments> provideInvalidInput() {
         Station station = new Station(1L, "잠실역");
         Station station2 = new Station(5L, "매봉역");
-        Station invalidStation = new Station(6L, "없는역");
         return Stream.of(
             Arguments.of(station, station, PathType.DISTANCE, "출발역과 도착역은 같을 수 없습니다."),
-            Arguments.of(station, station2, PathType.DISTANCE, "출발역과 도착역이 연결되어 있지 않습니다."),
-            Arguments.of(invalidStation, station2, PathType.DISTANCE, "존재하지 않는 역입니다."),
-            Arguments.of(station2, invalidStation, PathType.DISTANCE, "존재하지 않는 역입니다.")
+            Arguments.of(station, station2, PathType.DISTANCE, "출발역과 도착역이 연결되어 있지 않습니다.")
         );
     }
 }
