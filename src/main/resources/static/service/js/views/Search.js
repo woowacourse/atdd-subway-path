@@ -1,5 +1,5 @@
 import {EVENT_TYPE} from '../../utils/constants.js'
-import {container, lastContainer} from "../../utils/templates.js";
+import {container, lastContainer, resultTemplate} from "../../utils/templates.js";
 
 function Search() {
     const $departureStationName = document.querySelector('#departure-station-name')
@@ -9,7 +9,11 @@ function Search() {
     const $favoriteButton = document.querySelector('#favorite-button')
     const $durationContainer = document.querySelector('#duration-container');
     const $distanceContainer = document.querySelector('#distance-container');
-    const $shortPathContainer = document.querySelector('#short-path-container');
+    let $shortPathContainer = document.querySelector('#short-path-container');
+    let $distanceShowButton = document.querySelector("#shortest-distance-show-button");
+    let $durationShowButton = document.querySelector("#shortest-duration-show-button");
+    let $distancePathDetail;
+    let $durationPathDetail;
 
     const showSearchResult = () => {
         const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -28,16 +32,47 @@ function Search() {
             alert("출발역과 도착역은 같을 수 없습니다.");
             return;
         }
-        let pathDetail = await fetch(`/path?source=${searchInput.source}&target=${searchInput.target}`).then(data => data.json());
-        $durationContainer.textContent = pathDetail.duration + "분";
-        $distanceContainer.textContent = pathDetail.distance + "m";
+        let pathDetails = await fetch(`/path?source=${searchInput.source}&target=${searchInput.target}`).then(data => data.json());
+        $distancePathDetail = pathDetails[0];
+        $durationPathDetail = pathDetails[1];
+        console.log(pathDetails);
+        $durationContainer.textContent = $distancePathDetail.duration + "분";
+        $distanceContainer.textContent = $distancePathDetail.distance + "m";
 
-        $shortPathContainer.innerHTML = pathDetail.stations
+        $shortPathContainer.innerHTML = $distancePathDetail.stations
             .filter(station => station.name !== $arrivalStationName.value)
             .map(station => container(station))
             .join("")
             .concat(lastContainer($arrivalStationName.value));
         showSearchResult(searchInput)
+    }
+
+    const onClickDistanceButton = () => {
+        $searchResultContainer.innerHTML = resultTemplate($distancePathDetail);
+        $durationShowButton = document.querySelector("#shortest-duration-show-button");
+        $durationShowButton.addEventListener(EVENT_TYPE.CLICK, onClickDurationButton)
+
+        document.querySelector('#short-path-container').innerHTML = $distancePathDetail.stations
+            .filter(station => station.name !== $arrivalStationName.value)
+            .map(station => container(station))
+            .join("")
+            .concat(lastContainer($arrivalStationName.value));
+    }
+
+    const onClickDurationButton = () => {
+        $searchResultContainer.innerHTML = resultTemplate($durationPathDetail);
+        $distanceShowButton = document.querySelector("#shortest-distance-show-button");
+        $distanceShowButton.addEventListener(EVENT_TYPE.CLICK, onClickDistanceButton)
+
+        document.querySelector('#short-path-container').innerHTML = $durationPathDetail.stations
+            .filter(station => station.name !== $arrivalStationName.value)
+            .map(station => container(station))
+            .join("")
+            .concat(lastContainer($arrivalStationName.value));
+
+        $distanceShowButton.classList.add("bg-gray-200");
+
+        document.querySelector("#shortest-duration-show-button").classList.remove("bg-gray-200");
     }
 
     const onToggleFavorite = event => {
@@ -61,6 +96,8 @@ function Search() {
     const initEventListener = () => {
         $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
         $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+        $distanceShowButton.addEventListener(EVENT_TYPE.CLICK, onClickDistanceButton)
+        $durationShowButton.addEventListener(EVENT_TYPE.CLICK, onClickDurationButton)
     }
 
     this.init = () => {

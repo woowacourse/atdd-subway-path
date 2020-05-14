@@ -1,5 +1,7 @@
 package wooteco.subway.admin.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +19,9 @@ public class PathController {
 	}
 
 	@GetMapping("/path")
-	public ResponseEntity<PathResponse> getPath(@RequestParam("source") String departStation,
+	public ResponseEntity<List<PathResponse>> getPath(@RequestParam("source") String departStation,
 		@RequestParam("target") String arrivalStation) {
-		PathResponse pathResponse = lineService.findPath(departStation, arrivalStation);
-		return ResponseEntity.ok().body(pathResponse);
+		List<PathResponse> paths = lineService.findPath(departStation, arrivalStation);
+		return ResponseEntity.ok().body(paths);
 	}
 }

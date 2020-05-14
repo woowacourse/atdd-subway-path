@@ -3,6 +3,40 @@ export const listItemTemplate = station =>
   ${station.name}
 </div>`
 
+export const resultTemplate = pathResult =>
+    `<button
+            id="favorite-button"
+            class="favorite-button bg-yellow-500 mdi mdi-star-outline absolute text-white bg-transparent d-inline-block hover:bg-yellow-500 font-semibold hover:text-white py-2 px-3 hover:border-transparent rounded-full z-10"
+    >
+    </button>
+    <ul class="flex border-b w-full">
+      <li class="-mb-px w-2/4">
+        <a id="shortest-distance-show-button" class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">
+          최단거리</a>
+      </li>
+      <li class="w-2/4">
+        <a id="shortest-duration-show-button" class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#">
+          최소시간</a>
+      </li>
+    </ul>
+    <div class="px-2 py-4 border-b">
+      <div class="w-full flex mb-3">
+        <div class="inline-block w-1/2 border-r text-center">
+          <div class="text-gray-600 text-sm">소요시간</div>
+          <div id="duration-container">${pathResult.duration}분</div>
+        </div>
+        <div class="inline-block w-1/2 text-center">
+          <div class="text-gray-600 text-sm">거리</div>
+          <div id="distance-container">${pathResult.distance}m</div>
+        </div>
+      </div>
+    </div>
+    <div class="relative pt-3 pb-10">
+      <div class="px-2 py-1 w-full flex">
+        <div class="w-10/12 inline-block" id="short-path-container">
+        </div>
+      </div>
+    </div>`
 export const container = station =>
     `<span class="text-gray-600">${station.name}</span>
         <span class="mdi mdi-arrow-right-bold text-gray-500"></span>`

@@ -5,8 +5,12 @@ import static wooteco.subway.admin.acceptance.AcceptanceTest.*;
 import static wooteco.subway.admin.acceptance.PageAcceptanceTest.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +21,7 @@ import io.restassured.RestAssured;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.service.CustomEdge;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -44,34 +49,49 @@ public class PathAcceptanceTest {
 		addLineStation(line1.getId(), station3.getId(), station4.getId(), 1100, 6);
 
 		//when
-		PathResponse path = getPath("신길", "구리");
+		List<PathResponse> paths = getPath("신길", "구리");
+
+		PathResponse distanceFirstPath = paths.get(0);
+		PathResponse durationFirstPath = paths.get(1);
 
 		//then
-		assertThat(path.getDistance()).isEqualTo(2300);
-		//assertThat(path.getDuration()).isEqualTo(13);
+		assertThat(distanceFirstPath.getDistance()).isEqualTo(2300);
+		assertThat(durationFirstPath.getDuration()).isEqualTo(13);
 	}
 
-	// @Test
-	// public void getDijkstraShortestPath() {
-	// 	WeightedMultigraph<Long, DefaultWeightedEdge> graph
-	// 		= new WeightedMultigraph<>(DefaultWeightedEdge.class);
-	// 	graph.addVertex(1L);
-	// 	graph.addVertex(2L);
-	// 	graph.addVertex(3L);
-	// 	graph.setEdgeWeight(graph.addEdge(1L, 2L), 2);
-	// 	graph.setEdgeWeight(graph.addEdge(2L, 3L), 4);
-	// 	graph.setEdgeWeight(graph.addEdge(1L, 3L), 10);
-	// 	DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
-	// 		= new DijkstraShortestPath<>(graph);
-	// 	List<Long> shortestPath
-	// 		= dijkstraShortestPath.getPath(1L, 1L).getVertexList();
-	//
-	// 	System.out.println(shortestPath);
-	// 	System.out.println(dijkstraShortestPath.getPath(1L, 1L).getWeight());
-	// 	//assertThat(shortestPath.size()).isEqualTo(3);
-	// }
+	@Test
+	public void getDijkstraShortestPath() {
+		WeightedMultigraph<Long, CustomEdge> graph
+			= new WeightedMultigraph<>(CustomEdge.class);
+		CustomEdge customEdge1 = new CustomEdge(1,2);
+		CustomEdge customEdge2 = new CustomEdge(4,8);
+		CustomEdge customEdge3 = new CustomEdge(100,200);
+		graph.addVertex(1L);
+		graph.addVertex(2L);
+		graph.addVertex(3L);
+		graph.addEdge(1L, 2L, customEdge1);
+		graph.addEdge(2L, 3L, customEdge2);
+		graph.addEdge(1L, 3L, customEdge3);
+		graph.setEdgeWeight(customEdge1, customEdge1.getDistance());
+		graph.setEdgeWeight(customEdge2, customEdge2.getDistance());
+		graph.setEdgeWeight(customEdge3, customEdge3.getDistance());
+		DijkstraShortestPath<Long, CustomEdge> dijkstraShortestPath
+			= new DijkstraShortestPath<>(graph);
+		GraphPath<Long, CustomEdge> path = dijkstraShortestPath.getPath(1L, 3L);
+		List<Long> shortestPath = path.getVertexList();
+		shortestPath.forEach(x -> System.out.println(x));
 
-	public static PathResponse getPath(String source, String target) {
+		List<CustomEdge> edgeList = path.getEdgeList();
+		System.out.println("##### "+edgeList.get(0).getDistance());
+		double sumDistance = edgeList.stream().mapToDouble(CustomEdge::getDistance).sum();
+		double sumDuration = edgeList.stream().mapToDouble(CustomEdge::getDuration).sum();
+		assertThat(sumDistance).isEqualTo(5);
+		assertThat(sumDuration).isEqualTo(10);
+
+		assertThat(shortestPath.size()).isEqualTo(3);
+	}
+
+	public static List<PathResponse> getPath(String source, String target) {
 		Map<String, String> params = new HashMap<>();
 		params.put("source", source);
 		params.put("target", target);
@@ -81,7 +101,6 @@ public class PathAcceptanceTest {
 			get("/path").
 			then().
 			log().all().
-			extract().
-			as(PathResponse.class);
+			extract().jsonPath().getList(".",PathResponse.class);
 	}
 }

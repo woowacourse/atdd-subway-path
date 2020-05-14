@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.InaccessibleStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -146,9 +146,10 @@ public class LineServiceTest {
 
 	@Test
 	void findLineWithStationsById() {
-		List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
 		when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
-		when(stationRepository.findAllById(anyList())).thenReturn(stations);
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
+		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
 
 		LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
@@ -162,13 +163,12 @@ public class LineServiceTest {
 		line2.addLineStation(new LineStation(null, 4L, 10, 10));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
-
 		when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
 		when(lineRepository.findById(2L)).thenReturn(Optional.of(line2));
-		when(stationRepository.findAllById(Arrays.asList(1L, 2L, 3L))).thenReturn(
-			Arrays.asList(station1, station2, station3));
-		when(stationRepository.findAllById(Arrays.asList(4L))).thenReturn(Arrays.asList(station4));
-
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
+		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
+		when(stationRepository.findById(4L)).thenReturn(Optional.of(station4));
 		WholeSubwayResponse response = lineService.wholeLines();
 
 		LineDetailResponse firstLineDetailResponse = response.getLineDetailResponses().get(0);
@@ -186,7 +186,9 @@ public class LineServiceTest {
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
 		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
-		PathResponse pathResponse = lineService.findPath("강남역", "선릉역");
+
+		List<PathResponse> pathResponses = lineService.findPath("강남역", "선릉역");
+		PathResponse pathResponse = pathResponses.get(0);
 
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getDistance()).isEqualTo(20);
@@ -210,7 +212,7 @@ public class LineServiceTest {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
 
 		assertThatThrownBy(() -> lineService.findPath("강남역", "삼성역"))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(InaccessibleStationException.class)
 			.hasMessageContaining("갈 수 없는 역");
 	}
 }

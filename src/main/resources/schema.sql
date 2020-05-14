@@ -33,6 +33,7 @@ create table if not exists LINE_STATION
 -- INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('1호선', '15:00', '16:00', 10, 'bg-teal-400');
 -- INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('2호선', '07:00', '23:00', 10, 'bg-red-400');
 -- INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('부산 2호선', '07:00', '23:00', 10, 'bg-blue-400');
+-- INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('3호선', '07:00', '23:00', 10, 'bg-gray-400');
 --
 -- INSERT INTO STATION(name) VALUES ('서울');
 -- INSERT INTO STATION(name) VALUES ('용산');
@@ -42,6 +43,7 @@ create table if not exists LINE_STATION
 -- INSERT INTO STATION(name) VALUES ('해운대');
 -- INSERT INTO STATION(name) VALUES ('수영');
 -- INSERT INTO STATION(name) VALUES ('광안');
+-- INSERT INTO STATION(name) VALUES ('강남');
 --
 -- INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
 -- VALUES (1, 1, null, 0, 0);
@@ -61,3 +63,9 @@ create table if not exists LINE_STATION
 -- VALUES (3, 7, 6, 400, 3);
 -- INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
 -- VALUES (3, 8, 7, 600, 5);
+-- INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
+-- VALUES (4, 1, null, 0, 0);
+-- INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
+-- VALUES (4, 9, 1, 600, 10);
+-- INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
+-- VALUES (4, 5, 9, 100, 11);
