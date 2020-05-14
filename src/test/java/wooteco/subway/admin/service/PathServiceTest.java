@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -53,8 +54,8 @@ public class PathServiceTest {
         station4 = new Station(4L, STATION_NAME4);
         station5 = new Station(5L, STATION_NAME5);
 
-        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-300");
+        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-yellow-300");
 
         line1.addLineStation(new LineStation(null, 5L, 0, 0));
         line1.addLineStation(new LineStation(5L, 4L, 15, 15));
@@ -70,7 +71,9 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathResponse pathResponse = pathService.findShortestPathByDistance(station1.getId(), station4.getId());
+        PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(), "distance");
+
+        PathResponse pathResponse = pathService.findShortestPathByDistance(pathRequest);
 
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);

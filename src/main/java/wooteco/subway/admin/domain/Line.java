@@ -18,6 +18,7 @@ public class Line {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
+    private String backgroundColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Set<LineStation> stations = new HashSet<>();
@@ -25,17 +26,18 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.backgroundColor = backgroundColor;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
+        this(null, name, startTime, endTime, intervalTime, backgroundColor);
     }
 
     public Long getId() {
@@ -56,6 +58,10 @@ public class Line {
 
     public int getIntervalTime() {
         return intervalTime;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public Set<LineStation> getStations() {

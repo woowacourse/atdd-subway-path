@@ -26,6 +26,12 @@ const api = (() => {
   const request = (uri, config) => fetch(uri, config)
   const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json());
 
+  const station = {
+    show() {
+      return requestWithJsonData(`api/stations`);
+    },
+  }
+
   const line = {
     getAll() {
       return request(`api/lines/detail`)
@@ -43,7 +49,8 @@ const api = (() => {
 
   return {
     line,
-    path
+    path,
+    station
   }
 })()
 

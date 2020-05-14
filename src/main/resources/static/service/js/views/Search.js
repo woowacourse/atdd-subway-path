@@ -1,11 +1,10 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {optionSubwayTemplate, searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
-  const $departureStationName = document.querySelector('#departure-station-name')
-  const $arrivalStationName = document.querySelector('#arrival-station-name')
+  const $departureStation = document.querySelector('#departure-station-name')
+  const $arrivalStation = document.querySelector('#arrival-station-name')
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
@@ -36,9 +35,14 @@ function Search() {
   }
 
   const getSearchResult = pathType => {
+    const departureStationId = $departureStation.options[$departureStation.selectedIndex].dataset.optionStationId;
+    const arrivalStationId = $arrivalStation.options[$arrivalStation.selectedIndex].dataset.optionStationId;
+
+    console.log(departureStationId, arrivalStationId);
+
     const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value,
+      source: departureStationId,
+      target: arrivalStationId,
       type: pathType
     }
     api.path
@@ -67,6 +71,22 @@ function Search() {
     }
   }
 
+  const initSubwayStationOptions = () => {
+    let subwayStationOptionTemplate;
+
+    api.station.show().then(data => {
+      subwayStationOptionTemplate = data.map(station => optionSubwayTemplate(station)).join("");
+      $departureStation.insertAdjacentHTML(
+          "afterbegin",
+          subwayStationOptionTemplate
+      );
+      $arrivalStation.insertAdjacentHTML(
+          "afterbegin",
+          subwayStationOptionTemplate
+      );
+    });
+  }
+
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
@@ -75,7 +95,8 @@ function Search() {
   }
 
   this.init = () => {
-    initEventListener()
+    initEventListener();
+    initSubwayStationOptions();
   }
 }
 
