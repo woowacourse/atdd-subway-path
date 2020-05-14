@@ -1,7 +1,6 @@
 package wooteco.subway.service.client;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -38,13 +37,10 @@ public class ClientService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse searchPathByShortestDistance(String sourceName, String targetName) {
+    public PathResponse searchPathByShortestDistance(String source, String target) {
         List<Line> lines = lineRepository.findAll();
 
         List<Station> stations = stationRepository.findAll();
-
-        Station source = findStationByName(stations, sourceName);
-        Station target = findStationByName(stations, targetName);
 
         Path path = new Path(lines, stations, source, target);
 
@@ -52,10 +48,4 @@ public class ClientService {
             path.duration());
     }
 
-    private Station findStationByName(List<Station> stations, String source) {
-        return stations.stream()
-            .filter(station -> source.equals(station.getName()))
-            .findFirst()
-            .orElseThrow(NoSuchElementException::new);
-    }
 }
