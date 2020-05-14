@@ -6,8 +6,10 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.line.Line;
 import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.path.EdgeWeightType;
+import wooteco.subway.admin.domain.line.path.NoPathException;
 import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -34,6 +37,7 @@ public class LineServiceTest {
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
     private static final String STATION_NAME4 = "삼성역";
+    private static final String STATION_NAME5 = "도봉산역";
 
     @Mock
     private LineRepository lineRepository;
@@ -69,7 +73,8 @@ public class LineServiceTest {
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
+            10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -85,7 +90,8 @@ public class LineServiceTest {
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -101,7 +107,8 @@ public class LineServiceTest {
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -149,7 +156,8 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"),
+            new Station("삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -165,11 +173,28 @@ public class LineServiceTest {
         when(stationRepository.findAll()).thenReturn(stations);
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
-        PathResponses response = lineService.findPaths(new PathRequest(station1.getName(), station4.getName()));
+        PathResponses response = lineService.findPaths(
+            new PathRequest(station1.getName(), station4.getName()));
         PathResponse pathResponse = response.getResponse().get(EdgeWeightType.DISTANCE.getName());
         assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
         assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
         assertThat(pathResponse.getStationResponses().size()).isEqualTo(4);
+    }
+
+    @Test
+    void findPathWithException() {
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        LineStation newLineStation = new LineStation(null, 4L, 10, 10);
+        newLine.addLineStation(newLineStation);
+        Set<LineStation> lineStations = new HashSet<>(line.getStations());
+        lineStations.add(newLineStation);
+        when(lineRepository.findAllLineStations()).thenReturn(lineStations);
+        when(stationRepository.findAll()).thenReturn(stations);
+        when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
+        assertThatThrownBy(() -> lineService.findPaths(new PathRequest(station1.getName(), station4.getName())))
+            .isInstanceOf(NoPathException.class)
+            .hasMessage("경로가 존재하지 않습니다.");
     }
 
     @Test
@@ -179,8 +204,10 @@ public class LineServiceTest {
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
-        List<Station> stations1 = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
-        List<Station> stations2 = Arrays.asList(new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        List<Station> stations1 = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
+            new Station(3L, "삼성역"));
+        List<Station> stations2 = Arrays.asList(new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
+            new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAllById(line.getLineStationsId())).thenReturn(stations1);
