@@ -15,7 +15,7 @@ import wooteco.subway.admin.repository.StationRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/truncate.sql")
+@Sql({"/schema-test.sql","/truncate.sql"})
 public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
@@ -88,7 +88,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(2L, 8L, 9L);
 
         //When 출발역과 종착역의 최단경로를 요청한다.
-        PathResponse shortedStationPath = getShortestStationPath("강남역", "매봉역");
+        PathResponse shortedStationPath = getShortestStationPath("강남역", "매봉역", "DISTANCE");
 
 
         //Then 최단 경로와 최단 거리가 나온다.
@@ -146,7 +146,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(2L, 17L, 7L,1,1);
 
         //when 출발역과 종착역의 최단 경로를 요청한다.
-        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역");
+        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역", "DISTANCE");
 
         //then 최단 경로와 최단 거리가 나온다.
         assertThat(shortestStationPath.getStations()).hasSize(13);
@@ -212,7 +212,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(3L, 19L, 20L, 1, 1);
         addLineStation(3L, 20L, 21L, 1, 1);
 
-        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역");
+        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역", "DISTANCE");
         assertThat(shortestStationPath.getStations()).hasSize(13);
     }
 
@@ -290,17 +290,17 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         addLineStation(5L, null,1L,1,10);
         addLineStation(5L, 1L,8L,1,10);
 
-        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역");
+        PathResponse shortestStationPath = getShortestStationPath("강남역", "잠실역", "DISTANCE");
 
         assertThat(shortestStationPath.getDistance()).isEqualTo(11);
     }
 
 
-    private PathResponse getShortestStationPath(String source, String target) {
+    private PathResponse getShortestStationPath(String source, String target, String pathType) {
         return given().
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get(String.format("/stations/shortest-path?source=%s&target=%s",source, target)).
+                get(String.format("/stations/shortest-path?source=%s&target=%s&pathType=%s",source, target, pathType)).
                 then().
                 log().all().
                 extract().as(PathResponse.class);
