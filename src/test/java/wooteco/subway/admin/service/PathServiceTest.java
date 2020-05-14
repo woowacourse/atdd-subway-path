@@ -35,7 +35,6 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUP() {
-        PathService pathService = new PathService(lineRepository, stationRepository);
         stations = Arrays.asList(new Station(1L, "왕십리"), new Station(2L, "한양대"), new Station(3L, "뚝섬"),
                 new Station(4L, "성수"), new Station(5L, "건대입구"), new Station(6L, "뚝섬유원지"), new Station(7L, "청담"),
                 new Station(8L, "강남구청"), new Station(9L, "압구정로데오"), new Station(10L, "서울숲"));
