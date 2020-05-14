@@ -3,6 +3,7 @@ package wooteco.subway.admin.acceptance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/truncate.sql")
 public class WholeSubwayAcceptanceTest extends AcceptanceTest {
     @LocalServerPort
     int port;
