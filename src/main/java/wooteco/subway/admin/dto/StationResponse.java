@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.entity.Station;
 
 public class StationResponse {
 	private Long id;

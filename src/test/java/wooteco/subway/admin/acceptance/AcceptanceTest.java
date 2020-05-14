@@ -17,7 +17,9 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -172,5 +174,27 @@ public class AcceptanceTest {
 			log().all().
 			statusCode(HttpStatus.NO_CONTENT.value());
 	}
+
+	PathResponse findShortestPath(StationResponse source, StationResponse target) {
+		return
+			given().
+				when().
+				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
+				then().
+				log().all().
+				extract().as(PathResponse.class);
+	}
+
+	WholeSubwayResponse retrieveWholeSubway() {
+		return given().
+			accept(MediaType.APPLICATION_JSON_VALUE).
+			when().
+			get("/lines/detail").
+			then().
+			log().all().
+			statusCode(HttpStatus.OK.value()).
+			extract().as(WholeSubwayResponse.class);
+	}
 }
+
 

@@ -43,13 +43,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(shortestPath.getStations().size()).isEqualTo(4);
 	}
 
-	private PathResponse findShortestPath(StationResponse source, StationResponse target) {
-		return
-			given().
-				when().
-				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
-				then().
-				log().all().
-				extract().as(PathResponse.class);
-	}
 }

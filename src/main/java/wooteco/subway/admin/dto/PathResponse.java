@@ -3,7 +3,7 @@ package wooteco.subway.admin.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.entity.Station;
 
 public class PathResponse {
 	private int distance;

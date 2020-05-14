@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
