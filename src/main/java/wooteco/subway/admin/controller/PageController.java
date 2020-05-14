@@ -41,7 +41,6 @@ public class PageController {
 
     @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
     public String searchPage(Model model) {
-        System.out.println("<<<<<<<<<<<><>>>>>>>>>>>>>>>>>>>>>>>>>>");
         return "service/search";
     }
 }

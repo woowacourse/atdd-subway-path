@@ -67,11 +67,9 @@ public class PathService {
             while (iterator.hasNext()) {
                 LineStation lineStation = iterator.next();
 
-                System.out.println(lineStation.getStationId());
+                //todo: 리팩토링
                 Iterator<Station> a = stationRepository.findAll().iterator();
                 Station b = a.next();
-                System.out.println(b.getName() + ": " + b.getId());
-
 
                 Station station = stationRepository.findById(lineStation.getStationId())
                         .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
@@ -85,10 +83,12 @@ public class PathService {
                 graph.addVertex(preStation);
 
                 if (type.equals("duration")) {
+                    graph.setEdgeWeight(graph.addEdge(station, preStation), lineStation.getDuration());
                     graph.setEdgeWeight(graph.addEdge(preStation, station), lineStation.getDuration());
                     continue;
                 }
                 graph.setEdgeWeight(graph.addEdge(preStation, station), lineStation.getDistance());
+                graph.setEdgeWeight(graph.addEdge(station, preStation), lineStation.getDistance());
             }
         }
         return graph;
@@ -102,10 +102,16 @@ public class PathService {
             int value = 0;
 
             if (type.equals("duration")) {
-                value = lineStationRepository.findById(preStation.getId(), Station.getId()).getDuration();
+                value = lineStationRepository.findById(preStation.getId(), Station.getId())
+                        .orElse(lineStationRepository.findById(Station.getId(), preStation.getId())
+                                .orElseThrow(IllegalArgumentException::new))
+                        .getDuration();
             }
             if (type.equals("distance")) {
-                value = lineStationRepository.findById(preStation.getId(), Station.getId()).getDistance();
+                value = lineStationRepository.findById(preStation.getId(), Station.getId())
+                        .orElse(lineStationRepository.findById(Station.getId(), preStation.getId())
+                                .orElseThrow(IllegalArgumentException::new))
+                        .getDistance();
             }
             valueSum += value;
         }

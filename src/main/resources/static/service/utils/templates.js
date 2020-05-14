@@ -76,3 +76,20 @@ export const ErrorAlertTemplate = message => {
             </div>
           </div>`
 }
+
+export const firstPathTemplate = stationName => {
+ return `<span class="font-bold">
+         ${stationName}
+         </span>`
+}
+
+export const middlePathTemplate = stationName => {
+  return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+          <span class="text-gray-600">${stationName} </span>`
+}
+
+export const lastPathTemplate = stationName => {
+ return `<span class="mdi mdi-arrow-right-bold font-bold">
+         ${stationName}
+         </span>`
+}
