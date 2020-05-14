@@ -6,37 +6,37 @@ import java.util.stream.Collectors;
 import wooteco.subway.admin.domain.Station;
 
 public class PathResponse {
-	private List<StationResponse> stationResponses;
-	private int totalDistance;
-	private int totalDuration;
+	private List<StationResponse> stations;
+	private int distance;
+	private int duration;
 
 	private PathResponse() {
 	}
 
-	public PathResponse(final List<StationResponse> stationResponses, final int totalDistance,
-		final int totalDuration) {
-		this.stationResponses = stationResponses;
-		this.totalDistance = totalDistance;
-		this.totalDuration = totalDuration;
+	public PathResponse(final List<StationResponse> stations, final int distance,
+		final int duration) {
+		this.stations = stations;
+		this.distance = distance;
+		this.duration = duration;
 	}
 
-	public static PathResponse of(final List<Station> stations, final int totalDistance,
-		final int totalDuration) {
+	public static PathResponse of(final List<Station> stations, final int distance,
+		final int duration) {
 		return stations.stream()
 			.map(StationResponse::of)
 			.collect(Collectors.collectingAndThen(Collectors.toList(),
-				list -> new PathResponse(list, totalDistance, totalDuration)));
+				list -> new PathResponse(list, distance, duration)));
 	}
 
-	public List<StationResponse> getStationResponses() {
-		return stationResponses;
+	public List<StationResponse> getStations() {
+		return stations;
 	}
 
-	public int getTotalDistance() {
-		return totalDistance;
+	public int getDistance() {
+		return distance;
 	}
 
-	public int getTotalDuration() {
-		return totalDuration;
+	public int getDuration() {
+		return duration;
 	}
 }

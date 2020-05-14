@@ -191,18 +191,17 @@ public class AcceptanceTest {
 			.extract().as(WholeSubwayResponse.class);
 	}
 
-	public List<PathResponse> retrievePaths() {
+	public PathResponse retrievePath(String source, String target, String pathType) {
 		return given()
 			.log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/search?startId=" + 1L + "&endId=" + 2L)
+			.get("/search?source=" + source + "&target=" + target + "&type=" + pathType)
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
 			.extract()
-			.jsonPath()
-			.getList(".", PathResponse.class);
+			.as(PathResponse.class);
 	}
 }
 

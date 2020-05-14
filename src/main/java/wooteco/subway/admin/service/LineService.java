@@ -5,12 +5,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -19,10 +22,12 @@ import wooteco.subway.admin.repository.StationRepository;
 public class LineService {
 	private LineRepository lineRepository;
 	private StationRepository stationRepository;
+	private GraphService graphService;
 
-	public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+	public LineService(LineRepository lineRepository, StationRepository stationRepository, GraphService graphService) {
 		this.lineRepository = lineRepository;
 		this.stationRepository = stationRepository;
+		this.graphService = graphService;
 	}
 
 	public Line save(Line line) {
@@ -70,5 +75,24 @@ public class LineService {
 		return lines.stream()
 			.map(line -> findLineWithStationsById(line.getId()))
 			.collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
+	}
+
+	public PathResponse searchPath(String source, String target, PathType pathType) {
+		List<Line> lines = lineRepository.findAll();
+		Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
+		Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+
+		List<Edge> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), pathType);
+
+		List<Station> stations = path.stream()
+			.map(Edge::getStationId)
+			.collect(Collectors.collectingAndThen(Collectors.toList(), ids -> stationRepository.findAllById(ids)));
+		int distance = path.stream()
+			.mapToInt(Edge::getDistance)
+			.sum();
+		int duration = path.stream()
+			.mapToInt(Edge::getDuration)
+			.sum();
+		return PathResponse.of(stations, distance, duration);
 	}
 }

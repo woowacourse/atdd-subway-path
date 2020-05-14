@@ -2,8 +2,6 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,26 +42,25 @@ public class SearchAcceptanceTest extends AcceptanceTest {
 				And 지하철 노선이 여러 개 추가되어있다.
 				And 지하철 구간이 여러 개 추가되어있다.
 
-				When 지하철 출발역과 도착역을 입력하고 검색 요청을 한다.
+				When 지하철 출발역, 도착역과 최단 거리 경로 타입을 입력하고 검색 요청을 한다.
 				Then 지하철 최단 거리 경로를 응답 받는다.
-				And 지하철 최소 시간 경로를 응답받는다.
+
+				When 지하철 출발역, 도착역과 최소 시간 경로 타입을 입력하고 검색 요청을 한다.
+				Then 지하철 최소 시간 경로를 응답받는다.
 		 */
 	@DisplayName("지하철 최단 경로를 검색한다.")
 	@Test
 	void searchPath() {
-		List<PathResponse> pathResponses = retrievePaths();
+		PathResponse shortestPath = retrievePath(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, "DISTANCE");
 
-		assertThat(pathResponses.size()).isEqualTo(2);
+		assertThat(shortestPath.getStations().size()).isEqualTo(3);
+		assertThat(shortestPath.getDistance()).isEqualTo(30);
+		assertThat(shortestPath.getDuration()).isEqualTo(30);
 
-		PathResponse shortestPath = pathResponses.get(0);
-		PathResponse minimumTimePath = pathResponses.get(1);
+		PathResponse minimumTimePath = retrievePath(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, "DURATION");
 
-		assertThat(shortestPath.getStationResponses().size()).isEqualTo(3);
-		assertThat(shortestPath.getTotalDistance()).isEqualTo(30);
-		assertThat(shortestPath.getTotalDuration()).isEqualTo(30);
-
-		assertThat(minimumTimePath.getStationResponses().size()).isEqualTo(3);
-		assertThat(minimumTimePath.getTotalDistance()).isEqualTo(30);
-		assertThat(minimumTimePath.getTotalDuration()).isEqualTo(30);
+		assertThat(minimumTimePath.getStations().size()).isEqualTo(3);
+		assertThat(minimumTimePath.getDistance()).isEqualTo(30);
+		assertThat(minimumTimePath.getDuration()).isEqualTo(30);
 	}
 }
