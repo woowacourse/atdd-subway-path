@@ -75,7 +75,8 @@ function Search() {
     let subwayStationOptionTemplate;
 
     api.station.show().then(data => {
-      subwayStationOptionTemplate = data.map(station => optionSubwayTemplate(station)).join("");
+      subwayStationOptionTemplate = data.map(
+              station => optionSubwayTemplate(station)).join("");
       $departureStation.insertAdjacentHTML(
           "afterbegin",
           subwayStationOptionTemplate

@@ -5,8 +5,10 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -78,5 +80,18 @@ public class PathServiceTest {
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);
         assertThat(pathResponse.getDuration()).isEqualTo(35);
+    }
+
+    @DisplayName("존재하지 않은 역이 들어왔을 경우 예외 처리")
+    @Test
+    void notExistStationTest(){
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+
+        PathRequest pathRequest = new PathRequest(6L, station4.getId(), "distance");
+
+        assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage("등록되어있지 않은 역입니다.");
     }
 }

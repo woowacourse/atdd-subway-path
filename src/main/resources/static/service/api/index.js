@@ -30,7 +30,7 @@ const api = (() => {
     show() {
       return requestWithJsonData(`api/stations`);
     },
-  }
+  };
 
   const line = {
     getAll() {
@@ -52,6 +52,6 @@ const api = (() => {
     path,
     station
   }
-})()
+})();
 
 export default api

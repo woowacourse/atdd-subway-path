@@ -2,6 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.dto.LineResponse;
@@ -9,8 +10,9 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
-    @Test
-    void findPath() {
+
+    @BeforeEach
+    void setup() {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("선릉역");
@@ -27,8 +29,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse2.getId(), stationResponse2.getId(), stationResponse3.getId());
+    }
 
-        PathResponse pathResponse = findShortestPath("양재시민의숲역", "선릉역");
+    @Test
+    void findPath() {
+        PathResponse pathResponse = findShortestPath(5L, 3L, "DISTANCE");
 
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
         assertThat(pathResponse.getDistance()).isEqualTo(40);

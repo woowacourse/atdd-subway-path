@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -30,13 +31,13 @@ public class PathService {
     }
 
     public PathResponse findShortestPathByDistance(PathRequest pathRequest) {
-
         final Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, station -> station));
         final List<Line> lines = lineRepository.findAll();
-        final Station startStation = stations.get(pathRequest.getSource());
-        final Station endStation = stations.get(pathRequest.getTarget());
+
+        final Station startStation = getStationWithValidation(stations, pathRequest.getSource());
+        final Station endStation = getStationWithValidation(stations, pathRequest.getTarget());
 
         DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
             new DijkstraShortestPath<>(makeGraph(stations, lines));
@@ -48,6 +49,14 @@ public class PathService {
         final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();
 
         return new PathResponse(shortestPath, distance, duration);
+    }
+
+    private Station getStationWithValidation(Map<Long, Station> stations, Long stationId) {
+        if (!stations.containsKey(stationId)) {
+            throw new NoSuchElementException("등록되어있지 않은 역입니다.");
+        }
+
+        return stations.get(stationId);
     }
 
     private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines) {
@@ -62,10 +71,10 @@ public class PathService {
             .flatMap(Collection::stream)
             .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
             .forEach(lineStation -> {
-                Station preStation = stations.get(lineStation.getPreStationId());
-                Station currentStation = stations.get(lineStation.getStationId());
-
+                Station preStation = getStationWithValidation(stations, lineStation.getPreStationId());
+                Station currentStation = getStationWithValidation(stations, lineStation.getStationId());
                 Edge edge = lineStation.toEdge();
+
                 graph.addEdge(preStation, currentStation, edge);
                 graph.setEdgeWeight(edge, lineStation.getDistance());
             });

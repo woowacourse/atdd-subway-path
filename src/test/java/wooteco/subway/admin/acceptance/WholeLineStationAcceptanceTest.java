@@ -13,7 +13,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
-public class WholeLineStationAcceptanceTest extends AcceptanceTest{
+public class WholeLineStationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("전체 노선별 지하철 역 전체 조회")
     @Test

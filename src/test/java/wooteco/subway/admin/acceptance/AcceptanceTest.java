@@ -84,6 +84,7 @@ public class AcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("backgroundColor", "bg-gray-300");
 
         return
                 given().
@@ -137,7 +138,7 @@ public class AcceptanceTest {
     List<LineDetailResponse> getLineDetails() {
         return
             given().when()
-               .get("/api/lines/stations")
+               .get("/api/lines/detail")
             .then()
                 .log().all()
                 .extract()
@@ -185,18 +186,17 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    PathResponse findShortestPath(String source, String target) {
+    PathResponse findShortestPath(Long source, Long target, String type) {
         return given().
-            log().all().
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
+                log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            get("/api/routes?source=" + source + "&target=" + target).
+                get("/api/paths?source=" + source + "&target=" + target + "&type=" + type).
             then().
-            log().all().
-            statusCode(HttpStatus.OK.value()).
-            extract().
-            as(PathResponse.class);
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(PathResponse.class);
     }
 }
 
