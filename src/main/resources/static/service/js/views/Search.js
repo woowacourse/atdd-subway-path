@@ -1,56 +1,65 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {EVENT_TYPE} from '../../utils/constants.js'
+import api from '../../api/index.js'
 
 function Search() {
-  const $departureStationName = document.querySelector('#departure-station-name')
-  const $arrivalStationName = document.querySelector('#arrival-station-name')
-  const $searchButton = document.querySelector('#search-button')
-  const $searchResultContainer = document.querySelector('#search-result-container')
-  const $favoriteButton = document.querySelector('#favorite-button')
-
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
-    }
-  }
+  const $departureStationName = document.querySelector('#departure-station-name');
+  const $arrivalStationName = document.querySelector('#arrival-station-name');
+  const $searchButton = document.querySelector('#search-button');
+  const $searchResultContainer = document.querySelector('#search-result-container');
+  const $favoriteButton = document.querySelector('#favorite-button');
 
   const onSearch = event => {
-    event.preventDefault()
+    event.preventDefault();
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value
+    };
+    api.path.find(searchInput)
+      .then(response => {
+        if (response !== 200) {
+          throw new Error("잘못된 요청입니다.");
+        }
+        return response.json();
+      }).then(path => {
+      showSearchResult(path)
+    }).catch(error => alert(error.message))
+  };
+
+  const showSearchResult = (path) => {
+    const isHidden = $searchResultContainer.classList.contains('hidden');
+    if (isHidden) {
+      $searchResultContainer.classList.remove('hidden')
     }
-    console.log(searchInput)
-    showSearchResult(searchInput)
-  }
+
+  };
 
   const onToggleFavorite = event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+    event.preventDefault();
+    const isFavorite = $favoriteButton.classList.contains('mdi-star');
+    const classList = $favoriteButton.classList;
 
     if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.remove('mdi-star')
+      classList.add('mdi-star-outline');
+      classList.add('text-gray-600');
+      classList.remove('mdi-star');
       classList.remove('text-yellow-500')
     } else {
-      classList.remove('mdi-star-outline')
-      classList.remove('text-gray-600')
-      classList.add('mdi-star')
+      classList.remove('mdi-star-outline');
+      classList.remove('text-gray-600');
+      classList.add('mdi-star');
       classList.add('text-yellow-500')
     }
-  }
+  };
 
   const initEventListener = () => {
-    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
-  }
+  };
 
   this.init = () => {
     initEventListener()
   }
 }
 
-const login = new Search()
-login.init()
+const login = new Search();
+login.init();

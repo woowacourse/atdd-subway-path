@@ -39,7 +39,7 @@ public class PathService {
         Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(Collectors.toMap(Station::getId, station -> station));
-        WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph(
+        WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph<>(
             LineStationEdge.class);
         for (Station station : stations.values()) {
             graph.addVertex(station.getId());
@@ -56,7 +56,7 @@ public class PathService {
                 graph.setEdgeWeight(lineStationEdge, lineStationEdge.getDistance());
             }
         }
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(sourceId, targetId);
         List<Long> stationIds = path.getVertexList();
         List<StationResponse> responses = stationIds.stream()
@@ -77,7 +77,7 @@ public class PathService {
         private int distance;
         private int duration;
 
-        public LineStationEdge(int distance, int duration) {
+        private LineStationEdge(int distance, int duration) {
             this.distance = distance;
             this.duration = duration;
         }
