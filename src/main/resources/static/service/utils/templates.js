@@ -36,7 +36,7 @@ export const subwayLinesItemTemplate = line => {
 
 export const searchResultTemplate = result => {
   const lastIndex = result.stations.length - 1
-  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
+  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station, index, lastIndex)).join('')
   return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">

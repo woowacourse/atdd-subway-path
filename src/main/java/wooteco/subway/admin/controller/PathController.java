@@ -6,7 +6,7 @@ import wooteco.subway.admin.dto.PathSearchResponse;
 import wooteco.subway.admin.service.PathService;
 
 
-@RequestMapping("/path")
+@RequestMapping("/paths")
 @RestController
 public class PathController {
     private PathService pathService;
@@ -15,8 +15,8 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/{source}/{target}")
-    public ResponseEntity<PathSearchResponse> searchPath(@PathVariable String source, @PathVariable String target) {
+    @GetMapping("/{source}/{target}/type/{type}")
+    public ResponseEntity<PathSearchResponse> searchPath(@PathVariable String source, @PathVariable String target, @PathVariable String type) {
         return ResponseEntity.ok().body(pathService.searchPath(source, target));
     }
 }
