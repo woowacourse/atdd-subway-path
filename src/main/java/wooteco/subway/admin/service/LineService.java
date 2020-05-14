@@ -14,6 +14,7 @@ import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
 import wooteco.subway.admin.domain.line.path.EdgeWeightType;
 import wooteco.subway.admin.domain.line.path.SubwayRoute;
+import wooteco.subway.admin.domain.line.vo.PathInfo;
 import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -82,8 +83,9 @@ public class LineService {
     }
 
     public PathResponses findPaths(PathRequest pathRequest) {
-        Long departureId = findIdByName(pathRequest.getDepartureStationName());
-        Long arrivalId = findIdByName(pathRequest.getArrivalStationName());
+        PathInfo pathInfo = pathRequest.toPathInfo();
+        Long departureId = findIdByName(pathInfo.getDepartureStationName());
+        Long arrivalId = findIdByName(pathInfo.getArrivalStationName());
 
         LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
 
