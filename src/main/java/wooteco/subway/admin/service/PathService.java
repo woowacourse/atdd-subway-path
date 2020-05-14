@@ -4,10 +4,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.LineStations;
-import wooteco.subway.admin.domain.Lines;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -33,10 +30,10 @@ public class PathService {
 
         LineStations lineStations = new LineStations(allLines.getAllLineStation());
 
-        List<Station> allStations = stationRepository.findAll();
+        Stations stations = new Stations(stationRepository.findAll());
 
-        Station sourceStation = findStationByName(source, allStations);
-        Station targetStation = findStationByName(target, allStations);
+        Station sourceStation = stations.findStationByName(source);
+        Station targetStation = stations.findStationByName(target);
 
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = initGraph(lineStations);
 
@@ -49,7 +46,7 @@ public class PathService {
         Long preStationId = sourceStation.getId();
 
         for (Long stationId : shortestPathIds) {
-            shortestPath.add(findStationById(stationId, allStations));
+            shortestPath.add(stations.findStationById(stationId));
             LineStation lineStation = lineStations.findLineStation(preStationId, stationId);
             distance += lineStation.getDistance();
             duration += lineStation.getDuration();
@@ -75,19 +72,5 @@ public class PathService {
             }
         }
         return graph;
-    }
-
-    public Station findStationById(Long id, List<Station> stations) {
-        return stations.stream()
-                .filter(station -> station.is(id))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public Station findStationByName(String name, List<Station> stations) {
-        return stations.stream()
-                .filter(station -> station.is(name))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
     }
 }
