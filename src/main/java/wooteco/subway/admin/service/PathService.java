@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -42,7 +43,7 @@ public class PathService {
         if (source.is(target)) {
             throw new InvalidSubwayPathException("출발역과 도착역은 같을 수 없습니다.");
         }
-        
+
         stationRepository.findAll()
             .stream()
             .map(Station::getId)
@@ -65,6 +66,10 @@ public class PathService {
             source.getId(),
             target.getId()
         );
+
+        if (Objects.isNull(path)) {
+            throw new InvalidSubwayPathException("존재하지 않는 경로입니다.");
+        }
 
         List<StationResponse> stations = stationRepository
             .findAllById(path.getVertexList())

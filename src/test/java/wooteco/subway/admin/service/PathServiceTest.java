@@ -105,6 +105,7 @@ class PathServiceTest {
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
+        graph.addVertex("v4");
         graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
         graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
         graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
@@ -112,12 +113,29 @@ class PathServiceTest {
         DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
         assertThat(shortestPath.size()).isEqualTo(3);
+        assertThat(dijkstraShortestPath.getPath("v3", "v4")).isNull();
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우 예외 처리 테스트")
     @Test
     public void sameSourceTargetTest() {
         when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
         assertThatThrownBy(() -> pathService.getPath("1역", "1역", PathType.DISTANCE))
+            .isInstanceOf(InvalidSubwayPathException.class);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    public void sourceTargetNotConnected() {
+        Line line3 = new Line(3L, "3호선", LocalTime.of(5, 30), LocalTime.of(5, 30), 10, "bg-blue-300");
+        Station station6 = new Station(6L, "6역");
+        line3.addLineStation(new LineStation(null, station6.getId(), 10, 10));
+        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName("6역")).thenReturn(Optional.of(station6));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5, station6));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
+        assertThatThrownBy(() -> pathService.getPath("1역", "6역", PathType.DISTANCE))
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 }
