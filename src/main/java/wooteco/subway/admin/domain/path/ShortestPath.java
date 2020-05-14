@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ShortestPath {
 
-    DijkstraShortestPath<Long, WeightedEdge> path;
+    private DijkstraShortestPath<Long, WeightedEdge> path;
 
     private ShortestPath(DijkstraShortestPath<Long, WeightedEdge> path) {
         this.path = path;

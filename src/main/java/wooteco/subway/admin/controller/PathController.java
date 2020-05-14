@@ -27,12 +27,14 @@ public class PathController {
         String sourceName = URLDecoder.decode(encodedSourceName, "UTF-8");
         String targetName = URLDecoder.decode(encodedTargetName, "UTF-8");
         if ("DISTANCE".equals(type)) {
+            PathResponse response = lineService.findShortestDistancePath(sourceName, targetName);
             return ResponseEntity.ok()
-                    .body(lineService.findShortestDistancePath(sourceName, targetName));
+                    .body(response);
         }
         if ("DURATION".equals(type)) {
+            PathResponse response = lineService.findShortestDistancePath(sourceName, targetName);
             return ResponseEntity.ok()
-                    .body(lineService.findShortestDistancePath(sourceName, targetName));
+                    .body(response);
         }
         throw new IllegalArgumentException("잘못된 URI입니다.");
     }
