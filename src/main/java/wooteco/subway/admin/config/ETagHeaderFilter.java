@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// TODO: ETag 관련 설정하기
 @Configuration
 public class ETagHeaderFilter {
 

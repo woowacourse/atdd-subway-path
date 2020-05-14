@@ -39,13 +39,10 @@ insert into station (name) VALUES ('석촌');
 insert into station (name) VALUES ('부산');
 insert into station (name) VALUES ('대구');
 
-
-
 insert into line (name, background_color, start_time, end_time, interval_time) VALUES ('2호선', 'bg-green-400', current_time , current_time, 3);
 insert into line (name, background_color, start_time, end_time, interval_time) VALUES ('9호선', 'bg-yellow-500', current_time , current_time, 3);
 insert into line (name, background_color, start_time, end_time, interval_time) VALUES ('8호선', 'bg-pink-600', current_time , current_time, 3);
 insert into line (name, background_color, start_time, end_time, interval_time) VALUES ('ktx', 'bg-indigo-600', current_time , current_time, 3);
-
 
 insert into line_station (line, station_id, pre_station_id, distance, duration) VALUES (1, 1, null, 0, 0);
 insert into line_station (line, station_id, pre_station_id, distance, duration) VALUES (1, 2, 1, 10, 1);
