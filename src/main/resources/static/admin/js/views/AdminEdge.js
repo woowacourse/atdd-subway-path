@@ -7,47 +7,46 @@ function AdminEdge() {
   const $subwayLinesSlider = document.querySelector(".subway-lines-slider");
   const createSubwayEdgeModal = new Modal();
   const $createSubmitButton = document.querySelector("#submit-button");
-  const $errorMessage = document.querySelector("#error-message");
-  const $createSubmit = document.querySelector("#line-station-input");
 
   const initSubwayLinesSlider = () => {
     let statusCode;
 
-    fetch('/lines', {
+    fetch('/lines/detail', {
       method: 'GET',
     }).then(response => {
       if (!response.ok) {
-        statusCode = 500;
+        throw response;
       }
       return response.json();
     }).then(jsonResponse => {
-      if (statusCode !== 500) {
-        $subwayLinesSlider.innerHTML = jsonResponse
-        .map(line => subwayLinesItemTemplate(line))
-        .join("");
-        tns({
-          container: ".subway-lines-slider",
-          loop: true,
-          slideBy: "page",
-          speed: 400,
-          autoplayButtonOutput: false,
-          mouseDrag: true,
-          lazyLoad: true,
-          controlsContainer: "#slider-controls",
-          items: 1,
-          edgePadding: 25
-        });
-      } else {
-        alert(jsonResponse);
-      }
-    });
+      $subwayLinesSlider.innerHTML = jsonResponse.lineDetailResponse
+      .map(line => subwayLinesItemTemplate(line))
+      .join("");
+      tns({
+        container: ".subway-lines-slider",
+        loop: true,
+        slideBy: "page",
+        speed: 400,
+        autoplayButtonOutput: false,
+        mouseDrag: true,
+        lazyLoad: true,
+        controlsContainer: "#slider-controls",
+        items: 1,
+        edgePadding: 25
+      });
+    }).catch(response => response.json().then(error => alert(error.message)));
   };
 
   const initSubwayLineOptions = () => {
 
     fetch('/lines', {
       method: 'GET',
-    }).then(response => response.json())
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json();
+    })
     .then(jsonResponse => {
       const subwayLineOptionTemplate = jsonResponse
       .map(line => optionTemplate(line))
@@ -59,7 +58,7 @@ function AdminEdge() {
         "afterbegin",
         subwayLineOptionTemplate
       );
-    });
+    }).catch(response => response.json().then(error => alert(error.message)));
   };
 
   const onCreateStationHandler = event => {
@@ -79,9 +78,9 @@ function AdminEdge() {
       duration: document.querySelector("#duration").value
     }
 
-    // validate(data);
+    validate(data);
 
-    fetch('/lines/' + data.lineId+'/stations', {
+    fetch('/lines/' + data.lineId + '/stations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,13 +88,12 @@ function AdminEdge() {
       body: JSON.stringify(data)
     }).then(response => {
       if (response.status >= 400) {
-        alert("에러가 발생했습니다.");
-        statusCode = 500;
+        throw response;
       }
       return response.json();
     }).then(jsonResponse => async function (jsonResponse) {
       if (statusCode !== 500) {
-        const response = await fetch('/lineStations', {
+        const response = await fetch('/lines/detail', {
           method: 'GET'
         });
         const jsonResponse = await response.json();
@@ -114,12 +112,8 @@ function AdminEdge() {
           items: 1,
           edgePadding: 25
         });
-      } else {
-        $errorMessage.innerText = jsonResponse.message.value();
       }
-    }).catch(error => {
-      throw new Error(error);
-    });
+    }).catch(response => response.json().then(error => alert(error.message)));
   }
 
   function validate(data) {
@@ -128,28 +122,30 @@ function AdminEdge() {
     const array = Array.from(list);
 
     if (duplicatedName(lineId, array, data)) {
-      alert("추가하려는 역 이름이 이미 존재합니다.");
+      alert("추가하려는 역이 이미 존재합니다.");
       throw new Error();
     }
 
     if (notExistingPreStationName(lineId, array, data)) {
-      alert("이전 역 이름이 적절하지 않습니다.");
+      alert("이전 역이 적절하지 않습니다.");
       throw new Error();
     }
   }
 
   function duplicatedName(lineId, array, data) {
     return array.some(element => {
-      return element.dataset.lineId === lineId && element.innerText === data.stationName;
+      return Number(element.dataset.lineId) === Number(lineId) && Number(element.dataset.stationId) === Number(
+        data.stationId);
     });
   }
 
   function notExistingPreStationName(lineId, array, data) {
-    if(data.preStationName === ""){
+    if (data.preStationId === "") {
       return false;
     }
     for (const element of array) {
-      if (element.dataset.lineId === lineId && element.innerText === data.preStationName) {
+      if (Number(element.dataset.lineId) === Number(lineId) && Number(element.dataset.stationId) === Number(
+        data.preStationId)) {
         return false;
       }
     }
@@ -186,7 +182,7 @@ function AdminEdge() {
     fetch('/stations', {
       method: 'GET',
     }).then(response => response.json())
-    .then(stations=>{
+    .then(stations => {
       const stationsTemplate = stations.map(optionTemplate).join('');
 
       const $preStationSelectOptions = document.querySelector(
@@ -217,6 +213,32 @@ function AdminEdge() {
     initSubwayLineOptions();
     initSubwayStationOptions();
     initEventListeners();
+
+    fetch('/lines/detail', {
+      method: 'GET'
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json()
+    })
+    .then(lines => {
+      $subwayLinesSlider.innerHTML = lines.lineDetailResponse
+      .map(lineDetailResponse => subwayLinesItemTemplate(lineDetailResponse))
+      .join("");
+      tns({
+        container: ".subway-lines-slider",
+        loop: true,
+        slideBy: "page",
+        speed: 400,
+        autoplayButtonOutput: false,
+        mouseDrag: true,
+        lazyLoad: true,
+        controlsContainer: "#slider-controls",
+        items: 1,
+        edgePadding: 25
+      });
+    }).catch(response => response.json().then(error => alert(error.message)));
   };
 }
 

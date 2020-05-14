@@ -11,14 +11,15 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
+import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository,
         StationService stationService) {
@@ -26,12 +27,12 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    public Line save(Line line) {
-        return lineRepository.save(line);
+    public LineResponse save(Line line) {
+        return LineResponse.of(lineRepository.save(line));
     }
 
-    public List<Line> showLines() {
-        return lineRepository.findAll();
+    public List<LineResponse> showLines() {
+        return LineResponse.listOf(lineRepository.findAll());
     }
 
     public void updateLine(Long id, LineRequest request) {
