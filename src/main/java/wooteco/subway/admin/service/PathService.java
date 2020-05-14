@@ -54,8 +54,7 @@ public class PathService {
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
-        List<Long> shortestPath
-                = dijkstraShortestPath.getPath(source, target).getVertexList();
+        List<Long> shortestPath = findShortestPath(source, target, dijkstraShortestPath);
         int distance = (int) dijkstraShortestPath.getPathWeight(source, target);
 
         List<Station> pathStations = shortestPath.stream()
@@ -69,6 +68,16 @@ public class PathService {
                 .sum();
 
         return new PathResponse(StationResponse.listOf(pathStations), duration, distance);
+    }
+
+    private List<Long> findShortestPath(Long source, Long target, DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
+        List<Long> shortestPath;
+        try {
+            shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+        }catch (NullPointerException e){
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
+        }
+        return shortestPath;
     }
 
     private void checkDuplicateName(String sourceName, String targetName) {

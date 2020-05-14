@@ -24,6 +24,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *      When 존재하지 않는 역을 입력하여 최단 경로를 조회하는 요청을 한다.
      *      Then 역이 존재하지 않는다는 예외를 발생시킨다.
+     *
+     *      When 연결되어 있지 않은 출발역과 도착역으로 최단 경로를 조회하는 요청을 한다.
+     *      Then 경로를 찾을 수 없다는 예외를 발생시킨다.
      */
 
     @DisplayName("지하철 최단 경로 조회")
@@ -54,6 +57,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(noExistErrorMessage).isEqualTo("존재하지 않는 역은 입력할 수 없습니다.");
+
+        //when
+        String noPathErrorMessage = findPathError("왕십리", "잠실").getMessage();
+
+        //then
+        assertThat(noPathErrorMessage).isEqualTo("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
+
+
     }
 
     private Exception findPathError(String source, String target) {

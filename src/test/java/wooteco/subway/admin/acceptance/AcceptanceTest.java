@@ -187,6 +187,7 @@ public class AcceptanceTest {
         StationResponse stationResponse7 = createStation("강남구청");
         StationResponse stationResponse8 = createStation("압구정로데오");
         StationResponse stationResponse9 = createStation("서울숲");
+        StationResponse stationResponse10 = createStation("잠실");
 
         addLineStation(lineResponse1.getId(), null, stationResponse.getId(), 0, 0);
         addLineStation(lineResponse1.getId(), stationResponse.getId(), stationResponse1.getId(), 5, 2);
