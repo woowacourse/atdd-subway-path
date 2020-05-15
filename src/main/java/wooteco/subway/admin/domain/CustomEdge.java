@@ -11,14 +11,6 @@ public class CustomEdge extends DefaultWeightedEdge {
         this.criteriaType = criteriaType;
     }
 
-    public CriteriaType getCriteriaType() {
-        return criteriaType;
-    }
-
-    public void setCriteriaType(CriteriaType criteriaType) {
-        this.criteriaType = criteriaType;
-    }
-
     public LineStation getLineStation() {
         return lineStation;
     }

@@ -39,15 +39,21 @@ public class GraphService {
     }
 
     private GraphResultResponse getPathLineStation(List<CustomEdge> result, List<Long> stationIds) {
-        int distance = result.stream()
-            .map(CustomEdge::getLineStation)
-            .mapToInt(LineStation::getDistance)
-            .sum();
-        int duration = result.stream()
+        return new GraphResultResponse(stationIds, distance(result), duration(result));
+    }
+
+    private int duration(List<CustomEdge> result) {
+        return result.stream()
             .map(CustomEdge::getLineStation)
             .mapToInt(LineStation::getDuration)
             .sum();
-        return new GraphResultResponse(stationIds, distance, duration);
+    }
+
+    private int distance(List<CustomEdge> result) {
+        return result.stream()
+            .map(CustomEdge::getLineStation)
+            .mapToInt(LineStation::getDistance)
+            .sum();
     }
 
     private void validateNoConnection(GraphPath path) {
