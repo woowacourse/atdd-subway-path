@@ -26,6 +26,7 @@ class PathTest {
     private Station station2;
     private Station station3;
     private Station station4;
+    private WeightStrategy strategy;
 
     @BeforeEach
     void setUp() {
@@ -38,6 +39,8 @@ class PathTest {
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
+
+        strategy = WeightType.findStrategy("DISTANCE");
     }
 
     @DisplayName("각 구간 사이가 10분이고, 경로의 총 소요 시간이 20분인 경우 duration 확인 테스트")
@@ -48,7 +51,8 @@ class PathTest {
 
         //when
         Path path = new Path(Arrays.asList(line),
-            Arrays.asList(station1, station2, station3, station4), STATION_NAME1, STATION_NAME3);
+            Arrays.asList(station1, station2, station3, station4), STATION_NAME1, STATION_NAME3,
+            strategy);
         double actual = path.duration();
 
         //then
@@ -65,7 +69,7 @@ class PathTest {
         List<Station> stations = Arrays.asList(station1, station2, station3, station4);
 
         //when //then
-        assertThatThrownBy(() -> new Path(lines, stations, STATION_NAME1, STATION_NAME4))
+        assertThatThrownBy(() -> new Path(lines, stations, STATION_NAME1, STATION_NAME4, strategy))
             .isInstanceOf(InvalidPathException.class)
             .hasMessage(String.format("경로를 찾을 수 없습니다. sourceName: %s target: %s", STATION_NAME1,
                 STATION_NAME4));

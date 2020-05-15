@@ -57,9 +57,9 @@ public class ClientServiceTest {
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-600");
         line.addLineStation(new LineStation(null, 1L, 0, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
-        line.addLineStation(new LineStation(3L, 4L, 10, 10));
+        line.addLineStation(new LineStation(1L, 2L, 10, 1));
+        line.addLineStation(new LineStation(2L, 3L, 10, 1));
+        line.addLineStation(new LineStation(3L, 4L, 10, 1));
 
         line2 = new Line(2L, "4호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-600");
         line2.addLineStation(new LineStation(1L, 5L, 10, 10));
@@ -79,7 +79,27 @@ public class ClientServiceTest {
             Arrays.asList(station1, station5, station4));
 
         //when
-        PathResponse pathResponse = clientService.searchPathByShortestDistance(source, target);
+        PathResponse pathResponse = clientService.searchPath(source, target, "DISTANCE");
+
+        //then
+        List<StationResponse> actual = pathResponse.getStations();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void searchPathByShortestDuration() {
+        // given
+        List<Station> stations = Arrays.asList(station1, station2, station3, station4, station5);
+        when(stationRepository.findAll()).thenReturn(stations);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
+
+        String source = STATION_NAME1;
+        String target = STATION_NAME4;
+        List<StationResponse> expected = StationResponse.listOf(
+            Arrays.asList(station1, station2, station3, station4));
+
+        //when
+        PathResponse pathResponse = clientService.searchPath(source, target, "DURATION");
 
         //then
         List<StationResponse> actual = pathResponse.getStations();
@@ -90,7 +110,7 @@ public class ClientServiceTest {
     @Test
     void name() {
         assertThatThrownBy(
-            () -> clientService.searchPathByShortestDistance(STATION_NAME1, STATION_NAME1))
+            () -> clientService.searchPath(STATION_NAME1, STATION_NAME1, "DISTANCE"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("출발역과 도착역은 같을 수 없습니다");
     }

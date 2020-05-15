@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.WeightStrategy;
+import wooteco.subway.domain.path.WeightType;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -37,15 +39,16 @@ public class ClientService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse searchPathByShortestDistance(String source, String target) {
+    public PathResponse searchPath(String source, String target, String type) {
         validate(source, target);
 
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
 
-        Path path = new Path(lines, stations, source, target);
+        WeightStrategy strategy = WeightType.findStrategy(type);
+        Path path = new Path(lines, stations, source, target, strategy);
 
-        return new PathResponse(StationResponse.listOf(path.getVertexList()), path.getWeight(),
+        return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
             path.duration());
     }
 
