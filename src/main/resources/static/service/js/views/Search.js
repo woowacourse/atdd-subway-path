@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
 
@@ -35,6 +35,9 @@ function Search() {
     }
 
     const getSearchResult = pathType => {
+        if ($departureStationName.value === $arrivalStationName.value) {
+            return alert("출발역과 도착역이 같습니다.");
+        }
         const searchInput = {
             source: $departureStationName.value,
             target: $arrivalStationName.value,
@@ -43,7 +46,9 @@ function Search() {
         api.path
             .find(searchInput)
             .then(data => showSearchResult(data))
-            .catch(error => alert(ERROR_MESSAGE.COMMON))
+            .catch(error => {
+                alert(error.message);
+            })
     }
 
   const onToggleFavorite = event => {

@@ -12,8 +12,9 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
+import wooteco.subway.admin.exception.LineStationNotFoundException;
+
 public class Line {
-    private static final String LINE_STATION_NOT_FOUND_MESSAGE = "노선에 속한 역이 존재하지 않습니다.";
     @Id
     private Long id;
     private String name;
@@ -112,7 +113,7 @@ public class Line {
         LineStation targetLineStation = lineStations.stream()
                 .filter(it -> Objects.equals(it.getStationId(), stationId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(LINE_STATION_NOT_FOUND_MESSAGE));
+                .orElseThrow(LineStationNotFoundException::new);
 
         lineStations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), stationId))
@@ -130,7 +131,7 @@ public class Line {
         LineStation firstLineStation = lineStations.stream()
                 .filter(it -> !it.hasPreStation())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(LINE_STATION_NOT_FOUND_MESSAGE));
+                .orElseThrow(LineStationNotFoundException::new);
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());

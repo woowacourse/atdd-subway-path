@@ -34,7 +34,8 @@ public class Subway {
         }
     }
 
-    public ShortestPath findShortestPath(String source, String target, PathType pathType) {
+    public ShortestPath findShortestPath(String sourceName, String targetName, PathType pathType) {
+        validateStationName(sourceName, targetName);
         Map<Long, Station> stationMapper = generateStationMapper();
 
         WeightedMultigraph<Station, SubwayEdge> subwayGraph = new WeightedMultigraph<>(
@@ -44,10 +45,16 @@ public class Subway {
 
         DijkstraShortestPath<Station, SubwayEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
                 subwayGraph);
-        Station sourceId = findStationByName(source);
-        Station targetId = findStationByName(target);
+        Station source = findStationByName(sourceName);
+        Station target = findStationByName(targetName);
 
-        return new ShortestPath(dijkstraShortestPath.getPath(sourceId, targetId));
+        return new ShortestPath(dijkstraShortestPath.getPath(source, target));
+    }
+
+    private void validateStationName(String sourceName, String targetName) {
+        if (sourceName.equals(targetName)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
     }
 
     private Station findStationByName(String stationName) {

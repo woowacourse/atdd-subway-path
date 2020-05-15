@@ -26,7 +26,8 @@ public class LineTest {
         line.addLineStation(new LineStation(null, 4L, 10, 10));
 
         assertThat(line.getLineStations()).hasSize(4);
-        LineStation lineStation = line.getLineStations().stream()
+        LineStation lineStation = line.getLineStations()
+                .stream()
                 .filter(it -> it.isSameStation(4L))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);

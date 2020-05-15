@@ -23,12 +23,12 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(String source, String target, PathType pathType) {
+    public PathResponse findShortestPath(String sourceName, String targetName, PathType pathType) {
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
 
         Subway subway = new Subway(lines, stations);
-        ShortestPath shortestDurationPath = subway.findShortestPath(source, target, pathType);
+        ShortestPath shortestDurationPath = subway.findShortestPath(sourceName, targetName, pathType);
 
         return PathResponse.of(shortestDurationPath);
     }

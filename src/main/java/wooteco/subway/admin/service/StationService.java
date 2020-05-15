@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.StationRepository;
 
 @Service
@@ -32,7 +33,7 @@ public class StationService {
 
     public StationResponse findStationById(Long stationId) {
         Station station = stationRepository.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundException::new);
         return StationResponse.of(station);
     }
 

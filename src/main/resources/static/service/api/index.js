@@ -24,7 +24,14 @@ const METHOD = {
 
 const api = (() => {
     const request = (uri, config) => fetch(uri, config)
-    const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+    const requestWithJsonData = (uri, config) => fetch(uri, config).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        return response.json().then(message => {
+            throw Error(message.errorMessage);
+        });
+    });
 
     const line = {
         getAllDetails() {
@@ -32,9 +39,9 @@ const api = (() => {
         }
     }
 
-  const path = {
-    find(params) {
-        return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&pathType=${params.pathType}`)
+    const path = {
+        find(params) {
+            return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&pathType=${params.pathType}`)
     }
   }
 
