@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Graph;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.WeightStrategy;
 import wooteco.subway.domain.path.WeightType;
@@ -15,6 +16,7 @@ import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
+import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -46,7 +48,8 @@ public class ClientService {
         List<Station> stations = stationRepository.findAll();
 
         WeightStrategy strategy = WeightType.findStrategy(type);
-        Path path = new Path(lines, stations, source, target, strategy);
+        Graph graph = new Graph(lines, stations, strategy);
+        Path path = graph.createPath(source, target);
 
         return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
             path.duration());
@@ -54,7 +57,7 @@ public class ClientService {
 
     private void validate(String source, String target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다");
+            throw new InvalidPathException(InvalidPathException.DUPLICATE_DEPARTURE_AND_DESTINATION);
         }
     }
 

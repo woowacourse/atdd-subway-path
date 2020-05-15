@@ -13,3 +13,4 @@ public class StationCreateRequest {
         return new Station(name);
     }
 }
+

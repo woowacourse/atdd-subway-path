@@ -1,6 +1,10 @@
 package wooteco.subway.domain.path;
 
+import static wooteco.subway.exception.InvalidPathException.NOT_EXIST_PATH_WEIGHT;
+
 import java.util.Arrays;
+
+import wooteco.subway.exception.InvalidPathException;
 
 public enum WeightType {
     DURATION("DURATION", StationWeightEdge::getDuration),
@@ -18,7 +22,11 @@ public enum WeightType {
         return Arrays.stream(values())
             .filter(weightType -> weightType.name.equals(type))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당 경로 탐색 기준이 존재하지 않습니다."))
+			.orElseThrow(() -> new InvalidPathException(NOT_EXIST_PATH_WEIGHT))
             .strategy;
     }
+
+	public String getName() {
+		return name;
+	}
 }

@@ -14,26 +14,25 @@ import wooteco.subway.service.client.ClientService;
 @RestController
 @Validated
 public class ClientController {
-    private ClientService clientService;
+	private ClientService clientService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
+	public ClientController(ClientService clientService) {
+		this.clientService = clientService;
+	}
 
-    @GetMapping("/lines/detail")
-    public ResponseEntity<WholeSubwayResponse> retrieveLines() {
-        WholeSubwayResponse wholeSubwayResponse = clientService.wholeLines();
-        return ResponseEntity.ok()
-            .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
-            .body(wholeSubwayResponse);
-    }
+	@GetMapping("/lines/detail")
+	public ResponseEntity<WholeSubwayResponse> retrieveLines() {
+		WholeSubwayResponse wholeSubwayResponse = clientService.wholeLines();
+		return ResponseEntity.ok()
+			.eTag(String.valueOf(wholeSubwayResponse.hashCode()))
+			.body(wholeSubwayResponse);
+	}
 
-    @GetMapping("/lines/path")
-    public ResponseEntity<PathResponse> searchPathByShortestDistance(@NotBlank String source,
-        @NotBlank String target, @NotBlank String type) {
-        PathResponse pathResponse = clientService.searchPath(source, target, type);
-        return ResponseEntity.ok().body(pathResponse);
-    }
-
+	@GetMapping("/lines/path")
+	public ResponseEntity<PathResponse> searchPath(@NotBlank String source,
+		@NotBlank String target, @NotBlank String type) {
+		PathResponse pathResponse = clientService.searchPath(source, target, type);
+		return ResponseEntity.ok().body(pathResponse);
+	}
 }
 

@@ -18,30 +18,30 @@ import wooteco.subway.repository.StationRepository;
 
 @RestController
 public class StationController {
-    private final StationRepository stationRepository;
+	private final StationRepository stationRepository;
 
-    public StationController(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
-    }
+	public StationController(StationRepository stationRepository) {
+		this.stationRepository = stationRepository;
+	}
 
-    @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station station = view.toStation();
-        Station persistStation = stationRepository.save(station);
+	@PostMapping("/stations")
+	public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
+		Station station = view.toStation();
+		Station persistStation = stationRepository.save(station);
 
-        return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
-    }
+		return ResponseEntity
+			.created(URI.create("/stations/" + persistStation.getId()))
+			.body(StationResponse.of(persistStation));
+	}
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationRepository.findAll()));
-    }
+	@GetMapping("/stations")
+	public ResponseEntity<List<StationResponse>> showStations() {
+		return ResponseEntity.ok().body(StationResponse.listOf(stationRepository.findAll()));
+	}
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/stations/{id}")
+	public ResponseEntity deleteStation(@PathVariable Long id) {
+		stationRepository.deleteById(id);
+		return ResponseEntity.noContent().build();
+	}
 }

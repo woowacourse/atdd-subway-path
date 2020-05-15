@@ -1,9 +1,10 @@
 package wooteco.subway.api;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,9 +60,9 @@ public class ClientControllerTest {
         return LineDetailResponse.of(new Line(), stations);
     }
 
-    @DisplayName("경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생 확인")
+    @DisplayName("예외테스트: 경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생")
     @Test
-    void name() throws Exception {
+    void searchPath_GivenBlankStation_ExceptionThrown() throws Exception {
         //given
         HashMap<String, String> params = new HashMap<>();
         params.put("source", "");
