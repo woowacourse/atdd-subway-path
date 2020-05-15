@@ -6,6 +6,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
@@ -40,10 +41,10 @@ public class PathService {
         Long sourceId = findStationIdByName(stations, request.getSource());
         Long targetId = findStationIdByName(stations, request.getTarget());
 
-        if(sourceId.equals(targetId)){
+        if (sourceId.equals(targetId)) {
             throw new RuntimeException("출발지와 도착지는 같을 수 없습니다.");
         }
-        List<Long> shortestPath = createShortestPath(lines, sourceId, targetId);
+        List<Long> shortestPath = createShortestPath(lines, sourceId, targetId, request.getType());
 
         List<Station> pathStations = shortestPath.stream()
                 .map(id -> findStationById(stations, id))
@@ -80,7 +81,7 @@ public class PathService {
                 .orElseThrow(RuntimeException::new);
     }
 
-    private List<Long> createShortestPath(List<Line> lines, Long source, Long target) {
+    private List<Long> createShortestPath(List<Line> lines, Long source, Long target, PathType type) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         lines.stream()
                 .flatMap(it -> it.getLineStationsId().stream())
@@ -88,11 +89,11 @@ public class PathService {
         lines.stream()
                 .flatMap(line -> line.getStations().stream())
                 .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
-                .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), it.getDistance()));
+                .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), type.getWeight(it)));
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        try{
+        try {
             return dijkstraShortestPath.getPath(source, target).getVertexList();
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException("출발지와 도착지가 연결되어 있지 않습니다.");
         }
     }

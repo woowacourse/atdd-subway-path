@@ -19,7 +19,6 @@ public class PathController {
     public ResponseEntity<PathResponse> calculatePath(@RequestParam String source,
                                                       @RequestParam String target,
                                                       @RequestParam PathType type) {
-        System.out.println(source + " " + target + " " + type);
         return ResponseEntity.ok().body(pathService.calculatePath(new PathRequest(source, target, type)));
     }
 }
