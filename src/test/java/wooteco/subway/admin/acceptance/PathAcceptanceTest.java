@@ -1,6 +1,7 @@
 package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -32,19 +33,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .build();
     }
 
-    /**
-     * Feature : 지하철 경로 조회
-     * <p>
-     * Scenario : 자하철 경로를 조회한다.
-     * When : 출발역, 도착역 값을 입력받는다.
-     * Then : 출발역부터 도착역까지의 경로와 최단시간을 반환한다.
-     */
+    @DisplayName("지하철 경로 조회")
     @Test
     void getPath() throws Exception {
-        // 같은 라인에 역이 2개 이상 등록되어있고
-        // 출발역과 도착역을 입력했을때
-        // 최단거리를 구해서
-        // 경로와 소요시간, 거리 반환
         //given
         LineResponse line = createLine("2호선");
         StationResponse jamsil = createStation("잠실");
@@ -56,15 +47,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addEdge(line.getId(), hongik.getId(), sinchon.getId(), 12, 12);
 
         //when
-        Long sourceId = jamsil.getId();
-        Long targetId = sinchon.getId();
-        String requestKey = "distance";
-
         MvcResult mvcResult = mockMvc.perform(
                 get("/paths")
-                        .param("source", String.valueOf(sourceId))
-                        .param("target", String.valueOf(targetId))
-                        .param("key", requestKey)
+                        .param("source", "잠실")
+                        .param("target", "신촌")
+                        .param("key", "distance")
                         .accept(MediaType.APPLICATION_JSON_VALUE)
         )
                 .andDo(print())

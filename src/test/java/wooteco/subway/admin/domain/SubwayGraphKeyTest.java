@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -24,12 +28,16 @@ class SubwayGraphKeyTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("SubwayGraphKey의 개수만큼 graph 생성하기")
     @Test
     void makeGraph() {
         //given
+        Map<SubwayGraphKey, SubwayGraph> subwayGraphMap = SubwayGraphKey.makeGraph(new HashSet<>());
 
         //when
+        Set<SubwayGraphKey> subwayGraphKeys = subwayGraphMap.keySet();
 
         //then
+        assertThat(subwayGraphKeys).contains(SubwayGraphKey.DISTANCE, SubwayGraphKey.DURATION);
     }
 }

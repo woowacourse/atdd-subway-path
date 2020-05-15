@@ -17,11 +17,6 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 지하철 노선도 정보 조회")
     @Test
     void getAllEdge() {
-        /**
-         *지하철 역이 여러개 추가되어있다.
-         * 지하철 노선이 여러개 추가되어있다.
-         * 지하철 노선에 지하철역이 여러개 추가되어있다.
-         */
         //given
         LineResponse lineNumberTwo = createLine("2호선");
         LineResponse lineNumberEight = createLine("8호선");
@@ -37,9 +32,6 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         addEdge(lineNumberEight.getId(), jamsil.getId(), seokchon.getId());
         addEdge(lineNumberEight.getId(), seokchon.getId(), mongchon.getId());
 
-        /**
-         * 지하철 노선도 전체 조회 요청을 한다.
-         */
         //when
         WholeSubwayResponse wholeSubwayResponse = given().
                 contentType(ContentType.JSON).
@@ -51,9 +43,6 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract().as(WholeSubwayResponse.class);
 
-        /**
-         * 지하철 노선도 전체를 응답 받는다.
-         */
         //then
         LineDetailResponse expectedTwo = wholeSubwayResponse.getResponses().get(0);
         assertThat(expectedTwo.getId()).isEqualTo(lineNumberTwo.getId());

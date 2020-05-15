@@ -42,6 +42,14 @@ public class SubwayDefaultDataConfiguration {
 
             lineNumber1 = lineRepository.save(lineNumber1);
             lineNumber2 = lineRepository.save(lineNumber2);
+
+            Station station4 = stationRepository.save(new Station("신촌"));
+            Station station5 = stationRepository.save(new Station("합정"));
+            Line lineNumber3 = new Line("2호선", LocalTime.of(05, 10), LocalTime.of(22, 10), 10);
+            lineNumber3.addEdge(new Edge(null, station4.getId(), 10, 10));
+            lineNumber3.addEdge(new Edge(station4.getId(), station5.getId(), 10, 10));
+
+            lineNumber3 = lineRepository.save(lineNumber3);
         }
     }
 

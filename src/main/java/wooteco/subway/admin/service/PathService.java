@@ -4,17 +4,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.PathDetail;
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.domain.SubwayGraphKey;
 import wooteco.subway.admin.domain.SubwayGraphs;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.IllegalPathRequestException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -31,18 +30,22 @@ public class PathService {
     public PathResponse findPath(PathRequest pathRequest) {
         String source = pathRequest.getSource();
         String target = pathRequest.getTarget();
-        Stations requestStations = new Stations(stationRepository.findAllByNameIn(Arrays.asList(source, target)));
+        validateDuplicatedName(source, target);
 
-        Long sourceId = requestStations.findIdByName(source);
-        Long targetId = requestStations.findIdByName(target);
+        Stations stations = new Stations(stationRepository.findAll());
+        Long sourceId = stations.findIdByName(source);
+        Long targetId = stations.findIdByName(target);
 
-        //전체 노선을 가져온다
         Lines lines = new Lines(lineRepository.findAll());
-        //최단 경로를 가져온다.
         SubwayGraphs subwayGraphs = lines.makeSubwayGraphs(sourceId, targetId);
         PathDetail path = subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
 
-        List<Station> stations = stationRepository.findAllByIdIn(path.getPaths());
-        return PathResponse.of(path, new Stations(stations));
+        return PathResponse.of(path, stations);
+    }
+
+    private void validateDuplicatedName(final String source, final String target) {
+        if (Objects.equals(source, target)) {
+            throw new IllegalPathRequestException(String.format("출발역과 도착역이 같습니다.(%s)", source));
+        }
     }
 }

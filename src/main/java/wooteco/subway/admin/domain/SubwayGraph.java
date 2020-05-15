@@ -1,7 +1,9 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.exception.IllegalPathRequestException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -27,10 +29,24 @@ public class SubwayGraph {
     }
 
     public SubwayPath getPath(Long sourceStationId, Long targetStationId) {
-        if (!containAllVertexes(sourceStationId, targetStationId)) {
-            throw new IllegalArgumentException(String.format("%d - %d : 존재하지 않는 경로입니다.", sourceStationId, targetStationId));
+        validateContainStations(sourceStationId, targetStationId);
+
+        GraphPath<Long, SubwayWeightEdge> path = DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId);
+        validateLinkedEdge(sourceStationId, targetStationId, path);
+
+        return new SubwayPath(path);
+    }
+
+    private void validateLinkedEdge(final Long sourceStationId, final Long targetStationId, final GraphPath<Long, SubwayWeightEdge> path) {
+        if (Objects.isNull(path)) {
+            throw new IllegalPathRequestException(String.format("%d - %d : 존재하지 않는 경로입니다.", sourceStationId, targetStationId));
         }
-        return new SubwayPath(DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId));
+    }
+
+    private void validateContainStations(final Long sourceStationId, final Long targetStationId) {
+        if (!containAllVertexes(sourceStationId, targetStationId)) {
+            throw new IllegalArgumentException(String.format("%d - %d : 해당 역이 존재하지 않습니다.", sourceStationId, targetStationId));
+        }
     }
 
     public boolean containAllVertexes(final Long sourceStationId, final Long targetStationId) {
