@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathService {
+    private static final String KOREAN_WORD = "^[가-힣]*$";
+
     private StationRepository stationRepository;
     private LineRepository lineRepository;
     private GraphService graphService;
@@ -29,38 +31,74 @@ public class PathService {
     }
 
     public PathResponse findPath(String source, String target, PathType type) {
-        String regExp = "^[가-힣]*$";
-        if (Objects.equals(source, target)) {
-            throw new PathException("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
-        }
-        if (!source.matches(regExp) || !target.matches(regExp)) {
-            throw new PathException("출발역과 도착역은 한글만 입력가능합니다.");
-        }
+        checkSameStationName(source, target);
+        checkKoreanStationName(source, target, KOREAN_WORD);
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
-        Station targetStation = stationRepository.findByName(target).orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
+
+        Station sourceStation = findStationByName(source);
+        Station targetStation = findStationByName(target);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
-
-        List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .collect(Collectors.toList());
-
+        List<LineStation> lineStations = calculateLineStations(lines);
         List<LineStation> paths = extractPathLineStation(path, lineStations);
+
+        checkEmptyPath(paths);
+        int duration = calculateFastestDuration(paths);
+        int distance = calculateShortestDistance(paths);
+
+        List<Station> pathStation = calculateStationPath(path, stations);
+
+        return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
+    }
+
+    private List<Station> calculateStationPath(List<Long> path, List<Station> stations) {
+        return path.stream()
+                .map(it -> extractStation(it, stations))
+                .collect(Collectors.toList());
+    }
+
+    private int calculateShortestDistance(List<LineStation> paths) {
+        return paths.stream()
+                .mapToInt(LineStation::getDistance)
+                .sum();
+    }
+
+    private int calculateFastestDuration(List<LineStation> paths) {
+        return paths.stream()
+                .mapToInt(LineStation::getDuration)
+                .sum();
+    }
+
+    private void checkEmptyPath(List<LineStation> paths) {
         if (paths.isEmpty()) {
             throw new PathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+    }
 
-        List<Station> pathStation = path.stream()
-                .map(it -> extractStation(it, stations))
+    private List<LineStation> calculateLineStations(List<Line> lines) {
+        return lines.stream()
+                .flatMap(it -> it.getStations().stream())
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
                 .collect(Collectors.toList());
+    }
 
-        return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
+    private Station findStationByName(String source) {
+        return stationRepository.findByName(source)
+                .orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
+    }
+
+    private void checkKoreanStationName(String source, String target, String regExp) {
+        if (!source.matches(regExp) || !target.matches(regExp)) {
+            throw new PathException("출발역과 도착역은 한글만 입력가능합니다.");
+        }
+    }
+
+    private void checkSameStationName(String source, String target) {
+        if (Objects.equals(source, target)) {
+            throw new PathException("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
+        }
     }
 
     private Station extractStation(Long stationId, List<Station> stations) {
@@ -81,15 +119,19 @@ public class PathService {
             }
 
             Long finalPreStationId = preStationId;
-            LineStation lineStation = lineStations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
-                    .findFirst()
-                    .orElseThrow(RuntimeException::new);
+            LineStation lineStation = calculateLineStation(lineStations, stationId, finalPreStationId);
 
             paths.add(lineStation);
             preStationId = stationId;
         }
 
         return paths;
+    }
+
+    private LineStation calculateLineStation(List<LineStation> lineStations, Long stationId, Long finalPreStationId) {
+        return lineStations.stream()
+                .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }

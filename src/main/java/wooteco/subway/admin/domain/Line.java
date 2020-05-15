@@ -110,19 +110,14 @@ public class Line {
             return new ArrayList<>();
         }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
+        LineStation firstLineStation = getFirstLineStation();
         List<Long> stationIds = new ArrayList<>();
+
         stationIds.add(firstLineStation.getStationId());
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+            Optional<LineStation> nextLineStation = getNextLineStation(lastStationId);
 
             if (!nextLineStation.isPresent()) {
                 break;
@@ -132,5 +127,18 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    private Optional<LineStation> getNextLineStation(Long lastStationId) {
+        return stations.stream()
+                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                .findFirst();
+    }
+
+    private LineStation getFirstLineStation() {
+        return stations.stream()
+                .filter(it -> it.getPreStationId() == null)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }
