@@ -21,16 +21,10 @@ public class LineStations {
         return lineStations;
     }
 
-    // todo : 이거 리팩토링
     public LineStation findLineStation(Long preStationId, Long stationId) {
-        for (LineStation lineStation : lineStations) {
-            if (lineStation.is(preStationId, stationId)) {
-                return lineStation;
-            }
-            if (lineStation.is(stationId, preStationId)) {
-                return lineStation;
-            }
-        }
-        return LineStation.empty();
+        return lineStations.stream()
+                .filter(lineStation -> lineStation.is(preStationId, stationId) || lineStation.is(stationId, preStationId))
+                .findFirst()
+                .orElse(LineStation.empty());
     }
 }
