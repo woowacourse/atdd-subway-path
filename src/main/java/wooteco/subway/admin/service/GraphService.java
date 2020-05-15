@@ -9,26 +9,34 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.GraphResponse;
-import wooteco.subway.admin.dto.PathRequestWithId;
 import wooteco.subway.admin.dto.PathType;
+import wooteco.subway.admin.exception.IllegalStationNameException;
+import wooteco.subway.admin.exception.NotFoundLineException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 
 @Service
 public class GraphService {
-    public GraphResponse findPath(List<Line> lines, PathRequestWithId request) {
-        Long source = request.getSourceId();
-        Long target = request.getTargetId();
-        PathType pathType = request.getPathType();
-
+    public GraphResponse findPath(List<Line> lines, Long sourceId, Long targetId,
+        PathType pathType) {
+        validate(lines, sourceId, targetId);
         WeightedMultigraph<Long, LineStationEdge> graph = mapLinesToGraph(lines, pathType);
         DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
             graph);
 
-        if (Objects.isNull(dijkstraShortestPath.getPath(source, target))) {
-            throw new NotFoundPathException(source, target);
+        if (Objects.isNull(dijkstraShortestPath.getPath(sourceId, targetId))) {
+            throw new NotFoundPathException(sourceId, targetId);
         }
 
-        return mapToGraphResponse(source, target, dijkstraShortestPath);
+        return mapToGraphResponse(sourceId, targetId, dijkstraShortestPath);
+    }
+
+    private void validate(List<Line> lines, Long sourceId, Long targetId) {
+        if (Objects.isNull(lines)) {
+            throw new NotFoundLineException();
+        }
+        if (Objects.equals(sourceId, targetId)) {
+            throw new IllegalStationNameException(sourceId, targetId);
+        }
     }
 
     private WeightedMultigraph<Long, LineStationEdge> mapLinesToGraph(List<Line> lines,

@@ -9,11 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.GraphResponse;
 import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathRequestWithId;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.PathType;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.exception.IllegalStationNameException;
+import wooteco.subway.admin.exception.NotFoundStationException;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,24 +29,13 @@ public class PathService {
         this.graphService = graphService;
     }
 
-    public PathRequestWithId toPathRequestWithId(PathRequest pathRequest) {
-        String sourceName = pathRequest.getSourceName();
-        String targetName = pathRequest.getTargetName();
-        PathType pathType = PathType.of(pathRequest.getType());
-
-        if (sourceName.equals(targetName)) {
-            throw new IllegalStationNameException(sourceName);
-        }
-
-        Long sourceId = stationService.findIdByName(sourceName);
-        Long targetId = stationService.findIdByName(targetName);
-
-        return new PathRequestWithId(sourceId, targetId, pathType);
-    }
-
-    public PathResponse findPath(PathRequestWithId pathRequestWithId) {
+    public PathResponse findPath(PathRequest request) {
+        Long sourceId = stationService.findIdByName(request.getSourceName());
+        Long targetId = stationService.findIdByName(request.getTargetName());
         List<Line> lines = lineService.findAll();
-        GraphResponse graphResponse = graphService.findPath(lines, pathRequestWithId);
+
+        GraphResponse graphResponse = graphService.findPath(lines, sourceId, targetId,
+            PathType.of(request.getType()));
         List<Long> path = graphResponse.getPath();
 
         List<StationResponse> stationResponses = StationResponse.listOf(
@@ -66,7 +54,7 @@ public class PathService {
         for (Long stationId : path) {
             StationResponse response = stationResponses.stream()
                 .filter(stationResponse -> stationResponse.getId().equals(stationId))
-                .findAny().orElseThrow(IllegalArgumentException::new);
+                .findAny().orElseThrow(NotFoundStationException::new);
             result.add(response);
         }
         return result;

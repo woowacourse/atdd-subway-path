@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathRequestWithId;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
@@ -25,8 +24,7 @@ public class PathController {
 
     @PostMapping
     ResponseEntity<PathResponse> findPath(@Valid @RequestBody PathRequest pathRequest) {
-        PathRequestWithId PathRequestWithId = pathService.toPathRequestWithId(pathRequest);
-        PathResponse response = pathService.findPath(PathRequestWithId);
+        PathResponse response = pathService.findPath(pathRequest);
 
         return ResponseEntity.ok(response);
     }

@@ -17,5 +17,4 @@ public class ETagHeaderFilter {
         filter.setName("etagFilter");
         return filter;
     }
-
 }

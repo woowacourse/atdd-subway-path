@@ -6,13 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathRequestWithId;
-import wooteco.subway.admin.dto.PathType;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.exception.IllegalStationNameException;
-import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 import wooteco.subway.admin.repository.StationRepository;
 

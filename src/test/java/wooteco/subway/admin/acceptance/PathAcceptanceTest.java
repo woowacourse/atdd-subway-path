@@ -9,7 +9,6 @@ import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.exception.IllegalTypeNameException;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
