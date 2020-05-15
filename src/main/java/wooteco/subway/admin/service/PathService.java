@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
@@ -29,6 +30,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse showPaths(String source, String target, CriteriaType criteria) {
         validateSameStations(source, target);
         List<Line> lines = lineRepository.findAll();
