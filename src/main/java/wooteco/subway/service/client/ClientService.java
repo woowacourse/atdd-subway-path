@@ -38,14 +38,21 @@ public class ClientService {
 
     @Transactional(readOnly = true)
     public PathResponse searchPathByShortestDistance(String source, String target) {
-        List<Line> lines = lineRepository.findAll();
+        validate(source, target);
 
+        List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
 
         Path path = new Path(lines, stations, source, target);
 
         return new PathResponse(StationResponse.listOf(path.getVertexList()), path.getWeight(),
             path.duration());
+    }
+
+    private void validate(String source, String target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다");
+        }
     }
 
 }

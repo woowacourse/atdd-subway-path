@@ -2,6 +2,7 @@ package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -11,6 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineStation;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.InvalidPathException;
 
 public class Path {
     private final GraphPath<Station, StationWeightEdge> path;
@@ -20,7 +22,12 @@ public class Path {
         Station target = findStationByName(stations, targetName);
 
         WeightedMultigraph<Station, StationWeightEdge> graph = createGraph(lines, stations);
-        this.path = new DijkstraShortestPath<>(graph).getPath(source, target);
+        GraphPath<Station, StationWeightEdge> path = new DijkstraShortestPath<>(graph).getPath(
+            source, target);
+        if (Objects.isNull(path)) {
+            throw new InvalidPathException(sourceName, targetName);
+        }
+        this.path = path;
     }
 
     private WeightedMultigraph<Station, StationWeightEdge> createGraph(List<Line> lines,

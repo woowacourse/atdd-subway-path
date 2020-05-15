@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -83,5 +84,14 @@ public class ClientServiceTest {
         //then
         List<StationResponse> actual = pathResponse.getStations();
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("경로 조회시, 출발역과 도착역이 같은 경우 예외 발생 확인")
+    @Test
+    void name() {
+        assertThatThrownBy(
+            () -> clientService.searchPathByShortestDistance(STATION_NAME1, STATION_NAME1))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("출발역과 도착역은 같을 수 없습니다");
     }
 }

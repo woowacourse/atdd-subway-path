@@ -1,6 +1,9 @@
 package wooteco.subway.controller.client;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,6 +12,7 @@ import wooteco.subway.dto.WholeSubwayResponse;
 import wooteco.subway.service.client.ClientService;
 
 @RestController
+@Validated
 public class ClientController {
     private ClientService clientService;
 
@@ -25,9 +29,11 @@ public class ClientController {
     }
 
     @GetMapping("/lines/path")
-    public ResponseEntity<PathResponse> searchPathByShortestDistance(String source, String target) {
+    public ResponseEntity<PathResponse> searchPathByShortestDistance(@NotBlank String source,
+        @NotBlank String target) {
         PathResponse pathResponse = clientService.searchPathByShortestDistance(source, target);
         return ResponseEntity.ok().body(pathResponse);
     }
 
 }
+
