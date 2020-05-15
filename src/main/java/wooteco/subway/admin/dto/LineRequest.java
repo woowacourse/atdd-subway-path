@@ -1,35 +1,51 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Line;
-
 import java.time.LocalTime;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import wooteco.subway.admin.domain.Line;
+
 public class LineRequest {
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
+	@NotNull(message = "null값은 허용되지 않습니다.")
+	@NotBlank(message = "노선명을 입력해주세요.")
+	private String name;
 
-    public LineRequest() {
-    }
+	@NotNull(message = "출발시간을 입력해주세요.")
+	@DateTimeFormat(pattern = "HH:mm:ss")
+	private LocalTime startTime;
 
-    public String getName() {
-        return name;
-    }
+	@NotNull(message = "도착시간을 입력해주세요.")
+	@DateTimeFormat(pattern = "HH:mm:ss")
+	private LocalTime endTime;
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	@Min(value = 1, message = "배차 간격에 양수를 입력해주세요.")
+	private int intervalTime;
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	private LineRequest() {
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public Line toLine() {
+		return new Line(name, startTime, endTime, intervalTime);
+	}
 
-    public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime);
-    }
+	public String getName() {
+		return name;
+	}
+
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 }
