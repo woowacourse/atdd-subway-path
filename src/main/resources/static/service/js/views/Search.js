@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {optionSubwayTemplate, searchResultTemplate} from '../../utils/templates.js'
 
@@ -38,8 +38,6 @@ function Search() {
     const departureStationId = $departureStation.options[$departureStation.selectedIndex].dataset.optionStationId;
     const arrivalStationId = $arrivalStation.options[$arrivalStation.selectedIndex].dataset.optionStationId;
 
-    console.log(departureStationId, arrivalStationId);
-
     const searchInput = {
       source: departureStationId,
       target: arrivalStationId,
@@ -48,7 +46,7 @@ function Search() {
     api.path
       .find(searchInput)
       .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .catch(error => alert(error));
   }
 
   const onToggleFavorite = event => {
