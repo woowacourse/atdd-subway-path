@@ -57,12 +57,12 @@ public class LineServiceTest {
 		station3 = new Station(3L, STATION_NAME3);
 		station4 = new Station(4L, STATION_NAME4);
 
-		line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+		line1 = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
 		line1.addLineStation(new LineStation(null, 1L, 10, 10));
 		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
 
-		line2 = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		line2 = Line.of("신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(2L);
 		line2.addLineStation(new LineStation(null, 6L, 10, 10));
 		line2.addLineStation(new LineStation(6L, 5L, 10, 10));
 		line2.addLineStation(new LineStation(5L, 4L, 10, 10));
@@ -194,13 +194,13 @@ public class LineServiceTest {
 			new Station(4L, "양재역"), new Station(1L, "강남역"),
 			new Station(2L, "역삼역"), new Station(3L, "삼성역")
 		);
-		when(stationRepository.findAllById(anyList())).thenReturn(stations);
+		when(stationRepository.findAll()).thenReturn(stations);
 		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
 		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(new Station(3L, "삼성역")));
 
 		PathResponse pathResponse = lineService.searchPath("청계산입구역", "삼성역", PathType.DISTANCE);
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(5);
+		assertThat(pathResponse.getStations().size()).isEqualTo(6);
 		assertThat(pathResponse.getDistance()).isEqualTo(50);
 		assertThat(pathResponse.getDuration()).isEqualTo(50);
 	}

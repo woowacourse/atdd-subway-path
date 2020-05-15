@@ -116,6 +116,7 @@ public class AcceptanceTest {
 		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
+		params.put("name", "");
 
 		given().
 			body(params).

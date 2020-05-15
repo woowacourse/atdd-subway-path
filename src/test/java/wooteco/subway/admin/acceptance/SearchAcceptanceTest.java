@@ -53,13 +53,13 @@ public class SearchAcceptanceTest extends AcceptanceTest {
 	void searchPath() {
 		PathResponse shortestPath = retrievePath(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, "DISTANCE");
 
-		assertThat(shortestPath.getStations().size()).isEqualTo(2);
+		assertThat(shortestPath.getStations().size()).isEqualTo(3);
 		assertThat(shortestPath.getDistance()).isEqualTo(20);
 		assertThat(shortestPath.getDuration()).isEqualTo(20);
 
 		PathResponse minimumTimePath = retrievePath(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, "DURATION");
 
-		assertThat(minimumTimePath.getStations().size()).isEqualTo(2);
+		assertThat(minimumTimePath.getStations().size()).isEqualTo(3);
 		assertThat(minimumTimePath.getDistance()).isEqualTo(20);
 		assertThat(minimumTimePath.getDuration()).isEqualTo(20);
 	}

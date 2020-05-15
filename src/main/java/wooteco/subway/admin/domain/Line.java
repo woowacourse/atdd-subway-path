@@ -13,30 +13,37 @@ import org.springframework.data.annotation.Id;
 
 public class Line {
 	@Id
-	private Long id;
-	private String name;
-	private LocalTime startTime;
-	private LocalTime endTime;
-	private int intervalTime;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-	private Set<LineStation> stations = new HashSet<>();
+	private final Long id;
+	private final String name;
+	private final LocalTime startTime;
+	private final LocalTime endTime;
+	private final int intervalTime;
+	private final LocalDateTime createdAt;
+	private final LocalDateTime updatedAt;
+	private final Set<LineStation> stations;
 
-	public Line() {
-	}
-
-	public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+	Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+		LocalDateTime createdAt, LocalDateTime updatedAt, Set<LineStation> stations) {
 		this.id = id;
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.intervalTime = intervalTime;
-		this.createdAt = LocalDateTime.now();
-		this.updatedAt = LocalDateTime.now();
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.stations = stations;
 	}
 
-	public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-		this(null, name, startTime, endTime, intervalTime);
+	public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		return new Line(null, name, startTime, endTime, intervalTime, localDateTime, localDateTime
+			, new HashSet<>());
+	}
+
+	public Line withId(Long id) {
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt,
+			this.updatedAt, this.stations);
 	}
 
 	public Long getId() {
@@ -71,21 +78,9 @@ public class Line {
 		return updatedAt;
 	}
 
-	public void update(Line line) {
-		if (line.getName() != null) {
-			this.name = line.getName();
-		}
-		if (line.getStartTime() != null) {
-			this.startTime = line.getStartTime();
-		}
-		if (line.getEndTime() != null) {
-			this.endTime = line.getEndTime();
-		}
-		if (line.getIntervalTime() != 0) {
-			this.intervalTime = line.getIntervalTime();
-		}
-
-		this.updatedAt = LocalDateTime.now();
+	public Line update(Line line) {
+		return new Line(line.id, line.name, line.startTime, line.endTime, line.intervalTime,
+			line.createdAt, line.updatedAt, line.stations);
 	}
 
 	public void addLineStation(LineStation lineStation) {

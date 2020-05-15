@@ -1,11 +1,9 @@
 package wooteco.subway.admin.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Edge;
@@ -42,8 +40,8 @@ public class LineService {
 	}
 
 	public void updateLine(Long id, LineRequest request) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		persistLine.update(request.toLine());
+		final Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new)
+			.update(request.toLine().withId(id));
 		lineRepository.save(persistLine);
 	}
 
@@ -82,29 +80,18 @@ public class LineService {
 
 	public PathResponse searchPath(String source, String target, PathType pathType) {
 		List<Line> lines = lineRepository.findAll();
+		List<Station> stations = stationRepository.findAll();
 		Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
 		Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
 
-		List<Edge> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), pathType);
+		GraphPath<Station, Edge> path = graphService.findPath(lines, stations, sourceStation, targetStation, pathType);
 
-		List<Long> ids = lines.stream()
-			.map(Line::getLineStationsId)
-			.flatMap(Collection::stream)
-			.collect(Collectors.toList());
-		Map<Long, Station> map = stationRepository.findAllById(ids)
-			.stream()
-			.collect(Collectors.toMap(Station::getId, Function
-				.identity()));
-		List<Station> stations = path.stream()
-			.map(Edge::getStationId)
-			.map(map::get)
-			.collect(Collectors.toList());
-		int distance = path.stream()
+		int distance = path.getEdgeList().stream()
 			.mapToInt(Edge::getDistance)
 			.sum();
-		int duration = path.stream()
+		int duration = path.getEdgeList().stream()
 			.mapToInt(Edge::getDuration)
 			.sum();
-		return PathResponse.of(stations, distance, duration);
+		return PathResponse.of(path.getVertexList(), distance, duration);
 	}
 }
