@@ -1,6 +1,6 @@
 package wooteco.subway.admin.domain;
 
-public enum type {
+public enum PathType {
     DISTANCE,
     DURATION
 }

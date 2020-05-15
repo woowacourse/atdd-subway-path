@@ -4,7 +4,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathSearchResponse;
 import wooteco.subway.admin.dto.PathWeightedEdge;
@@ -27,11 +30,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathSearchResponse searchPath(String source, String target) {
+    public PathSearchResponse searchPath(String source, String target, PathType type) {
         WeightedMultigraph<String, PathWeightedEdge> pathGraph = new WeightedMultigraph(PathWeightedEdge.class);
 
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
+
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("Source can not be same with target.");
+        }
 
         Map<Long, Station> stationMap = new HashMap<>(); //key = stationId, value = Station
         for (Station station : stations) {
@@ -43,25 +50,44 @@ public class PathService {
         lines.forEach(line -> {
             line.getLineStations().stream()
                     .filter(lineStation -> !Objects.isNull(lineStation.getPreStationId()))
-                    .forEach(lineStation -> {
-                        String preStationName = stationMap.get(lineStation.getPreStationId()).getName();
-                        String nextStationName = stationMap.get(lineStation.getStationId()).getName();
-                        PathWeightedEdge edge = pathGraph.addEdge(preStationName, nextStationName);
-                        edge.setDistance(lineStation.getDistance());
-                        edge.setDuration(lineStation.getDuration());
-                        pathGraph.setEdgeWeight(edge, lineStation.getDistance());
-                    });
+                    .forEach(lineStation -> setLineStationEdgeByType(pathGraph, stationMap, lineStation, type));
         });
 
         GraphPath path = new DijkstraShortestPath(pathGraph).getPath(source, target);
+        if (Objects.isNull(path)) {
+            throw new IllegalArgumentException("Can not find path between " + source + "," + target + ".");
+        }
         List<String> shortestPath = path.getVertexList();
 
-        return new PathSearchResponse(calculateDuration(path.getEdgeList()), (int) path.getWeight(), shortestPath);
+        return new PathSearchResponse(calculateDuration(path.getEdgeList()), calculateDistance(path.getEdgeList()), shortestPath);
+    }
+
+    private void setLineStationEdgeByType(WeightedMultigraph<String, PathWeightedEdge> pathGraph,
+                                          Map<Long, Station> stationMap,
+                                          LineStation lineStation,
+                                          PathType type) {
+        String preStationName = stationMap.get(lineStation.getPreStationId()).getName();
+        String nextStationName = stationMap.get(lineStation.getStationId()).getName();
+        PathWeightedEdge edge = pathGraph.addEdge(preStationName, nextStationName);
+        edge.setDistance(lineStation.getDistance());
+        edge.setDuration(lineStation.getDuration());
+        if (PathType.DISTANCE.equals(type)) {
+            pathGraph.setEdgeWeight(edge, lineStation.getDistance());
+        }
+        if (PathType.DURATION.equals(type)) {
+            pathGraph.setEdgeWeight(edge, lineStation.getDuration());
+        }
     }
 
     private int calculateDuration(List<PathWeightedEdge> edges) {
         return edges.stream()
                 .map(edge -> edge.getDuration())
-                .reduce(0, (a,b) -> a+b);
+                .reduce(0, (a, b) -> a + b);
+    }
+
+    private int calculateDistance(List<PathWeightedEdge> edges) {
+        return edges.stream()
+                .map(edge -> edge.getDistance())
+                .reduce(0, (a, b) -> a + b);
     }
 }
