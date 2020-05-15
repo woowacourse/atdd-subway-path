@@ -8,6 +8,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.LineDoesNotExistException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -33,7 +34,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = getLine(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -43,23 +44,31 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        Line line = getLine(id);
+        LineStation lineStation = new LineStation(
+                request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration()
+        );
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = getLine(lineId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        Line line = getLine(id);
+        List<Station> stations = stationRepository
+                .findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
+    }
+
+    private Line getLine(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(LineDoesNotExistException::new);
     }
 
     public WholeSubwayResponse showLinesDetail() {
