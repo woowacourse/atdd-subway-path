@@ -105,6 +105,7 @@ class PathServiceTest {
 
         PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
         assertThat(paths.getDistance()).isEqualTo(40);
+        assertThat(paths.getDuration()).isEqualTo(80);
     }
 
     @Test
