@@ -8,7 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -17,6 +19,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +72,8 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
-        PathResponse pathResponse = pathService.calculatePath("강남역", "선릉역");
+        PathResponse pathResponse = pathService.calculatePath(
+                new PathRequest("강남역", "선릉역", PathType.DISTANCE));
 
         assertThat(pathResponse.getDistance()).isEqualTo(15);
         assertThat(pathResponse.getDuration()).isEqualTo(25);
@@ -84,7 +88,8 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
-        PathResponse pathResponse = pathService.calculatePath("선릉역", "양재시민의숲역");
+        PathResponse pathResponse = pathService.calculatePath(
+                new PathRequest("선릉역", "양재시민의숲역", PathType.DISTANCE));
 
         assertThat(pathResponse.getDistance()).isEqualTo(35);
         assertThat(pathResponse.getDuration()).isEqualTo(45);
@@ -93,5 +98,34 @@ public class PathServiceTest {
         assertThat(pathResponse.getStations().get(2).getName()).isEqualTo("강남역");
         assertThat(pathResponse.getStations().get(3).getName()).isEqualTo("양재역");
         assertThat(pathResponse.getStations().get(4).getName()).isEqualTo("양재시민의숲역");
+    }
+
+    @DisplayName("출발지와 도착지가 같은 경우 예외가 발생하는지 테스트")
+    @Test
+    void sameSourceAndTargetTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        PathRequest pathRequest = new PathRequest("강남역", "강남역", PathType.DISTANCE);
+
+        assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("출발지와 도착지는 같을 수 없습니다.");
+    }
+
+    @DisplayName("출발지와 도착지가 연결되어 있지 않은 경우 예외가 발생하는지 테스트")
+    @Test
+    void notConnectTest() {
+        Line line3 = new Line(3L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Station station6 = new Station(6L, "까치산역");
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
+
+        PathRequest pathRequest = new PathRequest("강남역", "까치산역", PathType.DISTANCE);
+
+        assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("출발지와 도착지가 연결되어 있지 않습니다.");
     }
 }

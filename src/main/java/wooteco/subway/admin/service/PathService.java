@@ -40,6 +40,9 @@ public class PathService {
         Long sourceId = findStationIdByName(stations, request.getSource());
         Long targetId = findStationIdByName(stations, request.getTarget());
 
+        if(sourceId.equals(targetId)){
+            throw new RuntimeException("출발지와 도착지는 같을 수 없습니다.");
+        }
         List<Long> shortestPath = createShortestPath(lines, sourceId, targetId);
 
         List<Station> pathStations = shortestPath.stream()
