@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
+import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
 
@@ -28,7 +28,6 @@ function Search() {
   }
 
   const onSearchMinimumTime = event => {
-    this.flag = false;
     event.preventDefault()
     $minimumTimeTab.classList.add('active-tab')
     $shortestDistanceTab.classList.remove('active-tab')
@@ -43,8 +42,13 @@ function Search() {
     }
     api.path
     .find(searchInput)
-    .then(data => showSearchResult(data))
-    .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .then(data => {
+      if (data.status) {
+        alert(data.message);
+        return
+      }
+      showSearchResult(data);
+    })
   }
 
   const onToggleFavorite = event => {
