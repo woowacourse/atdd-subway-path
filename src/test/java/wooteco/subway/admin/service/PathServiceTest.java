@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -91,7 +91,7 @@ class PathServiceTest {
 		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
 				station5, station6, station7, station8, station9, station10));
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
+		ShortestPathResponse shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
 
 		assertEquals(shortestPath.getPath().get(0), station6);
@@ -118,7 +118,7 @@ class PathServiceTest {
 		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
 				station5, station6, station7, station8, station9, station10));
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
+		ShortestPathResponse shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
 
 		assertEquals(shortestPath.getPath().get(0), station6);

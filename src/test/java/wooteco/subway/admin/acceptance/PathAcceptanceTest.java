@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(5L, 10L, 11L, 30, 10);
 
 		//		When 시청역부터 신도림역까지 최단거리 경로를 구하고 싶다.
-		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림", "distance");
+		ShortestPathResponse shortestPath = findShortestDistancePath("시청", "신도림", "distance");
 
 		//		Then 시청역부터 신도림역까지 최단거리 경로가 구해졌다.
 		List<Station> path = shortestPath.getPath();
@@ -136,7 +136,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(5L, 7L, 10L, 30, 10);
 		addLineStation(5L, 10L, 11L, 30, 10);
 		//    When 시청역부터 신도림역까지 최단시간 경로를 구하고 싶다.
-		ShortestPath shortestPath = findShortestDistancePath("시청", "신도림", "duration");
+		ShortestPathResponse shortestPath = findShortestDistancePath("시청", "신도림", "duration");
 		//    Then 시청역부터 신도림역까지 최단시간 경로가 구해졌다.
 		List<Station> path = shortestPath.getPath();
 		int distance = shortestPath.getDistance();

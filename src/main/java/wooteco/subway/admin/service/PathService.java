@@ -3,7 +3,7 @@ package wooteco.subway.admin.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
-import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.exception.EmptyStationNameException;
 import wooteco.subway.admin.exception.NoStationNameExistsException;
 import wooteco.subway.admin.exception.SourceEqualsTargetException;
@@ -23,7 +23,7 @@ public class PathService {
 	}
 
 	@Transactional
-	public ShortestPath findShortestDistancePath(String sourceName, String targetName, String criteriaType) {
+	public ShortestPathResponse findShortestDistancePath(String sourceName, String targetName, String criteriaType) {
 		if (sourceName.isEmpty() || targetName.isEmpty()) {
 			throw new EmptyStationNameException();
 		}

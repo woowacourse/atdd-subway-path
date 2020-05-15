@@ -8,7 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.response.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -181,7 +181,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    ShortestPath findShortestDistancePath(String sourceName, String targetName, String criteria) {
+    ShortestPathResponse findShortestDistancePath(String sourceName, String targetName, String criteria) {
         return given().
                 contentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8").
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -193,7 +193,7 @@ public class AcceptanceTest {
             then().
                     log().all().
                     statusCode(HttpStatus.OK.value()).
-                    extract().as(ShortestPath.class);
+                    extract().as(ShortestPathResponse.class);
     }
 }
 

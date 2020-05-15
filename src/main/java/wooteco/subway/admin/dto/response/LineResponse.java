@@ -1,13 +1,13 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.dto.response;
 
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class LineDetailResponse {
+public class LineResponse {
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -16,12 +16,11 @@ public class LineDetailResponse {
     private String color;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<StationResponse> stations;
 
-    public LineDetailResponse() {
+    public LineResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -30,11 +29,16 @@ public class LineDetailResponse {
         this.color = color;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.stations = StationResponse.listOf(stations);
     }
 
-    public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getColor(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+    public static LineResponse of(Line line) {
+        return new LineResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getColor(), line.getCreatedAt(), line.getUpdatedAt());
+    }
+
+    public static List<LineResponse> listOf(List<Line> lines) {
+        return lines.stream()
+                .map(line -> LineResponse.of(line))
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -67,9 +71,5 @@ public class LineDetailResponse {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public List<StationResponse> getStations() {
-        return stations;
     }
 }

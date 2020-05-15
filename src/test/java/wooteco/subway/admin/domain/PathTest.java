@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class PathTest {
 		Path path = new Path(subway, stations);
 
 
-		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of(criteria));
+		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4, Criteria.of(criteria));
 
 		assertEquals(shortestPath.getPath().get(0), station1);
 		assertEquals(shortestPath.getPath().get(1), station2);

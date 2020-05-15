@@ -1,18 +1,18 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.dto.response;
 
 import wooteco.subway.admin.domain.Station;
 
 import java.util.List;
 
-public class ShortestPath {
+public class ShortestPathResponse {
 	private List<Station> path;
 	private int distance;
 	private int duration;
 
-	public ShortestPath() {
+	public ShortestPathResponse() {
 	}
 
-	public ShortestPath(List<Station> path, int distance, int duration) {
+	public ShortestPathResponse(List<Station> path, int distance, int duration) {
 		this.path = path;
 		this.distance = distance;
 		this.duration = duration;

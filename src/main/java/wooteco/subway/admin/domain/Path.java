@@ -4,12 +4,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.admin.dto.ShortestPath;
-
-import java.util.Collection;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 public class Path {
-	private final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph(Edge.class);
+	private final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph<>(Edge.class);
 	private final Subway subway;
 	private final Stations stations;
 
@@ -18,16 +16,14 @@ public class Path {
 		this.stations = stations;
 	}
 
-	public ShortestPath findShortestPath(Station sourceStation, Station targetStation, Criteria criteria) {
-		addVerticesToGraph(stations.getStations());
+	public ShortestPathResponse findShortestPath(Station sourceStation, Station targetStation, Criteria criteria) {
+		Graphs.addAllVertices(graph, stations.getStations());
 
 		for (LineStation lineStation : subway.fetchLineStations()) {
 			makeGraph(criteria, lineStation);
 		}
 
 		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
-
-		// result가 null이면 경로가 존재하지 않는 경우
 
 		int totalDistance = result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
 				.mapToInt(Edge::getDistance)
@@ -37,7 +33,7 @@ public class Path {
 				.mapToInt(Edge::getDuration)
 				.sum();
 
-		return new ShortestPath(result.getVertexList(), totalDistance, totalDuration);
+		return new ShortestPathResponse(result.getVertexList(), totalDistance, totalDuration);
 
 	}
 
@@ -54,12 +50,8 @@ public class Path {
 		graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
 	}
 
-	private void addVerticesToGraph(Collection<Station> vertices) { // TODO: 2020/05/14 빼기?
-		Graphs.addAllVertices(graph, vertices);
-	}
-
 	private GraphPath<Station, Edge> getDijkstraShortestPath(WeightedMultigraph<Station, Edge> graph, Station sourceStation, Station targetStation) {
-		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+		DijkstraShortestPath<Station, Edge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);
 	}

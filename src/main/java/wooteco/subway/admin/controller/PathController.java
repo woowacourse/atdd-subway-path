@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.service.PathService;
 
 @RestController
@@ -16,13 +16,13 @@ public class PathController {
 	}
 
 	@GetMapping("/paths")
-	public ResponseEntity<ShortestPath> findShortestDistancePath(@RequestParam("source") String sourceName,
-																 @RequestParam("target") String targetName,
-																 @RequestParam("type") String criteria) {
+	public ResponseEntity<ShortestPathResponse> findShortestDistancePath(@RequestParam("source") String sourceName,
+																		 @RequestParam("target") String targetName,
+																		 @RequestParam("type") String criteria) {
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
+		ShortestPathResponse shortestPathResponse = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
 		return ResponseEntity.ok()
-				.body(shortestPath);
+				.body(shortestPathResponse);
 	}
 }
