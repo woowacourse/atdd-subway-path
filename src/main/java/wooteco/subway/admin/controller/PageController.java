@@ -17,7 +17,7 @@ public class PageController {
         this.stationRepository = stationRepository;
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
         return "admin/index";
     }
@@ -37,5 +37,20 @@ public class PageController {
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String edgePage(Model model) {
         return "admin/admin-edge";
+    }
+
+    @GetMapping("/")
+    public String serviceIndex() {
+        return "service/index";
+    }
+
+    @GetMapping("/map-page")
+    public String mapPage() {
+        return "service/map";
+    }
+
+    @GetMapping("/search-page")
+    public String searchPage() {
+        return "service/search";
     }
 }
