@@ -40,7 +40,7 @@ public class PathService {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph;
 
         try {
-            graph = initGraph(lineStations);
+            graph = initGraph(lineStations, type);
         } catch (IllegalArgumentException e) {
             throw new CanNotCreateGraphException();
         }
@@ -70,7 +70,7 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations) {
+    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations, String type) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
@@ -82,7 +82,13 @@ public class PathService {
 
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
-                graph.setEdgeWeight(graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()), lineStation.getDistance());
+                DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
+                if (type.equals("DISTANCE")) {
+                    graph.setEdgeWeight(edge, lineStation.getDistance());
+                }
+                if (type.equals("DURATION")) {
+                    graph.setEdgeWeight(edge, lineStation.getDuration());
+                }
             }
         }
         return graph;
