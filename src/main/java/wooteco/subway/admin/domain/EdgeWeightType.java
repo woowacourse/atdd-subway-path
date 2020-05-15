@@ -1,4 +1,4 @@
-package wooteco.subway.admin.service;
+package wooteco.subway.admin.domain;
 
 import java.util.Arrays;
 

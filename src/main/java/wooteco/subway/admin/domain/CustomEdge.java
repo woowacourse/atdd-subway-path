@@ -1,8 +1,6 @@
-package wooteco.subway.admin.service;
+package wooteco.subway.admin.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-
-import wooteco.subway.admin.domain.LineStation;
 
 public class CustomEdge extends DefaultWeightedEdge {
 	private int distance;
@@ -21,7 +19,7 @@ public class CustomEdge extends DefaultWeightedEdge {
 	}
 
 	@Override
-	protected double getWeight() {
+	public double getWeight() {
 		if (type == EdgeWeightType.DURATION) {
 			return duration;
 		}
