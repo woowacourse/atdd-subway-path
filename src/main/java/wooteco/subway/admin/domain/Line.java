@@ -106,17 +106,24 @@ public class Line {
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
+        LineStation targetLineStation = findTargetLineStation(stationId);
+        detachTargetLineStation(stationId, targetLineStation);
 
+        stations.remove(targetLineStation);
+    }
+
+    private void detachTargetLineStation(Long stationId, LineStation targetLineStation) {
         stations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), stationId))
             .findFirst()
             .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+    }
 
-        stations.remove(targetLineStation);
+    private LineStation findTargetLineStation(Long stationId) {
+        return stations.stream()
+            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     public List<LineStation> getLineStations() {
@@ -138,24 +145,32 @@ public class Line {
     }
 
     private List<LineStation> sortedLineStations() {
-        LineStation firstLineStation = stations.stream()
-            .filter(it -> it.getPreStationId() == null)
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
+        LineStation firstLineStation = findFirstLineStation();
 
         List<LineStation> lineStations = new ArrayList<>();
         lineStations.add(firstLineStation);
 
         while (lineStations.size() != stations.size()) {
             Long lastStationId = lineStations.get(lineStations.size() - 1).getStationId();
-            LineStation nextLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            LineStation nextLineStation = findNextLineStation(lastStationId);
             lineStations.add(nextLineStation);
         }
 
         return lineStations;
+    }
+
+    private LineStation findNextLineStation(Long lastStationId) {
+        return stations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
+    private LineStation findFirstLineStation() {
+        return stations.stream()
+            .filter(it -> it.getPreStationId() == null)
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
 }
