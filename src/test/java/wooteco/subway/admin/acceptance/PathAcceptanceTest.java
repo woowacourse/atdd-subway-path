@@ -2,6 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -29,19 +30,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse4.getId());
         addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
+        //and
+        LineResponse lineResponse3 = createLine("3호선");
+        StationResponse stationResponse6 = createStation("신촌역");
+        addLineStation(lineResponse3.getId(), null, stationResponse3.getId());
+        addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponse6.getId(), 1000, 1);
+        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse5.getId());
 
         //when
-        PathResponse pathResponse = calculatePath("양재시민의숲역", "선릉역");
+        PathResponse pathResponseByDistance = calculatePath("양재시민의숲역", "선릉역", PathType.DISTANCE);
+        //and
+        PathResponse pathResponseByDuration = calculatePath("양재시민의숲역", "선릉역", PathType.DURATION);
 
         //then
-        assertThat(pathResponse.getDistance()).isEqualTo(40);
-        assertThat(pathResponse.getDuration()).isEqualTo(40);
+        assertThat(pathResponseByDistance.getDistance()).isEqualTo(40);
+        assertThat(pathResponseByDistance.getDuration()).isEqualTo(40);
         //and
-        List<StationResponse> stations = pathResponse.getStations();
-        assertThat(stations.get(0).getName()).isEqualTo("양재시민의숲역");
-        assertThat(stations.get(1).getName()).isEqualTo("양재역");
-        assertThat(stations.get(2).getName()).isEqualTo("강남역");
-        assertThat(stations.get(3).getName()).isEqualTo("역삼역");
-        assertThat(stations.get(4).getName()).isEqualTo("선릉역");
+        assertThat(pathResponseByDuration.getDistance()).isEqualTo(1010);
+        assertThat(pathResponseByDuration.getDuration()).isEqualTo(11);
+
+        //and
+        List<StationResponse> stations1 = pathResponseByDistance.getStations();
+        assertThat(stations1.get(0).getName()).isEqualTo("양재시민의숲역");
+        assertThat(stations1.get(1).getName()).isEqualTo("양재역");
+        assertThat(stations1.get(2).getName()).isEqualTo("강남역");
+        assertThat(stations1.get(3).getName()).isEqualTo("역삼역");
+        assertThat(stations1.get(4).getName()).isEqualTo("선릉역");
+        //and
+        List<StationResponse> stations2 = pathResponseByDuration.getStations();
+        assertThat(stations2.get(0).getName()).isEqualTo("양재시민의숲역");
+        assertThat(stations2.get(1).getName()).isEqualTo("신촌역");
+        assertThat(stations2.get(2).getName()).isEqualTo("선릉역");
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.*;
 
 import java.time.LocalTime;
@@ -178,17 +179,18 @@ public class AcceptanceTest {
                         extract().as(WholeSubwayResponse.class);
     }
 
-    PathResponse calculatePath(String source, String target) {
-        Map<String, String> params = new HashMap<>();
+    PathResponse calculatePath(String source, String target, PathType type) {
+        Map<String, Object> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
+        params.put("type", type);
+
         return
                 given().
-                        body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/paths").
+                        get("/paths?source="+ source +"&target=" +target + "&type="+type.toString()).
                         then().
                         log().all().
                         extract().as(PathResponse.class);

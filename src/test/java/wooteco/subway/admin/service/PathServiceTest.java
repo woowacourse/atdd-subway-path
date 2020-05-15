@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import net.minidev.json.JSONUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,10 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -29,6 +32,7 @@ public class PathServiceTest {
     private static final String STATION_NAME3 = "선릉역";
     private static final String STATION_NAME4 = "양재역";
     private static final String STATION_NAME5 = "양재시민의숲역";
+    private static final String STATION_NAME6 = "신촌역";
 
     @Mock
     private LineRepository lineRepository;
@@ -39,11 +43,13 @@ public class PathServiceTest {
 
     private Line line1;
     private Line line2;
+    private Line line3;
     private Station station1;
     private Station station2;
     private Station station3;
     private Station station4;
     private Station station5;
+    private Station station6;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +60,7 @@ public class PathServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
         station5 = new Station(5L, STATION_NAME5);
+        station6 = new Station(6L, STATION_NAME6);
 
         line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -64,13 +71,20 @@ public class PathServiceTest {
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
         line2.addLineStation(new LineStation(1L, 4L, 10, 10));
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+
+        line3 = new Line(3L, "3호선", LocalTime.of(05, 30), LocalTime.of(22,30), 10);
+        line3.addLineStation(new LineStation(null, 5L, 0, 0));
+        line3.addLineStation(new LineStation( 5L, 6L, 10, 10));
+        line3.addLineStation(new LineStation(6L, 3L, 1000, 1));
+
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
     }
 
     @DisplayName("같은 호선 내에서의 경로 찾기 수행")
     @Test
     void findPathInSameLine() {
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
         PathResponse pathResponse = pathService.calculatePath(
                 new PathRequest("강남역", "선릉역", PathType.DISTANCE));
@@ -85,9 +99,6 @@ public class PathServiceTest {
     @DisplayName("다른 호선 내에서의 경로 찾기 수행")
     @Test
     void findPathInDifferentLine() {
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
-
         PathResponse pathResponse = pathService.calculatePath(
                 new PathRequest("선릉역", "양재시민의숲역", PathType.DISTANCE));
 
@@ -100,12 +111,23 @@ public class PathServiceTest {
         assertThat(pathResponse.getStations().get(4).getName()).isEqualTo("양재시민의숲역");
     }
 
+    @DisplayName("시간 기준으로 경로 찾기 수행")
+    @Test
+    void findPathByDuration() {
+        PathResponse pathResponse = pathService.calculatePath(
+                new PathRequest("선릉역", "양재시민의숲역", PathType.DURATION));
+
+        assertThat(pathResponse.getDistance()).isEqualTo(1010);
+        assertThat(pathResponse.getDuration()).isEqualTo(11);
+        assertThat(pathResponse.getStations().get(0).getName()).isEqualTo("선릉역");
+        assertThat(pathResponse.getStations().get(1).getName()).isEqualTo("신촌역");
+        assertThat(pathResponse.getStations().get(2).getName()).isEqualTo("양재시민의숲역");
+    }
+
+
     @DisplayName("출발지와 도착지가 같은 경우 예외가 발생하는지 테스트")
     @Test
     void sameSourceAndTargetTest() {
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
-
         PathRequest pathRequest = new PathRequest("강남역", "강남역", PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
@@ -132,9 +154,6 @@ public class PathServiceTest {
     @DisplayName("입력된 역을 찾을 수 없는 경우 예외가 발생하는지 테스트")
     @Test
     void stationNotFoundTest() {
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
-
         PathRequest pathRequest = new PathRequest("강남역", "제주역", PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
