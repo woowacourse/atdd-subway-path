@@ -25,6 +25,13 @@ public class AcceptanceTest {
     static final String STATION_NAME_JAMSIL = "잠실역";
     static final String STATION_NAME_YANGJAE = "양재역";
     static final String STATION_NAME_YANGJAECITIZEN = "양재시민의숲역";
+    static final String STATION_NAME_SEOUL = "서울역";
+    static final String STATION_NAME_YOUNGSAN = "용산역";
+    static final String STATION_NAME_NORYANGJIN = "노량진역";
+    static final String STATION_NAME_CITYHALL = "시청역";
+    static final String STATION_NAME_SAMSUNG = "삼성역";
+    static final String STATION_NAME_KYODAE = "교대역";
+    static final String TYPE_DISTANCE = "distance";
 
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";

@@ -33,7 +33,6 @@ public class PathServiceTest {
 	private PathService pathService;
 	private List<Station> stations;
 	private List<LineStation> lineStations;
-	private List<Long> stationIds;
 
 	@BeforeEach
 	void setUp() {
@@ -46,7 +45,6 @@ public class PathServiceTest {
 		                             new LineStation(1L, 2L, 10, 5),
 		                             new LineStation(2L, 3L, 10, 5),
 		                             new LineStation(3L, 4L, 10, 5));
-		stationIds = Arrays.asList(1L, 2L, 3L, 4L);
 	}
 
 	@DisplayName("출발역과 도착역이 존재하는 역인지 확인")
