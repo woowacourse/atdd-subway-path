@@ -21,7 +21,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("최단 거리를 구한다")
     @Test
-    void shortestPath() {
+    void shortestDistancePath() {
         // Given
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
@@ -59,7 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("최소 시간을 구한다")
     @Test
-    void shortestPath2() {
+    void shortestDurationPath() {
         // Given
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);

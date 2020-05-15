@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.NotFoundPathException;
+import wooteco.subway.admin.exception.SourceTargetSameException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -27,6 +30,8 @@ public class PathService {
     }
 
     public PathResponse findPath(String sourceName, String targetName, String type) {
+        validate(sourceName, targetName, type);
+
         Station source = stationService.findByName(sourceName);
         Station target = stationService.findByName(targetName);
         List<Line> lines = lineService.findLines();
@@ -39,6 +44,7 @@ public class PathService {
 
         DijkstraShortestPath<Station, LineStationEdge> path = shortestPath(lines, stations, pathType.getStrategy());
         GraphPath<Station, LineStationEdge> graphPath = path.getPath(source, target);
+        validatePath(graphPath, sourceName, targetName);
 
         List<Station> shortestPath = graphPath.getVertexList();
 
@@ -46,6 +52,18 @@ public class PathService {
         int shortestDuration = pathType.calculateDuration(graphPath);
 
         return new PathResponse(StationResponse.listOf(shortestPath), shortestDistance, shortestDuration);
+    }
+
+    private void validate(String sourceName, String targetName, String Type) {
+        if (Objects.equals(targetName, sourceName)) {
+            throw new SourceTargetSameException(sourceName);
+        }
+    }
+
+    private void validatePath(GraphPath<Station, LineStationEdge> graphPath, String sourceName, String targetName) {
+        if (Objects.isNull(graphPath)) {
+            throw new NotFoundPathException(sourceName, targetName);
+        }
     }
 
     private DijkstraShortestPath<Station, LineStationEdge> shortestPath(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {

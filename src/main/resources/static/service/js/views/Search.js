@@ -13,6 +13,7 @@ function Search() {
   const $drawingPart = document.querySelector("#drawing-part")
 
   const showSearchResult = async (data) => {
+    try {
       const path = await api.path.find(data)
 
       $drawingPart.innerHTML = pathTemplate(path)
@@ -21,6 +22,9 @@ function Search() {
       if (isHidden) {
         $searchResultContainer.classList.remove('hidden')
       }
+    } catch (e) {
+      alert(e.message)
+    }
   }
 
   const onSearch = type => event => {
@@ -37,7 +41,26 @@ function Search() {
       target: $arrivalStationName.value,
       type
     }
-    showSearchResult(searchInput)
+    try {
+      // validate(searchInput)
+      showSearchResult(searchInput)
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const validate = ({ source, target }) => {
+    if (!source) {
+      throw "출발역이 비어있습니다"
+    }
+
+    if (!target) {
+      throw "도착역이 비어있습니다"
+    }
+
+    if (source === target) {
+      throw "출발역과 도착역이 같습니다"
+    }
   }
 
   const onToggleFavorite = event => {
@@ -68,11 +91,7 @@ function Search() {
   this.init = () => {
     initEventListener()
   }
-
-  this.onSearch = type => onSearch(type);
 }
 
 const search = new Search()
 search.init()
-
-Window.onPathSearch = type => search.onSearch(type);

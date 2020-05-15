@@ -35,10 +35,6 @@ public enum PathType {
                 .orElseThrow(InvalidPathTypeException::new);
     }
 
-    public Function<LineStation, Integer> getStrategy() {
-        return strategy;
-    }
-
     public int calculateDistance(GraphPath<Station, LineStationEdge> graphPath) {
         return distanceStrategy.apply(graphPath)
                 .intValue();
@@ -47,5 +43,9 @@ public enum PathType {
     public int calculateDuration(GraphPath<Station, LineStationEdge> graphPath) {
         return durationStrategy.apply(graphPath)
                 .intValue();
+    }
+
+    public Function<LineStation, Integer> getStrategy() {
+        return strategy;
     }
 }

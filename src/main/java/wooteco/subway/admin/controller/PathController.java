@@ -9,6 +9,8 @@ import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/paths")
 public class PathController {
@@ -19,7 +21,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(@Valid @ModelAttribute PathRequest pathRequest) {
         PathResponse pathResponse = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getType());
         return ResponseEntity.ok().body(pathResponse);
     }

@@ -6,16 +6,16 @@ import java.util.function.Function;
 
 public class LineStationEdge extends DefaultWeightedEdge {
     private LineStation lineStation;
-    private Function<LineStation, Integer> edgeStrategy;
+    private Function<LineStation, Integer> weightStrategy;
 
-    public LineStationEdge(LineStation lineStation, Function<LineStation, Integer> edgeStrategy) {
+    public LineStationEdge(LineStation lineStation, Function<LineStation, Integer> weightStrategy) {
         this.lineStation = lineStation;
-        this.edgeStrategy = edgeStrategy;
+        this.weightStrategy = weightStrategy;
     }
 
     @Override
     public double getWeight() {
-        return edgeStrategy.apply(lineStation);
+        return weightStrategy.apply(lineStation);
     }
 
     public double getDistance() {

@@ -1,7 +1,6 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
-import wooteco.subway.admin.exception.NotFoundLineStationException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -90,13 +89,6 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        if (lineStation.isNotStarting()) {
-            stations.stream()
-                    .filter(it -> it.isStarting())
-                    .findAny()
-                    .orElseThrow(NotFoundLineStationException::new);
-        }
-
         stations.stream()
                 .filter(it -> it.hasPreStationId(lineStation.getPreStationId()))
                 .findAny()
