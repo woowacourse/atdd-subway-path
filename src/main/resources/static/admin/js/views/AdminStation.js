@@ -29,24 +29,15 @@ function AdminStation() {
       },
       body: JSON.stringify(data)
     }).then(response => {
-      if (response.status >= 400) {
-        alert("에러가 발생했습니다.");
-        statusCode = 500;
+      if (!response.ok) {
+        throw response;
       }
       return response.json();
     })
     .then(response => {
-      if (statusCode !== 500) {
-        $stationNameInput.value = "";
-        $stationList.insertAdjacentHTML("beforeend", listItemTemplate(response));
-      } else {
-        $errorMessage.innerText = response.message;
-      }
-    }).catch(error => {
-      alert(error);
-    });
-
-
+      $stationNameInput.value = "";
+      $stationList.insertAdjacentHTML("beforeend", listItemTemplate(response));
+    }).catch(error => error.json()).then(error => alert(error.errorMessage));
   };
 
   function validate(stationName) {

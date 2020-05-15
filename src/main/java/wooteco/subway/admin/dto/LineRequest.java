@@ -1,13 +1,12 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Line;
-
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import wooteco.subway.admin.domain.Line;
 
 public class LineRequest {
 

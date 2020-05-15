@@ -50,7 +50,7 @@ function Search() {
       $target.classList.toggle("border-l", true);
       $target.classList.toggle("border-t", true);
       $target.classList.toggle("border-r", true);
-      $byDistanceButton.classList.toggle("bg-gray-200",true);
+      $byDistanceButton.classList.toggle("bg-gray-200", true);
       $byDistanceButton.classList.toggle("border-l", false);
       $byDistanceButton.classList.toggle("border-t", false);
       $byDistanceButton.classList.toggle("border-r", false);
@@ -86,10 +86,10 @@ function Search() {
       response.json().then(jsonResponse => {
         showSearchResult(jsonResponse);
       });
-    }).catch(error => error.json().then(json => {
-      alert(json.message);
-    }))
-  }
+    }).catch(error => error.json()).then(jsonError => {
+      alert(jsonError.errorMessage);
+    });
+  };
 
   const onToggleFavorite = event => {
     event.preventDefault()

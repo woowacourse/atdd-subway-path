@@ -3,6 +3,7 @@ package wooteco.subway.admin.dto;
 import javax.validation.constraints.NotBlank;
 
 public class PathRequest {
+
     @NotBlank(message = "이전 역 이름은 필수 입력 요소입니다.")
     private String sourceName;
     @NotBlank(message = "대상 역 이름은 필수 입력 요소입니다.")

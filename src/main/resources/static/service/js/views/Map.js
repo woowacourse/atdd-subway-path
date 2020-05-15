@@ -22,7 +22,7 @@ function Map() {
         items: 3,
         edgePadding: 25
       });
-    });
+    }).catch(error => error.json()).then(error => alert(error.errorMessage));
   };
 
   this.init = () => {

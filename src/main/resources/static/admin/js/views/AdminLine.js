@@ -29,8 +29,12 @@ function AdminLine() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
-    }).then(response => response.json())
-    .then(jsonResponse => {
+    }).then(response => {
+      if (!response.ok) {
+        throw response
+      }
+      return response.json();
+    }).then(jsonResponse => {
       let lines = document.querySelectorAll(".line-id");
       for (let line of lines) {
         if (line.innerText.trim() === updateId) {
@@ -38,7 +42,7 @@ function AdminLine() {
         }
       }
       updateId = null;
-    });
+    }).catch(error => error.json()).then(json => alert(json.errorMessage));
   }
 
   function createLine(data) {
@@ -49,13 +53,12 @@ function AdminLine() {
       },
       body: JSON.stringify(data)
     }).then(response => {
-      if (response.status >= 400) {
-        alert("에러가 발생했습니다.");
+      if (!response.ok) {
+        throw response;
       }
       return response.json();
     })
     .then(jsonResponse => {
-
       const newSubwayLine = {
         id: jsonResponse.id,
         name: jsonResponse.name,
@@ -65,7 +68,7 @@ function AdminLine() {
         "beforeend",
         subwayLinesTemplate(newSubwayLine)
       );
-    });
+    }).catch(error => error.json()).then(error => alert(error.errorMessage));
   }
 
   const onCreateSubwayLine = event => {
@@ -157,14 +160,19 @@ function AdminLine() {
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         }
-      }).then(response => response.json())
+      }).then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
+      })
       .then(jsonResponse => {
         document.querySelector("#first-time-display").innerText = jsonResponse.startTime.toString()
         .substr(0, 5);
         document.querySelector("#last-time-display").innerText = jsonResponse.endTime.toString()
         .substr(0, 5);
         document.querySelector("#interval-time-display").innerText = jsonResponse.intervalTime + "분";
-      });
+      }).catch(error => error.json()).then(error => alert(error.errorMessage));
     }
   }
 
@@ -189,14 +197,18 @@ function AdminLine() {
       headers: {
         'Content-type': 'application/json'
       }
-    }).then(response => response.json())
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json();
+    })
     .then(jsonResponse => {
       for (const line of jsonResponse) {
         $subwayLineList.insertAdjacentHTML("beforeend", subwayLinesTemplate(line));
       }
-    }).catch(error => {
-      alert(error);
-    });
+    }).catch(error => error.json()).then(error => alert(error.errorMessage));
+    ;
 
   };
 

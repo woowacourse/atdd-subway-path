@@ -4,13 +4,12 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
-public abstract class UpdateTime extends CreateTime{
+public abstract class UpdateTime extends CreateTime {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-
-    public UpdateTime(){
+    public UpdateTime() {
     }
 
     public UpdateTime(LocalDateTime updatedAt) {

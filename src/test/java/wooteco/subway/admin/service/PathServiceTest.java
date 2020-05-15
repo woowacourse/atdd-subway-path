@@ -43,8 +43,6 @@ class PathServiceTest {
     @Mock
     private LineService lineService;
 
-    private GraphService graphService;
-
     private PathService pathService;
 
     private Line line1;
@@ -66,8 +64,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        graphService = new GraphService();
-        pathService = new PathService(stationService, lineService, graphService);
+        pathService = new PathService(stationService, lineService);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);

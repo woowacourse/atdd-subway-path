@@ -1,46 +1,35 @@
-package wooteco.subway.admin.service;
+package wooteco.subway.admin.domain;
 
 import java.util.List;
 import java.util.Objects;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
 
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.GraphResponse;
 import wooteco.subway.admin.dto.PathType;
 import wooteco.subway.admin.exception.IllegalStationNameException;
 import wooteco.subway.admin.exception.NotFoundLineException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 
-@Service
-public class GraphService {
-    public GraphResponse findPath(List<Line> lines, Long sourceId, Long targetId,
-        PathType pathType) {
-        validate(lines, sourceId, targetId);
-        WeightedMultigraph<Long, LineStationEdge> graph = mapLinesToGraph(lines, pathType);
-        DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-            graph);
+public class Graph {
 
-        if (Objects.isNull(dijkstraShortestPath.getPath(sourceId, targetId))) {
-            throw new NotFoundPathException(sourceId, targetId);
-        }
+    private final WeightedMultigraph<Long, LineStationEdge> graph;
 
-        return mapToGraphResponse(sourceId, targetId, dijkstraShortestPath);
+    private Graph(
+        WeightedMultigraph<Long, LineStationEdge> graph) {
+        this.graph = graph;
     }
 
-    private void validate(List<Line> lines, Long sourceId, Long targetId) {
+    public static Graph of(List<Line> lines, PathType pathType) {
+        return new Graph(mapLinesToGraph(lines, pathType));
+    }
+
+    private static WeightedMultigraph<Long, LineStationEdge> mapLinesToGraph(List<Line> lines,
+        PathType pathType) {
         if (Objects.isNull(lines)) {
             throw new NotFoundLineException();
         }
-        if (Objects.equals(sourceId, targetId)) {
-            throw new IllegalStationNameException(sourceId, targetId);
-        }
-    }
-
-    private WeightedMultigraph<Long, LineStationEdge> mapLinesToGraph(List<Line> lines,
-        PathType pathType) {
         WeightedMultigraph<Long, LineStationEdge> graph
             = new WeightedMultigraph(LineStationEdge.class);
         lines.stream()
@@ -53,6 +42,24 @@ public class GraphService {
                 it -> graph.addEdge(it.getPreStationId(), it.getStationId(),
                     new LineStationEdge(it, pathType)));
         return graph;
+    }
+
+    public GraphResponse findPath(Long sourceId, Long targetId) {
+        validate(sourceId, targetId);
+        DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
+
+        if (Objects.isNull(dijkstraShortestPath.getPath(sourceId, targetId))) {
+            throw new NotFoundPathException(sourceId, targetId);
+        }
+
+        return mapToGraphResponse(sourceId, targetId, dijkstraShortestPath);
+    }
+
+    private void validate(Long sourceId, Long targetId) {
+        if (Objects.equals(sourceId, targetId)) {
+            throw new IllegalStationNameException(sourceId, targetId);
+        }
     }
 
     private GraphResponse mapToGraphResponse(Long source, Long target,

@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 
 public class Line extends UpdateTime {
+
     @Id
     private Long id;
     private String name;

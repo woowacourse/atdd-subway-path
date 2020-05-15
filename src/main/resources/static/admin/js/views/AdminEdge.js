@@ -58,7 +58,7 @@ function AdminEdge() {
         "afterbegin",
         subwayLineOptionTemplate
       );
-    }).catch(response => response.json().then(error => alert(error.message)));
+    }).catch(response => response.json().then(error => alert(error.errorMessage)));
   };
 
   const onCreateStationHandler = event => {
@@ -87,7 +87,7 @@ function AdminEdge() {
       },
       body: JSON.stringify(data)
     }).then(response => {
-      if (response.status >= 400) {
+      if (!response.ok) {
         throw response;
       }
       return response.json();
@@ -113,7 +113,7 @@ function AdminEdge() {
           edgePadding: 25
         });
       }
-    }).catch(response => response.json().then(error => alert(error.message)));
+    }).catch(response => response.json().then(error => alert(error.errorMessage)));
   }
 
   function validate(data) {
@@ -238,7 +238,7 @@ function AdminEdge() {
         items: 1,
         edgePadding: 25
       });
-    }).catch(response => response.json().then(error => alert(error.message)));
+    }).catch(response => response.json().then(error => alert(error.errorMessage)));
   };
 }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.admin.domain.Graph;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.GraphResponse;
 import wooteco.subway.admin.dto.PathRequest;
@@ -20,13 +21,10 @@ public class PathService {
 
     private final StationService stationService;
     private final LineService lineService;
-    private final GraphService graphService;
 
-    public PathService(StationService stationService,
-        LineService lineService, GraphService graphService) {
+    public PathService(StationService stationService, LineService lineService) {
         this.stationService = stationService;
         this.lineService = lineService;
-        this.graphService = graphService;
     }
 
     public PathResponse findPath(PathRequest request) {
@@ -34,8 +32,9 @@ public class PathService {
         Long targetId = stationService.findIdByName(request.getTargetName());
         List<Line> lines = lineService.findAll();
 
-        GraphResponse graphResponse = graphService.findPath(lines, sourceId, targetId,
-            PathType.of(request.getType()));
+        Graph graph = Graph.of(lines, PathType.of(request.getType()));
+        GraphResponse graphResponse = graph.findPath(sourceId, targetId);
+
         List<Long> path = graphResponse.getPath();
 
         List<StationResponse> stationResponses = StationResponse.listOf(
