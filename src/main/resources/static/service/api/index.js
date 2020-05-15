@@ -23,7 +23,7 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(data => data.json());
 
   const line = {
     getAll() {
@@ -33,7 +33,7 @@ const api = (() => {
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return fetch(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
   }
 

@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exceptions.NotExistStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +55,7 @@ public class PathServiceTest {
 
 		assertThatThrownBy(() -> {
 			pathService.searchPath("source", "target", true);
-		}).isInstanceOf(RuntimeException.class);
+		}).isInstanceOf(NotExistStationException.class);
 	}
 
 	@DisplayName("최단 거리를 기준으로 경로 조회")

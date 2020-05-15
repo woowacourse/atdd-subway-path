@@ -7,10 +7,16 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
+import wooteco.subway.admin.exceptions.NotExistStationException;
+import wooteco.subway.admin.exceptions.UnconnectedStationsException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,6 +31,10 @@ public class PathService {
 	}
 
 	public PathResponse searchPath(String source, String target, Boolean isDistance) {
+		if (isDuplicatedStations(source, target)) {
+			throw new DuplicatedStationNamesException();
+		}
+
 		if (stationRepository.existsByName(source) && stationRepository.existsByName(target)) {
 			List<Long> allStationsIds = stationRepository.findAllIds();
 			List<LineStation> allLineStations = lineRepository.findAllLineStations();
@@ -36,6 +46,10 @@ public class PathService {
 
 			List<String> shortestPath = dijkstraShortestPath.getPath(
 					String.valueOf(sourceStation.getId()), String.valueOf(targetStation.getId())).getVertexList();
+
+			if (shortestPath.contains("")) {
+				throw new UnconnectedStationsException();
+			}
 
 			List<Station> stations = shortestPath.stream()
 					.map(it -> stationRepository.findById(Long.valueOf(it)))
@@ -52,7 +66,11 @@ public class PathService {
 
 			return new PathResponse(stations, totalDistance, totalDuration);
 		}
-		throw new RuntimeException("저장되지 않은 역을 입력하셨습니다.");
+		throw new NotExistStationException();
+	}
+
+	private boolean isDuplicatedStations(String source, String target) {
+		return Objects.equals(source, target);
 	}
 
 	private int calculateTotalDistance(List<Long> stations) {
