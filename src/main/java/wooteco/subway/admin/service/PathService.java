@@ -56,6 +56,7 @@ public class PathService {
                 .collect(Collectors.toList());
 
         int weight = (int) dijkstraShortestPath.getPathWeight(source, target);
+
         int information = lineStations.stream()
                 .filter(lineStation -> shortestPath.contains(lineStation.getStationId()))
                 .filter(lineStation -> shortestPath.contains(lineStation.getPreStationId()))
@@ -70,8 +71,7 @@ public class PathService {
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(PathType type, List<Station> stations, List<LineStation> lineStations) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Station station : stations) {
             graph.addVertex(station.getId());
@@ -80,6 +80,7 @@ public class PathService {
         for (LineStation station : lineStations) {
             graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), type.getGetWeight(station));
         }
+
         return graph;
     }
 

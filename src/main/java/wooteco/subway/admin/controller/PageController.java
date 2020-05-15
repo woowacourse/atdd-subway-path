@@ -48,4 +48,29 @@ public class PageController {
     public String serviceSearchPage(Model model) {
         return "service/search";
     }
+
+    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMapPage(Model model) {
+        return "service/map";
+    }
+
+    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceLogInPage(Model model) {
+        return "service/login";
+    }
+
+    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceJoinPage(Model model) {
+        return "service/join";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMyPage(Model model) {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMyPageEditPage(Model model) {
+        return "service/mypage-edit";
+    }
 }
