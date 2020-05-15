@@ -23,7 +23,12 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(async data => {
+    if (!data.ok) {
+      alert(await data.text());
+    }
+    return data.json()
+  });
 
   const line = {
     getAll() {
@@ -32,7 +37,7 @@ const api = (() => {
   }
 
   const path = {
-    find(params) {
+    findPath(params) {
       return request(`/path?source=${params.source}&target=${params.target}`)
     }
   }
@@ -41,6 +46,6 @@ const api = (() => {
     line,
     path
   }
-})()
+})();
 
 export default api

@@ -1,5 +1,6 @@
 import {EVENT_TYPE} from '../../utils/constants.js'
 import {container, lastContainer, resultTemplate} from "../../utils/templates.js";
+import api from "../../../service/api/index.js";
 
 function Search() {
     const $departureStationName = document.querySelector('#departure-station-name')
@@ -32,10 +33,9 @@ function Search() {
             alert("출발역과 도착역은 같을 수 없습니다.");
             return;
         }
-        let pathDetails = await fetch(`/path?source=${searchInput.source}&target=${searchInput.target}`).then(data => data.json());
+        let pathDetails = await api.path.findPath(searchInput);
         $distancePathDetail = pathDetails[0];
         $durationPathDetail = pathDetails[1];
-        console.log(pathDetails);
         $durationContainer.textContent = $distancePathDetail.duration + "분";
         $distanceContainer.textContent = $distancePathDetail.distance + "m";
 
