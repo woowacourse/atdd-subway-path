@@ -10,7 +10,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathSearchResponse;
-import wooteco.subway.admin.dto.PathWeightedEdge;
+import wooteco.subway.admin.domain.PathWeightedEdge;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
