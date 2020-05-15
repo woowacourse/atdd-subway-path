@@ -10,6 +10,8 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.StationNotFoundException;
+import wooteco.subway.admin.exception.WrongPathException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -42,7 +44,7 @@ public class PathService {
         Long targetId = findStationIdByName(stations, request.getTarget());
 
         if (sourceId.equals(targetId)) {
-            throw new RuntimeException("출발지와 도착지는 같을 수 없습니다.");
+            throw new WrongPathException();
         }
         List<Long> shortestPath = createShortestPath(lines, sourceId, targetId, request.getType());
 
@@ -69,7 +71,7 @@ public class PathService {
             pathLineStations.add(lineStations.stream()
                     .filter(lineStation -> lineStation.isLineStationOf(preStationId, stationId))
                     .findFirst()
-                    .orElseThrow(RuntimeException::new));
+                    .orElseThrow(WrongPathException::new));
         }
         return pathLineStations;
     }
@@ -78,7 +80,7 @@ public class PathService {
         return stations.stream()
                 .filter(station -> station.getId().equals(id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(StationNotFoundException::new);
     }
 
     private List<Long> createShortestPath(List<Line> lines, Long source, Long target, PathType type) {
@@ -94,7 +96,7 @@ public class PathService {
         try {
             return dijkstraShortestPath.getPath(source, target).getVertexList();
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("출발지와 도착지가 연결되어 있지 않습니다.");
+            throw new WrongPathException();
         }
     }
 
@@ -104,6 +106,6 @@ public class PathService {
                 .filter(station -> station.getName().equals(name))
                 .map(Station::getId)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("입력하신 역을 찾을 수 없습니다."));
+                .orElseThrow(StationNotFoundException::new);
     }
 }

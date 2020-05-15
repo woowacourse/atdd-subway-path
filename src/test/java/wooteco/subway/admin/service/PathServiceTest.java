@@ -15,6 +15,8 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.StationNotFoundException;
+import wooteco.subway.admin.exception.WrongPathException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -131,8 +133,8 @@ public class PathServiceTest {
         PathRequest pathRequest = new PathRequest("강남역", "강남역", PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("출발지와 도착지는 같을 수 없습니다.");
+                .isInstanceOf(WrongPathException.class)
+                .hasMessage("잘못된 입력입니다.");
     }
 
     @DisplayName("출발지와 도착지가 연결되어 있지 않은 경우 예외가 발생하는지 테스트")
@@ -147,8 +149,8 @@ public class PathServiceTest {
         PathRequest pathRequest = new PathRequest("강남역", "까치산역", PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("출발지와 도착지가 연결되어 있지 않습니다.");
+                .isInstanceOf(WrongPathException.class)
+                .hasMessage("잘못된 입력입니다.");
     }
 
     @DisplayName("입력된 역을 찾을 수 없는 경우 예외가 발생하는지 테스트")
@@ -157,7 +159,7 @@ public class PathServiceTest {
         PathRequest pathRequest = new PathRequest("강남역", "제주역", PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("입력하신 역을 찾을 수 없습니다.");
+                .isInstanceOf(StationNotFoundException.class)
+                .hasMessage("존재하지 않는 역입니다.");
     }
 }
