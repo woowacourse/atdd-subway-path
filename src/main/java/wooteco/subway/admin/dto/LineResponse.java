@@ -2,7 +2,9 @@ package wooteco.subway.admin.dto;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import wooteco.subway.admin.domain.Line;
 
@@ -16,12 +18,14 @@ public class LineResponse {
 	private int intervalTime;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private List<StationResponse> stations;
 
 	public LineResponse() {
 	}
 
 	public LineResponse(Long id, String name, String color, LocalTime startTime, LocalTime endTime,
-		int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
+		List<StationResponse> stations) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
@@ -30,11 +34,19 @@ public class LineResponse {
 		this.intervalTime = intervalTime;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.stations = new ArrayList<>(stations);
 	}
 
 	public static LineResponse of(Line line) {
 		return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getStartTime(),
-			line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt());
+			line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(),
+			new ArrayList<>());
+	}
+
+	public static LineResponse of(Line line, List<StationResponse> station) {
+		return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getStartTime(),
+			line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(),
+			station);
 	}
 
 	public static List<LineResponse> listOf(List<Line> lines) {
@@ -67,11 +79,57 @@ public class LineResponse {
 		return intervalTime;
 	}
 
+	public List<StationResponse> getStations() {
+		return stations;
+	}
+
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		LineResponse that = (LineResponse) o;
+		return intervalTime == that.intervalTime &&
+			Objects.equals(id, that.id) &&
+			Objects.equals(name, that.name) &&
+			Objects.equals(color, that.color) &&
+			Objects.equals(startTime, that.startTime) &&
+			Objects.equals(endTime, that.endTime) &&
+			Objects.equals(createdAt, that.createdAt) &&
+			Objects.equals(updatedAt, that.updatedAt) &&
+			Objects.equals(stations, that.stations);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects
+			.hash(id, name, color, startTime, endTime, intervalTime, createdAt, updatedAt,
+				stations);
+	}
+
+	@Override
+	public String toString() {
+		return "LineResponse{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			", color='" + color + '\'' +
+			", startTime=" + startTime +
+			", endTime=" + endTime +
+			", intervalTime=" + intervalTime +
+			", createdAt=" + createdAt +
+			", updatedAt=" + updatedAt +
+			", stations=" + stations +
+			'}';
 	}
 }

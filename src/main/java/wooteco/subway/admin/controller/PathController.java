@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.dto.PathInfoResponse;
 import wooteco.subway.admin.service.PathService;
 
-@RequestMapping("/paths")
+@RequestMapping("/api/paths")
 @RestController
 public class PathController {
 

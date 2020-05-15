@@ -6,12 +6,9 @@ import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 
@@ -70,21 +67,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse4.getId());
 		addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
 
-		List<LineDetailResponse> response = retrieveWholeSubway().getLineDetails();
+		List<LineResponse> response = retrieveWholeSubway().getLineDetails();
 		assertThat(response.size()).isEqualTo(2);
 		assertThat(response.get(0).getStations().size()).isEqualTo(3);
 		assertThat(response.get(1).getStations().size()).isEqualTo(3);
 	}
-
-	private WholeSubwayResponse retrieveWholeSubway() {
-		return given().
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			get("/lines/detail").
-			then().
-			log().all().
-			statusCode(HttpStatus.OK.value()).
-			extract().as(WholeSubwayResponse.class);
-	}
-
 }

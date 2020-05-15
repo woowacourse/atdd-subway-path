@@ -14,12 +14,12 @@ public class LineRequest {
 	public LineRequest() {
 	}
 
-	public String getName() {
-		return name;
+	public Line toLine() {
+		return new Line(name, color, startTime, endTime, intervalTime);
 	}
 
-	public String getColor() {
-		return color;
+	public String getName() {
+		return name;
 	}
 
 	public LocalTime getStartTime() {
@@ -34,7 +34,18 @@ public class LineRequest {
 		return intervalTime;
 	}
 
-	public Line toLine() {
-		return new Line(name, color, startTime, endTime, intervalTime);
+	public String getColor() {
+		return color;
+	}
+
+	@Override
+	public String toString() {
+		return "LineRequest{" +
+			"name='" + name + '\'' +
+			", color='" + color + '\'' +
+			", startTime=" + startTime +
+			", endTime=" + endTime +
+			", intervalTime=" + intervalTime +
+			'}';
 	}
 }

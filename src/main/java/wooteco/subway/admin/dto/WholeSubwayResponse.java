@@ -5,16 +5,16 @@ import java.util.List;
 
 public class WholeSubwayResponse {
 
-	private List<LineDetailResponse> lineDetails;
+	private List<LineResponse> lineDetails;
 
 	public WholeSubwayResponse() {
 	}
 
-	public WholeSubwayResponse(List<LineDetailResponse> lineDetails) {
+	public WholeSubwayResponse(List<LineResponse> lineDetails) {
 		this.lineDetails = new ArrayList<>(lineDetails);
 	}
 
-	public List<LineDetailResponse> getLineDetails() {
+	public List<LineResponse> getLineDetails() {
 		return lineDetails;
 	}
 }

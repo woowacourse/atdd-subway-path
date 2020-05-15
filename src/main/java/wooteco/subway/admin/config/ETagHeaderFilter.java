@@ -12,7 +12,7 @@ public class ETagHeaderFilter {
 	public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
 		FilterRegistrationBean<ShallowEtagHeaderFilter> filter
 			= new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
-		filter.addUrlPatterns("/lines/detail");
+		filter.addUrlPatterns("/api/lines/detail");
 		filter.setName("etagFilter");
 		return filter;
 	}

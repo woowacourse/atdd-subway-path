@@ -1,44 +1,30 @@
 package wooteco.subway.admin.controller;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import wooteco.subway.admin.repository.StationRepository;
-import wooteco.subway.admin.service.LineService;
 
 @RequestMapping("/admin")
 @Controller
 public class AdminPageController {
 
-    private LineService lineService;
-    private StationRepository stationRepository;
+	@GetMapping
+	public String index() {
+		return "/admin/index";
+	}
 
-    public AdminPageController(LineService lineService, StationRepository stationRepository) {
-        this.lineService = lineService;
-        this.stationRepository = stationRepository;
-    }
+	@GetMapping("/station")
+	public String adminStation() {
+		return "/admin/admin-station";
+	}
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
-        return "admin/index";
-    }
+	@GetMapping("/edge")
+	public String adminEdge() {
+		return "/admin/admin-edge";
+	}
 
-    @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
-    public String stationPage(Model model) {
-        model.addAttribute("stations", stationRepository.findAll());
-        return "admin/admin-station";
-    }
-
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
-        model.addAttribute("lines", lineService.showLines());
-        return "admin/admin-line";
-    }
-
-    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage(Model model) {
-        return "admin/admin-edge";
-    }
+	@GetMapping("/line")
+	public String adminLine() {
+		return "/admin/admin-line";
+	}
 }

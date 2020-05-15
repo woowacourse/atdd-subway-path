@@ -30,32 +30,32 @@ class PathServiceTest {
 	private PathService pathService;
 	private List<Station> stations;
 	private List<LineStation> lineStations;
-	private Station station1;
-	private Station station2;
-	private Station station3;
-	private Station station4;
-	private Station station5;
+	private Station 교대;
+	private Station 강남;
+	private Station 양재;
+	private Station 남부터미널;
+	private Station 폐쇄된역;
 
 
 	@BeforeEach
 	void setUp() {
 		pathService = new PathService(lineStationRepository, stationRepository);
 
-		station1 = new Station(1L, "교대");
-		station2 = new Station(2L, "강남");
-		station3 = new Station(3L, "양재");
-		station4 = new Station(4L, "남부터미널");
-		station5 = new Station(5L, "연결X");
-		stations = Arrays.asList(station1, station2, station3, station4, station5);
+		교대 = new Station(1L, "교대");
+		강남 = new Station(2L, "강남");
+		양재 = new Station(3L, "양재");
+		남부터미널 = new Station(4L, "남부터미널");
+		폐쇄된역 = new Station(5L, "폐쇄된역");
+		stations = Arrays.asList(교대, 강남, 양재, 남부터미널, 폐쇄된역);
 
 		lineStations = new ArrayList<>();
-		lineStations.add(new LineStation(null, station1.getId(), 0, 0));
-		lineStations.add(new LineStation(station1.getId(), station2.getId(), 3, 1));
-		lineStations.add(new LineStation(null, station1.getId(), 0, 0));
-		lineStations.add(new LineStation(station1.getId(), station4.getId(), 2, 1));
-		lineStations.add(new LineStation(station4.getId(), station3.getId(), 2, 2));
-		lineStations.add(new LineStation(null, station2.getId(), 0, 0));
-		lineStations.add(new LineStation(station2.getId(), station3.getId(), 2, 1));
+		lineStations.add(new LineStation(null, 교대.getId(), 0, 0));
+		lineStations.add(new LineStation(교대.getId(), 강남.getId(), 3, 1));
+		lineStations.add(new LineStation(null, 교대.getId(), 0, 0));
+		lineStations.add(new LineStation(교대.getId(), 남부터미널.getId(), 2, 1));
+		lineStations.add(new LineStation(남부터미널.getId(), 양재.getId(), 2, 2));
+		lineStations.add(new LineStation(null, 강남.getId(), 0, 0));
+		lineStations.add(new LineStation(강남.getId(), 양재.getId(), 2, 1));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ class PathServiceTest {
 		when(stationRepository.findAll()).thenReturn(stations);
 
 		PathInfoResponse pathInfoResponse = pathService
-			.searchPath(station1.getId(), station3.getId());
+			.searchPath(교대.getId(), 양재.getId());
 
 		PathResponse shortestDistancePath = pathInfoResponse.getShortestDistancePath();
 
@@ -79,7 +79,7 @@ class PathServiceTest {
 		when(stationRepository.findAll()).thenReturn(stations);
 
 		PathInfoResponse pathInfoResponse = pathService
-			.searchPath(station1.getId(), station3.getId());
+			.searchPath(교대.getId(), 양재.getId());
 
 		PathResponse shortestDurationPath = pathInfoResponse.getShortestDurationPath();
 

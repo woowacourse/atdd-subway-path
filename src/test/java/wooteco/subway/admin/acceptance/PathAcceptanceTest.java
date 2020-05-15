@@ -128,7 +128,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void addLineStation(Map<String, LineResponse> lineAll,
 		Map<String, StationResponse> stationAll) {
-		addLineStation(lineAll.get("2호선"), null, stationAll.get("서초"), 2, 1);
+		addLineStation(lineAll.get("2호선"), null, stationAll.get("서초"), 0, 0);
 		addLineStation(lineAll.get("2호선"), stationAll.get("서초"), stationAll.get("교대"), 2, 1);
 		addLineStation(lineAll.get("2호선"), stationAll.get("교대"), stationAll.get("강남"), 3, 1);
 		addLineStation(lineAll.get("2호선"), stationAll.get("강남"), stationAll.get("역삼"), 3, 1);
@@ -136,12 +136,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineAll.get("2호선"), stationAll.get("선릉"), stationAll.get("삼성"), 3, 1);
 		addLineStation(lineAll.get("2호선"), stationAll.get("삼성"), stationAll.get("종합운동장"), 4, 1);
 
-		addLineStation(lineAll.get("3호선"), null, stationAll.get("고속터미널"), 2, 1);
+		addLineStation(lineAll.get("3호선"), null, stationAll.get("고속터미널"), 0, 0);
 		addLineStation(lineAll.get("3호선"), stationAll.get("고속터미널"), stationAll.get("교대"), 2, 1);
 		addLineStation(lineAll.get("3호선"), stationAll.get("교대"), stationAll.get("남부터미널"), 2, 1);
 		addLineStation(lineAll.get("3호선"), stationAll.get("남부터미널"), stationAll.get("양재"), 2, 2);
 
-		addLineStation(lineAll.get("9호선"), null, stationAll.get("고속터미널"), 2, 1);
+		addLineStation(lineAll.get("9호선"), null, stationAll.get("고속터미널"), 0, 0);
 		addLineStation(lineAll.get("9호선"), stationAll.get("고속터미널"), stationAll.get("사평"), 2, 1);
 		addLineStation(lineAll.get("9호선"), stationAll.get("사평"), stationAll.get("신논현"), 2, 1);
 		addLineStation(lineAll.get("9호선"), stationAll.get("신논현"), stationAll.get("언주"), 2, 1);
@@ -150,7 +150,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineAll.get("9호선"), stationAll.get("삼성중앙"), stationAll.get("봉은사"), 2, 1);
 		addLineStation(lineAll.get("9호선"), stationAll.get("봉은사"), stationAll.get("종합운동장"), 2, 1);
 
-		addLineStation(lineAll.get("신분당선"), null, stationAll.get("강남"), 2, 1);
+		addLineStation(lineAll.get("신분당선"), null, stationAll.get("강남"), 0, 0);
 		addLineStation(lineAll.get("신분당선"), stationAll.get("강남"), stationAll.get("양재"), 2, 1);
 		addLineStation(lineAll.get("신분당선"), stationAll.get("양재"), stationAll.get("양재시민의숲"), 2, 1);
 	}
@@ -170,7 +170,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return
 			given().
 				when().
-				get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
+				get("/api/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
 				then().
 				log().all().
 				extract().as(PathInfoResponse.class)
@@ -183,7 +183,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return
 			given().
 				when().
-				get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
+				get("/api/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
 				then().
 				log().all().
 				extract().as(PathInfoResponse.class)

@@ -21,12 +21,13 @@ create table if not exists LINE
 
 create table if not exists LINE_STATION
 (
-    id             bigint auto_increment not null,
-    line           bigint                not null,
-    station_id     bigint                not null,
-    pre_station_id bigint,
-    distance       int,
-    duration       int,
-    created_at     datetime,
-    updated_at     datetime
+    id          bigint auto_increment not null,
+    line        bigint                not null,
+    sequence    int                   not null,
+    station     bigint                not null,
+    pre_station bigint,
+    distance    int,
+    duration    int,
+    created_at  datetime,
+    updated_at  datetime
 );
