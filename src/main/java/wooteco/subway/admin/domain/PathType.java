@@ -1,6 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 public enum PathType {
