@@ -65,6 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         HashMap<String, String> params = new HashMap<>();
         params.put("source", "역1");
         params.put("target", "역4");
+        params.put("type", "DISTANCE");
 
         PathResponse pathResponses = given()
             .params(params)

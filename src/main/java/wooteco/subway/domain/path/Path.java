@@ -17,11 +17,13 @@ import wooteco.subway.exception.InvalidPathException;
 public class Path {
     private final GraphPath<Station, StationWeightEdge> path;
 
-    public Path(List<Line> lines, List<Station> stations, String sourceName, String targetName) {
+    public Path(List<Line> lines, List<Station> stations, String sourceName, String targetName,
+        WeightStrategy strategy) {
         Station source = findStationByName(stations, sourceName);
         Station target = findStationByName(stations, targetName);
 
-        WeightedMultigraph<Station, StationWeightEdge> graph = createGraph(lines, stations);
+        WeightedMultigraph<Station, StationWeightEdge> graph = createGraph(lines, stations,
+            strategy);
         GraphPath<Station, StationWeightEdge> path = new DijkstraShortestPath<>(graph).getPath(
             source, target);
         if (Objects.isNull(path)) {
@@ -31,7 +33,7 @@ public class Path {
     }
 
     private WeightedMultigraph<Station, StationWeightEdge> createGraph(List<Line> lines,
-        List<Station> stations) {
+        List<Station> stations, WeightStrategy strategy) {
         WeightedMultigraph<Station, StationWeightEdge> graph
             = new WeightedMultigraph<>(StationWeightEdge.class);
 
@@ -46,7 +48,7 @@ public class Path {
 
                 StationWeightEdge edge = new StationWeightEdge(lineStation);
                 graph.addEdge(preStation, station, edge);
-                graph.setEdgeWeight(edge, edge.getDistance());
+                graph.setEdgeWeight(edge, strategy.getWeight(edge));
             });
         return graph;
     }
@@ -79,11 +81,14 @@ public class Path {
             .sum();
     }
 
-    public List<Station> getVertexList() {
-        return path.getVertexList();
+    public double distance() {
+        return path.getEdgeList()
+            .stream()
+            .mapToDouble(StationWeightEdge::getDistance)
+            .sum();
     }
 
-    public double getWeight() {
-        return path.getWeight();
+    public List<Station> getVertexList() {
+        return path.getVertexList();
     }
 }

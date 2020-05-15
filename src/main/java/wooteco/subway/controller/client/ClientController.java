@@ -30,8 +30,8 @@ public class ClientController {
 
     @GetMapping("/lines/path")
     public ResponseEntity<PathResponse> searchPathByShortestDistance(@NotBlank String source,
-        @NotBlank String target) {
-        PathResponse pathResponse = clientService.searchPathByShortestDistance(source, target);
+        @NotBlank String target, @NotBlank String type) {
+        PathResponse pathResponse = clientService.searchPath(source, target, type);
         return ResponseEntity.ok().body(pathResponse);
     }
 
