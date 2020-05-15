@@ -18,7 +18,7 @@ public class AdminPageController {
         this.stationRepository = stationRepository;
     }
 
-    @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
         return "admin/index";
     }

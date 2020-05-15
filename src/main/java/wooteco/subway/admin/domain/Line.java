@@ -80,6 +80,10 @@ public class Line {
         if (line.getName() != null) {
             this.name = line.getName();
         }
+        if (line.getColor() != null) {
+            this.color = line.getColor();
+        }
+
         if (line.getStartTime() != null) {
             this.startTime = line.getStartTime();
         }
@@ -94,6 +98,7 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
+        validateLineStation(lineStation);
         stations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
             .findAny()
@@ -138,10 +143,42 @@ public class Line {
             if (!nextLineStation.isPresent()) {
                 break;
             }
-
             stationIds.add(nextLineStation.get().getStationId());
         }
 
         return stationIds;
+    }
+
+    private void validateLineStation(LineStation lineStation) {
+        validateStation(lineStation);
+        validateStations(lineStation);
+        validateAlreadyRegistered(lineStation);
+        validateHavingSame(lineStation);
+    }
+
+    private void validateStation(LineStation lineStation) {
+        if (Objects.isNull(lineStation.getStationId())) {
+            throw new IllegalArgumentException("현재역은 비어있을 수 없습니다.");
+        }
+    }
+
+    private void validateAlreadyRegistered(LineStation lineStation) {
+        if (!lineStation.isFirstLineStation() && stations.isEmpty()) {
+            throw new IllegalArgumentException("첫 노선을 먼저 등록해야 합니다.");
+        }
+    }
+
+    private void validateStations(LineStation lineStation) {
+        if (lineStation.getStationId().equals(lineStation.getPreStationId())) {
+            throw new IllegalArgumentException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
+        }
+    }
+
+    private void validateHavingSame(LineStation lineStation) {
+        for (LineStation station : stations) {
+            if (station.hasSameStations(lineStation)) {
+                throw new IllegalArgumentException("이미 등록된 구간입니다.");
+            }
+        }
     }
 }

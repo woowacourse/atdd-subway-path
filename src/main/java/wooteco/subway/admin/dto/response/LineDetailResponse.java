@@ -10,6 +10,7 @@ import wooteco.subway.admin.domain.Station;
 public class LineDetailResponse {
     private Long id;
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,11 +21,13 @@ public class LineDetailResponse {
     private LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime,
+    public LineDetailResponse(Long id, String name, String color, LocalTime startTime,
+        LocalTime endTime,
         int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
         List<Station> stations) {
         this.id = id;
         this.name = name;
+        this.color = color;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -34,7 +37,8 @@ public class LineDetailResponse {
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(),
+        return new LineDetailResponse(line.getId(), line.getName(), line.getColor(),
+            line.getStartTime(),
             line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(),
             stations);
     }
@@ -45,6 +49,10 @@ public class LineDetailResponse {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public LocalTime getStartTime() {

@@ -41,7 +41,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+        return ResponseEntity.ok().body(lineService.showLines());
     }
 
     @GetMapping("/{id}")

@@ -63,6 +63,7 @@ public class LineServiceTest {
     @Test
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
             10);
@@ -80,6 +81,7 @@ public class LineServiceTest {
     @Test
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
             station4.getId(), 10, 10);
@@ -97,6 +99,7 @@ public class LineServiceTest {
     @Test
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
             station4.getId(), 10, 10);

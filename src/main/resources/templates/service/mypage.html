@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <title>RunningMap</title>
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"/>
+  <meta
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    name="viewport"/>
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
   <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css"
         rel="stylesheet"/>
@@ -23,17 +24,17 @@
       <div class="block text-gray-700 font-bold text-sm mb-2">eastjun</div>
     </div>
     <a
-      href="/mypage-edit"
       class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      href="/mypage-edit"
       type="button"
     >
       수정하기
     </a>
     <div class="mt-5 flex subway-lines-container relative overflow-y-auto">
-      <div id="subway-line-list" class="w-full overflow-y-auto"></div>
+      <div class="w-full overflow-y-auto" id="subway-line-list"></div>
     </div>
   </div>
 </div>
-<script type="module" src="/service/js/App.js"></script>
+<script src="/service/js/App.js" type="module"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@ export const subwayLinesItemTemplate = line => {
   .join('') : null
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
+              <div class="border ${line.color ? line.color : ''} lint-name px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stations}
               </div>

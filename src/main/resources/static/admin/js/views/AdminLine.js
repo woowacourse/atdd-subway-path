@@ -7,6 +7,7 @@ import api from '../../api/index.js'
 function AdminLine() {
   const $subwayLineList = document.querySelector('#subway-line-list')
   const $subwayLineNameInput = document.querySelector('#subway-line-name')
+  const $subwayLineColorInput = document.querySelector('#subway-line-color')
   const $subwayLineStartTime = document.querySelector('#subway-start-time')
   const $subwayLineEndTime = document.querySelector('#subway-end-time')
   const $subwayIntervalTime = document.querySelector('#subway-interval-time')
@@ -20,6 +21,7 @@ function AdminLine() {
   const createSubwayLine = () => {
     const newSubwayLine = {
       name: $subwayLineNameInput.value,
+      color: $subwayLineColorInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
       intervalTime: $subwayIntervalTime.value
@@ -66,6 +68,7 @@ function AdminLine() {
     .get(lineId)
     .then(line => {
       $subwayLineNameInput.value = line.name
+      $subwayLineColorInput.value = line.color
       $subwayLineStartTime.value = line.startTime
       $subwayLineEndTime.value = line.endTime
       $subwayIntervalTime.value = line.intervalTime
@@ -100,9 +103,38 @@ function AdminLine() {
     isUpdateSubmit ? updateSubwayLine($target) : createSubwayLine()
   }
 
+  const onShowLineInformation = event => {
+    const $target = event.target;
+
+    const isUpdateButton = $target.classList.contains("mdi-pencil");
+    const isDeleteButton = $target.classList.contains("mdi-delete");
+
+    if (!isUpdateButton && !isDeleteButton) {
+      const selectedLine = $target.closest(".subway-line-item");
+      const selectedLineId = selectedLine.dataset.id;
+      console.log(selectedLineId);
+
+      api.line.get(selectedLineId)
+      .then(response => fillLineInformation(response.startTime,
+        response.endTime,
+        response.intervalTime));
+    }
+  };
+
+  const fillLineInformation = (start, end, interval) => {
+    const $subwayLineStartTime = document.querySelector("#line-start-time");
+    const $subwayLineEndTime = document.querySelector("#line-end-time");
+    const $subwayLineIntervalTime = document.querySelector("#line-interval-time");
+
+    $subwayLineStartTime.innerText = start;
+    $subwayLineEndTime.innerText = end;
+    $subwayLineIntervalTime.innerText = interval;
+  }
+
   const onCreateLineFormInitializeHandler = () => {
     $activeSubwayLineItem = null
     $subwayLineNameInput.value = ''
+    $subwayLineColorInput.value = ''
     $subwayLineStartTime.value = ''
     $subwayLineEndTime.value = ''
     $subwayIntervalTime.value = ''
@@ -112,21 +144,23 @@ function AdminLine() {
     event.preventDefault()
     const $target = event.target
     if ($target.classList.contains('color-select-option')) {
-      document.querySelector('#subway-line-color').value = $target.dataset.color
+      $subwayLineColorInput.value = $target.dataset.color
     }
   }
 
   const initCreateSubwayLineForm = () => {
     const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
-    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(
+    const color = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(
       option,
       index)).join('')
+    $colorSelectContainer.insertAdjacentHTML("beforeend", color)
     $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
   }
 
   const initEventListeners = () => {
     $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLineHandler)
     $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onShowUpdateSubwayLineModal)
+    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onShowLineInformation)
     $subwayLineFormSubmitButton.addEventListener(EVENT_TYPE.CLICK, onSubmitHandler)
     $subwayLineCreateButton.addEventListener(EVENT_TYPE.CLICK, onCreateLineFormInitializeHandler)
   }

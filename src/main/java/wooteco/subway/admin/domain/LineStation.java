@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class LineStation {
     private Long preStationId;
@@ -53,4 +54,15 @@ public class LineStation {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public boolean isFirstLineStation() {
+        return Objects.isNull(preStationId);
+    }
+
+    public boolean hasSameStations(LineStation lineStation) {
+        return (Objects.equals(this.stationId, lineStation.stationId) && Objects.equals(
+            this.preStationId, lineStation.preStationId))
+            || (Objects.equals(this.preStationId, lineStation.stationId));
+    }
+
 }
