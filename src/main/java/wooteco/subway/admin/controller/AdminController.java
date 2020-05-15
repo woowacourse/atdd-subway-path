@@ -11,8 +11,8 @@ import wooteco.subway.admin.service.LineService;
 @RequestMapping("/admin")
 @Controller
 public class AdminController {
-    private LineService lineService;
-    private StationRepository stationRepository;
+    private final LineService lineService;
+    private final StationRepository stationRepository;
 
     public AdminController(LineService lineService, StationRepository stationRepository) {
         this.lineService = lineService;
@@ -20,7 +20,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-    public String index(Model model) {
+    public String index() {
         return "admin/index";
     }
 
@@ -37,7 +37,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage(Model model) {
+    public String edgePage() {
         return "admin/admin-edge";
     }
 }
