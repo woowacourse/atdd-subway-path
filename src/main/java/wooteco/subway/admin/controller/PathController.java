@@ -10,7 +10,6 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.error.ErrorResponse;
 import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.exception.OverlappedStationException;
-import wooteco.subway.admin.service.LineService;
 import wooteco.subway.admin.service.PathService;
 
 import javax.validation.constraints.NotBlank;
@@ -20,11 +19,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @Validated
 public class PathController {
-    private final LineService lineService;
     private final PathService pathService;
 
-    public PathController(LineService lineService, PathService pathService) {
-        this.lineService = lineService;
+    public PathController(PathService pathService) {
         this.pathService = pathService;
     }
 
