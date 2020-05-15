@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +16,10 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -52,7 +55,7 @@ public class LineServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-800");
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -149,5 +152,24 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void showLinesDetail() {
+        Line newLine = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+        newLine.addLineStation(new LineStation(null, 4L, 10, 10));
+        newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
+        newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
+
+        List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        List<LineDetailResponse> lineDetails = lineService.showLinesDetail().getLineDetailResponses();
+
+        assertThat(lineDetails).isNotNull();
+        assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
+        assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
     }
 }
