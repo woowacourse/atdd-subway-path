@@ -1,7 +1,5 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Station;
-
 import java.util.List;
 
 public class PathSearchResponse {

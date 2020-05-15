@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,8 +72,8 @@ public class PathServiceTest {
         List<Line> lines = Lists.newArrayList(line1, line2);
         List<Station> stations = Lists.newArrayList(station1, station2, station3, station4, station5, station6);
 
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findAll()).thenReturn(stations);
+        lenient().when(lineRepository.findAll()).thenReturn(lines);
+        lenient().when(stationRepository.findAll()).thenReturn(stations);
     }
 
     @Test

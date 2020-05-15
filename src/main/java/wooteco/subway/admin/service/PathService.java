@@ -31,14 +31,14 @@ public class PathService {
     }
 
     public PathSearchResponse searchPath(String source, String target, PathType type) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("Source can not be same with target.");
+        }
+
         WeightedMultigraph<String, PathWeightedEdge> pathGraph = new WeightedMultigraph(PathWeightedEdge.class);
 
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
-
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("Source can not be same with target.");
-        }
 
         Map<Long, Station> stationMap = new HashMap<>(); //key = stationId, value = Station
         for (Station station : stations) {
@@ -57,6 +57,7 @@ public class PathService {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException("Can not find path between " + source + "," + target + ".");
         }
+
         List<String> shortestPath = path.getVertexList();
 
         return new PathSearchResponse(calculateDuration(path.getEdgeList()), calculateDistance(path.getEdgeList()), shortestPath);
