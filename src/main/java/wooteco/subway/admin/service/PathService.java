@@ -14,7 +14,6 @@ import wooteco.subway.admin.repository.LineStationRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,16 +42,19 @@ public class PathService {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         List<Line> lines = lineRepository.findAll();
         for (Line line : lines) {
-            makeRelation(graph, line, type);
+            makeRelations(graph, line, type);
         }
         return graph;
     }
 
-    private void makeRelation(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line, String type) {
+    private void makeRelations(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line, String type) {
         for (LineStation lineStation : line.getStations()) {
-            if (lineStation.getPreStationId() == null) {
-                continue;
-            }
+            makeRelation(graph, lineStation, type);
+        }
+    }
+
+    private void makeRelation(WeightedMultigraph<Station, DefaultWeightedEdge> graph, LineStation lineStation, String type) {
+        if (lineStation.getPreStationId() != null) {
             Station station = findStationById(lineStation.getStationId());
             Station preStation = findStationById(lineStation.getPreStationId());
             graph.addVertex(station);
@@ -135,6 +137,6 @@ public class PathService {
 
     private LineStation findLineStationByIds(Station preStation, Station station) {
         return lineStationRepository.findById(preStation.getId(), station.getId())
-                .orElseThrow(()->new IllegalArgumentException("연결되지 않았습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("연결되지 않았습니다."));
     }
 }
