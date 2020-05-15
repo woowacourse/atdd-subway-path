@@ -22,32 +22,36 @@ public class Path {
 		addVerticesToGraph(stations.getStations());
 
 		for (LineStation lineStation : subway.fetchLineStations()) {
-			if (lineStation.getPreStationId() == null) {
-				continue;
-			}
-			Station station = stations.findByKey(lineStation.getStationId());
-			Station preStation = stations.findByKey(lineStation.getPreStationId());
-
-			Edge edge = new Edge(lineStation.getDuration(), lineStation.getDistance(), criteria);
-
-			graph.addEdge(preStation, station, edge);
-			graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
+			makeGraph(criteria, lineStation);
 		}
 
 		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
 
 		// result가 null이면 경로가 존재하지 않는 경우
 
-		int totalDistance = (int) result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
-				.mapToDouble(Edge::getDistance) // TODO: 2020/05/14 int?
+		int totalDistance = result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
+				.mapToInt(Edge::getDistance)
 				.sum();
 
-		int totalDuration = (int) result.getEdgeList().stream()
-				.mapToDouble(Edge::getDuration)
+		int totalDuration = result.getEdgeList().stream()
+				.mapToInt(Edge::getDuration)
 				.sum();
 
 		return new ShortestPath(result.getVertexList(), totalDistance, totalDuration);
 
+	}
+
+	private void makeGraph(Criteria criteria, LineStation lineStation) {
+		if (lineStation.getPreStationId() == null) {
+			return;
+		}
+		Station station = stations.findByKey(lineStation.getStationId());
+		Station preStation = stations.findByKey(lineStation.getPreStationId());
+
+		Edge edge = new Edge(lineStation.getDuration(), lineStation.getDistance(), criteria);
+
+		graph.addEdge(preStation, station, edge);
+		graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
 	}
 
 	private void addVerticesToGraph(Collection<Station> vertices) { // TODO: 2020/05/14 빼기?

@@ -24,9 +24,8 @@ public class Edge extends DefaultWeightedEdge {
 		return distance;
 	}
 
+	@Override
 	public double getWeight() {
 		return criteria.getWeight(duration, distance);
 	}
-
-
 }

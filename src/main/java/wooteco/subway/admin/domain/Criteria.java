@@ -18,7 +18,6 @@ public enum Criteria {
 	}
 
 	public static Criteria of(String criteriaType) {
-//		Criteria.valueOf(criteriaType.toUpperCase()); // TODO: 2020/05/15 살려 말어?
 		return Arrays.stream(values())
 				.filter(type -> type.criteriaType.equals(criteriaType))
 				.findFirst()

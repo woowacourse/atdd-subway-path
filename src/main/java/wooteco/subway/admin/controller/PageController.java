@@ -22,30 +22,30 @@ public class PageController {
 		return "service/index";
 	}
 
-    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
-    public String join() {
-        return "service/join";
-    }
+	@GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
+	public String join() {
+		return "service/join";
+	}
 
-    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
-    public String mypage() {
-        return "service/mypage";
-    }
+	@GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+	public String mypage() {
+		return "service/mypage";
+	}
 
-    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
-    public String mypageEdit() {
-        return "service/mypage-edit";
-    }
+	@GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+	public String mypageEdit() {
+		return "service/mypage-edit";
+	}
 
-    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
-    public String map() {
-        return "service/map";
-    }
+	@GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+	public String map() {
+		return "service/map";
+	}
 
-    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
-    public String search() {
-        return "service/search";
-    }
+	@GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+	public String search() {
+		return "service/search";
+	}
 
 	@GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
 	public String adminPage() {
