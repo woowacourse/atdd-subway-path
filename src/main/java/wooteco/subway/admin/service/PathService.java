@@ -20,19 +20,22 @@ public class PathService {
     }
 
     public PathResponse findPath(String sourceName, String targetName, String type) {
-        validate(sourceName, targetName, type);
+        validate(sourceName, targetName);
+
         Station source = stationService.findByName(sourceName);
         Station target = stationService.findByName(targetName);
+        PathType pathType = PathType.of(type);
+
         List<Line> lines = lineService.findLines();
         List<Station> stations = stationService.findAll();
 
-        SubwayGraph subwayGraph = new SubwayGraph(lines, stations, PathType.of(type));
+        SubwayGraph subwayGraph = new SubwayGraph(lines, stations, pathType::weight);
         SubWayPath subWayPath = subwayGraph.generatePath(source, target);
 
         return new PathResponse(StationResponse.listOf(subWayPath.stations()), subWayPath.distance(), subWayPath.duration());
     }
 
-    private void validate(String sourceName, String targetName, String Type) {
+    private void validate(String sourceName, String targetName) {
         if (Objects.equals(targetName, sourceName)) {
             throw new SourceTargetSameException(sourceName);
         }

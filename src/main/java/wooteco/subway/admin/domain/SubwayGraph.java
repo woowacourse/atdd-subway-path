@@ -13,11 +13,9 @@ import static java.util.stream.Collectors.toMap;
 
 public class SubwayGraph {
     private WeightedMultigraph<Station, LineStationEdge> graph;
-    private PathType pathType;
 
-    public SubwayGraph(List<Line> lines, List<Station> stations, PathType pathType) {
-        this.pathType = pathType;
-        this.graph = initialize(lines, mapStations(stations));
+    public SubwayGraph(List<Line> lines, List<Station> stations, Function<LineStation, Integer> weightStrategy) {
+        this.graph = initialize(lines, mapStations(stations), weightStrategy);
     }
 
     private Map<Long, Station> mapStations(List<Station> stations) {
@@ -25,7 +23,7 @@ public class SubwayGraph {
                 .collect(toMap(Station::getId, Function.identity()));
     }
 
-    private WeightedMultigraph<Station, LineStationEdge> initialize(List<Line> lines, Map<Long, Station> stations) {
+    private WeightedMultigraph<Station, LineStationEdge> initialize(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {
         WeightedMultigraph<Station, LineStationEdge> graph = new WeightedMultigraph<>(LineStationEdge.class);
 
         List<LineStation> lineStations = linesToLineStations(lines);
@@ -36,7 +34,7 @@ public class SubwayGraph {
         lineStations.forEach(lineStation -> {
             graph.addEdge(stations.get(lineStation.getPreStationId()),
                     stations.get(lineStation.getStationId()),
-                    new LineStationEdge(lineStation, pathType.getStrategy()));
+                    new LineStationEdge(lineStation, weightStrategy));
         });
 
         return graph;
@@ -51,6 +49,6 @@ public class SubwayGraph {
     }
 
     public SubWayPath generatePath(Station source, Station target) {
-        return new SubWayPath(new DijkstraShortestPath<>(graph), pathType, source, target);
+        return new SubWayPath(new DijkstraShortestPath<>(graph), source, target);
     }
 }

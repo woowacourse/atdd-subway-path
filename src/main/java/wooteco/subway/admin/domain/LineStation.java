@@ -35,11 +35,6 @@ public class LineStation {
         return !isStarting();
     }
 
-    public boolean isConnected(Long preStationId, Long stationId) {
-        return (hasPreStationId(preStationId) && hasStationId(stationId))
-                || (hasPreStationId(stationId) && hasStationId(preStationId));
-    }
-
     public Long getPreStationId() {
         return preStationId;
     }

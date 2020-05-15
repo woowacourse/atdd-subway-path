@@ -9,15 +9,13 @@ import java.util.Objects;
 
 public class SubWayPath {
     private final GraphPath<Station, LineStationEdge> path;
-    private final PathType pathType;
     private final Station source;
     private final Station target;
 
-    public SubWayPath(DijkstraShortestPath<Station, LineStationEdge> path, PathType pathType, Station source, Station target) {
+    public SubWayPath(DijkstraShortestPath<Station, LineStationEdge> path, Station source, Station target) {
         this.source = source;
         this.target = target;
         this.path = validate(path.getPath(source, target));
-        this.pathType = pathType;
     }
 
     private GraphPath<Station, LineStationEdge> validate(GraphPath<Station, LineStationEdge> graphPath) {
@@ -33,10 +31,14 @@ public class SubWayPath {
     }
 
     public int distance() {
-        return pathType.calculateDistance(path);
+        return (int) path.getEdgeList().stream()
+                .mapToDouble(LineStationEdge::getDistance)
+                .sum();
     }
 
     public int duration() {
-        return pathType.calculateDuration(path);
+        return (int) path.getEdgeList().stream()
+                .mapToDouble(LineStationEdge::getDuration)
+                .sum();
     }
 }
