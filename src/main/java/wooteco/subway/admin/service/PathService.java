@@ -63,6 +63,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         for (Line line : lines) {
             Set<LineStation> stations = line.getStations();
+
             Iterator<LineStation> lineStationIterator = stations.iterator();
             while (lineStationIterator.hasNext()) {
                 LineStation lineStation = lineStationIterator.next();
@@ -97,6 +98,7 @@ public class PathService {
             Station station = shortestPath.get(i);
             int value = 0;
 
+            //todo: exception message add
             if (type.equals("duration")) {
                 value = lineStationRepository.findById(preStation.getId(), station.getId())
                         .orElseThrow(IllegalArgumentException::new)
