@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
-    private List<String> stationNames;
+    private List<String> stations;
     private Integer totalDistance;
     private Integer totalDuration;
 
     private PathResponse() {
     }
 
-    public PathResponse(final List<String> stationNames, final Integer totalDistance, final Integer totalDuration) {
-        this.stationNames = stationNames;
+    public PathResponse(final List<String> stations, final Integer totalDistance, final Integer totalDuration) {
+        this.stations = stations;
         this.totalDistance = totalDistance;
         this.totalDuration = totalDuration;
     }
@@ -28,8 +28,8 @@ public class PathResponse {
         return new PathResponse(names, pathDetail.getTotalDistance(), pathDetail.getTotalDuration());
     }
 
-    public List<String> getStationNames() {
-        return new ArrayList<>(stationNames);
+    public List<String> getStations() {
+        return new ArrayList<>(stations);
     }
 
     public Integer getTotalDistance() {

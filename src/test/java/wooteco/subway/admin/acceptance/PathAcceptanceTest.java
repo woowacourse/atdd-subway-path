@@ -75,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = objectMapper.readValue(responseBody, PathResponse.class);
 
         //then
-        assertThat(pathResponse.getStationNames()).hasSize(3);
+        assertThat(pathResponse.getStations()).hasSize(3);
         assertThat(pathResponse.getTotalDistance()).isEqualTo(23);
         assertThat(pathResponse.getTotalDuration()).isEqualTo(23);
     }

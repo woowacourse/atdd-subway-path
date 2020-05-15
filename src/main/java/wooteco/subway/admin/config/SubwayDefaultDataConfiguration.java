@@ -29,17 +29,20 @@ public class SubwayDefaultDataConfiguration {
 
         @Override
         public void run(final ApplicationArguments args) throws Exception {
-            Station station1 = stationRepository.save(new Station("잠실"));
-            Station station2 = stationRepository.save(new Station("강남"));
-            Station station3 = stationRepository.save(new Station("석촌"));
-            Station station4 = stationRepository.save(new Station("몽촌토성"));
+            Station station1 = stationRepository.save(new Station("터틀"));
+            Station station2 = stationRepository.save(new Station("비밥"));
+            Station station3 = stationRepository.save(new Station("포비"));
 
-            Line lineNumberTwo = new Line("2호선", LocalTime.of(05, 10), LocalTime.of(22, 10), 10);
-            lineNumberTwo.addEdge(new Edge(station1.getId(), station2.getId(), 10, 10));
-            Line lineNumberEight = new Line("8호선", LocalTime.of(05, 20), LocalTime.of(23, 30), 15);
-            lineNumberEight.addEdge(new Edge(station3.getId(), station4.getId(), 10, 10));
-            lineNumberTwo = lineRepository.save(lineNumberTwo);
-            lineNumberEight = lineRepository.save(lineNumberEight);
+            Line lineNumber1 = new Line("1호선", LocalTime.of(05, 10), LocalTime.of(22, 10), 10);
+            lineNumber1.addEdge(new Edge(null, station1.getId(), 10, 10));
+            lineNumber1.addEdge(new Edge(station1.getId(), station2.getId(), 1, 10));
+            lineNumber1.addEdge(new Edge(station2.getId(), station3.getId(), 10, 10));
+            Line lineNumber2 = new Line("2호선", LocalTime.of(05, 20), LocalTime.of(23, 30), 15);
+            lineNumber2.addEdge(new Edge(null, station2.getId(), 10, 10));
+            lineNumber2.addEdge(new Edge(station2.getId(), station3.getId(), 1, 10));
+
+            lineNumber1 = lineRepository.save(lineNumber1);
+            lineNumber2 = lineRepository.save(lineNumber2);
         }
     }
 

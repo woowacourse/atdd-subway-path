@@ -2,10 +2,10 @@ package wooteco.subway.admin.dto;
 
 public class PathRequest {
     private String key;
-    private Long source;
-    private Long target;
+    private String source;
+    private String target;
 
-    public PathRequest(final String key, final Long source, final Long target) {
+    public PathRequest(final String key, final String source, final String target) {
         this.key = key;
         this.source = source;
         this.target = target;
@@ -15,11 +15,11 @@ public class PathRequest {
         return key;
     }
 
-    public Long getSource() {
+    public String getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public String getTarget() {
         return target;
     }
 }

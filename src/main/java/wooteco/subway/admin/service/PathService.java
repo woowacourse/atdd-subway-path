@@ -26,8 +26,13 @@ public class PathService {
     }
 
     public PathResponse findPath(PathRequest pathRequest) {
-        Long sourceId = pathRequest.getSource();
-        Long targetId = pathRequest.getTarget();
+        Station sourceStation = stationRepository.findByName(pathRequest.getSource())
+                .orElseThrow(IllegalArgumentException::new);
+        Station targetStation = stationRepository.findByName(pathRequest.getTarget())
+                .orElseThrow(IllegalArgumentException::new);
+
+        Long sourceId = sourceStation.getId();
+        Long targetId = targetStation.getId();
 
         //전체 노선을 가져온다
         Lines lines = new Lines(lineRepository.findAll());
