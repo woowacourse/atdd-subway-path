@@ -15,4 +15,12 @@ public class Stations {
                 .filter(station -> ids.contains(station.getId()))
                 .collect(Collectors.toList());
     }
+
+    public String findNameById(final Long id) {
+        return stations.stream()
+                .filter(station -> station.isSameId(id))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new)
+                .getName();
+    }
 }

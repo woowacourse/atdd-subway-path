@@ -33,9 +33,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     *
      * Feature : 지하철 경로 조회
-     *
+     * <p>
      * Scenario : 자하철 경로를 조회한다.
      * When : 출발역, 도착역 값을 입력받는다.
      * Then : 출발역부터 도착역까지의 경로와 최단시간을 반환한다.
@@ -59,11 +58,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         Long sourceId = jamsil.getId();
         Long targetId = sinchon.getId();
+        String requestKey = "distance";
 
         MvcResult mvcResult = mockMvc.perform(
                 get("/paths")
                         .param("source", String.valueOf(sourceId))
                         .param("target", String.valueOf(targetId))
+                        .param("key", requestKey)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
         )
                 .andDo(print())
@@ -74,8 +75,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = objectMapper.readValue(responseBody, PathResponse.class);
 
         //then
-        assertThat(pathResponse.getEdges()).hasSize(3);
-        assertThat(pathResponse.getTotalDistance()).isEqualTo(33);
-        //TODO 추후 최소시간 검증 필요
+        assertThat(pathResponse.getStationNames()).hasSize(3);
+        assertThat(pathResponse.getTotalDistance()).isEqualTo(23);
+        assertThat(pathResponse.getTotalDuration()).isEqualTo(23);
     }
 }

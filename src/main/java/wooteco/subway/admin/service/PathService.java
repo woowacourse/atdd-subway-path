@@ -2,11 +2,17 @@ package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.PathDetail;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
+import wooteco.subway.admin.domain.SubwayGraphKey;
 import wooteco.subway.admin.domain.SubwayGraphs;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.util.List;
 
 @Service
 public class PathService {
@@ -27,7 +33,9 @@ public class PathService {
         Lines lines = new Lines(lineRepository.findAll());
         //최단 경로를 가져온다.
         SubwayGraphs subwayGraphs = lines.makeSubwayGraphs(sourceId, targetId);
+        PathDetail path = subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
 
-        return new PathResponse();
+        List<Station> stations = stationRepository.findAllByIdIn(path.getPaths());
+        return PathResponse.of(path, new Stations(stations));
     }
 }
