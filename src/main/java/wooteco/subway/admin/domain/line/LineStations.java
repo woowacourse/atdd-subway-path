@@ -25,11 +25,7 @@ public class LineStations {
         Graphs.addAllVertices(graph, getStationIds());
 
         for (LineStation lineStation : lineStations) {
-            if (lineStation.isNotStart()) {
-                RouteEdge edge = lineStation.toEdge();
-                graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), edge);
-                edgeWeightStrategy.setWeight(graph, edge);
-            }
+            lineStation.addEdgeTo(graph, edgeWeightStrategy);
         }
 
         return new SubwayRoute(DijkstraShortestPath.findPathBetween(graph, departureId, arrivalId));

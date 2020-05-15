@@ -189,7 +189,6 @@ public class LineServiceTest {
         Set<LineStation> lineStations = new HashSet<>(line.getStations());
         lineStations.add(newLineStation);
         when(lineRepository.findAllLineStations()).thenReturn(lineStations);
-        when(stationRepository.findAll()).thenReturn(stations);
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
         assertThatThrownBy(() -> lineService.findPathsBy(new PathRequest(station1.getName(), station4.getName())))

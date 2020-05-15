@@ -2,6 +2,9 @@ package wooteco.subway.admin.domain.line;
 
 import java.util.Objects;
 
+import org.jgrapht.WeightedGraph;
+
+import wooteco.subway.admin.domain.line.path.EdgeWeightStrategy;
 import wooteco.subway.admin.domain.line.path.RouteEdge;
 
 public class LineStation {
@@ -37,11 +40,11 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
-    public RouteEdge toEdge() {
-        return new RouteEdge(distance, duration);
-    }
-
-    public boolean isNotStart() {
-        return Objects.nonNull(preStationId);
+    public void addEdgeTo(WeightedGraph<Long, RouteEdge> graph, EdgeWeightStrategy edgeWeightStrategy) {
+        if (Objects.nonNull(preStationId)) {
+            RouteEdge edge = new RouteEdge(distance, duration);
+            graph.addEdge(preStationId, stationId, edge);
+            edgeWeightStrategy.setWeight(graph, edge);
+        }
     }
 }

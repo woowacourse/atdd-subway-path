@@ -95,8 +95,7 @@ public class LineService {
         LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
 
         for (EdgeWeightType edgeWeightType : EdgeWeightType.values()) {
-            SubwayRoute shortestPath = lineStations.findShortestPath(
-                edgeWeightType.getEdgeWeightStrategy(), departureId, arrivalId);
+            SubwayRoute shortestPath = edgeWeightType.findShortestPath(lineStations, departureId, arrivalId);
             responses.put(edgeWeightType, toPathResponse(shortestPath));
         }
 

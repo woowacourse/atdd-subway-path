@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Sets;
-import wooteco.subway.admin.domain.line.path.EdgeWeightType;
 import wooteco.subway.admin.domain.line.path.SubwayRoute;
 
 class LineStationsTest {
@@ -30,7 +29,6 @@ class LineStationsTest {
 
     @Test
     void findShortestPath() {
-        assertThat(lineStations.findShortestPath(EdgeWeightType.DISTANCE.getEdgeWeightStrategy(), 1L, 3L)).isInstanceOf(SubwayRoute.class);
-        assertThat(lineStations.findShortestPath(EdgeWeightType.DURATION.getEdgeWeightStrategy(), 1L, 3L)).isInstanceOf(SubwayRoute.class);
+        assertThat(lineStations.findShortestPath((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()), 1L, 3L)).isInstanceOf(SubwayRoute.class);
     }
 }
