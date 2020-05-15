@@ -29,7 +29,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 * Then 최단 거리 경로를 하나만 응답한다.
 	 */
 	@Test
-	void searchPath() {
+	void searchPath_ByDistance() {
 		// given
 		Map<String, StationResponse> stationAll = createStationAll();
 		Map<String, LineResponse> lineAll = createLineAll();
@@ -38,10 +38,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// when
 		PathResponse pathResponse = searchShortestDistancePath(stationAll.get("교대"),
 			stationAll.get("양재"));
+
 		// then
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getDistance()).isEqualTo(4);
-		assertThat(pathResponse.getDuration()).isEqualTo(2);
+		assertThat(pathResponse.getDuration()).isEqualTo(3);
 
 		// when
 		pathResponse = searchShortestDistancePath(stationAll.get("교대"),
@@ -50,6 +51,46 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(pathResponse.getStations()).isNotNull();
 		assertThat(pathResponse.getDistance()).isEqualTo(16);
 		assertThat(pathResponse.getDuration()).isNotNull();
+	}
+
+	/*
+	 * Feature: 지하철 노선 경로 검색
+	 *
+	 * Scenario: 지하철 노선 최단 거리 검색
+	 * Given 지하철역이 여러 개 추가되어 있다.
+	 * And   지하철 노선이 여러 개 추가되어 있다.
+	 * And   지하철 노선에 구간 정보가 여러 개 추가되어 있다.
+	 *
+	 * When 지하철 노선 최소 시간 검색을 한다.
+	 * Then 최소 시간 기준으로 경로와 거리 정보를 응답한다.
+	 * And  거리 정보에는 총 소요시간, 총 거리가 포함되어있다.
+	 *
+	 * When 지하철 노선 최소 시간 검색을 한다.
+	 * And  최소 시간 경로가 여러 개 존재한다.
+	 * Then 최소 시간 경로를 하나만 응답한다.
+	 */
+	@Test
+	void searchPath_ByDuration() {
+		// given
+		Map<String, StationResponse> stationAll = createStationAll();
+		Map<String, LineResponse> lineAll = createLineAll();
+		addLineStation(lineAll, stationAll);
+
+		// when
+		PathResponse pathResponse = searchShortestDurationPath(stationAll.get("교대"),
+			stationAll.get("양재"));
+		// then
+		assertThat(pathResponse.getStations()).hasSize(3);
+		assertThat(pathResponse.getDistance()).isEqualTo(2);
+		assertThat(pathResponse.getDuration()).isEqualTo(5);
+
+		// when
+		pathResponse = searchShortestDurationPath(stationAll.get("교대"),
+			stationAll.get("종합운동장"));
+		// then
+		assertThat(pathResponse.getStations()).isNotNull();
+		assertThat(pathResponse.getDistance()).isNotNull();
+		assertThat(pathResponse.getDuration()).isEqualTo(16);
 	}
 
 	private Map<String, StationResponse> createStationAll() {
@@ -98,7 +139,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineAll.get("3호선"), null, stationAll.get("고속터미널"), 2, 1);
 		addLineStation(lineAll.get("3호선"), stationAll.get("고속터미널"), stationAll.get("교대"), 2, 1);
 		addLineStation(lineAll.get("3호선"), stationAll.get("교대"), stationAll.get("남부터미널"), 2, 1);
-		addLineStation(lineAll.get("3호선"), stationAll.get("남부터미널"), stationAll.get("양재"), 2, 1);
+		addLineStation(lineAll.get("3호선"), stationAll.get("남부터미널"), stationAll.get("양재"), 2, 2);
 
 		addLineStation(lineAll.get("9호선"), null, stationAll.get("고속터미널"), 2, 1);
 		addLineStation(lineAll.get("9호선"), stationAll.get("고속터미널"), stationAll.get("사평"), 2, 1);
@@ -134,6 +175,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				log().all().
 				extract().as(PathInfoResponse.class)
 				.getShortestDistancePath();
+	}
+
+	private PathResponse searchShortestDurationPath(StationResponse source,
+		StationResponse target) {
+
+		return
+			given().
+				when().
+				get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId()).
+				then().
+				log().all().
+				extract().as(PathInfoResponse.class)
+				.getShortestDurationPath();
 	}
 }
 

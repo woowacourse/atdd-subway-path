@@ -53,13 +53,13 @@ class PathServiceTest {
 		lineStations.add(new LineStation(station1.getId(), station2.getId(), 3, 1));
 		lineStations.add(new LineStation(null, station1.getId(), 0, 0));
 		lineStations.add(new LineStation(station1.getId(), station4.getId(), 2, 1));
-		lineStations.add(new LineStation(station4.getId(), station3.getId(), 2, 1));
+		lineStations.add(new LineStation(station4.getId(), station3.getId(), 2, 2));
 		lineStations.add(new LineStation(null, station2.getId(), 0, 0));
 		lineStations.add(new LineStation(station2.getId(), station3.getId(), 2, 1));
 	}
 
 	@Test
-	void searchPath() {
+	void searchPath_byDistance() {
 		when(lineStationRepository.findAll()).thenReturn(lineStations);
 		when(stationRepository.findAll()).thenReturn(stations);
 
@@ -70,6 +70,21 @@ class PathServiceTest {
 
 		assertThat(shortestDistancePath.getStations()).hasSize(3);
 		assertThat(shortestDistancePath.getDistance()).isEqualTo(4);
-		assertThat(shortestDistancePath.getDuration()).isEqualTo(2);
+		assertThat(shortestDistancePath.getDuration()).isEqualTo(3);
+	}
+
+	@Test
+	void searchPath_byDuration() {
+		when(lineStationRepository.findAll()).thenReturn(lineStations);
+		when(stationRepository.findAll()).thenReturn(stations);
+
+		PathInfoResponse pathInfoResponse = pathService
+			.searchPath(station1.getId(), station3.getId());
+
+		PathResponse shortestDurationPath = pathInfoResponse.getShortestDurationPath();
+
+		assertThat(shortestDurationPath.getStations()).hasSize(3);
+		assertThat(shortestDurationPath.getDistance()).isEqualTo(2);
+		assertThat(shortestDurationPath.getDuration()).isEqualTo(5);
 	}
 }
