@@ -22,6 +22,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime, Set<LineStation> stations) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.startTime = startTime;
@@ -33,47 +34,11 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, color, startTime, endTime, intervalTime, new HashSet<>());
+        this(id, name, color, startTime, endTime, intervalTime, new HashSet<>());
     }
 
     public Line(String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this(null, name, color, startTime, endTime, intervalTime);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public int getIntervalTime() {
-        return intervalTime;
-    }
-
-    public Set<LineStation> getStations() {
-        return stations;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void update(Line line) {
@@ -146,5 +111,41 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public int getIntervalTime() {
+        return intervalTime;
+    }
+
+    public Set<LineStation> getStations() {
+        return stations;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

@@ -21,13 +21,9 @@ public class LineStations {
         return lineStations;
     }
 
-    // todo : 이거 리팩토링
     public LineStation findLineStation(Long preStationId, Long stationId) {
         for (LineStation lineStation : lineStations) {
-            if (lineStation.is(preStationId, stationId)) {
-                return lineStation;
-            }
-            if (lineStation.is(stationId, preStationId)) {
+            if (lineStation.is(preStationId, stationId) || lineStation.is(stationId, preStationId)) {
                 return lineStation;
             }
         }

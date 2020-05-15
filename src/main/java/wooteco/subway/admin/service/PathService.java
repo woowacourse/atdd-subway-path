@@ -9,6 +9,7 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.CanNotCreateGraphException;
 import wooteco.subway.admin.exception.LineNotConnectedException;
+import wooteco.subway.admin.exception.OverlappedStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -27,6 +28,7 @@ public class PathService {
     }
 
     public PathResponse calculatePath(String source, String target, String type) {
+        validateOverlappedStation(source, target);
 
         Lines allLines = new Lines(lineRepository.findAll());
 
@@ -70,7 +72,14 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
+    private void validateOverlappedStation(String source, String target) {
+        if (source.equals(target)) {
+            throw new OverlappedStationException();
+        }
+    }
+
     private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations, String type) {
+        PathSearchType weight = PathSearchType.of(type);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
@@ -83,10 +92,11 @@ public class PathService {
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
                 DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
-                if (type.equals("DISTANCE")) {
+                if (weight.is("DISTANCE")) {
                     graph.setEdgeWeight(edge, lineStation.getDistance());
+                    continue;
                 }
-                if (type.equals("DURATION")) {
+                if (weight.is("DURATION")) {
                     graph.setEdgeWeight(edge, lineStation.getDuration());
                 }
             }

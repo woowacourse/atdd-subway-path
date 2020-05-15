@@ -15,6 +15,14 @@ public class LineStation {
         this.duration = duration;
     }
 
+    public static LineStation empty() {
+        return new LineStation(null, null, 0, 0);
+    }
+
+    public boolean is(Long preStationId, Long stationId) {
+        return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
+    }
+
     public Long getPreStationId() {
         return preStationId;
     }
@@ -33,13 +41,5 @@ public class LineStation {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
-    }
-
-    public boolean is(Long preStationId, Long stationId) {
-        return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
-    }
-
-    public static LineStation empty() {
-        return new LineStation(null, null, 0, 0);
     }
 }
