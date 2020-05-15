@@ -8,19 +8,29 @@ import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.admin.exception.LineNotFoundException;
+import wooteco.subway.admin.exception.StationNotFoundException;
+
 public class Subway {
     private final List<Line> lines;
     private final List<Station> stations;
 
     public Subway(List<Line> lines, List<Station> stations) {
-        validateNull(lines, stations);
+        validateLines(lines);
+        validateStations(stations);
         this.lines = lines;
         this.stations = stations;
     }
 
-    private void validateNull(List<Line> lines, List<Station> stations) {
-        if (Objects.isNull(lines) || Objects.isNull(stations)) {
-            throw new IllegalArgumentException("노선 또는 역이 존재하지 않습니다.");
+    private void validateLines(List<Line> lines) {
+        if (Objects.isNull(lines)) {
+            throw new LineNotFoundException();
+        }
+    }
+
+    private void validateStations(List<Station> stations) {
+        if (Objects.isNull(stations)) {
+            throw new StationNotFoundException();
         }
     }
 
@@ -40,11 +50,11 @@ public class Subway {
         return new ShortestPath(dijkstraShortestPath.getPath(sourceId, targetId));
     }
 
-    private Station findStationByName(String source) {
+    private Station findStationByName(String stationName) {
         return stations.stream()
-                .filter(station -> station.isSameName(source))
+                .filter(station -> station.isSameName(stationName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 지하철 역이 없습니다"));
+                .orElseThrow(() -> new StationNotFoundException(stationName));
     }
 
     private void addVertices(WeightedMultigraph<Station, SubwayEdge> subwayGraph) {
@@ -57,10 +67,9 @@ public class Subway {
             PathType pathType) {
         List<LineStation> lineStations = generateLineStations();
         for (LineStation lineStation : lineStations) {
-            SubwayEdge lineStationEdge = subwayGraph.addEdge(stationMapper.get(lineStation.getPreStationId()),
-                    stationMapper.get(lineStation.getStationId()));
-            subwayGraph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
-            lineStationEdge.setLineStation(lineStation);
+            SubwayEdge edge = new SubwayEdge(lineStation, pathType);
+            subwayGraph.addEdge(stationMapper.get(lineStation.getPreStationId()),
+                    stationMapper.get(lineStation.getStationId()), edge);
         }
     }
 

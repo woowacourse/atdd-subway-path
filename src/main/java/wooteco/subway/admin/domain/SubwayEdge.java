@@ -5,7 +5,13 @@ import java.util.Objects;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SubwayEdge extends DefaultWeightedEdge {
-    private LineStation lineStation;
+    private final LineStation lineStation;
+    private final PathType pathType;
+
+    public SubwayEdge(LineStation lineStation, PathType pathType) {
+        this.lineStation = lineStation;
+        this.pathType = pathType;
+    }
 
     public int getDuration() {
         if (Objects.isNull(lineStation)) {
@@ -21,7 +27,8 @@ public class SubwayEdge extends DefaultWeightedEdge {
         return lineStation.getDistance();
     }
 
-    public void setLineStation(LineStation lineStation) {
-        this.lineStation = lineStation;
+    @Override
+    protected double getWeight() {
+        return pathType.getWeight(lineStation);
     }
 }
