@@ -30,16 +30,16 @@ create table if not exists LINE_STATION
     updated_at datetime
 );
 
--- INSERT INTO STATION(name) VALUES('신정역');
--- INSERT INTO STATION(name) VALUES('여의도역');
--- INSERT INTO STATION(name) VALUES('천호역');
--- INSERT INTO STATION(name) VALUES('잠실역');
--- INSERT INTO STATION(name) VALUES('석촌역');
--- INSERT INTO STATION(name) VALUES('호돌역');
---
--- INSERT INTO LINE(name, interval_time) VALUES ('5호선', 10);
--- INSERT INTO LINE(name, interval_time) VALUES ('8호선', 10);
--- INSERT INTO LINE(name, interval_time) VALUES ('9호선', 10);
+INSERT INTO STATION(name) VALUES('신정역');
+INSERT INTO STATION(name) VALUES('여의도역');
+INSERT INTO STATION(name) VALUES('천호역');
+INSERT INTO STATION(name) VALUES('잠실역');
+INSERT INTO STATION(name) VALUES('석촌역');
+INSERT INTO STATION(name) VALUES('호돌역');
+
+INSERT INTO LINE(name, interval_time) VALUES ('5호선', 10);
+INSERT INTO LINE(name, interval_time) VALUES ('8호선', 10);
+INSERT INTO LINE(name, interval_time) VALUES ('9호선', 10);
 --
 -- -- 5호선
 -- INSERT INTO LINE_STATION(line, sequence, station_id, distance, duration) VALUES (1, 1, 1,1,2); -- 출발 - 신정역

@@ -24,6 +24,8 @@ public class PathService {
 	}
 
 	public PathResponse findPath(String sourceName, String targetName, String type) {
+		validateStationNamesAreSame(sourceName, targetName);
+
 		List<Line> allLines = lineRepository.findAll();
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
@@ -36,5 +38,11 @@ public class PathService {
 		List<Station> shortestPath = subwayShortestPath.getShortestPath();
 
 		return PathResponse.of(totalDistance, totalDuration, shortestPath);
+	}
+
+	private void validateStationNamesAreSame(String sourceName, String targetName) {
+		if (sourceName.equals(targetName)) {
+			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+		}
 	}
 }

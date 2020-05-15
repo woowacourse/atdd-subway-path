@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain.graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -30,8 +31,17 @@ public class SubwayShortestPath {
 		Graph<Long, SubwayEdge> graph = createMultiGraph(
 			allLineStations, allStationsById, weightType.getWeightStrategy());
 
-		this.shortestPath = new DijkstraShortestPath(graph).getPath(source.getId(), target.getId());
+		this.shortestPath = findShortestPath(source, target, graph);
 		this.allStationsById = allStationsById;
+	}
+
+	private GraphPath findShortestPath(Station source, Station target, Graph<Long, SubwayEdge> graph) {
+		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+		GraphPath shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
+		if (Objects.isNull(shortestPath)) {
+			throw new PathNotFoundException(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
+		}
+		return shortestPath;
 	}
 
 	public int calculateTotalDistance() {
@@ -55,7 +65,7 @@ public class SubwayShortestPath {
 
 	private Station findStationByName(String targetName, Map<Long, Station> stations) {
 		return stations.values().stream().filter(station -> station.isSameName(targetName))
-			.findAny().orElseThrow(() -> new IllegalArgumentException("출발역이 존재하지 않습니다."));
+			.findAny().orElseThrow(() -> new IllegalArgumentException(String.format("%s은 존재하지 않는 역입니다.", targetName)));
 	}
 
 	private List<LineStation> makeLineStations(List<Line> lines) {
