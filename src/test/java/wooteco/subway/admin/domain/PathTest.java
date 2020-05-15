@@ -2,7 +2,8 @@ package wooteco.subway.admin.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import wooteco.subway.admin.dto.ShortestPath;
 
 import java.time.LocalTime;
@@ -41,15 +42,18 @@ public class PathTest {
 		station4 = new Station(4L, "용산");
 		sourceStations = Arrays.asList(station1, station2, station3, station4);
 		stations = new Stations(sourceStations);
+
+		// TODO: 2020/05/15 빈약한 테스트 케이스를 보강하렴^^
 	}
 
-	@DisplayName("인자를 주면 ShortestPath를 반환")
-	@Test
-	void findShortestPath() {
+	@DisplayName("주어진 Criteria에 대한 ShortestPath를 반환")
+	@ValueSource(strings = {"distance", "duration"})
+	@ParameterizedTest
+	void findShortestPath(String criteria) {
 		Path path = new Path(subway, stations);
 
 
-		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of("distance"));
+		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of(criteria));
 
 		assertEquals(shortestPath.getPath().get(0), station1);
 		assertEquals(shortestPath.getPath().get(1), station2);

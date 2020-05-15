@@ -6,7 +6,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.dto.ShortestPath;
 
-import java.util.List;
+import java.util.Collection;
 
 public class Path {
 	private final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph(Edge.class);
@@ -36,8 +36,10 @@ public class Path {
 
 		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
 
-		int totalDistance = (int) result.getEdgeList().stream()
-				.mapToDouble(Edge::getDistance)
+		// result가 null이면 경로가 존재하지 않는 경우
+
+		int totalDistance = (int) result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
+				.mapToDouble(Edge::getDistance) // TODO: 2020/05/14 int?
 				.sum();
 
 		int totalDuration = (int) result.getEdgeList().stream()
@@ -48,7 +50,7 @@ public class Path {
 
 	}
 
-	private void addVerticesToGraph(List<Station> vertices) {
+	private void addVerticesToGraph(Collection<Station> vertices) { // TODO: 2020/05/14 빼기?
 		Graphs.addAllVertices(graph, vertices);
 	}
 

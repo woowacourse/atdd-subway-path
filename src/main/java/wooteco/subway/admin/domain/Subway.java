@@ -7,7 +7,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-public class Subway {
+public class Subway { // TODO: 2020/05/14 네이밍 고려하기
 	private final List<Line> lines;
 
 	public Subway(final List<Line> lines) {

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
-	// @formatter:off
 	@Mock
 	private LineRepository lineRepository;
 
@@ -63,12 +62,12 @@ class PathServiceTest {
 		line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-800");
 		line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-800");
 
-		line1.addLineStation(new LineStation(null, station1.getId(), 10, 10));
-		line1.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 10));
-		line1.addLineStation(new LineStation(station2.getId(), station3.getId(), 10, 10));
-		line1.addLineStation(new LineStation(station3.getId(), station4.getId(), 10, 10));
-		line1.addLineStation(new LineStation(station4.getId(), station5.getId(), 10, 10));
-		line1.addLineStation(new LineStation(station5.getId(), station6.getId(), 10, 10));
+		line1.addLineStation(new LineStation(null, station1.getId(), 10, 40));
+		line1.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 40));
+		line1.addLineStation(new LineStation(station2.getId(), station3.getId(), 10, 40));
+		line1.addLineStation(new LineStation(station3.getId(), station4.getId(), 10, 40));
+		line1.addLineStation(new LineStation(station4.getId(), station5.getId(), 10, 40));
+		line1.addLineStation(new LineStation(station5.getId(), station6.getId(), 10, 40));
 
 		line2.addLineStation(new LineStation(null, station6.getId(), 40, 10));
 		line2.addLineStation(new LineStation(station6.getId(), station7.getId(), 40, 10));
@@ -102,6 +101,33 @@ class PathServiceTest {
 		assertEquals(shortestPath.getPath().get(4), station2);
 
 		assertEquals(shortestPath.getDistance(), 40);
+		assertEquals(shortestPath.getDuration(), 160);
+	}
+
+	@DisplayName("최단시간 경로를 조회하는 테스트")
+	@Test
+	void getShortestDurationPath() {
+		String sourceName = "시청";
+		String targetName = "신도림";
+		String criteria = "duration";
+
+		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
+		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
+
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
+				station5, station6, station7, station8, station9, station10));
+
+		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
+
+
+		assertEquals(shortestPath.getPath().get(0), station6);
+		assertEquals(shortestPath.getPath().get(1), station7);
+		assertEquals(shortestPath.getPath().get(2), station8);
+		assertEquals(shortestPath.getPath().get(3), station9);
+		assertEquals(shortestPath.getPath().get(4), station2);
+
+		assertEquals(shortestPath.getDistance(), 160);
 		assertEquals(shortestPath.getDuration(), 40);
-	}// @formatter:on
+	}
 }
