@@ -1,67 +1,79 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import api from '../../api/index.js'
-import {searchResultTemplate} from '../../utils/templates.js'
+import {EVENT_TYPE} from '../../utils/constants.js';
+import api from '../../api/index.js';
+import {searchResultTemplate} from '../../utils/templates.js';
 
 function Search() {
 	const $departureStationName = document.querySelector(
-		'#departure-station-name');
+		'#departure-station-name',
+	);
 	const $arrivalStationName = document.querySelector('#arrival-station-name');
 	const $searchButton = document.querySelector('#search-button');
 	const $searchResultContainer = document.querySelector(
-		'#search-result-container');
+		'#search-result-container',
+	);
 	const $favoriteButton = document.querySelector('#favorite-button');
 	const $searchResult = document.querySelector('#search-result');
 	const $shortestDistanceTab = document.querySelector(
-		'#shortest-distance-tab');
+		'#shortest-distance-tab',
+	);
 	const $minimumTimeTab = document.querySelector('#minimum-time-tab');
 
 	let subwayStations = null;
 	let searchPathInfo = null;
 
-	const showSearchResult = data => {
+	const showSearchResult = (data) => {
 		const isHidden = $searchResultContainer.classList.contains('hidden');
 		if (isHidden) {
-			$searchResultContainer.classList.remove('hidden')
+			$searchResultContainer.classList.remove('hidden');
 		}
-		$searchResult.innerHTML = searchResultTemplate(data)
+		$searchResult.innerHTML = searchResultTemplate(data);
 	};
 
-	const findStationIdByName = name => {
-		return subwayStations.find(station => station.name === name).id;
+	const findStationIdByName = (name) => {
+		return subwayStations.find((station) => station.name === name).id;
 	};
 
-	const onSearchShortestDistance = event => {
+	const onSearchShortestDistance = (event) => {
 		event.preventDefault();
 		$shortestDistanceTab.classList.add('active-tab');
 		$minimumTimeTab.classList.remove('active-tab');
 		showSearchResult(searchPathInfo.shortestDistancePath);
 	};
 
-	const onSearchMinimumTime = event => {
+	const onSearchMinimumTime = (event) => {
 		event.preventDefault();
 		$minimumTimeTab.classList.add('active-tab');
 		$shortestDistanceTab.classList.remove('active-tab');
 		showSearchResult(searchPathInfo.shortestDurationPath);
 	};
 
-	const onSearchShortestPath = event => {
-		console.log("onSearchShortestPath");
+	const onSearchShortestPath = (event) => {
 		event.preventDefault();
 		const searchInput = {
 			source: findStationIdByName($departureStationName.value),
-			target: findStationIdByName($arrivalStationName.value)
+			target: findStationIdByName($arrivalStationName.value),
 		};
 
 		api.path
 		.find(searchInput)
-		.then(data => {
+		.then((data) => {
+			if (!data.ok) {
+				throw data;
+			}
+			return data.json();
+		})
+		.then((data) => {
 			searchPathInfo = data;
 			showSearchResult(data.shortestDistancePath);
 		})
-		.catch(error => alert(ERROR_MESSAGE.COMMON));
+		.catch((error) => {
+			error.text().then((error) => {
+				alert(error);
+			});
+		});
 	};
 
-	const onToggleFavorite = event => {
+	const onToggleFavorite = (event) => {
 		event.preventDefault();
 		const isFavorite = $favoriteButton.classList.contains('mdi-star');
 		const classList = $favoriteButton.classList;
@@ -84,15 +96,17 @@ function Search() {
 	const initEventListener = () => {
 		$favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
 		$searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestPath);
-		$shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK,
-			onSearchShortestDistance);
+		$shortestDistanceTab.addEventListener(
+			EVENT_TYPE.CLICK,
+			onSearchShortestDistance,
+		);
 		$minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime);
 	};
 
 	this.init = async () => {
 		subwayStations = await api.station.getAll();
 		initEventListener();
-	}
+	};
 }
 
 const search = new Search();
