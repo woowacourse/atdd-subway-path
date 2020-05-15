@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.domain.path.ShortestPath;
-import wooteco.subway.admin.domain.path.Type;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -14,6 +14,7 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -61,10 +62,10 @@ public class LineService {
     }
 
     public LineDetailResponse findDetailLineById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 
-        // Station id
         List<Station> orderedStations = new ArrayList<>();
         for (Long stationId : line.getLineStationsId()) {
             stations.stream()
@@ -76,42 +77,42 @@ public class LineService {
     }
 
     public List<LineDetailResponse> findDetailLines() {
-        List<Line> lines = lineRepository.findAll();
-        List<List<Station>> stations = lines.stream()
-                .map(line -> stationRepository.findAllById(line.getLineStationsId()))
-                .collect(Collectors.toList());
-
         List<LineDetailResponse> response = new ArrayList<>();
-        for (int i = 0; i < lines.size(); i++) {
-            response.add(LineDetailResponse.of(lines.get(i), stations.get(i)));
+        for (Line line : lineRepository.findAll()) {
+            List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+            response.add(LineDetailResponse.of(line, stations));
         }
         return response;
     }
 
-    public PathResponse findShortestPath(String sourceName, String targetName, Type type) {
+    public PathResponse findShortestPath(String sourceName, String targetName, PathType pathType) {
         if (sourceName.equals(targetName)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
 
-        List<LineStation> lineStations = lineRepository.findAll()
-                .stream()
-                .map(Line::getStations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        ShortestPath shortestPath = ShortestPath.of(lineStations, type);
+        List<LineStation> lineStations = findAllLineStations();
+        ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);
 
         Long sourceId = stationRepository.findIdByName(sourceName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
-        List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
 
+        List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
         int weight = shortestPath.getWeight(sourceId, targetId);
         int subWeight = shortestPath.getSubWeight(sourceId, targetId);
-        int distance = type.getDistance(weight, subWeight);
-        int duration = type.getDuration(weight, subWeight);
-        List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
 
+        int distance = pathType.getDistance(weight, subWeight);
+        int duration = pathType.getDuration(weight, subWeight);
+        List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
         return new PathResponse(distance, duration, pathStationNames);
+    }
+
+    private List<LineStation> findAllLineStations() {
+        return Collections.unmodifiableList(lineRepository.findAll())
+                .stream()
+                .map(Line::getStations)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 }

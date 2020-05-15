@@ -23,28 +23,27 @@ public class LineController {
     @PostMapping(value = "/lines")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         Line persistLine = lineService.save(view.toLine());
-
         return ResponseEntity
                 .created(URI.create("/lines/" + persistLine.getId()))
                 .body(LineResponse.of(persistLine));
     }
 
     @GetMapping("/lines")
-    public ResponseEntity<List<LineResponse>> showLine() {
+    public ResponseEntity<List<LineResponse>> showLines() {
         List<LineResponse> response = LineResponse.listOf(lineService.showLines());
         return ResponseEntity.ok()
                 .body(response);
     }
 
     @GetMapping("/lines/detail")
-    public ResponseEntity<List<LineDetailResponse>> showDetailLine() {
+    public ResponseEntity<List<LineDetailResponse>> showDetailLines() {
         List<LineDetailResponse> response = lineService.findDetailLines();
         return ResponseEntity.ok()
                 .body(response);
     }
 
     @GetMapping("/lines/{id}")
-    public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
+    public ResponseEntity<LineDetailResponse> showDetailLine(@PathVariable Long id) {
         LineDetailResponse response = lineService.findDetailLineById(id);
         return ResponseEntity.ok()
                 .body(response);

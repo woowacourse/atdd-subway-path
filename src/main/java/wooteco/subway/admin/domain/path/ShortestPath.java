@@ -8,16 +8,15 @@ import wooteco.subway.admin.domain.LineStation;
 import java.util.List;
 
 public class ShortestPath {
-
     private DijkstraShortestPath<Long, WeightedEdge> path;
 
     private ShortestPath(DijkstraShortestPath<Long, WeightedEdge> path) {
         this.path = path;
     }
 
-    public static ShortestPath of(List<LineStation> lineStations, Type type) {
+    public static ShortestPath of(List<LineStation> lineStations, PathType pathType) {
         WeightedGraph<Long, WeightedEdge> graph
-                = new DirectedWeightedMultigraph(WeightedEdge.class);
+                = new DirectedWeightedMultigraph<>(WeightedEdge.class);
 
         for (LineStation station : lineStations) {
             graph.addVertex(station.getStationId());
@@ -26,9 +25,8 @@ public class ShortestPath {
             }
             WeightedEdge weightedEdge
                     = graph.addEdge(station.getPreStationId(), station.getStationId());
-            int subWeight = type.findSubWeight(station);
-            weightedEdge.setSubWeight(subWeight); //
-            graph.setEdgeWeight(weightedEdge, type.findWeight(station));
+            weightedEdge.setSubWeight(pathType.findSubWeight(station));
+            graph.setEdgeWeight(weightedEdge, pathType.findWeight(station));
         }
 
         DijkstraShortestPath<Long, WeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
@@ -53,9 +51,9 @@ public class ShortestPath {
 
     public int getSubWeight(Long source, Long target) {
         return path.getPath(source, target)
-            .getEdgeList()
-            .stream()
-            .mapToInt(WeightedEdge::getSubWeight)
-            .sum();
+                .getEdgeList()
+                .stream()
+                .mapToInt(WeightedEdge::getSubWeight)
+                .sum();
     }
 }

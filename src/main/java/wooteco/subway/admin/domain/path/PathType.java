@@ -4,21 +4,21 @@ import wooteco.subway.admin.domain.LineStation;
 
 import java.util.function.Function;
 
-public enum Type {
+public enum PathType {
     DISTANCE(LineStation::getDistance, LineStation::getDuration),
     DURATION(LineStation::getDuration, LineStation::getDistance);
 
     private Function<LineStation, Integer> findWeight;
     private Function<LineStation, Integer> findSubWeight;
 
-    Type(Function<LineStation, Integer> findWeight, Function<LineStation, Integer> findSubWeight) {
+    PathType(Function<LineStation, Integer> findWeight, Function<LineStation, Integer> findSubWeight) {
         this.findWeight = findWeight;
         this.findSubWeight = findSubWeight;
     }
 
-    public static Type of(String type) {
+    public static PathType of(String type) {
         try {
-            return Type.valueOf(type.toUpperCase());
+            return PathType.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("경로 찾기의 Type이 잘못되었습니다.");
         }

@@ -12,9 +12,10 @@ Feature: 출발역과 도착역의 최단 경로를 조회
 
 ### To do
 - [ ] (예외) Admin 구간 추가 시, modal 재접속하면 이전역 로딩 오류
-- [ ] Shortest Path interface화
-- [ ] WeightedEdge 상속받는 클래스 구현
+- [ ] Shortest Path interface 화
+- [x] WeightedEdge 상속 받는 클래스 구현
 - [ ] Cache Filter로 사용하는 것 추가
 - [ ] Server 에서의 Cache 처리 추가
 - [ ] Cache Configuration
 - [ ] Advice 추가
+- [ ] 중복되는 ResponseDto 수정 (LineDetailResponse)

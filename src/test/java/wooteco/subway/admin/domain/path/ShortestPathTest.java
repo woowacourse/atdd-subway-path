@@ -38,7 +38,7 @@ public class ShortestPathTest {
                 .map(Line::getStations)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        ShortestPath shortestPath = ShortestPath.of(lineStations, Type.DURATION);
+        ShortestPath shortestPath = ShortestPath.of(lineStations, PathType.DURATION);
         assertThat(shortestPath.getPath()).isInstanceOf(DijkstraShortestPath.class);
     }
 }

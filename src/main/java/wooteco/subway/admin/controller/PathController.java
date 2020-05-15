@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.admin.domain.path.Type;
+import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.LineService;
 
@@ -29,7 +29,7 @@ public class PathController {
         String sourceName = URLDecoder.decode(encodedSourceName, "UTF-8");
         String targetName = URLDecoder.decode(encodedTargetName, "UTF-8");
 
-        PathResponse response = lineService.findShortestPath(sourceName, targetName, Type.of(type));
+        PathResponse response = lineService.findShortestPath(sourceName, targetName, PathType.of(type));
         return ResponseEntity.ok()
                 .body(response);
     }
