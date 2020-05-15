@@ -1,8 +1,6 @@
-package wooteco.subway.admin.service;
+package wooteco.subway.admin.domain;
 
 import java.util.function.Function;
-
-import wooteco.subway.admin.domain.LineStation;
 
 public enum PathType {
     DISTANCE(LineStation::getDistance),

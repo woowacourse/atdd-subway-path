@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.controller.validator.PathValidator;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.service.PathType;
 
 @ExtendWith(MockitoExtension.class)
 public class PathValidatorTest {

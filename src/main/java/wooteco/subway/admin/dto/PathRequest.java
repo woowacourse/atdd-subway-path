@@ -1,10 +1,15 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.service.PathType;
+import javax.validation.constraints.NotNull;
+
+import wooteco.subway.admin.domain.PathType;
 
 public class PathRequest {
+    @NotNull(message = "출발역을 지정해주세요!")
     private Long source;
+    @NotNull(message = "도착역을 지정해주세요!")
     private Long target;
+    @NotNull(message = "최단 거리 또는 최단 시간을 클릭해주세요!")
     private PathType type;
 
     public PathRequest() {

@@ -9,7 +9,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 
 public class Line {
     @Id
@@ -19,7 +21,9 @@ public class Line {
     private LocalTime endTime;
     private int intervalTime;
     private String backgroundColor;
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
     private LocalDateTime updatedAt;
     private Set<LineStation> stations = new HashSet<>();
 
@@ -32,8 +36,6 @@ public class Line {
         this.endTime = endTime;
         this.intervalTime = intervalTime;
         this.backgroundColor = backgroundColor;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {

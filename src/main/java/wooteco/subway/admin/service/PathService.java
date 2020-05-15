@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;

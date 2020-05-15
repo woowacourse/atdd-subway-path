@@ -24,7 +24,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.service.LineService;
 
 @WebMvcTest(controllers = {LineController.class})
-@Import(ETagHeaderFilter.class)
+@Import({ETagHeaderFilter.class})
 public class LineControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -38,22 +38,21 @@ public class LineControllerTest {
 
         given(lineService.wholeLines()).willReturn(response);
 
-        // TODO: 전체 지하철 노선도 정보를 조회하는 URI 입력하기
         String uri = "/api/lines";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
 
         String eTag = mvcResult.getResponse().getHeader("ETag");
 
         mockMvc.perform(get(uri).header("If-None-Match", eTag))
-                .andDo(print())
-                .andExpect(status().isNotModified())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isNotModified())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
     }
 
     private LineDetailResponse createMockResponse() {
