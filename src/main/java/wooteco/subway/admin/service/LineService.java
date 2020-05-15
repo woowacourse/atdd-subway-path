@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Lines;
@@ -25,24 +26,26 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line save(Line line) {
-        return lineRepository.save(line);
-    }
-
+    @Transactional(readOnly = true)
     public List<Line> showLines() {
         return lineRepository.findAll();
     }
 
-    public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(request.toLine());
-        lineRepository.save(persistLine);
+    @Transactional(readOnly = true)
+    public LineDetailResponse findLineWithStationsById(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        return LineDetailResponse.of(line, stations);
     }
 
-    public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
+    @Transactional(readOnly = true)
+    public WholeSubwayResponse wholeLines() {
+        Lines lines = new Lines(lineRepository.findAll());
+        Stations stations = new Stations(stationRepository.findAllById(lines.getStationIds()));
+        return WholeSubwayResponse.of(LineDetailResponse.listOf(lines, stations));
     }
 
+    @Transactional
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         Edge edge = new Edge(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
@@ -51,22 +54,29 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional
+    public Line save(Line line) {
+        return lineRepository.save(line);
+    }
+
+    @Transactional
+    public void updateLine(Long id, LineRequest request) {
+        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        persistLine.update(request.toLine());
+
+        lineRepository.save(persistLine);
+    }
+
+    @Transactional
+    public void deleteLineById(Long id) {
+        lineRepository.deleteById(id);
+    }
+
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         line.removeLineStationById(stationId);
+
         lineRepository.save(line);
-    }
-
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
-    }
-
-    public WholeSubwayResponse wholeLines() {
-        Lines lines = new Lines(lineRepository.findAll());
-        Stations stations = new Stations(stationRepository.findAllById(lines.getStationIds()));
-
-        return WholeSubwayResponse.of(LineDetailResponse.listOf(lines, stations));
     }
 }

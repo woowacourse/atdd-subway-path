@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.PathDetail;
 import wooteco.subway.admin.domain.Station;
@@ -12,6 +13,7 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -25,14 +27,14 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(PathRequest pathRequest) {
-        Station sourceStation = stationRepository.findByName(pathRequest.getSource())
-                .orElseThrow(IllegalArgumentException::new);
-        Station targetStation = stationRepository.findByName(pathRequest.getTarget())
-                .orElseThrow(IllegalArgumentException::new);
+        String source = pathRequest.getSource();
+        String target = pathRequest.getTarget();
+        Stations requestStations = new Stations(stationRepository.findAllByNameIn(Arrays.asList(source, target)));
 
-        Long sourceId = sourceStation.getId();
-        Long targetId = targetStation.getId();
+        Long sourceId = requestStations.findIdByName(source);
+        Long targetId = requestStations.findIdByName(target);
 
         //전체 노선을 가져온다
         Lines lines = new Lines(lineRepository.findAll());

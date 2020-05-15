@@ -20,7 +20,15 @@ public class Stations {
         return stations.stream()
                 .filter(station -> station.isSameId(id))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("존재하지 않는 역 ID(%d)입니다.", id)))
                 .getName();
+    }
+
+    public Long findIdByName(final String name) {
+        return stations.stream()
+                .filter(station -> station.isSameName(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format("존재하지 않는 역 이름(%s)입니다.", name)))
+                .getId();
     }
 }

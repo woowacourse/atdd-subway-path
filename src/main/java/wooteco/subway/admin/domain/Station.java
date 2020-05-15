@@ -25,6 +25,14 @@ public class Station {
         this.createdAt = LocalDateTime.now();
     }
 
+    public boolean isSameId(final Long id) {
+        return Objects.equals(this.id, id);
+    }
+
+    public boolean isSameName(final String name) {
+        return Objects.equals(this.name, name);
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,9 +43,5 @@ public class Station {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public boolean isSameId(final Long id) {
-        return Objects.equals(this.id, id);
     }
 }
