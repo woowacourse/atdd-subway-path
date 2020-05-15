@@ -34,6 +34,7 @@ class PathServiceTest {
 	private Station station2;
 	private Station station3;
 	private Station station4;
+	private Station station5;
 
 
 	@BeforeEach
@@ -44,7 +45,8 @@ class PathServiceTest {
 		station2 = new Station(2L, "강남");
 		station3 = new Station(3L, "양재");
 		station4 = new Station(4L, "남부터미널");
-		stations = Arrays.asList(station1, station2, station3, station4);
+		station5 = new Station(5L, "연결X");
+		stations = Arrays.asList(station1, station2, station3, station4, station5);
 
 		lineStations = new ArrayList<>();
 		lineStations.add(new LineStation(null, station1.getId(), 0, 0));
