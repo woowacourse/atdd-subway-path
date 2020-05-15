@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Graph;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.WeightStrategy;
 import wooteco.subway.domain.path.WeightType;
@@ -46,7 +47,8 @@ public class ClientService {
         List<Station> stations = stationRepository.findAll();
 
         WeightStrategy strategy = WeightType.findStrategy(type);
-        Path path = new Path(lines, stations, source, target, strategy);
+        Graph graph = new Graph(lines, stations, strategy);
+        Path path = graph.createPath(source, target);
 
         return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
             path.duration());

@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineStation;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.WeightType;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
@@ -66,8 +67,9 @@ public class ClientServiceTest {
         line2.addLineStation(new LineStation(5L, 4L, 10, 10));
     }
 
+    @DisplayName("경로 조회시, 최단 경로 기준으로 path생성")
     @Test
-    void searchPathByShortestDistance() {
+    void searchPath_GivenDistanceWeight_CreatePath() {
         // given
         List<Station> stations = Arrays.asList(station1, station2, station3, station4, station5);
         when(stationRepository.findAll()).thenReturn(stations);
@@ -79,15 +81,17 @@ public class ClientServiceTest {
             Arrays.asList(station1, station5, station4));
 
         //when
-        PathResponse pathResponse = clientService.searchPath(source, target, "DISTANCE");
+        PathResponse pathResponse = clientService.searchPath(source, target,
+            WeightType.DISTANCE.getName());
 
         //then
         List<StationResponse> actual = pathResponse.getStations();
         assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("경로 조회시, 최단 시간을 기준으로 path생성")
     @Test
-    void searchPathByShortestDuration() {
+    void searchPath_GivenDurationWeight_CreatePath() {
         // given
         List<Station> stations = Arrays.asList(station1, station2, station3, station4, station5);
         when(stationRepository.findAll()).thenReturn(stations);
@@ -99,18 +103,20 @@ public class ClientServiceTest {
             Arrays.asList(station1, station2, station3, station4));
 
         //when
-        PathResponse pathResponse = clientService.searchPath(source, target, "DURATION");
+        PathResponse pathResponse = clientService.searchPath(source, target,
+            WeightType.DURATION.getName());
 
         //then
         List<StationResponse> actual = pathResponse.getStations();
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("경로 조회시, 출발역과 도착역이 같은 경우 예외 발생 확인")
+    @DisplayName("예외테스트: 경로 조회시, 출발역과 도착역이 같은 경우 예외 발생 확인")
     @Test
-    void name() {
+    void searchPath_GivenSameStations_ExceptionThrown() {
         assertThatThrownBy(
-            () -> clientService.searchPath(STATION_NAME1, STATION_NAME1, "DISTANCE"))
+            () -> clientService.searchPath(STATION_NAME1, STATION_NAME1,
+                WeightType.DISTANCE.getName()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("출발역과 도착역은 같을 수 없습니다");
     }

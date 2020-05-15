@@ -59,9 +59,9 @@ public class ClientControllerTest {
         return LineDetailResponse.of(new Line(), stations);
     }
 
-    @DisplayName("경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생 확인")
+    @DisplayName("예외테스트: 경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생")
     @Test
-    void name() throws Exception {
+    void searchPath_GivenBlankStation_ExceptionThrown() throws Exception {
         //given
         HashMap<String, String> params = new HashMap<>();
         params.put("source", "");

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,9 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineStation;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.InvalidPathException;
 
-class PathTest {
+public class GraphTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
@@ -41,20 +43,20 @@ class PathTest {
         strategy = WeightType.findStrategy("DISTANCE");
     }
 
-    @DisplayName("각 구간 사이가 10분이고, 경로의 총 소요 시간이 20분인 경우 duration 확인")
+    @DisplayName("예외테스트: 연결되지 않은 역의 경로를 요청 시, 예외 발생")
     @Test
-    void duration_GivenStations_CalculateDuration() {
+    void createPath_GivenNotConnectedPath_ExceptionThrown() {
         //given
-        double expected = 20;
+        Line line2 = new Line();
+        line2.addLineStation(new LineStation(null, station4.getId(), 0, 0));
+        List<Line> lines = Arrays.asList(line, line2);
+        List<Station> stations = Arrays.asList(station1, station2, station3, station4);
+        Graph graph = new Graph(lines, stations, strategy);
 
-        //when
-        Graph graph = new Graph(Arrays.asList(line),
-            Arrays.asList(station1, station2, station3, station4), strategy);
-        Path path = graph.createPath(STATION_NAME1, STATION_NAME3);
-        double actual = path.duration();
-
-        //then
-        assertThat(actual).isEqualTo(expected);
+        //when //then
+        assertThatThrownBy(() -> graph.createPath(STATION_NAME1, STATION_NAME4))
+            .isInstanceOf(InvalidPathException.class)
+            .hasMessage(String.format("경로를 찾을 수 없습니다. sourceName: %s target: %s", STATION_NAME1,
+                STATION_NAME4));
     }
-
 }

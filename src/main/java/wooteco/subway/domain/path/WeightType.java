@@ -21,4 +21,8 @@ public enum WeightType {
             .orElseThrow(() -> new IllegalArgumentException("해당 경로 탐색 기준이 존재하지 않습니다."))
             .strategy;
     }
+
+    public String getName() {
+        return name;
+    }
 }
