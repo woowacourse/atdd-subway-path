@@ -8,10 +8,12 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.domain.LineDto;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -23,12 +25,14 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line save(Line line) {
-        return lineRepository.save(line);
+    public LineDto save(Line line) {
+        return LineDto.of(lineRepository.save(line));
     }
 
-    public List<Line> showLines() {
-        return lineRepository.findAll();
+    public List<LineDto> showLines() {
+        return lineRepository.findAll().stream()
+                .map(LineDto::of)
+                .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest request) {
@@ -57,12 +61,18 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return findLineWithStationsByLine(line);
+    }
+
+    public LineDetailResponse findLineWithStationsByLine(Line line) {
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<LineDetailResponse> wholeLines = lineRepository.findAll().stream()
+                .map(this::findLineWithStationsByLine)
+                .collect(Collectors.toList());
+        return WholeSubwayResponse.of(wholeLines);
     }
 }

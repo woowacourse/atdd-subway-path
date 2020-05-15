@@ -24,6 +24,14 @@ public class Station {
         this.createdAt = LocalDateTime.now();
     }
 
+    public boolean is(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean is(String name) {
+        return this.name.equals(name);
+    }
+
     public Long getId() {
         return id;
     }
