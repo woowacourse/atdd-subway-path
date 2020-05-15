@@ -42,30 +42,21 @@ public class PathServiceTest {
     @Mock
     private LineRepository lineRepository;
 
-    private Line line1;
-    private Line line2;
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-    private Station station5;
-    private Station station6;
-    private Station station7;
-
     @BeforeEach
     void setUp() {
         pathService = new PathService(lineRepository, stationRepository);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
-        station7 = new Station(7L, STATION_NAME7);
+        Station station1 = new Station(1L, STATION_NAME1);
+        Station station2 = new Station(2L, STATION_NAME2);
+        Station station3 = new Station(3L, STATION_NAME3);
+        Station station4 = new Station(4L, STATION_NAME4);
+        Station station5 = new Station(5L, STATION_NAME5);
+        Station station6 = new Station(6L, STATION_NAME6);
+        Station station7 = new Station(7L, STATION_NAME7);
 
-        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2 = new Line(2L, "8호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line2 = new Line(2L, "8호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
         line1.addLineStation(new LineStation(1L, 2L, 10, 3));
         line1.addLineStation(new LineStation(2L, 3L, 10, 3));
