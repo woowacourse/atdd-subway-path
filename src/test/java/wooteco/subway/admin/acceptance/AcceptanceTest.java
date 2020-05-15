@@ -185,11 +185,11 @@ public class AcceptanceTest {
         return given().
                 contentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8").
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                queryParam("sourceName", sourceName).
-                queryParam("targetName", targetName).
-                queryParam("criteria", criteria).
+                queryParam("source", sourceName).
+                queryParam("target", targetName).
+                queryParam("type", criteria).
             when().
-                    get("/path/distance").
+                    get("/paths").
             then().
                     log().all().
                     statusCode(HttpStatus.OK.value()).

@@ -17,8 +17,8 @@ public class PathController {
 
 	@GetMapping("/paths")
 	public ResponseEntity<ShortestPath> findShortestDistancePath(@RequestParam("source") String sourceName,
-																 @RequestParam("type") String criteria,
-																 @RequestParam("target") String targetName) {
+																 @RequestParam("target") String targetName,
+																 @RequestParam("type") String criteria) {
 
 		ShortestPath shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 

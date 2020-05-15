@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.ShortestPath;
+import wooteco.subway.admin.exception.EmptyStationNameException;
+import wooteco.subway.admin.exception.NoStationNameExistsException;
+import wooteco.subway.admin.exception.SourceEqualsTargetException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -21,10 +24,18 @@ public class PathService {
 
 	@Transactional
 	public ShortestPath findShortestDistancePath(String sourceName, String targetName, String criteriaType) {
+		if (sourceName.isEmpty() || targetName.isEmpty()) {
+			throw new EmptyStationNameException();
+		}
+
 		Station sourceStation = stationRepository.findByName(sourceName)
-				.orElseThrow(() -> new IllegalArgumentException("해당 이름의 역이 없습니다."));
+				.orElseThrow(NoStationNameExistsException::new);
 		Station targetStation = stationRepository.findByName(targetName)
-				.orElseThrow(() -> new IllegalArgumentException("해당 이름의 역이 없습니다."));
+				.orElseThrow(NoStationNameExistsException::new);
+
+		if (sourceStation.equals(targetStation)) {
+			throw new SourceEqualsTargetException();
+		}
 
 		Criteria criteria = Criteria.of(criteriaType);
 

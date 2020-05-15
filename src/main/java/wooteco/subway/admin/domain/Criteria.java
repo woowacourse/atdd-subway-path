@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import wooteco.subway.admin.exception.NoCriteriaExistsException;
+
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
@@ -16,10 +18,11 @@ public enum Criteria {
 	}
 
 	public static Criteria of(String criteriaType) {
+//		Criteria.valueOf(criteriaType.toUpperCase()); // TODO: 2020/05/15 살려 말어?
 		return Arrays.stream(values())
 				.filter(type -> type.criteriaType.equals(criteriaType))
 				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("해당 Criteria가 존재하지 않습니다."));
+				.orElseThrow(NoCriteriaExistsException::new);
 	}
 
 	public double getWeight(int duration, int distance) {
