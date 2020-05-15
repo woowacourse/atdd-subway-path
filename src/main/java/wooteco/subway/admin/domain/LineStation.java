@@ -15,6 +15,17 @@ public class LineStation {
 		this.duration = duration;
 	}
 
+	public void updatePreLineStation(Long preStationId) {
+		this.preStationId = preStationId;
+	}
+
+	public Station findMatchingStation(List<Station> stations) {
+		return stations.stream()
+			.filter(station -> station.getId().equals(this.getStationId()))
+			.findFirst()
+			.orElseThrow(IllegalArgumentException::new);
+	}
+
 	public Long getPreStationId() {
 		return preStationId;
 	}
@@ -29,16 +40,5 @@ public class LineStation {
 
 	public int getDuration() {
 		return duration;
-	}
-
-	public void updatePreLineStation(Long preStationId) {
-		this.preStationId = preStationId;
-	}
-
-	public Station findMatchingStation(List<Station> stations) {
-		return stations.stream()
-			.filter(station -> station.getId().equals(this.getStationId()))
-			.findFirst()
-			.orElseThrow(IllegalArgumentException::new);
 	}
 }

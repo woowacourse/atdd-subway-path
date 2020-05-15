@@ -6,7 +6,7 @@ public enum PathSearchType {
 	DISTANCE("distance"),
 	DURATION("duration");
 
-	String name;
+	private final String name;
 
 	PathSearchType(String name) {
 		this.name = name;

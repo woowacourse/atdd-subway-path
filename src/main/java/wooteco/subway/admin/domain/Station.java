@@ -15,8 +15,7 @@ public class Station {
 	}
 
 	public Station(String name) {
-		this.name = name;
-		this.createdAt = LocalDateTime.now();
+		this(null, name);
 	}
 
 	public Station(Long id, String name) {
@@ -51,14 +50,5 @@ public class Station {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name);
-	}
-
-	@Override
-	public String toString() {
-		return "Station{" +
-			"id=" + id +
-			", name='" + name + '\'' +
-			", createdAt=" + createdAt +
-			'}';
 	}
 }

@@ -13,7 +13,6 @@ import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
 public class WholeSubwayAcceptanceTest extends AcceptanceTest {
-
 	@DisplayName("지하철 노선도 전체 정보 조회")
 	@Test
 	public void wholeSubway() {
@@ -26,7 +25,6 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
 		LineResponse lineResponse2 = createLine("신분당선");
-		// StationResponse stationResponse4 = createStation("강남역");
 		StationResponse stationResponse5 = createStation("양재역");
 		StationResponse stationResponse6 = createStation("양재시민의숲역");
 		addLineStation(lineResponse2.getId(), null, stationResponse1.getId());

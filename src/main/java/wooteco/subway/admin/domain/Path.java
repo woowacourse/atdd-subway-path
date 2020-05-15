@@ -11,15 +11,15 @@ import wooteco.subway.admin.exception.DisconnectedPathException;
 import wooteco.subway.admin.exception.NullStationIdException;
 import wooteco.subway.admin.exception.SameSourceAndDestinationException;
 
-public class Lines {
-	private DijkstraShortestPath<Long, DefaultWeightedEdge> shortestDistancePath;
+public class Path {
 	private final WeightedMultigraph<Long, DefaultWeightedEdge> durationGraph = new WeightedMultigraph<>(
 		DefaultWeightedEdge.class);
-	private DijkstraShortestPath<Long, DefaultWeightedEdge> shortestDurationPath;
 	private final WeightedMultigraph<Long, DefaultWeightedEdge> distanceGraph = new WeightedMultigraph<>(
 		DefaultWeightedEdge.class);
+	private DijkstraShortestPath<Long, DefaultWeightedEdge> shortestDistancePath;
+	private DijkstraShortestPath<Long, DefaultWeightedEdge> shortestDurationPath;
 
-	public Lines(List<Line> lines) {
+	public Path(List<Line> lines) {
 		init(lines);
 	}
 
@@ -48,8 +48,6 @@ public class Lines {
 		}
 	}
 
-	/****/
-
 	private GraphPath<Long, DefaultWeightedEdge> getShortestPath(Long source, Long target, PathSearchType type) {
 		GraphPath<Long, DefaultWeightedEdge> path = null;
 		validateNotNull(source, target);
@@ -69,8 +67,6 @@ public class Lines {
 			.getVertexList();
 	}
 
-	/****/
-
 	public int calculateShortestDuration(Long source, Long target) {
 		return (int)getShortestPath(source, target, PathSearchType.DURATION).getWeight();
 	}
@@ -85,7 +81,6 @@ public class Lines {
 		return wholeDistance;
 	}
 
-	/////////////
 	public int calculateShortestDistance(Long source, Long target) {
 		return (int)getShortestPath(source, target, PathSearchType.DISTANCE).getWeight();
 	}
@@ -99,7 +94,6 @@ public class Lines {
 		}
 		return wholeDuration;
 	}
-	/////////
 
 	private void validateConnectedPath(GraphPath<Long, DefaultWeightedEdge> path) {
 		if (path == null) {

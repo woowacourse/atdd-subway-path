@@ -29,7 +29,6 @@ public class PathServiceTest {
 	public static final String STATION_NAME2 = "역삼역";
 	public static final String STATION_NAME3 = "선릉역";
 	public static final String STATION_NAME4 = "삼성역";
-	public static final String STATION_NAME5 = "잠실역";
 
 	@Mock
 	private LineRepository lineRepository;
@@ -44,7 +43,6 @@ public class PathServiceTest {
 	private Station station2;
 	private Station station3;
 	private Station station4;
-	private Station station5;
 
 	@BeforeEach
 	void setUp() {
@@ -54,10 +52,9 @@ public class PathServiceTest {
 		station2 = new Station(2L, STATION_NAME2);
 		station3 = new Station(3L, STATION_NAME3);
 		station4 = new Station(4L, STATION_NAME4);
-		station5 = new Station(5L, STATION_NAME5);
 
-		lineOne = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-		lineTwo = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+		lineOne = new Line(1L, "1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		lineTwo = new Line(2L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
 
 		lineOne.addLineStation(new LineStation(null, 1L, 0, 0));
 		lineOne.addLineStation(new LineStation(1L, 2L, 5, 3));

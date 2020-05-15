@@ -3,6 +3,8 @@ package wooteco.subway.admin.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,7 @@ public class LineController {
 	}
 
 	@PostMapping(value = "/lines")
-	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest request) {
+	public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest request) {
 		Line persistLine = lineService.save(request.toLine());
 
 		return ResponseEntity
@@ -54,7 +56,7 @@ public class LineController {
 	}
 
 	@PutMapping("/lines/{id}")
-	public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest request) {
+	public ResponseEntity<Void> updateLine(@PathVariable Long id, @Valid @RequestBody LineRequest request) {
 		lineService.updateLine(id, request);
 		return ResponseEntity.ok().build();
 	}
