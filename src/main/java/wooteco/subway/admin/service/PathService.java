@@ -90,7 +90,11 @@ public class PathService {
                 .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
                 .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), it.getDistance()));
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        try{
+            return dijkstraShortestPath.getPath(source, target).getVertexList();
+        } catch(IllegalArgumentException e) {
+            throw new RuntimeException("출발지와 도착지가 연결되어 있지 않습니다.");
+        }
     }
 
     private Long findStationIdByName(List<Station> stations, String name) {
@@ -99,6 +103,6 @@ public class PathService {
                 .filter(station -> station.getName().equals(name))
                 .map(Station::getId)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("입력하신 역을 찾을 수 없습니다."));
     }
 }

@@ -128,4 +128,17 @@ public class PathServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("출발지와 도착지가 연결되어 있지 않습니다.");
     }
+
+    @DisplayName("입력된 역을 찾을 수 없는 경우 예외가 발생하는지 테스트")
+    @Test
+    void stationNotFoundTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        PathRequest pathRequest = new PathRequest("강남역", "제주역", PathType.DISTANCE);
+
+        assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("입력하신 역을 찾을 수 없습니다.");
+    }
 }
