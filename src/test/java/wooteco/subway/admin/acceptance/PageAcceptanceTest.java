@@ -36,7 +36,7 @@ public class PageAcceptanceTest {
 		createLine("신분당선");
 
 		given().
-			accept(MediaType.TEXT_HTML_VALUE).
+			accept(MediaType.APPLICATION_JSON_VALUE).
 			when().
 			get("/lines").
 			then().
