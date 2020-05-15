@@ -41,10 +41,10 @@ public class PathService {
                 .filter(lineStation -> lineStation.getPreStationId() != null)
                 .collect(Collectors.toList());
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(type, stations, lineStations);
-
         Long source = findStationIdWithStationName(sourceName, stations);
         Long target = findStationIdWithStationName(targetName, stations);
+
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(type, stations, lineStations);
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
@@ -57,17 +57,17 @@ public class PathService {
 
         int weight = (int) dijkstraShortestPath.getPathWeight(source, target);
 
-        int information = lineStations.stream()
+        int extraInformation = lineStations.stream()
                 .filter(lineStation -> shortestPath.contains(lineStation.getStationId()))
                 .filter(lineStation -> shortestPath.contains(lineStation.getPreStationId()))
-                .mapToInt(type::getGetInformation)
+                .mapToInt(type::getExtraInformation)
                 .sum();
 
         if (type.equals(PathType.DISTANCE)) {
-            return new PathResponse(StationResponse.listOf(pathStations), information, weight);
+            return new PathResponse(StationResponse.listOf(pathStations), extraInformation, weight);
         }
 
-        return new PathResponse(StationResponse.listOf(pathStations), weight, information);
+        return new PathResponse(StationResponse.listOf(pathStations), weight, extraInformation);
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(PathType type, List<Station> stations, List<LineStation> lineStations) {
@@ -78,7 +78,7 @@ public class PathService {
         }
 
         for (LineStation station : lineStations) {
-            graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), type.getGetWeight(station));
+            graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), type.getWeight(station));
         }
 
         return graph;

@@ -7,18 +7,18 @@ public enum PathType {
     DURATION((LineStation::getDuration), (LineStation::getDistance));
 
     private Function<LineStation, Integer> getWeight;
-    private Function<LineStation, Integer> getInformation;
+    private Function<LineStation, Integer> getExtraInformation;
 
-    PathType(Function<LineStation, Integer> getWeight, Function<LineStation, Integer> getInformation) {
+    PathType(Function<LineStation, Integer> getWeight, Function<LineStation, Integer> getExtraInformation) {
         this.getWeight = getWeight;
-        this.getInformation = getInformation;
+        this.getExtraInformation = getExtraInformation;
     }
 
-    public int getGetWeight(LineStation lineStation) {
+    public int getWeight(LineStation lineStation) {
         return getWeight.apply(lineStation);
     }
 
-    public int getGetInformation(LineStation lineStation) {
-        return getInformation.apply(lineStation);
+    public int getExtraInformation(LineStation lineStation) {
+        return getExtraInformation.apply(lineStation);
     }
 }
