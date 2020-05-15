@@ -52,7 +52,7 @@ public class PathServiceTest {
 	@DisplayName("출발역과 도착역이 존재하는 역인지 확인")
 	@Test
 	void existStations() {
-		when(stationRepository.existsByName(any())).thenReturn(false);
+		when(stationRepository.notExistsByName(any())).thenReturn(true);
 
 		assertThatThrownBy(() -> {
 			pathService.searchPath("source", "target", SearchType.DISTANCE);
@@ -84,15 +84,11 @@ public class PathServiceTest {
 	}
 
 	private void setUpMock() {
-		when(stationRepository.existsByName(any())).thenReturn(true);
-		when(stationRepository.findAllIds()).thenReturn(Arrays.asList(1L, 2L, 3L, 4L));
+		when(stationRepository.notExistsByName(any())).thenReturn(false);
+		when(stationRepository.findAll()).thenReturn(stations);
 		when(lineRepository.findAllLineStations()).thenReturn(lineStations);
 		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(new Station(1L, "강남역")));
 		when(stationRepository.findByName("잠실역")).thenReturn(Optional.of(new Station(4L, "잠실역")));
-		when(stationRepository.findById(1L)).thenReturn(Optional.of(new Station(1L, "강남역")));
-		when(stationRepository.findById(2L)).thenReturn(Optional.of(new Station(2L, "역삼역")));
-		when(stationRepository.findById(3L)).thenReturn(Optional.of(new Station(3L, "선릉역")));
-		when(stationRepository.findById(4L)).thenReturn(Optional.of(new Station(4L, "잠실역")));
 		when(lineRepository.findLineStationByPreStationIdAndStationId(1L, 2L))
 				.thenReturn(lineStations.get(1));
 		when(lineRepository.findLineStationByPreStationIdAndStationId(2L, 3L))
