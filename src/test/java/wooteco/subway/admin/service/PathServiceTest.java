@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.NotExistStationException;
@@ -54,7 +55,7 @@ public class PathServiceTest {
 		when(stationRepository.existsByName(any())).thenReturn(false);
 
 		assertThatThrownBy(() -> {
-			pathService.searchPath("source", "target", true);
+			pathService.searchPath("source", "target", SearchType.DISTANCE);
 		}).isInstanceOf(NotExistStationException.class);
 	}
 
@@ -63,7 +64,7 @@ public class PathServiceTest {
 	void searchPathByShortestDistance() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", true);
+		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", SearchType.DISTANCE);
 
 		assertThat(pathResponse.getStations().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
@@ -75,7 +76,7 @@ public class PathServiceTest {
 	void searchPathByShortestDuration() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", false);
+		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", SearchType.DURATION);
 
 		assertThat(pathResponse.getStations().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);

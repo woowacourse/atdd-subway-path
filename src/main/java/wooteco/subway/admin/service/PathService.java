@@ -5,6 +5,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
@@ -30,7 +31,7 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse searchPath(String source, String target, Boolean isDistance) {
+	public PathResponse searchPath(String source, String target, SearchType searchType) {
 		if (isDuplicatedStations(source, target)) {
 			throw new DuplicatedStationNamesException();
 		}
@@ -42,7 +43,7 @@ public class PathService {
 			Station targetStation = stationRepository.findByName(target).orElseThrow(NoSuchElementException::new);
 
 			DijkstraShortestPath dijkstraShortestPath = findDijkstraShortestPath(
-					allStationsIds, allLineStations, isDistance);
+					allStationsIds, allLineStations, searchType);
 
 			List<String> shortestPath = dijkstraShortestPath.getPath(
 					String.valueOf(sourceStation.getId()), String.valueOf(targetStation.getId())).getVertexList();
@@ -90,7 +91,7 @@ public class PathService {
 	}
 
 	private DijkstraShortestPath findDijkstraShortestPath(
-			List<Long> allStationsIds, List<LineStation> allLineStations, Boolean isDistance) {
+			List<Long> allStationsIds, List<LineStation> allLineStations, SearchType searchType) {
 
 		WeightedMultigraph<String, DefaultWeightedEdge> graph
 				= new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -102,7 +103,7 @@ public class PathService {
 			String preStationIdValue = createStringValue(it.getPreStationId());
 			String stationIdValue = String.valueOf(it.getStationId());
 			graph.setEdgeWeight(graph.addEdge(preStationIdValue, stationIdValue),
-			                    isDistance ? it.getDistance() : it.getDuration());
+			                    searchType.isDistance() ? it.getDistance() : it.getDuration());
 		});
 
 
