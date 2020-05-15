@@ -75,7 +75,7 @@ public class LineController {
 
     @GetMapping("/lines/path/{departure}/{arrival}")
     public PathResponses showPaths(@PathVariable String departure, @PathVariable String arrival) {
-        return lineService.findPaths(new PathRequest(departure, arrival));
+        return lineService.findPathsBy(new PathRequest(departure, arrival));
     }
 
     @GetMapping("/lines/detail")

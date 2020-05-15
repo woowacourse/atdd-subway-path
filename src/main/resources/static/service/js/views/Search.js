@@ -11,6 +11,7 @@ function Search() {
   const $searchResult = document.querySelector('#search-result')
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
+  let searchResults;
 
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -24,16 +25,14 @@ function Search() {
     event.preventDefault()
     $minimumTimeTab.classList.add('active-tab')
     $shortestDistanceTab.classList.remove('active-tab')
-    const results = JSON.parse(localStorage.getItem("results"));
-    showSearchResult(results.response.duration)
+    showSearchResult(searchResults.response.DURATION)
   }
 
   const onSearchShortestDistance = event => {
     event.preventDefault()
     $shortestDistanceTab.classList.add('active-tab')
     $minimumTimeTab.classList.remove('active-tab')
-    const results = JSON.parse(localStorage.getItem("results"));
-    showSearchResult(results.response.distance)
+    showSearchResult(searchResults.response.DISTANCE)
   }
 
   const onToggleFavorite = event => {
@@ -62,8 +61,7 @@ function Search() {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
     }
-    const responses = await api.path.find(searchInput);
-    localStorage.setItem("results", JSON.stringify(responses));
+    searchResults = await api.path.find(searchInput);
     onSearchShortestDistance(event);
   }
 

@@ -173,9 +173,9 @@ public class LineServiceTest {
         when(stationRepository.findAll()).thenReturn(stations);
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
-        PathResponses response = lineService.findPaths(
+        PathResponses response = lineService.findPathsBy(
             new PathRequest(station1.getName(), station4.getName()));
-        PathResponse pathResponse = response.getResponse().get(EdgeWeightType.DISTANCE.getName());
+        PathResponse pathResponse = response.getResponse().get(EdgeWeightType.DISTANCE);
         assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
         assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
         assertThat(pathResponse.getStationResponses().size()).isEqualTo(4);
@@ -192,7 +192,7 @@ public class LineServiceTest {
         when(stationRepository.findAll()).thenReturn(stations);
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station4.getName())).thenReturn(Optional.of(station4));
-        assertThatThrownBy(() -> lineService.findPaths(new PathRequest(station1.getName(), station4.getName())))
+        assertThatThrownBy(() -> lineService.findPathsBy(new PathRequest(station1.getName(), station4.getName())))
             .isInstanceOf(NoPathException.class)
             .hasMessage("경로가 존재하지 않습니다.");
     }

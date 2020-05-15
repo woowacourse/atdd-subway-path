@@ -2,7 +2,7 @@ package wooteco.subway.admin.service;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -82,36 +82,46 @@ public class LineService {
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Station 입니다."));
     }
 
-    public PathResponses findPaths(PathRequest pathRequest) {
+    public PathResponses findPathsBy(PathRequest pathRequest) {
         PathInfo pathInfo = pathRequest.toPathInfo();
         Long departureId = findIdByName(pathInfo.getDepartureStationName());
         Long arrivalId = findIdByName(pathInfo.getArrivalStationName());
+        return findPaths(departureId, arrivalId);
+    }
+
+    private PathResponses findPaths(Long departureId, Long arrivalId) {
+        Map<EdgeWeightType, PathResponse> responses = new HashMap<>();
 
         LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
 
-        Map<String, PathResponse> responses = Arrays.stream(EdgeWeightType.values())
-            .collect(toMap(EdgeWeightType::getName, edgeWeightType ->
-                getPathResponse(getStationMap(),
-                    lineStations.findShortestPath(edgeWeightType.getEdgeWeightStrategy(), departureId, arrivalId)))
-            );
+        for (EdgeWeightType edgeWeightType : EdgeWeightType.values()) {
+            SubwayRoute shortestPath = lineStations.findShortestPath(
+                edgeWeightType.getEdgeWeightStrategy(), departureId, arrivalId);
+            responses.put(edgeWeightType, toPathResponse(shortestPath));
+        }
 
         return new PathResponses(responses);
+    }
+
+    private PathResponse toPathResponse(SubwayRoute subwayRoute) {
+        List<Long> shortestPath = subwayRoute.getShortestPath();
+        List<StationResponse> responses = toStationResponses(shortestPath);
+        return new PathResponse(responses, subwayRoute.calculateTotalDuration(),
+            subwayRoute.calculateTotalDistance());
+    }
+
+    private List<StationResponse> toStationResponses(List<Long> shortestPath) {
+        Map<Long, Station> stationMap = getStationMap();
+        return shortestPath.stream()
+            .map(stationMap::get)
+            .map(StationResponse::of)
+            .collect(toList());
     }
 
     private Map<Long, Station> getStationMap() {
         return stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, Function.identity()));
-    }
-
-    private PathResponse getPathResponse(Map<Long, Station> stationMap, SubwayRoute subwayRoute) {
-        List<Long> shortestPath = subwayRoute.getShortestPath();
-        List<StationResponse> responses = shortestPath.stream()
-            .map(stationMap::get)
-            .map(StationResponse::of)
-            .collect(toList());
-        return new PathResponse(responses, subwayRoute.calculateTotalDuration(),
-            subwayRoute.calculateTotalDistance());
     }
 
     public WholeSubwayResponse wholeLines() {

@@ -2,17 +2,19 @@ package wooteco.subway.admin.dto;
 
 import java.util.Map;
 
+import wooteco.subway.admin.domain.line.path.EdgeWeightType;
+
 public class PathResponses {
-    private Map<String, PathResponse> response;
+    private Map<EdgeWeightType, PathResponse> response;
 
     private PathResponses() {
     }
 
-    public PathResponses(Map<String, PathResponse> response) {
+    public PathResponses(Map<EdgeWeightType, PathResponse> response) {
         this.response = response;
     }
 
-    public Map<String, PathResponse> getResponse() {
+    public Map<EdgeWeightType, PathResponse> getResponse() {
         return response;
     }
 }
