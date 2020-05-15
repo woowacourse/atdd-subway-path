@@ -67,52 +67,47 @@ public class PathServiceTest {
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2 = new Line(2L, "8호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
-        line1.addLineStation(new LineStation(3L, 4L, 10, 10));
-        line1.addLineStation(new LineStation(4L, 5L, 10, 10));
-        line1.addLineStation(new LineStation(5L, 6L, 10, 10));
+        line1.addLineStation(new LineStation(1L, 2L, 10, 3));
+        line1.addLineStation(new LineStation(2L, 3L, 10, 3));
+        line1.addLineStation(new LineStation(3L, 4L, 10, 3));
+        line1.addLineStation(new LineStation(4L, 5L, 10, 3));
+        line1.addLineStation(new LineStation(5L, 6L, 10, 3));
 
         line2.addLineStation(new LineStation(null, 2L, 11, 10));
         line2.addLineStation(new LineStation(2L, 4L, 11, 10));
         line2.addLineStation(new LineStation(4L, 6L, 11, 10));
-    }
 
-    @Test
-    void searchPath() {
         List<Line> lines = Lists.newArrayList(line1, line2);
         List<Station> stations = Lists.newArrayList(station1, station2, station3, station4, station5, station6);
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
+    }
 
-        PathSearchResponse pathSearchResponse = pathService.searchPath(STATION_NAME1, STATION_NAME6, PathType.DURATION);
+    @Test
+    void searchPath_byDistance() {
+        PathSearchResponse pathSearchResponse = pathService.searchPath(STATION_NAME1, STATION_NAME6, PathType.DISTANCE);
 
         assertThat(pathSearchResponse.getDistance()).isEqualTo(32);
-        assertThat(pathSearchResponse.getDuration()).isEqualTo(30);
         assertThat(pathSearchResponse.getStations().size()).isEqualTo(4);
     }
 
     @Test
+    void searchPath_byDuration() {
+        PathSearchResponse pathSearchResponse2 = pathService.searchPath(STATION_NAME1, STATION_NAME6, PathType.DURATION);
+
+        assertThat(pathSearchResponse2.getDuration()).isEqualTo(15);
+        assertThat(pathSearchResponse2.getStations().size()).isEqualTo(6);
+    }
+
+    @Test
     void searchPath_unReachable() {
-        List<Line> lines = Lists.newArrayList(line1, line2);
-        List<Station> stations = Lists.newArrayList(station1, station2, station3, station4, station5, station6, station7);
-
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findAll()).thenReturn(stations);
-
         assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME7, PathType.DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void searchPath_sameSourceTarget() {
-        List<Line> lines = Lists.newArrayList(line1, line2);
-        List<Station> stations = Lists.newArrayList(station1, station2, station3, station4, station5, station6);
-
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findAll()).thenReturn(stations);
-
         assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME1, PathType.DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -121,32 +116,7 @@ public class PathServiceTest {
     void searchPath_inValidStation() {
         String notExistStationName = "천호역";
 
-        List<Line> lines = Lists.newArrayList(line1, line2);
-        List<Station> stations = Lists.newArrayList(station1, station2, station3, station4, station5, station6);
-
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findAll()).thenReturn(stations);
-
         assertThatThrownBy(() -> pathService.searchPath(notExistStationName, STATION_NAME7, PathType.DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-                = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
     }
 }
