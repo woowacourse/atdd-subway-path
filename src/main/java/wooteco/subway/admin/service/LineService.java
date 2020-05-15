@@ -38,7 +38,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -48,7 +49,8 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
@@ -56,14 +58,15 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId)
+                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findDetailLineById(Long id) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 
         List<Station> orderedStations = new ArrayList<>();
