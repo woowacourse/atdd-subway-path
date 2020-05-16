@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
@@ -20,6 +21,9 @@ import java.util.Set;
 
 @Service
 public class PathService {
+    public static final String DISTANCE = "DISTANCE";
+    public static final String DURATION = "DURATION";
+
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
@@ -39,7 +43,7 @@ public class PathService {
         Station sourceStation = stations.findStationByName(source);
         Station targetStation = stations.findStationByName(target);
 
-        WeightedMultigraph<Long, DefaultEdge> graph;
+        WeightedGraph<Long, DefaultEdge> graph;
 
         try {
             graph = initGraph(lineStations, type);
@@ -72,8 +76,8 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
-    private WeightedMultigraph<Long, DefaultEdge> initGraph(LineStations lineStations, String type) {
-        WeightedMultigraph<Long, DefaultEdge> graph
+    private WeightedGraph<Long, DefaultEdge> initGraph(LineStations lineStations, String type) {
+        WeightedGraph<Long, DefaultEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         Set<Long> allStationIds = lineStations.getAllLineStationId();
@@ -85,10 +89,10 @@ public class PathService {
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
                 DefaultEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
-                if (type.equals("DISTANCE")) {
+                if (type.equals(DISTANCE)) {
                     graph.setEdgeWeight(edge, lineStation.getDistance());
                 }
-                if (type.equals("DURATION")) {
+                if (type.equals(DURATION)) {
                     graph.setEdgeWeight(edge, lineStation.getDuration());
                 }
             }
