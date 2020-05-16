@@ -12,8 +12,6 @@ import wooteco.subway.admin.exception.LineNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,7 +67,7 @@ public class LineService {
         List<Line> lines = lineRepository.findAll();
         List<Long> stationIds = lines.stream()
                 .flatMap(it -> it.getStations().stream())
-                .map(it -> it.getStationId())
+                .map(LineStation::getStationId)
                 .collect(Collectors.toList());
 
         List<Station> stations = stationRepository.findAllById(stationIds);
