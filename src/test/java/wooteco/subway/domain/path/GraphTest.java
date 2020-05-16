@@ -52,7 +52,7 @@ class GraphTest {
 		List<Station> stations = Arrays.asList(station1, station2, station3, station4);
 		Graph graph = new Graph(lines, stations, strategy);
 
-		assertThatThrownBy(() -> graph.createPath(STATION_NAME1, STATION_NAME4))
+		assertThatThrownBy(() -> graph.createPath(station1, station4))
 			.isInstanceOf(InvalidPathException.class)
 			.hasMessage(String.format(InvalidPathException.NOT_CONNECTED_PATH, STATION_NAME1, STATION_NAME4));
 	}

@@ -8,57 +8,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.Graph;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.WeightStrategy;
-import wooteco.subway.domain.path.WeightType;
+import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @Service
 public class ClientService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+	private LineRepository lineRepository;
+	private StationRepository stationRepository;
 
-    public ClientService(LineRepository lineRepository, StationRepository stationRepository) {
-        this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
-    }
+	public ClientService(LineRepository lineRepository, StationRepository stationRepository) {
+		this.lineRepository = lineRepository;
+		this.stationRepository = stationRepository;
+	}
 
-    public WholeSubwayResponse wholeLines() {
-        List<Line> lines = lineRepository.findAll();
-        return lines.stream()
-            .map(line -> {
-                List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-                return LineDetailResponse.of(line, stations);
-            })
-            .collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
-    }
+	@Transactional(readOnly = true)
+	public WholeSubwayResponse wholeLines() {
+		List<Line> lines = lineRepository.findAll();
+		return lines.stream()
+			.map(line -> {
+				List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+				return LineDetailResponse.of(line, stations);
+			})
+			.collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
+	}
 
-    @Transactional(readOnly = true)
-    public PathResponse searchPath(String source, String target, String type) {
-        validate(source, target);
+	@Transactional(readOnly = true)
+	public PathResponse searchPath(String source, String target, String type) {
+		PathGenerator pathGenerator = new PathGenerator(source, target, type);
 
-        List<Line> lines = lineRepository.findAll();
-        List<Station> stations = stationRepository.findAll();
+		List<Line> lines = lineRepository.findAll();
+		List<Station> stations = stationRepository.findAll();
 
-        WeightStrategy strategy = WeightType.findStrategy(type);
-        Graph graph = new Graph(lines, stations, strategy);
-        Path path = graph.createPath(source, target);
-
-        return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
-            path.duration());
-    }
-
-    private void validate(String source, String target) {
-        if (source.equals(target)) {
-            throw new InvalidPathException(InvalidPathException.DUPLICATE_DEPARTURE_AND_DESTINATION);
-        }
-    }
-
+		Path path = pathGenerator.generate(lines, stations);
+		return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
+			path.duration());
+	}
 }

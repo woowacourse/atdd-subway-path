@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.InvalidPathException;
 
 /*
- *
  * 1. 경로 조회 시 출발역 혹은 도착역이 Null이거나 빈 문자열일 경우
  *   - @Valid를 통해 ConstraintViolationException 발생
  *   - getRequestException 메서드를 통해 처리
