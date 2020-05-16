@@ -27,31 +27,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String backgroundColor, LocalTime startTime,
-        LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt,
-        Set<LineStation> stations) {
-        this.name = name;
-        this.backgroundColor = backgroundColor;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.stations = stations;
-    }
-
-    public Line(String name, String backgroundColor, LocalTime startTime, LocalTime endTime,
-        int intervalTime) {
-        this.name = name;
-        this.backgroundColor = backgroundColor;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public Line(Long id, String name, String backgroundColor, LocalTime startTime,
-        LocalTime endTime, int intervalTime) {
+                LocalTime endTime, int intervalTime) {
         this.id = id;
         this.name = name;
         this.backgroundColor = backgroundColor;
@@ -60,6 +36,11 @@ public class Line {
         this.intervalTime = intervalTime;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public static Line of(String name, String backgroundColor, LocalTime startTime, LocalTime endTime,
+                     int intervalTime) {
+        return new Line(null, name, backgroundColor, startTime, endTime, intervalTime);
     }
 
     public Long getId() {

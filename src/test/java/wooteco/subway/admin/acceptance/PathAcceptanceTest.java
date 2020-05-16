@@ -47,8 +47,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(ktx.getId(),  busan.getId(), daegu.getId(), 100, 100);
 
 
-
-
         //when
         PathResponse pathByDistance = findPath(jamsil.getName(), samjun.getName(), "distance");
         PathResponse pathByDuration = findPath(jamsil.getName(), samjun.getName(), "duration");
