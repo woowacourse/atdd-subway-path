@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class LineTest {
+
     private Line line;
 
     @BeforeEach
@@ -25,11 +26,11 @@ public class LineTest {
         Long addStationId = 4L;
         line.addLineStation(new Edge(null, addStationId, 10, 10));
 
-        assertThat(line.getStations()).hasSize(4);
-        Edge edge = line.getStations().stream()
-                .filter(it -> addStationId.equals(it.getPreStationId()))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        assertThat(line.getEdges().getEdges()).hasSize(4);
+        Edge edge = line.getEdges().getEdges().stream()
+            .filter(it -> addStationId.equals(it.getPreStationId()))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
         assertThat(edge.getStationId()).isEqualTo(1L);
     }
 
@@ -48,6 +49,6 @@ public class LineTest {
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdges().getEdges()).hasSize(2);
     }
 }

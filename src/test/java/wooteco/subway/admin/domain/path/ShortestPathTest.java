@@ -12,8 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.vo.Edges;
 
 public class ShortestPathTest {
+
     private Line line1;
     private Line line2;
 
@@ -34,9 +36,10 @@ public class ShortestPathTest {
     @Test
     void createDistanceGraph() {
         List<Edge> edges = Stream.of(line1, line2)
-                .map(Line::getStations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+            .map(Line::getEdges)
+            .map(Edges::getEdges)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
         ShortestPath shortestPath = ShortestPath.of(edges, PathType.DURATION);
         assertThat(shortestPath.getPath()).isInstanceOf(DijkstraShortestPath.class);
     }

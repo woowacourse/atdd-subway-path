@@ -11,6 +11,7 @@ import wooteco.subway.admin.domain.Line;
 
 @DataJdbcTest
 public class LineRepositoryTest {
+
     @Autowired
     private LineRepository lineRepository;
 
@@ -26,6 +27,6 @@ public class LineRepositoryTest {
         Line resultLine = lineRepository.save(persistLine);
 
         // then
-        assertThat(resultLine.getStations()).hasSize(2);
+        assertThat(resultLine.getEdges().getEdges()).hasSize(2);
     }
 }

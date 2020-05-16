@@ -11,6 +11,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.domain.path.ShortestPath;
+import wooteco.subway.admin.domain.vo.Edges;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -20,6 +21,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class LineService {
+
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
@@ -38,7 +40,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -49,8 +51,9 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
-        Edge edge = new Edge(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+            .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+        Edge edge = new Edge(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
         line.addLineStation(edge);
 
         lineRepository.save(line);
@@ -58,22 +61,22 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findDetailLineById(Long id) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         List<Station> stations = stationRepository.findAllById(line.getStationIds());
 
         List<Station> orderedStations = new ArrayList<>();
         for (Long stationId : line.getStationIds()) {
             stations.stream()
-                    .filter(station -> station.getId().equals(stationId))
-                    .findAny()
-                    .ifPresent(orderedStations::add);
+                .filter(station -> station.getId().equals(stationId))
+                .findAny()
+                .ifPresent(orderedStations::add);
         }
         return LineDetailResponse.of(line, orderedStations);
     }
@@ -96,9 +99,9 @@ public class LineService {
         ShortestPath shortestPath = ShortestPath.of(edges, pathType);
 
         Long sourceId = stationRepository.findIdByName(sourceName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
 
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
         int weight = shortestPath.getWeight(sourceId, targetId);
@@ -112,9 +115,10 @@ public class LineService {
 
     private List<Edge> findAllLineStations() {
         return Collections.unmodifiableList(lineRepository.findAll())
-                .stream()
-                .map(Line::getStations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+            .stream()
+            .map(Line::getEdges)
+            .map(Edges::getEdges)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     }
 }

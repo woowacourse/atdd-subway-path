@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import java.util.Objects;
 
 public class Edge {
+
     private Long preStationId;
     private Long stationId;
     private int distance;
@@ -13,6 +14,10 @@ public class Edge {
         this.stationId = stationId;
         this.distance = distance;
         this.duration = duration;
+    }
+
+    public boolean isFirst() {
+        return Objects.isNull(preStationId);
     }
 
     public Long getPreStationId() {
@@ -31,11 +36,7 @@ public class Edge {
         return duration;
     }
 
-    public void updatePreLineStation(Long preStationId) {
+    public void updatePreStation(Long preStationId) {
         this.preStationId = preStationId;
-    }
-
-    public boolean isFirst() {
-        return Objects.isNull(preStationId);
     }
 }
