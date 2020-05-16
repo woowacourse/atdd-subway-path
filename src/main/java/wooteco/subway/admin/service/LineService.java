@@ -66,10 +66,10 @@ public class LineService {
     public LineDetailResponse findDetailLineById(Long id) {
         Line line = lineRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        List<Station> stations = stationRepository.findAllById(line.getStationIds());
 
         List<Station> orderedStations = new ArrayList<>();
-        for (Long stationId : line.getLineStationsId()) {
+        for (Long stationId : line.getStationIds()) {
             stations.stream()
                     .filter(station -> station.getId().equals(stationId))
                     .findAny()
@@ -81,7 +81,7 @@ public class LineService {
     public List<LineDetailResponse> findDetailLines() {
         List<LineDetailResponse> response = new ArrayList<>();
         for (Line line : lineRepository.findAll()) {
-            List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+            List<Station> stations = stationRepository.findAllById(line.getStationIds());
             response.add(LineDetailResponse.of(line, stations));
         }
         return response;

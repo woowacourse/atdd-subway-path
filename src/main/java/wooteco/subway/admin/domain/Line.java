@@ -2,11 +2,9 @@ package wooteco.subway.admin.domain;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
@@ -150,33 +148,5 @@ public class Line {
         return stations.stream()
                 .map(Edge::getStationId)
                 .collect(Collectors.toList());
-    }
-
-    public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
-            return new ArrayList<>();
-        }
-        Edge firstEdge = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("출발역이 없습니다."));
-
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstEdge.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<Edge> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
     }
 }
