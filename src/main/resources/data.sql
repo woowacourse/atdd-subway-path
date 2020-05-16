@@ -9,9 +9,9 @@ insert into station (name) values ('잠실역');
 insert into station (name) values ('강남역');
 insert into station (name) values ('역삼역');
 
-insert into line_station (line, line_key, pre_station_id, station_id, distance, duration)
+insert into edge (line, line_key, pre_station_id, station_id, distance, duration)
 values (1, 0, null, 1, 0, 0);
-insert into line_station (line, line_key, pre_station_id, station_id, distance, duration)
+insert into edge (line, line_key, pre_station_id, station_id, distance, duration)
 values (1, 1, 1, 2, 10, 10);
-insert into line_station (line, line_key, pre_station_id, station_id, distance, duration)
+insert into edge (line, line_key, pre_station_id, station_id, distance, duration)
 values (1, 2, 2, 3, 5, 20);

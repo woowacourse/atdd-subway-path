@@ -1,11 +1,15 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.annotation.Id;
 
 public class Line {
     public static final int FIRST = 0;
@@ -17,7 +21,7 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<LineStation> stations = new LinkedList<>();
+    private List<Edge> stations = new LinkedList<>();
 
     public Line() {
     }
@@ -55,7 +59,7 @@ public class Line {
         return intervalTime;
     }
 
-    public List<LineStation> getStations() {
+    public List<Edge> getStations() {
         return stations;
     }
 
@@ -84,67 +88,67 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addLineStation(LineStation lineStation) {
-        if (lineStation.isFirst()) {
-            addFirst(lineStation);
+    public void addLineStation(Edge edge) {
+        if (edge.isFirst()) {
+            addFirst(edge);
             return;
         }
 
-        if (hasNoSuchPreStation(lineStation)) {
+        if (hasNoSuchPreStation(edge)) {
             throw new NoSuchElementException("이전 역이 등록되지 않았습니다.");
         }
 
-        Optional<LineStation> nextStation = findNextStationBy(lineStation.getPreStationId());
+        Optional<Edge> nextStation = findNextStationBy(edge.getPreStationId());
         if (nextStation.isPresent()) {
-            addBetweenTwo(lineStation, nextStation.get());
+            addBetweenTwo(edge, nextStation.get());
             return;
         }
 
-        stations.add(lineStation);
+        stations.add(edge);
     }
 
-    private void addFirst(LineStation lineStation) {
+    private void addFirst(Edge edge) {
         stations.stream()
                 .findFirst()
-                .ifPresent(station -> station.updatePreLineStation(lineStation.getStationId()));
-        stations.add(FIRST, lineStation);
+                .ifPresent(station -> station.updatePreLineStation(edge.getStationId()));
+        stations.add(FIRST, edge);
     }
 
-    private void addBetweenTwo(LineStation lineStation, LineStation nextStation) {
-        nextStation.updatePreLineStation(lineStation.getStationId());
+    private void addBetweenTwo(Edge edge, Edge nextStation) {
+        nextStation.updatePreLineStation(edge.getStationId());
         int position = stations.indexOf(nextStation);
-        stations.add(position, lineStation);
+        stations.add(position, edge);
     }
 
-    private boolean hasNoSuchPreStation(LineStation lineStation) {
+    private boolean hasNoSuchPreStation(Edge edge) {
         return stations.stream()
-                .map(LineStation::getStationId)
-                .noneMatch(id -> lineStation.getPreStationId().equals(id));
+                .map(Edge::getStationId)
+                .noneMatch(id -> edge.getPreStationId().equals(id));
     }
 
-    private Optional<LineStation> findNextStationBy(Long stationId) {
+    private Optional<Edge> findNextStationBy(Long stationId) {
         return stations.stream()
                 .filter(station -> stationId.equals(station.getPreStationId()))
                 .findFirst();
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation station = findStationBy(stationId);
+        Edge station = findStationBy(stationId);
         findNextStationBy(stationId)
                 .ifPresent(nextStation -> nextStation.updatePreLineStation(station.getPreStationId()));
         stations.remove(station);
     }
 
-    private LineStation findStationBy(Long stationId) {
+    private Edge findStationBy(Long stationId) {
         return stations.stream()
-                .filter(lineStation -> lineStation.getStationId().equals(stationId))
+                .filter(edge -> edge.getStationId().equals(stationId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("해당 노선에 등록되지 않은 역입니다."));
     }
 
     public List<Long> getStationIds() {
         return stations.stream()
-                .map(LineStation::getStationId)
+                .map(Edge::getStationId)
                 .collect(Collectors.toList());
     }
 
@@ -152,17 +156,17 @@ public class Line {
         if (stations.isEmpty()) {
             return new ArrayList<>();
         }
-        LineStation firstLineStation = stations.stream()
+        Edge firstEdge = stations.stream()
                 .filter(it -> it.getPreStationId() == null)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("출발역이 없습니다."));
 
         List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
+        stationIds.add(firstEdge.getStationId());
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+            Optional<Edge> nextLineStation = stations.stream()
                     .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
                     .findFirst();
 

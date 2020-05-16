@@ -1,11 +1,10 @@
 package wooteco.subway.admin.domain.path;
 
+import java.util.List;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
-import wooteco.subway.admin.domain.LineStation;
-
-import java.util.List;
+import wooteco.subway.admin.domain.Edge;
 
 public class ShortestPath {
     private DijkstraShortestPath<Long, WeightedEdge> path;
@@ -14,11 +13,11 @@ public class ShortestPath {
         this.path = path;
     }
 
-    public static ShortestPath of(List<LineStation> lineStations, PathType pathType) {
+    public static ShortestPath of(List<Edge> edges, PathType pathType) {
         WeightedGraph<Long, WeightedEdge> graph
                 = new DirectedWeightedMultigraph<>(WeightedEdge.class);
 
-        for (LineStation station : lineStations) {
+        for (Edge station : edges) {
             graph.addVertex(station.getStationId());
             if (station.isFirst()) {
                 continue;

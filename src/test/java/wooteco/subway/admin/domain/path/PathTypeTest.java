@@ -1,16 +1,15 @@
 package wooteco.subway.admin.domain.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.admin.domain.LineStation;
-
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import wooteco.subway.admin.domain.Edge;
 
 public class PathTypeTest {
 
@@ -54,16 +53,16 @@ public class PathTypeTest {
     @ParameterizedTest
     @MethodSource("generateTypeWeightArguments")
     void findWeight(PathType pathType, int expected) {
-        LineStation lineStation = new LineStation(1L, 2L, 10, 5);
-        int actual = pathType.findWeight(lineStation);
+        Edge edge = new Edge(1L, 2L, 10, 5);
+        int actual = pathType.findWeight(edge);
         assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest
     @MethodSource("generateTypeSubWeightArguments")
     void findSubWeight(PathType pathType, int expected) {
-        LineStation lineStation = new LineStation(1L, 2L, 10, 5);
-        int actual = pathType.findSubWeight(lineStation);
+        Edge edge = new Edge(1L, 2L, 10, 5);
+        int actual = pathType.findSubWeight(edge);
         assertThat(actual).isEqualTo(expected);
     }
 }

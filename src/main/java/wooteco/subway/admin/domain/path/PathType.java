@@ -1,17 +1,16 @@
 package wooteco.subway.admin.domain.path;
 
-import wooteco.subway.admin.domain.LineStation;
-
 import java.util.function.Function;
+import wooteco.subway.admin.domain.Edge;
 
 public enum PathType {
-    DISTANCE(LineStation::getDistance, LineStation::getDuration),
-    DURATION(LineStation::getDuration, LineStation::getDistance);
+    DISTANCE(Edge::getDistance, Edge::getDuration),
+    DURATION(Edge::getDuration, Edge::getDistance);
 
-    private Function<LineStation, Integer> findWeight;
-    private Function<LineStation, Integer> findSubWeight;
+    private Function<Edge, Integer> findWeight;
+    private Function<Edge, Integer> findSubWeight;
 
-    PathType(Function<LineStation, Integer> findWeight, Function<LineStation, Integer> findSubWeight) {
+    PathType(Function<Edge, Integer> findWeight, Function<Edge, Integer> findSubWeight) {
         this.findWeight = findWeight;
         this.findSubWeight = findSubWeight;
     }
@@ -24,12 +23,12 @@ public enum PathType {
         }
     }
 
-    public int findWeight(LineStation lineStation) {
-        return findWeight.apply(lineStation);
+    public int findWeight(Edge edge) {
+        return findWeight.apply(edge);
     }
 
-    public int findSubWeight(LineStation lineStation) {
-        return findSubWeight.apply(lineStation);
+    public int findSubWeight(Edge edge) {
+        return findSubWeight.apply(edge);
     }
 
     public int getDistance(int weight, int subWeight) {

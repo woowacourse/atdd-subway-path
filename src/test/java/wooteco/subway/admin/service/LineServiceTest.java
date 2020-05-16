@@ -1,5 +1,16 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +22,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.dto.LineDetailResponse;
@@ -20,18 +31,6 @@ import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -66,11 +65,11 @@ public class LineServiceTest {
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2 = new Line(2L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 0, 0));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 5));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 5));
+        line1.addLineStation(new Edge(null, 1L, 0, 0));
+        line1.addLineStation(new Edge(1L, 2L, 10, 5));
+        line1.addLineStation(new Edge(2L, 3L, 10, 5));
 
-        line2.addLineStation(new LineStation(null, 4L, 10, 10));
+        line2.addLineStation(new Edge(null, 4L, 10, 10));
     }
 
     @Test
@@ -219,8 +218,8 @@ public class LineServiceTest {
     @MethodSource("generateTypePathArguments")
     void findShortestPath_DifferentLine(PathType pathType, int distance, int duration) {
         List<Line> lines = Lists.newArrayList(line1, line2);
-        line2.addLineStation(new LineStation(4L, 1L, 10, 5));
-        line2.addLineStation(new LineStation(1L, 2L, 5, 10));
+        line2.addLineStation(new Edge(4L, 1L, 10, 5));
+        line2.addLineStation(new Edge(1L, 2L, 5, 10));
 
         List<Station> stations = Lists.newArrayList(station1, station3);
         List<String> names = stations.stream().map(Station::getName).collect(Collectors.toList());
