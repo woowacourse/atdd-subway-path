@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -24,10 +25,15 @@ public class GraphService {
             .filter(it -> Objects.nonNull(it.getPreStationId()))
             .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), pathType.getWeight(it)));
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        if (Objects.isNull(dijkstraShortestPath.getPath(source, target))) {
+
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        validatePath(path);
+        return path.getVertexList();
+    }
+
+    private void validatePath(GraphPath path) {
+        if (Objects.isNull(path)) {
             throw new NotFoundPathException();
         }
-
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 }
