@@ -10,15 +10,13 @@ import wooteco.subway.admin.domain.Edge;
 
 public class Edges {
 
-    private static final int FIRST = 0;
-
     @MappedCollection(keyColumn = "line_key")
-    private List<Edge> edges = new LinkedList<>();
+    private LinkedList<Edge> edges = new LinkedList<>();
 
     public Edges() {
     }
 
-    public Edges(List<Edge> edges) {
+    public Edges(LinkedList<Edge> edges) {
         this.edges = edges;
     }
 
@@ -45,7 +43,7 @@ public class Edges {
         edges.stream()
             .findFirst()
             .ifPresent(station -> station.updatePreStation(edge.getStationId()));
-        edges.add(FIRST, edge);
+        edges.addFirst(edge);
     }
 
     private void addBetweenTwo(Edge edge, Edge nextStation) {
@@ -86,7 +84,7 @@ public class Edges {
             .collect(Collectors.toList());
     }
 
-    public List<Edge> getEdges() {
+    public LinkedList<Edge> getEdges() {
         return edges;
     }
 }
