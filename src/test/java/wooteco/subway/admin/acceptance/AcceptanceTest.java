@@ -194,5 +194,24 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract().as(PathResponse.class);
     }
+
+    protected String findPathWithError(String source, String target, String type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", source);
+        params.put("targetName", target);
+        params.put("type", type);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/path").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .extract().body().jsonPath().get("message");
+    }
 }
 
