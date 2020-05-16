@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ import java.util.Set;
 
 @Service
 public class PathService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
     public PathService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
@@ -37,7 +38,7 @@ public class PathService {
         Station sourceStation = stations.findStationByName(source);
         Station targetStation = stations.findStationByName(target);
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+        WeightedMultigraph<Long, DefaultEdge> graph;
 
         try {
             graph = initGraph(lineStations, type);
@@ -45,7 +46,7 @@ public class PathService {
             throw new CanNotCreateGraphException();
         }
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Long, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         List<Long> shortestPathIds;
         try {
@@ -70,9 +71,9 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations, String type) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Long, DefaultEdge> initGraph(LineStations lineStations, String type) {
+        WeightedMultigraph<Long, DefaultEdge> graph
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         Set<Long> allStationIds = lineStations.getAllLineStationId();
 
@@ -82,7 +83,7 @@ public class PathService {
 
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
-                DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
+                DefaultEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
                 if (type.equals("DISTANCE")) {
                     graph.setEdgeWeight(edge, lineStation.getDistance());
                 }
