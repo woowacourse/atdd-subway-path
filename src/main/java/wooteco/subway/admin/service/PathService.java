@@ -31,8 +31,7 @@ public class PathService {
 
     public PathResponse findPath(PathRequestWithId pathRequestWithId) {
         List<Line> lines = lineRepository.findAll();
-        List<Long> pathFormedId = graphService.findPath(lines, pathRequestWithId.getSourceId(),
-                pathRequestWithId.getTargetId(), pathRequestWithId.getPathType());
+        List<Long> pathFormedId = graphService.findPath(lines, pathRequestWithId);
 
         List<Station> stations = stationRepository.findAllById(pathFormedId);
         List<StationResponse> pathFormedStationResponse = StationResponse.listOf(stations);

@@ -6,6 +6,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.dto.path.PathRequestWithId;
 import wooteco.subway.admin.dto.path.PathType;
 import wooteco.subway.admin.exception.NotFoundPathException;
 
@@ -14,7 +15,11 @@ import java.util.Objects;
 
 @Service
 public class GraphService {
-    public List<Long> findPath(List<Line> lines, Long source, Long target, PathType pathType) {
+    public List<Long> findPath(List<Line> lines, PathRequestWithId pathRequestWithId) {
+        Long source = pathRequestWithId.getSourceId();
+        Long target = pathRequestWithId.getTargetId();
+        PathType pathType = pathRequestWithId.getPathType();
+
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
         lines.stream()
