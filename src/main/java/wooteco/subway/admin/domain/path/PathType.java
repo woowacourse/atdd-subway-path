@@ -7,8 +7,8 @@ public enum PathType {
     DISTANCE(Edge::getDistance, Edge::getDuration),
     DURATION(Edge::getDuration, Edge::getDistance);
 
-    private Function<Edge, Integer> findWeight;
-    private Function<Edge, Integer> findSubWeight;
+    private final Function<Edge, Integer> findWeight;
+    private final Function<Edge, Integer> findSubWeight;
 
     PathType(Function<Edge, Integer> findWeight, Function<Edge, Integer> findSubWeight) {
         this.findWeight = findWeight;

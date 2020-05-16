@@ -3,6 +3,7 @@ package wooteco.subway.admin.dto;
 import java.util.List;
 
 public class PathResponse {
+
     private int distance;
     private int duration;
     private List<String> path;

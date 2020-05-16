@@ -1,13 +1,13 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Station;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import wooteco.subway.admin.domain.Station;
 
 public class StationResponse {
+
     private Long id;
     private String name;
     private LocalDateTime createdAt;
@@ -18,8 +18,8 @@ public class StationResponse {
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public StationResponse() {
@@ -45,11 +45,15 @@ public class StationResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StationResponse)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StationResponse)) {
+            return false;
+        }
         StationResponse that = (StationResponse) o;
         return Objects.equals(getId(), that.getId()) &&
-                Objects.equals(getName(), that.getName());
+            Objects.equals(getName(), that.getName());
     }
 
     @Override

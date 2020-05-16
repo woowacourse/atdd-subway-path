@@ -5,9 +5,9 @@ import java.util.Objects;
 public class Edge {
 
     private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+    private final Long stationId;
+    private final int distance;
+    private final int duration;
 
     public Edge(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;

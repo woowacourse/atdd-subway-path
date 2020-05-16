@@ -55,7 +55,6 @@ public class LineService {
         Edge edge = new Edge(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(edge);
-
         lineRepository.save(line);
     }
 

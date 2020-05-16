@@ -7,7 +7,8 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
 import wooteco.subway.admin.domain.Edge;
 
 public class ShortestPath {
-    private DijkstraShortestPath<Long, WeightedEdge> path;
+
+    private final DijkstraShortestPath<Long, WeightedEdge> path;
 
     private ShortestPath(DijkstraShortestPath<Long, WeightedEdge> path) {
         this.path = path;
@@ -15,7 +16,7 @@ public class ShortestPath {
 
     public static ShortestPath of(List<Edge> edges, PathType pathType) {
         WeightedGraph<Long, WeightedEdge> graph
-                = new DirectedWeightedMultigraph<>(WeightedEdge.class);
+            = new DirectedWeightedMultigraph<>(WeightedEdge.class);
 
         for (Edge station : edges) {
             graph.addVertex(station.getStationId());
@@ -23,7 +24,7 @@ public class ShortestPath {
                 continue;
             }
             WeightedEdge weightedEdge
-                    = graph.addEdge(station.getPreStationId(), station.getStationId());
+                = graph.addEdge(station.getPreStationId(), station.getStationId());
             weightedEdge.setSubWeight(pathType.findSubWeight(station));
             graph.setEdgeWeight(weightedEdge, pathType.findWeight(station));
         }
@@ -50,9 +51,9 @@ public class ShortestPath {
 
     public int getSubWeight(Long source, Long target) {
         return path.getPath(source, target)
-                .getEdgeList()
-                .stream()
-                .mapToInt(WeightedEdge::getSubWeight)
-                .sum();
+            .getEdgeList()
+            .stream()
+            .mapToInt(WeightedEdge::getSubWeight)
+            .sum();
     }
 }

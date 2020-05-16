@@ -1,11 +1,11 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 //Feature: 출발역과 도착역의 최단 경로를 조회
 //        Scenario: 출발역과 도착역의 최단 경로를 조회한다.
@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 //        Then: 출발역과 도착역의 최단 경로를 응답 받는다.
 
 public class PathAcceptanceTest extends AcceptanceTest {
+
     @Test
     void managePath() {
         // given

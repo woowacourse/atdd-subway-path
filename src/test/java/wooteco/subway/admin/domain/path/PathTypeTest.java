@@ -15,24 +15,24 @@ public class PathTypeTest {
 
     static Stream<Arguments> generateTypeArguments() {
         return Stream.of(
-                Arguments.of("DISTANCE", PathType.DISTANCE),
-                Arguments.of("distance", PathType.DISTANCE),
-                Arguments.of("Distance", PathType.DISTANCE),
-                Arguments.of("DURATION", PathType.DURATION),
-                Arguments.of("duration", PathType.DURATION),
-                Arguments.of("Duration", PathType.DURATION));
+            Arguments.of("DISTANCE", PathType.DISTANCE),
+            Arguments.of("distance", PathType.DISTANCE),
+            Arguments.of("Distance", PathType.DISTANCE),
+            Arguments.of("DURATION", PathType.DURATION),
+            Arguments.of("duration", PathType.DURATION),
+            Arguments.of("Duration", PathType.DURATION));
     }
 
     static Stream<Arguments> generateTypeWeightArguments() {
         return Stream.of(
-                Arguments.of(PathType.DISTANCE, 10),
-                Arguments.of(PathType.DURATION, 5));
+            Arguments.of(PathType.DISTANCE, 10),
+            Arguments.of(PathType.DURATION, 5));
     }
 
     static Stream<Arguments> generateTypeSubWeightArguments() {
         return Stream.of(
-                Arguments.of(PathType.DISTANCE, 5),
-                Arguments.of(PathType.DURATION, 10));
+            Arguments.of(PathType.DISTANCE, 5),
+            Arguments.of(PathType.DURATION, 10));
     }
 
     @DisplayName("생성 성공")
@@ -47,7 +47,7 @@ public class PathTypeTest {
     @ValueSource(strings = {"", " ", "time"})
     void of_Fail(String input) {
         assertThatThrownBy(() -> PathType.of(input))
-                .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest

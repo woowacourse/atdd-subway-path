@@ -1,13 +1,12 @@
 package wooteco.subway.admin.acceptance;
 
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import java.util.List;
 
 /*
 모든 지하철 노선과 각 노선에 포함된 지하철역 조회 기능 구현
