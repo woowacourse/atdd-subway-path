@@ -7,40 +7,25 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 public class Path {
-	private final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph<>(Edge.class);
-	private final Subway subway;
-	private final Stations stations;
+	private final WeightedMultigraph<Station, Edge> graph;
 
-	public Path(Subway subway, Stations stations) {
-		this.subway = subway;
-		this.stations = stations;
+	public Path(WeightedMultigraph<Station, Edge> graph, Lines lines, Stations stations, Criteria criteria) {
+		this.graph = graph;
+		initGraph(stations, lines, criteria);
 	}
 
-	public ShortestPathResponse findShortestPath(Station sourceStation, Station targetStation, Criteria criteria) {
+	private void initGraph(Stations stations, Lines lines, Criteria criteria) {
 		Graphs.addAllVertices(graph, stations.getStations());
-
-		for (LineStation lineStation : subway.fetchLineStations()) {
-			makeGraph(criteria, lineStation);
+		for (LineStation lineStation : lines.fetchLineStations()) {
+			addEdgeBy(lineStation, stations, criteria);
 		}
-
-		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
-
-		int totalDistance = result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
-				.mapToInt(Edge::getDistance)
-				.sum();
-
-		int totalDuration = result.getEdgeList().stream()
-				.mapToInt(Edge::getDuration)
-				.sum();
-
-		return new ShortestPathResponse(result.getVertexList(), totalDistance, totalDuration);
-
 	}
 
-	private void makeGraph(Criteria criteria, LineStation lineStation) {
+	private void addEdgeBy(LineStation lineStation, Stations stations, Criteria criteria) {
 		if (lineStation.getPreStationId() == null) {
 			return;
 		}
+
 		Station station = stations.findByKey(lineStation.getStationId());
 		Station preStation = stations.findByKey(lineStation.getPreStationId());
 
@@ -50,9 +35,30 @@ public class Path {
 		graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
 	}
 
-	private GraphPath<Station, Edge> getDijkstraShortestPath(WeightedMultigraph<Station, Edge> graph, Station sourceStation, Station targetStation) {
+	public ShortestPathResponse findShortestPath(Station sourceStation, Station targetStation) {
+		GraphPath<Station, Edge> result = getDijkstraShortestPath(sourceStation, targetStation);
+		int totalDistance = calculateTotalDistance(result);
+		int totalDuration = calculateTotalDuration(result);
+
+		return new ShortestPathResponse(result.getVertexList(), totalDistance, totalDuration);
+	}
+
+
+	private GraphPath<Station, Edge> getDijkstraShortestPath(Station sourceStation, Station targetStation) {
 		DijkstraShortestPath<Station, Edge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);
 	}
+
+	private int calculateTotalDuration(GraphPath<Station, Edge> result) {
+		return result.getEdgeList().stream()
+				.mapToInt(Edge::getDuration)
+				.sum();
+	}
+
+	private int calculateTotalDistance(GraphPath<Station, Edge> result) {
+		return result.getEdgeList().stream()
+				.mapToInt(Edge::getDistance)
+				.sum();
+}
 }

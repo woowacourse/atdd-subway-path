@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
@@ -39,12 +40,12 @@ public class PathService {
 
 		Criteria criteria = Criteria.of(criteriaType);
 
-		Subway subway = new Subway(lineRepository.findAll());
-		List<Long> lineStationIds = subway.fetchLineStationIds();
+		Lines lines = new Lines(lineRepository.findAll());
+		List<Long> lineStationIds = lines.fetchLineStationIds();
 
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 
-		Path path = new Path(subway, stations);
-		return path.findShortestPath(sourceStation, targetStation, criteria);
+		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
+		return path.findShortestPath(sourceStation, targetStation);
 	}
 }

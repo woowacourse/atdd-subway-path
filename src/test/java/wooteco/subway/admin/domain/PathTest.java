@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PathTest {
-	private Subway subway;
-	private List<Line> lines = new ArrayList<>();
+	private Lines lines;
+	private List<Line> tempLines = new ArrayList<>();
 	private Line line1;
 	private Line line2;
 
@@ -36,7 +37,7 @@ public class PathTest {
 		line1.addLineStation(new LineStation(1L, 2L, 3, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 3, 10));
 		line1.addLineStation(new LineStation(3L, 4L, 3, 10));
-		lines.add(line1);
+		tempLines.add(line1);
 
 		line2 = new Line(1L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-500");
 		line2.addLineStation(new LineStation(null, 2L, 10, 10));
@@ -45,9 +46,9 @@ public class PathTest {
 		line2.addLineStation(new LineStation(6L, 7L, 10, 3));
 		line2.addLineStation(new LineStation(7L, 8L, 10, 3));
 		line2.addLineStation(new LineStation(8L, 4L, 10, 3));
-		lines.add(line2);
+		tempLines.add(line2);
 
-		subway = new Subway(lines);
+		lines = new Lines(tempLines);
 
 		station1 = new Station(1L, "구로");
 		station2 = new Station(2L, "신도림");
@@ -64,9 +65,9 @@ public class PathTest {
 	@DisplayName("최단거리 경로를 반환")
 	@Test
 	void findShortestDistancePath() {
-		Path path = new Path(subway, stations);
+		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("distance"));
 
-		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4, Criteria.of("distance"));
+		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4);
 
 		assertEquals(shortestPath.getPath().get(0), station1);
 		assertEquals(shortestPath.getPath().get(1), station2);
@@ -77,9 +78,9 @@ public class PathTest {
 	@DisplayName("최단시간 경로를 반환")
 	@Test
 	void findShortestDurationPath() {
-		Path path = new Path(subway, stations);
+		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("distance"));
 
-		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4, Criteria.of("duration"));
+		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4);
 
 		assertEquals(shortestPath.getPath().get(0), station1);
 		assertEquals(shortestPath.getPath().get(1), station2);
