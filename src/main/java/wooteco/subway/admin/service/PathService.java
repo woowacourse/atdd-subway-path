@@ -38,8 +38,7 @@ public class PathService {
 
         List<LineStation> lineStations = lines.stream()
                 .flatMap(line -> line.getStations().stream())
-                .filter(lineStation -> pathFormedId.contains(lineStation.getStationId()))
-                .filter(lineStation -> Objects.isNull(lineStation.getPreStationId()) || pathFormedId.contains(lineStation.getPreStationId()))
+                .filter(lineStation -> isLineStationOnPath(pathFormedId, lineStation))
                 .collect(Collectors.toList());
 
         int totalDistance = lineStations.stream().mapToInt(LineStation::getDistance).sum();
@@ -48,6 +47,11 @@ public class PathService {
         List<StationResponse> sortedStationResponses = sort(pathFormedId, pathFormedStationResponse);
 
         return new PathResponse(sortedStationResponses, totalDistance, totalDuration);
+    }
+
+    private boolean isLineStationOnPath(List<Long> pathFormedId, LineStation lineStation) {
+        return pathFormedId.contains(lineStation.getStationId())
+                && (Objects.isNull(lineStation.getPreStationId()) || pathFormedId.contains(lineStation.getPreStationId()));
     }
 
     private List<StationResponse> sort(List<Long> path, List<StationResponse> stationResponses) {
