@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -46,11 +47,11 @@ public class PathService {
             throw new CanNotCreateGraphException();
         }
 
-        DijkstraShortestPath<Long, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        ShortestPathAlgorithm<Long, DefaultEdge> shortestPathAlgorithm = new DijkstraShortestPath<>(graph);
 
         List<Long> shortestPathIds;
         try {
-            shortestPathIds = dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
+            shortestPathIds = shortestPathAlgorithm.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
         } catch (NullPointerException e) {
             throw new LineNotConnectedException();
         }
