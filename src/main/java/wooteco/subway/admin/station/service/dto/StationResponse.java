@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import wooteco.subway.admin.station.domain.Station;
 
 public class StationResponse {
+
 	private Long id;
 	private String name;
 	private LocalDateTime createdAt;
@@ -41,4 +42,5 @@ public class StationResponse {
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
+
 }

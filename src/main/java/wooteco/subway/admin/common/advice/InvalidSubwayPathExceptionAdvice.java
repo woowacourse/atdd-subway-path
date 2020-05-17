@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.admin.path.domain.InvalidSubwayPathException;
 
 @RestControllerAdvice
-public class InvalidSubwayPathAdvice {
+public class InvalidSubwayPathExceptionAdvice {
 
 	@ExceptionHandler(InvalidSubwayPathException.class)
 	public ResponseEntity<String> handleInvalidSubwayPathException(InvalidSubwayPathException e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
+
 }

@@ -75,4 +75,5 @@ public class LineResponse {
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
+
 }

@@ -111,7 +111,7 @@ public class LineServiceTest {
 	@Test
 	void removeLineStationAtTheFirstOfLine() {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-		lineService.removeLineStation(line.getId(), 1L);
+		lineService.delete(line.getId(), 1L);
 
 		assertThat(line.getStations()).hasSize(2);
 
@@ -123,7 +123,7 @@ public class LineServiceTest {
 	@Test
 	void removeLineStationBetweenTwo() {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-		lineService.removeLineStation(line.getId(), 2L);
+		lineService.delete(line.getId(), 2L);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -133,7 +133,7 @@ public class LineServiceTest {
 	@Test
 	void removeLineStationAtTheEndOfLine() {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-		lineService.removeLineStation(line.getId(), 3L);
+		lineService.delete(line.getId(), 3L);
 
 		assertThat(line.getStations()).hasSize(2);
 

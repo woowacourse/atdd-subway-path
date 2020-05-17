@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import wooteco.subway.admin.common.filter.ETagHeaderFilter;
-import wooteco.subway.admin.line.controller.LineController;
+import wooteco.subway.admin.common.config.ETagHeaderFilter;
+import wooteco.subway.admin.line.controller.line.LineController;
 import wooteco.subway.admin.line.domain.line.Line;
 import wooteco.subway.admin.line.service.LineService;
 import wooteco.subway.admin.line.service.dto.line.LineDetailResponse;

@@ -19,4 +19,5 @@ public class WholeSubwayResponse {
 	public List<LineDetailResponse> getLineDetails() {
 		return lineDetails;
 	}
+
 }
