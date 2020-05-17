@@ -47,15 +47,15 @@ class GraphServiceTest {
 		graphService = new GraphService(lineRepository, stationRepository);
 
 		line1 = Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(1L);
-		line1.addLineStation(new LineStation(null, 1L, 10, 10));
-		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+		line1.addLineStation(LineStation.of(null, 1L, 10, 10));
+		line1.addLineStation(LineStation.of(1L, 2L, 10, 10));
+		line1.addLineStation(LineStation.of(2L, 3L, 10, 10));
 
 		line2 = Line.of("신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(2L);
-		line2.addLineStation(new LineStation(null, 6L, 10, 10));
-		line2.addLineStation(new LineStation(6L, 5L, 10, 10));
-		line2.addLineStation(new LineStation(5L, 4L, 10, 10));
-		line2.addLineStation(new LineStation(4L, 1L, 10, 10));
+		line2.addLineStation(LineStation.of(null, 6L, 10, 10));
+		line2.addLineStation(LineStation.of(6L, 5L, 10, 10));
+		line2.addLineStation(LineStation.of(5L, 4L, 10, 10));
+		line2.addLineStation(LineStation.of(4L, 1L, 10, 10));
 
 		stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
 			new Station(5L, "양재시민의숲역"),
@@ -91,7 +91,7 @@ class GraphServiceTest {
 	@Test
 	void searchPaths3() {
 		Line line3 = Line.of("8호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(3L);
-		line3.addLineStation(new LineStation(null, 11L, 0, 0));
+		line3.addLineStation(LineStation.of(null, 11L, 0, 0));
 		stations.add(new Station(11L, "암사역"));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2, line3));

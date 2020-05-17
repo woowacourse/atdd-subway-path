@@ -87,7 +87,11 @@ public class Line {
 		stations.stream()
 			.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
 			.findAny()
-			.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+			.ifPresent(it -> {
+				LineStation station = it.updatePreLineStation(lineStation.getStationId());
+				stations.remove(it);
+				stations.add(station);
+			});
 
 		stations.add(lineStation);
 	}
@@ -101,7 +105,11 @@ public class Line {
 		stations.stream()
 			.filter(it -> Objects.equals(it.getPreStationId(), stationId))
 			.findFirst()
-			.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+			.ifPresent(it -> {
+				LineStation station = it.updatePreLineStation(targetLineStation.getStationId());
+				stations.remove(it);
+				stations.add(station);
+			});
 
 		stations.remove(targetLineStation);
 	}
