@@ -7,9 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 @SpringBootApplication
 public class SubwayAdminApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SubwayAdminApplication.class, args);
 	}
-
 }

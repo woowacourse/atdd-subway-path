@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jgrapht.Graph;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.entity.Line;
 import wooteco.subway.admin.domain.entity.Station;
+import wooteco.subway.admin.domain.graph.PathFactory;
+import wooteco.subway.admin.domain.graph.SubwayEdge;
 import wooteco.subway.admin.domain.graph.SubwayShortestPath;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -23,6 +27,7 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public PathResponse findPath(String sourceName, String targetName, String type) {
 		validateStationNamesAreSame(sourceName, targetName);
 
@@ -30,8 +35,10 @@ public class PathService {
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
-		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(allLines, allStationsById, sourceName,
-			targetName, type);
+		Graph<Long, SubwayEdge> graph = PathFactory.from(allLines, allStationsById);
+		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(graph);
+		// SubwayShortestPath subwayShortestPath = new SubwayShortestPath(allLines, allStationsById, sourceName,
+		// 	targetName, type);
 
 		int totalDuration = subwayShortestPath.calculateTotalDuration();
 		int totalDistance = subwayShortestPath.calculateTotalDistance();

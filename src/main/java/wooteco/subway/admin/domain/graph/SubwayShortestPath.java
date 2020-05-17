@@ -17,7 +17,6 @@ import wooteco.subway.admin.domain.type.WeightType;
 import wooteco.subway.admin.domain.type.weightstrategy.WeightStrategy;
 
 public class SubwayShortestPath {
-
 	private final GraphPath shortestPath;
 	private final Map<Long, Station> allStationsById;
 
@@ -28,8 +27,8 @@ public class SubwayShortestPath {
 		Station target = findStationByName(targetName, allStationsById);
 
 		List<LineStation> allLineStations = makeLineStations(allLines);
-		Graph<Long, SubwayEdge> graph = createMultiGraph(
-			allLineStations, allStationsById, weightType.getWeightStrategy());
+		Graph<Long, SubwayEdge> graph = createMultiGraph(allLineStations, allStationsById,
+			weightType.getWeightStrategy());
 
 		this.shortestPath = findShortestPath(source, target, graph);
 		this.allStationsById = allStationsById;
