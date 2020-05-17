@@ -12,6 +12,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
@@ -28,21 +29,21 @@ public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPathByDistance(PathRequest pathRequest) {
         final Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, station -> station));
         final List<Line> lines = lineRepository.findAll();
-
         final Station startStation = getStationWithValidation(stations, pathRequest.getSource());
         final Station endStation = getStationWithValidation(stations, pathRequest.getTarget());
 
-        DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
+        final DijkstraShortestPath<Station, Edge> dijkstraShortestPath =
             new DijkstraShortestPath<>(makeGraph(stations, lines, pathRequest.getType()));
 
         final GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, endStation);
@@ -51,8 +52,8 @@ public class PathService {
             throw new NotConnectEdgeException();
         }
 
-        List<Station> shortestPath = path.getVertexList();;
-        List<Edge> edgeList = path.getEdgeList();
+        final List<Station> shortestPath = path.getVertexList();
+        final List<Edge> edgeList = path.getEdgeList();
 
         final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
         final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();
@@ -68,8 +69,9 @@ public class PathService {
         return stations.get(stationId);
     }
 
-    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines, PathType pathType) {
-        WeightedMultigraph<Station, Edge> graph
+    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines,
+        PathType pathType) {
+        final WeightedMultigraph<Station, Edge> graph
             = new WeightedMultigraph<>(Edge.class);
 
         stations.values()

@@ -13,20 +13,15 @@ import wooteco.subway.admin.service.PathService;
 @RequestMapping("/api/paths")
 @RestController
 public class PathController {
-
     private final PathService pathService;
-    private final PathValidator pathValidator;
 
-    public PathController(PathService pathService,
-        PathValidator pathValidator) {
+    public PathController(final PathService pathService) {
         this.pathService = pathService;
-        this.pathValidator = pathValidator;
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(PathRequest pathRequest) {
-        pathValidator.valid(pathRequest);
-
+        PathValidator.valid(pathRequest);
         PathResponse pathResponse = pathService.findShortestPathByDistance(pathRequest);
 
         return ResponseEntity
