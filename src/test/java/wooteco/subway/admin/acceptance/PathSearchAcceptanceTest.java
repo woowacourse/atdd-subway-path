@@ -2,6 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
@@ -47,10 +48,18 @@ public class PathSearchAcceptanceTest extends AcceptanceTest {
     }
 
     private PathResponses getPath(String departure, String arrival) {
-        return given().when()
-            .get("/lines/path/" + departure + "/" + arrival)
-            .then()
-            .log().all()
-            .extract().as(PathResponses.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("source", departure);
+        params.put("target", arrival);
+
+        return
+                given().
+                        params(params).
+                when().
+                        get("/lines/path/").
+                then().
+                        log().all().
+                        extract().
+                        as(PathResponses.class);
     }
 }

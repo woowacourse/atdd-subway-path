@@ -3,23 +3,23 @@ package wooteco.subway.admin.dto;
 import wooteco.subway.admin.domain.line.path.vo.PathInfo;
 
 public class PathRequest {
-    private final String departureStationName;
-    private final String arrivalStationName;
+    private final String source;
+    private final String target;
 
-    public PathRequest(String departureStationName, String arrivalStationName) {
-        this.departureStationName = departureStationName;
-        this.arrivalStationName = arrivalStationName;
+    public PathRequest(String source, String target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public String getDepartureStationName() {
-        return departureStationName;
+    public String getSource() {
+        return source;
     }
 
-    public String getArrivalStationName() {
-        return arrivalStationName;
+    public String getTarget() {
+        return target;
     }
 
     public PathInfo toPathInfo() {
-        return new PathInfo(departureStationName, arrivalStationName);
+        return new PathInfo(source, target);
     }
 }
