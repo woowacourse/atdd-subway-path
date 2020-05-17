@@ -171,13 +171,11 @@ public class AcceptanceTest {
     }
 
     SearchPathResponse searchPath(String startStationName, String targetStationName, String type) {
-        SearchPathRequest searchPathRequest = new SearchPathRequest(startStationName, targetStationName, type);
         return  given().
-                        body(searchPathRequest).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                        post("/paths").
+                        get("/paths?startStationName="+startStationName
+                        +"&targetStationName="+targetStationName
+                        +"&type="+type).
                 then().
                         log().all().
                         extract().as(SearchPathResponse.class);
