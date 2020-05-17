@@ -1,22 +1,25 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.PathInfoResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.repository.LineStationRepository;
-import wooteco.subway.admin.repository.StationRepository;
+
+import wooteco.subway.admin.line.domain.lineStation.LineStation;
+import wooteco.subway.admin.line.repository.lineStation.LineStationRepository;
+import wooteco.subway.admin.path.service.PathService;
+import wooteco.subway.admin.path.service.dto.PathInfoResponse;
+import wooteco.subway.admin.path.service.dto.PathResponse;
+import wooteco.subway.admin.station.domain.Station;
+import wooteco.subway.admin.station.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -35,7 +38,6 @@ class PathServiceTest {
 	private Station station3;
 	private Station station4;
 	private Station station5;
-
 
 	@BeforeEach
 	void setUp() {

@@ -1,14 +1,16 @@
 package wooteco.subway.admin.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.PathInfoResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+
+import wooteco.subway.admin.line.service.dto.line.LineResponse;
+import wooteco.subway.admin.path.service.dto.PathInfoResponse;
+import wooteco.subway.admin.path.service.dto.PathResponse;
+import wooteco.subway.admin.station.service.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
