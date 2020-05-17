@@ -72,9 +72,10 @@ public class LineService {
     }
 
     public WholeSubwayResponse wholeLines() {
+        List<Station> stations = stationRepository.findAll();
         return WholeSubwayResponse.of(lineRepository.findAll()
             .stream()
-            .map(line -> LineDetailResponse.of(line, stationRepository.findAllById(line.getLineStationsId())))
+            .map(line -> LineDetailResponse.of(line, line.getStations(stations)))
             .collect(Collectors.toList())
         );
     }

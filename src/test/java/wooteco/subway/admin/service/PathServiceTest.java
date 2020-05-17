@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,13 +67,8 @@ class PathServiceTest {
     @Test
     void getShortestDistancePath() {
         // mock repository methods
-        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
-        when(stationRepository.findByName("3역")).thenReturn(Optional.of(station3));
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(station1, station2, station3, station4, station5)
-        );
-        when(stationRepository.findAllById(anyList())).thenReturn(
-            Arrays.asList(station1, station2, station4, station5, station3)
         );
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
@@ -90,14 +84,9 @@ class PathServiceTest {
     @DisplayName("최단시간 경로 조회 테스트")
     @Test
     void getShortestDurationPath() {
-        // mock repository methods
-        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
-        when(stationRepository.findByName("3역")).thenReturn(Optional.of(station3));
+        // mock repository method
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(station1, station2, station3, station4, station5)
-        );
-        when(stationRepository.findAllById(anyList())).thenReturn(
-            Arrays.asList(station1, station2, station3)
         );
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
@@ -122,7 +111,9 @@ class PathServiceTest {
     @Test
     public void sameSourceTargetTest() {
         // mock repository methods
-        when(stationRepository.findByName(anyString())).thenReturn(Optional.of(station1));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
         assertThatThrownBy(() ->
             pathService.getPath("1역", "1역", PathType.DISTANCE)
@@ -138,8 +129,6 @@ class PathServiceTest {
         line3.addLineStation(new LineStation(null, station6.getId(), 10, 10));
 
         // mock repository methods
-        when(stationRepository.findByName("1역")).thenReturn(Optional.of(station1));
-        when(stationRepository.findByName("6역")).thenReturn(Optional.of(station6));
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(station1, station2, station3, station4, station5, station6));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));

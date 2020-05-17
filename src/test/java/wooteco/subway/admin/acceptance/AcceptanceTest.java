@@ -1,5 +1,7 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.hamcrest.Matchers.*;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineDetailResponse;
@@ -212,15 +215,25 @@ public class AcceptanceTest {
         // @formatter:on
     }
 
-    PathResponse retrievePath(String departure, String arrival, PathType type) {
+    ValidatableResponse retrievePath(String departure, String arrival, PathType type) {
         // @formatter:off
         return given().
-        when().
+            when().
             get("/paths?source=" + departure + "&target=" + arrival + "&type=" + type).
-        then().
+            then().
             log().all().
-            statusCode(HttpStatus.OK.value()).
-            extract().as(PathResponse.class);
+            statusCode(anyOf(
+                is(HttpStatus.CREATED.value()),
+                is(HttpStatus.BAD_REQUEST.value()),
+                is(HttpStatus.NOT_FOUND.value())
+            ));
+        // @formatter:on
+    }
+
+    PathResponse getPath(String departure, String arrival, PathType type) {
+        // @formatter:off
+        return retrievePath(departure, arrival, type)
+            .extract().as(PathResponse.class);
         // @formatter:on
     }
 }

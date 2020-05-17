@@ -28,6 +28,10 @@ public class Station {
         return id.equals(other.id);
     }
 
+    public boolean is(Long stationId) {
+        return id.equals(stationId);
+    }
+
     public Long getId() {
         return id;
     }
