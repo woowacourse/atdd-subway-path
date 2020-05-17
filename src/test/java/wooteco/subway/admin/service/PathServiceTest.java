@@ -2,8 +2,10 @@ package wooteco.subway.admin.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
@@ -15,7 +17,9 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -75,41 +79,30 @@ class PathServiceTest {
 		line2.addLineStation(new LineStation(station8.getId(), station9.getId(), 40, 10));
 		line2.addLineStation(new LineStation(station9.getId(), station2.getId(), 40, 10));
 		line2.addLineStation(new LineStation(station2.getId(), station10.getId(), 40, 10));
-  	}
-
-  	@DisplayName("최단거리 경로를 조회하는 테스트")
-  	@Test
-  	void getShortestDistancePath() {
-		String sourceName = "시청";
-		String targetName = "신도림";
-		String criteria = "distance";
-
-		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
-		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
-
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
-		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
-				station5, station6, station7, station8, station9, station10));
-
-		ShortestPathResponse shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
-
-
-		assertEquals(shortestPath.getPath().get(0), station6);
-		assertEquals(shortestPath.getPath().get(1), station5);
-		assertEquals(shortestPath.getPath().get(2), station4);
-		assertEquals(shortestPath.getPath().get(3), station3);
-		assertEquals(shortestPath.getPath().get(4), station2);
-
-		assertEquals(shortestPath.getDistance(), 40);
-		assertEquals(shortestPath.getDuration(), 160);
 	}
 
-	@DisplayName("최단시간 경로를 조회하는 테스트")
-	@Test
-	void getShortestDurationPath() {
+	private static Stream<Arguments> provideCriteriaAndResult() {
+		Station station2 = new Station(2L, "신도림");
+		Station station3 = new Station(3L, "신길");
+		Station station4 = new Station(4L, "용산");
+		Station station5 = new Station(5L, "서울역");
+		Station station6 = new Station(6L, "시청");
+		Station station7 = new Station(7L, "충정로");
+		Station station8 = new Station(8L, "당산");
+		Station station9 = new Station(9L, "영등포구청");
+
+		return Stream.of(
+				Arguments.of("distance", Arrays.asList(station6, station5, station4, station3, station2), 40, 160),
+				Arguments.of("duration", Arrays.asList(station6, station7, station8, station9, station2), 160, 40)
+		);
+	}
+
+	@DisplayName("최단 거리와 시간 경로를 조회하는 테스트")
+	@ParameterizedTest
+	@MethodSource("provideCriteriaAndResult")
+	void getShortestPath(String criteria, List<Station> expectedPath, int expectedDistance, int expectedDuration) {
 		String sourceName = "시청";
 		String targetName = "신도림";
-		String criteria = "duration";
 
 		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
 		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
@@ -120,14 +113,11 @@ class PathServiceTest {
 
 		ShortestPathResponse shortestPath = pathService.findShortestDistancePath(sourceName, targetName, criteria);
 
+		for (int i = 0; i < shortestPath.getPath().size(); i++) {
+			assertEquals(shortestPath.getPath().get(i), expectedPath.get(i));
+		}
 
-		assertEquals(shortestPath.getPath().get(0), station6);
-		assertEquals(shortestPath.getPath().get(1), station7);
-		assertEquals(shortestPath.getPath().get(2), station8);
-		assertEquals(shortestPath.getPath().get(3), station9);
-		assertEquals(shortestPath.getPath().get(4), station2);
-
-		assertEquals(shortestPath.getDistance(), 160);
-		assertEquals(shortestPath.getDuration(), 40);
+		assertEquals(shortestPath.getDistance(), expectedDistance);
+		assertEquals(shortestPath.getDuration(), expectedDuration);
 	}
 }
