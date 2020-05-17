@@ -13,7 +13,6 @@ import wooteco.subway.admin.service.PathService;
 @RequestMapping("/api/paths")
 @RestController
 public class PathController {
-
     private final PathService pathService;
     private final PathValidator pathValidator;
 

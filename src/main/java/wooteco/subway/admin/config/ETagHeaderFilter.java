@@ -7,13 +7,13 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 @Configuration
 public class ETagHeaderFilter {
-	@Bean
-	public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter(){
-		FilterRegistrationBean<ShallowEtagHeaderFilter> filter =
-			new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
-		filter.addUrlPatterns("/api/*");
-		filter.setName("etagFilter");
+    @Bean
+    public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
+        FilterRegistrationBean<ShallowEtagHeaderFilter> filter =
+            new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
+        filter.addUrlPatterns("/api/*");
+        filter.setName("etagFilter");
 
-		return filter;
-	}
+        return filter;
+    }
 }

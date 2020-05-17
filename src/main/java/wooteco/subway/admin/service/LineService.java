@@ -26,9 +26,13 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public LineResponse save(LineRequest lineRequest) {
+    public Line save(Line line) {
+        return lineRepository.save(line);
+    }
+
+    public LineResponse addLine(final LineRequest lineRequest) {
         Line line = lineRequest.toLine();
-        Line persistLine = lineRepository.save(line);
+        Line persistLine = save(line);
 
         return LineResponse.of(persistLine);
     }
@@ -49,12 +53,12 @@ public class LineService {
         lineRepository.deleteById(lineId);
     }
 
-    public void addLineStation(Long lineId, LineStationCreateRequest request) {
+    public LineResponse addLineStation(Long lineId, LineStationCreateRequest request) {
         Line line = findBy(lineId);
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
-        lineRepository.save(line);
+        return LineResponse.of(save(line));
     }
 
     public Line findBy(Long lineId){

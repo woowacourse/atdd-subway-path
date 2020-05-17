@@ -2,6 +2,7 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
@@ -21,12 +22,12 @@ public class StationController {
     }
 
     @PostMapping()
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
+    public ResponseEntity<Void> createStation(@RequestBody StationCreateRequest view) {
         StationResponse stationResponse = stationService.createStation(view);
 
         return ResponseEntity
-                .created(URI.create("/api/stations/" + stationResponse.getId()))
-                .body(stationResponse);
+            .created(URI.create("/api/stations/" + stationResponse.getId()))
+            .build();
     }
 
     @GetMapping()
@@ -39,7 +40,7 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> removeStation(@PathVariable Long id) {
         stationService.removeStation(id);
 
         return ResponseEntity

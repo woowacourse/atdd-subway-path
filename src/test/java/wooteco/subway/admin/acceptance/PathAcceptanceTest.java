@@ -2,9 +2,12 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -13,14 +16,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setup() {
-        StationResponse stationResponse1 = createStation("강남역");
-        StationResponse stationResponse2 = createStation("역삼역");
-        StationResponse stationResponse3 = createStation("선릉역");
-        StationResponse stationResponse4 = createStation("양재역");
-        StationResponse stationResponse5 = createStation("양재시민숲역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("양재역");
+        createStation("양재시민숲역");
 
-        LineResponse lineResponse1 = createLine("신분당선");
-        LineResponse lineResponse2 = createLine("2호선");
+        createLine("신분당선");
+        createLine("2호선");
+
+        List<LineResponse> lines = getLines();
+        assertThat(lines.size()).isEqualTo(2);
+
+        LineDetailResponse lineResponse1 = getLine(lines.get(0).getId());
+        LineDetailResponse lineResponse2 = getLine(lines.get(1).getId());
+
+        List<StationResponse> stations = getStations();
+
+        assertThat(stations.size()).isEqualTo(5);
+
+        StationResponse stationResponse1 = stations.get(0);
+        StationResponse stationResponse2 = stations.get(1);
+        StationResponse stationResponse3 = stations.get(2);
+        StationResponse stationResponse4 = stations.get(3);
+        StationResponse stationResponse5 = stations.get(4);
 
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse4.getId());
