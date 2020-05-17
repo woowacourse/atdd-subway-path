@@ -64,8 +64,11 @@ public class SubwayShortestPath {
 	}
 
 	private Station findStationByName(String targetName, Map<Long, Station> stations) {
-		return stations.values().stream().filter(station -> station.isSameName(targetName))
-			.findAny().orElseThrow(() -> new IllegalArgumentException(String.format("%s은 존재하지 않는 역입니다.", targetName)));
+		return stations.values().stream()
+			.filter(station -> station.isSameName(targetName))
+			.findAny()
+			.orElseThrow(() -> new IllegalArgumentException(
+				String.format("%s은 존재하지 않는 역입니다.", targetName)));
 	}
 
 	private List<LineStation> makeLineStations(List<Line> lines) {

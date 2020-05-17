@@ -69,7 +69,6 @@ public class LineService {
 
 		List<Line> lines = lineRepository.findAll();
 		for (Line line : lines) {
-			System.out.println("## " + line.getName());
 			List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 			lineDetailResponses.add(LineDetailResponse.of(line, stations));
 		}
