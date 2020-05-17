@@ -41,7 +41,7 @@ public class PathService {
 		Criteria criteria = Criteria.of(criteriaType);
 
 		Lines lines = new Lines(lineRepository.findAll());
-		List<Long> lineStationIds = lines.fetchLineStationIds();
+		List<Long> lineStationIds = lines.toLineStationIds();
 
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 

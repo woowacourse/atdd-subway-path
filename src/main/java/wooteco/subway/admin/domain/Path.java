@@ -16,7 +16,7 @@ public class Path {
 
 	private void initGraph(Stations stations, Lines lines, Criteria criteria) {
 		Graphs.addAllVertices(graph, stations.getStations());
-		for (LineStation lineStation : lines.fetchLineStations()) {
+		for (LineStation lineStation : lines.toLineStations()) {
 			addEdgeBy(lineStation, stations, criteria);
 		}
 	}

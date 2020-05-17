@@ -11,15 +11,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LinesTest {
 	private Lines lines;
 	private List<Line> tempLines = new ArrayList<>();
-	private Line line1;
 
 	@BeforeEach
 	void setUp() {
-		line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+		Line line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
 		line1.addLineStation(new LineStation(null, 1L, 10, 10));
 		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -41,13 +41,14 @@ class LinesTest {
 	@Test
 	void createSubway_WhenNull_ThrowException() {
 		List<Line> lines = null;
-		assertThatThrownBy(() -> new Lines(lines)).isInstanceOf(IllegalArgumentException.class).hasMessage("List<Line>이 null일 수 없습니다.");
+		assertThatThrownBy(() -> new Lines(lines))
+				.isInstanceOf(IllegalArgumentException.class).hasMessage("List<Line>이 null일 수 없습니다.");
 	}
 
 	@DisplayName("lineStationId들을 반환한다.")
 	@Test
-	void fetchLineStationIds_ReturnListLong() {
-		List<Long> lineStationIds = lines.fetchLineStationIds();
+	void toLineStationIds_ReturnListLong() {
+		List<Long> lineStationIds = lines.toLineStationIds();
 
 		assertEquals(lineStationIds.get(0), 1L);
 		assertEquals(lineStationIds.get(1), 2L);
@@ -56,10 +57,10 @@ class LinesTest {
 
 	@DisplayName("lineStation들을 반환한다.")
 	@Test
-	void fetchLineStations_ReturnListLineStation() {
-		List<LineStation> lineStationIds = lines.fetchLineStations();
+	void toLineStations_ReturnListLineStation() {
+		List<LineStation> lineStationIds = lines.toLineStations();
 
-		assertEquals(lineStationIds.get(0).getPreStationId(), null);
+		assertNull(lineStationIds.get(0).getPreStationId());
 		assertEquals(lineStationIds.get(1).getPreStationId(), 1L);
 		assertEquals(lineStationIds.get(2).getPreStationId(), 2L);
 	}

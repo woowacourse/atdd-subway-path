@@ -21,14 +21,14 @@ public class Lines {
 		}
 	}
 
-	public List<Long> fetchLineStationIds() {
+	public List<Long> toLineStationIds() {
 		return lines.stream()
 				.flatMap(line -> line.getLineStationsId().stream())
 				.collect(collectingAndThen(toList(),
 						Collections::unmodifiableList));
 	}
 
-	public List<LineStation> fetchLineStations() {
+	public List<LineStation> toLineStations() {
 		return lines.stream()
 				.flatMap(line -> line.getStations().stream())
 				.collect(collectingAndThen(toList(),
