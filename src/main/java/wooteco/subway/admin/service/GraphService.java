@@ -9,13 +9,21 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.path.PathRequestWithId;
 import wooteco.subway.admin.dto.path.PathType;
 import wooteco.subway.admin.exception.NotFoundPathException;
+import wooteco.subway.admin.repository.LineRepository;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class GraphService {
-    public List<Long> findPath(List<Line> lines, PathRequestWithId pathRequestWithId) {
+    private final LineRepository lineRepository;
+
+    public GraphService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
+    }
+
+    public List<Long> findPathFormedId(PathRequestWithId pathRequestWithId) {
+        List<Line> lines = lineRepository.findAll();
         Long source = pathRequestWithId.getSourceId();
         Long target = pathRequestWithId.getTargetId();
         PathType pathType = pathRequestWithId.getPathType();

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.path.PathRequestWithId;
 import wooteco.subway.admin.dto.path.PathResponse;
 import wooteco.subway.admin.dto.station.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -13,38 +12,34 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class PathService {
-
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
-    private final GraphService graphService;
 
-    public PathService(StationRepository stationRepository,
-                       LineRepository lineRepository, GraphService graphService) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.graphService = graphService;
     }
 
-    public PathResponse findPath(PathRequestWithId pathRequestWithId) {
-        List<Line> lines = lineRepository.findAll();
-        List<Long> pathFormedId = graphService.findPath(lines, pathRequestWithId);
-
+    public PathResponse findPath(List<Long> pathFormedId) {
         List<Station> stations = stationRepository.findAllById(pathFormedId);
         List<StationResponse> pathFormedStationResponse = StationResponse.listOf(stations);
-
-        List<LineStation> lineStations = lines.stream()
-                .flatMap(line -> line.getStations().stream())
-                .filter(lineStation -> isLineStationOnPath(pathFormedId, lineStation))
-                .collect(Collectors.toList());
-
-        int totalDistance = lineStations.stream().mapToInt(LineStation::getDistance).sum();
-        int totalDuration = lineStations.stream().mapToInt(LineStation::getDuration).sum();
-
         List<StationResponse> sortedStationResponses = sort(pathFormedId, pathFormedStationResponse);
+
+        int totalDistance = 0;
+        int totalDuration = 0;
+        for (Line line : lineRepository.findAll()) {
+            Set<LineStation> lineStations = line.getStations();
+            for (LineStation lineStation : lineStations) {
+                if (isLineStationOnPath(pathFormedId, lineStation)) {
+                    totalDistance += lineStation.getDistance();
+                    totalDuration += lineStation.getDuration();
+                }
+            }
+        }
 
         return new PathResponse(sortedStationResponses, totalDistance, totalDuration);
     }
