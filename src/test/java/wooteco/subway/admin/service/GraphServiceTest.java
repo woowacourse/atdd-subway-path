@@ -84,4 +84,26 @@ class GraphServiceTest {
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("동일");
 	}
+
+	@DisplayName("출발지와 도착지 연결되어 있지 않을 경우 예외처리한다.")
+	@Test
+	void searchPaths3() {
+		Line line3 = Line.of("8호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(3L);
+		line3.addLineStation(new LineStation(null, 11L, 0, 0));
+
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2, line3));
+		List<Station> stations = Lists.newArrayList(new Station(11L, "암사역"),
+			new Station(6L, "청계산입구역"),
+			new Station(5L, "양재시민의숲역"),
+			new Station(4L, "양재역"), new Station(1L, "강남역"),
+			new Station(2L, "역삼역"), new Station(3L, "삼성역")
+		);
+		when(stationRepository.findAll()).thenReturn(stations);
+		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
+		when(stationRepository.findByName("암사역")).thenReturn(Optional.of(new Station(11L, "암사역")));
+
+		assertThatThrownBy(() -> graphService.searchPath("청계산입구역", "암사역", PathType.DISTANCE))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("연결");
+	}
 }

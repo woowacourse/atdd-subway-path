@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class GraphService {
 
 		Graph graph = Graph.of(lines, stations, pathType);
 		GraphPath<Station, Edge> path = graph.findPath(sourceStation, targetStation);
+		if (Objects.isNull(path)) {
+			throw new IllegalArgumentException("출발지와 목적지가 연결되어있지 않습니다.");
+		}
 		int distance = path.getEdgeList().stream()
 			.mapToInt(Edge::getDistance)
 			.sum();
