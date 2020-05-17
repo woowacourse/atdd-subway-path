@@ -23,53 +23,54 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
     private StationResponse jamsil;
     private StationResponse jamsilsaenae;
     private StationResponse playgound;
-    private StationResponse samjun;
-    private StationResponse sukchongobun;
-    private StationResponse sukchon;
+    private StationResponse samjeon;
+    private StationResponse seokchongobun;
+    private StationResponse seokchon;
 
     private LineResponse line2;
-    private LineResponse line8;
-    private LineResponse line9;
+    private LineResponse line3;
+    private LineResponse lineBunDang;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
 
-        jamsil = createStation("잠실");
-        jamsilsaenae = createStation("잠실새내");
-        playgound = createStation("종합운동장");
-        samjun = createStation("삼전");
-        sukchongobun = createStation("석촌고분");
-        sukchon = createStation("석촌");
+        jamsil = createStation(STATION_NAME_JAMSIL);
+        jamsilsaenae = createStation(STATION_NAME_JAMSILSAENAE);
+        playgound = createStation(STATION_NAME_PLAYGROUND);
+        samjeon = createStation(STATION_NAME_SAMJEON);
+        seokchongobun = createStation(STATION_NAME_SEOKCHOENGOBUN);
+        seokchon = createStation(STATION_NAME_SEOCKCHEON);
 
-        line2 = createLine("2호선");
-        line8 = createLine("8호선");
-        line9 = createLine("9호선");
+        line2 = createLine(LINE_NAME_2);
+        line3 = createLine(LINE_NAME_3);
+        lineBunDang = createLine(LINE_NAME_BUNDANG);
 
         addLineStation(line2.getId(), null, jamsil.getId(), 0, 0);
         addLineStation(line2.getId(), jamsil.getId(), jamsilsaenae.getId(), 10, 1);
         addLineStation(line2.getId(), jamsilsaenae.getId(), playgound.getId(), 10, 1);
 
-        addLineStation(line9.getId(), null, playgound.getId(), 0, 0);
-        addLineStation(line9.getId(), playgound.getId(), samjun.getId(), 10, 1);
-        addLineStation(line9.getId(), samjun.getId(), sukchongobun.getId(), 1, 10);
-        addLineStation(line9.getId(), sukchongobun.getId(), sukchon.getId(), 1, 10);
+        addLineStation(lineBunDang.getId(), null, playgound.getId(), 0, 0);
+        addLineStation(lineBunDang.getId(), playgound.getId(), samjeon.getId(), 10, 1);
+        addLineStation(lineBunDang.getId(), samjeon.getId(), seokchongobun.getId(), 1, 10);
+        addLineStation(lineBunDang.getId(), seokchongobun.getId(), seokchon.getId(), 1, 10);
 
-        addLineStation(line8.getId(), null, jamsil.getId(), 0, 0);
-        addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 1, 10);
+        addLineStation(line3.getId(), null, jamsil.getId(), 0, 0);
+        addLineStation(line3.getId(), jamsil.getId(), seokchon.getId(), 1, 10);
     }
 
     @DisplayName("최단경로를 조회한다")
     @Test
     void findPathByDistance() {
         //when
-        PathResponse path = getPath(jamsil.getName(), samjun.getName(), "distance");
+        PathResponse path = getPath(jamsil.getName(), samjeon.getName(), "distance");
 
         //then
         assertThat(path.getStations()).hasSize(4);
         assertThat(path.getStations()).extracting(StationResponse::getName)
-            .containsExactly("잠실", "석촌", "석촌고분", "삼전");
+            .containsExactly(STATION_NAME_JAMSIL, STATION_NAME_SEOCKCHEON, STATION_NAME_SEOKCHOENGOBUN,
+                STATION_NAME_SAMJEON);
         assertThat(path.getDistance()).isEqualTo(3);
         assertThat(path.getDuration()).isEqualTo(30);
     }
@@ -78,22 +79,23 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistanceAndDuration() {
         //when
-        PathResponse pathByDistance = getPath(jamsil.getName(), sukchongobun.getName(), "distance");
+        PathResponse pathByDistance = getPath(jamsil.getName(), seokchongobun.getName(), "distance");
 
         //then
         assertThat(pathByDistance.getStations()).hasSize(3);
         assertThat(pathByDistance.getStations()).extracting(StationResponse::getName)
-            .containsExactly("잠실", "석촌", "석촌고분");
+            .containsExactly(STATION_NAME_JAMSIL, STATION_NAME_SEOCKCHEON, STATION_NAME_SEOKCHOENGOBUN);
         assertThat(pathByDistance.getDistance()).isEqualTo(2);
         assertThat(pathByDistance.getDuration()).isEqualTo(20);
 
         //when
-        PathResponse pathByDuration = getPath(jamsil.getName(), sukchongobun.getName(), "duration");
+        PathResponse pathByDuration = getPath(jamsil.getName(), seokchongobun.getName(), "duration");
 
         //then
         assertThat(pathByDuration.getStations()).hasSize(5);
         assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
-            .containsExactly("잠실", "잠실새내", "종합운동장", "삼전", "석촌고분");
+            .containsExactly(STATION_NAME_JAMSIL, STATION_NAME_JAMSILSAENAE, STATION_NAME_PLAYGROUND,
+                STATION_NAME_SAMJEON, STATION_NAME_SEOKCHOENGOBUN);
         assertThat(pathByDuration.getDistance()).isEqualTo(31);
         assertThat(pathByDuration.getDuration()).isEqualTo(13);
     }

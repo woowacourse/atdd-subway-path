@@ -22,6 +22,12 @@ import wooteco.subway.admin.dto.StationResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
+    static final String STATION_NAME_JAMSIL = "잠실";
+    static final String STATION_NAME_JAMSILSAENAE = "잠실새내";
+    static final String STATION_NAME_PLAYGROUND = "종합운동장";
+    static final String STATION_NAME_SAMJEON = "삼전";
+    static final String STATION_NAME_SEOKCHOENGOBUN = "석촌고분";
+    static final String STATION_NAME_SEOCKCHEON = "석촌";
     static final String STATION_NAME_KANGNAM = "강남역";
     static final String STATION_NAME_YEOKSAM = "역삼역";
     static final String STATION_NAME_SEOLLEUNG = "선릉역";
