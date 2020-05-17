@@ -1,7 +1,6 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.path.PathResponse;
@@ -12,7 +11,7 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -29,16 +28,16 @@ public class PathService {
         List<StationResponse> pathFormedStationResponse = StationResponse.listOf(stations);
         List<StationResponse> sortedStationResponses = sort(pathFormedId, pathFormedStationResponse);
 
+        List<LineStation> lineStations = lineRepository.findAll().stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> isLineStationOnPath(pathFormedId, lineStation))
+                .collect(Collectors.toList());
+
         int totalDistance = 0;
         int totalDuration = 0;
-        for (Line line : lineRepository.findAll()) {
-            Set<LineStation> lineStations = line.getStations();
-            for (LineStation lineStation : lineStations) {
-                if (isLineStationOnPath(pathFormedId, lineStation)) {
-                    totalDistance += lineStation.getDistance();
-                    totalDuration += lineStation.getDuration();
-                }
-            }
+        for (LineStation lineStation : lineStations) {
+            totalDistance += lineStation.getDistance();
+            totalDuration += lineStation.getDuration();
         }
 
         return new PathResponse(sortedStationResponses, totalDistance, totalDuration);

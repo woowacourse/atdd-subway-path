@@ -26,17 +26,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     LineResponse ktx;
 
     /**
-     *              잠실 ------20km------ 석촌
-     *               |                    |
-     *               10km                 |
-     *               |                    |
-     *              잠실새내              10km
-     *               |                      |
-     *               10km                    |
-     *               |                        |
-     *  봉은사 -10km- 종합운동장 -10km- 삼전 -10km-- 석촌고분
-     *
-     *  duration 은 모두 1
+     * 잠실 ------20km------ 석촌
+     * |                    |
+     * 10km                 |
+     * |                    |
+     * 잠실새내              10km
+     * |                      |
+     * 10km                    |
+     * |                        |
+     * 봉은사 -10km- 종합운동장 -10km- 삼전 -10km-- 석촌고분
+     * <p>
+     * duration 은 모두 1
      */
     @Override
     @BeforeEach
@@ -70,11 +70,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(line9.getId(), sukchongobun.getId(), sukchon.getId(), 10, 1);
 
         addLineStation(line8.getId(), null, jamsil.getId(), 0, 0);
-        addLineStation(line8.getId(),  jamsil.getId(), sukchon.getId(), 20, 1);
+        addLineStation(line8.getId(), jamsil.getId(), sukchon.getId(), 20, 1);
 
 
-        addLineStation(ktx.getId(),  null, busan.getId(), 100, 100);
-        addLineStation(ktx.getId(),  busan.getId(), daegu.getId(), 100, 100);
+        addLineStation(ktx.getId(), null, busan.getId(), 100, 100);
+        addLineStation(ktx.getId(), busan.getId(), daegu.getId(), 100, 100);
     }
 
     @DisplayName("최소시간 기준으로 경로 조회(경로가 여러개)")
@@ -91,12 +91,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최소시간 기준으로 경로 조회(경로가 한개)")
     @Test
     void findPathByDurationWhenOnePath() {
-        PathResponse pathByDuration = findPath(jamsilsaenae.getName(), samjun.getName(), "duration");
-        assertThat(pathByDuration.getStations()).hasSize(3);
-        assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
-                .containsExactly("잠실새내", "종합운동장", "삼전");
-        assertThat(pathByDuration.getTotalDistance()).isEqualTo(20);
-        assertThat(pathByDuration.getTotalDuration()).isEqualTo(2);
+            PathResponse pathByDuration = findPath(jamsilsaenae.getName(), samjun.getName(), "duration");
+            assertThat(pathByDuration.getStations()).hasSize(3);
+            assertThat(pathByDuration.getStations()).extracting(StationResponse::getName)
+                    .containsExactly("잠실새내", "종합운동장", "삼전");
+            assertThat(pathByDuration.getTotalDistance()).isEqualTo(20);
+            assertThat(pathByDuration.getTotalDuration()).isEqualTo(2);
+
     }
 
     @DisplayName("최단경로 기준으로 경로 조회")
