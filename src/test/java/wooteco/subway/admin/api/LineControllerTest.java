@@ -38,7 +38,7 @@ public class LineControllerTest {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
-        String uri = "https://localhost:8080/lines/detail";
+        String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
