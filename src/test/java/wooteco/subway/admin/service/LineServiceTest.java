@@ -49,10 +49,10 @@ public class LineServiceTest {
 	void setUp() {
 		lineService = new LineService(lineRepository, stationRepository);
 
-		station1 = new Station(1L, STATION_NAME1);
-		station2 = new Station(2L, STATION_NAME2);
-		station3 = new Station(3L, STATION_NAME3);
-		station4 = new Station(4L, STATION_NAME4);
+		station1 = Station.of(STATION_NAME1).withId(1L);
+		station2 = Station.of(STATION_NAME2).withId(2L);
+		station3 = Station.of(STATION_NAME3).withId(3L);
+		station4 = Station.of(STATION_NAME4).withId(4L);
 
 		line1 = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
 		line1.addLineStation(LineStation.of(null, 1L, 10, 10));
@@ -64,7 +64,6 @@ public class LineServiceTest {
 		line2.addLineStation(LineStation.of(6L, 5L, 10, 10));
 		line2.addLineStation(LineStation.of(5L, 4L, 10, 10));
 		line2.addLineStation(LineStation.of(4L, 1L, 10, 10));
-
 	}
 
 	@Test
@@ -151,7 +150,7 @@ public class LineServiceTest {
 
 	@Test
 	void findLineWithStationsById() {
-		List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+		List<Station> stations = Lists.newArrayList(Station.of("강남역"), Station.of("역삼역"), Station.of("삼성역"));
 		when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line1));
 		when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -162,10 +161,10 @@ public class LineServiceTest {
 
 	@Test
 	void wholeLines() {
-		List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역"),
-			new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
-			new Station(6L, "청계산입구역"));
+		List<Station> stations = Lists.newArrayList(Station.of("강남역").withId(1L),
+			Station.of("역삼역").withId(2L), Station.of("삼성역").withId(3L),
+			Station.of("양재역").withId(4L), Station.of("양재시민의숲역").withId(5L),
+			Station.of("청계산입구역").withId(6L));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
 		when(lineRepository.findById(1L)).thenReturn(Optional.of(this.line1));

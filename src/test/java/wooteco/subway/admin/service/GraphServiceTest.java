@@ -57,10 +57,10 @@ class GraphServiceTest {
 		line2.addLineStation(LineStation.of(5L, 4L, 10, 10));
 		line2.addLineStation(LineStation.of(4L, 1L, 10, 10));
 
-		stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
-			new Station(5L, "양재시민의숲역"),
-			new Station(4L, "양재역"), new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역")
+		stations = Lists.newArrayList(Station.of("청계산입구역").withId(6L),
+			Station.of("양재시민의숲역").withId(5L),
+			Station.of("양재역").withId(4L), Station.of("강남역").withId(1L),
+			Station.of("역삼역").withId(2L), Station.of("삼성역").withId(3L)
 		);
 	}
 
@@ -69,8 +69,8 @@ class GraphServiceTest {
 	void searchPaths() {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
-		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(new Station(3L, "삼성역")));
+		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(Station.of("청계산입구역").withId(6L)));
+		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(Station.of("삼성역").withId(3L)));
 
 		PathResponse pathResponse = graphService.searchPath("청계산입구역", "삼성역", PathType.DISTANCE);
 
@@ -92,12 +92,12 @@ class GraphServiceTest {
 	void searchPaths3() {
 		Line line3 = Line.of("8호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(3L);
 		line3.addLineStation(LineStation.of(null, 11L, 0, 0));
-		stations.add(new Station(11L, "암사역"));
+		stations.add(Station.of("암사역").withId(11L));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2, line3));
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
-		when(stationRepository.findByName("암사역")).thenReturn(Optional.of(new Station(11L, "암사역")));
+		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(Station.of("청계산입구역").withId(6L)));
+		when(stationRepository.findByName("암사역")).thenReturn(Optional.of(Station.of("암사역").withId(11L)));
 
 		assertThatThrownBy(() -> graphService.searchPath("청계산입구역", "암사역", PathType.DISTANCE))
 			.isInstanceOf(IllegalArgumentException.class)
@@ -120,7 +120,7 @@ class GraphServiceTest {
 	void searchPaths5() {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
+		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(Station.of("청계산입구역").withId(6L)));
 
 		assertThatThrownBy(() -> graphService.searchPath("청계산입구역", "홍대입구역", PathType.DISTANCE))
 			.isInstanceOf(IllegalArgumentException.class)

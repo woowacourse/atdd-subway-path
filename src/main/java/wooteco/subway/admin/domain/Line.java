@@ -106,7 +106,7 @@ public class Line {
 			.filter(it -> Objects.equals(it.getPreStationId(), stationId))
 			.findFirst()
 			.ifPresent(it -> {
-				LineStation station = it.updatePreLineStation(targetLineStation.getStationId());
+				LineStation station = it.updatePreLineStation(targetLineStation.getPreStationId());
 				stations.remove(it);
 				stations.add(station);
 			});
