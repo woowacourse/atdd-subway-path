@@ -1,18 +1,18 @@
 package wooteco.subway.admin.domain.line.path;
 
-import wooteco.subway.admin.domain.line.LineStations;
+import org.jgrapht.WeightedGraph;
 
-public enum EdgeWeightType {
-    DISTANCE((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance())),
-    DURATION((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()));
-
-    private final EdgeWeightStrategy edgeWeightStrategy;
-
-    EdgeWeightType(EdgeWeightStrategy edgeWeightStrategy) {
-        this.edgeWeightStrategy = edgeWeightStrategy;
-    }
-
-    public SubwayRoute findShortestPath(LineStations lineStations, Long departureId, Long arrivalId) {
-        return lineStations.findShortestPath(edgeWeightStrategy, departureId, arrivalId);
+public enum EdgeWeightType implements EdgeWeightStrategy {
+    DISTANCE {
+        @Override
+        public void setWeight(WeightedGraph<Long, RouteEdge> graph, RouteEdge edge) {
+            graph.setEdgeWeight(edge, edge.getDistance());
+        }
+    },
+    DURATION {
+        @Override
+        public void setWeight(WeightedGraph<Long, RouteEdge> graph, RouteEdge edge) {
+            graph.setEdgeWeight(edge, edge.getDuration());
+        }
     }
 }
