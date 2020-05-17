@@ -20,10 +20,12 @@ class SubwayRouteTest {
         LineStation lineStation2 = new LineStation(2L, 3L, 5, 10);
         LineStations lineStations = new LineStations(
             Sets.newHashSet(lineStation, lineStation1, lineStation2));
+        SubwayGraph subwayGraph = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
+        SubwayGraph subwayGraph1 = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()));
 
-        distanceRoute = lineStations.findShortestPath((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()), 1L, 3L);
+        distanceRoute = subwayGraph.findDijkstraShortestPath(1L, 3L);
 
-        durationRoute = lineStations.findShortestPath((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()), 1L, 3L);
+        durationRoute = subwayGraph1.findDijkstraShortestPath(1L, 3L);
     }
 
     @Test

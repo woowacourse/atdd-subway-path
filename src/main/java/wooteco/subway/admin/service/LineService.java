@@ -13,6 +13,7 @@ import wooteco.subway.admin.domain.line.Line;
 import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
 import wooteco.subway.admin.domain.line.path.EdgeWeightType;
+import wooteco.subway.admin.domain.line.path.SubwayGraph;
 import wooteco.subway.admin.domain.line.path.SubwayRoute;
 import wooteco.subway.admin.domain.line.path.vo.PathInfo;
 import wooteco.subway.admin.domain.station.Station;
@@ -95,8 +96,8 @@ public class LineService {
         LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
 
         for (EdgeWeightType edgeWeightType : EdgeWeightType.values()) {
-            SubwayRoute shortestPath = lineStations.findShortestPath(edgeWeightType, departureId, arrivalId);;
-            responses.put(edgeWeightType, toPathResponse(shortestPath));
+            SubwayGraph subwayGraph = lineStations.toGraph(edgeWeightType);
+            responses.put(edgeWeightType, toPathResponse(subwayGraph.findDijkstraShortestPath(departureId, arrivalId)));
         }
 
         return new PathResponses(responses);
