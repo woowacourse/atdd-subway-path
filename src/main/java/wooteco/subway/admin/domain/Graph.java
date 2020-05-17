@@ -33,7 +33,7 @@ public class Graph {
     }
 
     GraphPath<Station, LineStationEdge> getShortestPath(Station source, Station target) {
-        GraphPath<Station, LineStationEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
+        GraphPath<Station, LineStationEdge> path = DijkstraShortestPath.findPathBetween(graph, source, target);
         if (path == null) {
             throw new NotExistPathException(String.format("(%s, %s) 구간이 존재하지 않습니다.", source.getName(), target.getName()));
         }
