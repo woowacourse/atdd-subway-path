@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,11 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -50,7 +47,7 @@ public class LineServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		lineService = new LineService(lineRepository, stationRepository, new GraphService());
+		lineService = new LineService(lineRepository, stationRepository);
 
 		station1 = new Station(1L, STATION_NAME1);
 		station2 = new Station(2L, STATION_NAME2);
@@ -183,25 +180,5 @@ public class LineServiceTest {
 		assertThat(lineDetailResponses).isNotNull();
 		assertThat(lineDetailResponses.get(0).getStations().size()).isEqualTo(3);
 		assertThat(lineDetailResponses.get(1).getStations().size()).isEqualTo(4);
-	}
-
-	@DisplayName("최단 거리 경로와 최소 시간 경로를 찾는다.")
-	@Test
-	void searchPaths() {
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
-		List<Station> stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
-			new Station(5L, "양재시민의숲역"),
-			new Station(4L, "양재역"), new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역")
-		);
-		when(stationRepository.findAll()).thenReturn(stations);
-		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
-		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(new Station(3L, "삼성역")));
-
-		PathResponse pathResponse = lineService.searchPath("청계산입구역", "삼성역", PathType.DISTANCE);
-
-		assertThat(pathResponse.getStations().size()).isEqualTo(6);
-		assertThat(pathResponse.getDistance()).isEqualTo(50);
-		assertThat(pathResponse.getDuration()).isEqualTo(50);
 	}
 }

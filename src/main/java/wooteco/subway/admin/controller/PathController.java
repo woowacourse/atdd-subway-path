@@ -8,23 +8,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.GraphService;
 
 @RestController
 @RequestMapping("search")
 public class PathController {
+	private final GraphService graphService;
 
-	private LineService lineService;
-
-	public PathController(LineService lineService) {
-		this.lineService = lineService;
+	public PathController(final GraphService graphService) {
+		this.graphService = graphService;
 	}
 
 	@GetMapping
 	public ResponseEntity<PathResponse> search(@RequestParam(value = "source") String source,
 		@RequestParam(value = "target") String target, @RequestParam(value = "type") PathType type) {
 
-		PathResponse pathResponse = lineService.searchPath(source, target, type);
+		PathResponse pathResponse = graphService.searchPath(source, target, type);
 		return ResponseEntity.ok().body(pathResponse);
 	}
 }

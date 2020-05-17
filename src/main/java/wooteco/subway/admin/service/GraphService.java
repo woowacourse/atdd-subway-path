@@ -12,6 +12,9 @@ import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.repository.LineRepository;
+import wooteco.subway.admin.repository.StationRepository;
 
 /**
  *    GraphService 클래스입니다.
@@ -20,10 +23,36 @@ import wooteco.subway.admin.domain.Station;
  */
 @Service
 public class GraphService {
-	public GraphPath<Station, Edge> findPath(List<Line> lines, List<Station> stations,
+	private final LineRepository lineRepository;
+	private final StationRepository stationRepository;
+
+	public GraphService(final LineRepository lineRepository, final StationRepository stationRepository) {
+		this.lineRepository = lineRepository;
+		this.stationRepository = stationRepository;
+	}
+
+	public PathResponse searchPath(String source, String target, PathType pathType) {
+		List<Line> lines = lineRepository.findAll();
+		List<Station> stations = stationRepository.findAll();
+
+		Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
+		Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+
+		GraphPath<Station, Edge> path = findPath(lines, stations, sourceStation, targetStation, pathType);
+		int distance = path.getEdgeList().stream()
+			.mapToInt(Edge::getDistance)
+			.sum();
+		int duration = path.getEdgeList().stream()
+			.mapToInt(Edge::getDuration)
+			.sum();
+
+		return PathResponse.of(path.getVertexList(), distance, duration);
+	}
+
+	private GraphPath<Station, Edge> findPath(List<Line> lines, List<Station> stations,
 		Station source, Station target, PathType type) {
 		WeightedMultigraph<Station, Edge> graph
-			= new WeightedMultigraph(Edge.class);
+			= new WeightedMultigraph<>(Edge.class);
 
 		stations.forEach(graph::addVertex);
 
@@ -37,14 +66,13 @@ public class GraphService {
 				graph.setEdgeWeight(edge, type.findWeightOf(it));
 			});
 
-		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-		return dijkstraShortestPath.getPath(source, target);
+		return DijkstraShortestPath.findPathBetween(graph, source, target);
 	}
 
 	private Station findStation(List<Station> stations, Long id) {
 		return stations.stream()
 			.filter(station -> station.getId().equals(id))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다." + id));
+			.orElseThrow(() -> new IllegalArgumentException(id + "는 존재하지 않는 역입니다."));
 	}
 }
