@@ -12,7 +12,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -31,9 +30,6 @@ import wooteco.subway.admin.domain.PathType;
 class GraphServiceTest {
 	private Line line1;
 	private Line line2;
-
-	@Autowired
-	private GraphService graphService;
 
 	@BeforeEach
 	void setUp() {
