@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Service
 public class PathService {
-    private LineService lineService;
+    private final LineService lineService;
 
     public PathService(LineService lineService) {
         this.lineService = lineService;
