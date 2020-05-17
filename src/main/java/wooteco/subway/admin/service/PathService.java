@@ -24,7 +24,7 @@ public class PathService {
     }
 
     public SearchPathResponse searchPath(String startStationName, String targetStationName, String type) {
-        validateTwoStation(startStationName, targetStationName);
+        validateStationSame(startStationName, targetStationName);
 
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
@@ -38,9 +38,7 @@ public class PathService {
 
         int durationSum = getEdgeValueSum(shortestPath, DURATION);
         int distanceSum = getEdgeValueSum(shortestPath, DISTANCE);
-        List<String> stationNames = shortestPath.getVertexList().stream()
-                .map(edge -> edge.getName())
-                .collect(Collectors.toList());
+        List<String> stationNames = getVertexName(shortestPath);
 
         return new SearchPathResponse(durationSum, distanceSum, stationNames);
     }
@@ -51,6 +49,12 @@ public class PathService {
                 .sum();
     }
 
+    private List<String> getVertexName(GraphPath<Station, Edge> shortestPath) {
+        return shortestPath.getVertexList().stream()
+                .map(edge -> edge.getName())
+                .collect(Collectors.toList());
+    }
+
     private Station findStationByName(String stationName, List<Station> stations) {
         return stations.stream()
                 .filter(station -> stationName.equals(station.getName()))
@@ -58,7 +62,7 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
     }
 
-    private void validateTwoStation(String startStationName, String targetStationName) {
+    private void validateStationSame(String startStationName, String targetStationName) {
         if (startStationName.equals(targetStationName)) {
             throw new IllegalArgumentException("시작역과 도착역이 같습니다.");
         }
