@@ -23,12 +23,16 @@ public class LineStations {
     public SubwayRoute findShortestPath(EdgeWeightStrategy edgeWeightStrategy, Long departureId, Long arrivalId) {
         WeightedGraph<Long, RouteEdge> graph = new WeightedMultigraph<>(RouteEdge.class);
         Graphs.addAllVertices(graph, getStationIds());
-
-        for (LineStation lineStation : lineStations) {
-            lineStation.addEdgeTo(graph, edgeWeightStrategy);
-        }
-
+        lineStations.stream()
+                .filter(LineStation::isNotStart)
+                .forEach(lineStation -> setEdge(edgeWeightStrategy, graph, lineStation));
         return new SubwayRoute(DijkstraShortestPath.findPathBetween(graph, departureId, arrivalId));
+    }
+
+    private void setEdge(EdgeWeightStrategy edgeWeightStrategy, WeightedGraph<Long, RouteEdge> graph, LineStation lineStation) {
+        RouteEdge routeEdge = lineStation.toEdge();
+        graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), routeEdge);
+        edgeWeightStrategy.setWeight(graph, routeEdge);
     }
 
     private Set<Long> getStationIds() {
