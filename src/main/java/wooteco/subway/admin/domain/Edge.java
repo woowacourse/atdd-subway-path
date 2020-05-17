@@ -2,9 +2,6 @@ package wooteco.subway.admin.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import static wooteco.subway.admin.domain.EdgeType.DISTANCE;
-import static wooteco.subway.admin.domain.EdgeType.DURATION;
-
 public class Edge extends DefaultWeightedEdge {
     private Long preStationId;
     private Long stationId;
@@ -25,6 +22,10 @@ public class Edge extends DefaultWeightedEdge {
                 lineStation.getDistance());
     }
 
+    public LineStation toLineStation() {
+        return new LineStation(preStationId, stationId, distance, duration);
+    }
+
     public Long getPreStationId() {
         return preStationId;
     }
@@ -39,15 +40,5 @@ public class Edge extends DefaultWeightedEdge {
 
     public int getDistance() {
         return distance;
-    }
-
-    public int getValueByType(EdgeType edgeType) {
-        if (edgeType.equals(DISTANCE)) {
-            return getDistance();
-        }
-        if (edgeType.equals(DURATION)) {
-            return getDuration();
-        }
-        throw new IllegalArgumentException("올바르지 않은 타입입니다.");
     }
 }

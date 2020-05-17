@@ -25,7 +25,7 @@ public class Graph {
                     graph.addEdge(findStationById(lineStation.getPreStationId(), stations),
                             findStationById(lineStation.getStationId(), stations),
                             edge);
-                    graph.setEdgeWeight(edge, edge.getValueByType(type));
+                    graph.setEdgeWeight(edge, type.getEdgeValue(lineStation));
                 });
         return new Graph(graph);
     }

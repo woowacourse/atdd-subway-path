@@ -47,7 +47,7 @@ public class PathService {
 
     private int getEdgeValueSum(GraphPath<Station, Edge> shortestPath, EdgeType edgeType) {
         return shortestPath.getEdgeList().stream()
-                .mapToInt(edge -> edge.getValueByType(edgeType))
+                .mapToInt(edge -> edgeType.getEdgeValue(edge.toLineStation()))
                 .sum();
     }
 
