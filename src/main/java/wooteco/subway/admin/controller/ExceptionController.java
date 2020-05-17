@@ -2,9 +2,8 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.LineNotFoundException;
@@ -12,8 +11,7 @@ import wooteco.subway.admin.exception.LineStationNotFoundException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.exception.VerticesNotConnectedException;
 
-@ControllerAdvice
-@RestController
+@RestControllerAdvice
 public class ExceptionController {
     @ExceptionHandler(value = {LineNotFoundException.class, LineStationNotFoundException.class,
             StationNotFoundException.class})

@@ -8,14 +8,14 @@ import org.jgrapht.GraphPath;
 import wooteco.subway.admin.exception.VerticesNotConnectedException;
 
 public class ShortestPath {
-    private final GraphPath<Station, SubwayEdge> path;
+    private final GraphPath<Station, Edge> path;
 
-    public ShortestPath(GraphPath<Station, SubwayEdge> path) {
+    public ShortestPath(GraphPath<Station, Edge> path) {
         validateNull(path);
         this.path = path;
     }
 
-    private void validateNull(GraphPath<Station, SubwayEdge> path) {
+    private void validateNull(GraphPath<Station, Edge> path) {
         if (Objects.isNull(path)) {
             throw new VerticesNotConnectedException();
         }
@@ -28,14 +28,14 @@ public class ShortestPath {
     public Long calculateTotalDistance() {
         return path.getEdgeList()
                 .stream()
-                .mapToLong(SubwayEdge::getDistance)
+                .mapToLong(Edge::getDistance)
                 .sum();
     }
 
     public Long calculateTotalDuration() {
         return path.getEdgeList()
                 .stream()
-                .mapToLong(SubwayEdge::getDuration)
+                .mapToLong(Edge::getDuration)
                 .sum();
     }
 }

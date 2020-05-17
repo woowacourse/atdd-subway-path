@@ -48,11 +48,6 @@ public class PathServiceTest {
     private Line line1;
     private Line line2;
 
-    private LineStation lineStation1;
-    private LineStation lineStation2;
-    private LineStation lineStation3;
-    private LineStation lineStation4;
-
     @BeforeEach
     void setUp() {
         station1 = new Station(1L, STATION_NAME_1);
@@ -64,10 +59,10 @@ public class PathServiceTest {
         line1 = new Line(1L, LINE_NAME_1, LocalTime.now(), LocalTime.now(), 10, "black");
         line2 = new Line(2L, LINE_NAME_2, LocalTime.now(), LocalTime.now(), 10, "red");
 
-        lineStation1 = new LineStation(1L, 2L, 10, 10);
-        lineStation2 = new LineStation(2L, 3L, 10, 10);
-        lineStation3 = new LineStation(3L, 4L, 10, 10);
-        lineStation4 = new LineStation(4L, 5L, 10, 10);
+        LineStation lineStation1 = new LineStation(1L, 2L, 10, 10);
+        LineStation lineStation2 = new LineStation(2L, 3L, 10, 10);
+        LineStation lineStation3 = new LineStation(3L, 4L, 10, 10);
+        LineStation lineStation4 = new LineStation(4L, 5L, 10, 10);
 
         pathService = new PathService(lineRepository, stationRepository);
 

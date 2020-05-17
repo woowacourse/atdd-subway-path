@@ -16,19 +16,20 @@ import org.springframework.test.context.jdbc.Sql;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
+// @formatter:off
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class PageAcceptanceTest {
     @LocalServerPort
     int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     @Test
@@ -36,9 +37,9 @@ public class PageAcceptanceTest {
         createLine("신분당선");
 
         given().
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/lines").
+                accept(MediaType.TEXT_HTML_VALUE).
+        when().
+                get("/admin/lines").
         then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -50,6 +51,7 @@ public class PageAcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("backgroundColor", "bg-color-white-700");
 
         given().
                 body(params).
@@ -61,5 +63,4 @@ public class PageAcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
     }
-
 }

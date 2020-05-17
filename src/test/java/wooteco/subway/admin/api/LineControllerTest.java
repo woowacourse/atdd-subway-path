@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class LineControllerTest {
 
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+        WholeSubwayResponse response = WholeSubwayResponse.of(
+                Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
         String uri = "/lines/details";
@@ -58,7 +60,8 @@ public class LineControllerTest {
 
     private LineDetailResponse createMockResponse() {
         List<Station> stations = Arrays.asList(
-                new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+                new Station("강남"), new Station("논현"), new Station("고속터미널"));
+        return LineDetailResponse.of(new Line("1호선", LocalTime.now(), LocalTime.now(), 10, "bg-color-red-700"),
+                stations);
     }
 }

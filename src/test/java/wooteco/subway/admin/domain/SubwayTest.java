@@ -11,7 +11,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.exception.VerticesNotConnectedException;
@@ -31,7 +31,7 @@ public class SubwayTest {
         subway = new Subway(Collections.singletonList(line), Arrays.asList(station1, station2, station3));
     }
 
-    @CsvSource("DISTANCE,DURATION")
+    @EnumSource(value = PathType.class, names = {"DISTANCE", "DURATION"})
     @ParameterizedTest
     void findShortestPath(PathType pathType) {
         assertThat(subway.findShortestPath("잠실", "강남", pathType))
