@@ -1,7 +1,6 @@
 package wooteco.subway.admin.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.domain.path.ShortestPath;
+import wooteco.subway.admin.domain.path.ShortestPathFactory;
 import wooteco.subway.admin.domain.vo.Edges;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -94,9 +94,7 @@ public class LineService {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
 
-        List<Edge> edges = findAllLineStations();
-        ShortestPath shortestPath = ShortestPath.of(edges, pathType);
-
+        ShortestPath shortestPath = ShortestPathFactory.createDijkstra(pathType, findAllEdges());
         Long sourceId = stationRepository.findIdByName(sourceName)
             .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
@@ -112,8 +110,8 @@ public class LineService {
         return new PathResponse(distance, duration, pathStationNames);
     }
 
-    private List<Edge> findAllLineStations() {
-        return Collections.unmodifiableList(lineRepository.findAll())
+    private List<Edge> findAllEdges() {
+        return lineRepository.findAll()
             .stream()
             .map(Line::getEdges)
             .map(Edges::getEdges)

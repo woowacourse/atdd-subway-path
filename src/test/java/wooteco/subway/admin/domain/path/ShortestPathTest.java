@@ -40,7 +40,8 @@ public class ShortestPathTest {
             .map(Edges::getEdges)
             .flatMap(List::stream)
             .collect(Collectors.toList());
-        ShortestPath shortestPath = ShortestPath.of(edges, PathType.DURATION);
+        ShortestPath shortestPath = ShortestPathFactory.createDijkstra(PathType.DISTANCE, edges);
         assertThat(shortestPath.getPath()).isInstanceOf(DijkstraShortestPath.class);
     }
+
 }
