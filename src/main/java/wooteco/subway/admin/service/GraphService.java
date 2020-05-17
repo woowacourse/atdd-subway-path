@@ -30,6 +30,9 @@ public class GraphService {
 	}
 
 	public PathResponse searchPath(String source, String target, PathType pathType) {
+		if (source.equals(target)) {
+			throw new IllegalArgumentException("출발지와 목적지가 동일합니다!");
+		}
 		List<Line> lines = lineRepository.findAll();
 		List<Station> stations = stationRepository.findAll();
 

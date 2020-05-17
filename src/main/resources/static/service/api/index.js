@@ -1,13 +1,13 @@
 const METHOD = {
   PUT() {
     return {
-      method: 'PUT'
-    }
+      method: "PUT"
+    };
   },
   DELETE() {
     return {
       method: 'DELETE'
-    }
+    };
   },
   POST(data) {
     return {
@@ -23,17 +23,28 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config);
+  // const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(async data => {
+    if (!data.ok) {
+      let error = null;
+      await data.json().then(message => {
+        error = new Error(message.errorMessage);
+      });
+      throw error;
+    } else {
+      return data.json();
+    }
+  }).catch(e => alert(e.message));
 
   const line = {
     getAll() {
-      return request(`/lines/detail`)
+      return request(`/lines/detail`);
     },
     getAllDetail() {
-      return requestWithJsonData(`/lines/detail`)
+      return requestWithJsonData(`/lines/detail`);
     }
-  }
+  };
 
   const path = {
     find(params) {
@@ -44,7 +55,7 @@ const api = (() => {
   return {
     line,
     path
-  }
-})()
+  };
+})();
 
-export default api
+export default api;

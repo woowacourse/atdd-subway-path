@@ -76,4 +76,12 @@ class GraphServiceTest {
 		assertThat(pathResponse.getDistance()).isEqualTo(50);
 		assertThat(pathResponse.getDuration()).isEqualTo(50);
 	}
+
+	@DisplayName("출발지와 도착지가 같을 경우 예외처리한다.")
+	@Test
+	void searchPaths2() {
+		assertThatThrownBy(() -> graphService.searchPath("강남역", "강남역", PathType.DISTANCE))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("동일");
+	}
 }

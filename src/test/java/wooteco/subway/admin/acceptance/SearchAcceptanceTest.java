@@ -11,7 +11,6 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class SearchAcceptanceTest extends AcceptanceTest {
-
 	@Override
 	@BeforeEach
 	void setUp() {

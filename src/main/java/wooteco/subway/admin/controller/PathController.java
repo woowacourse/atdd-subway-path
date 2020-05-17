@@ -22,7 +22,6 @@ public class PathController {
 	@GetMapping
 	public ResponseEntity<PathResponse> search(@RequestParam(value = "source") String source,
 		@RequestParam(value = "target") String target, @RequestParam(value = "type") PathType type) {
-
 		PathResponse pathResponse = graphService.searchPath(source, target, type);
 		return ResponseEntity.ok().body(pathResponse);
 	}
