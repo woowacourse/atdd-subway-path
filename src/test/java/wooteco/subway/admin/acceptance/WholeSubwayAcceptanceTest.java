@@ -1,8 +1,6 @@
 package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.admin.acceptance.AcceptanceTest.*;
-import static wooteco.subway.admin.acceptance.PageAcceptanceTest.*;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
-public class WholeSubwayAcceptanceTest {
+public class WholeSubwayAcceptanceTest extends AcceptanceTest {
 
 	@Test
 	public void wholeSubway() {
@@ -43,7 +41,7 @@ public class WholeSubwayAcceptanceTest {
 
 	public static WholeSubwayResponse retrieveWholeSubway() {
 		return RestAssured.given().when().
-			get("/lineDetails").
+			get("/line-details").
 			then().
 			log().all().
 			extract().

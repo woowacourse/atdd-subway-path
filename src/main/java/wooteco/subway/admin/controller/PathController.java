@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.PathService;
 
 @Controller
 public class PathController {
-	private LineService lineService;
+	private PathService pathService;
 
-	public PathController(LineService lineService) {
-		this.lineService = lineService;
+	public PathController(PathService pathService) {
+		this.pathService = pathService;
 	}
 
 	@GetMapping("/path")
 	public ResponseEntity<List<PathResponse>> getPath(@RequestParam("source") String departStation,
 		@RequestParam("target") String arrivalStation) {
-		List<PathResponse> paths = lineService.findPath(departStation, arrivalStation);
+		List<PathResponse> paths = pathService.findPath(departStation, arrivalStation);
 		return ResponseEntity.ok().body(paths);
 	}
 }

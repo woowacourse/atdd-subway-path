@@ -32,7 +32,7 @@ const api = (() => {
 
   const line = {
     getAll() {
-      return request(`/lineDetails`)
+      return request(`/line-details`)
     }
   }
 
