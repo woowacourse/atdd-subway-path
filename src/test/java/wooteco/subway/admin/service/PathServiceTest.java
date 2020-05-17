@@ -12,10 +12,12 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.NotExistPathException;
 import wooteco.subway.admin.exception.NotFoundException;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,24 +99,24 @@ class PathServiceTest {
     }
 
     @Test
-    void shortestDistance() {
+    void shortestDistance() throws UnsupportedEncodingException {
         when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
         when(lineService.showLines()).thenReturn(lines);
-
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
+        PathRequest pathRequest = PathRequest.of("환-강남역", "환-지축역", PathType.DISTANCE);
+        PathResponse paths = pathService.retrieveShortestPath(pathRequest);
         assertThat(paths.getDistance()).isEqualTo(40);
         assertThat(paths.getDuration()).isEqualTo(80);
     }
 
     @Test
-    void sameSourceAndTarget() {
+    void sameSourceAndTarget() throws UnsupportedEncodingException {
         when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.showLines()).thenReturn(lines);
-
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
+        PathRequest pathRequest = PathRequest.of("환-강남역", "환-강남역", PathType.DISTANCE);
+        PathResponse paths = pathService.retrieveShortestPath(pathRequest);
         assertThat(paths.getStations()).hasSize(1);
         assertThat(paths.getStations().get(0).getName()).isEqualTo("환-강남역");
     }
@@ -137,7 +139,8 @@ class PathServiceTest {
         when(lineService.showLines()).thenReturn(lines);
 
         assertThatThrownBy(() -> {
-            pathService.retrieveShortestPath("환-강남역", "4-오이도역", PathType.DISTANCE);
+            PathRequest pathRequest = PathRequest.of("환-강남역", "4-오이도역", PathType.DISTANCE);
+            pathService.retrieveShortestPath(pathRequest);
         }).isInstanceOf(NotExistPathException.class)
                 .hasMessage("(환-강남역, 4-오이도역) 구간이 존재하지 않습니다.");
     }
@@ -150,19 +153,20 @@ class PathServiceTest {
                 .thenThrow(new NotFoundException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", invalidStationName)));
 
         assertThatThrownBy(() -> {
-            pathService.retrieveShortestPath("환-강남역", invalidStationName, PathType.DISTANCE);
+            PathRequest pathRequest = PathRequest.of("환-강남역", invalidStationName, PathType.DISTANCE);
+            pathService.retrieveShortestPath(pathRequest);
         }).isInstanceOf(NotFoundException.class)
                 .hasMessage("없는 역 이름을 가진 역이 존재하지 않습니다.");
     }
 
     @Test
-    void shortestDuration() {
+    void shortestDuration() throws UnsupportedEncodingException {
         when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
         when(lineService.showLines()).thenReturn(lines);
-
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
+        PathRequest pathRequest = PathRequest.of("환-강남역", "환-지축역", PathType.DURATION);
+        PathResponse paths = pathService.retrieveShortestPath(pathRequest);
         assertThat(paths.getStations()).hasSize(5);
         assertThat(paths.getDistance()).isEqualTo(80);
         assertThat(paths.getDuration()).isEqualTo(41);

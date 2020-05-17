@@ -68,12 +68,11 @@ public class SearchAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private PathResponse retrieveShortestDistancePath(String source, String target, String type) throws UnsupportedEncodingException {
-        String encodedSource = URLEncoder.encode(source, "UTF-8");
-        String encodedTarget = URLEncoder.encode(target, "UTF-8");
+    private PathResponse retrieveShortestDistancePath(String source, String target, String type) {
         return given()
+                    .log().all()
                 .when()
-                    .get("/paths?source=" + encodedSource + "&target=" + encodedTarget + "&type=" + type)
+                    .get("/paths?source=" + source + "&target=" + target + "&type=" + type)
                 .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value())

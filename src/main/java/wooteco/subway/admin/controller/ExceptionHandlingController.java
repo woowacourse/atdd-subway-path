@@ -7,16 +7,8 @@ import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.NotExistPathException;
 import wooteco.subway.admin.exception.NotFoundException;
 
-import java.io.UnsupportedEncodingException;
-
-
 @RestControllerAdvice
 public class ExceptionHandlingController {
-
-    @ExceptionHandler({UnsupportedEncodingException.class})
-    public ResponseEntity<ErrorResponse> errorDuplicatedValue(UnsupportedEncodingException error) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(error.getMessage()));
-    }
 
     @ExceptionHandler({NotExistPathException.class})
     public ResponseEntity<ErrorResponse> errorDuplicatedValue(NotExistPathException error) {
@@ -32,6 +24,4 @@ public class ExceptionHandlingController {
     public ResponseEntity<ErrorResponse> errorDuplicatedValue(Exception error) {
         return ResponseEntity.badRequest().body(new ErrorResponse(error.getMessage()));
     }
-
-
 }
