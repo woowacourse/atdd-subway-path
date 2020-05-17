@@ -13,11 +13,9 @@ import java.util.List;
 
 @RestController
 public class StationController {
-    private final StationRepository stationRepository;
     private final StationService stationService;
 
-    public StationController(StationRepository stationRepository, StationService stationService) {
-        this.stationRepository = stationRepository;
+    public StationController(StationService stationService) {
         this.stationService = stationService;
     }
 
