@@ -1,20 +1,19 @@
 package wooteco.subway.admin.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-class SubwayTest {
-	private Subway subway;
-	private List<Line> lines = new ArrayList<>();
+class LinesTest {
+	private Lines lines;
+	private List<Line> lineSources = new ArrayList<>();
 	private Line line1;
 
 	@BeforeEach
@@ -23,31 +22,32 @@ class SubwayTest {
 		line1.addLineStation(new LineStation(null, 1L, 10, 10));
 		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
-		lines.add(line1);
+		lineSources.add(line1);
 
-		subway = new Subway(lines);
+		lines = new Lines(lineSources);
 	}
 
-	@DisplayName("Subway 객체를 생성한다.")
+	@DisplayName("Lines 객체를 생성한다.")
 	@Test
 	void createSubway_WhenNormalCase_ReturnInstance() {
 		List<Line> lines = new ArrayList<>();
-		Subway subway = new Subway(lines);
-		assertThat(subway).isInstanceOf(Subway.class);
+		Lines subway = new Lines(lines);
+		assertThat(subway).isInstanceOf(Lines.class);
 		assertThat(subway).isNotNull();
 	}
 
-	@DisplayName("Subway 객체를 생성시 null 값이 주입되면 예외처리한다.")
+	@DisplayName("Lines 객체를 생성시 null 값이 주입되면 예외처리한다.")
 	@Test
 	void createSubway_WhenNull_ThrowException() {
-		List<Line> lines = null;
-		assertThatThrownBy(() -> new Subway(lines)).isInstanceOf(IllegalArgumentException.class).hasMessage("List<Line>이 null일 수 없습니다.");
+		List<Line> lineSources = null;
+		assertThatThrownBy(() -> new Lines(lineSources)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage("List<Line>이 null일 수 없습니다.");
 	}
 
 	@DisplayName("lineStationId들을 반환한다.")
 	@Test
-	void fetchLineStationIds_ReturnListLong() {
-		List<Long> lineStationIds = subway.fetchLineStationIds();
+	void toLineStationIds_ReturnListLong() {
+		List<Long> lineStationIds = lines.toLineStationIds();
 
 		assertEquals(lineStationIds.get(0), 1L);
 		assertEquals(lineStationIds.get(1), 2L);
@@ -56,8 +56,8 @@ class SubwayTest {
 
 	@DisplayName("lineStation들을 반환한다.")
 	@Test
-	void fetchLineStations_ReturnListLineStation() {
-		List<LineStation> lineStationIds = subway.fetchLineStations();
+	void toLineStations_ReturnListLineStation() {
+		List<LineStation> lineStationIds = lines.toLineStations();
 
 		assertEquals(lineStationIds.get(0).getPreStationId(), null);
 		assertEquals(lineStationIds.get(1).getPreStationId(), 1L);

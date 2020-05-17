@@ -4,24 +4,24 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.admin.dto.ShortestPath;
 
-import java.util.Collection;
+import wooteco.subway.admin.dto.ShortestPath;
 
 public class Path {
 	private final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph(Edge.class);
-	private final Subway subway;
+	private final Lines lines;
 	private final Stations stations;
 
-	public Path(Subway subway, Stations stations) {
-		this.subway = subway;
+	public Path(Lines lines, Stations stations) {
+		this.lines = lines;
 		this.stations = stations;
 	}
 
 	public ShortestPath findShortestPath(Station sourceStation, Station targetStation, Criteria criteria) {
-		addVerticesToGraph(stations.getStations());
+		// TODO: 2020-05-17 메서드 분리 등 리팩토링 필요
+		Graphs.addAllVertices(graph, stations.getStations());
 
-		for (LineStation lineStation : subway.fetchLineStations()) {
+		for (LineStation lineStation : lines.toLineStations()) {
 			if (lineStation.getPreStationId() == null) {
 				continue;
 			}
@@ -36,25 +36,20 @@ public class Path {
 
 		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
 
-		// result가 null이면 경로가 존재하지 않는 경우
+		int totalDistance = result.getEdgeList().stream()
+			.mapToInt(Edge::getDistance)
+			.sum();
 
-		int totalDistance = (int) result.getEdgeList().stream() // TODO: 2020/05/14 메서드로 빼기 아래도 적용
-				.mapToDouble(Edge::getDistance) // TODO: 2020/05/14 int?
-				.sum();
-
-		int totalDuration = (int) result.getEdgeList().stream()
-				.mapToDouble(Edge::getDuration)
-				.sum();
+		int totalDuration = result.getEdgeList().stream()
+			.mapToInt(Edge::getDuration)
+			.sum();
 
 		return new ShortestPath(result.getVertexList(), totalDistance, totalDuration);
 
 	}
 
-	private void addVerticesToGraph(Collection<Station> vertices) { // TODO: 2020/05/14 빼기?
-		Graphs.addAllVertices(graph, vertices);
-	}
-
-	private GraphPath<Station, Edge> getDijkstraShortestPath(WeightedMultigraph<Station, Edge> graph, Station sourceStation, Station targetStation) {
+	private GraphPath<Station, Edge> getDijkstraShortestPath(WeightedMultigraph<Station, Edge> graph,
+		Station sourceStation, Station targetStation) {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);

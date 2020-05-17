@@ -1,16 +1,15 @@
 package wooteco.subway.admin.domain;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-
-public class Subway { // TODO: 2020/05/14 네이밍 고려하기
+public class Lines {
 	private final List<Line> lines;
 
-	public Subway(final List<Line> lines) {
+	public Lines(final List<Line> lines) {
 		validateLines(lines);
 		this.lines = lines;
 	}
@@ -21,14 +20,14 @@ public class Subway { // TODO: 2020/05/14 네이밍 고려하기
 		}
 	}
 
-	public List<Long> fetchLineStationIds() {
+	public List<Long> toLineStationIds() {
 		return lines.stream()
 				.flatMap(line -> line.getLineStationsId().stream())
 				.collect(collectingAndThen(toList(),
 						Collections::unmodifiableList));
 	}
 
-	public List<LineStation> fetchLineStations() {
+	public List<LineStation> toLineStations() {
 		return lines.stream()
 				.flatMap(line -> line.getStations().stream())
 				.collect(collectingAndThen(toList(),

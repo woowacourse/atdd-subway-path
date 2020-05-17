@@ -1,16 +1,21 @@
 package wooteco.subway.admin.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.admin.domain.*;
+
+import wooteco.subway.admin.domain.Criteria;
+import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.Path;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.ShortestPath;
 import wooteco.subway.admin.exception.EmptyStationNameException;
 import wooteco.subway.admin.exception.NoStationNameExistsException;
 import wooteco.subway.admin.exception.SourceEqualsTargetException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
 
 @Service
 public class PathService {
@@ -39,12 +44,12 @@ public class PathService {
 
 		Criteria criteria = Criteria.of(criteriaType);
 
-		Subway subway = new Subway(lineRepository.findAll());
-		List<Long> lineStationIds = subway.fetchLineStationIds();
+		Lines lines = new Lines(lineRepository.findAll());
+		List<Long> lineStationIds = lines.toLineStationIds();
 
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 
-		Path path = new Path(subway, stations);
+		Path path = new Path(lines, stations);
 		return path.findShortestPath(sourceStation, targetStation, criteria);
 	}
 }

@@ -1,21 +1,22 @@
 package wooteco.subway.admin.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.admin.dto.ShortestPath;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import wooteco.subway.admin.dto.ShortestPath;
 
 public class PathTest {
-	private Subway subway;
-	private List<Line> lines = new ArrayList<>();
+	private Lines lines;
+	private List<Line> lineSources = new ArrayList<>();
 	private Line line1;
 
 	private Station station1;
@@ -32,9 +33,9 @@ public class PathTest {
 		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
 		line1.addLineStation(new LineStation(3L, 4L, 10, 10));
-		lines.add(line1);
+		lineSources.add(line1);
 
-		subway = new Subway(lines);
+		lines = new Lines(lineSources);
 
 		station1 = new Station(1L, "구로");
 		station2 = new Station(2L, "신도림");
@@ -50,7 +51,7 @@ public class PathTest {
 	@ValueSource(strings = {"distance", "duration"})
 	@ParameterizedTest
 	void findShortestPath(String criteria) {
-		Path path = new Path(subway, stations);
+		Path path = new Path(lines, stations);
 
 
 		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of(criteria));
