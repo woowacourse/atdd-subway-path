@@ -40,6 +40,7 @@ class GraphServiceTest {
 
 	private Line line1;
 	private Line line2;
+	private List<Station> stations;
 
 	@BeforeEach
 	void setUp() {
@@ -55,17 +56,18 @@ class GraphServiceTest {
 		line2.addLineStation(new LineStation(6L, 5L, 10, 10));
 		line2.addLineStation(new LineStation(5L, 4L, 10, 10));
 		line2.addLineStation(new LineStation(4L, 1L, 10, 10));
+
+		stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
+			new Station(5L, "양재시민의숲역"),
+			new Station(4L, "양재역"), new Station(1L, "강남역"),
+			new Station(2L, "역삼역"), new Station(3L, "삼성역")
+		);
 	}
 
 	@DisplayName("최단 거리 경로와 최소 시간 경로를 찾는다.")
 	@Test
 	void searchPaths() {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
-		List<Station> stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
-			new Station(5L, "양재시민의숲역"),
-			new Station(4L, "양재역"), new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역")
-		);
 		when(stationRepository.findAll()).thenReturn(stations);
 		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
 		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(new Station(3L, "삼성역")));
@@ -90,14 +92,9 @@ class GraphServiceTest {
 	void searchPaths3() {
 		Line line3 = Line.of("8호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(3L);
 		line3.addLineStation(new LineStation(null, 11L, 0, 0));
+		stations.add(new Station(11L, "암사역"));
 
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2, line3));
-		List<Station> stations = Lists.newArrayList(new Station(11L, "암사역"),
-			new Station(6L, "청계산입구역"),
-			new Station(5L, "양재시민의숲역"),
-			new Station(4L, "양재역"), new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역")
-		);
 		when(stationRepository.findAll()).thenReturn(stations);
 		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
 		when(stationRepository.findByName("암사역")).thenReturn(Optional.of(new Station(11L, "암사역")));
@@ -105,5 +102,28 @@ class GraphServiceTest {
 		assertThatThrownBy(() -> graphService.searchPath("청계산입구역", "암사역", PathType.DISTANCE))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("연결");
+	}
+
+	@DisplayName("존재하지 않는 출발역을 조회할 경우 예외처리한다.")
+	@Test
+	void searchPaths4() {
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
+		when(stationRepository.findAll()).thenReturn(stations);
+
+		assertThatThrownBy(() -> graphService.searchPath("홍대입구역", "삼성역", PathType.DISTANCE))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("출발역");
+	}
+
+	@DisplayName("존재하지 않는 도착역을 조회할 경우 예외처리한다.")
+	@Test
+	void searchPaths5() {
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
+		when(stationRepository.findAll()).thenReturn(stations);
+		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
+
+		assertThatThrownBy(() -> graphService.searchPath("청계산입구역", "홍대입구역", PathType.DISTANCE))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("도착역");
 	}
 }

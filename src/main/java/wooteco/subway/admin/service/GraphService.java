@@ -37,8 +37,10 @@ public class GraphService {
 		List<Line> lines = lineRepository.findAll();
 		List<Station> stations = stationRepository.findAll();
 
-		Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-		Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+		Station sourceStation = stationRepository.findByName(source)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
+		Station targetStation = stationRepository.findByName(target)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
 
 		Graph graph = Graph.of(lines, stations, pathType);
 		GraphPath<Station, Edge> path = graph.findPath(sourceStation, targetStation);
