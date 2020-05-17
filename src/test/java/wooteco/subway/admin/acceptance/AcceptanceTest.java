@@ -223,7 +223,7 @@ public class AcceptanceTest {
             then().
             log().all().
             statusCode(anyOf(
-                is(HttpStatus.CREATED.value()),
+                is(HttpStatus.OK.value()),
                 is(HttpStatus.BAD_REQUEST.value()),
                 is(HttpStatus.NOT_FOUND.value())
             ));

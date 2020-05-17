@@ -13,10 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.admin.domain.DijkstraPath;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
@@ -28,6 +30,7 @@ class PathServiceTest {
 
     @Mock
     private LineRepository lineRepository;
+
     @Mock
     private StationRepository stationRepository;
 
@@ -43,7 +46,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository, new DijkstraPath());
         line1 = new Line(1L, "1호선", LocalTime.of(5, 30), LocalTime.of(5, 30), 10, "bg-teal-500");
         line2 = new Line(2L, "2호선", LocalTime.of(5, 30), LocalTime.of(5, 30), 10, "bg-teal-300");
 
@@ -73,7 +76,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
         // when
-        PathResponse path = pathService.getPath("1역", "3역", PathType.DISTANCE);
+        PathResponse path = pathService.getPath(new PathRequest("1역", "3역", PathType.DISTANCE));
 
         // then
         assertThat(path.getStations()).hasSize(5);
@@ -91,7 +94,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
         // when
-        PathResponse path = pathService.getPath("1역", "3역", PathType.DURATION);
+        PathResponse path = pathService.getPath(new PathRequest("1역", "3역", PathType.DURATION));
 
         // then
         assertThat(path.getStations()).hasSize(3);
@@ -103,7 +106,7 @@ class PathServiceTest {
     @Test
     public void sourceOrTargetDoesNotExist() {
         assertThatThrownBy(() ->
-            pathService.getPath("존재하지 않는 역", "1역", PathType.DISTANCE)
+            pathService.getPath(new PathRequest("존재하지 않는 역", "1역", PathType.DISTANCE))
         ).isInstanceOf(StationNotFoundException.class);
     }
 
@@ -116,7 +119,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
         assertThatThrownBy(() ->
-            pathService.getPath("1역", "1역", PathType.DISTANCE)
+            pathService.getPath(new PathRequest("1역", "1역", PathType.DISTANCE))
         ).isInstanceOf(InvalidSubwayPathException.class);
     }
 
@@ -134,7 +137,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
 
         assertThatThrownBy(() ->
-            pathService.getPath("1역", "6역", PathType.DISTANCE)
+            pathService.getPath(new PathRequest("1역", "6역", PathType.DISTANCE))
         ).isInstanceOf(InvalidSubwayPathException.class);
     }
 }

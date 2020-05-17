@@ -8,37 +8,35 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 
+@Component
 public class DijkstraPath implements PathStrategy {
 
-    private final List<Line> lines;
-    private final List<Station> stations;
-    private final Station source;
-    private final Station target;
-
-    public DijkstraPath(List<Line> lines, List<Station> stations, final String source, final String target) {
-        this.lines = lines;
-        this.stations = stations;
-        this.source = stations.stream().filter(station -> station.getName().equals(source)).findAny()
-            .orElseThrow(() -> new StationNotFoundException(source));
-        this.target = stations.stream().filter(station -> station.getName().equals(target)).findAny()
-            .orElseThrow(() -> new StationNotFoundException(target));
-    }
-
     @Override
-    public PathResponse getPath(PathType type) {
+    public PathResponse getPath(List<Line> allLines, List<Station> allStations, PathRequest request) {
+        final Station source = allStations.stream()
+            .filter(station -> station.getName().equals(request.getSource()))
+            .findAny()
+            .orElseThrow(() -> new StationNotFoundException(request.getSource()));
+        final Station target = allStations.stream()
+            .filter(station -> station.getName().equals(request.getTarget()))
+            .findAny()
+            .orElseThrow(() -> new StationNotFoundException(request.getTarget()));
+
         validateSourceTargetEquality(source, target);
 
-        WeightedMultigraph<Long, PathEdge> graph = initializeGraph();
-        addEdgeByPathType(type, graph);
+        WeightedMultigraph<Long, PathEdge> graph = initializeGraph(allStations);
+        addEdgeByPathType(allLines, request.getType(), graph);
         GraphPath<Long, PathEdge> path = DijkstraShortestPath.findPathBetween(graph, source.getId(), target.getId());
 
-        List<StationResponse> stations = findStationsFromPath(path);
+        List<StationResponse> stations = findStationsFromPath(allStations, path);
         return new PathResponse(stations, getDistance(path), getDuration(path));
     }
 
@@ -48,7 +46,7 @@ public class DijkstraPath implements PathStrategy {
         }
     }
 
-    private WeightedMultigraph<Long, PathEdge> initializeGraph() {
+    private WeightedMultigraph<Long, PathEdge> initializeGraph(List<Station> stations) {
         WeightedMultigraph<Long, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
         stations.stream()
             .map(Station::getId)
@@ -56,7 +54,11 @@ public class DijkstraPath implements PathStrategy {
         return graph;
     }
 
-    private void addEdgeByPathType(final PathType pathType, final WeightedMultigraph<Long, PathEdge> graph) {
+    private void addEdgeByPathType(
+        final List<Line> lines,
+        final PathType pathType,
+        final WeightedMultigraph<Long, PathEdge> graph
+    ) {
         lines.stream()
             .map(Line::getLineStations)
             .flatMap(Collection::stream)
@@ -70,10 +72,13 @@ public class DijkstraPath implements PathStrategy {
         graph.setEdgeWeight(edge, edge.getWeight());
     }
 
-    private List<StationResponse> findStationsFromPath(final GraphPath<Long, PathEdge> path) {
+    private List<StationResponse> findStationsFromPath(
+        final List<Station> stations,
+        final GraphPath<Long, PathEdge> path
+    ) {
         validatePath(path);
         return path.getVertexList().stream()
-            .map(this::getStation)
+            .map(id -> getStation(stations, id))
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }
@@ -84,7 +89,7 @@ public class DijkstraPath implements PathStrategy {
         }
     }
 
-    private Station getStation(final Long id) {
+    private Station getStation(final List<Station> stations, final Long id) {
         return stations.stream()
             .filter(station -> station.is(id))
             .findAny()
