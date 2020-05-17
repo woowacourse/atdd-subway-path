@@ -18,29 +18,29 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import wooteco.subway.admin.config.ETagHeaderFilter;
-import wooteco.subway.admin.controller.LineController;
+import wooteco.subway.admin.controller.restcontroller.PathController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
-import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.PathService;
 
-@WebMvcTest(controllers = {LineController.class})
+@WebMvcTest(controllers = {PathController.class})
 @Import(ETagHeaderFilter.class)
-public class LineControllerTest {
+public class PathControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private LineService lineService;
+    private PathService pathService;
 
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
             Arrays.asList(createMockResponse(), createMockResponse()));
-        given(lineService.wholeLines()).willReturn(response);
+        given(pathService.wholeLines()).willReturn(response);
 
-        String uri = "/lines/detail";
+        String uri = "/paths/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
             .andDo(print())

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
@@ -60,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return given()
             .queryParam("source", source)
             .queryParam("target", target)
-            .queryParam("type", "distance")
+            .queryParam("type", PathType.DISTANCE.name())
             .when()
             .get("/paths")
             .then()

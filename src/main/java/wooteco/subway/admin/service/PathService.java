@@ -3,22 +3,20 @@ package wooteco.subway.admin.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.admin.Graphs;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
-import wooteco.subway.admin.dto.response.StationResponse;
+import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -27,60 +25,63 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final Graphs graphs;
 
     public PathService(LineRepository lineRepository,
-        StationRepository stationRepository) {
+        StationRepository stationRepository, Graphs graphs) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.graphs = graphs;
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public WholeSubwayResponse wholeLines() {
+        List<Line> lines = lineRepository.findAll();
+        Map<Long, Station> stations = stationRepository.findAll()
+            .stream()
+            .collect(Collectors.toMap(Station::getId, station -> station));
+        List<LineDetailResponse> responses = lines.stream()
+            .map(line -> getLineDetailResponse(stations, line))
+            .collect(Collectors.toList());
+        return WholeSubwayResponse.of(responses);
+    }
+
+    @Transactional(readOnly = true)
+    public LineDetailResponse findLineWithStationsById(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
+        return LineDetailResponse.of(line, stations);
+    }
+
+    @Transactional
+    public void addLineStation(Long id, LineStationCreateRequest request) {
+        validateStations(request.getPreStationId(), request.getStationId());
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
+        line.addLineStation(lineStation);
+
+        lineRepository.save(line);
+        synchronized (graphs) {
+            graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
+        }
+    }
+
+    @Transactional
+    public synchronized void removeLineStation(Long lineId, Long stationId) {
+        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        line.removeLineStationById(stationId);
+        lineRepository.save(line);
+        synchronized (graphs) {
+            graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
+        }
     }
 
     @Transactional
     public PathResponse findPath(Long sourceId, Long targetId, PathType pathType) {
-        try {
-            validate(sourceId, targetId);
-            List<Line> lines = lineRepository.findAll();
-            Map<Long, Station> stations = stationRepository.findAll()
-                .stream()
-                .collect(Collectors.toMap(Station::getId, station -> station));
-            WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph<>(
-                LineStationEdge.class);
-            for (Station station : stations.values()) {
-                graph.addVertex(station.getId());
-            }
-            for (Line line : lines) {
-                Set<LineStation> lineStations = line.getStations();
-                for (LineStation lineStation : lineStations) {
-                    if (Objects.isNull(lineStation.getPreStationId())) {
-                        continue;
-                    }
-                    LineStationEdge lineStationEdge = LineStationEdge.of(lineStation);
-                    graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
-                        lineStationEdge);
-                    graph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
-                }
-            }
-            DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-                graph);
-            GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(sourceId,
-                targetId);
-            List<Long> stationIds = path.getVertexList();
-            List<StationResponse> responses = stationIds.stream()
-                .map(stations::get)
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-            List<LineStationEdge> edges = path.getEdgeList();
-            int distance = edges.stream()
-                .mapToInt(LineStationEdge::getDistance)
-                .sum();
-            int duration = edges.stream()
-                .mapToInt(LineStationEdge::getDuration)
-                .sum();
-            return new PathResponse(responses, duration, distance);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("등록되지 않은 역이 포함되어 있습니다.");
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("갈 수 없는 역입니다.");
-        }
+        validate(sourceId, targetId);
+        return graphs.getPath(sourceId, targetId, pathType);
     }
 
     private void validate(Long sourceId, Long targetId) {
@@ -100,25 +101,21 @@ public class PathService {
         }
     }
 
-    static class LineStationEdge extends DefaultWeightedEdge {
-        private int distance;
-        private int duration;
+    private LineDetailResponse getLineDetailResponse(Map<Long, Station> stations, Line line) {
+        List<Long> stationIds = line.getLineStationsId();
+        List<Station> stationsList = stationIds.stream()
+            .map(stations::get)
+            .collect(Collectors.toList());
+        return LineDetailResponse.of(line, stationsList);
+    }
 
-        private LineStationEdge(int distance, int duration) {
-            this.distance = distance;
-            this.duration = duration;
+    private void validateStations(Long preStationId, Long stationId) {
+        if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
+            throw new IllegalArgumentException("존재하지 않는 이전역입니다.");
         }
-
-        public static LineStationEdge of(LineStation lineStation) {
-            return new LineStationEdge(lineStation.getDistance(), lineStation.getDuration());
-        }
-
-        public int getDistance() {
-            return distance;
-        }
-
-        public int getDuration() {
-            return duration;
+        if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
+            throw new IllegalArgumentException("존재하지 않는 현재역입니다.");
         }
     }
+
 }

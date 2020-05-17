@@ -105,7 +105,7 @@ public class AcceptanceTest {
     LineDetailResponse getLine(Long id) {
         return
             given().when().
-                get("/lines/" + id).
+                get("/paths/lines/" + id).
                 then().
                 log().all().
                 extract().as(LineDetailResponse.class);
@@ -163,7 +163,7 @@ public class AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/lines/" + lineId + "/stations").
+            post("/paths/lines/" + lineId + "/stations").
             then().
             log().all().
             statusCode(HttpStatus.OK.value());
@@ -174,7 +174,7 @@ public class AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            delete("/lines/" + lineId + "/stations/" + stationId).
+            delete("/paths/lines/" + lineId + "/stations/" + stationId).
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());

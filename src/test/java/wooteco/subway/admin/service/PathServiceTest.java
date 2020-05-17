@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +17,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.admin.Graphs;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -33,6 +35,7 @@ class PathServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
+    private Graphs graphs = new Graphs();
 
     private PathService pathService;
     private Station kangnam;
@@ -45,7 +48,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository, graphs);
 
         seolleung = new Station(2L, "선릉역", LocalDateTime.now());
         yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
@@ -86,6 +89,7 @@ class PathServiceTest {
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(jamwon, yeoksam));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
         assertThatThrownBy(
             () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE))
             .isInstanceOf(IllegalArgumentException.class);
@@ -107,6 +111,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine, secondLine));
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
 
         PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE);
         assertThat(pathResponse.getStations()).size().isEqualTo(6);
@@ -136,6 +141,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(first, second, third));
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
 
         PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION);
         PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE);
@@ -147,51 +153,153 @@ class PathServiceTest {
         assertThat(distanceResponse.getDistance()).isEqualTo(5);
     }
 
+    @DisplayName("라인의 맨 앞에 새로운 구간을 추가하는 경우")
     @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+    void addLineStationAtTheFirstOfLine() {
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
+        firstLine.addLineStation(LineStation.of(null, kangnam.getId(), 10, 10));
+        firstLine.addLineStation(LineStation.of(kangnam.getId(), seolleung.getId(), 10, 10));
+        firstLine.addLineStation(LineStation.of(seolleung.getId(), yeoksam.getId(), 10, 10));
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
-        assertThat(shortestPath.size()).isEqualTo(3);
+        LineStationCreateRequest request = new LineStationCreateRequest(null, gyodae.getId(), 10,
+            10);
+        pathService.addLineStation(firstLine.getId(), request);
+
+        assertThat(firstLine.getStations()).hasSize(4);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(4L);
+        assertThat(stationIds.get(1)).isEqualTo(1L);
+        assertThat(stationIds.get(2)).isEqualTo(2L);
+        assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
-    @DisplayName("등록되지 않은 경우")
+    @DisplayName("라인의 중간에 새로운 구간을 추가하는 경우")
     @Test
-    public void dijkstraShortestPathNotExistException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+    void addLineStationBetweenTwo() {
+        addInitialLineStation();
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        LineStationCreateRequest request = new LineStationCreateRequest(1L,
+            4L, 10, 10);
+        pathService.addLineStation(firstLine.getId(), request);
 
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThat(firstLine.getStations()).hasSize(4);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(1L);
+        assertThat(stationIds.get(1)).isEqualTo(4L);
+        assertThat(stationIds.get(2)).isEqualTo(2L);
+        assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
-    @DisplayName("연결되지 않은 경우")
+    @DisplayName("라인의 마지막에 구간을 추가하는 경우")
     @Test
-    public void dijkstraShortestPathNotConnectedException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+    void addLineStationAtTheEndOfLine() {
+        addInitialLineStation();
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        when(stationRepository.existsById(anyLong())).thenReturn(true);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        LineStationCreateRequest request = new LineStationCreateRequest(3L,
+            4L, 10, 10);
+        pathService.addLineStation(firstLine.getId(), request);
 
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(NullPointerException.class);
+        assertThat(firstLine.getStations()).hasSize(4);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(1L);
+        assertThat(stationIds.get(1)).isEqualTo(2L);
+        assertThat(stationIds.get(2)).isEqualTo(3L);
+        assertThat(stationIds.get(3)).isEqualTo(4L);
+    }
+
+    @DisplayName("첫 역을 삭제하는 경우")
+    @Test
+    void removeLineStationAtTheFirstOfLine() {
+        addInitialLineStation();
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        pathService.removeLineStation(firstLine.getId(), 1L);
+
+        assertThat(firstLine.getStations()).hasSize(2);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(2L);
+        assertThat(stationIds.get(1)).isEqualTo(3L);
+    }
+
+    @DisplayName("중간역을 삭제하는 경우")
+    @Test
+    void removeLineStationBetweenTwo() {
+        addInitialLineStation();
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        pathService.removeLineStation(firstLine.getId(), 2L);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(1L);
+        assertThat(stationIds.get(1)).isEqualTo(3L);
+    }
+
+    @DisplayName("노선의 마지막 역을 삭제하는 경우")
+    @Test
+    void removeLineStationAtTheEndOfLine() {
+        addInitialLineStation();
+        when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
+        pathService.removeLineStation(firstLine.getId(), 3L);
+
+        assertThat(firstLine.getStations()).hasSize(2);
+
+        List<Long> stationIds = firstLine.getLineStationsId();
+        assertThat(stationIds.get(0)).isEqualTo(1L);
+        assertThat(stationIds.get(1)).isEqualTo(2L);
+    }
+
+    @DisplayName("노선의 구간을 가져오는 경우")
+    @Test
+    void findLineWithStationsById() {
+        addInitialLineStation();
+        List<Station> stations = Lists.newArrayList(Station.of("강남역"), Station.of("역삼역"),
+            Station.of("삼성역"));
+        when(lineRepository.findById(anyLong())).thenReturn(Optional.of(firstLine));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        LineDetailResponse lineDetailResponse = pathService.findLineWithStationsById(1L);
+
+        assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @DisplayName("전체 노선도 가져오기")
+    @Test
+    void wholeLines() {
+        addInitialLineStation();
+        Line newLine = new Line(2L, "신분당선", "bg-green-500", LocalTime.of(05, 30),
+            LocalTime.of(22, 30), 5);
+        newLine.addLineStation(LineStation.of(null, 4L, 10, 10));
+        newLine.addLineStation(LineStation.of(4L, 5L, 10, 10));
+        newLine.addLineStation(LineStation.of(5L, 6L, 10, 10));
+
+        List<Station> stations = Arrays.asList(new Station(1L, "강남역", LocalDateTime.now()),
+            new Station(2L, "역삼역", LocalDateTime.now()),
+            new Station(3L, "삼성역", LocalDateTime.now()),
+            new Station(4L, "양재역", LocalDateTime.now()),
+            new Station(5L, "양재시민의숲역", LocalDateTime.now()),
+            new Station(6L, "청계산입구역", LocalDateTime.now()));
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine, newLine));
+        when(stationRepository.findAll()).thenReturn(stations);
+
+        List<LineDetailResponse> lineDetails = pathService.wholeLines().getLineDetailResponse();
+
+        assertThat(lineDetails).isNotNull();
+        assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
+        assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
+    }
+
+    private void addInitialLineStation() {
+        firstLine.addLineStation(LineStation.of(null, 1L, 10, 10));
+        firstLine.addLineStation(LineStation.of(1L, 2L, 10, 10));
+        firstLine.addLineStation(LineStation.of(2L, 3L, 10, 10));
     }
 }

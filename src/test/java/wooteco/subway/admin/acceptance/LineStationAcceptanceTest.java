@@ -64,7 +64,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     private WholeSubwayResponse retrieveWholeSubway() {
         return given().
             when().
-            get("/lines/detail").
+            get("/paths/lines/detail").
             then().
             extract().
             body().

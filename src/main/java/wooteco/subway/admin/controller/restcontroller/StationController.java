@@ -1,4 +1,4 @@
-package wooteco.subway.admin.controller;
+package wooteco.subway.admin.controller.restcontroller;
 
 import java.net.URI;
 import java.util.List;
