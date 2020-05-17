@@ -9,9 +9,11 @@ import java.util.List;
 
 public class ShortestPath {
     private DijkstraShortestPath<Long, WeightedEdge> path;
+    private PathType pathType;
 
-    private ShortestPath(DijkstraShortestPath<Long, WeightedEdge> path) {
+    public ShortestPath(DijkstraShortestPath<Long, WeightedEdge> path, PathType pathType) {
         this.path = path;
+        this.pathType = pathType;
     }
 
     public static ShortestPath of(List<LineStation> lineStations, PathType pathType) {
@@ -30,12 +32,11 @@ public class ShortestPath {
         }
 
         DijkstraShortestPath<Long, WeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return new ShortestPath(shortestPath);
+        return new ShortestPath(shortestPath, pathType);
     }
 
     public DijkstraShortestPath<Long, WeightedEdge> getPath() {
         return path;
-
     }
 
     public List<Long> getVertexList(Long source, Long target) {
@@ -46,15 +47,29 @@ public class ShortestPath {
         }
     }
 
-    public int getWeight(Long source, Long target) {
+    private int getWeight(Long source, Long target) {
         return (int) path.getPath(source, target).getWeight();
     }
 
-    public int getSubWeight(Long source, Long target) {
+    private int getSubWeight(Long source, Long target) {
         return path.getPath(source, target)
                 .getEdgeList()
                 .stream()
                 .mapToInt(WeightedEdge::getSubWeight)
                 .sum();
+    }
+
+    public int getDistance(Long source, Long target) {
+        if (pathType.equals(PathType.DISTANCE)) {
+            return getWeight(source, target);
+        }
+        return getSubWeight(source, target);
+    }
+
+    public int getDuration(Long source, Long target) {
+        if (pathType.equals(PathType.DURATION)) {
+            return getWeight(source, target);
+        }
+        return getSubWeight(source, target);
     }
 }

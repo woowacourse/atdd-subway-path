@@ -31,18 +31,4 @@ public enum PathType {
     public int findSubWeight(LineStation lineStation) {
         return findSubWeight.apply(lineStation);
     }
-
-    public int getDistance(int weight, int subWeight) {
-        if (this == DURATION) {
-            return subWeight;
-        }
-        return weight;
-    }
-
-    public int getDuration(int weight, int subWeight) {
-        if (this == DISTANCE) {
-            return subWeight;
-        }
-        return weight;
-    }
 }

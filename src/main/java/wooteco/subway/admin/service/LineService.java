@@ -100,13 +100,10 @@ public class LineService {
         List<LineStation> lineStations = findAllLineStations();
         ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);
 
-
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
-        int weight = shortestPath.getWeight(sourceId, targetId);
-        int subWeight = shortestPath.getSubWeight(sourceId, targetId);
+        int distance = shortestPath.getDistance(sourceId, targetId);
+        int duration = shortestPath.getDuration(sourceId, targetId);
 
-        int distance = pathType.getDistance(weight, subWeight);
-        int duration = pathType.getDuration(weight, subWeight);
         List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
         return new PathResponse(distance, duration, pathStationNames);
     }
