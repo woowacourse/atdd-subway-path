@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -18,14 +19,15 @@ import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public LineResponse save(LineRequest lineRequest) {
         Line line = lineRequest.toLine();
         Line persistLine = lineRepository.save(line);
@@ -33,47 +35,53 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> showLines() {
         List<Line> lines = lineRepository.findAll();
         return LineResponse.listOf(lines);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
+        Line persistLine = findBy(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
 
-    public void deleteLineById(Long lineId) {
+    @Transactional
+    public void deleteLineBy(Long lineId) {
         lineRepository.deleteById(lineId);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, LineStationCreateRequest request) {
         Line line = findBy(lineId);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
-        line.addLineStation(lineStation);
+        LineStation lineStation = request.toLineStation();
 
+        line.addLineStation(lineStation);
         lineRepository.save(line);
     }
 
-    public Line findBy(Long lineId){
+    private Line findBy(Long lineId) {
         return lineRepository.findById(lineId)
             .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findBy(lineId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = findBy(lineId);
         List<Long> lineStationsIds = line.getLineStationsIds();
         return LineDetailResponse.of(line, sortBySubwayRule(lineStationsIds));
     }
 
+    @Transactional(readOnly = true)
     public List<LineDetailResponse> wholeLines() {
         List<Line> lines = lineRepository.findAll();
 
@@ -82,14 +90,19 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
         List<Station> stations = stationRepository.findAllById(lineStationsIds);
 
         return lineStationsIds.stream()
-            .map(lineStationsId -> stations.stream()
-                .filter(station -> lineStationsId.equals(station.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다")))
+            .map(lineStationsId -> getStationByEqualId(stations, lineStationsId))
             .collect(Collectors.toList());
+    }
+
+    private Station getStationByEqualId(List<Station> stations, Long lineStationsId) {
+        return stations.stream()
+            .filter(station -> lineStationsId.equals(station.getId()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다"));
     }
 }
