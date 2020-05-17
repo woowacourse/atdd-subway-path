@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.StationService;
 
 import java.net.URI;
