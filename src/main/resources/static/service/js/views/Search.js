@@ -16,53 +16,67 @@ function Search() {
   const $shortestDistance = document.querySelector('#shortest-distance')
   const $shortestTime = document.querySelector('#shortest-time')
 
-  const showSearchResult = () => {
+  const showSearchResult = (data) => {
+    $durationSum.innerText = data.durationSum + "분";
+    $distanceSum.innerText = data.distanceSum + "km";
+
+    $stationList.innerHTML = "";
+    const firstStationNameTemplate = firstPathTemplate(data.pathStationNames[0]);
+    const middleStationNameTemplate = data.pathStationNames.slice(1,data.pathStationNames.length -1)
+      .map(stationName => middlePathTemplate(stationName))
+      .join("");
+    const lastStationNameTemplate = lastPathTemplate(data.pathStationNames[data.pathStationNames.length -1]);
+
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      firstStationNameTemplate
+    );
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      middleStationNameTemplate
+    );
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      lastStationNameTemplate
+    );
+
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
   }
 
+  const setSelected = classList => {
+    classList.remove('bg-gray-200');
+    classList.remove('text-gray-500');
+    classList.add('text-gray-700');
+    classList.add('bg-white');
+    classList.add('border-l');
+    classList.add('border-t');
+    classList.add('border-r');
+  }
+
+  const setUnSelected = classList => {
+    classList.add('bg-gray-200');
+    classList.remove('text-gray-700');
+    classList.add('text-gray-500');
+    classList.remove('bg-white');
+    classList.remove('border-l');
+    classList.remove('border-t');
+    classList.remove('border-r');
+  }
+
   const onSearch = event => {
     var value = $searchButton.dataset.selected;
     if(event.target.id == 'shortest-time'){
-      $shortestTime.classList.remove('bg-gray-200');
-      $shortestTime.classList.remove('text-gray-500');
-      $shortestTime.classList.add('text-gray-700');
-      $shortestTime.classList.add('bg-white');
-      $shortestTime.classList.add('border-l');
-      $shortestTime.classList.add('border-t');
-      $shortestTime.classList.add('border-r');
-
-      $shortestDistance.classList.add('bg-gray-200');
-      $shortestDistance.classList.remove('text-gray-700');
-      $shortestDistance.classList.add('text-gray-500');
-      $shortestDistance.classList.remove('bg-white');
-      $shortestDistance.classList.remove('border-l');
-      $shortestDistance.classList.remove('border-t');
-      $shortestDistance.classList.remove('border-r');
-
+      setSelected($shortestTime.classList)
+      setUnSelected($shortestDistance.classList);
       $searchButton.dataset.selected = 'duration';
       value = 'duration';
     }
-
     if(event.target.id == 'shortest-distance'){
-      $shortestDistance.classList.remove('bg-gray-200');
-      $shortestDistance.classList.remove('text-gray-500');
-      $shortestDistance.classList.add('text-gray-700');
-      $shortestDistance.classList.add('bg-white');
-      $shortestDistance.classList.add('border-l');
-      $shortestDistance.classList.add('border-t');
-      $shortestDistance.classList.add('border-r');
-
-      $shortestTime.classList.add('bg-gray-200');
-      $shortestTime.classList.remove('text-gray-700');
-      $shortestTime.classList.add('text-gray-500');
-      $shortestTime.classList.remove('bg-white');
-      $shortestTime.classList.remove('border-l');
-      $shortestTime.classList.remove('border-t');
-      $shortestTime.classList.remove('border-r');
-
+      setSelected($shortestDistance.classList);
+      setUnSelected($shortestTime.classList);
       $searchButton.dataset.selected = 'distance';
       value = 'distance';
     }
@@ -79,29 +93,7 @@ function Search() {
         alert(data.message);
         return;
       }
-      $durationSum.innerText = data.durationSum + "분";
-      $distanceSum.innerText = data.distanceSum + "km";
-
-      $stationList.innerHTML = "";
-      const firstStationNameTemplate = firstPathTemplate(data.pathStationNames[0]);
-      const middleStationNameTemplate = data.pathStationNames.slice(1,data.pathStationNames.length -1)
-        .map(stationName => middlePathTemplate(stationName))
-        .join("");
-      const lastStationNameTemplate = lastPathTemplate(data.pathStationNames[data.pathStationNames.length -1]);
-
-      $stationList.insertAdjacentHTML(
-        "beforeend",
-        firstStationNameTemplate
-      );
-      $stationList.insertAdjacentHTML(
-        "beforeend",
-        middleStationNameTemplate
-      );
-      $stationList.insertAdjacentHTML(
-        "beforeend",
-        lastStationNameTemplate
-      );
-      showSearchResult(searchInput)
+      showSearchResult(data);
     })
   }
 
