@@ -6,14 +6,16 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SearchPathAcceptanceTest extends AcceptanceTest {
-//    Feature: 출발역과 도착역의 최단 경로를 조회하는 기능 구현
+    //    Feature: 출발역과 도착역의 최단 경로를 조회하는 기능 구현
 //    Scenario: 두 역의 최단 경로를 조회한다.
     @DisplayName("지하철 경로 조회 테스트")
     @Test
-    void searchTest(){
+    void searchTest() {
 //        Given 지하철역이 여러 개 추가되어있다.
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
@@ -30,6 +32,6 @@ public class SearchPathAcceptanceTest extends AcceptanceTest {
 //        When 출발역과 도착역을 입력하여 조회 요청을 한다.
 //        Then 최단 거리 기준으로 경로와 기타 정보를 응답한다.
         SearchPathResponse searchPathResponse = searchPath(stationResponse1.getName(), stationResponse2.getName(), "distance");
-        assertThat(searchPathResponse.getPathStationNames().size()).isEqualTo(2);
+        assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역"));
     }
 }
