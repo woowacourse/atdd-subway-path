@@ -15,8 +15,8 @@ import wooteco.subway.admin.service.LineService;
  */
 @Controller
 public class ServicePageController {
-	private LineService lineService;
-	private StationRepository stationRepository;
+	private final LineService lineService;
+	private final StationRepository stationRepository;
 
 	public ServicePageController(final LineService lineService,
 		final StationRepository stationRepository) {
