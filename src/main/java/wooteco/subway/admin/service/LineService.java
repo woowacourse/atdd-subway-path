@@ -17,6 +17,7 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.exceptions.NotFoundException;
 
 @Service
 public class LineService {
@@ -83,9 +84,9 @@ public class LineService {
 		List<Line> lines = lineRepository.findAll();
 		List<Station> stations = stationRepository.findAll();
 		Station sourceStation = stationRepository.findByName(source)
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new NotFoundException("출발역을 찾을 수 없습니다."));
 		Station targetStation = stationRepository.findByName(target)
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new NotFoundException("도착역을 찾을 수 없습니다."));
 
 		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
 			sourceStation, targetStation, pathType);

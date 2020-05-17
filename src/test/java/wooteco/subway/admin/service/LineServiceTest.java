@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +75,8 @@ public class LineServiceTest {
 	void addLineStationAtTheFirstOfLine() {
 		when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-		LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
+		LineStationCreateRequest request = new LineStationCreateRequest(null,
+			station4.getId(), 10, 10);
 		lineService.addLineStation(line1.getId(), request);
 
 		assertThat(line1.getStations()).hasSize(4);
@@ -90,7 +92,8 @@ public class LineServiceTest {
 	void addLineStationBetweenTwo() {
 		when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-		LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
+		LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
+			station4.getId(), 10, 10);
 		lineService.addLineStation(line1.getId(), request);
 
 		assertThat(line1.getStations()).hasSize(4);
@@ -106,7 +109,8 @@ public class LineServiceTest {
 	void addLineStationAtTheEndOfLine() {
 		when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-		LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
+		LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
+			station4.getId(), 10, 10);
 		lineService.addLineStation(line1.getId(), request);
 
 		assertThat(line1.getStations()).hasSize(4);
@@ -154,7 +158,8 @@ public class LineServiceTest {
 
 	@Test
 	void findLineWithStationsById() {
-		List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+		List<Station> stations = Lists.newArrayList(new Station("강남역"),
+			new Station("역삼역"), new Station("삼성역"));
 		when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line1));
 		when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -176,9 +181,11 @@ public class LineServiceTest {
 		when(stationRepository.findAllById(Arrays.asList(1L, 2L, 3L)))
 			.thenReturn(Arrays.asList(stations.get(0), stations.get(1), stations.get(2)));
 		when(stationRepository.findAllById(Arrays.asList(6L, 5L, 4L, 1L)))
-			.thenReturn(Arrays.asList(stations.get(5), stations.get(4), stations.get(3), stations.get(0)));
+			.thenReturn(Arrays.asList(stations.get(5), stations.get(4), stations.get(3),
+				stations.get(0)));
 
-		List<LineDetailResponse> lineDetailResponses = lineService.wholeLines().getLineDetailResponses();
+		List<LineDetailResponse> lineDetailResponses = lineService.wholeLines()
+			.getLineDetailResponses();
 
 		assertThat(lineDetailResponses).isNotNull();
 		assertThat(lineDetailResponses.get(0).getStations().size()).isEqualTo(3);
@@ -189,16 +196,21 @@ public class LineServiceTest {
 	@Test
 	void searchPaths() {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line1, this.line2));
-		List<Station> stations = Lists.newArrayList(new Station(6L, "청계산입구역"),
-			new Station(5L, "양재시민의숲역"),
-			new Station(4L, "양재역"), new Station(1L, "강남역"),
-			new Station(2L, "역삼역"), new Station(3L, "삼성역")
+
+		LocalDateTime createdAt = LocalDateTime.of(20, 5, 17, 0, 0);
+		List<Station> stations = Lists.newArrayList(new Station(6L, "청계산입구역", createdAt),
+			new Station(5L, "양재시민의숲역", createdAt),
+			new Station(4L, "양재역", createdAt), new Station(1L, "강남역", createdAt),
+			new Station(2L, "역삼역", createdAt), new Station(3L, "삼성역", createdAt)
 		);
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(stationRepository.findByName("청계산입구역")).thenReturn(Optional.of(new Station(6L, "청계산입구역")));
-		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(new Station(3L, "삼성역")));
+		when(stationRepository.findByName("청계산입구역"))
+			.thenReturn(Optional.of(new Station(6L, "청계산입구역", createdAt)));
+		when(stationRepository.findByName("삼성역"))
+			.thenReturn(Optional.of(new Station(3L, "삼성역", createdAt)));
 
-		PathResponse pathResponse = lineService.searchPath("청계산입구역", "삼성역", PathType.DISTANCE);
+		PathResponse pathResponse = lineService.searchPath("청계산입구역", "삼성역",
+			PathType.DISTANCE);
 
 		assertThat(pathResponse.getStations().size()).isEqualTo(6);
 		assertThat(pathResponse.getDistance()).isEqualTo(50);

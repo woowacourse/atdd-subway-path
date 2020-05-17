@@ -7,6 +7,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.admin.domain.exceptions.IllegalPathException;
+
 public class SubwayShortestPath {
 	private final GraphPath<Station, Edge> graphPath;
 
@@ -15,18 +17,44 @@ public class SubwayShortestPath {
 	}
 
 	public static SubwayShortestPath of(final List<Line> lines,
-		final List<Station> stations,
-		final Station source, final Station target, final PathType type) {
+		final List<Station> stations, final Station source, final Station target,
+		final PathType type) {
+		validateSourceAndTarget(source, target);
+
 		WeightedMultigraph<Station, Edge> graph
 			= new WeightedMultigraph<>(Edge.class);
 
 		addStationsInGraph(stations, graph);
 		addLineInGraph(lines, stations, type, graph);
 
-		DijkstraShortestPath<Station, Edge> dijkstraShortestPath
-			= new DijkstraShortestPath<>(graph);
+		GraphPath<Station, Edge> graphPath = createGraphPath(source, target,
+			graph);
+		validatePath(graphPath);
 
-		return new SubwayShortestPath(dijkstraShortestPath.getPath(source, target));
+		return new SubwayShortestPath(graphPath);
+	}
+
+	private static void validateSourceAndTarget(Station source, Station target) {
+		if (source.equals(target)) {
+			throw new IllegalPathException("출발역과 도착역은 같을 수 없습니다.");
+		}
+	}
+
+	private static GraphPath<Station, Edge> createGraphPath(Station source,
+		Station target, WeightedMultigraph<Station, Edge> graph) {
+		try {
+			DijkstraShortestPath<Station, Edge> dijkstraShortestPath
+				= new DijkstraShortestPath<>(graph);
+			return dijkstraShortestPath.getPath(source, target);
+		} catch (IllegalArgumentException e) {
+			throw new IllegalPathException(e.getMessage());
+		}
+	}
+
+	private static void validatePath(GraphPath<Station, Edge> graphPath) {
+		if (graphPath == null) {
+			throw new IllegalPathException("가능한 경로가 없습니다.");
+		}
 	}
 
 	private static void addStationsInGraph(List<Station> stations,
@@ -37,8 +65,7 @@ public class SubwayShortestPath {
 	}
 
 	private static void addLineInGraph(List<Line> lines, List<Station> stations,
-		PathType type,
-		WeightedMultigraph<Station, Edge> graph) {
+		PathType type, WeightedMultigraph<Station, Edge> graph) {
 		for (Line line : lines) {
 			addEdgeOfLine(line, stations, type, graph);
 		}
