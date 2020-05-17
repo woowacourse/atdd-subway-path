@@ -30,14 +30,10 @@ public class PathService {
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
-		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(allLines, allStationsById, sourceName,
-			targetName, type);
+		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(
+		    allLines, allStationsById, sourceName, targetName, type);
 
-		int totalDuration = subwayShortestPath.calculateTotalDuration();
-		int totalDistance = subwayShortestPath.calculateTotalDistance();
-		List<Station> shortestPath = subwayShortestPath.getShortestPath();
-
-		return PathResponse.of(totalDistance, totalDuration, shortestPath);
+		return PathResponse.from(subwayShortestPath);
 	}
 
 	private void validateStationNamesAreSame(String sourceName, String targetName) {
