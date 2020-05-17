@@ -56,7 +56,11 @@ public class SearchAcceptanceTest extends AcceptanceTest {
 		assertThat(shortestPath.getStations().size()).isEqualTo(3);
 		assertThat(shortestPath.getDistance()).isEqualTo(20);
 		assertThat(shortestPath.getDuration()).isEqualTo(20);
+	}
 
+	@DisplayName("지하철 최소 시간 경로를 검색한다.")
+	@Test
+	void searchPath2() {
 		PathResponse minimumTimePath = retrievePath(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, "DURATION");
 
 		assertThat(minimumTimePath.getStations().size()).isEqualTo(3);
