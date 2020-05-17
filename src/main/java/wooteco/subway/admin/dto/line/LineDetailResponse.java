@@ -1,7 +1,8 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.dto.line;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.station.StationResponse;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +11,7 @@ import java.util.List;
 public class LineDetailResponse {
     private Long id;
     private String name;
+    private String backgroundColor;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,9 +22,12 @@ public class LineDetailResponse {
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineDetailResponse(Long id, String name, String backgroundColor,
+        LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt,
+        LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
+        this.backgroundColor = backgroundColor;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -32,7 +37,7 @@ public class LineDetailResponse {
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+        return new LineDetailResponse(line.getId(), line.getName(), line.getBackgroundColor(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
     public Long getId() {
@@ -41,6 +46,10 @@ public class LineDetailResponse {
 
     public String getName() {
         return name;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public LocalTime getStartTime() {

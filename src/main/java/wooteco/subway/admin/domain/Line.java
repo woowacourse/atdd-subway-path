@@ -4,12 +4,18 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class Line {
     @Id
     private Long id;
     private String name;
+    private String backgroundColor;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,8 +26,11 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, String backgroundColor, LocalTime startTime,
+                LocalTime endTime, int intervalTime) {
+        this.id = id;
         this.name = name;
+        this.backgroundColor = backgroundColor;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -29,8 +38,9 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public static Line of(String name, String backgroundColor, LocalTime startTime, LocalTime endTime,
+                     int intervalTime) {
+        return new Line(null, name, backgroundColor, startTime, endTime, intervalTime);
     }
 
     public Long getId() {
@@ -47,6 +57,10 @@ public class Line {
 
     public LocalTime getEndTime() {
         return endTime;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public int getIntervalTime() {
@@ -69,6 +83,11 @@ public class Line {
         if (line.getName() != null) {
             this.name = line.getName();
         }
+
+        if (line.getBackgroundColor() != null) {
+            this.intervalTime = line.getIntervalTime();
+        }
+
         if (line.getStartTime() != null) {
             this.startTime = line.getStartTime();
         }

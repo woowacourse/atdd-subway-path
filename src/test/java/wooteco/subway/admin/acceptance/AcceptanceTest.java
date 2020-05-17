@@ -8,7 +8,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
+import wooteco.subway.admin.dto.line.LineResponse;
+import wooteco.subway.admin.dto.path.PathResponse;
+import wooteco.subway.admin.dto.station.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -49,9 +53,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+                        when().
                         post("/stations").
-                then().
+                        then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -61,7 +65,7 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/stations").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
@@ -70,35 +74,36 @@ public class AcceptanceTest {
     void deleteStation(Long id) {
         given().when().
                 delete("/stations/" + id).
-        then().
+                then().
                 log().all();
     }
 
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("backgroundColor", "white");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/lines").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
-                then().
+                        then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -113,27 +118,27 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
+                when().
                 put("/lines/" + id).
-        then().
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    List<LineResponse> getLines() {
+    WholeSubwayResponse getLines() {
         return
                 given().when().
-                        get("/lines").
-                then().
+                        get("/lines/detail").
+                        then().
                         log().all().
                         extract().
-                        jsonPath().getList(".", LineResponse.class);
+                        as(WholeSubwayResponse.class);
     }
 
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
-        then().
+                then().
                 log().all();
     }
 
@@ -141,7 +146,8 @@ public class AcceptanceTest {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+                        Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -170,5 +176,42 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    PathResponse findPath(String source, String target, String type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", source);
+        params.put("targetName", target);
+        params.put("type", type);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/path").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(PathResponse.class);
+    }
+
+    protected String findPathWithError(String source, String target, String type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", source);
+        params.put("targetName", target);
+        params.put("type", type);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/path").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .extract().body().jsonPath().get("message");
+    }
 }
 

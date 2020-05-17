@@ -2,13 +2,12 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.line.LineDetailResponse;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다")
@@ -20,7 +19,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createLine(LINE_NAME_2);
         createLine(LINE_NAME_3);
         // then
-        List<LineResponse> lines = getLines();
+        List<LineDetailResponse> lines = getLines().getLineDetailResponse();
         assertThat(lines.size()).isEqualTo(4);
 
         // when
@@ -44,7 +43,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         deleteLine(line.getId());
         // then
-        List<LineResponse> linesAfterDelete = getLines();
+        List<LineDetailResponse> linesAfterDelete = getLines().getLineDetailResponse();
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }
 }
