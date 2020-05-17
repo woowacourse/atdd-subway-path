@@ -1,13 +1,11 @@
 package wooteco.subway.admin.acceptance;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,11 +19,13 @@ public class SearchAcceptanceTest extends AcceptanceTest {
      * Then 최단 거리 기준으로 경로와 총 소요시간, 총 거리를 응답 받는다.
     */
 
-    @Test
-    void find_shortestDistancePath() throws UnsupportedEncodingException {
+    @Override
+    @BeforeEach
+    void setUp() {
+        super.setUp();
+
         LineResponse lineResponse1 = createLine("1호선");
         LineResponse lineResponse2 = createLine("2호선");
-        LineResponse lineResponse3 = createLine("3호선");
 
         StationResponse stationResponse1 = createStation("환-강남역");
         StationResponse stationResponse2 = createStation("1-역삼역");
@@ -34,8 +34,6 @@ public class SearchAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse5 = createStation("환-지축역");
         StationResponse stationResponse6 = createStation("2-역삼역");
         StationResponse stationResponse7 = createStation("2-삼송역");
-        StationResponse stationResponse8 = createStation("3-역삼역");
-        StationResponse stationResponse9 = createStation("3-삼송역");
 
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 10, 30);
@@ -48,24 +46,24 @@ public class SearchAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse3.getId(), 30, 20);
         addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse7.getId(), 30, 20);
         addLineStation(lineResponse2.getId(), stationResponse7.getId(), stationResponse5.getId(), 30, 20);
+    }
 
-        addLineStation(lineResponse3.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse3.getId(), stationResponse1.getId(), stationResponse8.getId(), 50, 50);
-        addLineStation(lineResponse3.getId(), stationResponse8.getId(), stationResponse3.getId(), 50, 50);
-        addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponse9.getId(), 50, 50);
-        addLineStation(lineResponse3.getId(), stationResponse9.getId(), stationResponse5.getId(), 50, 50);
-
+    @Test
+    void find_shortestDistancePath() {
         PathResponse pathResponse1 = retrieveShortestDistancePath("환-강남역", "환-지축역", "DISTANCE");
-        PathResponse pathResponse2 = retrieveShortestDistancePath("환-강남역", "환-지축역", "DURATION");
 
         assertThat(pathResponse1.getDuration()).isEqualTo(120);
         assertThat(pathResponse1.getDistance()).isEqualTo(40);
         assertThat(pathResponse1.getStations().get(1).getName()).isEqualTo("1-역삼역");
+    }
+
+    @Test
+    void find_shortestDurationPath() {
+        PathResponse pathResponse2 = retrieveShortestDistancePath("환-강남역", "환-지축역", "DURATION");
 
         assertThat(pathResponse2.getDuration()).isEqualTo(80);
         assertThat(pathResponse2.getDistance()).isEqualTo(120);
         assertThat(pathResponse2.getStations().get(1).getName()).isEqualTo("2-역삼역");
-
     }
 
     private PathResponse retrieveShortestDistancePath(String source, String target, String type) {
