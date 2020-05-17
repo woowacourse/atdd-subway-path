@@ -57,7 +57,7 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
+    public Set<LineStation> getLineStations() {
         return stations;
     }
 
