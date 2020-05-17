@@ -48,7 +48,7 @@ public class MapAcceptanceTest extends AcceptanceTest {
         return given()
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/lines/detail")
+            .get("/map")
             .then()
             .extract().as(WholeSubwayResponse.class);
     }

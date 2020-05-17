@@ -5,10 +5,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import wooteco.subway.domain.LineStation;
 
 public class StationWeightEdge extends DefaultWeightedEdge {
-    private double distance;
-    private double duration;
+    private int distance;
+    private int duration;
 
-    public StationWeightEdge(double distance, double duration) {
+    public StationWeightEdge(int distance, int duration) {
         this.distance = distance;
         this.duration = duration;
     }

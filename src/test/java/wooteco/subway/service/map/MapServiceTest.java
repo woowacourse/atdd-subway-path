@@ -1,4 +1,4 @@
-package wooteco.subway.service.client;
+package wooteco.subway.service.map;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,7 +24,7 @@ import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceTest {
+public class MapServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
@@ -36,7 +36,7 @@ public class ClientServiceTest {
     @Mock
     private StationRepository stationRepository;
 
-    private ClientService clientService;
+    private MapService mapService;
 
     private Line line;
     private Line line2;
@@ -48,7 +48,7 @@ public class ClientServiceTest {
 
     @BeforeEach
     void setUp() {
-        clientService = new ClientService(lineRepository, stationRepository);
+        mapService = new MapService(lineRepository, stationRepository);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -81,7 +81,7 @@ public class ClientServiceTest {
             Arrays.asList(station1, station5, station4));
 
         //when
-        PathResponse pathResponse = clientService.searchPath(source, target,
+        PathResponse pathResponse = mapService.searchPath(source, target,
             WeightType.DISTANCE.getName());
 
         //then
@@ -103,7 +103,7 @@ public class ClientServiceTest {
             Arrays.asList(station1, station2, station3, station4));
 
         //when
-        PathResponse pathResponse = clientService.searchPath(source, target,
+        PathResponse pathResponse = mapService.searchPath(source, target,
             WeightType.DURATION.getName());
 
         //then
@@ -115,7 +115,7 @@ public class ClientServiceTest {
     @Test
     void searchPath_GivenSameStations_ExceptionThrown() {
         assertThatThrownBy(
-            () -> clientService.searchPath(STATION_NAME1, STATION_NAME1,
+            () -> mapService.searchPath(STATION_NAME1, STATION_NAME1,
                 WeightType.DISTANCE.getName()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("출발역과 도착역은 같을 수 없습니다");

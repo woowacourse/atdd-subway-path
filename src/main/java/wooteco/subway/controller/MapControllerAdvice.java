@@ -25,7 +25,7 @@ import wooteco.subway.exception.InvalidPathException;
  *
  * */
 @RestControllerAdvice()
-public class ClientControllerAdvice {
+public class MapControllerAdvice {
 
     @ExceptionHandler({ConstraintViolationException.class, IllegalArgumentException.class,
         InvalidPathException.class})

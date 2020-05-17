@@ -1,6 +1,7 @@
-package wooteco.subway.service.client;
+package wooteco.subway.service.map;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -20,11 +21,11 @@ import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @Service
-public class ClientService {
+public class MapService {
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
-    public ClientService(LineRepository lineRepository, StationRepository stationRepository) {
+    public MapService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -40,15 +41,17 @@ public class ClientService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse searchPath(String source, String target, String type) {
-        validate(source, target);
+    public PathResponse searchPath(String sourceName, String targetName, String type) {
+        validate(sourceName, targetName);
 
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
+        Station sourceStation = findStationByName(stations, sourceName);
+        Station targetStation = findStationByName(stations, targetName);
 
         WeightStrategy strategy = WeightType.findStrategy(type);
         Graph graph = new Graph(lines, stations, strategy);
-        Path path = graph.createPath(source, target);
+        Path path = graph.createPath(sourceStation, targetStation);
 
         return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
             path.duration());
@@ -60,4 +63,10 @@ public class ClientService {
         }
     }
 
+    private Station findStationByName(List<Station> stations, String source) {
+        return stations.stream()
+            .filter(station -> source.equals(station.getName()))
+            .findFirst()
+            .orElseThrow(NoSuchElementException::new);
+    }
 }

@@ -1,7 +1,6 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -16,10 +15,8 @@ import wooteco.subway.exception.InvalidPathException;
 
 public class Graph {
     private final WeightedMultigraph<Station, StationWeightEdge> graph;
-    private final List<Station> stations;
 
     public Graph(List<Line> lines, List<Station> stations, WeightStrategy strategy) {
-        this.stations = stations;
         this.graph = createGraph(lines, stations, strategy);
     }
 
@@ -58,24 +55,14 @@ public class Graph {
             .orElseThrow(AssertionError::new);
     }
 
-    public Path createPath(String sourceName, String targetName) {
-        Station source = findStationByName(stations, sourceName);
-        Station target = findStationByName(stations, targetName);
-
+    public Path createPath(Station source, Station target) {
         GraphPath<Station, StationWeightEdge> path
             = new DijkstraShortestPath<>(graph).getPath(source, target);
 
         if (Objects.isNull(path)) {
-            throw new InvalidPathException(sourceName, targetName);
+            throw new InvalidPathException(source.getName(), target.getName());
         }
 
         return new Path(path);
-    }
-
-    private Station findStationByName(List<Station> stations, String source) {
-        return stations.stream()
-            .filter(station -> source.equals(station.getName()))
-            .findFirst()
-            .orElseThrow(NoSuchElementException::new);
     }
 }

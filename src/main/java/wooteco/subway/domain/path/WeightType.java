@@ -25,4 +25,8 @@ public enum WeightType {
     public String getName() {
         return name;
     }
+
+    public WeightStrategy getStrategy() {
+        return strategy;
+    }
 }

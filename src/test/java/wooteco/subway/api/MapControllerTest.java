@@ -17,28 +17,28 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import wooteco.subway.controller.client.ClientController;
+import wooteco.subway.controller.map.MapController;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.ClientService;
+import wooteco.subway.service.map.MapService;
 
-@WebMvcTest(controllers = {ClientController.class})
-public class ClientControllerTest {
+@WebMvcTest(controllers = {MapController.class})
+public class MapControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientService clientService;
+    private MapService mapService;
 
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
             Arrays.asList(createMockResponse(), createMockResponse()));
-        given(clientService.wholeLines()).willReturn(response);
+        given(mapService.wholeLines()).willReturn(response);
 
-        String uri = "/lines/detail";
+        String uri = "/map";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
             .andDo(print())
@@ -69,7 +69,7 @@ public class ClientControllerTest {
 
         //when
         //then
-        mockMvc.perform(get("/lines/path")
+        mockMvc.perform(get("/map/path")
             .param("source", "")
             .param("target", "강남역"))
             .andDo(print())

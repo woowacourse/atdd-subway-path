@@ -1,37 +1,39 @@
-package wooteco.subway.controller.client;
+package wooteco.subway.controller.map;
 
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.ClientService;
+import wooteco.subway.service.map.MapService;
 
-@RestController
 @Validated
-public class ClientController {
-    private ClientService clientService;
+@RequestMapping("/map")
+@RestController
+public class MapController {
+    private MapService mapService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
+    public MapController(MapService mapService) {
+        this.mapService = mapService;
     }
 
-    @GetMapping("/lines/detail")
+    @GetMapping
     public ResponseEntity<WholeSubwayResponse> retrieveLines() {
-        WholeSubwayResponse wholeSubwayResponse = clientService.wholeLines();
+        WholeSubwayResponse wholeSubwayResponse = mapService.wholeLines();
         return ResponseEntity.ok()
             .eTag(String.valueOf(wholeSubwayResponse.hashCode()))
             .body(wholeSubwayResponse);
     }
 
-    @GetMapping("/lines/path")
+    @GetMapping("/path")
     public ResponseEntity<PathResponse> searchPath(@NotBlank String source,
         @NotBlank String target, @NotBlank String type) {
-        PathResponse pathResponse = clientService.searchPath(source, target, type);
+        PathResponse pathResponse = mapService.searchPath(source, target, type);
         return ResponseEntity.ok().body(pathResponse);
     }
 
