@@ -92,14 +92,14 @@ public class LineService {
         if (sourceName.equals(targetName)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
-
-        List<LineStation> lineStations = findAllLineStations();
-        ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);
-
         Long sourceId = stationRepository.findIdByName(sourceName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
         Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+
+        List<LineStation> lineStations = findAllLineStations();
+        ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);
+
 
         List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
         int weight = shortestPath.getWeight(sourceId, targetId);

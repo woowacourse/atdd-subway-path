@@ -35,6 +35,7 @@ public class ShortestPath {
 
     public DijkstraShortestPath<Long, WeightedEdge> getPath() {
         return path;
+
     }
 
     public List<Long> getVertexList(Long source, Long target) {
