@@ -97,6 +97,12 @@ public class PathServiceTest {
         lineRepository.save(line2);
         lineRepository.save(line3);
 
+        pathService = new PathService(lineRepository, stationRepository, lineStationRepository);
+    }
+
+    @DisplayName("최소 거리 조회 테스트")
+    @Test
+    public void shortestDistance() {
         when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(STATION_NAME4)).thenReturn(Optional.of(station4));
         when(stationRepository.findByName(STATION_NAME7)).thenReturn(Optional.of(station7));
@@ -116,26 +122,49 @@ public class PathServiceTest {
         when(lineStationRepository.findById(5L, 4L)).thenReturn(Optional.ofNullable(lineStation6));
         when(lineStationRepository.findById(6L, 7L)).thenReturn(Optional.ofNullable(lineStation7));
 
-        pathService = new PathService(lineRepository, stationRepository, lineStationRepository);
-    }
-
-    @DisplayName("최소 거리 조회 테스트")
-    @Test
-    public void shortestDistance() {
         SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "distance");
-        assertThat(searchPathResponse.getPathStationNames()).contains("가깝고느린역");
+        assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역", "가깝고느린역", "삼성역"));
     }
 
     @DisplayName("최소 시간 조회 테스트")
     @Test
     public void shortestDuration() {
+        when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName(STATION_NAME4)).thenReturn(Optional.of(station4));
+        when(stationRepository.findByName(STATION_NAME7)).thenReturn(Optional.of(station7));
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(station1));
+        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(station2));
+        when(stationRepository.findById(3L)).thenReturn(Optional.ofNullable(station3));
+        when(stationRepository.findById(4L)).thenReturn(Optional.ofNullable(station4));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(station5));
+        when(stationRepository.findById(6L)).thenReturn(Optional.ofNullable(station6));
+        when(stationRepository.findById(7L)).thenReturn(Optional.ofNullable(station7));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
+        when(lineStationRepository.findById(null, 1L)).thenReturn(Optional.ofNullable(lineStation1));
+        when(lineStationRepository.findById(1L, 2L)).thenReturn(Optional.ofNullable(lineStation2));
+        when(lineStationRepository.findById(2L, 3L)).thenReturn(Optional.ofNullable(lineStation3));
+        when(lineStationRepository.findById(3L, 4L)).thenReturn(Optional.ofNullable(lineStation4));
+        when(lineStationRepository.findById(2L, 5L)).thenReturn(Optional.ofNullable(lineStation5));
+        when(lineStationRepository.findById(5L, 4L)).thenReturn(Optional.ofNullable(lineStation6));
+        when(lineStationRepository.findById(6L, 7L)).thenReturn(Optional.ofNullable(lineStation7));
+
         SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "duration");
-        assertThat(searchPathResponse.getPathStationNames()).contains("선릉역");
+        assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역", "선릉역", "삼성역"));
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     public void sameStartTarget() {
+        when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(station1));
+        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(station2));
+        when(stationRepository.findById(3L)).thenReturn(Optional.ofNullable(station3));
+        when(stationRepository.findById(4L)).thenReturn(Optional.ofNullable(station4));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(station5));
+        when(stationRepository.findById(6L)).thenReturn(Optional.ofNullable(station6));
+        when(stationRepository.findById(7L)).thenReturn(Optional.ofNullable(station7));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1));
+
         assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME1, "duration"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("시작역과 도착역이 같습니다.");
@@ -144,6 +173,17 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 연결되지 않은 경우")
     @Test
     public void notConnected() {
+        when(stationRepository.findByName(STATION_NAME1)).thenReturn(Optional.of(station1));
+        when(stationRepository.findByName(STATION_NAME7)).thenReturn(Optional.of(station7));
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(station1));
+        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(station2));
+        when(stationRepository.findById(3L)).thenReturn(Optional.ofNullable(station3));
+        when(stationRepository.findById(4L)).thenReturn(Optional.ofNullable(station4));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(station5));
+        when(stationRepository.findById(6L)).thenReturn(Optional.ofNullable(station6));
+        when(stationRepository.findById(7L)).thenReturn(Optional.ofNullable(station7));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line3));
+
         assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME7, "duration"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("두 역이 연결되어있지 않습니다.");
@@ -152,6 +192,8 @@ public class PathServiceTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
     @Test
     public void notExistStation() {
+        when(stationRepository.findByName(STATION_NAME7)).thenReturn(Optional.of(station7));
+
         assertThatThrownBy(() -> pathService.searchPath("X", STATION_NAME7, "duration"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역이 존재하지 않습니다.");
