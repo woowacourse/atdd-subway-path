@@ -14,6 +14,7 @@ import wooteco.subway.admin.domain.exceptions.IllegalPathException;
 class SubwayShortestPathTest extends domainTest {
 	Line line1;
 	Line line2;
+	Line line3;
 
 	Station station1;
 	Station station2;
@@ -23,6 +24,8 @@ class SubwayShortestPathTest extends domainTest {
 	Station station6;
 	Station station7;
 	Station station8;
+	Station station9;
+	Station station10;
 
 	LineStation lineStation1;
 	LineStation lineStation2;
@@ -30,6 +33,9 @@ class SubwayShortestPathTest extends domainTest {
 	LineStation lineStation4;
 	LineStation lineStation5;
 	LineStation lineStation6;
+	LineStation lineStation7;
+	LineStation lineStation8;
+	LineStation lineStation9;
 
 	List<Line> lines;
 	List<Station> stations;
@@ -38,6 +44,7 @@ class SubwayShortestPathTest extends domainTest {
 	void setUp() {
 		line1 = createLine("1호선", 1L);
 		line2 = createLine("2호선", 2L);
+		line3 = createLine("3호선", 3L);
 
 		station1 = createStation("a역", 1L);
 		station2 = createStation("b역", 2L);
@@ -47,6 +54,8 @@ class SubwayShortestPathTest extends domainTest {
 		station6 = createStation("f역", 6L);
 		station7 = createStation("g역", 7L);
 		station8 = createStation("h역", 8L);
+		station9 = createStation("i역", 9L);
+		station10 = createStation("j역", 10L);
 
 		lineStation1 = createLineStation(null, 1L);
 		lineStation2 = createLineStation(1L, 2L);
@@ -54,6 +63,9 @@ class SubwayShortestPathTest extends domainTest {
 		lineStation4 = createLineStation(null, 4L);
 		lineStation5 = createLineStation(4L, 5L);
 		lineStation6 = createLineStation(5L, 6L);
+		lineStation7 = createLineStation(null, 6L);
+		lineStation8 = createLineStation(6L, 9L);
+		lineStation9 = createLineStation(9L, 10L);
 
 		line1.addLineStation(lineStation1);
 		line1.addLineStation(lineStation2);
@@ -61,10 +73,35 @@ class SubwayShortestPathTest extends domainTest {
 		line2.addLineStation(lineStation4);
 		line2.addLineStation(lineStation5);
 		line2.addLineStation(lineStation6);
+		line3.addLineStation(lineStation7);
+		line3.addLineStation(lineStation8);
+		line3.addLineStation(lineStation9);
 
-		lines = Arrays.asList(line1, line2);
+		lines = Arrays.asList(line1, line2, line3);
 		stations = Arrays.asList(station1, station2, station3, station4, station5,
-			station6);
+			station6, station9, station10);
+	}
+
+	@DisplayName("출발역에서 도착역으로 가는 최소 거리 경로를 조회한다.")
+	@Test
+	void findPath_happyCase_ShortestPath() {
+		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
+			station4, station10, PathType.DISTANCE);
+		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
+			Arrays.asList(station4, station5, station6, station9, station10));
+		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
+		assertThat(subwayShortestPath.getDuration()).isEqualTo(40);
+	}
+
+	@DisplayName("출발역에서 도착역으로 가는 최단 시간 경로를 조회한다.")
+	@Test
+	void findPath_happyCase_MinimumTimePath() {
+		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
+			station4, station10, PathType.DURATION);
+		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
+			Arrays.asList(station4, station5, station6, station9, station10));
+		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
+		assertThat(subwayShortestPath.getDuration()).isEqualTo(40);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalPathException을 던진다.")
