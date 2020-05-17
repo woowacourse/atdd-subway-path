@@ -20,6 +20,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.NotConnectEdgeException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -58,7 +59,7 @@ public class PathService {
         final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
         final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();
 
-        return new PathResponse(shortestPath, distance, duration);
+        return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
 
     private Station getStationWithValidation(Map<Long, Station> stations, Long stationId) {
