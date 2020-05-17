@@ -38,6 +38,19 @@ public class Line {
 		this(null, name, startTime, endTime, intervalTime);
 	}
 
+	public static List<LineStation> toLineStations(List<Line> allLines) {
+		List<LineStation> lineStations = new ArrayList<>();
+		for (Line line : allLines) {
+			for (LineStation lineStation : line.getLineStations()) {
+				if (lineStation.isStart()) {
+					continue;
+				}
+				lineStations.add(lineStation);
+			}
+		}
+		return lineStations;
+	}
+
 	public Long getId() {
 		return id;
 	}
