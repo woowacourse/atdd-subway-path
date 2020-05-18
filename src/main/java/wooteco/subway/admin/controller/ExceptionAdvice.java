@@ -29,4 +29,10 @@ public class ExceptionAdvice {
 	public ExceptionResponse unconnectedStation(UnconnectedStationsException e) {
 		return new ExceptionResponse("UNCONNECTED_STATIONS", e.getMessage());
 	}
+
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(RuntimeException.class)
+	public ExceptionResponse serverError(RuntimeException e) {
+		return new ExceptionResponse("SERVER_ERROR", e.getMessage());
+	}
 }
