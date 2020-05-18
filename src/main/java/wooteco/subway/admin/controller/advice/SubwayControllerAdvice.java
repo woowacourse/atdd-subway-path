@@ -1,5 +1,7 @@
 package wooteco.subway.admin.controller.advice;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,28 +11,24 @@ import wooteco.subway.admin.exception.*;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
-	@ExceptionHandler(SourceEqualsTargetException.class)
-	public ResponseEntity<ExceptionResponse> getSourceEqualsTargetException(SourceEqualsTargetException e) {
+	private static final Logger LOGGER = LogManager.getLogger("SubwayControllerAdvice");
+
+	@ExceptionHandler({
+			SourceEqualsTargetException.class,
+			EmptyStationNameException.class
+	})
+	public ResponseEntity<ExceptionResponse> getBadRequestException(RuntimeException e) {
+		LOGGER.error(e);
 		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(NoStationNameExistsException.class)
-	public ResponseEntity<ExceptionResponse> getNoStationNameExistsException(NoStationNameExistsException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
-	}
-
-	@ExceptionHandler(EmptyStationNameException.class)
-	public ResponseEntity<ExceptionResponse> getEmptyStationNameException(EmptyStationNameException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(NoCriteriaExistsException.class)
-	public ResponseEntity<ExceptionResponse> getNoCriteriaExistsException(NoCriteriaExistsException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
-	}
-
-	@ExceptionHandler(NoLineExistException.class)
-	public ResponseEntity<ExceptionResponse> getNoLineExistException(NoLineExistException e) {
+	@ExceptionHandler({
+			NoStationNameExistsException.class,
+			NoCriteriaExistsException.class,
+			NoLineExistException.class
+	})
+	public ResponseEntity<ExceptionResponse> getResourceNotFoundException(RuntimeException e) {
+		LOGGER.error(e);
 		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 }
