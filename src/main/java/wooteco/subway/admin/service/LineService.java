@@ -8,8 +8,8 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
-import wooteco.subway.admin.exception.NotExistPathException;
-import wooteco.subway.admin.exception.NotFoundException;
+import wooteco.subway.admin.exception.LineNotFoundException;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -37,7 +37,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("%d를 가진 Line을 찾을 수 없습니다.", id)));
+                .orElseThrow(() -> new LineNotFoundException(id));
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -47,7 +47,7 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d를 가진 Line을 찾을 수 없습니다.", id)));
+        Line line = lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException(id));
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
@@ -55,13 +55,13 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(() -> new NotFoundException(String.format("%d를 가진 Line을 찾을 수 없습니다.", lineId)));
+        Line line = lineRepository.findById(lineId).orElseThrow(() -> new LineNotFoundException(lineId));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d를 가진 Line을 찾을 수 없습니다.", id)));
+        Line line = lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException(id));
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
@@ -90,7 +90,7 @@ public class LineService {
 
     public Station findStationWithName(String name) {
         return stationRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundException(String.format("%s 이름을 가진 역이 존재하지 않습니다.", name)));
+                .orElseThrow(() -> new StationNotFoundException(name));
     }
 
     public List<Station> findAllStations() {

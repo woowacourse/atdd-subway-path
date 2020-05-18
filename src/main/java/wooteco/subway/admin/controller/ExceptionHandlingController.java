@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.NotExistPathException;
-import wooteco.subway.admin.exception.NotFoundException;
+import wooteco.subway.admin.exception.LineNotFoundException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -23,8 +23,8 @@ public class ExceptionHandlingController {
         return ResponseEntity.badRequest().body(new ErrorResponse(error.getMessage()));
     }
 
-    @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<ErrorResponse> errorDuplicatedValue(NotFoundException error) {
+    @ExceptionHandler({LineNotFoundException.class})
+    public ResponseEntity<ErrorResponse> errorDuplicatedValue(LineNotFoundException error) {
         return ResponseEntity.badRequest().body(new ErrorResponse(error.getMessage()));
     }
 

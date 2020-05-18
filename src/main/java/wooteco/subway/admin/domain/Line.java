@@ -1,7 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
-import wooteco.subway.admin.exception.NotFoundException;
+import wooteco.subway.admin.exception.StationNotFoundException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -97,7 +97,7 @@ public class Line {
         LineStation targetLineStation = stations.stream()
                 .filter(it -> Objects.equals(it.getStationId(), stationId))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("해당 역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new StationNotFoundException(stationId));
 
         stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), stationId))
@@ -115,7 +115,7 @@ public class Line {
         LineStation firstLineStation = stations.stream()
                 .filter(it -> it.getPreStationId() == null)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("해당 역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new AssertionError("첫 역은 반드시 존재해야합니다."));
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
