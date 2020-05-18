@@ -13,22 +13,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setup() {
-        StationResponse stationResponse1 = createStation("강남역");
-        StationResponse stationResponse2 = createStation("역삼역");
-        StationResponse stationResponse3 = createStation("선릉역");
-        StationResponse stationResponse4 = createStation("양재역");
-        StationResponse stationResponse5 = createStation("양재시민숲역");
+        StationResponse gangNamStation = createStation("강남역");
+        StationResponse yeokSamStation = createStation("역삼역");
+        StationResponse seolLeungStation = createStation("선릉역");
+        StationResponse yangJaeStation = createStation("양재역");
+        StationResponse yangJaeCitizensForestStation = createStation("양재시민숲역");
 
-        LineResponse lineResponse1 = createLine("신분당선");
-        LineResponse lineResponse2 = createLine("2호선");
+        LineResponse shinBunDangLine = createLine("신분당선");
+        LineResponse line2 = createLine("2호선");
 
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse4.getId());
-        addLineStation(lineResponse1.getId(), stationResponse4.getId(), stationResponse5.getId());
+        addLineStation(shinBunDangLine.getId(), null, gangNamStation.getId());
+        addLineStation(shinBunDangLine.getId(), gangNamStation.getId(), yangJaeStation.getId());
+        addLineStation(shinBunDangLine.getId(), yangJaeStation.getId(), yangJaeCitizensForestStation.getId());
 
-        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse2.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addLineStation(line2.getId(), null, gangNamStation.getId());
+        addLineStation(line2.getId(), gangNamStation.getId(), yeokSamStation.getId());
+        addLineStation(line2.getId(), yeokSamStation.getId(), seolLeungStation.getId());
     }
 
     @Test

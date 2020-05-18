@@ -30,7 +30,8 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+        String backgroundColor) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -97,51 +98,49 @@ public class Line {
 
     public void addLineStation(LineStation lineStation) {
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+            .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+            .findAny()
+            .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
         stations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
         LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
 
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+            .filter(it -> Objects.equals(it.getPreStationId(), stationId))
+            .findFirst()
+            .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
         stations.remove(targetLineStation);
     }
 
     public List<Long> getLineStationsIds() {
+        List<Long> stationIds = new ArrayList<>();
+
         if (stations.isEmpty()) {
-            return new ArrayList<>();
+            return stationIds;
         }
 
         LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> it.getPreStationId() == null)
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
 
-        List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
 
-        while (true) {
+        for (int i = 1; i < stations.size(); i++) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+            LineStation nextLineStation = stations.stream()
+                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
 
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
+            stationIds.add(nextLineStation.getStationId());
         }
 
         return stationIds;
