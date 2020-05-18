@@ -124,9 +124,9 @@ class PathServiceTest {
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station6.getName())).thenReturn(Optional.of(station6));
 
-        assertThatThrownBy(() -> {
-            pathService.showPaths(station1.getName(), station6.getName(), CriteriaType.DISTANCE);
-        }).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(
+            () -> pathService.showPaths(station1.getName(), station6.getName(), CriteriaType.DISTANCE)).isInstanceOf(
+            IllegalArgumentException.class)
             .hasMessage("갈 수 없는 경로입니다.");
     }
 

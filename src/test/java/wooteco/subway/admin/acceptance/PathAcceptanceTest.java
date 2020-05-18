@@ -3,12 +3,8 @@ package wooteco.subway.admin.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,16 +15,18 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
-public class PathDistanceAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse jamsil;
     private StationResponse jamsilsaenae;
     private StationResponse playgound;
     private StationResponse samjeon;
     private StationResponse seokchongobun;
     private StationResponse seokchon;
+    private StationResponse songnae;
 
     private LineResponse line2;
     private LineResponse line3;
+    private LineResponse line4;
     private LineResponse lineBunDang;
 
     @Override
@@ -42,9 +40,11 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         samjeon = createStation(STATION_NAME_SAMJEON);
         seokchongobun = createStation(STATION_NAME_SEOKCHOENGOBUN);
         seokchon = createStation(STATION_NAME_SEOCKCHEON);
+        songnae = createStation(STATION_NAME_SONGNAE);
 
         line2 = createLine(LINE_NAME_2);
         line3 = createLine(LINE_NAME_3);
+        line4 = createLine(LINE_NAME_4);
         lineBunDang = createLine(LINE_NAME_BUNDANG);
 
         addLineStation(line2.getId(), null, jamsil.getId(), 0, 0);
@@ -58,6 +58,8 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
 
         addLineStation(line3.getId(), null, jamsil.getId(), 0, 0);
         addLineStation(line3.getId(), jamsil.getId(), seokchon.getId(), 1, 10);
+
+        addLineStation(line4.getId(), null, songnae.getId(), 10, 10);
     }
 
     @DisplayName("최단경로를 조회한다")
@@ -73,6 +75,24 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
                 STATION_NAME_SAMJEON);
         assertThat(path.getDistance()).isEqualTo(3);
         assertThat(path.getDuration()).isEqualTo(30);
+    }
+
+    @DisplayName("최단경로를 이어있지 않은 역을 조회해 실패한다")
+    @Test
+    void NotfoundPathByDistanceWhenNotConnection() {
+        notFoundPath(jamsil.getName(), songnae.getName(), "distance");
+    }
+
+    @DisplayName("최단경로를 같은역을 조회해 실패한다")
+    @Test
+    void NotfoundPathByDistanceWhenSameSourceAndTarget() {
+        notFoundPath(jamsil.getName(), jamsil.getName(), "distance");
+    }
+
+    @DisplayName("최단경로를 존재하지 않는 역을 조회해 실패한다")
+    @Test
+    void NotfoundPathByDistanceWhenNotExistStation() {
+        notFoundPath(jamsil.getName(), "부개", "distance");
     }
 
     @DisplayName("경로를 최단거리와 최소시간으로 조회단다")
@@ -100,11 +120,8 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         assertThat(pathByDuration.getDuration()).isEqualTo(13);
     }
 
-    private PathResponse getPath(String source, String target, String CriteriaType) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
-        params.put("criteria", CriteriaType);
+    private PathResponse getPath(String source, String target, String criteriaType) {
+        Map<String, String> params = getParams(source, target, criteriaType);
 
         return given().
             body(params).
@@ -118,22 +135,26 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
             extract().as(PathResponse.class);
     }
 
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph;
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+    private void notFoundPath(String source, String target, String criteriaType) {
+        Map<String, String> params = getParams(source, target, criteriaType);
 
-        DijkstraShortestPath dijkstraShortestPath
-            = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-            = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
+        given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/paths").
+            then().
+            log().all().
+            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    private Map<String, String> getParams(String source, String target, String criteriaType) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+        params.put("criteria", criteriaType);
+        return params;
+    }
+
 }

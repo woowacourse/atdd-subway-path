@@ -39,7 +39,7 @@ public class LineControllerTest {
             Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
-        String uri = "http://localhost:8080/lines/detail";
+        String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
             .andDo(print())

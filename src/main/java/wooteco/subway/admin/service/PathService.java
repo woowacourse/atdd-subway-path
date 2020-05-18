@@ -3,8 +3,10 @@ package wooteco.subway.admin.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
@@ -29,8 +31,10 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "잘못된 소스와 타켓을 요청하였습니다")
     public PathResponse showPaths(String source, String target, CriteriaType criteria) {
         validateSameStations(source, target);
+
         List<Line> lines = lineRepository.findAll();
         Station from = stationRepository.findByName(source)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
@@ -42,8 +46,7 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(result.getStationIds());
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 
-        List<StationResponse> sortedStationResponses = sort(result.getStationIds(),
-            stationResponses);
+        List<StationResponse> sortedStationResponses = sort(result.getStationIds(), stationResponses);
 
         return new PathResponse(sortedStationResponses, result.getDistance(), result.getDuration());
     }
@@ -54,15 +57,19 @@ public class PathService {
         }
     }
 
-    private List<StationResponse> sort(List<Long> path, List<StationResponse> stationResponses) {
+    private List<StationResponse> sort(List<Long> shortestPath, List<StationResponse> stationResponses) {
         List<StationResponse> result = new ArrayList<>();
 
-        for (Long stationId : path) {
-            StationResponse response = stationResponses.stream()
-                .filter(stationResponse -> stationResponse.getId().equals(stationId))
-                .findAny().orElseThrow(IllegalArgumentException::new);
+        for (Long stationId : shortestPath) {
+            StationResponse response = findByStationIdFrom(stationResponses, stationId);
             result.add(response);
         }
         return result;
+    }
+
+    private StationResponse findByStationIdFrom(List<StationResponse> stationResponses, Long stationId) {
+        return stationResponses.stream()
+            .filter(stationResponse -> stationResponse.getId().equals(stationId))
+            .findAny().orElseThrow(IllegalArgumentException::new);
     }
 }

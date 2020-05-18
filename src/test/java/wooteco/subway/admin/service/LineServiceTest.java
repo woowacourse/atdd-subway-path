@@ -160,10 +160,10 @@ public class LineServiceTest {
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
 
-    @DisplayName("전체 노선을 받아오는 테스트")
+    @DisplayName("전체 노선을 조회한다")
     @Test
     void showWholeSubwayResponse() {
-        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         newLine.addLineStation(new LineStation(null, 4L, 10, 10));
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
