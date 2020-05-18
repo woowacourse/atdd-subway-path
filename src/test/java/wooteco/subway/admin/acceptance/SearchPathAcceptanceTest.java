@@ -6,8 +6,6 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SearchPathAcceptanceTest extends AcceptanceTest {
@@ -25,13 +23,15 @@ public class SearchPathAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse2 = createLine("3호선");
         LineResponse lineResponse3 = createLine("4호선");
 //        And 지하철 노선에 지하철역이 여러 개 추가되어있다.
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 1, 2);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 3, 4);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 6);
 
 //        When 출발역과 도착역을 입력하여 조회 요청을 한다.
 //        Then 최단 거리 기준으로 경로와 기타 정보를 응답한다.
         SearchPathResponse searchPathResponse = searchPath(stationResponse1.getName(), stationResponse2.getName(), "distance");
-        assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역"));
+        assertThat(searchPathResponse.getPathStationNames()).containsExactly("강남역", "역삼역");
+        assertThat(searchPathResponse.getDistanceSum()).isEqualTo(3);
+        assertThat(searchPathResponse.getDurationSum()).isEqualTo(4);
     }
 }
