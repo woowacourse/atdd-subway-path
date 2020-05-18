@@ -9,7 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.Test;
 
-class GraphServiceTest {
+class DijkstraShortestStrategy2Test {
     @Test
     public void getDijkstraShortestPath() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph;

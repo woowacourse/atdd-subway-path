@@ -28,7 +28,7 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PathService.class, GraphService.class})
+@ContextConfiguration(classes = {PathService.class, DijkstraShortestStrategy.class})
 class PathServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
@@ -42,7 +42,7 @@ class PathServiceTest {
     @MockBean
     private StationRepository stationRepository;
 
-    private GraphService graphService = new GraphService();
+    private DijkstraShortestStrategy dijkstraShortestStrategy2 = new DijkstraShortestStrategy();
 
     private PathService pathService;
 
@@ -57,7 +57,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository, graphService);
+        pathService = new PathService(lineRepository, stationRepository, dijkstraShortestStrategy2);
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);

@@ -20,13 +20,13 @@ import wooteco.subway.admin.repository.StationRepository;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final GraphService graphService;
+    private final PathStrategy pathStrategy;
 
     public PathService(LineRepository lineRepository,
-        StationRepository stationRepository, GraphService graphService) {
+        StationRepository stationRepository, PathStrategy pathStrategy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.graphService = graphService;
+        this.pathStrategy = pathStrategy;
     }
 
     @Transactional(readOnly = true)
@@ -34,15 +34,15 @@ public class PathService {
         String source = pathRequest.getSource();
         String target = pathRequest.getTarget();
         CriteriaType criteria = CriteriaType.of(pathRequest.getCriteria());
-
         validateSameStations(source, target);
+
         List<Line> lines = lineRepository.findAll();
         Station from = stationRepository.findByName(source)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
         Station to = stationRepository.findByName(target)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
 
-        GraphResultResponse result = graphService.findPath(lines, from.getId(), to.getId(),
+        GraphResultResponse result = pathStrategy.getPath(lines, from.getId(), to.getId(),
             criteria);
         List<Station> stations = stationRepository.findAllById(result.getStationIds());
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
