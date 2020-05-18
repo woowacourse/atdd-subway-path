@@ -12,7 +12,8 @@ import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
-import wooteco.subway.admin.exceptions.NotExistStationException;
+import wooteco.subway.admin.exceptions.NotExistSourceStationException;
+import wooteco.subway.admin.exceptions.NotExistTargetStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,17 +54,20 @@ public class PathServiceTest {
 	@DisplayName("출발역이 존재 하지 않은 역인 경우 예외 발생")
 	@Test
 	void existSourceStations() {
+		when(stationRepository.findByName(eq("사당역"))).thenThrow(NotExistSourceStationException.class);
 		assertThatThrownBy(() -> {
 			pathService.searchPath("사당역", "역삼역", SearchType.DISTANCE);
-		}).isInstanceOf(NotExistStationException.class);
+		}).isInstanceOf(NotExistSourceStationException.class);
 	}
 
 	@DisplayName("도착역이 존재 하지 않은 역인 경우 예외 발생")
 	@Test
 	void existTargetStations() {
+		when(stationRepository.findByName(eq("의정부역"))).thenThrow(NotExistTargetStationException.class);
+		when(stationRepository.findByName(eq("강남역"))).thenReturn(Optional.of(stations.get(0)));
 		assertThatThrownBy(() -> {
 			pathService.searchPath("강남역", "의정부역", SearchType.DISTANCE);
-		}).isInstanceOf(NotExistStationException.class);
+		}).isInstanceOf(NotExistTargetStationException.class);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 예외 발생")

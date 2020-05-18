@@ -7,7 +7,8 @@ import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
-import wooteco.subway.admin.exceptions.NotExistStationException;
+import wooteco.subway.admin.exceptions.NotExistSourceStationException;
+import wooteco.subway.admin.exceptions.NotExistTargetStationException;
 import wooteco.subway.admin.exceptions.UnconnectedStationsException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -38,8 +39,8 @@ public class PathService {
 			throw new DuplicatedStationNamesException();
 		}
 
-		Station sourceStation = stationRepository.findByName(source).orElseThrow(NotExistStationException::new);
-		Station targetStation = stationRepository.findByName(target).orElseThrow(NotExistStationException::new);
+		Station sourceStation = stationRepository.findByName(source).orElseThrow(NotExistSourceStationException::new);
+		Station targetStation = stationRepository.findByName(target).orElseThrow(NotExistTargetStationException::new);
 
 		List<Station> allStations = stationRepository.findAll();
 		List<LineStation> allLineStations = lineRepository.findAllLineStations();

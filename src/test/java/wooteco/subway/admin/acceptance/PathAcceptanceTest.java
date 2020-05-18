@@ -61,30 +61,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
         addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
-        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
-        addLineStation(lines.get(0).getId(), stations.get(2).getId(), stations.get(3).getId());
+		addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
+		addLineStation(lines.get(0).getId(), stations.get(2).getId(), stations.get(3).getId());
 
-        PathResponse pathResponse = searchPath(stations.get(0).getName(), stations.get(3).getName(), SearchType.DISTANCE);
+		PathResponse pathResponse = searchPath(stations.get(0).getName(), stations.get(3).getName(), SearchType.DISTANCE);
 
-        assertThat(pathResponse.getStations().size()).isEqualTo(4);
-        assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
-        assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
+		assertThat(pathResponse.getStations().size()).isEqualTo(4);
+		assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
+		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
 
-        /** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
-        String result1 = searchPathWithNotExistStations(STATION_NAME_SAMSUNG, STATION_NAME_KYODAE, SearchType.DISTANCE);
-        assertThat(result1).contains("저장되지 않은 역을 입력하셨습니다.");
+		/** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
+		String result1 = searchPathWithNotExistStations(STATION_NAME_SAMSUNG, STATION_NAME_KANGNAM, SearchType.DISTANCE);
+		assertThat(result1).contains("존재하지 않는 출발역 입니다.");
 
-        String result2 = searchPathWithSameStations(STATION_NAME_SAMSUNG, STATION_NAME_SAMSUNG, SearchType.DISTANCE);
-        assertThat(result2).contains("출발역과 도착역은 같을 수 없습니다.");
+		String result2 = searchPathWithNotExistStations(STATION_NAME_KANGNAM, STATION_NAME_SAMSUNG, SearchType.DISTANCE);
+		assertThat(result2).contains("존재하지 않는 도착역 입니다.");
 
-        addLineStation(lines.get(1).getId(), null, stations.get(4).getId());
-        addLineStation(lines.get(1).getId(), stations.get(4).getId(), stations.get(5).getId());
-        addLineStation(lines.get(1).getId(), stations.get(5).getId(), stations.get(6).getId());
-        addLineStation(lines.get(1).getId(), stations.get(6).getId(), stations.get(7).getId());
+		String result3 = searchPathWithSameStations(STATION_NAME_SAMSUNG, STATION_NAME_SAMSUNG, SearchType.DISTANCE);
+		assertThat(result3).contains("출발역과 도착역은 같을 수 없습니다.");
 
-		String result3 = searchPathWithUnconnectedStations(stations.get(1).getName(), stations.get(7).getName(), SearchType.DISTANCE);
-        assertThat(result3).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
-    }
+		addLineStation(lines.get(1).getId(), null, stations.get(4).getId());
+		addLineStation(lines.get(1).getId(), stations.get(4).getId(), stations.get(5).getId());
+		addLineStation(lines.get(1).getId(), stations.get(5).getId(), stations.get(6).getId());
+		addLineStation(lines.get(1).getId(), stations.get(6).getId(), stations.get(7).getId());
+
+		String result4 = searchPathWithUnconnectedStations(stations.get(1).getName(), stations.get(7).getName(), SearchType.DISTANCE);
+		assertThat(result4).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
+	}
 
 	private PathResponse searchPath(String source, String target, SearchType type) {
 		return given().
