@@ -4,26 +4,21 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum EdgeType {
-    DURATION("duration", LineStation::getDuration),
-    DISTANCE("distance", LineStation::getDistance);
+    DURATION(LineStation::getDuration),
+    DISTANCE(LineStation::getDistance);
 
-    private final String edgeType;
     private final Function<LineStation, Integer> expression;
 
-    EdgeType(String edgeType, Function<LineStation, Integer> expression) {
-        this.edgeType = edgeType;
+    EdgeType(Function<LineStation, Integer> expression) {
         this.expression = expression;
     }
 
     public static EdgeType of(String type) {
+        String upperCaseType = type.toUpperCase();
         return Arrays.stream(values())
-                .filter(edgeType -> type.equals(edgeType.getEdgeType()))
+                .filter(edgeType -> upperCaseType.equals(edgeType.name()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 EdgeType 입니다."));
-    }
-
-    public String getEdgeType() {
-        return edgeType;
     }
 
     public int getEdgeValue(LineStation lineStation) {
