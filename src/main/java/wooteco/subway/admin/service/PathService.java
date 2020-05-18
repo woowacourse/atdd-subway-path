@@ -14,6 +14,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class PathService {
+	public static final String ERROR_MESSAGE_START_IS_SAME_TO_END = "출발역과 도착역이 같습니다.";
 	private LineRepository lineRepository;
 	private StationRepository stationRepository;
 
@@ -37,7 +38,7 @@ public class PathService {
 
 	private void validateStationNamesAreSame(String sourceName, String targetName) {
 		if (sourceName.equals(targetName)) {
-			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+			throw new IllegalArgumentException(ERROR_MESSAGE_START_IS_SAME_TO_END);
 		}
 	}
 }

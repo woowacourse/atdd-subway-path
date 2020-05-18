@@ -1,11 +1,12 @@
 package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
@@ -23,5 +24,10 @@ public class PathController {
 		@RequestParam("target") String targetName, @RequestParam("type") String type) {
 		PathResponse pathResponse = pathService.findPath(sourceName, targetName, type);
 		return ResponseEntity.ok(pathResponse);
+	}
+
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<ErrorResponse> handleException(Exception e) {
+		return ResponseEntity.badRequest().body(ErrorResponse.of(e));
 	}
 }

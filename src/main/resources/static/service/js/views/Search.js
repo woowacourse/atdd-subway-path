@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
 
@@ -41,13 +41,21 @@ function Search() {
             target: $arrivalStationName.value,
             type: pathType
         }
-        api.path
-            .find(searchInput)
+        api.path.find(searchInput)
             .then(data => {
-                console.log(data);
+                console.log("정상")
+                console.log(data)
                 return showSearchResult(data)
             })
-            .catch(error => alert(ERROR_MESSAGE.COMMON))
+           .catch(error => {
+                error.then(error => {
+                    console.log(error)
+                    alert(error.message)
+                })
+
+                $departureStationName.value = ""
+                $arrivalStationName.value = ""
+            })
     }
 
     const onToggleFavorite = event => {

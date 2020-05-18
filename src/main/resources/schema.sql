@@ -10,8 +10,8 @@ create table if not exists LINE
 (
    id bigint auto_increment not null,
    name varchar(255) not null,
-   start_time time,  -- Todo: not null 추가
-   end_time time,  --  Todo: not null 추가
+   start_time time,
+   end_time time,
    interval_time int not null,
    created_at datetime,
    updated_at datetime,

@@ -24,7 +24,14 @@ const METHOD = {
 
 const api = (() => {
     const request = (uri, config) => fetch(uri, config)
-    const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+    const requestWithJsonData = (uri, config) => {
+      return fetch(uri, config).then(data => {
+        if (!data.ok) {
+           throw data.json();
+        }
+        return data.json()
+      });
+    }
 
     const line = {
         getAll() {

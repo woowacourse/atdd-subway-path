@@ -1,20 +1,19 @@
 package wooteco.subway.admin.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -178,11 +177,22 @@ public class AcceptanceTest {
 	PathResponse findShortestPath(StationResponse source, StationResponse target) {
 		return
 			given().
-				when().
+			when().
 				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
-				then().
+			then().
 				log().all().
 				extract().as(PathResponse.class);
+	}
+
+	ErrorResponse sendBadRequestForShortestPath(StationResponse source, StationResponse target) {
+		return
+			given().
+			when().
+				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
+			then().
+				log().all().
+				statusCode(HttpStatus.BAD_REQUEST.value()).
+				extract().as(ErrorResponse.class);
 	}
 
 	WholeSubwayResponse retrieveWholeSubway() {

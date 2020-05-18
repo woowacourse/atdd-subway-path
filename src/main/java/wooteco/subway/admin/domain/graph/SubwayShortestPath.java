@@ -33,8 +33,9 @@ public class SubwayShortestPath {
 	}
 
 	private GraphPath findShortestPath(Station source, Station target, Graph<Long, SubwayEdge> graph) {
-		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-		GraphPath shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
+		GraphPath shortestPath = DijkstraShortestPath.findPathBetween(
+			graph, source.getId(), target.getId());
+
 		if (Objects.isNull(shortestPath)) {
 			throw new PathNotFoundException(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
 		}
