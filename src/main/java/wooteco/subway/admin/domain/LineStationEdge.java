@@ -1,8 +1,7 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import java.util.function.Function;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class LineStationEdge extends DefaultWeightedEdge {
     private LineStation lineStation;
@@ -18,11 +17,11 @@ public class LineStationEdge extends DefaultWeightedEdge {
         return weightStrategy.apply(lineStation);
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return lineStation.getDistance();
     }
 
-    public double getDuration() {
+    public int getDuration() {
         return lineStation.getDuration();
     }
 }

@@ -1,11 +1,10 @@
 package wooteco.subway.admin.domain;
 
+import java.util.List;
+import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import wooteco.subway.admin.exception.NotFoundPathException;
-
-import java.util.List;
-import java.util.Objects;
 
 public class SubWayPath {
     private final GraphPath<Station, LineStationEdge> path;
@@ -31,14 +30,14 @@ public class SubWayPath {
     }
 
     public int distance() {
-        return (int) path.getEdgeList().stream()
-                .mapToDouble(LineStationEdge::getDistance)
+        return path.getEdgeList().stream()
+                .mapToInt(LineStationEdge::getDistance)
                 .sum();
     }
 
     public int duration() {
-        return (int) path.getEdgeList().stream()
-                .mapToDouble(LineStationEdge::getDuration)
+        return path.getEdgeList().stream()
+                .mapToInt(LineStationEdge::getDuration)
                 .sum();
     }
 }
