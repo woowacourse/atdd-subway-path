@@ -19,8 +19,8 @@ import wooteco.subway.repository.StationRepository;
 
 @Service
 public class ClientService {
-	private LineRepository lineRepository;
-	private StationRepository stationRepository;
+	private final LineRepository lineRepository;
+	private final StationRepository stationRepository;
 
 	public ClientService(LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineRepository = lineRepository;

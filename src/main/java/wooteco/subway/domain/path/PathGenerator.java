@@ -12,9 +12,9 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.exception.InvalidPathException;
 
 public class PathGenerator {
-	private String sourceName;
-	private String targetName;
-	private WeightStrategy strategy;
+	private final String sourceName;
+	private final String targetName;
+	private final WeightStrategy strategy;
 
 	public PathGenerator(String sourceName, String targetName, String type) {
 		validate(sourceName, targetName);

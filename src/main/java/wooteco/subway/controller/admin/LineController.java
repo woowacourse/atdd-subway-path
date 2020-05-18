@@ -23,15 +23,15 @@ import wooteco.subway.service.admin.LineService;
 @RequestMapping("/lines")
 @RestController
 public class LineController {
-	private LineService lineService;
+	private final LineService lineService;
 
 	public LineController(LineService lineService) {
 		this.lineService = lineService;
 	}
 
 	@PostMapping
-	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
-		Line persistLine = lineService.save(view.toLine());
+	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+		Line persistLine = lineService.save(lineRequest.toLine());
 
 		return ResponseEntity
 			.created(URI.create("/lines/" + persistLine.getId()))
@@ -40,7 +40,6 @@ public class LineController {
 
 	@GetMapping
 	public ResponseEntity<List<LineResponse>> showLine() {
-		lineService.showLines();
 		return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
 	}
 
