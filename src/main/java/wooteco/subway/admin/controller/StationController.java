@@ -15,13 +15,11 @@ import java.util.List;
 
 @RestController
 public class StationController {
-    private final LineService lineService;
     private final PathService pathService;
 
     private final StationRepository stationRepository;
 
-    public StationController(LineService lineService, PathService pathService, StationRepository stationRepository) {
-        this.lineService = lineService;
+    public StationController(PathService pathService, StationRepository stationRepository) {
         this.pathService = pathService;
         this.stationRepository = stationRepository;
     }
