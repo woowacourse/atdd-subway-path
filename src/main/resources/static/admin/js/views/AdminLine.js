@@ -31,7 +31,7 @@ function AdminLine() {
         subwayLineModal.toggle()
       })
       .catch(error => {
-        alert('에러가 발생했습니다.')
+        alert(error.message)
       })
   }
 
@@ -85,12 +85,12 @@ function AdminLine() {
       intervalTime: $subwayIntervalTime.value
     }
     api.line
-      .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
-      .then(() => {
-        subwayLineModal.toggle()
-        $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
-      })
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
+    .then(() => {
+      subwayLineModal.toggle()
+      $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
+    })
+    .catch(error => alert(error.message))
   }
 
   const onSubmitHandler = event => {

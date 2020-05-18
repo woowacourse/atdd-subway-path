@@ -1,4 +1,4 @@
-import { EVENT_TYPE, ERROR_MESSAGE, KEY_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, KEY_TYPE } from '../../utils/constants.js'
 import { listItemTemplate } from '../../utils/templates.js'
 import api from '../../api'
 
@@ -21,14 +21,14 @@ function AdminStation() {
       name: stationName
     }
     api.station
-      .create(newStation)
-      .then(data => {
-        $stationInput.value = ''
-        $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
-      })
-      .catch(() => {
-        alert('에러가 발생했습니다.')
-      })
+    .create(newStation)
+    .then(data => {
+      $stationInput.value = ''
+      $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
+    })
+    .catch((error) => {
+      alert(error.message)
+    })
   }
 
   const onDeleteStationHandler = event => {

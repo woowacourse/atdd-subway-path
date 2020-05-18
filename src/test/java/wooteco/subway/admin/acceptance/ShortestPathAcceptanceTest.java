@@ -2,8 +2,6 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,6 @@ public class ShortestPathAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findShortestPath() {
 		//given
-		List<StationResponse> stations = getStations();
-
 		StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
 		StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
 		StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);

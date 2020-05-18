@@ -10,4 +10,9 @@ public class ExceptionController {
 	public ResponseEntity<String> getException(RuntimeException e) {
 		return ResponseEntity.badRequest().body(e.getMessage());
 	}
+
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<String> getException(Exception e) {
+		return ResponseEntity.badRequest().body(e.getMessage());
+	}
 }
