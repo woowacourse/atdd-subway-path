@@ -25,9 +25,9 @@ class SubwayGraphTest {
 
         //when
         SubwayPath path = subwayGraph.getPath(1L, 3L);
-
-        Integer totalDistance = path.sumOfEdge(Edge::getDistance);
-        Integer totalDuration = path.sumOfEdge(Edge::getDuration);
+        PathCost cost = path.getCost();
+        Integer totalDistance = cost.getDistance();
+        Integer totalDuration = cost.getDuration();
 
         //then
         assertThat(path.getPaths()).containsExactly(1L, 2L, 3L);

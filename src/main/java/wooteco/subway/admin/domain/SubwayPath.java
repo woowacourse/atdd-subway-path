@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class SubwayPath {
     private static final int FIRST = 0;
@@ -13,13 +12,16 @@ public class SubwayPath {
 
     public SubwayPath(final GraphPath<Long, SubwayWeightEdge> path) {
         this.paths = path.getEdgeList();
-
     }
 
-    public Integer sumOfEdge(Function<Edge, Integer> edgeIntegerFunction) {
-        return paths.stream()
-                .mapToInt(path -> path.getValue(edgeIntegerFunction))
-                .sum();
+    public PathCost getCost() {
+        Integer distance = 0;
+        Integer duration = 0;
+        for (SubwayWeightEdge subwayWeightEdge : paths) {
+            distance += subwayWeightEdge.getValue(Edge::getDistance);
+            duration += subwayWeightEdge.getValue(Edge::getDuration);
+        }
+        return new PathCost(distance, duration);
     }
 
     public List<Long> getPaths() {

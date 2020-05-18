@@ -13,6 +13,7 @@ public class SubwayGraphs {
     public PathDetail getPath(Long source, Long target, SubwayGraphKey key) {
         SubwayGraph subwayGraph = subwayGraphs.get(key);
         SubwayPath path = subwayGraph.getPath(source, target);
-        return new PathDetail(path.getPaths(), path.sumOfEdge(Edge::getDistance), path.sumOfEdge(Edge::getDuration));
+        PathCost pathCost = path.getCost();
+        return new PathDetail(path.getPaths(), pathCost.getDistance(), pathCost.getDuration());
     }
 }

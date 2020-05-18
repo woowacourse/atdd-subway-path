@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Station;
@@ -25,9 +26,14 @@ public class StationService {
 
     @Transactional
     public StationResponse save(final StationCreateRequest request) {
-        validateDuplication(request.getName());
-        Station station = stationRepository.save(new Station(request.getName()));
-        return StationResponse.of(station);
+        String name = request.getName();
+        validateDuplication(name);
+        try {
+            Station station = stationRepository.save(new Station(name));
+            return StationResponse.of(station);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedNameException(name);
+        }
     }
 
     private void validateDuplication(final String name) {
