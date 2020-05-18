@@ -33,4 +33,11 @@ public class ExceptionAdvice {
 	public ExceptionResponse unconnectedStation(UnconnectedStationsException e) {
 		return new ExceptionResponse("UNCONNECTED_STATIONS", e.getMessage());
 	}
+
+	@ResponseBody
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(Exception.class)
+	public ExceptionResponse otherExceptions(Exception e) {
+		return new ExceptionResponse("SERVER_ERROR", "시스템 에러입니다!");
+	}
 }

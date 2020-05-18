@@ -71,12 +71,12 @@ function Search() {
       searchInput.type = typeName;
 
       api.path.find(searchInput).then(response => {
-          if (response.status === 404 || response.status === 400) {
+          if (response.status === 200) {
+              response.json().then(data => onShowResult(data))
+          } else {
               response.json().then(data => {
                   alert(ERROR_MESSAGE[data.frontMessageKey]);
               });
-          } else if (response.status === 200) {
-              response.json().then(data => onShowResult(data))
           }
       })
   }
