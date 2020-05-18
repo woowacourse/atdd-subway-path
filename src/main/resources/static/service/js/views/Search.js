@@ -87,14 +87,13 @@ function Search() {
       targetStationName: $arrivalStationName.value,
       type: value
     }
-    api.path.find(searchInput).then(data => {
-      if(data.hasOwnProperty('error')){
-        console.log(data);
-        alert(data.message);
+    api.path.find(searchInput).then(async data => {
+      if(!data.ok){
+        alert(await data.text());
         return;
       }
       showSearchResult(data);
-    })
+    });
   }
 
   const onToggleFavorite = event => {
