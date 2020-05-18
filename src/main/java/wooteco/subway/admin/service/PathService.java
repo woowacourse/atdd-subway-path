@@ -6,7 +6,6 @@ import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.domain.graph.GraphStrategy;
 import wooteco.subway.admin.domain.graph.PathDetail;
-import wooteco.subway.admin.domain.graph.SubwayGraphKey;
 import wooteco.subway.admin.domain.graph.SubwayGraphs;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
@@ -41,7 +40,7 @@ public class PathService {
 
         Lines lines = new Lines(lineRepository.findAll());
         SubwayGraphs subwayGraphs = lines.makeSubwayGraphs(graphStrategy);
-        PathDetail path = subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
+        PathDetail path = subwayGraphs.getPath(sourceId, targetId, pathRequest.getKey());
 
         return PathResponse.of(path, stations);
     }

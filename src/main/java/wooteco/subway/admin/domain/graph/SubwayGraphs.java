@@ -12,8 +12,8 @@ public class SubwayGraphs {
         this.subwayGraphs = SubwayGraphKey.makeGraph(edges, graphStrategy);
     }
 
-    public PathDetail getPath(Long source, Long target, SubwayGraphKey key) {
-        Graph subwayGraph = subwayGraphs.get(key);
+    public PathDetail getPath(Long source, Long target, String key) {
+        Graph subwayGraph = subwayGraphs.get(SubwayGraphKey.of(key));
         SubwayPath path = subwayGraph.getPath(source, target);
         PathCost pathCost = path.getCost();
         return new PathDetail(path.getPaths(), pathCost.getDistance(), pathCost.getDuration());

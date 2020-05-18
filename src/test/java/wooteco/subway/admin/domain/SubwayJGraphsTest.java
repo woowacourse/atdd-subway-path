@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.admin.domain.graph.PathDetail;
-import wooteco.subway.admin.domain.graph.SubwayGraphKey;
 import wooteco.subway.admin.domain.graph.SubwayGraphs;
 import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraph;
 import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraphStrategy;
@@ -19,8 +18,8 @@ class SubwayJGraphsTest {
 
     @DisplayName("찾은 경로중에 가장 조건에 맞는 최적 경로를 반환한다.")
     @ParameterizedTest
-    @CsvSource(value = {"DISTANCE,2,11", "DURATION,11,2"})
-    void getPath(SubwayGraphKey key, Integer expectDistance, Integer expectDuration) {
+    @CsvSource(value = {"distance,2,11", "duration,11,2"})
+    void getPath(String key, Integer expectDistance, Integer expectDuration) {
         //given
         Edge edge1 = new Edge(1L, 2L, 1, 1);
         Edge edge2 = new Edge(2L, 3L, 10, 1);
@@ -48,7 +47,7 @@ class SubwayJGraphsTest {
         SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2), new SubwayJGraphStrategy());
 
         //when
-        assertThatThrownBy(() -> subwayGraphs.getPath(source, target, SubwayGraphKey.DISTANCE))
+        assertThatThrownBy(() -> subwayGraphs.getPath(source, target, "distance"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("%d - %d : 해당 역이 존재하지 않습니다.", source, target);
     }
