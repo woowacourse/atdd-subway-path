@@ -9,7 +9,5 @@ spring:
   h2:
     console:
       enabled: true
-  profiles:
-    active: local
 handlebars:
   suffix: .html
