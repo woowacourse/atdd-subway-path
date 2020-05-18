@@ -36,17 +36,11 @@ public class LineStations {
         return new LineStations(findLineStations);
     }
 
-    public int getDistance() {
+    public int getWeightBy(PathType type) {
         return lineStations
                 .stream()
-                .mapToInt(LineStation::getDistance)
+                .mapToInt(type::getWeight)
                 .sum();
-    }
-
-    public int getDuration() {
-        return lineStations
-                .stream()
-                .mapToInt(LineStation::getDuration)
-                .sum();
+        //type::getWeight에는 getDistance, getDuration 등이 들어있음
     }
 }

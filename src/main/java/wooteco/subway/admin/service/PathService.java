@@ -36,14 +36,20 @@ public class PathService {
         if (sourceId.equals(targetId)) {
             throw new WrongPathException();
         }
-        List<Long> shortestPath = createShortestPath(lines, sourceId, targetId, request.getType());
 
-        Stations pathStations = shortestPath.stream()
+        List<Long> shortestPath = createShortestPath(lines, sourceId, targetId, request.getType());
+        return createPathResponse(shortestPath, stations, lineStations);
+    }
+
+    private PathResponse createPathResponse(List<Long> path, Stations stations, LineStations lineStations) {
+        Stations pathStations = path.stream()
                 .map(stations::findStationById)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
+        LineStations pathLineStations =  lineStations.findLineStationsByIds(path);
 
-        LineStations pathLineStations = lineStations.findLineStationsByIds(shortestPath);
-        return new PathResponse(pathStations, pathLineStations.getDistance(), pathLineStations.getDuration());
+        int duration = pathLineStations.getWeightBy(PathType.DURATION);
+        int distance = pathLineStations.getWeightBy(PathType.DISTANCE);
+        return new PathResponse(pathStations, distance, duration);
     }
 
     private List<Long> createShortestPath(Lines lines, Long source, Long target, PathType type) {
