@@ -30,10 +30,8 @@ public class PathService {
 			throw new EmptyStationNameException();
 		}
 
-		Station sourceStation = stationRepository.findByName(pathSearchRequest.getSource())
-				.orElseThrow(NoStationNameExistsException::new);
-		Station targetStation = stationRepository.findByName(pathSearchRequest.getTarget())
-				.orElseThrow(NoStationNameExistsException::new);
+		Station sourceStation = findStationByName(pathSearchRequest.getSource());
+		Station targetStation = findStationByName(pathSearchRequest.getTarget());
 
 		if (sourceStation.equals(targetStation)) {
 			throw new SourceEqualsTargetException();
@@ -48,5 +46,10 @@ public class PathService {
 
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
 		return path.findShortestPath(sourceStation, targetStation);
+	}
+
+	private Station findStationByName(String source) {
+		return stationRepository.findByName(source)
+				.orElseThrow(NoStationNameExistsException::new);
 	}
 }
