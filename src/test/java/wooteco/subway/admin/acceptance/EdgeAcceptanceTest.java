@@ -74,4 +74,15 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineNumberTwo.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
+
+    void removeLineStation(Long lineId, Long stationId) {
+        given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete("/lines/" + lineId + "/stations/" + stationId).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }
