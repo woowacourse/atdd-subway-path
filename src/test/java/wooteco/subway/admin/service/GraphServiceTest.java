@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class GraphServiceTest {
-    private final GraphService graphService = new GraphService();
+    private final GraphService graphService = new GraphService(new DijkstraService());
 
     @Test
     void findPath() {
