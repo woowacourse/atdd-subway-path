@@ -12,6 +12,10 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class LineService {
@@ -27,7 +31,7 @@ public class LineService {
         return lineRepository.save(line);
     }
 
-    public List<Line> showLines() {
+    public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
@@ -55,14 +59,29 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
+    public WholeSubwayResponse findAllLinesWithStations() {
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+                .map(this::changeLineToLineDetailResponse)
+                .collect(collectingAndThen(toList(), WholeSubwayResponse::of));
     }
 
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
+    public LineDetailResponse findLineWithStationsById(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return changeLineToLineDetailResponse(line);
+    }
+
+    private LineDetailResponse changeLineToLineDetailResponse(Line line) {
+        List<Long> idsInOrder = line.getLineStationsId();
+
+        Map<Long, Station> stations = stationRepository.findAllById(idsInOrder)
+                .stream()
+                .collect(toMap(Station::getId, Function.identity()));
+
+        List<Station> stationsInOrder = idsInOrder.stream()
+                .map(stations::get)
+                .collect(toList());
+
+        return LineDetailResponse.of(line, stationsInOrder);
     }
 }

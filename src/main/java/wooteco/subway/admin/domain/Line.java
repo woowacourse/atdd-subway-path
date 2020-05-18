@@ -10,6 +10,7 @@ public class Line {
     @Id
     private Long id;
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,8 +21,9 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this.name = name;
+        this.color = color;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
@@ -29,8 +31,8 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(null, name, color, startTime, endTime, intervalTime);
     }
 
     public Long getId() {
@@ -39,6 +41,10 @@ public class Line {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public LocalTime getStartTime() {
@@ -84,7 +90,7 @@ public class Line {
 
     public void addLineStation(LineStation lineStation) {
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+                .filter(it -> it.hasPreStationId(lineStation.getPreStationId()))
                 .findAny()
                 .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
@@ -93,12 +99,12 @@ public class Line {
 
     public void removeLineStationById(Long stationId) {
         LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
+                .filter(it -> it.hasStationId(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
         stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
+                .filter(it -> it.hasPreStationId(stationId))
                 .findFirst()
                 .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
@@ -111,7 +117,7 @@ public class Line {
         }
 
         LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
+                .filter(LineStation::isStarting)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
@@ -121,7 +127,7 @@ public class Line {
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
             Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                    .filter(it -> it.hasPreStationId(lastStationId))
                     .findFirst();
 
             if (!nextLineStation.isPresent()) {
