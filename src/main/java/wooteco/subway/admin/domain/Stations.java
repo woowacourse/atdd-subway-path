@@ -1,6 +1,6 @@
 package wooteco.subway.admin.domain;
 
-import wooteco.subway.admin.exception.NoSuchStationException;
+import wooteco.subway.admin.domain.exception.NoSuchStationException;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package wooteco.subway.admin.exception;
+package wooteco.subway.admin.domain.exception;
 
 import java.util.NoSuchElementException;
 

@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.exception;
 
 public class IllegalPathSearchTypeException extends RuntimeException {
     public IllegalPathSearchTypeException() {

@@ -3,7 +3,7 @@ package wooteco.subway.admin.domain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.exception.NoSuchStationException;
+import wooteco.subway.admin.domain.exception.NoSuchStationException;
 
 import java.util.ArrayList;
 import java.util.List;

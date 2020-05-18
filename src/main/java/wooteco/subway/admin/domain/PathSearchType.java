@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import wooteco.subway.admin.domain.exception.IllegalPathSearchTypeException;
+
 import java.util.Arrays;
 
 public enum PathSearchType {
