@@ -11,7 +11,6 @@ import wooteco.subway.admin.service.LineService;
 
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/paths")
@@ -23,12 +22,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam("source") @NotNull String encodedSourceName,
-                                                 @RequestParam("target") @NotNull String encodedTargetName,
+    public ResponseEntity<PathResponse> findPath(@RequestParam("source") @NotNull String sourceName,
+                                                 @RequestParam("target") @NotNull String targetName,
                                                  @RequestParam("type") @NotNull String type) throws UnsupportedEncodingException {
-        String sourceName = URLDecoder.decode(encodedSourceName, "UTF-8");
-        String targetName = URLDecoder.decode(encodedTargetName, "UTF-8");
-
         PathResponse response = lineService.findShortestPath(sourceName, targetName, PathType.of(type));
         return ResponseEntity.ok()
                 .body(response);
