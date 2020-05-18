@@ -1,15 +1,14 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NoExistLineException;
+import wooteco.subway.admin.exception.NoExistStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -32,9 +31,14 @@ public class LineService {
         return lineRepository.findAll();
     }
 
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new NoExistLineException(NO_EXIST_LINE));
+    }
+
     public void updateLine(Long id, Line line) {
         Line persistLine = lineRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(NO_EXIST_LINE));
+            .orElseThrow(() -> new NoExistLineException(NO_EXIST_LINE));
         persistLine.update(line);
         lineRepository.save(persistLine);
     }
@@ -45,31 +49,16 @@ public class LineService {
 
     public void addLineStation(Long id, LineStation lineStation) {
         Line line = lineRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(NO_EXIST_LINE));
+            .orElseThrow(() -> new NoExistLineException(NO_EXIST_LINE));
         line.addLineStation(lineStation);
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
-            .orElseThrow(() -> new RuntimeException(NO_EXIST_LINE));
+            .orElseThrow(() -> new NoExistLineException(NO_EXIST_LINE));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
-    }
-
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(NO_EXIST_LINE));
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
-    }
-
-    public WholeSubwayResponse wholeLines() {
-        List<Line> lines = lineRepository.findAll();
-        List<LineDetailResponse> lineDetailResponses = lines.stream()
-            .map(line -> findLineWithStationsById(line.getId()))
-            .collect(Collectors.toList());
-        return WholeSubwayResponse.of(lineDetailResponses);
     }
 
     public Station addStation(Station station) {
@@ -82,7 +71,7 @@ public class LineService {
 
     public Station findStationByName(String name) {
         return stationRepository.findByName(name)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new NoExistStationException("존재하지 않는 역입니다."));
     }
 
     public List<Station> findAllStationsByIds(List<Long> stationIds) {

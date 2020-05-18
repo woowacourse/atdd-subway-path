@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -22,8 +24,6 @@ import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 @ExtendWith(SpringExtension.class)
@@ -38,9 +38,12 @@ public class LineControllerTest {
 
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(
-            Arrays.asList(createMockResponse(), createMockResponse()));
-        given(lineService.wholeLines()).willReturn(response);
+        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5,
+            "bg-green-600");
+        List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "선릉역"));
+        given(lineService.showLines()).willReturn(Collections.singletonList(line));
+        given(lineService.findLineById(anyLong())).willReturn(line);
+        given(lineService.findAllStationsByIds(anyList())).willReturn(stations);
 
         String uri = "/lines/detail";
 
@@ -57,10 +60,5 @@ public class LineControllerTest {
             .andExpect(status().isNotModified())
             .andExpect(header().exists("ETag"))
             .andReturn();
-    }
-
-    private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
     }
 }

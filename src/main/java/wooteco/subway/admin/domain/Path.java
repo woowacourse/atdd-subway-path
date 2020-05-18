@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -7,6 +8,8 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import wooteco.subway.admin.exception.NoExistPathException;
 
 public class Path {
     private final WeightedMultigraph<Long, PathEdge> graph;
@@ -23,7 +26,7 @@ public class Path {
 
     public void setEdges(List<Line> lines, PathType pathType) {
         for (Line line : lines) {
-            List<LineStation> lineStations = line.getLineStations();
+            List<LineStation> lineStations = line.getSortedLineStations();
             List<LineStation> edgeStations = filterValidEdgeStations(lineStations);
             addEdgesWithWeight(edgeStations, pathType);
         }
@@ -55,13 +58,13 @@ public class Path {
 
     private void validatePath(GraphPath<Long, PathEdge> shortestPath) {
         if (Objects.isNull(shortestPath)) {
-            throw new RuntimeException("출발역과 도착역이 연결되어 있지 않습니다.");
+            throw new NoExistPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 
     private void validateSourceTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
+            throw new InvalidParameterException("출발역과 도착역은 같을 수 없습니다.");
         }
     }
 
