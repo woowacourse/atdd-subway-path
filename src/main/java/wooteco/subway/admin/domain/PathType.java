@@ -1,9 +1,9 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public enum PathType {
-
     DISTANCE(LineStation::getDistance),
     DURATION(LineStation::getDuration);
 
@@ -14,7 +14,11 @@ public enum PathType {
     }
 
     public static PathType of(String name) {
-        return valueOf(name.toUpperCase());
+        return Arrays.stream(values())
+                .filter(val -> name.equals(val.name()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(String.format("%s을(를) 찾을 수 없습니다.", name)));
     }
 
     public int getWeight(LineStation lineStation) {

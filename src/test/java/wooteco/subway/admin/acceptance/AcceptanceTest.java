@@ -1,23 +1,22 @@
 package wooteco.subway.admin.acceptance;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -159,14 +158,14 @@ public class AcceptanceTest {
         params.put("duration", duration.toString());
 
         given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            post("/lines/" + lineId + "/stations").
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/lines/" + lineId + "/stations").
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value());
     }
 
     void removeLineStation(Long lineId, Long stationId) {

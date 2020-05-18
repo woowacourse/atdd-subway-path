@@ -23,12 +23,16 @@ public class LineStation {
 
     public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
         return new LineStation(preStationId, stationId, distance, duration, LocalDateTime.now(),
-            LocalDateTime.now());
+                LocalDateTime.now());
     }
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isFirstLineStation() {
+        return Objects.isNull(preStationId);
     }
 
     public Long getPreStationId() {
@@ -55,14 +59,17 @@ public class LineStation {
         return updatedAt;
     }
 
-    public boolean isFirstLineStation() {
-        return Objects.isNull(preStationId);
+    public boolean hasSameStations(LineStation lineStation) {
+        return isSameWith(lineStation) || isNotCircular(lineStation);
     }
 
-    public boolean hasSameStations(LineStation lineStation) {
-        return (Objects.equals(this.stationId, lineStation.stationId) && Objects.equals(
-            this.preStationId, lineStation.preStationId))
-            || (Objects.equals(this.preStationId, lineStation.stationId));
+    private boolean isSameWith(LineStation lineStation) {
+        return Objects.equals(this.stationId, lineStation.stationId) && Objects.equals(
+                this.preStationId, lineStation.preStationId);
+    }
+
+    private boolean isNotCircular(LineStation lineStation) {
+        return Objects.equals(this.preStationId, lineStation.stationId);
     }
 
 }

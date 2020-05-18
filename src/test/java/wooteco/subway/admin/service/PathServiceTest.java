@@ -1,13 +1,5 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -17,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
@@ -25,6 +16,15 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -53,8 +53,8 @@ class PathServiceTest {
         gyodae = new Station(4L, "교대역", LocalDateTime.now());
         jamwon = new Station(5L, "잠원역", LocalDateTime.now());
         sinsa = new Station(6L, "신사역", LocalDateTime.now());
-        firstLine = new Line(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(23, 00),
-            10);
+        firstLine = new Line(1L, "1호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(23, 0),
+                10);
     }
 
     @DisplayName("출발역이나 도착역을 입력하지 않은 경우")
@@ -98,8 +98,8 @@ class PathServiceTest {
         firstLine.addLineStation(LineStation.of(seolleung.getId(), yeoksam.getId(), 20, 10));
         firstLine.addLineStation(LineStation.of(yeoksam.getId(), kangnam.getId(), 20, 10));
         firstLine.addLineStation(LineStation.of(kangnam.getId(), gyodae.getId(), 20, 10));
-        Line secondLine = new Line(2L, "2호선", "bg-green-500", LocalTime.of(06, 30),
-            LocalTime.of(23, 00), 10);
+        Line secondLine = new Line(2L, "2호선", "bg-green-500", LocalTime.of(6, 30),
+                LocalTime.of(23, 00), 10);
         secondLine.addLineStation(LineStation.of(null, gyodae.getId(), 10, 10));
         secondLine.addLineStation(LineStation.of(gyodae.getId(), jamwon.getId(), 40, 30));
         secondLine.addLineStation(LineStation.of(jamwon.getId(), sinsa.getId(), 30, 10));
@@ -117,12 +117,12 @@ class PathServiceTest {
     @DisplayName("최단시간과 최단거리 기준으로 path를 구할 수 있다.")
     @Test
     void findPathBy() {
-        Line first = new Line(1L, "1호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
-            1);
-        Line second = new Line(2L, "2호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
-            1);
-        Line third = new Line(3L, "3호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
-            1);
+        Line first = new Line(1L, "1호선", "bg-pink-600", LocalTime.of(10, 0), LocalTime.of(12, 0),
+                1);
+        Line second = new Line(2L, "2호선", "bg-pink-600", LocalTime.of(10, 0), LocalTime.of(12, 0),
+                1);
+        Line third = new Line(3L, "3호선", "bg-pink-600", LocalTime.of(10, 0), LocalTime.of(12, 0),
+                1);
         first.addLineStation(LineStation.of(null, 1L, 1, 1));
         first.addLineStation(LineStation.of(1L, 3L, 1, 1));
         first.addLineStation(LineStation.of(3L, 2L, 1, 1));

@@ -1,22 +1,22 @@
 package wooteco.subway.admin.domain;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
     private Line line;
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(LineStation.of(null, 1L, 10, 10));
         line.addLineStation(LineStation.of(1L, 2L, 10, 10));
         line.addLineStation(LineStation.of(2L, 3L, 10, 10));
