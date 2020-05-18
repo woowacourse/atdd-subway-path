@@ -30,7 +30,7 @@ public class LineTest {
 		LineStation lineStation = line.getStations().stream()
 			.filter(it -> Objects.equals(it.getPreStationId(), 4L))
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(IllegalArgumentException::new);
 		assertThat(lineStation.getStationId()).isEqualTo(1L);
 	}
 
