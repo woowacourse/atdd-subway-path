@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.PathSearchType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.NoSuchSourceStationException;
@@ -17,7 +18,7 @@ import wooteco.subway.admin.exception.NoSuchTargetStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class PathService {
 	private final LineRepository lineRepository;
@@ -28,12 +29,14 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public ShortestPathResponse getShortestPath(String source, String target, PathSearchType type) {
-		Station sourceStation = stationRepository.findByName(source).orElseThrow(NoSuchSourceStationException::new);
-		Station targetStation = stationRepository.findByName(target).orElseThrow(NoSuchTargetStationException::new);
+	@Transactional(readOnly = true)
+	public ShortestPathResponse getShortestPath(PathRequest request) {
+		Station sourceStation = stationRepository.findByName(request.getSource()).orElseThrow(NoSuchSourceStationException::new);
+		Station targetStation = stationRepository.findByName(request.getTarget()).orElseThrow(NoSuchTargetStationException::new);
 
 		Long targetStationId = targetStation.getId();
 		Long sourceStationId = sourceStation.getId();
+		PathSearchType type = request.getType();
 		Path graphLines = new Path(lineRepository.findAll());
 		List<Long> shortestPath = graphLines.findShortestPath(sourceStationId, targetStationId, type);
 		List<StationResponse> stationResponses = StationResponse.listOf(findStationsByIds(shortestPath));

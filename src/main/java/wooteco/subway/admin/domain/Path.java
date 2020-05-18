@@ -23,7 +23,7 @@ public class Path {
 		init(lines);
 	}
 
-	public void init(List<Line> lines) {
+	private void init(List<Line> lines) {
 		for (Line line : lines) {
 			setGraphWithLineStation(line);
 		}
