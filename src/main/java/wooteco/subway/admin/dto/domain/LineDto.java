@@ -8,15 +8,15 @@ import java.time.LocalTime;
 import java.util.Set;
 
 public class LineDto {
-    private Long id;
-    private String name;
-    private String color;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Set<LineStation> stations;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
+    private final int intervalTime;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final Set<LineStation> stations;
 
     public LineDto(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, Set<LineStation> stations) {
         this.id = id;

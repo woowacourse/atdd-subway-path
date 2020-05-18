@@ -8,7 +8,7 @@ public enum PathSearchType {
     DISTANCE("DISTANCE"),
     DURATION("DURATION");
 
-    private String value;
+    private final String value;
 
     PathSearchType(String value) {
         this.value = value;

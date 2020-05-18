@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
@@ -64,7 +64,7 @@ public class LineService {
         return findLineWithStationsByLine(line);
     }
 
-    public LineDetailResponse findLineWithStationsByLine(Line line) {
+    private LineDetailResponse findLineWithStationsByLine(Line line) {
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }

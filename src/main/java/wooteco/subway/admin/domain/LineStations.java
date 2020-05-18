@@ -17,10 +17,6 @@ public class LineStations {
                 .collect(Collectors.toSet());
     }
 
-    public List<LineStation> getLineStations() {
-        return lineStations;
-    }
-
     public LineStation findLineStation(Long preStationId, Long stationId) {
         for (LineStation lineStation : lineStations) {
             if (lineStation.isSamePreStationIdAndStationId(preStationId, stationId)
@@ -29,5 +25,9 @@ public class LineStations {
             }
         }
         return LineStation.empty();
+    }
+
+    public List<LineStation> getLineStations() {
+        return lineStations;
     }
 }

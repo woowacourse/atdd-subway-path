@@ -11,8 +11,8 @@ import wooteco.subway.admin.service.LineService;
 @RequestMapping("/admin")
 @Controller
 public class AdminController {
-    private LineService lineService;
-    private StationRepository stationRepository;
+    private final LineService lineService;
+    private final StationRepository stationRepository;
 
     public AdminController(LineService lineService, StationRepository stationRepository) {
         this.lineService = lineService;
