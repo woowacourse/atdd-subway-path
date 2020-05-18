@@ -3,10 +3,12 @@ package wooteco.subway.admin.acceptance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.PathResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/truncate.sql")
 public class PathAcceptanceTest extends AcceptanceTest {
     /*
      * Scenario: 지하철 경로 조회를 한다.

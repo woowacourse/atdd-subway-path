@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Station {
     @Id
@@ -34,5 +35,10 @@ public class Station {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdAt);
     }
 }

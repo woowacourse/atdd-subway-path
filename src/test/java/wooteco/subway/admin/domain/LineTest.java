@@ -29,6 +29,7 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
+                .filter(it -> it.getPreStationId() != null)
                 .filter(it -> it.getPreStationId() == 4L)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
