@@ -3,24 +3,24 @@ package wooteco.subway.admin.dto;
 import wooteco.subway.admin.domain.PathType;
 
 public class PathRequest {
-    private String source;
-    private String target;
+    private Long source;
+    private Long target;
     private PathType type;
 
     public PathRequest() {
     }
 
-    public PathRequest(String source, String target, PathType type) {
+    public PathRequest(Long source, Long target, PathType type) {
         this.source = source;
         this.target = target;
         this.type = type;
     }
 
-    public String getSource() {
+    public Long getSource() {
         return source;
     }
 
-    public String getTarget() {
+    public Long getTarget() {
         return target;
     }
 

@@ -1,12 +1,10 @@
 package wooteco.subway.admin.domain;
 
-import java.util.Objects;
-
 public class Edge {
     private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+    private final Long stationId;
+    private final int distance;
+    private final int duration;
 
     public Edge(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
@@ -20,8 +18,8 @@ public class Edge {
     }
 
     public boolean isEdgeOf(Long preStationId, Long stationId) {
-        return (this.preStationId == preStationId && this.stationId == stationId)
-                || (this.preStationId == stationId && this.stationId == preStationId);
+        return (this.preStationId.equals(preStationId) && this.stationId.equals(stationId))
+                || (this.preStationId.equals(stationId) && this.stationId.equals(preStationId));
     }
 
     public Long getPreStationId() {
@@ -38,21 +36,5 @@ public class Edge {
 
     public int getDuration() {
         return duration;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Edge that = (Edge) o;
-        return distance == that.distance &&
-                duration == that.duration &&
-                Objects.equals(preStationId, that.preStationId) &&
-                Objects.equals(stationId, that.stationId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(preStationId, stationId, distance, duration);
     }
 }

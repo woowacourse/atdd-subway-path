@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import wooteco.subway.admin.exception.StationNotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Stations {
     private final List<Station> stations;
@@ -25,6 +26,12 @@ public class Stations {
                 .filter(station -> station.getId().equals(id))
                 .findFirst()
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    public List<Station> filterStationsByIds(List<Long> ids) {
+        return stations.stream()
+                .filter(station -> ids.contains(station.getId()))
+                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {

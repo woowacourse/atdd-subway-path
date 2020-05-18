@@ -3,11 +3,10 @@ package wooteco.subway.admin.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.exception.WrongPathException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Lines {
@@ -19,9 +18,7 @@ public class Lines {
 
     public List<Edge> findWholeEdges() {
         return lines.stream()
-                .flatMap(line -> line.getEdges()
-                        .stream()
-                        .filter(edge -> Objects.nonNull(edge.getPreStationId())))
+                .flatMap(line -> line.getEdgesExceptFirst().stream())
                 .collect(Collectors.toList());
     }
 
@@ -47,9 +44,22 @@ public class Lines {
 
     private void setAllEdgeWeight(WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
         lines.stream()
-                .flatMap(line -> line.getEdges().stream())
-                .filter(edge -> Objects.nonNull(edge.getPreStationId()))
+                .flatMap(line -> line.getEdgesExceptFirst().stream())
                 .forEach(edge
                         -> graph.setEdgeWeight(graph.addEdge(edge.getPreStationId(), edge.getStationId()), type.getWeight(edge)));
+    }
+
+    public List<Long> getStationIds() {
+        return lines.stream()
+                .flatMap(line -> line.getEdges().stream())
+                .map(Edge::getStationId)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<LineWithStationsResponse> findLineWithStationsResponses(Stations stations) {
+        return lines.stream()
+                .map(line -> LineWithStationsResponse.of(line, stations.filterStationsByIds(line.getSortedStationIds())))
+                .collect(Collectors.toList());
     }
 }

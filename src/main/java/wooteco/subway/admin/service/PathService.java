@@ -27,8 +27,8 @@ public class PathService {
         Lines wholeLines = new Lines(lineRepository.findAll());
         Stations wholeStations = new Stations(stationRepository.findAll());
         Edges wholeEdges = new Edges(wholeLines.findWholeEdges());
-        Long sourceStationId = wholeStations.findIdByName(request.getSource());
-        Long targetStationId = wholeStations.findIdByName(request.getTarget());
+        Long sourceStationId = request.getSource();
+        Long targetStationId = request.getTarget();
 
         if (sourceStationId.equals(targetStationId)) {
             throw new WrongPathException();

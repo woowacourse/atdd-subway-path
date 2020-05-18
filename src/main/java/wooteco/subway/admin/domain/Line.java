@@ -59,6 +59,12 @@ public class Line {
         return edges;
     }
 
+    public Set<Edge> getEdgesExceptFirst() {
+        return edges.stream()
+                .filter(edge -> Objects.nonNull(edge.getPreStationId()))
+                .collect(Collectors.toSet());
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -107,7 +113,7 @@ public class Line {
         edges.remove(targetEdge);
     }
 
-    public List<Long> getEdgesId() {
+    public List<Long> getSortedStationIds() {
         if (edges.isEmpty()) {
             return new ArrayList<>();
         }
@@ -129,10 +135,8 @@ public class Line {
             if (!nextEdge.isPresent()) {
                 break;
             }
-
             stationIds.add(nextEdge.get().getStationId());
         }
-
         return stationIds;
     }
 

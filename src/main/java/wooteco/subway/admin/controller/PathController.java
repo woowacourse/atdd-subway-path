@@ -16,8 +16,8 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> calculatePath(@RequestParam String source,
-                                                      @RequestParam String target,
+    public ResponseEntity<PathResponse> calculatePath(@RequestParam Long source,
+                                                      @RequestParam Long target,
                                                       @RequestParam PathType type) {
         return ResponseEntity.ok().body(pathService.calculatePath(new PathRequest(source, target, type)));
     }
