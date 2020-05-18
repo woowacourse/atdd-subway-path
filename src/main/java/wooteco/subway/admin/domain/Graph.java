@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -39,22 +40,24 @@ public class Graph {
     }
 
     public int getEdgeValueSum(Station startStation, Station targetStation, EdgeType edgeType) {
-        GraphPath<Station, Edge> shortestPath = findShortestPath(startStation, targetStation);
+        GraphPath<Station, Edge> shortestPath
+                = findShortestPath(new DijkstraShortestPath<>(graph), startStation, targetStation);
         return shortestPath.getEdgeList().stream()
                 .mapToInt(edge -> edgeType.getEdgeValue(edge.toLineStation()))
                 .sum();
     }
 
     public List<String> getVertexName(Station startStation, Station targetStation) {
-        GraphPath<Station, Edge> shortestPath = findShortestPath(startStation, targetStation);
+        GraphPath<Station, Edge> shortestPath
+                = findShortestPath(new DijkstraShortestPath<>(graph), startStation, targetStation);
         return shortestPath.getVertexList().stream()
                 .map(edge -> edge.getName())
                 .collect(Collectors.toList());
     }
 
-    private GraphPath<Station, Edge> findShortestPath(Station startStation, Station targetStation) {
-        DijkstraShortestPath<Station, Edge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, targetStation);
+    private GraphPath<Station, Edge> findShortestPath(ShortestPathAlgorithm<Station, Edge> algorithm, Station startStation, Station targetStation) {
+        ShortestPathAlgorithm<Station, Edge> shortestPathAlgorithm = algorithm;
+        GraphPath<Station, Edge> path = shortestPathAlgorithm.getPath(startStation, targetStation);
         validatePath(path);
         return path;
     }
