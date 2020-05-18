@@ -65,6 +65,10 @@ public class Edges {
 		return edges.isEmpty();
 	}
 
+	public int size() {
+		return edges.size();
+	}
+
 	public Set<Edge> getEdges() {
 		return edges;
 	}

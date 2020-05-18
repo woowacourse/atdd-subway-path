@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -99,28 +100,22 @@ public class Line {
     }
 
     public List<Long> getLineStationsId() {
-        if (edges.isEmpty()) {
-            return new ArrayList<>();
+        List<Edge> list = new ArrayList<>();
+        edges.findByPreStationId(null)
+                .ifPresent(list::add);
+
+        for (int i = 0; i < edges.size() - 1; i++) {
+            list.add(findNext(list.get(i)));
         }
 
-        Edge firstEdge = edges.findByPreStationId(null)
-                .orElseThrow(RuntimeException::new);
+        return list.stream()
+                .map(Edge::getStationId)
+                .collect(Collectors.toList());
+    }
 
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstEdge.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<Edge> nextLineStation = edges.findByPreStationId(lastStationId);
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
+    private Edge findNext(Edge nextStation) {
+        return edges.findByPreStationId(nextStation.getStationId())
+                .orElse(nextStation);
     }
 
     public boolean containsAll(final List<Long> stationIds) {
