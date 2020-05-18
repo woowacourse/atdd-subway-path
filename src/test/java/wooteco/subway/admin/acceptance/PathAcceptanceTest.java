@@ -29,30 +29,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineResponse secondLine = createLine(LINE_NAME_2);
         LineResponse thirdLine = createLine(LINE_NAME_3);
         //And: 지하철 역이 등록되어 있다.
-        StationResponse jamsil = createStation(STATION_NAME_JAMSIL);
-        StationResponse seolleung = createStation(STATION_NAME_SEOLLEUNG);
-        StationResponse yeoksam = createStation(STATION_NAME_YEOKSAM);
-        StationResponse kangnam = createStation(STATION_NAME_KANGNAM);
-        StationResponse gyodae = createStation(STATION_NAME_GYODAE);
-        StationResponse jamwon = createStation(STATION_NAME_JAMWON);
-        StationResponse sinsa = createStation(STATION_NAME_SINSA);
+        Long jamsil = createStation(STATION_NAME_JAMSIL);
+        Long seolleung = createStation(STATION_NAME_SEOLLEUNG);
+        Long yeoksam = createStation(STATION_NAME_YEOKSAM);
+        Long kangnam = createStation(STATION_NAME_KANGNAM);
+        Long gyodae = createStation(STATION_NAME_GYODAE);
+        Long jamwon = createStation(STATION_NAME_JAMWON);
+        Long sinsa = createStation(STATION_NAME_SINSA);
         //And: 지하철 노선에 역이 등록되어 있다.
-        addLineStation(secondLine.getId(), null, jamsil.getId());
-        addLineStation(secondLine.getId(), jamsil.getId(), seolleung.getId());
-        addLineStation(secondLine.getId(), seolleung.getId(), yeoksam.getId());
-        addLineStation(secondLine.getId(), yeoksam.getId(), kangnam.getId());
-        addLineStation(secondLine.getId(), kangnam.getId(), gyodae.getId());
-        addLineStation(thirdLine.getId(), null, gyodae.getId());
-        addLineStation(thirdLine.getId(), gyodae.getId(), jamwon.getId());
-        addLineStation(thirdLine.getId(), jamwon.getId(), sinsa.getId());
+        addLineStation(secondLine.getId(), null, jamsil);
+        addLineStation(secondLine.getId(), jamsil, seolleung);
+        addLineStation(secondLine.getId(), seolleung, yeoksam);
+        addLineStation(secondLine.getId(), yeoksam, kangnam);
+        addLineStation(secondLine.getId(), kangnam, gyodae);
+        addLineStation(thirdLine.getId(), null, gyodae);
+        addLineStation(thirdLine.getId(), gyodae, jamwon);
+        addLineStation(thirdLine.getId(), jamwon, sinsa);
 
         //When: 출발역과 도착역을 입력한다.
-        PathResponse path = findPath(yeoksam.getId(), jamwon.getId());
+        PathResponse path = findPath(yeoksam, jamwon);
         //Then: 최단거리 경로와 총 소요시간, 총 거리를 응답한다.
-        assertThat(path.getStations().get(0).getId()).isEqualTo(yeoksam.getId());
-        assertThat(path.getStations().get(1).getId()).isEqualTo(kangnam.getId());
-        assertThat(path.getStations().get(2).getId()).isEqualTo(gyodae.getId());
-        assertThat(path.getStations().get(3).getId()).isEqualTo(jamwon.getId());
+        assertThat(path.getStations().get(0).getId()).isEqualTo(yeoksam);
+        assertThat(path.getStations().get(1).getId()).isEqualTo(kangnam);
+        assertThat(path.getStations().get(2).getId()).isEqualTo(gyodae);
+        assertThat(path.getStations().get(3).getId()).isEqualTo(jamwon);
         assertThat(path.getDuration()).isEqualTo(30);
         assertThat(path.getDistance()).isEqualTo(30);
     }

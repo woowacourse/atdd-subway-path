@@ -17,20 +17,20 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        Long station1Id = createStation(STATION_NAME_KANGNAM);
+        Long station2Id = createStation(STATION_NAME_YEOKSAM);
+        Long station3Id = createStation(STATION_NAME_SEOLLEUNG);
 
         LineResponse lineResponse = createLine("2호선");
 
-        addLineStation(lineResponse.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addLineStation(lineResponse.getId(), null, station1Id);
+        addLineStation(lineResponse.getId(), station1Id, station2Id);
+        addLineStation(lineResponse.getId(), station2Id, station3Id);
 
         LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        removeLineStation(lineResponse.getId(), station2Id);
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
@@ -40,20 +40,20 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @Test
     public void wholeSubway() {
         LineResponse lineResponse1 = createLine("2호선");
-        StationResponse stationResponse1 = createStation("강남역");
-        StationResponse stationResponse2 = createStation("역삼역");
-        StationResponse stationResponse3 = createStation("삼성역");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
+        Long stationResponse1 = createStation("강남역");
+        Long stationResponse2 = createStation("역삼역");
+        Long stationResponse3 = createStation("삼성역");
+        addLineStation(lineResponse1.getId(), null, stationResponse1);
+        addLineStation(lineResponse1.getId(), stationResponse1, stationResponse2);
+        addLineStation(lineResponse1.getId(), stationResponse2, stationResponse3);
 
         LineResponse lineResponse2 = createLine("신분당선");
-        StationResponse stationResponse4 = createStation("잠실역");
-        StationResponse stationResponse5 = createStation("양재역");
-        StationResponse stationResponse6 = createStation("양재시민의숲역");
-        addLineStation(lineResponse2.getId(), null, stationResponse4.getId());
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
-        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
+        Long stationResponse4 = createStation("잠실역");
+        Long stationResponse5 = createStation("양재역");
+        Long stationResponse6 = createStation("양재시민의숲역");
+        addLineStation(lineResponse2.getId(), null, stationResponse4);
+        addLineStation(lineResponse2.getId(), stationResponse4, stationResponse5);
+        addLineStation(lineResponse2.getId(), stationResponse5, stationResponse6);
 
         List<LineDetailResponse> responses = retrieveWholeSubway().getLineDetailResponse();
         assertThat(responses.size()).isEqualTo(2);

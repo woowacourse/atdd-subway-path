@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.request.LineRequest;
 import wooteco.subway.admin.dto.response.LineResponse;
+import wooteco.subway.admin.exception.EntityNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 
 @Service
@@ -45,9 +46,8 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     private Line findBy(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException());
+            .orElseThrow(() -> new EntityNotFoundException(Line.class.getName(), id));
     }
 }

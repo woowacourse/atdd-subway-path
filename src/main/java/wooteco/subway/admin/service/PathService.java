@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.admin.Graphs;
+import wooteco.subway.admin.domain.Graphs;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
@@ -17,6 +17,7 @@ import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
+import wooteco.subway.admin.exception.EntityNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -111,11 +112,10 @@ public class PathService {
 
     private void validateStations(Long preStationId, Long stationId) {
         if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
-            throw new IllegalArgumentException("존재하지 않는 이전역입니다.");
+            throw new EntityNotFoundException(Station.class.getName(), preStationId);
         }
         if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
-            throw new IllegalArgumentException("존재하지 않는 현재역입니다.");
+            throw new EntityNotFoundException(Station.class.getName(), stationId);
         }
     }
-
 }

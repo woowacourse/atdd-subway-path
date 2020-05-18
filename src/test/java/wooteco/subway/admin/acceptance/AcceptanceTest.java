@@ -47,7 +47,7 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    StationResponse createStation(String name) {
+    Long createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
@@ -61,7 +61,7 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value()).
-                extract().as(StationResponse.class);
+                extract().as(Long.class);
     }
 
     List<StationResponse> getStations() {

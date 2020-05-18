@@ -12,12 +12,12 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
     private int intervalTime;
-    @JsonFormat(pattern = "HH:mm")
     private LocalDateTime createdAt;
-    @JsonFormat(pattern = "HH:mm")
     private LocalDateTime updatedAt;
 
     public LineResponse() {

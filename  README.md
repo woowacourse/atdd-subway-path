@@ -33,8 +33,8 @@
 - [x] 최단 경로 조회 기능과의 중복 제거를 수행(테스트 코드도 마찬가지로 중복제거)
 
 ## TODO
-- [ ] graph 클래스 분리
-- [ ] line 도메인 일급 컬렉션 및 list로 변경 경 
-- [ ] exception 추상화
-- [ ] exception handler 추가
+- [x] graph 클래스 분리
+- [x] line 도메인 일급 컬렉션 및 list로 변경
+- [x] exception 추상화
+- [x] exception handler 추가
 - [ ] javascript 리팩토링

@@ -12,6 +12,7 @@ import org.springframework.data.relational.core.mapping.Embedded;
 
 import wooteco.subway.admin.domain.vo.LineSchedule;
 import wooteco.subway.admin.domain.vo.LineStations;
+import wooteco.subway.admin.exception.LineStationException;
 
 public class Line {
     @Id
@@ -127,42 +128,21 @@ public class Line {
     }
 
     private void validateLineStation(LineStation lineStation) {
-        validateStation(lineStation);
-        validateStations(lineStation);
         validateAlreadyRegistered(lineStation);
         validateHavingSame(lineStation);
     }
 
-    private void validateStation(LineStation lineStation) {
-        if (Objects.isNull(lineStation.getStationId())) {
-            throw new IllegalArgumentException("현재역은 비어있을 수 없습니다.");
-        }
-    }
-
     private void validateAlreadyRegistered(LineStation lineStation) {
         if (!lineStation.isFirstLineStation() && lineStations.isEmpty()) {
-            throw new IllegalArgumentException("첫 노선을 먼저 등록해야 합니다.");
-        }
-    }
-
-    private void validateStations(LineStation lineStation) {
-        if (lineStation.getStationId().equals(lineStation.getPreStationId())) {
-            throw new IllegalArgumentException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
+            throw new LineStationException("첫 노선을 먼저 등록해야 합니다.");
         }
     }
 
     private void validateHavingSame(LineStation lineStation) {
         for (LineStation station : lineStations.getStations()) {
             if (station.hasSameStations(lineStation)) {
-                throw new IllegalArgumentException("이미 등록된 구간입니다.");
+                throw new LineStationException("이미 등록된 구간입니다.");
             }
-        }
-    }
-
-    private void updatePreStation(int index, Long stationId) {
-        if (lineStations.size() != index) {
-            LineStation existing = lineStations.get(index);
-            existing.updatePreLineStation(stationId);
         }
     }
 
@@ -177,15 +157,22 @@ public class Line {
         LineStation preStation = lineStations.getStations().stream()
             .filter(station -> Objects.equals(preStationId, station.getPreStationId()))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("현재 노선에 등록되지 않은 이전역입니다."));
+            .orElseThrow(() -> new LineStationException("현재 노선에 등록되지 않은 이전역입니다."));
         return lineStations.indexOf(preStation);
+    }
+
+    private void updatePreStation(int index, Long stationId) {
+        if (lineStations.size() != index) {
+            LineStation existing = lineStations.get(index);
+            existing.updatePreLineStation(stationId);
+        }
     }
 
     private int findStationIndex(Long stationId) {
         LineStation lineStation = lineStations.getStations().stream()
             .filter(station -> Objects.equals(stationId, station.getStationId()))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당 호선에 등록되지 않은 역입니다."));
+            .orElseThrow(() -> new LineStationException("해당 호선에 등록되지 않은 역입니다."));
         return lineStations.indexOf(lineStation);
     }
 }
