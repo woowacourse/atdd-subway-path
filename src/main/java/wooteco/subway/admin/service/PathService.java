@@ -37,7 +37,7 @@ public class PathService {
         Long targetId = stations.findIdByName(target);
 
         Lines lines = new Lines(lineRepository.findAll());
-        SubwayGraphs subwayGraphs = lines.makeSubwayGraphs(sourceId, targetId);
+        SubwayGraphs subwayGraphs = lines.makeSubwayGraphs();
         PathDetail path = subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
 
         return PathResponse.of(path, stations);
