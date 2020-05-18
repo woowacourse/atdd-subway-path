@@ -1,7 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,6 +8,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Line {
     @Id
@@ -20,7 +21,8 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<Edge> edges = new HashSet<>();
+    @Embedded.Empty
+    private Edges edges = new Edges(new HashSet<>());
 
     private Line() {
     }
@@ -60,7 +62,7 @@ public class Line {
     }
 
     public Set<Edge> getEdges() {
-        return edges;
+        return edges.getEdges();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -89,26 +91,11 @@ public class Line {
     }
 
     public void addEdge(Edge edge) {
-        edges.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), edge.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(edge.getStationId()));
-
         edges.add(edge);
     }
 
     public void removeLineStationById(Long stationId) {
-        Edge targetEdge = edges.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        edges.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetEdge.getPreStationId()));
-
-        edges.remove(targetEdge);
+        edges.remove(stationId);
     }
 
     public List<Long> getLineStationsId() {
@@ -116,9 +103,7 @@ public class Line {
             return new ArrayList<>();
         }
 
-        Edge firstEdge = edges.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
+        Edge firstEdge = edges.findByPreStationId(null)
                 .orElseThrow(RuntimeException::new);
 
         List<Long> stationIds = new ArrayList<>();
@@ -126,9 +111,7 @@ public class Line {
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<Edge> nextLineStation = edges.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+            Optional<Edge> nextLineStation = edges.findByPreStationId(lastStationId);
 
             if (!nextLineStation.isPresent()) {
                 break;
@@ -141,8 +124,7 @@ public class Line {
     }
 
     public boolean containsAll(final List<Long> stationIds) {
-        Edges edges1 = new Edges(edges);
-        return edges1.containsStationIdAll(stationIds);
+        return edges.containsStationIdAll(stationIds);
     }
 
     public int getPath() {
