@@ -1,5 +1,8 @@
 package wooteco.subway.admin.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -30,7 +33,17 @@ public class LineService {
     }
 
     public Line save(Line line) {
-        return lineRepository.save(line);
+        try {
+            return lineRepository.save(line);
+        } catch (DbActionExecutionException exception) {
+            if (exception.getCause() instanceof DuplicateKeyException) {
+                throw new DuplicateKeyException("이미 존재하는 호선입니다.");
+            }
+            if (exception.getCause() instanceof DataIntegrityViolationException) {
+                throw new DataIntegrityViolationException("필수값을 입력해주세요.");
+            }
+            throw exception;
+        }
     }
 
     public List<Line> showLines() {
