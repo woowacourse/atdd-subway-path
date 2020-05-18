@@ -23,7 +23,7 @@ public class LineStations {
 
     public LineStation findLineStation(Long preStationId, Long stationId) {
         return lineStations.stream()
-                .filter(lineStation -> lineStation.is(preStationId, stationId) || lineStation.is(stationId, preStationId))
+                .filter(lineStation -> lineStation.isEdgeOf(preStationId, stationId) || lineStation.isEdgeOf(stationId, preStationId))
                 .findFirst()
                 .orElse(LineStation.empty());
     }
