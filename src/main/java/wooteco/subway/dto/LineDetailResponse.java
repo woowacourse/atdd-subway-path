@@ -13,7 +13,7 @@ public class LineDetailResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
-    private String bgColor;
+    private String backgroundColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
@@ -22,14 +22,14 @@ public class LineDetailResponse {
     }
 
     public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime,
-        int intervalTime, String bgColor, LocalDateTime createdAt,
+        int intervalTime, String backgroundColor, LocalDateTime createdAt,
         LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
-        this.bgColor = bgColor;
+        this.backgroundColor = backgroundColor;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.stations = StationResponse.listOf(stations);
@@ -37,7 +37,7 @@ public class LineDetailResponse {
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
         return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(),
-            line.getBgColor(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+            line.getBackgroundColor(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
     public Long getId() {
@@ -60,8 +60,8 @@ public class LineDetailResponse {
         return intervalTime;
     }
 
-    public String getBgColor() {
-        return bgColor;
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,6 +1,6 @@
-INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('1호선', PARSEDATETIME('06:00', 'HH:mm'), PARSEDATETIME('23:00', 'HH:mm'), 10, 'bg-blue-600');
-INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('2호선', PARSEDATETIME('07:00', 'HH:mm'), PARSEDATETIME('00:00', 'HH:mm'), 10, 'bg-green-600');
-INSERT INTO LINE(name, start_time, end_time, interval_time, bg_color) VALUES ('4호선', PARSEDATETIME('08:00', 'HH:mm'), PARSEDATETIME('22:00', 'HH:mm'), 10, 'bg-blue-400');
+INSERT INTO LINE(name, start_time, end_time, interval_time, background_color) VALUES ('1호선', PARSEDATETIME('06:00', 'HH:mm'), PARSEDATETIME('23:00', 'HH:mm'), 10, 'bg-blue-600');
+INSERT INTO LINE(name, start_time, end_time, interval_time, background_color) VALUES ('2호선', PARSEDATETIME('07:00', 'HH:mm'), PARSEDATETIME('00:00', 'HH:mm'), 10, 'bg-green-600');
+INSERT INTO LINE(name, start_time, end_time, interval_time, background_color) VALUES ('4호선', PARSEDATETIME('08:00', 'HH:mm'), PARSEDATETIME('22:00', 'HH:mm'), 10, 'bg-blue-400');
 
 INSERT INTO STATION(name) VALUES ('당산');
 INSERT INTO STATION(name) VALUES ('합정');

@@ -21,7 +21,7 @@ function AdminLine() {
     event.preventDefault();
     const newSubwayLine = {
       title: $subwayLineNameInput.value,
-      bgColor: $subwayLineColorInput.value
+      backgroundColor: $subwayLineColorInput.value
     };
     $subwayLineList.insertAdjacentHTML(
       "beforeend",

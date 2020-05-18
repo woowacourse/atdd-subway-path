@@ -50,7 +50,7 @@ public class PageAcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
-        params.put("bgColor", "bg-red-500");
+        params.put("backgroundColor", "bg-red-500");
 
         given().
                 body(params).
