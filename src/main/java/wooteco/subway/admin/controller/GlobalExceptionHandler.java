@@ -10,6 +10,7 @@ import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.InvalidPathTypeException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
+import wooteco.subway.admin.exception.SourceTargetSameException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundPathException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundPathException(NotFoundPathException e) {
         ErrorResponse errorResponse = new ErrorResponse("입력한 경로를 찾을 수 없습니다");
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(SourceTargetSameException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundPathException(SourceTargetSameException e) {
+        ErrorResponse errorResponse = new ErrorResponse("출발역과 도착역은 같을 수 없습니다");
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

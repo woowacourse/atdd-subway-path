@@ -1,10 +1,15 @@
 package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -96,5 +101,81 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stations.get(3).getId()).isEqualTo(stationResponseEnd.getId());
         assertThat(pathResponse.getDistance()).isEqualTo(30);
         assertThat(pathResponse.getDuration()).isEqualTo(3);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void equalSourceTarget() {
+        createStation(STATION_NAME_KANGNAM);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("source", STATION_NAME_KANGNAM);
+        params.put("target", STATION_NAME_KANGNAM);
+        params.put("type", PathType.DISTANCE.name());
+
+        given().
+                queryParams(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                get("/paths").
+        then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                body("message", equalTo("출발역과 도착역은 같을 수 없습니다"));
+    }
+
+    @DisplayName("출발역에서 도착역으로 가는 경로가 없는 경우")
+    @Test
+    void notFoundPath() {
+        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
+        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse stationResponseStart = createStation(STATION_NAME_START);
+        StationResponse stationResponseEnd = createStation(STATION_NAME_END);
+
+        LineResponse lineResponse1 = createLine(LINE_NAME_2);
+        LineResponse lineResponse2 = createLine(LINE_NAME_3);
+
+        addLineStation(lineResponse1.getId(), null, stationResponseStart.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponseStart.getId(), stationResponse1.getId(), 10, 1);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 10, 1);
+
+        addLineStation(lineResponse2.getId(), null, stationResponseEnd.getId(), 0, 0);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("source", STATION_NAME_START);
+        params.put("target", STATION_NAME_END);
+        params.put("type", PathType.DISTANCE.name());
+
+        given().
+                queryParams(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                get("/paths").
+        then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                body("message", equalTo("입력한 경로를 찾을 수 없습니다"));
+    }
+
+    @DisplayName("존재하지 않는 역에 대해서 조회하는 경우")
+    @Test
+    void notFoundStation() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", "출발역");
+        params.put("target", "도착역");
+        params.put("type", PathType.DISTANCE.name());
+
+        given().
+                queryParams(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                get("/paths").
+        then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                body("message", equalTo("입력한 역을 찾을 수 없습니다"));
     }
 }
