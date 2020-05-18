@@ -16,6 +16,12 @@ public class LineControllerAdvice {
 
     @ExceptionHandler(NoPathException.class)
     public ResponseEntity<ErrorMessage> getNoPathException(NoPathException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> getUnExpectedException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorMessage("예기치 못한 에러가 발생했습니다.\n" + e.getMessage()));
     }
 }
