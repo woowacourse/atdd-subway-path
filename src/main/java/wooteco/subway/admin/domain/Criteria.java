@@ -6,20 +6,18 @@ import java.util.function.BiFunction;
 import wooteco.subway.admin.exception.NoCriteriaExistsException;
 
 public enum Criteria {
-	DISTANCE("distance", ((duration, distance) -> (double) distance)),
-	DURATION("duration", ((duration, distance) -> (double) duration));
+	DISTANCE((duration, distance) -> (double)distance),
+	DURATION((duration, distance) -> (double)duration);
 
-	private String criteriaType;
 	private BiFunction<Integer, Integer, Double> weightSelector;
 
-	Criteria(String criteriaType, BiFunction<Integer, Integer, Double> weightSelector) {
-		this.criteriaType = criteriaType;
+	Criteria(BiFunction<Integer, Integer, Double> weightSelector) {
 		this.weightSelector = weightSelector;
 	}
 
 	public static Criteria of(String criteriaType) {
 		return Arrays.stream(values())
-				.filter(type -> type.criteriaType.equals(criteriaType))
+			.filter(type -> type.name().equals(criteriaType.toUpperCase()))
 				.findFirst()
 				.orElseThrow(NoCriteriaExistsException::new);
 	}
