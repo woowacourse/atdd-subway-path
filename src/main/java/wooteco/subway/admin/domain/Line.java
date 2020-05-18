@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Line {
+    private static Long NO_STATION = 0L;
+
     @Id
     private Long id;
     private String name;
@@ -103,7 +105,7 @@ public class Line {
             newStations.add(newLineStation);
             newStations.add(lineStation);
             lineStation.updatePreLineStation(newLineStation.getStationId());
-            newLineStation.updatePreLineStation(0L);
+            newLineStation.updatePreLineStation(NO_STATION);
             return;
         }
         newStations.add(lineStation);
