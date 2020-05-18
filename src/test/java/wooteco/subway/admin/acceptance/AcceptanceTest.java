@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,11 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
@@ -40,7 +44,7 @@ public class AcceptanceTest {
     int port;
 
     @BeforeEach
-    void setUp() {
+    void setUp1() {
         RestAssured.port = port;
     }
 
@@ -49,12 +53,11 @@ public class AcceptanceTest {
     }
 
     StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
+        StationCreateRequest request = new StationCreateRequest(name);
 
         // @formatter:off
-        return given().
-                body(params).
+        return given().with().
+                body(request).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
             when().
@@ -89,16 +92,16 @@ public class AcceptanceTest {
     }
 
     LineResponse createLine(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-        params.put("bgColor", "bg-teal-500");
+        LineRequest request = new LineRequest(
+            name,
+            LocalTime.of(5, 30),
+            LocalTime.of(23, 30),
+            10,
+            "bg-teal-500");
 
         // @formatter:off
         return given().
-            body(params).
+            body(request).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
         when().
@@ -166,16 +169,14 @@ public class AcceptanceTest {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", Objects.isNull(preStationId) ? Strings.EMPTY : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
+    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+        Integer duration) {
+        LineStationCreateRequest request = new LineStationCreateRequest(
+            preStationId, stationId, distance, duration);
 
         // @formatter:off
         given().
-            body(params).
+            body(request).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
         when().

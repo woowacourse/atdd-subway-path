@@ -27,7 +27,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private String arrival;
 
     @BeforeEach
-    void setUp() {
+    void setUp2() {
         // given 지하철역이 여러 개 추가되어있다.
         StationResponse station1 = createStation("1역");
         StationResponse station2 = createStation("2역");
@@ -54,7 +54,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         arrival = station3.getName();
     }
 
-    @DisplayName("출발역과 도착역의 최단거리 경를 조회한다.")
+    @DisplayName("출발역과 도착역의 최단거리 경로를 조회한다.")
     @Test
     void getShortestDistancePath() {
         // when 출발역과 도착역의 최단 경로 조회 요청을 한다.
