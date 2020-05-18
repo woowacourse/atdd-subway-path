@@ -1,5 +1,11 @@
 package wooteco.subway.admin.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalTime;
+import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,19 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 import wooteco.subway.admin.exception.SourceTargetSameException;
-
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
@@ -71,7 +71,7 @@ public class PathServiceTest {
         when(stationService.findByName("도착역")).thenReturn(stations.get(4));
         when(stationService.findAll()).thenReturn(stations);
 
-        PathResponse pathResponse = pathService.findPath("출발역", "도착역", "distance");
+        PathResponse pathResponse = pathService.findPath("출발역", "도착역", PathType.DISTANCE.name());
         List<StationResponse> stationResponses = pathResponse.getStations();
         assertThat(stationResponses.size()).isEqualTo(3);
         assertThat(stationResponses.get(0).getId()).isEqualTo(4L);
@@ -89,7 +89,7 @@ public class PathServiceTest {
         when(stationService.findByName("도착역")).thenReturn(stations.get(4));
         when(stationService.findAll()).thenReturn(stations);
 
-        PathResponse pathResponse = pathService.findPath("출발역", "도착역", "duration");
+        PathResponse pathResponse = pathService.findPath("출발역", "도착역", PathType.DURATION.name());
         List<StationResponse> stationResponses = pathResponse.getStations();
         assertThat(stationResponses.size()).isEqualTo(4);
         assertThat(stationResponses.get(0).getId()).isEqualTo(4L);
@@ -103,7 +103,7 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우 예외")
     @Test
     void equalSourceTarget() {
-        assertThatThrownBy(() -> pathService.findPath("출발역", "출발역", "distance"))
+        assertThatThrownBy(() -> pathService.findPath("출발역", "출발역", PathType.DISTANCE.name()))
                 .isInstanceOf(SourceTargetSameException.class);
     }
 
@@ -115,7 +115,7 @@ public class PathServiceTest {
         when(stationService.findByName("왕따역")).thenReturn(stations.get(5));
         when(stationService.findAll()).thenReturn(stations);
 
-        assertThatThrownBy(() -> pathService.findPath("출발역", "왕따역", "distance"))
+        assertThatThrownBy(() -> pathService.findPath("출발역", "왕따역", PathType.DISTANCE.name()))
                 .isInstanceOf(NotFoundPathException.class);
     }
 
@@ -124,7 +124,7 @@ public class PathServiceTest {
     void notFoundStation() {
         when(stationService.findByName("포비역")).thenThrow(new NotFoundStationException());
 
-        assertThatThrownBy(() -> pathService.findPath("포비역", "준역", "distance"))
+        assertThatThrownBy(() -> pathService.findPath("포비역", "준역", PathType.DISTANCE.name()))
                 .isInstanceOf(NotFoundStationException.class);
     }
 }

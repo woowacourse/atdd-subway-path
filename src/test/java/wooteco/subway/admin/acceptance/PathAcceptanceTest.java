@@ -1,14 +1,14 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceTest extends AcceptanceTest {
     /*
@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponseEnd.getId(), 10, 10);
 
         // When
-        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, "distance");
+        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, PathType.DISTANCE.name());
 
         // Then
         List<StationResponse> stations = pathResponse.getStations();
@@ -85,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponseEnd.getId(), 10, 10);
 
         // When
-        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, "duration");
+        PathResponse pathResponse = getShortestPath(STATION_NAME_START, STATION_NAME_END, PathType.DURATION.name());
 
         // Then
         List<StationResponse> stations = pathResponse.getStations();
