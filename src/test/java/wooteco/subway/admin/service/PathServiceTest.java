@@ -80,23 +80,23 @@ class PathServiceTest {
         station8 = new Station(8L, STATION_NAME8);
         station9 = new Station(9L, STATION_NAME8);
 
-        line1 = new Line(1L, "2호선", "bg-green-400", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line1 = Line.of(1L, "2호선", "bg-green-400", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 0, 0));
         line1.addLineStation(new LineStation(1L, 2L, 10, 1));
         line1.addLineStation(new LineStation(2L, 3L, 10, 1));
         line1.addLineStation(new LineStation(3L, 4L, 10, 1));
 
-        line2 = new Line(2L, "8호선", "bg-pink-600", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line2 = Line.of(2L, "8호선", "bg-pink-600", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line2.addLineStation(new LineStation(null, 1L, 1, 10));
         line2.addLineStation(new LineStation(1L, 6L, 1, 10));
 
-        line3 = new Line(3L, "9호선", "bg-yellow-700", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line3 = Line.of(3L, "9호선", "bg-yellow-700", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line3.addLineStation(new LineStation(null, 3L, 0, 0));
         line3.addLineStation(new LineStation(3L, 4L, 1, 10));
         line3.addLineStation(new LineStation(4L, 5L, 1, 10));
         line3.addLineStation(new LineStation(5L, 6L, 1, 10));
 
-        line4 = new Line(4L, "대구1호선", "bg-indigo-500", LocalTime.of(05, 30), LocalTime.of(22, 30),
+        line4 = Line.of(4L, "대구1호선", "bg-indigo-500", LocalTime.of(05, 30), LocalTime.of(22, 30),
             5);
         line4.addLineStation(new LineStation(null, 7L, 0, 0));
         line4.addLineStation(new LineStation(7L, 8L, 20, 20));

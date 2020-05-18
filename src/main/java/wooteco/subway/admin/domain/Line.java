@@ -19,31 +19,33 @@ public class Line extends TimeEntity {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
-    private Set<LineStation> stations = new HashSet<>();
+    private Set<LineStation> stations;
 
     public Line() {
     }
 
     public Line(Long id, String name, String backgroundColor, LocalTime startTime,
         LocalTime endTime, int intervalTime, Set<LineStation> stations) {
-        this(name, backgroundColor, startTime, endTime, intervalTime);
         this.id = id;
-        this.stations = stations;
-    }
-
-    public Line(Long id, String name, String backgroundColor, LocalTime startTime,
-        LocalTime endTime, int intervalTime) {
-        this(name, backgroundColor, startTime, endTime, intervalTime);
-        this.id = id;
-    }
-
-    public Line(String name, String backgroundColor, LocalTime startTime, LocalTime endTime,
-        int intervalTime) {
         this.name = name;
         this.backgroundColor = backgroundColor;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.stations = stations;
+    }
+
+    public static Line of(Long id, String name, String backgroundColor, LocalTime startTime,
+        LocalTime endTime, int intervalTime) {
+        return new Line(id, name, backgroundColor, startTime, endTime, intervalTime,
+            new HashSet<>());
+    }
+
+    public static Line of(String name, String backgroundColor, LocalTime startTime,
+        LocalTime endTime,
+        int intervalTime) {
+        return new Line(null, name, backgroundColor, startTime, endTime, intervalTime,
+            new HashSet<>());
     }
 
     public Long getId() {

@@ -21,7 +21,7 @@ public class PathAlgorithmByDijkstra implements PathAlgorithm {
             throw new NotFoundPathException(sourceId, targetId);
         }
 
-        return mapToPahtResponse(sourceId, targetId, dijkstraShortestPath);
+        return mapToPathResult(sourceId, targetId, dijkstraShortestPath);
     }
 
     private void validate(Long sourceId, Long targetId) {
@@ -30,21 +30,17 @@ public class PathAlgorithmByDijkstra implements PathAlgorithm {
         }
     }
 
-    private PathResult mapToPahtResponse(Long source, Long target,
+    private PathResult mapToPathResult(Long source, Long target,
         DijkstraShortestPath<Long, LineStationEdge> dijkstraShortestPath) {
         List<Long> path = dijkstraShortestPath.getPath(source, target).getVertexList();
+        int totalDistance = 0;
+        int totalDuration = 0;
 
-        int totalDistance = dijkstraShortestPath.getPath(source, target)
-            .getEdgeList()
-            .stream()
-            .mapToInt(LineStationEdge::getDistance)
-            .sum();
+        for (LineStationEdge edge : dijkstraShortestPath.getPath(source, target).getEdgeList()) {
+            totalDistance += edge.getDistance();
+            totalDuration += edge.getDuration();
+        }
 
-        int totalDuration = dijkstraShortestPath.getPath(source, target)
-            .getEdgeList()
-            .stream()
-            .mapToInt(LineStationEdge::getDuration)
-            .sum();
         return new PathResult(path, totalDistance, totalDuration);
     }
 }

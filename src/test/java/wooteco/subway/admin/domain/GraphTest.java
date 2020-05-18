@@ -22,12 +22,12 @@ class GraphTest {
 
     @BeforeEach
     void setUp() {
-        line1 = new Line(1L, "2호선", "bg-green-400", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        line1 = Line.of(1L, "2호선", "bg-green-400", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 5, 10));
         line1.addLineStation(new LineStation(1L, 2L, 5, 10));
         line1.addLineStation(new LineStation(2L, 3L, 5, 10));
 
-        line2 = new Line(2L, "분당선", "bg-yellow-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        line2 = Line.of(2L, "분당선", "bg-yellow-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line2.addLineStation(new LineStation(null, 4L, 10, 5));
         line2.addLineStation(new LineStation(4L, 2L, 10, 5));
         line2.addLineStation(new LineStation(2L, 5L, 10, 5));

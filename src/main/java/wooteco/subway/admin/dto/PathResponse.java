@@ -7,6 +7,9 @@ public class PathResponse {
     private int totalDistance;
     private int totalDuration;
 
+    public PathResponse() {
+    }
+
     public PathResponse(List<StationResponse> stations, int totalDistance,
         int totalDuration) {
         this.stations = stations;

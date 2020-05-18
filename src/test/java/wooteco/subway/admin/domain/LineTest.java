@@ -1,16 +1,16 @@
 package wooteco.subway.admin.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.test.context.jdbc.Sql;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.context.jdbc.Sql;
 
 @Sql("/truncate.sql")
 public class LineTest {
@@ -18,7 +18,7 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", "white", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = Line.of(1L, "2호선", "white", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
