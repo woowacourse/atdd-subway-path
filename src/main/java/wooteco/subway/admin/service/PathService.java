@@ -4,6 +4,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
+import wooteco.subway.admin.dto.request.PathSearchRequest;
 import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.exception.EmptyStationNameException;
 import wooteco.subway.admin.exception.NoStationNameExistsException;
@@ -24,21 +25,21 @@ public class PathService {
 	}
 
 	@Transactional
-	public ShortestPathResponse findShortestDistancePath(String sourceName, String targetName, String criteriaType) {
-		if (sourceName.isEmpty() || targetName.isEmpty()) {
+	public ShortestPathResponse findShortestDistancePath(PathSearchRequest pathSearchRequest) {
+		if (pathSearchRequest.getSource().isEmpty() || pathSearchRequest.getTarget().isEmpty()) {
 			throw new EmptyStationNameException();
 		}
 
-		Station sourceStation = stationRepository.findByName(sourceName)
+		Station sourceStation = stationRepository.findByName(pathSearchRequest.getSource())
 				.orElseThrow(NoStationNameExistsException::new);
-		Station targetStation = stationRepository.findByName(targetName)
+		Station targetStation = stationRepository.findByName(pathSearchRequest.getTarget())
 				.orElseThrow(NoStationNameExistsException::new);
 
 		if (sourceStation.equals(targetStation)) {
 			throw new SourceEqualsTargetException();
 		}
 
-		Criteria criteria = Criteria.of(criteriaType);
+		Criteria criteria = Criteria.of(pathSearchRequest.getType());
 
 		Lines lines = new Lines(lineRepository.findAll());
 		List<Long> lineStationIds = lines.toLineStationIds();
