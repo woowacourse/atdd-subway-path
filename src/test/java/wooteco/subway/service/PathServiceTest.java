@@ -1,4 +1,4 @@
-package wooteco.subway.service.client;
+package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,6 +23,7 @@ import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
+import wooteco.subway.service.PathService;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {

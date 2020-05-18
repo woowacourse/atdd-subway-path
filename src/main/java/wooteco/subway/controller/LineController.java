@@ -1,4 +1,4 @@
-package wooteco.subway.controller.admin;
+package wooteco.subway.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -18,7 +18,7 @@ import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineStationCreateRequest;
-import wooteco.subway.service.admin.LineService;
+import wooteco.subway.service.LineService;
 
 @RequestMapping("/lines")
 @RestController

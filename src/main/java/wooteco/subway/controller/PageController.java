@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.service.admin.LineService;
+import wooteco.subway.service.LineService;
 
 @Controller
 public class PageController {

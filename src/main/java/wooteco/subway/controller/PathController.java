@@ -1,4 +1,4 @@
-package wooteco.subway.controller.client;
+package wooteco.subway.controller;
 
 import javax.validation.constraints.NotBlank;
 
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.PathService;
+import wooteco.subway.service.PathService;
 
 @RestController
 @Validated
-public class ClientController {
-	private PathService pathService;
+public class PathController {
+	private final PathService pathService;
 
-	public ClientController(PathService pathService) {
+	public PathController(PathService pathService) {
 		this.pathService = pathService;
 	}
 
-	@GetMapping("/lines/detail")
+	@GetMapping("/paths/detail")
 	public ResponseEntity<WholeSubwayResponse> retrieveLines() {
 		WholeSubwayResponse wholeSubwayResponse = pathService.wholeLines();
 		return ResponseEntity.ok()
@@ -28,7 +28,7 @@ public class ClientController {
 			.body(wholeSubwayResponse);
 	}
 
-	@GetMapping("/lines/path")
+	@GetMapping("/paths")
 	public ResponseEntity<PathResponse> searchPath(@NotBlank String source,
 		@NotBlank String target, @NotBlank String type) {
 		PathResponse pathResponse = pathService.searchPath(source, target, type);

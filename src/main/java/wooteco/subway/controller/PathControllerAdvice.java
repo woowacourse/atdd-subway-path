@@ -1,4 +1,4 @@
-package wooteco.subway.controller.client;
+package wooteco.subway.controller;
 
 import javax.validation.ConstraintViolationException;
 
@@ -24,9 +24,9 @@ import wooteco.subway.exception.InvalidPathException;
  *
  * */
 @RestControllerAdvice()
-public class ClientControllerAdvice {
+public class PathControllerAdvice {
 	@ExceptionHandler({ConstraintViolationException.class, InvalidPathException.class})
-    public ResponseEntity<String> getRequestException(RuntimeException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+	public ResponseEntity<String> getRequestException(RuntimeException e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }

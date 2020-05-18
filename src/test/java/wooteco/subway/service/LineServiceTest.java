@@ -1,4 +1,4 @@
-package wooteco.subway.service.admin;
+package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -23,6 +23,7 @@ import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.LineStationCreateRequest;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
+import wooteco.subway.service.LineService;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {

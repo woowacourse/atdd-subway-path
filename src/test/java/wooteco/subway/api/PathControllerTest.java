@@ -18,15 +18,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import wooteco.subway.controller.client.ClientController;
+import wooteco.subway.controller.PathController;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.PathService;
+import wooteco.subway.service.PathService;
 
-@WebMvcTest(controllers = {ClientController.class})
-public class ClientControllerTest {
+@WebMvcTest(controllers = {PathController.class})
+public class PathControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -39,7 +39,7 @@ public class ClientControllerTest {
             Arrays.asList(createMockResponse(), createMockResponse()));
         given(pathService.wholeLines()).willReturn(response);
 
-        String uri = "/lines/detail";
+        String uri = "/paths/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
             .andDo(print())
@@ -70,9 +70,10 @@ public class ClientControllerTest {
 
         //when
         //then
-        mockMvc.perform(get("/lines/path")
+        mockMvc.perform(get("/paths")
             .param("source", "")
-            .param("target", "강남역"))
+            .param("target", "강남역")
+            .param("type", "DISTANCE"))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andReturn();

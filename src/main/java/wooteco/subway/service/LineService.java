@@ -1,4 +1,4 @@
-package wooteco.subway.service.admin;
+package wooteco.subway.service;
 
 import java.util.List;
 

@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .params(params)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/lines/path")
+            .get("/paths")
             .then()
             .statusCode(HttpStatus.OK.value())
             .extract().as(PathResponse.class);
