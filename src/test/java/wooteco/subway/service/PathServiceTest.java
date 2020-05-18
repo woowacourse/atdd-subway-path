@@ -82,7 +82,7 @@ public class PathServiceTest {
 
 		//when
 		PathResponse pathResponse = pathService.searchPath(강남, 삼성,
-			WeightType.DISTANCE.getName());
+			WeightType.DISTANCE.name());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -100,7 +100,7 @@ public class PathServiceTest {
 		List<StationResponse> expected = StationResponse.listOf(Arrays.asList(강남역, 역삼역, 선릉역, 삼성역));
 
 		//when
-		PathResponse pathResponse = pathService.searchPath(강남, 삼성, WeightType.DURATION.getName());
+		PathResponse pathResponse = pathService.searchPath(강남, 삼성, WeightType.DURATION.name());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -111,7 +111,7 @@ public class PathServiceTest {
 	@Test
 	void searchPath_GivenSameStations_ExceptionThrown() {
 		assertThatThrownBy(
-			() -> pathService.searchPath(강남, 강남, WeightType.DISTANCE.getName()))
+			() -> pathService.searchPath(강남, 강남, WeightType.DISTANCE.name()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역은 같을 수 없습니다");
 	}

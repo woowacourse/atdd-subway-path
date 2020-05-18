@@ -7,14 +7,12 @@ import java.util.Arrays;
 import wooteco.subway.exception.InvalidPathException;
 
 public enum WeightType {
-	DURATION("DURATION", StationWeightEdge::getDuration),
-	DISTANCE("DISTANCE", StationWeightEdge::getDistance);
+	DURATION(StationWeightEdge::getDuration),
+	DISTANCE(StationWeightEdge::getDistance);
 
-	private final String name;
 	private final WeightStrategy strategy;
 
-	WeightType(String name, WeightStrategy strategy) {
-		this.name = name;
+	WeightType(WeightStrategy strategy) {
 		this.strategy = strategy;
 	}
 
@@ -27,10 +25,6 @@ public enum WeightType {
 	}
 
 	private boolean isEquals(String type) {
-		return this.name.equals(type);
-	}
-
-	public String getName() {
-		return name;
+		return this.name().equals(type);
 	}
 }
