@@ -7,11 +7,13 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
-	/**
+    /**
 	 * Feature: 지하철 경로 조회
 	 * Scenario1: 지하철 경로를 조회한다.
 	 * When 지하철 노선 n개 추가 요청을 한다.
@@ -40,43 +42,49 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	@Test
 	void managePath() {
-		/** Scenario1: 지하철 경로를 조회한다. **/
-		LineResponse lineResponse1 = createLine(LINE_NAME_2);
-		StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-		StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-		StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
-		StationResponse stationResponse4 = createStation(STATION_NAME_JAMSIL);
-		addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-		addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
-		addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId());
+        /** Scenario1: 지하철 경로를 조회한다. **/
+        createLine(LINE_NAME_2);
+        createLine(LINE_NAME_1);
 
-		PathResponse pathResponse = searchPath(stationResponse1.getName(), stationResponse4.getName(), SearchType.DISTANCE);
+        List<LineResponse> lines = getLines();
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(4);
-		assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
-		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_JAMSIL);
+        createStation(STATION_NAME_SEOUL);
+        createStation(STATION_NAME_YOUNGSAN);
+        createStation(STATION_NAME_NORYANGJIN);
+        createStation(STATION_NAME_CITYHALL);
 
-		/** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
-		String result1 = searchPathWithNotExistStations(STATION_NAME_SAMSUNG, STATION_NAME_KYODAE, SearchType.DISTANCE);
-		assertThat(result1).contains("저장되지 않은 역을 입력하셨습니다.");
+        List<StationResponse> stations = getStations();
 
-		String result2 = searchPathWithSameStations(STATION_NAME_SAMSUNG, STATION_NAME_SAMSUNG, SearchType.DISTANCE);
-		assertThat(result2).contains("출발역과 도착역은 같을 수 없습니다.");
+        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
+        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
+        addLineStation(lines.get(0).getId(), stations.get(2).getId(), stations.get(3).getId());
 
-		LineResponse lineResponse2 = createLine("1호선");
-		StationResponse stationResponse5 = createStation(STATION_NAME_SEOUL);
-		StationResponse stationResponse6 = createStation(STATION_NAME_YOUNGSAN);
-		StationResponse stationResponse7 = createStation(STATION_NAME_NORYANGJIN);
-		StationResponse stationResponse8 = createStation(STATION_NAME_CITYHALL);
-		addLineStation(lineResponse2.getId(), null, stationResponse5.getId());
-		addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
-		addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse7.getId());
-		addLineStation(lineResponse2.getId(), stationResponse7.getId(), stationResponse8.getId());
+        PathResponse pathResponse = searchPath(stations.get(0).getName(), stations.get(3).getName(), SearchType.DISTANCE);
 
-		String result3 = searchPathWithUnconnectedStations(STATION_NAME_KANGNAM, STATION_NAME_SEOUL, SearchType.DISTANCE);
-		assertThat(result3).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
-	}
+        assertThat(pathResponse.getStations().size()).isEqualTo(4);
+        assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
+        assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
+
+        /** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
+        String result1 = searchPathWithNotExistStations(STATION_NAME_SAMSUNG, STATION_NAME_KYODAE, SearchType.DISTANCE);
+        assertThat(result1).contains("저장되지 않은 역을 입력하셨습니다.");
+
+        String result2 = searchPathWithSameStations(STATION_NAME_SAMSUNG, STATION_NAME_SAMSUNG, SearchType.DISTANCE);
+        assertThat(result2).contains("출발역과 도착역은 같을 수 없습니다.");
+
+        addLineStation(lines.get(1).getId(), null, stations.get(4).getId());
+        addLineStation(lines.get(1).getId(), stations.get(4).getId(), stations.get(5).getId());
+        addLineStation(lines.get(1).getId(), stations.get(5).getId(), stations.get(6).getId());
+        addLineStation(lines.get(1).getId(), stations.get(6).getId(), stations.get(7).getId());
+
+        String result3 = searchPathWithUnconnectedStations(STATION_NAME_KANGNAM, STATION_NAME_SEOUL, SearchType.DISTANCE);
+        assertThat(result3).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
+    }
 
 	private PathResponse searchPath(String source, String target, SearchType type) {
 		return given().

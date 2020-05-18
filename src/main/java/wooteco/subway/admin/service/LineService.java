@@ -10,6 +10,7 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +37,13 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(Line.from(request));
-        lineRepository.save(persistLine);
+        Line line = getLine(id);
+        line.update(Line.from(request));
+        lineRepository.save(line);
+    }
+
+    private Line getLine(final Long id) {
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
@@ -46,26 +51,29 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+    @Transactional
+    public void addLineStation(Long id, LineStationCreateRequest lineStationRequest) {
+        Line line = getLine(id);
+        LineStation lineStation = LineStation.from(lineStationRequest);
         line.addLineStation(lineStation);
-
         lineRepository.save(line);
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+    @Transactional
+    public void removeLineStation(final Long id, final Long stationId) {
+        Line line = getLine(id);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional(readOnly = true)
+    public LineDetailResponse findLineWithStationsById(final Long id) {
+        Line line = getLine(id);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
         return WholeSubwayResponse.from(

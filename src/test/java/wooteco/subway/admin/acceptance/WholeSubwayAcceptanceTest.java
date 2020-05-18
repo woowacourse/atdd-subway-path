@@ -16,20 +16,27 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선도 전체 정보 조회")
     @Test
     public void wholeSubway() {
-        LineResponse lineResponse1 = createLine(LINE_NAME_2);
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
+        createLine(LINE_NAME_2);
+        createLine(LINE_NAME_SINBUNDANG);
 
-        LineResponse lineResponse2 = createLine(LINE_NAME_SINBUNDANG);
-        StationResponse stationResponse5 = createStation(STATION_NAME_YANGJAE);
-        StationResponse stationResponse6 = createStation(STATION_NAME_YANGJAECITIZEN);
-        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse5.getId());
-        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
+        List<LineResponse> lines = getLines();
+
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_YANGJAE);
+        createStation(STATION_NAME_YANGJAECITIZEN);
+
+        List<StationResponse> stations = getStations();
+
+        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
+        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
+
+
+        addLineStation(lines.get(1).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(1).getId(), stations.get(0).getId(), stations.get(3).getId());
+        addLineStation(lines.get(1).getId(), stations.get(3).getId(), stations.get(4).getId());
 
         List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponse();
         assertThat(response.size()).isEqualTo(2);
