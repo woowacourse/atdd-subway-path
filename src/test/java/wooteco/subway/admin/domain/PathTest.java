@@ -2,6 +2,7 @@ package wooteco.subway.admin.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import wooteco.subway.admin.exception.NoExistPathException;
 
 class PathTest {
     private Path path;
@@ -90,10 +93,10 @@ class PathTest {
     @ParameterizedTest
     @MethodSource("provideInvalidInput")
     void getShortestDistancePathWithInvalidInput(Station source, Station target, PathType pathType,
-        String message) {
+        Class exceptionClass, String message) {
         path.setEdges(Collections.singletonList(line3), pathType);
         assertThatThrownBy(() -> path.searchShortestPath(source, target))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(exceptionClass)
             .hasMessage(message);
     }
 
@@ -101,8 +104,10 @@ class PathTest {
         Station station = new Station(1L, "잠실역");
         Station station2 = new Station(7L, "서울역");
         return Stream.of(
-            Arguments.of(station, station, PathType.DISTANCE, "출발역과 도착역은 같을 수 없습니다."),
-            Arguments.of(station, station2, PathType.DISTANCE, "출발역과 도착역이 연결되어 있지 않습니다.")
+            Arguments.of(station, station, PathType.DISTANCE, InvalidParameterException.class,
+                "출발역과 도착역은 같을 수 없습니다."),
+            Arguments.of(station, station2, PathType.DISTANCE, NoExistPathException.class,
+                "출발역과 도착역이 연결되어 있지 않습니다.")
         );
     }
 }

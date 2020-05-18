@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,6 +18,8 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.exception.NoExistLineException;
+import wooteco.subway.admin.exception.NoExistStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -52,12 +55,35 @@ public class LineServiceTest {
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
-
-        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
     }
 
+    @DisplayName("존재하지 않는 노선 조회")
+    @Test
+    void findLineWithInvalidId() {
+        when(lineRepository.findById(anyLong())).thenThrow(
+            new NoExistLineException("존재하지 않는 노선입니다."));
+
+        assertThatThrownBy(() -> lineService.findLineById(2L))
+            .isInstanceOf(NoExistLineException.class)
+            .hasMessage("존재하지 않는 노선입니다.");
+    }
+
+    @DisplayName("존재하지 않는 역 조회")
+    @Test
+    void findStationWithInvalidName() {
+        when(stationRepository.findByName(anyString())).thenThrow(
+            new NoExistStationException("존재하지 않는 역입니다."));
+
+        assertThatThrownBy(() -> lineService.findStationByName("서울역"))
+            .isInstanceOf(NoExistStationException.class)
+            .hasMessage("존재하지 않는 역입니다.");
+    }
+
+    @DisplayName("노선에 첫번째 역 추가")
     @Test
     void addLineStationAtTheFirstOfLine() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
             10);
         lineService.addLineStation(line.getId(), request.toLineStation());
@@ -71,8 +97,11 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 중간에 역 추가")
     @Test
     void addLineStationBetweenTwo() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
             station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request.toLineStation());
@@ -86,8 +115,11 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 마지막에 역 추가")
     @Test
     void addLineStationAtTheEndOfLine() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
             station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request.toLineStation());
@@ -103,6 +135,8 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationAtTheFirstOfLine() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         lineService.removeLineStation(line.getId(), 1L);
 
         assertThat(line.getStations()).hasSize(2);
@@ -114,6 +148,8 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationBetweenTwo() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         lineService.removeLineStation(line.getId(), 2L);
 
         List<Long> stationIds = line.getSortedLineStationsId();
@@ -123,6 +159,8 @@ public class LineServiceTest {
 
     @Test
     void removeLineStationAtTheEndOfLine() {
+        when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+
         lineService.removeLineStation(line.getId(), 3L);
 
         assertThat(line.getStations()).hasSize(2);

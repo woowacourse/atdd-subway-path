@@ -15,8 +15,8 @@ import wooteco.subway.admin.repository.StationRepository;
 @Service
 public class LineService {
     public static final String NO_EXIST_LINE = "존재하지 않는 노선입니다.";
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
