@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Graphs;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.vo.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;

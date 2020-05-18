@@ -23,19 +23,19 @@ public class AdminPageController {
         return "admin/index";
     }
 
-    @GetMapping(value = "/admin-stations", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/stations", produces = MediaType.TEXT_HTML_VALUE)
     public String stationPage(Model model) {
         model.addAttribute("stations", stationRepository.findAll());
         return "admin/admin-station";
     }
 
-    @GetMapping(value = "/admin-lines", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/lines", produces = MediaType.TEXT_HTML_VALUE)
     public String linePage(Model model) {
         model.addAttribute("lines", lineService.showLines());
         return "admin/admin-line";
     }
 
-    @GetMapping(value = "/admin-edges", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String edgePage(Model model) {
         return "admin/admin-edge";
     }

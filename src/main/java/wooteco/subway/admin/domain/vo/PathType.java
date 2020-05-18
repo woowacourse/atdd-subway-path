@@ -1,6 +1,8 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.vo;
 
 import java.util.function.Function;
+
+import wooteco.subway.admin.domain.LineStation;
 
 public enum PathType {
 
@@ -14,7 +16,11 @@ public enum PathType {
     }
 
     public static PathType of(String name) {
-        return valueOf(name.toUpperCase());
+        try {
+            return valueOf(name.toUpperCase());
+        } catch(IllegalArgumentException ie) {
+            return DISTANCE;
+        }
     }
 
     public int getWeight(LineStation lineStation) {

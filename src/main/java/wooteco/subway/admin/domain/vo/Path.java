@@ -1,8 +1,10 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.vo;
 
 import java.util.List;
 
 import org.jgrapht.GraphPath;
+
+import wooteco.subway.admin.domain.LineStationEdge;
 
 public class Path {
 

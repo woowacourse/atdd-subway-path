@@ -5,10 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.vo.PathType;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
-import wooteco.subway.admin.dto.response.StationResponse;
 
 /*
 Feature: 지하철 경로 조회
