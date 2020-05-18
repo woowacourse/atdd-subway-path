@@ -30,12 +30,12 @@ public class PathService {
 			throw new EmptyStationNameException();
 		}
 
-		Station sourceStation = findStationByName(pathSearchRequest.getSource());
-		Station targetStation = findStationByName(pathSearchRequest.getTarget());
-
-		if (sourceStation.equals(targetStation)) {
+		if (pathSearchRequest.getSource().equals(pathSearchRequest.getTarget())) {
 			throw new SourceEqualsTargetException();
 		}
+
+		Station sourceStation = findStationByName(pathSearchRequest.getSource());
+		Station targetStation = findStationByName(pathSearchRequest.getTarget());
 
 		Criteria criteria = Criteria.of(pathSearchRequest.getType());
 
