@@ -14,7 +14,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/truncate.sql")
+@Sql("classpath:truncate.sql")
 public class LineTest {
     private Line line;
 

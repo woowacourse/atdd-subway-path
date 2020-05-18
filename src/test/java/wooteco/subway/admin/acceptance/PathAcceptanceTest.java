@@ -50,17 +50,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 		addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId());
 
-		PathResponse pathResponse = searchPath(stationResponse1.getName(), stationResponse4.getName(), TYPE_DISTANCE);
+		PathResponse pathResponse = searchPath(stationResponse1.getId(), stationResponse4.getId(), TYPE_DISTANCE);
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(4);
+		assertThat(pathResponse.getStationNames().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDuration()).isEqualTo(30);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
 
 		/** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
-		String result1 = searchPathWithNotExistStations(STATION_NAME_SAMSUNG, STATION_NAME_KYODAE, TYPE_DISTANCE);
+		String result1 = searchPathWithNotExistStations(stationResponse1.getId(), 111L, TYPE_DISTANCE);
 		assertThat(result1).contains("저장되지 않은 역을 입력하셨습니다.");
 
-		String result2 = searchPathWithSameStations(STATION_NAME_SAMSUNG, STATION_NAME_SAMSUNG, TYPE_DISTANCE);
+		String result2 = searchPathWithSameStations(stationResponse3.getId(), stationResponse3.getId(), TYPE_DISTANCE);
 		assertThat(result2).contains("출발역과 도착역은 같을 수 없습니다.");
 
 		LineResponse lineResponse2 = createLine("1호선");
@@ -73,11 +73,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse7.getId());
 		addLineStation(lineResponse2.getId(), stationResponse7.getId(), stationResponse8.getId());
 
-		String result3 = searchPathWithUnconnectedStations(STATION_NAME_KANGNAM, STATION_NAME_SEOUL,TYPE_DISTANCE);
+		String result3 = searchPathWithUnconnectedStations(stationResponse1.getId(), stationResponse5.getId(),
+		                                                   TYPE_DISTANCE);
 		assertThat(result3).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
 	}
 
-	private PathResponse searchPath(String source, String target, String type) {
+	private PathResponse searchPath(Long source, Long target, String type) {
 		return given().
 				when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
@@ -87,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				extract().as(PathResponse.class);
 	}
 
-	private String searchPathWithNotExistStations(String source, String target, String type) {
+	private String searchPathWithNotExistStations(Long source, Long target, String type) {
 		return given().
 				when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
@@ -97,7 +98,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				extract().asString();
 	}
 
-	private String searchPathWithSameStations(String source, String target, String type) {
+	private String searchPathWithSameStations(Long source, Long target, String type) {
 		return given().
 				when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
@@ -107,7 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				extract().asString();
 	}
 
-	private String searchPathWithUnconnectedStations(String source, String target, String type) {
+	private String searchPathWithUnconnectedStations(Long source, Long target, String type) {
 		return given().
 				when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).

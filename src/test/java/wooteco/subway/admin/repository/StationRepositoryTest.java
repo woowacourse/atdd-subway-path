@@ -10,7 +10,7 @@ import wooteco.subway.admin.domain.Station;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJdbcTest
-@Sql("/truncate.sql")
+@Sql("classpath:truncate.sql")
 public class StationRepositoryTest {
     @Autowired
     private StationRepository stationRepository;

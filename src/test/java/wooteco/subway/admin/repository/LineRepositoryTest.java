@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJdbcTest
-@Sql("/truncate.sql")
+@Sql("classpath:truncate.sql")
 public class LineRepositoryTest {
     @Autowired
     private LineRepository lineRepository;

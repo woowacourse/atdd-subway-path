@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.NotExistStationException;
+import wooteco.subway.admin.exceptions.UnconnectedStationsException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -20,10 +23,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PathServiceTest {
 	@Mock
 	private LineRepository lineRepository;
@@ -40,20 +43,20 @@ public class PathServiceTest {
 		stations = Arrays.asList(new Station(1L, "강남역"),
 		                         new Station(2L, "역삼역"),
 		                         new Station(3L, "선릉역"),
-		                         new Station(4L, "잠실역"));
+		                         new Station(4L, "잠실역"),
+		                         new Station(5L, "서울역"));
 		lineStations = Arrays.asList(new LineStation(null, 1L, 10, 5),
 		                             new LineStation(1L, 2L, 10, 5),
 		                             new LineStation(2L, 3L, 10, 5),
-		                             new LineStation(3L, 4L, 10, 5));
+		                             new LineStation(3L, 4L, 10, 5),
+		                             new LineStation(null, 5L, 10, 5));
 	}
 
 	@DisplayName("출발역과 도착역이 존재하는 역인지 확인")
 	@Test
 	void existStations() {
-		when(stationRepository.notExistsByName(any())).thenReturn(true);
-
 		assertThatThrownBy(() -> {
-			pathService.searchPath("source", "target", SearchType.DISTANCE);
+			pathService.searchPath(6L, 7L, SearchType.DISTANCE);
 		}).isInstanceOf(NotExistStationException.class);
 	}
 
@@ -62,9 +65,9 @@ public class PathServiceTest {
 	void searchPathByShortestDistance() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", SearchType.DISTANCE);
+		PathResponse pathResponse = pathService.searchPath(1L, 4L, SearchType.DISTANCE);
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(4);
+		assertThat(pathResponse.getStationNames().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
 		assertThat(pathResponse.getTotalDuration()).isEqualTo(15);
 	}
@@ -74,19 +77,28 @@ public class PathServiceTest {
 	void searchPathByShortestDuration() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath("강남역", "잠실역", SearchType.DURATION);
+		PathResponse pathResponse = pathService.searchPath(1L, 4L, SearchType.DURATION);
 
-		assertThat(pathResponse.getStations().size()).isEqualTo(4);
+		assertThat(pathResponse.getStationNames().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
 		assertThat(pathResponse.getTotalDuration()).isEqualTo(15);
 	}
 
+	@DisplayName("경로가 없는 출발역과 도착역으로 경로 탐색 시 UnconnectedStationsException이 발생하는지 확인")
+	@Test
+	void ifUnconnectedStationsInputThenThrowException() {
+		setUpMock();
+
+		assertThatThrownBy(() -> pathService.searchPath(1L, 5L, SearchType.DISTANCE))
+				.isInstanceOf(UnconnectedStationsException.class);
+	}
+
 	private void setUpMock() {
-		when(stationRepository.notExistsByName(any())).thenReturn(false);
 		when(stationRepository.findAll()).thenReturn(stations);
 		when(lineRepository.findAllLineStations()).thenReturn(lineStations);
-		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(new Station(1L, "강남역")));
-		when(stationRepository.findByName("잠실역")).thenReturn(Optional.of(new Station(4L, "잠실역")));
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(new Station(1L, "강남역")));
+		when(stationRepository.findById(4L)).thenReturn(Optional.of(new Station(4L, "잠실역")));
+		when(stationRepository.findById(5L)).thenReturn(Optional.of(new Station(5L, "서울역")));
 		when(lineRepository.findLineStationByPreStationIdAndStationId(1L, 2L))
 				.thenReturn(lineStations.get(1));
 		when(lineRepository.findLineStationByPreStationIdAndStationId(2L, 3L))
