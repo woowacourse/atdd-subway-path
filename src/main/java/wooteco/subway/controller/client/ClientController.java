@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.ClientService;
+import wooteco.subway.service.client.PathService;
 
 @RestController
 @Validated
 public class ClientController {
-	private ClientService clientService;
+	private PathService pathService;
 
-	public ClientController(ClientService clientService) {
-		this.clientService = clientService;
+	public ClientController(PathService pathService) {
+		this.pathService = pathService;
 	}
 
 	@GetMapping("/lines/detail")
 	public ResponseEntity<WholeSubwayResponse> retrieveLines() {
-		WholeSubwayResponse wholeSubwayResponse = clientService.wholeLines();
+		WholeSubwayResponse wholeSubwayResponse = pathService.wholeLines();
 		return ResponseEntity.ok()
 			.eTag(String.valueOf(wholeSubwayResponse.hashCode()))
 			.body(wholeSubwayResponse);
@@ -31,7 +31,7 @@ public class ClientController {
 	@GetMapping("/lines/path")
 	public ResponseEntity<PathResponse> searchPath(@NotBlank String source,
 		@NotBlank String target, @NotBlank String type) {
-		PathResponse pathResponse = clientService.searchPath(source, target, type);
+		PathResponse pathResponse = pathService.searchPath(source, target, type);
 		return ResponseEntity.ok().body(pathResponse);
 	}
 }

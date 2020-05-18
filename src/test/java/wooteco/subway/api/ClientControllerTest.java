@@ -23,7 +23,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.WholeSubwayResponse;
-import wooteco.subway.service.client.ClientService;
+import wooteco.subway.service.client.PathService;
 
 @WebMvcTest(controllers = {ClientController.class})
 public class ClientControllerTest {
@@ -31,13 +31,13 @@ public class ClientControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientService clientService;
+    private PathService pathService;
 
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
             Arrays.asList(createMockResponse(), createMockResponse()));
-        given(clientService.wholeLines()).willReturn(response);
+        given(pathService.wholeLines()).willReturn(response);
 
         String uri = "/lines/detail";
 

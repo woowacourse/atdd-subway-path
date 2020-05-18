@@ -25,7 +25,7 @@ import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceTest {
+public class PathServiceTest {
 	private static final String 강남 = "강남역";
 	private static final String 역삼 = "역삼역";
 	private static final String 선릉 = "선릉역";
@@ -37,7 +37,7 @@ public class ClientServiceTest {
 	@Mock
 	private StationRepository stationRepository;
 
-	private ClientService clientService;
+	private PathService pathService;
 
 	private Line line;
 	private Line line4;
@@ -49,7 +49,7 @@ public class ClientServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		clientService = new ClientService(lineRepository, stationRepository);
+		pathService = new PathService(lineRepository, stationRepository);
 
 		강남역 = new Station(1L, 강남);
 		역삼역 = new Station(2L, 역삼);
@@ -80,7 +80,7 @@ public class ClientServiceTest {
 			Arrays.asList(강남역, 양재역, 삼성역));
 
 		//when
-		PathResponse pathResponse = clientService.searchPath(강남, 삼성,
+		PathResponse pathResponse = pathService.searchPath(강남, 삼성,
 			WeightType.DISTANCE.getName());
 
 		//then
@@ -99,7 +99,7 @@ public class ClientServiceTest {
 		List<StationResponse> expected = StationResponse.listOf(Arrays.asList(강남역, 역삼역, 선릉역, 삼성역));
 
 		//when
-		PathResponse pathResponse = clientService.searchPath(강남, 삼성, WeightType.DURATION.getName());
+		PathResponse pathResponse = pathService.searchPath(강남, 삼성, WeightType.DURATION.getName());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -110,7 +110,7 @@ public class ClientServiceTest {
 	@Test
 	void searchPath_GivenSameStations_ExceptionThrown() {
 		assertThatThrownBy(
-			() -> clientService.searchPath(강남, 강남, WeightType.DISTANCE.getName()))
+			() -> pathService.searchPath(강남, 강남, WeightType.DISTANCE.getName()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역은 같을 수 없습니다");
 	}
