@@ -31,4 +31,10 @@ public class SubwayControllerAdvice {
 		LOGGER.error(e);
 		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ExceptionResponse> getUnexpectedException(Exception e) {
+		LOGGER.error(e);
+		return new ResponseEntity<>(ExceptionResponse.of("서버 오류가 발생했어요."), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
