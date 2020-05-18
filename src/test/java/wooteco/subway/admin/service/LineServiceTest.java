@@ -23,7 +23,7 @@ public class LineServiceTest {
     void setUp() {
         lineService = new LineService(lineRepository);
 
-        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = Line.of(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
     }
 
 }

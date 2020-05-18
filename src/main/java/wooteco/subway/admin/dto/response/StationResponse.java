@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import wooteco.subway.admin.domain.Station;
 
 public class StationResponse {
     private Long id;
     private String name;
+    @JsonFormat(pattern = "HH:mm")
     private LocalDateTime createdAt;
 
     public StationResponse() {

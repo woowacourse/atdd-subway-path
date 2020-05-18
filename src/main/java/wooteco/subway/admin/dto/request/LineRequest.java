@@ -35,6 +35,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return Line.of(name, color, startTime, endTime, intervalTime);
+        return Line.withoutId(name, color, startTime, endTime, intervalTime);
     }
 }

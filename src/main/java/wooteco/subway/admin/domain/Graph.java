@@ -27,7 +27,7 @@ public class Graph {
     private static void addEdge(List<Line> lines, PathType pathType,
         WeightedMultigraph<Long, LineStationEdge> graph) {
         for (Line line : lines) {
-            for (LineStation lineStation : line.getStations()) {
+            for (LineStation lineStation : line.getLineStations()) {
                 if (Objects.isNull(lineStation.getPreStationId())) {
                     continue;
                 }
@@ -52,5 +52,4 @@ public class Graph {
         GraphPath<Long, LineStationEdge> path = dijkstraShortestPath.getPath(source, target);
         return Path.of(path);
     }
-
 }

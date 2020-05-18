@@ -67,6 +67,7 @@ function AdminLine() {
     api.line
     .get(lineId)
     .then(line => {
+      console.log(line);
       $subwayLineNameInput.value = line.name
       $subwayLineColorInput.value = line.color
       $subwayLineStartTime.value = line.startTime

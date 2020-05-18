@@ -58,7 +58,8 @@ public class PathControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        Line mockLine = Line.of("lineName", "bg-green-500", LocalTime.now(), LocalTime.now(), 1);
+        Line mockLine = Line.withoutId("lineName", "bg-green-500", LocalTime.now(), LocalTime.now(),
+            1);
         Station mockStation = Station.of("stationName");
         List<Station> stations = Arrays.asList(mockStation, mockStation, mockStation);
         return LineDetailResponse.of(mockLine, stations);

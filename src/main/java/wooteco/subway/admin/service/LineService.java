@@ -23,6 +23,11 @@ public class LineService {
         return LineResponse.listOf(lineRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
+    public LineResponse getLine(Long id) {
+        return LineResponse.of(findBy(id));
+    }
+
     @Transactional
     public Line save(Line line) {
         return lineRepository.save(line);
@@ -30,7 +35,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findBy(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -38,5 +43,11 @@ public class LineService {
     @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    private Line findBy(Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException());
     }
 }

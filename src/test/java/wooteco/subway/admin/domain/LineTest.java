@@ -16,7 +16,7 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = Line.of(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(LineStation.of(null, 1L, 10, 10));
         line.addLineStation(LineStation.of(1L, 2L, 10, 10));
         line.addLineStation(LineStation.of(2L, 3L, 10, 10));
@@ -25,8 +25,8 @@ public class LineTest {
     @Test
     void addLineStation() {
         line.addLineStation(LineStation.of(null, 4L, 10, 10));
-        assertThat(line.getStations()).hasSize(4);
-        LineStation lineStation = line.getStations().stream()
+        assertThat(line.getLineStations()).hasSize(4);
+        LineStation lineStation = line.getLineStations().stream()
             .filter(it -> Objects.equals(it.getPreStationId(), 4L))
             .findFirst()
             .orElseThrow(RuntimeException::new);
@@ -48,6 +48,6 @@ public class LineTest {
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getLineStations()).hasSize(2);
     }
 }

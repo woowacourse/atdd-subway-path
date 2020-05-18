@@ -56,7 +56,7 @@ class PathServiceTest {
         gyodae = new Station(4L, "교대역", LocalDateTime.now());
         jamwon = new Station(5L, "잠원역", LocalDateTime.now());
         sinsa = new Station(6L, "신사역", LocalDateTime.now());
-        firstLine = new Line(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(23, 00),
+        firstLine = Line.of(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(23, 00),
             10);
     }
 
@@ -102,7 +102,7 @@ class PathServiceTest {
         firstLine.addLineStation(LineStation.of(seolleung.getId(), yeoksam.getId(), 20, 10));
         firstLine.addLineStation(LineStation.of(yeoksam.getId(), kangnam.getId(), 20, 10));
         firstLine.addLineStation(LineStation.of(kangnam.getId(), gyodae.getId(), 20, 10));
-        Line secondLine = new Line(2L, "2호선", "bg-green-500", LocalTime.of(06, 30),
+        Line secondLine = Line.of(2L, "2호선", "bg-green-500", LocalTime.of(06, 30),
             LocalTime.of(23, 00), 10);
         secondLine.addLineStation(LineStation.of(null, gyodae.getId(), 10, 10));
         secondLine.addLineStation(LineStation.of(gyodae.getId(), jamwon.getId(), 40, 30));
@@ -122,11 +122,11 @@ class PathServiceTest {
     @DisplayName("최단시간과 최단거리 기준으로 path를 구할 수 있다.")
     @Test
     void findPathBy() {
-        Line first = new Line(1L, "1호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+        Line first = Line.of(1L, "1호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
-        Line second = new Line(2L, "2호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+        Line second = Line.of(2L, "2호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
-        Line third = new Line(3L, "3호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+        Line third = Line.of(3L, "3호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
         first.addLineStation(LineStation.of(null, 1L, 1, 1));
         first.addLineStation(LineStation.of(1L, 3L, 1, 1));
@@ -167,7 +167,7 @@ class PathServiceTest {
             10);
         pathService.addLineStation(firstLine.getId(), request);
 
-        assertThat(firstLine.getStations()).hasSize(4);
+        assertThat(firstLine.getLineStations()).hasSize(4);
 
         List<Long> stationIds = firstLine.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(4L);
@@ -187,7 +187,7 @@ class PathServiceTest {
             4L, 10, 10);
         pathService.addLineStation(firstLine.getId(), request);
 
-        assertThat(firstLine.getStations()).hasSize(4);
+        assertThat(firstLine.getLineStations()).hasSize(4);
 
         List<Long> stationIds = firstLine.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -207,7 +207,7 @@ class PathServiceTest {
             4L, 10, 10);
         pathService.addLineStation(firstLine.getId(), request);
 
-        assertThat(firstLine.getStations()).hasSize(4);
+        assertThat(firstLine.getLineStations()).hasSize(4);
 
         List<Long> stationIds = firstLine.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -223,7 +223,7 @@ class PathServiceTest {
         when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
         pathService.removeLineStation(firstLine.getId(), 1L);
 
-        assertThat(firstLine.getStations()).hasSize(2);
+        assertThat(firstLine.getLineStations()).hasSize(2);
 
         List<Long> stationIds = firstLine.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(2L);
@@ -249,7 +249,7 @@ class PathServiceTest {
         when(lineRepository.findById(firstLine.getId())).thenReturn(Optional.of(firstLine));
         pathService.removeLineStation(firstLine.getId(), 3L);
 
-        assertThat(firstLine.getStations()).hasSize(2);
+        assertThat(firstLine.getLineStations()).hasSize(2);
 
         List<Long> stationIds = firstLine.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -274,7 +274,7 @@ class PathServiceTest {
     @Test
     void wholeLines() {
         addInitialLineStation();
-        Line newLine = new Line(2L, "신분당선", "bg-green-500", LocalTime.of(05, 30),
+        Line newLine = Line.of(2L, "신분당선", "bg-green-500", LocalTime.of(05, 30),
             LocalTime.of(22, 30), 5);
         newLine.addLineStation(LineStation.of(null, 4L, 10, 10));
         newLine.addLineStation(LineStation.of(4L, 5L, 10, 10));

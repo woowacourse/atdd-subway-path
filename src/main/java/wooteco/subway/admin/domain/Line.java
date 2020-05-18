@@ -2,42 +2,55 @@ package wooteco.subway.admin.domain;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.Embedded;
+
+import wooteco.subway.admin.domain.vo.LineSchedule;
+import wooteco.subway.admin.domain.vo.LineStations;
 
 public class Line {
     @Id
     private Long id;
     private String name;
     private String color;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
+    @Embedded.Nullable
+    private LineSchedule lineSchedule;
+    @Embedded.Empty
+    private LineStations lineStations;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
 
-    public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime,
-        int intervalTime) {
+    @PersistenceConstructor
+    public Line(Long id, String name, String color, LineSchedule lineSchedule,
+        LineStations lineStations,
+        LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.lineSchedule = lineSchedule;
+        this.lineStations = lineStations;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public static Line of(String name, String color, LocalTime startTime, LocalTime endTime,
+    public static Line of(Long id, String name, String color, LocalTime startTime,
+        LocalTime endTime,
         int intervalTime) {
-        return new Line(null, name, color, startTime, endTime, intervalTime);
+        LineSchedule lineSchedule = LineSchedule.of(startTime, endTime, intervalTime);
+        return new Line(id, name, color, lineSchedule, LineStations.empty(), LocalDateTime.now(),
+            LocalDateTime.now());
+    }
+
+    public static Line withoutId(String name, String color, LocalTime startTime, LocalTime endTime,
+        int intervalTime) {
+        LineSchedule lineSchedule = LineSchedule.of(startTime, endTime, intervalTime);
+        return new Line(null, name, color, lineSchedule, LineStations.empty(), LocalDateTime.now(),
+            LocalDateTime.now());
     }
 
     public Long getId() {
@@ -53,19 +66,19 @@ public class Line {
     }
 
     public LocalTime getStartTime() {
-        return startTime;
+        return lineSchedule.getStartTime();
     }
 
     public LocalTime getEndTime() {
-        return endTime;
+        return lineSchedule.getEndTime();
     }
 
     public int getIntervalTime() {
-        return intervalTime;
+        return lineSchedule.getIntervalTime();
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public List<LineStation> getLineStations() {
+        return lineStations.getStations();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -83,70 +96,34 @@ public class Line {
         if (line.getColor() != null) {
             this.color = line.getColor();
         }
-
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
+        if (line.lineSchedule != null) {
+            this.lineSchedule = line.lineSchedule;
         }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
-        }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
-        }
-
         this.updatedAt = LocalDateTime.now();
     }
 
     public void addLineStation(LineStation lineStation) {
         validateLineStation(lineStation);
-        stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-            .findAny()
-            .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
-
-        stations.add(lineStation);
+        int insertIndex = findInsertIndex(lineStation.getPreStationId());
+        Long stationId = lineStation.getStationId();
+        updatePreStation(insertIndex, stationId);
+        lineStations.add(insertIndex, lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
-
-        stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-            .findFirst()
-            .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
-
-        stations.remove(targetLineStation);
+        int index = findStationIndex(stationId);
+        int indexToUpdate = index + 1;
+        Long preStationdId = lineStations.get(index).getPreStationId();
+        updatePreStation(indexToUpdate, preStationdId);
+        lineStations.remove(index);
     }
 
     public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
-            return new ArrayList<>();
+        LinkedList<Long> stations = new LinkedList<>();
+        for (LineStation lineStation : this.lineStations.getStations()) {
+            stations.add(lineStation.getStationId());
         }
-
-        LineStation firstLineStation = stations.stream()
-            .filter(it -> it.getPreStationId() == null)
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
-
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                .findFirst();
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
+        return stations;
     }
 
     private void validateLineStation(LineStation lineStation) {
@@ -163,7 +140,7 @@ public class Line {
     }
 
     private void validateAlreadyRegistered(LineStation lineStation) {
-        if (!lineStation.isFirstLineStation() && stations.isEmpty()) {
+        if (!lineStation.isFirstLineStation() && lineStations.isEmpty()) {
             throw new IllegalArgumentException("첫 노선을 먼저 등록해야 합니다.");
         }
     }
@@ -175,10 +152,40 @@ public class Line {
     }
 
     private void validateHavingSame(LineStation lineStation) {
-        for (LineStation station : stations) {
+        for (LineStation station : lineStations.getStations()) {
             if (station.hasSameStations(lineStation)) {
                 throw new IllegalArgumentException("이미 등록된 구간입니다.");
             }
         }
+    }
+
+    private void updatePreStation(int index, Long stationId) {
+        if (lineStations.size() != index) {
+            LineStation existing = lineStations.get(index);
+            existing.updatePreLineStation(stationId);
+        }
+    }
+
+    private int findInsertIndex(Long preStationId) {
+        if (Objects.isNull(preStationId)) {
+            return 0;
+        }
+        LineStation last = lineStations.getLast();
+        if (preStationId.equals(last.getStationId())) {
+            return lineStations.size();
+        }
+        LineStation preStation = lineStations.getStations().stream()
+            .filter(station -> Objects.equals(preStationId, station.getPreStationId()))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("현재 노선에 등록되지 않은 이전역입니다."));
+        return lineStations.indexOf(preStation);
+    }
+
+    private int findStationIndex(Long stationId) {
+        LineStation lineStation = lineStations.getStations().stream()
+            .filter(station -> Objects.equals(stationId, station.getStationId()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("해당 호선에 등록되지 않은 역입니다."));
+        return lineStations.indexOf(lineStation);
     }
 }
