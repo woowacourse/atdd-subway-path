@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import wooteco.subway.admin.dto.ShortestPath;
 
@@ -48,13 +48,12 @@ public class PathTest {
 	}
 
 	@DisplayName("주어진 Criteria에 대한 ShortestPath를 반환")
-	@ValueSource(strings = {"distance", "duration"})
+	@EnumSource(Criteria.class)
 	@ParameterizedTest
-	void findShortestPath(String criteria) {
+	void findShortestPath(Criteria criteria) {
 		Path path = new Path(lines, stations);
 
-
-		ShortestPath shortestPath = path.findShortestPath(station1, station4, Criteria.of(criteria));
+		ShortestPath shortestPath = path.findShortestPath(station1, station4, criteria);
 
 		assertEquals(shortestPath.getPath().get(0), station1);
 		assertEquals(shortestPath.getPath().get(1), station2);
