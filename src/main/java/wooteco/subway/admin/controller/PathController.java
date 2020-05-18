@@ -19,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
         return ResponseEntity.ok(pathService.findPath(pathRequest));
     }
 }
