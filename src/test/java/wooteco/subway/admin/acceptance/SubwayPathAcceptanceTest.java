@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PathAcceptanceTest extends AcceptanceTest {
+public class SubwayPathAcceptanceTest extends AcceptanceTest {
     /*
         given 역이 여러개 추가되어있다
         and 라인이 여러개 추가되어있다.

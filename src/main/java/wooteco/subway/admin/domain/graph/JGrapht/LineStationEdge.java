@@ -1,6 +1,7 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph.JGrapht;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.admin.domain.LineStation;
 
 import java.util.function.Function;
 

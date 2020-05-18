@@ -1,7 +1,12 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.*;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.graph.JGrapht.DijkstraSubwayGraph;
+import wooteco.subway.admin.domain.graph.SubwayGraph;
+import wooteco.subway.admin.domain.graph.SubwayPath;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.SourceTargetSameException;
@@ -29,10 +34,10 @@ public class PathService {
         List<Line> lines = lineService.findLines();
         List<Station> stations = stationService.findAll();
 
-        SubwayGraph subwayGraph = new SubwayGraph(lines, stations, pathType::weight);
-        SubWayPath subWayPath = subwayGraph.generatePath(source, target);
+        SubwayGraph subwayGraph = new DijkstraSubwayGraph(lines, stations, pathType::weight);
+        SubwayPath subWayPath = subwayGraph.generatePath(source, target);
 
-        return new PathResponse(StationResponse.listOf(subWayPath.stations()), subWayPath.distance(), subWayPath.duration());
+        return new PathResponse(StationResponse.listOf(subWayPath.getStations()), subWayPath.getDistance(), subWayPath.getDuration());
     }
 
     private void validate(String sourceName, String targetName) {

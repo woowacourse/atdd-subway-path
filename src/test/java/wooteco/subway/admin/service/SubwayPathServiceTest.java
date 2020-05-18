@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PathServiceTest {
+public class SubwayPathServiceTest {
     @Mock
     LineService lineService;
 
