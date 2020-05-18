@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -37,31 +37,31 @@ public class LineController {
     }
 
     @PutMapping("/lines/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
         lineService.updateLine(id, view);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/lines/{lineId}/stations")
-    public ResponseEntity addEdge(@PathVariable Long lineId, @RequestBody EdgeCreateRequest view) {
+    public ResponseEntity<Void> addEdge(@PathVariable Long lineId, @RequestBody EdgeCreateRequest view) {
         lineService.addEdge(lineId, view);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity removeEdge(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> removeEdge(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.removeEdge(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/lines/detail")
-    public ResponseEntity wholeLines() {
+    public ResponseEntity<WholeSubwayResponse> wholeLines() {
         WholeSubwayResponse result = lineService.wholeLines();
         return ResponseEntity.ok()
                 .eTag(String.valueOf(result.hashCode()))
