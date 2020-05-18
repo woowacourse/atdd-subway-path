@@ -13,6 +13,9 @@ import wooteco.subway.admin.dto.req.PathRequest;
 import wooteco.subway.admin.dto.res.GraphResultResponse;
 import wooteco.subway.admin.dto.res.PathResponse;
 import wooteco.subway.admin.dto.res.StationResponse;
+import wooteco.subway.admin.exception.DuplicateStationException;
+import wooteco.subway.admin.exception.ErrorCode;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -38,24 +41,22 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
         Station from = stationRepository.findByName(source)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new StationNotFoundException(ErrorCode.NOT_EXIST_STATION));
         Station to = stationRepository.findByName(target)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+            .orElseThrow(() -> new StationNotFoundException(ErrorCode.NOT_EXIST_STATION));
 
-        GraphResultResponse result = pathStrategy.getPath(lines, from.getId(), to.getId(),
-            criteria);
+        GraphResultResponse result = pathStrategy.getPath(lines, from.getId(), to.getId(), criteria);
         List<Station> stations = stationRepository.findAllById(result.getStationIds());
         List<StationResponse> stationResponses = StationResponse.listOf(stations);
 
-        List<StationResponse> sortedStationResponses = sort(result.getStationIds(),
-            stationResponses);
+        List<StationResponse> sortedStationResponses = sort(result.getStationIds(), stationResponses);
 
         return new PathResponse(sortedStationResponses, result.getDistance(), result.getDuration());
     }
 
     private void validateSameStations(String source, String target) {
         if (source.equalsIgnoreCase(target)) {
-            throw new IllegalArgumentException("동일역으로는 조회할 수 없습니다.");
+            throw new DuplicateStationException(ErrorCode.SOURCE_TARGET_SAME);
         }
     }
 

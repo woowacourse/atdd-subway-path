@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.admin.domain.CustomEdge;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.dto.res.GraphResultResponse;
+import wooteco.subway.admin.exception.ErrorCode;
+import wooteco.subway.admin.exception.NoEdgeBetweenException;
 
 @Component
 public class DijkstraShortestStrategy extends BaseGraphStrategy {
@@ -43,7 +45,7 @@ public class DijkstraShortestStrategy extends BaseGraphStrategy {
 
     private void validateNoConnection(GraphPath path) {
         if (Objects.isNull(path)) {
-            throw new IllegalArgumentException("갈 수 없는 경로입니다.");
+            throw new NoEdgeBetweenException(ErrorCode.NO_EDGE);
         }
     }
 }
