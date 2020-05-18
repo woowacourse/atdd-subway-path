@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Edge;
+import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.EdgeCreateRequest;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -70,7 +69,7 @@ public class LineServiceTest {
 
         assertThat(line.getEdges()).hasSize(4);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(4L);
         assertThat(stationIds.get(1)).isEqualTo(1L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -86,7 +85,7 @@ public class LineServiceTest {
 
         assertThat(line.getEdges()).hasSize(4);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(4L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -102,7 +101,7 @@ public class LineServiceTest {
 
         assertThat(line.getEdges()).hasSize(4);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
@@ -116,7 +115,7 @@ public class LineServiceTest {
 
         assertThat(line.getEdges()).hasSize(2);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(2L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -126,7 +125,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeEdge(line.getId(), 2L);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -138,7 +137,7 @@ public class LineServiceTest {
 
         assertThat(line.getEdges()).hasSize(2);
 
-        List<Long> stationIds = line.getEdgesId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
@@ -149,9 +148,9 @@ public class LineServiceTest {
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
+        LineWithStationsResponse lineWithStationsResponse = lineService.findLineWithStationsById(1L);
 
-        assertThat(lineDetailResponse.getStations()).hasSize(3);
+        assertThat(lineWithStationsResponse.getStations()).hasSize(3);
     }
 
     @DisplayName("전체 노선 조회 테스트")
@@ -168,7 +167,7 @@ public class LineServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        List<LineDetailResponse> responses = lineService.wholeLines().getLineDetailResponses();
+        List<LineWithStationsResponse> responses = lineService.wholeLines().getLineWithStationsResponse();
 
         assertThat(responses).isNotNull();
         assertThat(responses.get(0).getStations().size()).isEqualTo(3);

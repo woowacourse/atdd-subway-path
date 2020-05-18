@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class LineDetailResponse {
+public class LineWithStationsResponse {
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -17,10 +17,10 @@ public class LineDetailResponse {
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
 
-    public LineDetailResponse() {
+    public LineWithStationsResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineWithStationsResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -31,8 +31,8 @@ public class LineDetailResponse {
         this.stations = StationResponse.listOf(stations);
     }
 
-    public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+    public static LineWithStationsResponse of(Line line, List<Station> stations) {
+        return new LineWithStationsResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
     public Long getId() {

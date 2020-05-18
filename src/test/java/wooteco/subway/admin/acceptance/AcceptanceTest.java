@@ -95,13 +95,13 @@ public class AcceptanceTest {
                         extract().as(LineResponse.class);
     }
 
-    LineDetailResponse getLine(Long id) {
+    LineWithStationsResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
                         then().
                         log().all().
-                        extract().as(LineDetailResponse.class);
+                        extract().as(LineWithStationsResponse.class);
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {

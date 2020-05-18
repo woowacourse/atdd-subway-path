@@ -1,7 +1,7 @@
 package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
@@ -31,7 +31,7 @@ public class WholeSubwayLineAcceptanceTest extends AcceptanceTest {
         addEdge(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
 
         //when
-        List<LineDetailResponse> responses = retrieveWholeSubway().getLineDetailResponses();
+        List<LineWithStationsResponse> responses = retrieveWholeSubway().getLineWithStationsResponse();
 
         //then
         assertThat(responses.size()).isEqualTo(2);

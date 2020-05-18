@@ -2,7 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.dto.LineResponse;
 
 import java.time.LocalTime;
@@ -24,7 +24,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(lines.size()).isEqualTo(4);
 
         // when
-        LineDetailResponse line = getLine(lines.get(0).getId());
+        LineWithStationsResponse line = getLine(lines.get(0).getId());
         // then
         assertThat(line.getId()).isNotNull();
         assertThat(line.getName()).isNotNull();
@@ -37,7 +37,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LocalTime endTime = LocalTime.of(22, 00);
         updateLine(line.getId(), startTime, endTime);
         //then
-        LineDetailResponse updatedLine = getLine(line.getId());
+        LineWithStationsResponse updatedLine = getLine(line.getId());
         assertThat(updatedLine.getStartTime()).isEqualTo(startTime);
         assertThat(updatedLine.getEndTime()).isEqualTo(endTime);
 

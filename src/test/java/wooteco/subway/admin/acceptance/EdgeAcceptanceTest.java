@@ -2,7 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
@@ -23,12 +23,12 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         addEdge(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
         addEdge(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
-        assertThat(lineDetailResponse.getStations()).hasSize(3);
+        LineWithStationsResponse lineWithStationsResponse = getLine(lineResponse.getId());
+        assertThat(lineWithStationsResponse.getStations()).hasSize(3);
 
         removeEdge(lineResponse.getId(), stationResponse2.getId());
 
-        LineDetailResponse lineResponseAfterRemoveEdge = getLine(lineResponse.getId());
+        LineWithStationsResponse lineResponseAfterRemoveEdge = getLine(lineResponse.getId());
         assertThat(lineResponseAfterRemoveEdge.getStations().size()).isEqualTo(2);
     }
 }

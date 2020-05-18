@@ -11,7 +11,7 @@ import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
@@ -55,8 +55,8 @@ public class LineControllerTest {
                 .andReturn();
     }
 
-    private LineDetailResponse createMockResponse() {
+    private LineWithStationsResponse createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        return LineWithStationsResponse.of(new Line(), stations);
     }
 }
