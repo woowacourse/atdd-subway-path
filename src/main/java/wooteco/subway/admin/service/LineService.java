@@ -1,9 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -67,23 +65,17 @@ public class LineService {
     }
 
     public WholeSubwayResponse wholeLines() {
-        List<Line> lines = showLines();
-        List<Long> wholeStationIds = getWholeStationIds(lines);
-        List<Station> wholeStations = stationRepository.findAllById(wholeStationIds);
+        Lines lines = Lines.of(showLines());
+        List<Long> wholeStationIds = lines.getWholeStationIds();
+        Stations wholeStations = Stations.of(stationRepository.findAllById(wholeStationIds));
 
         List<LineDetailResponse> lineDetailResponses = getLineDetailResponses(lines, wholeStations);
         return WholeSubwayResponse.of(lineDetailResponses);
     }
 
-    private List<Long> getWholeStationIds(List<Line> lines) {
-        return lines.stream()
-                .map(Line::getLineStationsId)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-    private List<LineDetailResponse> getLineDetailResponses(List<Line> lines, List<Station> wholeStations) {
-        return lines.stream()
+    private List<LineDetailResponse> getLineDetailResponses(Lines lines, Stations wholeStations) {
+        return lines.getLines()
+                .stream()
                 .map(line -> LineDetailResponse.of(line, line.getMatchingStations(wholeStations)))
                 .collect(Collectors.toList());
     }

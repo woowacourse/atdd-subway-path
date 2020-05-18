@@ -1,5 +1,6 @@
 package wooteco.subway.admin.api;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,9 +17,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +26,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyObject;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,6 +42,7 @@ public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
+    @DisplayName("Etag 학습 테스트")
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));

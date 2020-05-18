@@ -1,5 +1,6 @@
 package wooteco.subway.admin.acceptance;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.admin.dto.LineResponse;
@@ -21,6 +22,7 @@ public class SearchAcceptanceTest extends AcceptanceTest {
      * Then 최단 거리 기준으로 경로와 총 소요시간, 총 거리를 응답 받는다.
     */
 
+    @DisplayName("지하철 구간 조회")
     @Test
     void find_shortestDistancePath() throws UnsupportedEncodingException {
         LineResponse lineResponse1 = createLine("1호선");

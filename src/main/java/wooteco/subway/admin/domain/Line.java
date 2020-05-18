@@ -136,13 +136,11 @@ public class Line {
         return stationIds;
     }
 
-    public List<Station> getMatchingStations(List<Station> wholeStations) {
+    public List<Station> getMatchingStations(Stations wholeStations) {
         List<Long> stationIds = stations.stream()
                 .map(LineStation::getStationId)
                 .collect(Collectors.toList());
 
-        return wholeStations.stream()
-                .filter(station -> stationIds.contains(station.getId()))
-                .collect(Collectors.toList());
+        return wholeStations.getMatchingStationsByIds(stationIds);
     }
 }

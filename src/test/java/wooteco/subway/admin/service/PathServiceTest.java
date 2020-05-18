@@ -4,6 +4,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -96,6 +97,21 @@ class PathServiceTest {
         assertThat(shortestPath.size()).isEqualTo(3);
     }
 
+    @DisplayName("최소 시간 구간 조회")
+    @Test
+    void shortestDuration() {
+        when(lineService.findAllStations()).thenReturn(stations);
+        when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
+        when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
+        when(lineService.showLines()).thenReturn(lines);
+
+        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
+        assertThat(paths.getStations()).hasSize(5);
+        assertThat(paths.getDistance()).isEqualTo(80);
+        assertThat(paths.getDuration()).isEqualTo(41);
+    }
+
+    @DisplayName("최소 거리 구간 조회")
     @Test
     void shortestDistance() {
         when(lineService.findAllStations()).thenReturn(stations);
@@ -107,6 +123,7 @@ class PathServiceTest {
         assertThat(paths.getDistance()).isEqualTo(40);
     }
 
+    @DisplayName("같은 역일 경우 빈 배열")
     @Test
     void sameSourceAndTarget() {
         when(lineService.findAllStations()).thenReturn(stations);
@@ -118,6 +135,7 @@ class PathServiceTest {
         assertThat(paths.getStations().get(0).getName()).isEqualTo("환-강남역");
     }
 
+    @DisplayName("연결되지 않은 역은 예외")
     @Test
     void notConnectedEdges() {
         List<Station> stations = new ArrayList<>(this.stations);
@@ -141,6 +159,7 @@ class PathServiceTest {
                 .hasMessage("(환-강남역, 4-오이도역) 구간이 존재하지 않습니다.");
     }
 
+    @DisplayName("존재하지 않는 역은 예외")
     @Test
     void notExistSourceOrTarget() {
         String invalidStationName = "없는 역";
@@ -152,18 +171,5 @@ class PathServiceTest {
             pathService.retrieveShortestPath("환-강남역", invalidStationName, PathType.DISTANCE);
         }).isInstanceOf(StationNotFoundException.class)
                 .hasMessage("이름이 없는 역인 역이 존재하지 않습니다.");
-    }
-
-    @Test
-    void shortestDuration() {
-        when(lineService.findAllStations()).thenReturn(stations);
-        when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
-        when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
-        when(lineService.showLines()).thenReturn(lines);
-
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
-        assertThat(paths.getStations()).hasSize(5);
-        assertThat(paths.getDistance()).isEqualTo(80);
-        assertThat(paths.getDuration()).isEqualTo(41);
     }
 }

@@ -20,4 +20,10 @@ public class Stations {
         return stations.stream()
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
+
+    public List<Station> getMatchingStationsByIds(List<Long> stationIds) {
+        return stations.stream()
+                .filter(station -> stationIds.contains(station.getId()))
+                .collect(Collectors.toList());
+    }
 }

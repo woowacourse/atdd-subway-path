@@ -8,10 +8,9 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 @Configuration
 public class ETagHeaderFilter {
     @Bean
-    public FilterRegistrationBean<ShallowEtagHeaderFilter>
-    shallowEtagHeaderFilter() {
+    public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
         FilterRegistrationBean<ShallowEtagHeaderFilter> filter
-                = new FilterRegistrationBean<>( new ShallowEtagHeaderFilter());
+                = new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
         filter.addUrlPatterns("/lines/*", "/stations/*");
         filter.setName("etagFilter");
         return filter;

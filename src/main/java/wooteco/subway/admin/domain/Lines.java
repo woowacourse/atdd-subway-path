@@ -21,4 +21,15 @@ public class Lines {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
+
+    public List<Long> getWholeStationIds() {
+        return lines.stream()
+                .map(Line::getLineStationsId)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    public List<Line> getLines() {
+        return lines;
+    }
 }

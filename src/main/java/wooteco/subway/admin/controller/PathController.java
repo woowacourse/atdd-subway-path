@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
@@ -21,14 +22,12 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> retrieve(@RequestParam(name = "source", defaultValue = "") String source,
-                                                 @RequestParam(name = "target", defaultValue = "") String target,
-                                                 @RequestParam(name = "type") PathType pathType) throws UnsupportedEncodingException {
+    public ResponseEntity<PathResponse> retrieve(PathRequest pathRequest) throws UnsupportedEncodingException {
 
-        String decodedSource = URLDecoder.decode(source, "UTF-8");
-        String decodedTarget = URLDecoder.decode(target, "UTF-8");
+        String decodedSource = URLDecoder.decode(pathRequest.getSource(), "UTF-8");
+        String decodedTarget = URLDecoder.decode(pathRequest.getTarget(), "UTF-8");
 
-        PathResponse pathResponse = pathService.retrieveShortestPath(decodedSource, decodedTarget, pathType);
+        PathResponse pathResponse = pathService.retrieveShortestPath(decodedSource, decodedTarget, pathRequest.getType());
 
         return ResponseEntity.ok(pathResponse);
     }

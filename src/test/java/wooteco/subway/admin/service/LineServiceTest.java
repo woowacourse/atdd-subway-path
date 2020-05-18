@@ -3,6 +3,7 @@ package wooteco.subway.admin.service;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -58,6 +59,7 @@ public class LineServiceTest {
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("노선의 첫번째 구간 등록")
     @Test
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -74,6 +76,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 중간에 구간 등록")
     @Test
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -90,6 +93,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 마지막 구간 등록")
     @Test
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -106,6 +110,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(4L);
     }
 
+    @DisplayName("노선 첫번째 역 제거")
     @Test
     void removeLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -118,6 +123,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 중간 구간 제거")
     @Test
     void removeLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -128,6 +134,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 마지막 구간 제거")
     @Test
     void removeLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -140,6 +147,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
 
+    @DisplayName("노선과 그에 딸린 역 테스트")
     @Test
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
@@ -151,6 +159,7 @@ public class LineServiceTest {
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
 
+    @DisplayName("전제 노선 조회")
     @Test
     void wholeLines() {
         Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
@@ -170,6 +179,7 @@ public class LineServiceTest {
         assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
     }
 
+    @DisplayName("역 이름으로 조회")
     @Test
     void findStationWithName() {
         Station station = new Station(1L, "환-강남역");
