@@ -3,12 +3,10 @@ package wooteco.subway.admin.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -39,5 +37,16 @@ public class WholeLineStationAcceptanceTest extends AcceptanceTest {
         assertThat(lineDetailResponses.size()).isEqualTo(2);
         assertThat(lineDetailResponses.get(0).getStations().size()).isEqualTo(3);
         assertThat(lineDetailResponses.get(1).getStations().size()).isEqualTo(3);
+    }
+
+    List<LineDetailResponse> getLineDetails() {
+        return
+            given().when()
+                .get("/api/lines/detail")
+                .then()
+                .log().all()
+                .extract()
+                .jsonPath()
+                .getList(".", LineDetailResponse.class);
     }
 }

@@ -37,7 +37,6 @@ public class PageAcceptanceTest extends AcceptanceTest {
         then().
             log().all().
             statusCode(HttpStatus.OK.value());
-
     }
 
 }

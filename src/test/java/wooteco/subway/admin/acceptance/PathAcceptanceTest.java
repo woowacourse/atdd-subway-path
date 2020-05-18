@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -38,5 +40,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
         assertThat(pathResponse.getDistance()).isEqualTo(40);
         assertThat(pathResponse.getDuration()).isEqualTo(40);
+    }
+
+    PathResponse findShortestPath(Long source, Long target, String type) {
+        return given().
+            log().all().
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            get("/api/paths?source=" + source + "&target=" + target + "&type=" + type).
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract().as(PathResponse.class);
     }
 }

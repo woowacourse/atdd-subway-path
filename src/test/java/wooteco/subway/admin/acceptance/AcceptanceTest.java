@@ -61,23 +61,6 @@ public class AcceptanceTest {
                         extract().as(StationResponse.class);
     }
 
-    List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/api/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
-    }
-
-    void deleteStation(Long id) {
-        given().when().
-                delete("/api/stations/" + id).
-        then().
-                log().all();
-    }
-
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -108,51 +91,6 @@ public class AcceptanceTest {
                         extract().as(LineDetailResponse.class);
     }
 
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                put("/api/lines/" + id).
-        then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/api/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-    }
-
-    List<LineDetailResponse> getLineDetails() {
-        return
-            given().when()
-               .get("/api/lines/detail")
-            .then()
-                .log().all()
-                .extract()
-                .jsonPath()
-                .getList(".", LineDetailResponse.class);
-    }
-
-    void deleteLine(Long id) {
-        given().when().
-                delete("/api/lines/" + id).
-        then().
-                log().all();
-    }
-
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
@@ -173,30 +111,6 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
-    }
-
-    void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/api/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    PathResponse findShortestPath(Long source, Long target, String type) {
-        return given().
-                log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-                get("/api/paths?source=" + source + "&target=" + target + "&type=" + type).
-            then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(PathResponse.class);
     }
 }
 
