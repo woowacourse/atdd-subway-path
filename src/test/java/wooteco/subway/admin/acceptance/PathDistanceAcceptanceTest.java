@@ -2,11 +2,6 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,14 +60,14 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         PathResponse path = getPath(jamsil.getName(), samjun.getName(), "distance");
 
         //then
-        assertThat(path.getStations()).hasSize(4);
-        assertThat(path.getStations()).extracting(StationResponse::getName)
+        assertThat(path.getStations())
+            .extracting(StationResponse::getName)
             .containsExactly("잠실", "석촌", "석촌고분", "삼전");
         assertThat(path.getDistance()).isEqualTo(3);
         assertThat(path.getDuration()).isEqualTo(30);
     }
 
-    @DisplayName("경로를 최단거리와 최소시간으로 조회단다")
+    @DisplayName("경로를 최단거리와 최소시간으로 조회된다")
     @Test
     void findPathByDistanceAndDuration() {
         //when
@@ -106,24 +101,5 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
             log().all().
             statusCode(HttpStatus.OK.value()).
             extract().as(PathResponse.class);
-    }
-
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph;
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath
-            = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-            = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
     }
 }

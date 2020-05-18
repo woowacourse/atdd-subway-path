@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -103,18 +105,10 @@ class PathServiceTest {
             .hasMessageContaining("동일역으로는 조회할 수 없습니다.");
     }
 
-    @Test
-    void notExistSourceName() {
-        PathRequest pathRequest = new PathRequest("존재하지 않는 역", station1.getName(), "distance");
-        assertThatThrownBy(() -> {
-            pathService.showPaths(pathRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("존재하지 않는 역입니다.");
-    }
-
-    @Test
-    void notExistTargetName() {
-        PathRequest pathRequest = new PathRequest(station1.getName(), "존재하지 않는 역", "distance");
+    @ParameterizedTest
+    @CsvSource({"강남역,존재하지 않는 역", "존재하지 않는 역,강남역"})
+    void notExistName(String name1, String name2) {
+        PathRequest pathRequest = new PathRequest(name1, name2, "distance");
         assertThatThrownBy(() -> {
             pathService.showPaths(pathRequest);
         }).isInstanceOf(IllegalArgumentException.class)
