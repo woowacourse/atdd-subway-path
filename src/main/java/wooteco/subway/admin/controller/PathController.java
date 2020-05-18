@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.controller.validator.PathValidator;
+import wooteco.subway.admin.domain.strategy.DijkstraStrategy;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.PathService;
@@ -26,7 +27,7 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(PathRequest pathRequest) {
         pathValidator.valid(pathRequest);
 
-        PathResponse pathResponse = pathService.findShortestPathByDistance(pathRequest);
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest, new DijkstraStrategy());
 
         return ResponseEntity
             .ok()

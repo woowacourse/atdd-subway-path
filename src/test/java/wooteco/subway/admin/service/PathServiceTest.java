@@ -18,6 +18,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.strategy.DijkstraStrategy;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.NotConnectEdgeException;
@@ -80,7 +81,7 @@ public class PathServiceTest {
 
         PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(), PathType.DISTANCE);
 
-        PathResponse pathResponse = pathService.findShortestPathByDistance(pathRequest);
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest, new DijkstraStrategy());
 
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);
@@ -104,7 +105,7 @@ public class PathServiceTest {
 
         PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), PathType.DISTANCE);
 
-        assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new DijkstraStrategy()))
             .isInstanceOf(NotConnectEdgeException.class)
             .hasMessageContaining("으로부터")
             .hasMessageContaining("까지 연결되어 있지 않습니다!");
@@ -119,7 +120,7 @@ public class PathServiceTest {
 
         PathRequest pathRequest = new PathRequest(6L, station4.getId(), PathType.DISTANCE);
 
-        assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new DijkstraStrategy()))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("해당 역은 등록되어있지 않은 역입니다.");
     }
