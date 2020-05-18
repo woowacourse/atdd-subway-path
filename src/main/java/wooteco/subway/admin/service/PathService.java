@@ -3,10 +3,9 @@ package wooteco.subway.admin.service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.admin.domain.entity.Line;
+import wooteco.subway.admin.domain.entity.LineStation;
 import wooteco.subway.admin.domain.entity.Station;
 import wooteco.subway.admin.domain.graph.SubwayShortestPath;
 import wooteco.subway.admin.dto.PathResponse;
@@ -26,12 +25,12 @@ public class PathService {
 	public PathResponse findPath(String sourceName, String targetName, String type) {
 		validateStationNamesAreSame(sourceName, targetName);
 
-		List<Line> allLines = lineRepository.findAll();
+		List<LineStation> allLineStations = Line.findAllLineStationsOf(lineRepository.findAll());
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
 		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(
-		    allLines, allStationsById, sourceName, targetName, type);
+			allLineStations, allStationsById, sourceName, targetName, type);
 
 		return PathResponse.from(subwayShortestPath);
 	}

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
@@ -21,6 +20,20 @@ public class Line {
 	private LocalDateTime updatedAt;
 	@MappedCollection(idColumn = "line", keyColumn = "sequence")
 	private List<LineStation> stations = new ArrayList<>();
+
+	public static List<LineStation> findAllLineStationsOf(List<Line> lines) {
+		List<LineStation> lineStations = new ArrayList<>();
+
+		for (Line line : lines) {
+			for (LineStation lineStation : line.getLineStations()) {
+				if (lineStation.isStart()) {
+					continue;
+				}
+				lineStations.add(lineStation);
+			}
+		}
+		return lineStations;
+	}
 
 	public Line() {
 	}
