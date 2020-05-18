@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.admin.domain.graph.Graph;
 import wooteco.subway.admin.domain.graph.SubwayGraphKey;
-import wooteco.subway.admin.domain.graph.SubwayGraphStrategy;
+import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraphStrategy;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SubwayGraphKeyTest {
+class SubwayJGraphKeyTest {
 
     @DisplayName("SubwayGraphKey의 String을 입력하면 해당 SubwayGraphKey 반환")
     @ParameterizedTest
@@ -35,7 +35,7 @@ class SubwayGraphKeyTest {
     @Test
     void makeGraph() {
         //given
-        Map<SubwayGraphKey, Graph> subwayGraphMap = SubwayGraphKey.makeGraph(new HashSet<>(), new SubwayGraphStrategy());
+        Map<SubwayGraphKey, Graph> subwayGraphMap = SubwayGraphKey.makeGraph(new HashSet<>(), new SubwayJGraphStrategy());
 
         //when
         Set<SubwayGraphKey> subwayGraphKeys = subwayGraphMap.keySet();

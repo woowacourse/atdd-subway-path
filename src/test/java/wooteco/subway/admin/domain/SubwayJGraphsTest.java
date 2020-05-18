@@ -6,16 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.admin.domain.graph.PathDetail;
-import wooteco.subway.admin.domain.graph.SubwayGraph;
 import wooteco.subway.admin.domain.graph.SubwayGraphKey;
-import wooteco.subway.admin.domain.graph.SubwayGraphStrategy;
 import wooteco.subway.admin.domain.graph.SubwayGraphs;
+import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraph;
+import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraphStrategy;
 import wooteco.subway.admin.exception.IllegalPathRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SubwayGraphsTest {
+class SubwayJGraphsTest {
 
     @DisplayName("찾은 경로중에 가장 조건에 맞는 최적 경로를 반환한다.")
     @ParameterizedTest
@@ -27,7 +27,7 @@ class SubwayGraphsTest {
 
         Edge edge3 = new Edge(2L, 3L, 1, 10);
 
-        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2, edge3), new SubwayGraphStrategy());
+        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2, edge3), new SubwayJGraphStrategy());
 
         //when
         PathDetail path = subwayGraphs.getPath(1L, 3L, key);
@@ -45,7 +45,7 @@ class SubwayGraphsTest {
         Edge edge1 = new Edge(null, 1L, 10, 10);
         Edge edge2 = new Edge(1L, 2L, 10, 10);
 
-        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2), new SubwayGraphStrategy());
+        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2), new SubwayJGraphStrategy());
 
         //when
         assertThatThrownBy(() -> subwayGraphs.getPath(source, target, SubwayGraphKey.DISTANCE))
@@ -63,10 +63,10 @@ class SubwayGraphsTest {
         Edge edge2 = new Edge(2L, 3L, 10, 1);
         Edge edge3 = new Edge(4L, 5L, 1, 10);
 
-        SubwayGraph subwayGraph = new SubwayGraph(Sets.newLinkedHashSet(edge, edge1, edge2, edge3), Edge::getDistance);
+        SubwayJGraph subwayJGraph = new SubwayJGraph(Sets.newLinkedHashSet(edge, edge1, edge2, edge3), Edge::getDistance);
 
         //then
-        assertThatThrownBy(() -> subwayGraph.getPath(1L, 5L))
+        assertThatThrownBy(() -> subwayJGraph.getPath(1L, 5L))
                 .isInstanceOf(IllegalPathRequestException.class)
                 .hasMessage("%d - %d : 존재하지 않는 경로입니다.", 1L, 5L);
 

@@ -4,14 +4,14 @@ import com.google.common.collect.Sets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.domain.graph.PathCost;
-import wooteco.subway.admin.domain.graph.SubwayGraph;
 import wooteco.subway.admin.domain.graph.SubwayPath;
+import wooteco.subway.admin.domain.graph.jgraph.SubwayJGraph;
 
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SubwayGraphTest {
+class SubwayJGraphTest {
 
     @DisplayName("최단 경로를 찾는다")
     @Test
@@ -24,10 +24,10 @@ class SubwayGraphTest {
 
         Line line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(11, 30), 10);
         line2.addEdge(new Edge(2L, 3L, 1, 10));
-        SubwayGraph subwayGraph = new SubwayGraph(Sets.union(line1.getEdges(), line2.getEdges()), Edge::getDistance);
+        SubwayJGraph subwayJGraph = new SubwayJGraph(Sets.union(line1.getEdges(), line2.getEdges()), Edge::getDistance);
 
         //when
-        SubwayPath path = subwayGraph.getPath(1L, 3L);
+        SubwayPath path = subwayJGraph.getPath(1L, 3L);
         PathCost cost = path.getCost();
         Integer totalDistance = cost.getDistance();
         Integer totalDuration = cost.getDuration();
