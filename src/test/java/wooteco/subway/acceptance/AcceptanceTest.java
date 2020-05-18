@@ -22,14 +22,14 @@ import wooteco.subway.dto.StationResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
-    static final String STATION_NAME_KANGNAM = "강남역";
-    static final String STATION_NAME_YEOKSAM = "역삼역";
-    static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    static final String 강남 = "강남역";
+    static final String 역삼 = "역삼역";
+    static final String 선릉 = "선릉역";
 
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";
-    static final String LINE_NAME_BUNDANG = "분당선";
-    static final String LINE_NAME_SINBUNDANG = "신분당선";
+    static final String 분당선 = "분당선";
+    static final String 신분당선 = "신분당선";
 
     @LocalServerPort
     int port;
@@ -145,7 +145,7 @@ public class AcceptanceTest {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+    private void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
         Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());

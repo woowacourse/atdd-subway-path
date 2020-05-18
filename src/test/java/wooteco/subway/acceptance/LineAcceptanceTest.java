@@ -16,8 +16,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void manageLine() {
         // when
-        createLine(LINE_NAME_SINBUNDANG);
-        createLine(LINE_NAME_BUNDANG);
+        createLine(신분당선);
+        createLine(분당선);
         createLine(LINE_NAME_2);
         createLine(LINE_NAME_3);
         // then

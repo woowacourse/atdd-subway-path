@@ -26,63 +26,61 @@ import wooteco.subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "삼성역";
-    private static final String STATION_NAME5 = "양재역";
+	private static final String 강남 = "강남역";
+	private static final String 역삼 = "역삼역";
+	private static final String 선릉 = "선릉역";
+	private static final String 삼성 = "삼성역";
+	private static final String 양재 = "양재역";
 
-    @Mock
-    private LineRepository lineRepository;
-    @Mock
-    private StationRepository stationRepository;
+	@Mock
+	private LineRepository lineRepository;
+	@Mock
+	private StationRepository stationRepository;
 
-    private ClientService clientService;
+	private ClientService clientService;
 
-    private Line line;
-    private Line line2;
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-    private Station station5;
+	private Line line;
+	private Line line4;
+	private Station 강남역;
+	private Station 역삼역;
+	private Station 선릉역;
+	private Station 삼성역;
+	private Station 양재역;
 
-    @BeforeEach
-    void setUp() {
-        clientService = new ClientService(lineRepository, stationRepository);
+	@BeforeEach
+	void setUp() {
+		clientService = new ClientService(lineRepository, stationRepository);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
+		강남역 = new Station(1L, 강남);
+		역삼역 = new Station(2L, 역삼);
+		선릉역 = new Station(3L, 선릉);
+		삼성역 = new Station(4L, 삼성);
+		양재역 = new Station(5L, 양재);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-600");
-        line.addLineStation(new LineStation(null, 1L, 0, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 1));
-        line.addLineStation(new LineStation(2L, 3L, 10, 1));
-        line.addLineStation(new LineStation(3L, 4L, 10, 1));
+		line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-600");
+		line.addLineStation(new LineStation(null, 1L, 0, 10));
+		line.addLineStation(new LineStation(1L, 2L, 10, 1));
+		line.addLineStation(new LineStation(2L, 3L, 10, 1));
+		line.addLineStation(new LineStation(3L, 4L, 10, 1));
 
-        line2 = new Line(2L, "4호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-600");
-        line2.addLineStation(new LineStation(1L, 5L, 10, 10));
-        line2.addLineStation(new LineStation(5L, 4L, 10, 10));
-    }
+		line4 = new Line(2L, "4호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-600");
+		line4.addLineStation(new LineStation(1L, 5L, 10, 10));
+		line4.addLineStation(new LineStation(5L, 4L, 10, 10));
+	}
 
 	@DisplayName("경로 조회시, 최단 경로 기준으로 path생성")
 	@Test
 	void searchPath_GivenDistanceWeight_CreatePath() {
 		// given
-		List<Station> stations = Arrays.asList(station1, station2, station3, station4, station5);
+		List<Station> stations = Arrays.asList(강남역, 역삼역, 선릉역, 삼성역, 양재역);
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line4));
 
-		String source = STATION_NAME1;
-		String target = STATION_NAME4;
 		List<StationResponse> expected = StationResponse.listOf(
-			Arrays.asList(station1, station5, station4));
+			Arrays.asList(강남역, 양재역, 삼성역));
 
 		//when
-		PathResponse pathResponse = clientService.searchPath(source, target,
+		PathResponse pathResponse = clientService.searchPath(강남, 삼성,
 			WeightType.DISTANCE.getName());
 
 		//then
@@ -94,18 +92,14 @@ public class ClientServiceTest {
 	@Test
 	void searchPath_GivenDurationWeight_CreatePath() {
 		// given
-		List<Station> stations = Arrays.asList(station1, station2, station3, station4, station5);
+		List<Station> stations = Arrays.asList(강남역, 역삼역, 선릉역, 삼성역, 양재역);
 		when(stationRepository.findAll()).thenReturn(stations);
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line4));
 
-		String source = STATION_NAME1;
-		String target = STATION_NAME4;
-		List<StationResponse> expected = StationResponse.listOf(
-			Arrays.asList(station1, station2, station3, station4));
+		List<StationResponse> expected = StationResponse.listOf(Arrays.asList(강남역, 역삼역, 선릉역, 삼성역));
 
 		//when
-		PathResponse pathResponse = clientService.searchPath(source, target,
-			WeightType.DURATION.getName());
+		PathResponse pathResponse = clientService.searchPath(강남, 삼성, WeightType.DURATION.getName());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -113,12 +107,11 @@ public class ClientServiceTest {
 	}
 
 	@DisplayName("예외테스트: 경로 조회시, 출발역과 도착역이 같은 경우 예외 발생 확인")
-    @Test
+	@Test
 	void searchPath_GivenSameStations_ExceptionThrown() {
-        assertThatThrownBy(
-			() -> clientService.searchPath(STATION_NAME1, STATION_NAME1,
-				WeightType.DISTANCE.getName()))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("출발역과 도착역은 같을 수 없습니다");
-    }
+		assertThatThrownBy(
+			() -> clientService.searchPath(강남, 강남, WeightType.DISTANCE.getName()))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessage("출발역과 도착역은 같을 수 없습니다");
+	}
 }

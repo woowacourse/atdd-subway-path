@@ -10,13 +10,12 @@ import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponse1 = createStation(강남);
+        StationResponse stationResponse2 = createStation(역삼);
+        StationResponse stationResponse3 = createStation(선릉);
 
         LineResponse lineResponse = createLine("2호선");
 
