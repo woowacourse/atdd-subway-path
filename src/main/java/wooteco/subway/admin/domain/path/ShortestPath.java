@@ -1,11 +1,13 @@
 package wooteco.subway.admin.domain.path;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ShortestPath {
     private DijkstraShortestPath<Long, WeightedEdge> path;
@@ -35,24 +37,32 @@ public class ShortestPath {
         return new ShortestPath(shortestPath, pathType);
     }
 
-    public DijkstraShortestPath<Long, WeightedEdge> getPath() {
+    public DijkstraShortestPath<Long, WeightedEdge> getTotalPath() {
         return path;
     }
 
-    public List<Long> getVertexList(Long source, Long target) {
+    public GraphPath<Long, WeightedEdge> getPath(Long source, Long target) {
         try {
-            return path.getPath(source, target).getVertexList();
-        } catch (NullPointerException e) {
+            GraphPath<Long, WeightedEdge> result = path.getPath(source, target);
+            if (Objects.isNull(result)) {
+                throw new IllegalArgumentException();
+            }
+            return result;
+        } catch (NullPointerException | IllegalArgumentException e) {
             throw new IllegalArgumentException("존재하지 않는 경로입니다.");
         }
     }
 
+    public List<Long> getVertexList(Long source, Long target) {
+        return getPath(source, target).getVertexList();
+    }
+
     private int getWeight(Long source, Long target) {
-        return (int) path.getPath(source, target).getWeight();
+        return (int) getPath(source, target).getWeight();
     }
 
     private int getSubWeight(Long source, Long target) {
-        return path.getPath(source, target)
+        return getPath(source, target)
                 .getEdgeList()
                 .stream()
                 .mapToInt(WeightedEdge::getSubWeight)

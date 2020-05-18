@@ -13,6 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathTypeTest {
+    @DisplayName("생성 성공")
+    @ParameterizedTest
+    @MethodSource("generateTypeArguments")
+    void of(String input, PathType pathType) {
+        assertThat(PathType.of(input)).isEqualTo(pathType);
+    }
 
     static Stream<Arguments> generateTypeArguments() {
         return Stream.of(
@@ -22,25 +28,6 @@ public class PathTypeTest {
                 Arguments.of("DURATION", PathType.DURATION),
                 Arguments.of("duration", PathType.DURATION),
                 Arguments.of("Duration", PathType.DURATION));
-    }
-
-    static Stream<Arguments> generateTypeWeightArguments() {
-        return Stream.of(
-                Arguments.of(PathType.DISTANCE, 10),
-                Arguments.of(PathType.DURATION, 5));
-    }
-
-    static Stream<Arguments> generateTypeSubWeightArguments() {
-        return Stream.of(
-                Arguments.of(PathType.DISTANCE, 5),
-                Arguments.of(PathType.DURATION, 10));
-    }
-
-    @DisplayName("생성 성공")
-    @ParameterizedTest
-    @MethodSource("generateTypeArguments")
-    void of(String input, PathType pathType) {
-        assertThat(PathType.of(input)).isEqualTo(pathType);
     }
 
     @DisplayName("생성 실패")
@@ -59,11 +46,23 @@ public class PathTypeTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    static Stream<Arguments> generateTypeWeightArguments() {
+        return Stream.of(
+                Arguments.of(PathType.DISTANCE, 10),
+                Arguments.of(PathType.DURATION, 5));
+    }
+
     @ParameterizedTest
     @MethodSource("generateTypeSubWeightArguments")
     void findSubWeight(PathType pathType, int expected) {
         LineStation lineStation = new LineStation(1L, 2L, 10, 5);
         int actual = pathType.findSubWeight(lineStation);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    static Stream<Arguments> generateTypeSubWeightArguments() {
+        return Stream.of(
+                Arguments.of(PathType.DISTANCE, 5),
+                Arguments.of(PathType.DURATION, 10));
     }
 }
