@@ -4,6 +4,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class ShortestPath {
             }
             return result;
         } catch (NullPointerException | IllegalArgumentException e) {
-            throw new IllegalArgumentException("존재하지 않는 경로입니다.");
+            throw new CustomException("존재하지 않는 경로입니다.", e);
         }
     }
 

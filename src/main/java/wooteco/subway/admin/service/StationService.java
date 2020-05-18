@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -22,10 +23,10 @@ public class StationService {
             return stationRepository.save(station);
         } catch (DbActionExecutionException exception) {
             if (exception.getCause() instanceof DuplicateKeyException) {
-                throw new DuplicateKeyException("이미 존재하는 호선입니다.");
+                throw new CustomException("이미 존재하는 호선입니다.", exception);
             }
             if (exception.getCause() instanceof DataIntegrityViolationException) {
-                throw new DataIntegrityViolationException("필수값을 입력해주세요.");
+                throw new CustomException("필수값을 입력해주세요.", exception);
             }
             throw exception;
         }

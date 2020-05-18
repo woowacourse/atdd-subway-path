@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain.path;
 
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.function.Function;
@@ -20,7 +21,7 @@ public enum PathType {
         try {
             return PathType.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("경로 찾기의 Type이 잘못되었습니다.");
+            throw new CustomException("경로 찾기의 Type이 잘못되었습니다.", e);
         }
     }
 

@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+    private final String NO_SUCH_LINE_EXCEPTION = "노선이 존재하지 않습니다.";
+    private final String NO_SUCH_STATION_EXCEPTION = "존재하지 않는 역입니다.";
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
@@ -37,10 +40,10 @@ public class LineService {
             return lineRepository.save(line);
         } catch (DbActionExecutionException exception) {
             if (exception.getCause() instanceof DuplicateKeyException) {
-                throw new DuplicateKeyException("이미 존재하는 호선입니다.");
+                throw new CustomException("이미 존재하는 호선입니다.", exception);
             }
             if (exception.getCause() instanceof DataIntegrityViolationException) {
-                throw new DataIntegrityViolationException("필수값을 입력해주세요.");
+                throw new CustomException("필수값을 입력해주세요.", exception);
             }
             throw exception;
         }
@@ -52,7 +55,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_LINE_EXCEPTION, new NoSuchElementException()));
         persistLine.update(request.toLine());
         save(persistLine);
     }
@@ -63,7 +66,7 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_LINE_EXCEPTION, new NoSuchElementException()));
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
@@ -72,14 +75,14 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_LINE_EXCEPTION, new NoSuchElementException()));
         line.removeLineStationById(stationId);
         save(line);
     }
 
     public LineDetailResponse findDetailLineById(Long id) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_LINE_EXCEPTION, new NoSuchElementException()));
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 
         List<Station> orderedStations = new ArrayList<>();
@@ -103,12 +106,12 @@ public class LineService {
 
     public PathResponse findShortestPath(String sourceName, String targetName, PathType pathType) {
         if (sourceName.equals(targetName)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new CustomException("출발역과 도착역이 같습니다.", new NoSuchElementException());
         }
         Long sourceId = stationRepository.findIdByName(sourceName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_STATION_EXCEPTION, new NoSuchElementException()));
         Long targetId = stationRepository.findIdByName(targetName)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_STATION_EXCEPTION, new NoSuchElementException()));
 
         List<LineStation> lineStations = findAllLineStations();
         ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);

@@ -91,7 +91,7 @@ public class Line {
         }
 
         if (hasNoSuchPreStation(lineStation)) {
-            throw new NoSuchElementException("이전 역이 등록되지 않았습니다.");
+            throw new CustomException("이전 역이 등록되지 않았습니다.", new NoSuchElementException());
         }
 
         Optional<LineStation> nextStation = findNextStationBy(lineStation.getPreStationId());
@@ -139,7 +139,7 @@ public class Line {
         return stations.stream()
                 .filter(lineStation -> lineStation.getStationId().equals(stationId))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 노선에 등록되지 않은 역입니다."));
+                .orElseThrow(() -> new CustomException("해당 노선에 등록되지 않은 역입니다.", new NoSuchElementException()));
     }
 
     public List<Long> getStationIds() {
@@ -155,7 +155,7 @@ public class Line {
         LineStation firstLineStation = stations.stream()
                 .filter(it -> it.getPreStationId() == null)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("출발역이 없습니다."));
+                .orElseThrow(() -> new CustomException("출발역이 없습니다.", new NoSuchElementException()));
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
