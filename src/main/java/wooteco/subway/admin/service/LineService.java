@@ -90,16 +90,16 @@ public class LineService {
     }
 
     private PathResponses findPaths(Long departureId, Long arrivalId) {
-        Map<EdgeWeightType, PathResponse> responses = new HashMap<>();
+        Map<EdgeWeightType, PathResponse> responseByEdgeWeight = new HashMap<>();
 
         LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
 
         for (EdgeWeightType edgeWeightType : EdgeWeightType.values()) {
             SubwayRoute shortestPath = edgeWeightType.findShortestPath(lineStations, departureId, arrivalId);
-            responses.put(edgeWeightType, toPathResponse(shortestPath));
+            responseByEdgeWeight.put(edgeWeightType, toPathResponse(shortestPath));
         }
 
-        return new PathResponses(responses);
+        return new PathResponses(responseByEdgeWeight);
     }
 
     private PathResponse toPathResponse(SubwayRoute subwayRoute) {
