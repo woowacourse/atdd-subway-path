@@ -1,4 +1,9 @@
 const METHOD = {
+  GET() {
+    return {
+      method: 'GET'
+    }
+  },
   PUT() {
     return {
       method: 'PUT'
@@ -47,9 +52,16 @@ const api = (() => {
     }
   }
 
+  const station = {
+    getAll(){
+      return requestWithJsonData(`/stations`, METHOD.GET());
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    station
   }
 })()
 

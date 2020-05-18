@@ -22,6 +22,8 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
     </div>
 </nav>`
 
+export const optionTemplate = data => `<option data-option-station-id="${data.id}">${data.name}</option>`;
+
 export const subwayLinesItemTemplate = line => {
   const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
   return `<div class="inline-block w-1/2 px-2">

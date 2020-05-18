@@ -1,6 +1,6 @@
 import {EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import {searchResultTemplate} from '../../utils/templates.js'
+import {searchResultTemplate, optionTemplate} from '../../utils/templates.js'
 import {PATH_TYPE, ERROR_MESSAGE} from '../../utils/constants.js'
 
 function Search() {
@@ -37,8 +37,8 @@ function Search() {
 
     const getSearchResult = pathType => {
         const searchInput = {
-            source: $departureStationName.value,
-            target: $arrivalStationName.value,
+            source: $departureStationName.options[$departureStationName.selectedIndex].dataset.optionStationId,
+            target: $arrivalStationName.options[$arrivalStationName.selectedIndex].dataset.optionStationId,
             type: pathType
         }
         api.path
@@ -75,8 +75,25 @@ function Search() {
         $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime)
     }
 
+    const initStationList = () => {
+        let stationOptionTemplate;
+
+        api.station.getAll().then(stations => {
+            stationOptionTemplate = stations.map(station => optionTemplate(station)).join("");
+            $departureStationName.insertAdjacentHTML(
+                "afterbegin",
+                stationOptionTemplate
+            );
+            $arrivalStationName.insertAdjacentHTML(
+                "afterbegin",
+                stationOptionTemplate
+            )
+        })
+    }
+
     this.init = () => {
         initEventListener()
+        initStationList()
     }
 }
 
