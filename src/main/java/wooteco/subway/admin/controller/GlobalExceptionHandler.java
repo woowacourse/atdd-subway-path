@@ -1,5 +1,6 @@
 package wooteco.subway.admin.controller;
 
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,18 +15,21 @@ import wooteco.subway.admin.exception.NotFoundStationException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> handleBindException(BindException e) {
-        ErrorResponse errorResponse = new ErrorResponse("적절하지 않은 입력입니다");
+        ErrorResponse errorResponse = new ErrorResponse(
+                Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(InvalidPathTypeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidPathTypeException(InvalidPathTypeException e) {
-        ErrorResponse errorResponse = new ErrorResponse("적절하지 않은 형태의 요청입니다");
+    public ResponseEntity<ErrorResponse> handleInvalidPathTypeException(
+            InvalidPathTypeException e) {
+        ErrorResponse errorResponse = new ErrorResponse("유효하지 않는 경로 타입입니다.");
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(NotFoundStationException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundStationException(NotFoundStationException e) {
+    public ResponseEntity<ErrorResponse> handleNotFoundStationException(
+            NotFoundStationException e) {
         ErrorResponse errorResponse = new ErrorResponse("입력한 역을 찾을 수 없습니다");
         return ResponseEntity.badRequest().body(errorResponse);
     }
@@ -36,7 +40,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 예상치 못한 애러에 대해서 내부 스펙 유출 방지를 위한 익셉션 핸들러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("서버에서 오류가 발생했습니다");

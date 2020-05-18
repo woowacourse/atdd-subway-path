@@ -42,7 +42,7 @@ function Search() {
       type
     }
     try {
-      // validate(searchInput)
+      validate(searchInput)
       showSearchResult(searchInput)
     } catch (e) {
       alert(e)
