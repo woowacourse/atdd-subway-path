@@ -34,7 +34,7 @@ public class SubwayGraph {
         GraphPath<Long, SubwayWeightEdge> path = DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId);
         validateLinkedEdge(sourceStationId, targetStationId, path);
 
-        return new SubwayPath(path);
+        return new SubwayPath(path.getEdgeList());
     }
 
     private void validateLinkedEdge(final Long sourceStationId, final Long targetStationId, final GraphPath<Long, SubwayWeightEdge> path) {

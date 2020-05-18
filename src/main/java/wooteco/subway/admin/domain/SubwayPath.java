@@ -1,7 +1,5 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.GraphPath;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +8,8 @@ public class SubwayPath {
 
     private final List<SubwayWeightEdge> paths;
 
-    public SubwayPath(final GraphPath<Long, SubwayWeightEdge> path) {
-        this.paths = path.getEdgeList();
+    public SubwayPath(final List<SubwayWeightEdge> paths) {
+        this.paths = paths;
     }
 
     public PathCost getCost() {
