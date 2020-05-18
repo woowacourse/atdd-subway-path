@@ -27,13 +27,17 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse searchPath(final String source, final String target, final SearchType searchType) {
+	public List<Station> findAllStations() {
+		return stationRepository.findAll();
+	}
+
+	public PathResponse searchPath(final Long source, final Long target, final SearchType searchType) {
 		if (Objects.equals(source, target)) {
 			throw new DuplicatedStationNamesException();
 		}
 
-		Station sourceStation = stationRepository.findByName(source).orElseThrow(NotExistStationException::new);
-		Station targetStation = stationRepository.findByName(target).orElseThrow(NotExistStationException::new);
+		Station sourceStation = stationRepository.findById(source).orElseThrow(NotExistStationException::new);
+		Station targetStation = stationRepository.findById(target).orElseThrow(NotExistStationException::new);
 		List<Station> allStations = stationRepository.findAll();
 		List<LineStation> allLineStations = lineRepository.findAllLineStations();
 

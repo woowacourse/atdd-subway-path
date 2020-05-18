@@ -17,7 +17,4 @@ public interface StationRepository extends CrudRepository<Station, Long> {
 
     @Query("select * from station where name = :stationName")
     Optional<Station> findByName(@Param("stationName") String stationName);
-
-    @Query("select count(*)=0 from station where name = :source")
-	boolean notExistsByName(@Param("source") String source);
 }

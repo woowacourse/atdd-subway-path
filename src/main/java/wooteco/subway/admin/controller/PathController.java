@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.service.PathService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class PathController {
@@ -18,12 +22,21 @@ public class PathController {
 
 	@GetMapping("/paths")
 	public ResponseEntity<PathResponse> searchPath(
-			@RequestParam("source") String source,
-			@RequestParam("target") String target,
+			@RequestParam("source") Long source,
+			@RequestParam("target") Long target,
 			@RequestParam("type") String typeName) {
 		SearchType searchType = SearchType.of(typeName);
 		PathResponse pathResponse = pathService.searchPath(source, target, searchType);
 
 		return ResponseEntity.ok().body(pathResponse);
+	}
+
+	@GetMapping("/paths/stations")
+	public ResponseEntity<List<StationResponse>> findAllStations() {
+		List<StationResponse> stationResponses = pathService.findAllStations().stream()
+				.map(StationResponse::of)
+				.collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(stationResponses);
 	}
 }

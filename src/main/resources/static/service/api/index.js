@@ -37,9 +37,16 @@ const api = (() => {
     }
   }
 
+  const station = {
+    getAll() {
+      return request(`/paths/stations`)
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    station
   }
 })()
 

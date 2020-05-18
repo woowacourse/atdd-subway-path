@@ -4,26 +4,28 @@ import {PathStationTemplate} from "../../utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
-  const $arrivalStationName = document.querySelector('#arrival-station-name')
-  const $searchButton = document.querySelector('#search-button')
-  const $searchResultContainer = document.querySelector('#search-result-container')
-  const $shortestDistanceButton = document.querySelector('#shortest-distance-button')
-  const $shortestDurationButton = document.querySelector('#shortest-duration-button')
-  const $shortestDistanceHighlight = document.querySelector('#shortest-distance-highlight')
-  const $shortestDurationHighlight = document.querySelector('#shortest-duration-highlight')
-  const $sourceStation = document.querySelector('#source-station');
-  const $middleStations = document.querySelector('#middle-stations');
-  const $targetStations = document.querySelector('#target-station');
-  const $favoriteButton = document.querySelector('#favorite-button')
-  let $typeName = 'distance';
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
-    }
-  }
+    const $arrivalStationName = document.querySelector('#arrival-station-name')
+    const $searchButton = document.querySelector('#search-button')
+    const $searchResultContainer = document.querySelector('#search-result-container')
+    const $shortestDistanceButton = document.querySelector('#shortest-distance-button')
+    const $shortestDurationButton = document.querySelector('#shortest-duration-button')
+    const $shortestDistanceHighlight = document.querySelector('#shortest-distance-highlight')
+    const $shortestDurationHighlight = document.querySelector('#shortest-duration-highlight')
+    const $sourceStation = document.querySelector('#source-station');
+    const $middleStations = document.querySelector('#middle-stations');
+    const $targetStations = document.querySelector('#target-station');
+    const $favoriteButton = document.querySelector('#favorite-button');
+    const allStations = new Map();
+    let $typeName = 'distance';
 
-  const highlightButton = () => {
+    const showSearchResult = () => {
+        const isHidden = $searchResultContainer.classList.contains('hidden')
+        if (isHidden) {
+            $searchResultContainer.classList.remove('hidden')
+        }
+    }
+
+    const highlightButton = () => {
     if ($typeName === 'distance') {
       $shortestDistanceHighlight.classList.add('border-l', 'border-t', 'border-r');
       $shortestDistanceHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
@@ -58,14 +60,21 @@ function Search() {
         $middleStations.innerHTML = '';
         $targetStations.innerText = '';
 
+        const departureStationId = allStations.get($departureStationName.value.trim());
+        const arrivalStationId = allStations.get($arrivalStationName.value.trim());
+        if (!departureStationId || !arrivalStationId) {
+            alert(ERROR_MESSAGE.NOT_EXIST_STATION);
+            return;
+        }
+
         const searchInput = {
-            source: $departureStationName.value,
-            target: $arrivalStationName.value,
+            source: departureStationId,
+            target: arrivalStationId,
             type: $typeName
-    }
+        }
 
         findPathResult(searchInput, $typeName)
-  }
+    }
 
   const findPathResult = (searchInput, typeName) => {
       searchInput.type = typeName;
@@ -108,20 +117,29 @@ function Search() {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.add('mdi-star')
-      classList.add('text-yellow-500')
+            classList.add('text-yellow-500')
+        }
     }
-  }
 
-  const initEventListener = () => {
-    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
-    $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
-    $shortestDistanceButton.addEventListener(EVENT_TYPE.CLICK, onShortestDistanceResult)
-    $shortestDurationButton.addEventListener(EVENT_TYPE.CLICK, onShortestDurationResult)
-  }
+    const initEventListener = () => {
+        $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+        $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+        $shortestDistanceButton.addEventListener(EVENT_TYPE.CLICK, onShortestDistanceResult)
+        $shortestDurationButton.addEventListener(EVENT_TYPE.CLICK, onShortestDurationResult)
+    }
 
-  this.init = () => {
-    initEventListener()
-  }
+    const initStations = () => {
+        api.station.getAll().then(stations => stations.forEach(
+            station => {
+                allStations.set(station.name, station.id);
+            }
+        ))
+    }
+
+    this.init = () => {
+        initStations();
+        initEventListener();
+    }
 }
 
 const login = new Search()
