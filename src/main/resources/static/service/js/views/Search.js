@@ -68,18 +68,10 @@ function Search() {
     }
 
     event.preventDefault()
-    const searchInput = {
-      sourceName: $departureStationName.value,
-      targetName: $arrivalStationName.value,
-      type: $type
-    }
-    fetch('/path', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(searchInput)
-    }).then(response => {
+    fetch("/path?sourceName=" + $departureStationName.value + "&targetName=" + $arrivalStationName.value + "&type=" + $type,
+      {
+        method: 'GET',
+      }).then(response => {
       if (!response.ok) {
         throw response;
       }

@@ -198,18 +198,14 @@ public class AcceptanceTest {
     }
 
     PathResponse findPath(String source, String target, String type) {
-        Map<String, String> params = new HashMap<>();
-        params.put("sourceName", source);
-        params.put("targetName", target);
-        params.put("type", type);
-
+        String encodingUrl =
+            "/path?sourceName=" + source + "&targetName=" + target + "&type=" + type;
         return
             given().
-                body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/path").
+                get(encodingUrl).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -217,18 +213,11 @@ public class AcceptanceTest {
     }
 
     ErrorResponse findPathByWrongType(String source, String target, String type) {
-        Map<String, String> params = new HashMap<>();
-        params.put("sourceName", source);
-        params.put("targetName", target);
-        params.put("type", type);
-
         return
             given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/path").
+                get("/path?sourceName=" + source + "&targetName=" + target + "&type=" + type).
                 then().
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).

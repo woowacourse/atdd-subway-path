@@ -1,9 +1,8 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.domain;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.exception.IllegalTypeNameException;
 
 public enum PathType {
@@ -16,10 +15,6 @@ public enum PathType {
         this.function = function;
     }
 
-    public int getWeight(LineStation lineStation) {
-        return function.apply(lineStation);
-    }
-
     public static PathType of(String typeName) {
         String upperCaseName = typeName.toUpperCase();
         if (!Objects.equals(upperCaseName, DURATION.name()) && !Objects.equals(upperCaseName,
@@ -27,5 +22,9 @@ public enum PathType {
             throw new IllegalTypeNameException(typeName);
         }
         return valueOf(upperCaseName);
+    }
+
+    public int getWeight(LineStation lineStation) {
+        return function.apply(lineStation);
     }
 }

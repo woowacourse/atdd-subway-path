@@ -1,6 +1,6 @@
 package wooteco.subway.admin.domain;
 
-public class LineStation {
+public class LineStation extends TimeEntity {
     private Long preStationId;
     private final Long stationId;
     private final int distance;

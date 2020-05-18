@@ -15,10 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathAlgorithm;
+import wooteco.subway.admin.domain.PathAlgorithmByDijkstra;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.PathType;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.IllegalStationNameException;
 import wooteco.subway.admin.exception.NotFoundLineException;
@@ -43,6 +45,8 @@ class PathServiceTest {
     @Mock
     private LineService lineService;
 
+    private PathAlgorithm pathAlgorithm = new PathAlgorithmByDijkstra();
+
     private PathService pathService;
 
     private Line line1;
@@ -64,7 +68,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationService, lineService);
+        pathService = new PathService(stationService, lineService, pathAlgorithm);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);

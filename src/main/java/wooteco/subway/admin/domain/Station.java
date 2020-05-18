@@ -2,7 +2,7 @@ package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
 
-public class Station extends CreateTime {
+public class Station extends TimeEntity {
 
     @Id
     private Long id;

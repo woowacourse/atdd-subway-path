@@ -1,13 +1,13 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.domain;
 
 import java.util.List;
 
-public class GraphResponse {
+public class PathResult {
     private final List<Long> path;
     private final int totalDistance;
     private final int totalDuration;
 
-    public GraphResponse(List<Long> path, int totalDistance, int totalDuration) {
+    public PathResult(List<Long> path, int totalDistance, int totalDuration) {
         this.path = path;
         this.totalDistance = totalDistance;
         this.totalDuration = totalDuration;
