@@ -54,7 +54,7 @@ public class LineService {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         persistLine.update(request.toLine());
-        lineRepository.save(persistLine);
+        save(persistLine);
     }
 
     public void deleteLineById(Long id) {
@@ -67,14 +67,14 @@ public class LineService {
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
-        lineRepository.save(line);
+        save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
                 .orElseThrow(() -> new NoSuchElementException("노선이 존재하지 않습니다."));
         line.removeLineStationById(stationId);
-        lineRepository.save(line);
+        save(line);
     }
 
     public LineDetailResponse findDetailLineById(Long id) {

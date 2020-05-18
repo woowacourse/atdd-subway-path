@@ -19,9 +19,6 @@ public class LineRepositoryTest {
     @Autowired
     private LineRepository lineRepository;
 
-//    @Autowired
-//    private LineService lineService;
-
     @Test
     void addLineStation() {
         // given
@@ -51,6 +48,15 @@ public class LineRepositoryTest {
     @Test
     void saveNullLine() {
         Line line = new Line("2호선", null, null, 5);
+        assertThatThrownBy(() -> lineRepository.save(line))
+                .isInstanceOf(DbActionExecutionException.class)
+                .hasCauseInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void nullLineStation() {
+        Line line = new Line("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line.addLineStation(new LineStation(null, null, 10, 10));
         assertThatThrownBy(() -> lineRepository.save(line))
                 .isInstanceOf(DbActionExecutionException.class)
                 .hasCauseInstanceOf(DataIntegrityViolationException.class);
