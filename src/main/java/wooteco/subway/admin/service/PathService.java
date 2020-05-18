@@ -6,6 +6,7 @@ import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.exception.WrongPathException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -30,9 +31,7 @@ public class PathService {
         Long sourceStationId = request.getSource();
         Long targetStationId = request.getTarget();
 
-        if (sourceStationId.equals(targetStationId)) {
-            throw new WrongPathException();
-        }
+        validate(request, wholeStations, sourceStationId, targetStationId);
 
         List<Long> StationIdsInShortestPath
                 = wholeLines.createShortestPath(sourceStationId, targetStationId, request.getType());
@@ -47,5 +46,14 @@ public class PathService {
                 edgesInShortestPath.getDistance(),
                 edgesInShortestPath.getDuration()
         );
+    }
+
+    private void validate(PathRequest request, Stations wholeStations, Long sourceStationId, Long targetStationId) {
+        if (wholeStations.isNotContains(request.getSource()) || wholeStations.isNotContains(request.getTarget())) {
+            throw new StationNotFoundException();
+        }
+        if (sourceStationId.equals(targetStationId)) {
+            throw new WrongPathException();
+        }
     }
 }

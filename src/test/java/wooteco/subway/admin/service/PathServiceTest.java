@@ -84,7 +84,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
 
         PathResponse pathResponse = pathService.calculatePath(
-                new PathRequest("강남역", "선릉역", PathType.DISTANCE));
+                new PathRequest(1L, 3L, PathType.DISTANCE));
 
         assertThat(pathResponse.getDistance()).isEqualTo(15);
         assertThat(pathResponse.getDuration()).isEqualTo(25);
@@ -100,7 +100,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
 
         PathResponse pathResponse = pathService.calculatePath(
-                new PathRequest("선릉역", "양재시민의숲역", PathType.DISTANCE));
+                new PathRequest(3L, 5L, PathType.DISTANCE));
 
         assertThat(pathResponse.getDistance()).isEqualTo(35);
         assertThat(pathResponse.getDuration()).isEqualTo(45);
@@ -118,7 +118,7 @@ public class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
 
         PathResponse pathResponse = pathService.calculatePath(
-                new PathRequest("선릉역", "양재시민의숲역", PathType.DURATION));
+                new PathRequest(3L, 5L, PathType.DURATION));
 
         assertThat(pathResponse.getDistance()).isEqualTo(1010);
         assertThat(pathResponse.getDuration()).isEqualTo(11);
@@ -131,7 +131,7 @@ public class PathServiceTest {
     @DisplayName("출발지와 도착지가 같은 경우 예외가 발생하는지 테스트")
     @Test
     void sameSourceAndTargetTest() {
-        PathRequest pathRequest = new PathRequest("강남역", "강남역", PathType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(1L, 1L, PathType.DISTANCE);
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
@@ -150,7 +150,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
 
-        PathRequest pathRequest = new PathRequest("강남역", "까치산역", PathType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(1L, 6L, PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
                 .isInstanceOf(WrongPathException.class)
@@ -160,7 +160,7 @@ public class PathServiceTest {
     @DisplayName("입력된 역을 찾을 수 없는 경우 예외가 발생하는지 테스트")
     @Test
     void stationNotFoundTest() {
-        PathRequest pathRequest = new PathRequest("강남역", "제주역", PathType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(1L, 10L, PathType.DISTANCE);
 
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6));
 

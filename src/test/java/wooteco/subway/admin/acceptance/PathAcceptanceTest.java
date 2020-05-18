@@ -38,9 +38,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addEdge(lineResponse3.getId(), stationResponse6.getId(), stationResponse5.getId());
 
         //when
-        PathResponse pathResponseByDistance = calculatePath("양재시민의숲역", "선릉역", PathType.DISTANCE);
+        PathResponse pathResponseByDistance = calculatePath(5L, 3L, PathType.DISTANCE);
         //and
-        PathResponse pathResponseByDuration = calculatePath("양재시민의숲역", "선릉역", PathType.DURATION);
+        PathResponse pathResponseByDuration = calculatePath(5L, 3L, PathType.DURATION);
 
         //then
         assertThat(pathResponseByDistance.getDistance()).isEqualTo(40);

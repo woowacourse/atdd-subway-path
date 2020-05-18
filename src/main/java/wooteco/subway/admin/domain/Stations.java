@@ -37,4 +37,9 @@ public class Stations {
     public List<Station> getStations() {
         return stations;
     }
+
+    public boolean isNotContains(Long stationId) {
+        return stations.stream()
+                .noneMatch(station -> station.getId().equals(stationId));
+    }
 }

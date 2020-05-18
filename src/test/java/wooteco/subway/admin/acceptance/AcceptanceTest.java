@@ -179,7 +179,7 @@ public class AcceptanceTest {
                         extract().as(WholeSubwayResponse.class);
     }
 
-    PathResponse calculatePath(String source, String target, PathType type) {
+    PathResponse calculatePath(Long source, Long target, PathType type) {
         Map<String, Object> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
