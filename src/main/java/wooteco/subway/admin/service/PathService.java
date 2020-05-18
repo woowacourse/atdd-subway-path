@@ -11,10 +11,8 @@ import wooteco.subway.admin.exception.WrongPathException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,25 +42,13 @@ public class PathService {
                 .map(stations::findStationById)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
 
-        LineStations pathLineStations = extractPathLineStations(lineStations, shortestPath);
+        LineStations pathLineStations = lineStations.findLineStationsByIds(shortestPath);
         return new PathResponse(pathStations, pathLineStations.getDistance(), pathLineStations.getDuration());
-    }
-
-    private LineStations extractPathLineStations(LineStations lineStations, List<Long> shortestPath) {
-        List<LineStation> pathLineStations = new ArrayList<>();
-
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            Long preStationId = shortestPath.get(i);
-            Long stationId = shortestPath.get(i + 1);
-
-            pathLineStations.add(lineStations.findLineStationById(preStationId, stationId));
-        }
-        return new LineStations(pathLineStations);
     }
 
     private List<Long> createShortestPath(Lines lines, Long source, Long target, PathType type) {
         try {
-            return createDijkstraShortestPathByLines(lines,type).getPath(source, target).getVertexList();
+            return createDijkstraShortestPathByLines(lines, type).getPath(source, target).getVertexList();
         } catch (IllegalArgumentException e) {
             throw new WrongPathException();
         }

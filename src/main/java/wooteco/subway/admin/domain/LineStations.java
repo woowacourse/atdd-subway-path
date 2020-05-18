@@ -2,6 +2,7 @@ package wooteco.subway.admin.domain;
 
 import wooteco.subway.admin.exception.WrongPathException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LineStations {
@@ -21,6 +22,18 @@ public class LineStations {
                 .filter(lineStation -> lineStation.isLineStationOf(preStationId, stationId))
                 .findFirst()
                 .orElseThrow(WrongPathException::new);
+    }
+
+    public LineStations findLineStationsByIds(List<Long> ids) {
+        List<LineStation> findLineStations = new ArrayList<>();
+
+        for (int i = 0; i < ids.size() - 1; i++) {
+            Long preStationId = ids.get(i);
+            Long stationId = ids.get(i + 1);
+
+            findLineStations.add(findLineStationById(preStationId, stationId));
+        }
+        return new LineStations(findLineStations);
     }
 
     public int getDistance() {
