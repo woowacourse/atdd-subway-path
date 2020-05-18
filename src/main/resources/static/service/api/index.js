@@ -33,7 +33,7 @@ const api = (() => {
 
   const path = {
     find(data) {
-      return fetch(`/paths?startStationName=${data.startStationName}&targetStationName=${data.targetStationName}&type=${data.type}`);
+      return request(`/paths?startStationName=${data.startStationName}&targetStationName=${data.targetStationName}&type=${data.type}`);
     }
   }
 

@@ -87,12 +87,17 @@ function Search() {
       targetStationName: $arrivalStationName.value,
       type: value
     }
-    api.path.find(searchInput).then(async data => {
-      if(!data.ok){
-        alert(await data.text());
+    api.path.find(searchInput).then(data => {
+      console.log(data);
+      if(data.status == 400){
+        alert(data.message);
         return;
       }
-      showSearchResult(await data.json());
+      if(data.status == 500){
+        alert("Unexpected Server Error");
+        return;
+      }
+      showSearchResult(data);
     });
   }
 
