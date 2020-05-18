@@ -23,7 +23,8 @@ public class LineStations {
 
     public LineStation findLineStation(Long preStationId, Long stationId) {
         for (LineStation lineStation : lineStations) {
-            if (lineStation.is(preStationId, stationId) || lineStation.is(stationId, preStationId)) {
+            if (lineStation.isSamePreStationIdAndStationId(preStationId, stationId)
+                    || lineStation.isSamePreStationIdAndStationId(stationId, preStationId)) {
                 return lineStation;
             }
         }

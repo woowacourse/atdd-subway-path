@@ -14,12 +14,12 @@ public enum PathSearchType {
 
     public static PathSearchType of(String type) {
         return Arrays.stream(PathSearchType.values())
-                .filter(pathSearchType -> pathSearchType.is(type))
+                .filter(pathSearchType -> pathSearchType.isSameValue(type))
                 .findFirst()
                 .orElseThrow(IllegalPathSearchTypeException::new);
     }
 
-    public boolean is(String value) {
+    public boolean isSameValue(String value) {
         return this.value.equals(value);
     }
 }

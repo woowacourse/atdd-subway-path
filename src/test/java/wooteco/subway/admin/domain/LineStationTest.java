@@ -11,6 +11,6 @@ public class LineStationTest {
     void isTest() {
         LineStation lineStation = new LineStation(1L, 2L, 10, 10);
 
-        assertTrue(lineStation.is(1L, 2L));
+        assertTrue(lineStation.isSamePreStationIdAndStationId(1L, 2L));
     }
 }

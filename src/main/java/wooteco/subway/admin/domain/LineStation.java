@@ -19,7 +19,7 @@ public class LineStation {
         return new LineStation(null, null, 0, 0);
     }
 
-    public boolean is(Long preStationId, Long stationId) {
+    public boolean isSamePreStationIdAndStationId(Long preStationId, Long stationId) {
         return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
     }
 

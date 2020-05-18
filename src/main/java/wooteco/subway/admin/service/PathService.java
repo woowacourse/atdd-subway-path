@@ -92,11 +92,11 @@ public class PathService {
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
                 DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
-                if (weight.is("DISTANCE")) {
+                if (weight.isSameValue("DISTANCE")) {
                     graph.setEdgeWeight(edge, lineStation.getDistance());
                     continue;
                 }
-                if (weight.is("DURATION")) {
+                if (weight.isSameValue("DURATION")) {
                     graph.setEdgeWeight(edge, lineStation.getDuration());
                 }
             }
