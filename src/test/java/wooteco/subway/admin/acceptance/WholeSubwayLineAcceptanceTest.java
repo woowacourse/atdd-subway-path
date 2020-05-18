@@ -18,17 +18,17 @@ public class WholeSubwayLineAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("삼성역");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addEdge(lineResponse1.getId(), null, stationResponse1.getId());
+        addEdge(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
+        addEdge(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
         //and
         LineResponse lineResponse2 = createLine("2호선");
         StationResponse stationResponse4 = createStation("잠실역");
         StationResponse stationResponse5 = createStation("양재역");
         StationResponse stationResponse6 = createStation("양재시민의숲역");
-        addLineStation(lineResponse2.getId(), null, stationResponse4.getId());
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
-        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
+        addEdge(lineResponse2.getId(), null, stationResponse4.getId());
+        addEdge(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
+        addEdge(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
 
         //when
         List<LineDetailResponse> responses = retrieveWholeSubway().getLineDetailResponses();

@@ -60,8 +60,8 @@ const api = (() => {
     getAllDetail() {
       return requestWithJsonData(`/lines/detail`)
     },
-    addLineStation(lineId, lineStationCreateRequestView) {
-      return request(`/lines/${lineId}/stations`, METHOD.POST(lineStationCreateRequestView))
+    addEdge(lineId, edgeCreateRequestView) {
+      return request(`/lines/${lineId}/stations`, METHOD.POST(edgeCreateRequestView))
     },
     create(data) {
       return requestWithJsonData(`/lines`, METHOD.POST(data))

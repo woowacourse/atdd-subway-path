@@ -86,7 +86,7 @@ function AdminEdge() {
       duration: document.querySelector('#duration').value
     }
     api.line
-      .addLineStation(lineId, newEdge)
+      .addEdge(lineId, newEdge)
       .then(() => {
         createSubwayEdgeModal.toggle()
         initSubwayLinesView()

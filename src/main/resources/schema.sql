@@ -18,7 +18,7 @@ create table if not exists LINE
    primary key(id)
 );
 
-create table if not exists LINE_STATION
+create table if not exists EDGE
 (
     line bigint not null,
     station_id bigint not null,
@@ -28,3 +28,4 @@ create table if not exists LINE_STATION
     created_at datetime,
     updated_at datetime
 );
+

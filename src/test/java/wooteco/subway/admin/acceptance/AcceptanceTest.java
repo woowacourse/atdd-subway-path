@@ -138,11 +138,11 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
-        addLineStation(lineId, preStationId, stationId, 10, 10);
+    void addEdge(Long lineId, Long preStationId, Long stationId) {
+        addEdge(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    void addEdge(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -160,7 +160,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    void removeLineStation(Long lineId, Long stationId) {
+    void removeEdge(Long lineId, Long stationId) {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).

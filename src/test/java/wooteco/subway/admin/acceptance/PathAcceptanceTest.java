@@ -20,22 +20,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("선릉역");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addEdge(lineResponse1.getId(), null, stationResponse1.getId());
+        addEdge(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
+        addEdge(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
         //and
         LineResponse lineResponse2 = createLine("2호선");
         StationResponse stationResponse4 = createStation("양재역");
         StationResponse stationResponse5 = createStation("양재시민의숲역");
-        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse4.getId());
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
+        addEdge(lineResponse2.getId(), null, stationResponse1.getId());
+        addEdge(lineResponse2.getId(), stationResponse1.getId(), stationResponse4.getId());
+        addEdge(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId());
         //and
         LineResponse lineResponse3 = createLine("3호선");
         StationResponse stationResponse6 = createStation("신촌역");
-        addLineStation(lineResponse3.getId(), null, stationResponse3.getId());
-        addLineStation(lineResponse3.getId(), stationResponse3.getId(), stationResponse6.getId(), 1000, 1);
-        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse5.getId());
+        addEdge(lineResponse3.getId(), null, stationResponse3.getId());
+        addEdge(lineResponse3.getId(), stationResponse3.getId(), stationResponse6.getId(), 1000, 1);
+        addEdge(lineResponse3.getId(), stationResponse6.getId(), stationResponse5.getId());
 
         //when
         PathResponse pathResponseByDistance = calculatePath("양재시민의숲역", "선릉역", PathType.DISTANCE);

@@ -2,24 +2,24 @@ package wooteco.subway.admin.domain;
 
 import java.util.Objects;
 
-public class LineStation {
+public class Edge {
     private Long preStationId;
     private Long stationId;
     private int distance;
     private int duration;
 
-    public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+    public Edge(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
         this.duration = duration;
     }
 
-    public void updatePreLineStation(Long preStationId) {
+    public void updatePreEdge(Long preStationId) {
         this.preStationId = preStationId;
     }
 
-    public boolean isLineStationOf(Long preStationId, Long stationId) {
+    public boolean isEdgeOf(Long preStationId, Long stationId) {
         return (this.preStationId == preStationId && this.stationId == stationId)
                 || (this.preStationId == stationId && this.stationId == preStationId);
     }
@@ -44,7 +44,7 @@ public class LineStation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LineStation that = (LineStation) o;
+        Edge that = (Edge) o;
         return distance == that.distance &&
                 duration == that.duration &&
                 Objects.equals(preStationId, that.preStationId) &&

@@ -49,14 +49,14 @@ public class LineController {
     }
 
     @PostMapping("/lines/{lineId}/stations")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
-        lineService.addLineStation(lineId, view);
+    public ResponseEntity addEdge(@PathVariable Long lineId, @RequestBody EdgeCreateRequest view) {
+        lineService.addEdge(lineId, view);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
+    public ResponseEntity removeEdge(@PathVariable Long lineId, @PathVariable Long stationId) {
+        lineService.removeEdge(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 

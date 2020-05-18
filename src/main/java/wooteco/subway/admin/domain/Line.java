@@ -16,7 +16,7 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
+    private Set<Edge> edges = new HashSet<>();
 
     public Line() {
     }
@@ -54,8 +54,8 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public Set<Edge> getEdges() {
+        return edges;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -83,53 +83,53 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+    public void addEdge(Edge edge) {
+        edges.stream()
+                .filter(it -> Objects.equals(it.getPreStationId(), edge.getPreStationId()))
                 .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+                .ifPresent(it -> it.updatePreEdge(edge.getStationId()));
 
-        stations.add(lineStation);
+        edges.add(edge);
     }
 
-    public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
+    public void removeEdgeById(Long stationId) {
+        Edge targetEdge = edges.stream()
                 .filter(it -> Objects.equals(it.getStationId(), stationId))
                 .findFirst()
                 .orElseThrow(StationNotFoundException::new);
 
-        stations.stream()
+        edges.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), stationId))
                 .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+                .ifPresent(it -> it.updatePreEdge(targetEdge.getPreStationId()));
 
-        stations.remove(targetLineStation);
+        edges.remove(targetEdge);
     }
 
-    public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
+    public List<Long> getEdgesId() {
+        if (edges.isEmpty()) {
             return new ArrayList<>();
         }
 
-        LineStation firstLineStation = stations.stream()
+        Edge firstEdge = edges.stream()
                 .filter(it -> it.getPreStationId() == null)
                 .findFirst()
                 .orElseThrow(StationNotFoundException::new);
 
         List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
+        stationIds.add(firstEdge.getStationId());
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+            Optional<Edge> nextEdge = edges.stream()
                     .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
                     .findFirst();
 
-            if (!nextLineStation.isPresent()) {
+            if (!nextEdge.isPresent()) {
                 break;
             }
 
-            stationIds.add(nextLineStation.get().getStationId());
+            stationIds.add(nextEdge.get().getStationId());
         }
 
         return stationIds;
