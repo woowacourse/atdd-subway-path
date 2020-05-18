@@ -145,4 +145,11 @@ public class Line {
 
         return stationIds;
     }
+
+    public LineStation findLineStationByPreStationId(Long preStationId){
+        return stations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
+    }
 }

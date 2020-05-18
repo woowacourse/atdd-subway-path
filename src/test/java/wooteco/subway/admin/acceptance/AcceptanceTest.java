@@ -113,4 +113,3 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 }
-
