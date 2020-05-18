@@ -15,6 +15,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        List<Station> stations = Arrays.asList(new Station("잠실"), new Station("강남"), new Station("삼성"));
+        return LineDetailResponse.of(new Line("2호선", LocalTime.of(5,30), LocalTime.of(23,30), 10), stations);
     }
 }

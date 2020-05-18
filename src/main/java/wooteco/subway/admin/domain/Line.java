@@ -22,7 +22,7 @@ public class Line {
     private LocalDateTime updatedAt;
     private Set<Edge> edges = new HashSet<>();
 
-    public Line() {
+    private Line() {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
