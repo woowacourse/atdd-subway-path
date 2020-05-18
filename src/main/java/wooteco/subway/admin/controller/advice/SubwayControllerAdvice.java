@@ -16,7 +16,7 @@ public class SubwayControllerAdvice {
 
 	@ExceptionHandler(NoStationNameExistsException.class)
 	public ResponseEntity<ExceptionResponse> getNoStationNameExistsException(NoStationNameExistsException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(EmptyStationNameException.class)
@@ -26,11 +26,11 @@ public class SubwayControllerAdvice {
 
 	@ExceptionHandler(NoCriteriaExistsException.class)
 	public ResponseEntity<ExceptionResponse> getNoCriteriaExistsException(NoCriteriaExistsException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(LineDoesNotExistException.class)
-	public ResponseEntity<ExceptionResponse> getLineDoesNotExistException(LineDoesNotExistException e) {
-		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+	@ExceptionHandler(NoLineExistException.class)
+	public ResponseEntity<ExceptionResponse> getNoLineExistException(NoLineExistException e) {
+		return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 }

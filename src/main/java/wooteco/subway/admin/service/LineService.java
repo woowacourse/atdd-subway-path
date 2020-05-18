@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.request.LineRequest;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
-import wooteco.subway.admin.exception.LineDoesNotExistException;
+import wooteco.subway.admin.exception.NoLineExistException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -68,7 +68,7 @@ public class LineService {
 
     private Line getLine(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(LineDoesNotExistException::new);
+                .orElseThrow(NoLineExistException::new);
     }
 
     public WholeSubwayResponse showLinesDetail() {
