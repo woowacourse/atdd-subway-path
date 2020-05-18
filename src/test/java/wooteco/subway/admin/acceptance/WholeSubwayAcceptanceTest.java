@@ -14,7 +14,6 @@ import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
 public class WholeSubwayAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("지하철 노선도 전체 정보 조회")
     @Test
     public void wholeSubway() {

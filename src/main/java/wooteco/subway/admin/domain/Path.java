@@ -9,10 +9,10 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
-    private WeightedMultigraph<Long, PathEdge> graph;
+    private final WeightedMultigraph<Long, PathEdge> graph;
 
     public Path() {
-        graph = new WeightedMultigraph(PathEdge.class);
+        graph = new WeightedMultigraph<>(PathEdge.class);
     }
 
     public void addVertexes(List<Station> stations) {
@@ -23,8 +23,8 @@ public class Path {
 
     public void setEdges(List<Line> lines, PathType pathType) {
         for (Line line : lines) {
-            List<LineStation> stations = line.getLineStations();
-            List<LineStation> edgeStations = filterValidEdgeStations(stations);
+            List<LineStation> lineStations = line.getLineStations();
+            List<LineStation> edgeStations = filterValidEdgeStations(lineStations);
             addEdgesWithWeight(edgeStations, pathType);
         }
     }

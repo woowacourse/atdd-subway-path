@@ -4,14 +4,18 @@ import java.time.LocalTime;
 
 import wooteco.subway.admin.domain.Line;
 
-public class LineRequest {
+public class LineCreateRequest {
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
     private String bgColor;
 
-    public LineRequest() {
+    public LineCreateRequest() {
+    }
+
+    public Line toLine() {
+        return new Line(name, startTime, endTime, intervalTime, bgColor);
     }
 
     public String getName() {
@@ -28,10 +32,6 @@ public class LineRequest {
 
     public int getIntervalTime() {
         return intervalTime;
-    }
-
-    public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime, bgColor);
     }
 
     public String getBgColor() {

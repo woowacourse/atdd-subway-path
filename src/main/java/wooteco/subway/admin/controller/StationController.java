@@ -27,8 +27,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station persistStation = lineService.addStation(view);
+    public ResponseEntity<StationResponse> createStation(
+        @RequestBody StationCreateRequest stationCreateRequest) {
+        Station persistStation = lineService.addStation(stationCreateRequest.toStation());
 
         return ResponseEntity
             .created(URI.create("/stations/" + persistStation.getId()))
@@ -43,7 +44,7 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         lineService.deleteStationById(id);
 
         return ResponseEntity.noContent().build();

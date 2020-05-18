@@ -10,18 +10,18 @@ import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.PathEdge;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.ShortestDistanceResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 @Service
 public class PathService {
-    private LineService lineService;
+    private final LineService lineService;
 
     public PathService(LineService lineService) {
         this.lineService = lineService;
     }
 
-    public ShortestDistanceResponse searchShortestDistancePath(String source, String target,
+    public PathResponse searchShortestPath(String source, String target,
         String type) {
         Station sourceStation = lineService.findStationByName(source);
         Station targetStation = lineService.findStationByName(target);
@@ -31,7 +31,7 @@ public class PathService {
         GraphPath<Long, PathEdge> shortestPath = path.searchShortestPath(sourceStation,
             targetStation);
         List<Long> stationIds = shortestPath.getVertexList();
-        return new ShortestDistanceResponse(StationResponse.listOf(toStations(stationIds)),
+        return new PathResponse(StationResponse.listOf(toStations(stationIds)),
             path.calculateDistance(shortestPath), path.calculateDuration(shortestPath));
     }
 

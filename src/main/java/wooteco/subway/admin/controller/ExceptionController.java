@@ -10,7 +10,8 @@ import wooteco.subway.admin.dto.ErrorResponse;
 @RestControllerAdvice
 public class ExceptionController {
     @ExceptionHandler(value = {RuntimeException.class})
-    public ResponseEntity handleRuntimeException(RuntimeException e) {
-        return new ResponseEntity(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()),
+            HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

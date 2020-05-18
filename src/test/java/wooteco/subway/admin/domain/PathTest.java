@@ -66,6 +66,7 @@ class PathTest {
         assertThat(duration).isEqualTo(10);
     }
 
+    @DisplayName("최단 시간 경로 조회")
     @Test
     void getShortestDurationPath() {
         //given

@@ -2,15 +2,15 @@ package wooteco.subway.admin.dto;
 
 import java.util.List;
 
-public class ShortestDistanceResponse {
+public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
     private int duration;
 
-    public ShortestDistanceResponse() {
+    public PathResponse() {
     }
 
-    public ShortestDistanceResponse(List<StationResponse> stations, int distance, int duration) {
+    public PathResponse(List<StationResponse> stations, int distance, int duration) {
         this.stations = stations;
         this.distance = distance;
         this.duration = duration;

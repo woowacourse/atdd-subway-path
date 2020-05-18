@@ -63,7 +63,7 @@ public class LineServiceTest {
     void addLineStationAtTheFirstOfLine() {
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
             10);
-        lineService.addLineStation(line.getId(), request);
+        lineService.addLineStation(line.getId(), request.toLineStation());
 
         assertThat(line.getStations()).hasSize(4);
 
@@ -78,7 +78,7 @@ public class LineServiceTest {
     void addLineStationBetweenTwo() {
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
             station4.getId(), 10, 10);
-        lineService.addLineStation(line.getId(), request);
+        lineService.addLineStation(line.getId(), request.toLineStation());
 
         assertThat(line.getStations()).hasSize(4);
 
@@ -93,7 +93,7 @@ public class LineServiceTest {
     void addLineStationAtTheEndOfLine() {
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
             station4.getId(), 10, 10);
-        lineService.addLineStation(line.getId(), request);
+        lineService.addLineStation(line.getId(), request.toLineStation());
 
         assertThat(line.getStations()).hasSize(4);
 
