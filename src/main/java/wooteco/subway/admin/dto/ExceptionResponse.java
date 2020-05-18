@@ -1,8 +1,8 @@
 package wooteco.subway.admin.dto;
 
 public class ExceptionResponse {
-	private String frontMessageKey;
-	private String message;
+	private final String frontMessageKey;
+	private final String message;
 
 	public ExceptionResponse(String frontMessageKey, String message) {
 		this.frontMessageKey = frontMessageKey;
