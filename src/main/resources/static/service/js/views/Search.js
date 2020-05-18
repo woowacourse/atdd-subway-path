@@ -17,7 +17,6 @@ function Search() {
   const $shortestTime = document.querySelector('#shortest-time')
 
   const showSearchResult = (data) => {
-    console.log(data);
     $durationSum.innerText = data.durationSum + "분";
     $distanceSum.innerText = data.distanceSum + "km";
 
@@ -93,7 +92,7 @@ function Search() {
         alert(await data.text());
         return;
       }
-      showSearchResult(data);
+      showSearchResult(await data.json());
     });
   }
 
