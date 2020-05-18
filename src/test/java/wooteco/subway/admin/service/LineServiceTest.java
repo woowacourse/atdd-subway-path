@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -60,6 +61,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선의 첫번째 역으로 추가")
     void addLineStationAtTheFirstOfLine() {
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
             10);
@@ -75,6 +77,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선 중간에 역을 추가")
     void addLineStationBetweenTwo() {
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
             station4.getId(), 10, 10);
@@ -90,6 +93,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선의 마지막에 역을 추가")
     void addLineStationAtTheEndOfLine() {
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
             station4.getId(), 10, 10);
@@ -105,6 +109,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선의 첫번째 역 삭제")
     void removeLineStationAtTheFirstOfLine() {
         lineService.removeLineStation(line.getId(), 1L);
 
@@ -116,6 +121,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선 중간역 삭제")
     void removeLineStationBetweenTwo() {
         lineService.removeLineStation(line.getId(), 2L);
 
@@ -125,6 +131,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("노선 마지막 역 삭제")
     void removeLineStationAtTheEndOfLine() {
         lineService.removeLineStation(line.getId(), 3L);
 
@@ -136,6 +143,7 @@ public class LineServiceTest {
     }
 
     @Test
+    @DisplayName("지하철역 id로 노선 조회")
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"),
             new Station("삼성역"));

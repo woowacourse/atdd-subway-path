@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import wooteco.subway.admin.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
     @Test
+    @DisplayName("시작역과 도착역의 최단 거리 경로를 조회")
     void searchShortestDistancePath() {
         //given 여러 개의 노선에 여러 개의 지하철역이 추가되어있다.
         LineResponse line = createLine("2호선");
@@ -38,6 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("시작역과 도착역의 최소 시간 경로를 조회")
     void searchShortestDurationPath() {
         //given 여러 개의 노선에 여러 개의 지하철역이 추가되어있다.
         LineResponse line = createLine("2호선");

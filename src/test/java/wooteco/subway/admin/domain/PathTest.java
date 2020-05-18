@@ -67,6 +67,7 @@ class PathTest {
     }
 
     @Test
+    @DisplayName("최소 거리 경로 조회")
     void getShortestDurationPath() {
         //given
         path.setEdges(Collections.singletonList(line3), PathType.DURATION);

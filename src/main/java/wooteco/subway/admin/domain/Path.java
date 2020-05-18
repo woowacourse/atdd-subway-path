@@ -12,7 +12,7 @@ public class Path {
     private WeightedMultigraph<Long, PathEdge> graph;
 
     public Path() {
-        graph = new WeightedMultigraph(PathEdge.class);
+        graph = new WeightedMultigraph<>(PathEdge.class);
     }
 
     public void addVertexes(List<Station> stations) {

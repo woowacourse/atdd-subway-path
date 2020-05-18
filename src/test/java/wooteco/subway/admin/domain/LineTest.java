@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,6 +24,7 @@ public class LineTest {
     }
 
     @Test
+    @DisplayName("노선의 첫번째 역으로 추가")
     void addLineStation() {
         line.addLineStation(new LineStation(null, 4L, 10, 10));
 
@@ -35,6 +37,7 @@ public class LineTest {
     }
 
     @Test
+    @DisplayName("노선에 추가된 역 정보를 조회")
     void getLineStations() {
         List<Long> stationIds = line.getLineStationsId();
 
@@ -45,6 +48,7 @@ public class LineTest {
     }
 
     @ParameterizedTest
+    @DisplayName("역의 id로 해당 역을 삭제")
     @ValueSource(longs = {1L, 2L, 3L})
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);

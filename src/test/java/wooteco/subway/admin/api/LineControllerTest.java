@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class LineControllerTest {
     private LineService lineService;
 
     @Test
+    @DisplayName("ETag를 이용해 캐싱")
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
             Arrays.asList(createMockResponse(), createMockResponse()));

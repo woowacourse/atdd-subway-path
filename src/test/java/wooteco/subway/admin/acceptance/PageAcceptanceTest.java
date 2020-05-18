@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -32,6 +33,7 @@ public class PageAcceptanceTest {
     }
 
     @Test
+    @DisplayName("새로운 노선을 추가하고 조회")
     void linePage() {
         createLine("신분당선");
 

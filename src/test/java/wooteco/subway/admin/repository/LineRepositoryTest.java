@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -17,6 +18,7 @@ public class LineRepositoryTest {
     private LineRepository lineRepository;
 
     @Test
+    @DisplayName("노선을 생성하고 그 노선에 역을 추가")
     void addLineStation() {
         // given
         Line line = new Line("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-600");
