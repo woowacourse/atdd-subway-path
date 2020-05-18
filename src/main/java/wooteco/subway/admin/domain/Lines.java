@@ -22,7 +22,7 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.toList());
     }
 
-    public SubwayGraphs makeSubwayGraphs(Long sourceStationId, Long targetStationId) {
+    public SubwayGraphs makeSubwayGraphs() {
         return lines.stream()
                 .map(Line::getEdges)
                 .flatMap(Collection::stream)
