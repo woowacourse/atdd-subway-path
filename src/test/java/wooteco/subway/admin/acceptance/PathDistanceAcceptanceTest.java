@@ -2,9 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -98,18 +96,12 @@ public class PathDistanceAcceptanceTest extends AcceptanceTest {
         assertThat(pathByDuration.getDuration()).isEqualTo(13);
     }
 
-    private PathResponse getPath(String source, String target, String CriteriaType) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
-        params.put("criteria", CriteriaType);
-
+    private PathResponse getPath(String source, String target, String criteriaType) {
         return given().
-            body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/paths").
+            get("/paths?source=" + source + "&target=" + target + "&criteria=" + criteriaType).
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).

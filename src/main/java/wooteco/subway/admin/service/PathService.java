@@ -10,6 +10,7 @@ import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.GraphResultResponse;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -29,7 +30,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse showPaths(String source, String target, CriteriaType criteria) {
+    public PathResponse showPaths(PathRequest pathRequest) {
+        String source = pathRequest.getSource();
+        String target = pathRequest.getTarget();
+        CriteriaType criteria = CriteriaType.of(pathRequest.getCriteria());
+
         validateSameStations(source, target);
         List<Line> lines = lineRepository.findAll();
         Station from = stationRepository.findByName(source)

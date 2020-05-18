@@ -1,5 +1,4 @@
 import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
-import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
 
 function Search() {
@@ -35,14 +34,12 @@ function Search() {
   }
 
   const getSearchResult = pathType => {
-    const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value,
-      criteria: pathType,
-    }
-    api.path
-    .find(searchInput)
-    .then(data => {
+    const source = $departureStationName.value;
+    const target = $arrivalStationName.value;
+    const criteria = pathType;
+
+    fetch("/paths?source=" + source + "&target=" + target + "&criteria=" + criteria)
+    .then(data => data.json()).then(data => {
       if (data.status) {
         alert(data.message);
         return

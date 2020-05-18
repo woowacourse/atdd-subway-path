@@ -16,10 +16,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -81,8 +81,9 @@ class PathServiceTest {
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station3.getName())).thenReturn(Optional.of(station3));
 
-        PathResponse pathResponse = pathService.showPaths(station1.getName(), station3.getName(),
-            CriteriaType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(station1.getName(), station3.getName(),
+            "distance");
+        PathResponse pathResponse = pathService.showPaths(pathRequest);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
         List<StationResponse> stations = pathResponse.getStations();
         List<Long> ids = stations.stream()
@@ -94,24 +95,28 @@ class PathServiceTest {
 
     @Test
     void sameSourceAndTarget() {
+        PathRequest pathRequest = new PathRequest(station1.getName(), station1.getName(),
+            "distance");
         assertThatThrownBy(() -> {
-            pathService.showPaths(station1.getName(), station1.getName(), CriteriaType.DISTANCE);
+            pathService.showPaths(pathRequest);
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("동일역으로는 조회할 수 없습니다.");
     }
 
     @Test
     void notExistSourceName() {
+        PathRequest pathRequest = new PathRequest("존재하지 않는 역", station1.getName(), "distance");
         assertThatThrownBy(() -> {
-            pathService.showPaths("존재하지 않는 역", station1.getName(), CriteriaType.DISTANCE);
+            pathService.showPaths(pathRequest);
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("존재하지 않는 역입니다.");
     }
 
     @Test
     void notExistTargetName() {
+        PathRequest pathRequest = new PathRequest(station1.getName(), "존재하지 않는 역", "distance");
         assertThatThrownBy(() -> {
-            pathService.showPaths(station1.getName(), "존재하지 않는 역", CriteriaType.DISTANCE);
+            pathService.showPaths(pathRequest);
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("존재하지 않는 역입니다.");
     }
@@ -124,8 +129,10 @@ class PathServiceTest {
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station6.getName())).thenReturn(Optional.of(station6));
 
+        PathRequest pathRequest = new PathRequest(station1.getName(), station6.getName(),
+            "distance");
         assertThatThrownBy(() -> {
-            pathService.showPaths(station1.getName(), station6.getName(), CriteriaType.DISTANCE);
+            pathService.showPaths(pathRequest);
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("갈 수 없는 경로입니다.");
     }
