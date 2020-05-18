@@ -91,9 +91,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private PathResponse searchPath(String source, String target, SearchType type) {
 		return given().
-				when().
+		when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
-				then().
+		then().
 				log().all().
 				statusCode(HttpStatus.OK.value()).
 				extract().as(PathResponse.class);
@@ -101,9 +101,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private String searchPathWithNotExistStations(String source, String target, SearchType type) {
 		return given().
-				when().
+		when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
-				then().
+		then().
 				log().all().
 				statusCode(HttpStatus.NOT_FOUND.value()).
 				extract().asString();
@@ -111,9 +111,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private String searchPathWithSameStations(String source, String target, SearchType type) {
 		return given().
-				when().
+		when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
-				then().
+		then().
 				log().all().
 				statusCode(HttpStatus.BAD_REQUEST.value()).
 				extract().asString();
@@ -121,9 +121,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private String searchPathWithUnconnectedStations(String source, String target, SearchType type) {
 		return given().
-				when().
+		when().
 				get("/paths" + "?source=" + source + "&target=" + target + "&type=" + type).
-				then().
+		then().
 				log().all().
 				statusCode(HttpStatus.BAD_REQUEST.value()).
 				extract().asString();

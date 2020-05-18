@@ -27,7 +27,6 @@ public class AcceptanceTest {
     static final String STATION_NAME_NORYANGJIN = "노량진역";
     static final String STATION_NAME_CITYHALL = "시청역";
     static final String STATION_NAME_SAMSUNG = "삼성역";
-    static final String STATION_NAME_KYODAE = "교대역";
 
     static final String LINE_NAME_1 = "1호선";
     static final String LINE_NAME_2 = "2호선";
@@ -53,9 +52,9 @@ public class AcceptanceTest {
                 body(stationRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
     }
@@ -63,9 +62,9 @@ public class AcceptanceTest {
     List<StationResponse> getStations() {
         return
                 given().
-                        when().
+                when().
                         get("/stations").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
@@ -73,9 +72,9 @@ public class AcceptanceTest {
 
     void deleteStation(Long id) {
         given().
-                when().
+        when().
                 delete("/stations/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -86,9 +85,9 @@ public class AcceptanceTest {
                 body(lineRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
     }
@@ -96,9 +95,9 @@ public class AcceptanceTest {
     LineDetailResponse getLine(Long id) {
         return
                 given().
-                        when().
+                when().
                         get("/lines/" + id).
-                        then().
+                then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -110,9 +109,9 @@ public class AcceptanceTest {
                 body(lineRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 put("/lines/" + id).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -120,9 +119,9 @@ public class AcceptanceTest {
     List<LineResponse> getLines() {
         return
                 given().
-                        when().
+                when().
                         get("/lines").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
@@ -130,9 +129,9 @@ public class AcceptanceTest {
 
     void deleteLine(Long id) {
         given().
-                when().
+        when().
                 delete("/lines/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -147,9 +146,9 @@ public class AcceptanceTest {
                 body(lineStationRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -158,9 +157,9 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }

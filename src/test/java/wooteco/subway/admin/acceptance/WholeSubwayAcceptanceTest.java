@@ -47,10 +47,10 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
     private WholeSubwayResponse retrieveWholeSubway() {
         return given().
                 when().
-                    get("/lines/detail").
+                        get("/lines/detail").
                 then().
-                    log().all().
-                    extract().
-                    as(WholeSubwayResponse.class);
+                        log().all().
+                        extract().
+                        as(WholeSubwayResponse.class);
     }
 }

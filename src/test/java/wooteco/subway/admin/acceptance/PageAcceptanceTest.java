@@ -11,9 +11,9 @@ public class PageAcceptanceTest extends AcceptanceTest {
 
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
-                when().
+        when().
                 get("/lines").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -24,9 +24,9 @@ public class PageAcceptanceTest extends AcceptanceTest {
 
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
-                when().
+        when().
                 get("/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
