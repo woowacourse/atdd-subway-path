@@ -20,8 +20,8 @@ public class PathController {
     @GetMapping("/paths")
     public ResponseEntity findPath(@RequestParam("source") String source, @RequestParam("target") String target, @RequestParam("type") String type) {
         PathResponse path;
-        PathType pathType = PathType.valueOf(type);
         try {
+            PathType pathType = PathType.of(type);
             path = pathService.findPath(source, target, pathType);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e);

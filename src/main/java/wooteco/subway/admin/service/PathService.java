@@ -41,8 +41,15 @@ public class PathService {
                 .filter(lineStation -> lineStation.getPreStationId() != null)
                 .collect(Collectors.toList());
 
-        Long source = findStationIdWithStationName(sourceName, stations);
-        Long target = findStationIdWithStationName(targetName, stations);
+        Long source = null;
+        Long target = null;
+        for (Station station : stations) {
+            source = findIdByName(sourceName, source, station);
+            target = findIdByName(targetName, target, station);
+        }
+        if (source == null || target == null) {
+            throw new IllegalArgumentException(NO_EXIST_STATION_ERR_MSG);
+        }
 
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(type, stations, lineStations);
 
@@ -68,6 +75,13 @@ public class PathService {
         }
 
         return new PathResponse(StationResponse.listOf(pathStations), weight, extraInformation);
+    }
+
+    private Long findIdByName(String name, Long id, Station station) {
+        if (station.getName().equals(name)) {
+            return station.getId();
+        }
+        return id;
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(PathType type, List<Station> stations, List<LineStation> lineStations) {
