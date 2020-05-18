@@ -2,7 +2,6 @@ package wooteco.subway.admin.controller;
 
 import java.net.URI;
 import java.util.List;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import wooteco.subway.admin.domain.entity.Line;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -30,6 +28,11 @@ public class LineController {
 		this.lineService = lineService;
 	}
 
+	@GetMapping("/lines")
+	public ResponseEntity<List<LineResponse>> showLine() {
+		return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+	}
+
 	@PostMapping(value = "/lines")
 	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
 		Line persistLine = lineService.save(view.toLine());
@@ -37,11 +40,6 @@ public class LineController {
 		return ResponseEntity
 			.created(URI.create("/lines/" + persistLine.getId()))
 			.body(LineResponse.of(persistLine));
-	}
-
-	@GetMapping("/lines")
-	public ResponseEntity<List<LineResponse>> showLine() {
-		return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
 	}
 
 	@GetMapping("/lines/{id}")
