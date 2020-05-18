@@ -8,20 +8,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum SubwayGraphKey {
-    DISTANCE("distance", Edge::getDistance),
-    DURATION("duration", Edge::getDuration);
+    DISTANCE(Edge::getDistance),
+    DURATION(Edge::getDuration);
 
-    private final String symbol;
     private final Function<Edge, Integer> edgeIntegerFunction;
 
-    SubwayGraphKey(final String symbol, final Function<Edge, Integer> edgeIntegerFunction) {
-        this.symbol = symbol;
+    SubwayGraphKey(final Function<Edge, Integer> edgeIntegerFunction) {
         this.edgeIntegerFunction = edgeIntegerFunction;
     }
 
     public static SubwayGraphKey of(String key) {
         return Arrays.stream(values())
-                .filter(subwayGraphKey -> subwayGraphKey.symbol.equals(key))
+                .filter(subwayGraphKey -> subwayGraphKey.name().equalsIgnoreCase(key))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
