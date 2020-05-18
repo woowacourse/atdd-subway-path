@@ -1,10 +1,11 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.admin.domain.Edge;
 
 import java.util.function.Function;
 
-public class SubwayWeightEdge extends DefaultWeightedEdge {
+public class SubwayWeightEdge extends DefaultWeightedEdge implements WeightEdge {
     private final Edge edge;
     private final Function<Edge, Integer> edgeIntegerFunction;
 
@@ -13,14 +14,17 @@ public class SubwayWeightEdge extends DefaultWeightedEdge {
         this.edgeIntegerFunction = edgeIntegerFunction;
     }
 
+    @Override
     public Integer getValue(Function<Edge, Integer> edgeIntegerFunction) {
         return edgeIntegerFunction.apply(edge);
     }
 
+    @Override
     public Long getPreStationId() {
         return edge.getPreStationId();
     }
 
+    @Override
     public Long getStationId() {
         return edge.getStationId();
     }

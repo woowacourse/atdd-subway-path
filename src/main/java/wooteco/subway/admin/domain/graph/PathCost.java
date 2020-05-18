@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph;
 
 public class PathCost {
     private final Integer distance;

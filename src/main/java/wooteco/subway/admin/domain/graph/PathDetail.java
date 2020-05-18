@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph;
 
 import java.util.List;
 

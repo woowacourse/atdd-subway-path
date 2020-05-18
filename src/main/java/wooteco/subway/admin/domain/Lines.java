@@ -1,8 +1,12 @@
 package wooteco.subway.admin.domain;
 
+import wooteco.subway.admin.domain.graph.GraphStrategy;
+import wooteco.subway.admin.domain.graph.SubwayGraphs;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -22,11 +26,12 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.toList());
     }
 
-    public SubwayGraphs makeSubwayGraphs() {
-        return lines.stream()
+    public SubwayGraphs makeSubwayGraphs(GraphStrategy graphStrategy) {
+        Set<Edge> edges = lines.stream()
                 .map(Line::getEdges)
                 .flatMap(Collection::stream)
-                .collect(Collectors.collectingAndThen(Collectors.toSet(), SubwayGraphs::new));
+                .collect(Collectors.toSet());
+        return new SubwayGraphs(edges, graphStrategy);
     }
 
     @Override

@@ -5,6 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.admin.domain.graph.PathDetail;
+import wooteco.subway.admin.domain.graph.SubwayGraph;
+import wooteco.subway.admin.domain.graph.SubwayGraphKey;
+import wooteco.subway.admin.domain.graph.SubwayGraphStrategy;
+import wooteco.subway.admin.domain.graph.SubwayGraphs;
 import wooteco.subway.admin.exception.IllegalPathRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +27,7 @@ class SubwayGraphsTest {
 
         Edge edge3 = new Edge(2L, 3L, 1, 10);
 
-        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2, edge3));
+        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2, edge3), new SubwayGraphStrategy());
 
         //when
         PathDetail path = subwayGraphs.getPath(1L, 3L, key);
@@ -40,7 +45,7 @@ class SubwayGraphsTest {
         Edge edge1 = new Edge(null, 1L, 10, 10);
         Edge edge2 = new Edge(1L, 2L, 10, 10);
 
-        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2));
+        SubwayGraphs subwayGraphs = new SubwayGraphs(Sets.newLinkedHashSet(edge1, edge2), new SubwayGraphStrategy());
 
         //when
         assertThatThrownBy(() -> subwayGraphs.getPath(source, target, SubwayGraphKey.DISTANCE))

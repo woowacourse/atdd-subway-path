@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.admin.domain.graph.Graph;
+import wooteco.subway.admin.domain.graph.SubwayGraphKey;
+import wooteco.subway.admin.domain.graph.SubwayGraphStrategy;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -32,7 +35,7 @@ class SubwayGraphKeyTest {
     @Test
     void makeGraph() {
         //given
-        Map<SubwayGraphKey, SubwayGraph> subwayGraphMap = SubwayGraphKey.makeGraph(new HashSet<>());
+        Map<SubwayGraphKey, Graph> subwayGraphMap = SubwayGraphKey.makeGraph(new HashSet<>(), new SubwayGraphStrategy());
 
         //when
         Set<SubwayGraphKey> subwayGraphKeys = subwayGraphMap.keySet();

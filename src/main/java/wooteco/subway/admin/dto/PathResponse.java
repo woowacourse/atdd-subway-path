@@ -1,7 +1,7 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.PathDetail;
 import wooteco.subway.admin.domain.Stations;
+import wooteco.subway.admin.domain.graph.PathDetail;
 
 import java.util.ArrayList;
 import java.util.List;

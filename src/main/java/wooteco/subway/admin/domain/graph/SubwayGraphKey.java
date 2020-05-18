@@ -1,4 +1,6 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph;
+
+import wooteco.subway.admin.domain.Edge;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -26,11 +28,11 @@ public enum SubwayGraphKey {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static Map<SubwayGraphKey, SubwayGraph> makeGraph(Set<Edge> edges) {
+    public static Map<SubwayGraphKey, Graph> makeGraph(Set<Edge> edges, GraphStrategy graphStrategy) {
         return Arrays.stream(values())
                 .collect(Collectors.toMap(
                         key -> key,
-                        key -> new SubwayGraph(edges, key.edgeIntegerFunction),
+                        key -> graphStrategy.makeGraph(edges, key.edgeIntegerFunction),
                         (oldOne, newOne) -> newOne,
                         () -> new EnumMap<>(SubwayGraphKey.class)
                 ));

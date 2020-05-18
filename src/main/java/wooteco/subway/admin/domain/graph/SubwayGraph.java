@@ -1,26 +1,27 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.graph;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.exception.IllegalPathRequestException;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-public class SubwayGraph {
-    private WeightedMultigraph<Long, SubwayWeightEdge> graph;
+public class SubwayGraph implements Graph {
+    private WeightedMultigraph<Long, WeightEdge> graph;
 
     public SubwayGraph(Set<Edge> edges, Function<Edge, Integer> edgeIntegerFunction) {
-        WeightedMultigraph<Long, SubwayWeightEdge> graph = new WeightedMultigraph<>(SubwayWeightEdge.class);
+        WeightedMultigraph<Long, WeightEdge> graph = new WeightedMultigraph<>(SubwayWeightEdge.class);
         for (Edge edge : edges) {
             addEdge(graph, edge, edgeIntegerFunction);
         }
         this.graph = graph;
     }
 
-    private void addEdge(final WeightedMultigraph<Long, SubwayWeightEdge> graph, final Edge edge, final Function<Edge, Integer> edgeIntegerFunction) {
+    private void addEdge(final WeightedMultigraph<Long, WeightEdge> graph, final Edge edge, final Function<Edge, Integer> edgeIntegerFunction) {
         graph.addVertex(edge.getStationId());
         if (edge.isNotFirst()) {
             graph.addVertex(edge.getPreStationId());
@@ -28,16 +29,17 @@ public class SubwayGraph {
         }
     }
 
+    @Override
     public SubwayPath getPath(Long sourceStationId, Long targetStationId) {
         validateContainStations(sourceStationId, targetStationId);
 
-        GraphPath<Long, SubwayWeightEdge> path = DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId);
+        GraphPath<Long, WeightEdge> path = DijkstraShortestPath.findPathBetween(graph, sourceStationId, targetStationId);
         validateLinkedEdge(sourceStationId, targetStationId, path);
 
         return new SubwayPath(path.getEdgeList());
     }
 
-    private void validateLinkedEdge(final Long sourceStationId, final Long targetStationId, final GraphPath<Long, SubwayWeightEdge> path) {
+    private void validateLinkedEdge(final Long sourceStationId, final Long targetStationId, final GraphPath<Long, WeightEdge> path) {
         if (Objects.isNull(path)) {
             throw new IllegalPathRequestException(String.format("%d - %d : 존재하지 않는 경로입니다.", sourceStationId, targetStationId));
         }
@@ -49,6 +51,7 @@ public class SubwayGraph {
         }
     }
 
+    @Override
     public boolean containAllVertexes(final Long sourceStationId, final Long targetStationId) {
         return graph.containsVertex(sourceStationId) && graph.containsVertex(targetStationId);
     }
