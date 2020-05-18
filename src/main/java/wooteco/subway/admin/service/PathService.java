@@ -27,7 +27,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse calculatePath(String source, String target, String type) {
+    public PathResponse calculatePath(String source, String target, PathSearchType type) {
         validateOverlappedStation(source, target);
 
         Lines allLines = new Lines(lineRepository.findAll());
@@ -78,8 +78,8 @@ public class PathService {
         }
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations, String type) {
-        PathSearchType weight = PathSearchType.of(type);
+    // TODO : 해당 로직을 담은 새로온 Domain을 만들 수 있지 않을까 ?
+    private WeightedMultigraph<Long, DefaultWeightedEdge> initGraph(LineStations lineStations, PathSearchType weightType) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
@@ -92,13 +92,7 @@ public class PathService {
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.getPreStationId() != null) {
                 DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
-                if (weight.isSameValue("DISTANCE")) {
-                    graph.setEdgeWeight(edge, lineStation.getDistance());
-                    continue;
-                }
-                if (weight.isSameValue("DURATION")) {
-                    graph.setEdgeWeight(edge, lineStation.getDuration());
-                }
+                graph.setEdgeWeight(edge, weightType.getValueByPathSearchType(lineStation));
             }
         }
         return graph;
