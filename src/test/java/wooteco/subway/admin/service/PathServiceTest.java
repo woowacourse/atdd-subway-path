@@ -45,17 +45,13 @@ class PathServiceTest {
         List<Long> path = Arrays.asList(1L, 2L, 5L);
 
         Line line = new Line(1L, "1호선", LocalTime.now(), LocalTime.now(), 10);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 5L, 10, 10));
+        line.addLineStation(new LineStation(null, 1L, 10, 5));
+        line.addLineStation(new LineStation(1L, 2L, 10, 5));
+        line.addLineStation(new LineStation(2L, 5L, 10, 5));
 
         List<Line> lines = Collections.singletonList(line);
 
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findByName(source.getName())).thenReturn(Optional.of(source));
-        when(stationRepository.findByName(target.getName())).thenReturn(Optional.of(target));
-        when(graphService.findPath(lines, source.getId(), target.getId(), PathType.DISTANCE)).thenReturn(path);
-        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
+        stubDependencies(source, target, path, lines, PathType.DISTANCE);
 
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
 
@@ -65,6 +61,19 @@ class PathServiceTest {
         //then
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
+
+        stubDependencies(source, target, path, lines, PathType.DURATION);
+        pathResponse = pathService.findPath(source.getName(), target.getName(), PathType.DURATION);
+        assertThat(pathResponse.getStations().size()).isEqualTo(3);
+        assertThat(pathResponse.getDuration()).isEqualTo(10);
+    }
+
+    private void stubDependencies(Station source, Station target, List<Long> path, List<Line> lines, PathType pathType) {
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findByName(source.getName())).thenReturn(Optional.of(source));
+        when(stationRepository.findByName(target.getName())).thenReturn(Optional.of(target));
+        when(graphService.findPath(lines, source.getId(), target.getId(), pathType)).thenReturn(path);
+        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
     }
 
     @Test
