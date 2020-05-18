@@ -22,12 +22,6 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.toList());
     }
 
-    public Lines findByStationIdIn(final List<Long> stationIds) {
-        return lines.stream()
-                .filter(line -> line.containsAll(stationIds))
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Lines::new));
-    }
-
     public SubwayGraphs makeSubwayGraphs(Long sourceStationId, Long targetStationId) {
         return lines.stream()
                 .map(Line::getEdges)

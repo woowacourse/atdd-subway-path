@@ -61,10 +61,6 @@ public class Edges {
 		edges.remove(targetEdge);
 	}
 
-	public boolean isEmpty() {
-		return edges.isEmpty();
-	}
-
 	public int size() {
 		return edges.size();
 	}

@@ -121,9 +121,4 @@ public class Line {
     public boolean containsAll(final List<Long> stationIds) {
         return edges.containsStationIdAll(stationIds);
     }
-
-    public int getPath() {
-
-        return 0;
-    }
 }
