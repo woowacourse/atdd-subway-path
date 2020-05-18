@@ -43,7 +43,6 @@ function AdminLine() {
       return
     }
     const lineId = $subwayLineItem.dataset.lineId
-    console.log(lineId)
     api.line
       .delete(lineId)
       .then(() => {

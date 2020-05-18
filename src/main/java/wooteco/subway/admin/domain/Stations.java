@@ -12,15 +12,6 @@ public class Stations {
         this.stations = stations;
     }
 
-    public Long findIdByName(String name) {
-        return stations
-                .stream()
-                .filter(station -> station.getName().equals(name))
-                .map(Station::getId)
-                .findFirst()
-                .orElseThrow(StationNotFoundException::new);
-    }
-
     public Station findStationById(Long id) {
         return stations.stream()
                 .filter(station -> station.getId().equals(id))
