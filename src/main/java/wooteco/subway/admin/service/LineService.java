@@ -1,6 +1,10 @@
 package wooteco.subway.admin.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -11,14 +15,12 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.List;
-
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
@@ -29,6 +31,10 @@ public class LineService {
 
     public List<Line> showLines() {
         return lineRepository.findAll();
+    }
+
+    public List<Station> showStations() {
+        return stationRepository.findAll();
     }
 
     public void updateLine(Long id, LineRequest request) {
@@ -43,9 +49,13 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(
+            request.getPreStationId(),
+            request.getStationId(),
+            request.getDistance(),
+            request.getDuration()
+        );
         line.addLineStation(lineStation);
-
         lineRepository.save(line);
     }
 
@@ -61,8 +71,12 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Station> stations = stationRepository.findAll();
+        return WholeSubwayResponse.of(lineRepository.findAll()
+            .stream()
+            .map(line -> LineDetailResponse.of(line, line.getStations(stations)))
+            .collect(Collectors.toList())
+        );
     }
 }
