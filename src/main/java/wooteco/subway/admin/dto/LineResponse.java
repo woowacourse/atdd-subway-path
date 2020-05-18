@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private static String VERSION = "1";
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -38,10 +37,6 @@ public class LineResponse {
         this.intervalTime = intervalTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public static String getVERSION() {
-        return VERSION;
     }
 
     public Long getId() {
