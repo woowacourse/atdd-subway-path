@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public enum PathType {
     DISTANCE(lineStation -> lineStation.getDistance(), "최단거리"),
-    DURATION(lineStation -> lineStation.getDuration(), "최소시");
+    DURATION(lineStation -> lineStation.getDuration(), "최소시간");
 
     private final Function<LineStation, Integer> expression;
     private final String name;
