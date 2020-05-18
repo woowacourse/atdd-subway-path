@@ -60,8 +60,8 @@ public class PathServiceTest {
         station4 = new Station(4L, STATION_NAME4);
         station5 = new Station(5L, STATION_NAME5);
 
-        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-300");
-        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-yellow-300");
+        line1 = new Line(1L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5, "bg-red-300");
+        line2 = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5, "bg-yellow-300");
 
         line1.addLineStation(new LineStation(null, 5L, 0, 0));
         line1.addLineStation(new LineStation(5L, 4L, 15, 15));
@@ -93,25 +93,27 @@ public class PathServiceTest {
         Station station6 = new Station(6L, STATION_NAME6);
         Station station7 = new Station(7L, STATION_NAME7);
 
-        Line line3 = new Line(3L, "7호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-300");
+        Line line3 = new Line(3L, "7호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5, "bg-blue-300");
 
         line3.addLineStation(new LineStation(null, 6L, 0, 0));
         line3.addLineStation(new LineStation(6L, 7L, 15, 15));
 
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
 
         PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
             .isInstanceOf(NotConnectEdgeException.class)
-            .hasMessage("출발 지점으로부터 도착 지점까지 갈 수 없습니다!");
+            .hasMessageContaining("으로부터")
+            .hasMessageContaining("까지 연결되어 있지 않습니다!");
 
     }
 
     @DisplayName("존재하지 않은 역이 들어왔을 경우 예외 처리")
     @Test
-    void notExistStationTest(){
+    void notExistStationTest() {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
@@ -119,6 +121,6 @@ public class PathServiceTest {
 
         assertThatThrownBy(() -> pathService.findShortestPathByDistance(pathRequest))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("등록되어있지 않은 역입니다.");
+            .hasMessage("해당 역은 등록되어있지 않은 역입니다.");
     }
 }

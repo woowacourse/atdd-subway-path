@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
@@ -48,10 +49,11 @@ public class PathService {
         final GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, endStation);
 
         if (Objects.isNull(path)) {
-            throw new NotConnectEdgeException();
+            throw new NotConnectEdgeException(startStation, endStation);
         }
 
-        List<Station> shortestPath = path.getVertexList();;
+        List<Station> shortestPath = path.getVertexList();
+        ;
         List<Edge> edgeList = path.getEdgeList();
 
         final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
@@ -60,15 +62,8 @@ public class PathService {
         return new PathResponse(shortestPath, distance, duration);
     }
 
-    private Station getStationWithValidation(Map<Long, Station> stations, Long stationId) {
-        if (!stations.containsKey(stationId)) {
-            throw new NoSuchElementException("등록되어있지 않은 역입니다.");
-        }
-
-        return stations.get(stationId);
-    }
-
-    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines, PathType pathType) {
+    private WeightedMultigraph<Station, Edge> makeGraph(Map<Long, Station> stations, List<Line> lines,
+        PathType pathType) {
         WeightedMultigraph<Station, Edge> graph
             = new WeightedMultigraph<>(Edge.class);
 
@@ -78,7 +73,7 @@ public class PathService {
         lines.stream()
             .map(Line::getStations)
             .flatMap(Collection::stream)
-            .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+            .filter(LineStation::isEdge)
             .forEach(lineStation -> {
                 Station preStation = getStationWithValidation(stations, lineStation.getPreStationId());
                 Station currentStation = getStationWithValidation(stations, lineStation.getStationId());
@@ -88,5 +83,13 @@ public class PathService {
                 graph.setEdgeWeight(edge, pathType.getValue(lineStation));
             });
         return graph;
+    }
+
+    private Station getStationWithValidation(Map<Long, Station> stations, Long stationId) {
+        if (!stations.containsKey(stationId)) {
+            throw new NoSuchElementException("해당 역은 등록되어있지 않은 역입니다.");
+        }
+
+        return stations.get(stationId);
     }
 }

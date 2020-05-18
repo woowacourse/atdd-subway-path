@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -52,7 +53,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void findPath() {
-        PathResponse pathResponse = findShortestPath(5L, 3L, "DISTANCE");
+        PathResponse pathResponse = findShortestPath(5L, 3L, PathType.DISTANCE.name());
 
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
         assertThat(pathResponse.getDistance()).isEqualTo(40);

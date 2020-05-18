@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -55,13 +56,14 @@ public class LineService {
 
     public LineResponse addLineStation(Long lineId, LineStationCreateRequest request) {
         Line line = findBy(lineId);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         return LineResponse.of(save(line));
     }
 
-    public Line findBy(Long lineId){
+    public Line findBy(Long lineId) {
         return lineRepository.findById(lineId)
             .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
     }
@@ -88,12 +90,15 @@ public class LineService {
 
     public List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
         List<Station> stations = stationRepository.findAllById(lineStationsIds);
+        List<Station> sortedStations = new ArrayList<>();
 
-        return lineStationsIds.stream()
-            .map(lineStationsId -> stations.stream()
-                .filter(station -> lineStationsId.equals(station.getId()))
+        lineStationsIds.forEach(lineStationsId ->
+            stations.stream()
+                .filter(station -> station.isExist(lineStationsId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다")))
-            .collect(Collectors.toList());
+                .ifPresent(sortedStations::add)
+        );
+
+        return sortedStations;
     }
 }

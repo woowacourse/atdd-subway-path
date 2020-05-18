@@ -1,4 +1,4 @@
-package wooteco.subway.admin.api;
+package wooteco.subway.admin.external.api;
 
 import static org.assertj.core.api.Assertions.*;
 

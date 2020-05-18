@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
@@ -207,3 +206,4 @@ public class AcceptanceTest {
                 extract().as(PathResponse.class);
     }
 }
+
