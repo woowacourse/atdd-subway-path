@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Graph {
     WeightedMultigraph<Station, Edge> graph;
@@ -37,9 +38,30 @@ public class Graph {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
     }
 
-    public GraphPath<Station, Edge> findShortestPath(Station startStation, Station targetStation) {
+    public int getEdgeValueSum(Station startStation, Station targetStation, EdgeType edgeType) {
+        GraphPath<Station, Edge> shortestPath = findShortestPath(startStation, targetStation);
+        return shortestPath.getEdgeList().stream()
+                .mapToInt(edge -> edgeType.getEdgeValue(edge.toLineStation()))
+                .sum();
+    }
+
+    public List<String> getVertexName(Station startStation, Station targetStation) {
+        GraphPath<Station, Edge> shortestPath = findShortestPath(startStation, targetStation);
+        return shortestPath.getVertexList().stream()
+                .map(edge -> edge.getName())
+                .collect(Collectors.toList());
+    }
+
+    private GraphPath<Station, Edge> findShortestPath(Station startStation, Station targetStation) {
         DijkstraShortestPath<Station, Edge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, Edge> path = dijkstraShortestPath.getPath(startStation, targetStation);
+        validatePath(path);
         return path;
+    }
+
+    private void validatePath(GraphPath<Station, Edge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("두 역이 연결되어있지 않습니다.");
+        }
     }
 }
