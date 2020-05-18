@@ -30,7 +30,6 @@ public class StationController {
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest request) {
         StationResponse stationResponse = stationService.save(request);
-        // TODO : body 없이 반환
         return ResponseEntity
                 .created(URI.create("/stations/" + stationResponse.getId()))
                 .body(stationResponse);
