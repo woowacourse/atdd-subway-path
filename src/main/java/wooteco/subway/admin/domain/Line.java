@@ -6,6 +6,7 @@ import wooteco.subway.admin.exception.StationNotFoundException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
     @Id
@@ -133,5 +134,11 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public List<Long> getStationIds() {
+        return this.edges.stream()
+                .map(Edge::getStationId)
+                .collect(Collectors.toList());
     }
 }
