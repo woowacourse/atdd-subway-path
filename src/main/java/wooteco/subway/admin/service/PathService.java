@@ -45,7 +45,7 @@ public class PathService {
         Stations pathStations = path.stream()
                 .map(stations::findStationById)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
-        LineStations pathLineStations =  lineStations.findLineStationsByIds(path);
+        LineStations pathLineStations = lineStations.findLineStationsByIds(path);
 
         int duration = pathLineStations.getWeightBy(PathType.DURATION);
         int distance = pathLineStations.getWeightBy(PathType.DISTANCE);

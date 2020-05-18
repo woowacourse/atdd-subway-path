@@ -41,6 +41,5 @@ public class LineStations {
                 .stream()
                 .mapToInt(type::getWeight)
                 .sum();
-        //type::getWeight에는 getDistance, getDuration 등이 들어있음
     }
 }
