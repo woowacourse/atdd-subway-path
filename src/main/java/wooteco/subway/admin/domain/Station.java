@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.dto.StationCreateRequest;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,10 @@ public class Station {
         this.id = id;
         this.name = name;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public static Station from(final StationCreateRequest stationRequest) {
+        return new Station(stationRequest.getName());
     }
 
     public Long getId() {

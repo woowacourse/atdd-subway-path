@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.dto.LineRequest;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,6 +32,10 @@ public class Line {
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this(null, name, startTime, endTime, intervalTime);
+    }
+
+    public static Line from(final LineRequest lineRequest) {
+        return new Line(lineRequest.getName(), lineRequest.getStartTime(), lineRequest.getEndTime(), lineRequest.getIntervalTime());
     }
 
     public Long getId() {

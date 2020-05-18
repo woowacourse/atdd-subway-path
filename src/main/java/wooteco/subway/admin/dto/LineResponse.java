@@ -16,13 +16,13 @@ public class LineResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static LineResponse of(Line line) {
+    public static LineResponse from(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt());
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
+    public static List<LineResponse> listFrom(List<Line> lines) {
         return lines.stream()
-                .map(it -> LineResponse.of(it))
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 

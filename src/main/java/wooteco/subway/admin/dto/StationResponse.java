@@ -11,13 +11,13 @@ public class StationResponse {
     private String name;
     private LocalDateTime createdAt;
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedAt());
     }
 
-    public static List<StationResponse> listOf(List<Station> stations) {
+    public static List<StationResponse> listFrom(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
