@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.req.PathRequest;
+import wooteco.subway.admin.dto.res.PathResponse;
 import wooteco.subway.admin.service.PathService;
 
 @RestController

@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
 
 public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 관리한다")

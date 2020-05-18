@@ -21,9 +21,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.req.PathRequest;
+import wooteco.subway.admin.dto.res.PathResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 

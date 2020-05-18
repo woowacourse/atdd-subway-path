@@ -15,9 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.res.LineDetailResponse;
+import wooteco.subway.admin.dto.res.LineResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")

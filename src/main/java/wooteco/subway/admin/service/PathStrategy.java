@@ -4,7 +4,7 @@ import java.util.List;
 
 import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.GraphResultResponse;
+import wooteco.subway.admin.dto.res.GraphResultResponse;
 
 public interface PathStrategy {
     GraphResultResponse getPath(List<Line> lines, Long source, Long target, CriteriaType type);

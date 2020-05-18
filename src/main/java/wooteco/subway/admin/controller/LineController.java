@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.req.LineRequest;
+import wooteco.subway.admin.dto.req.LineStationCreateRequest;
+import wooteco.subway.admin.dto.res.LineDetailResponse;
+import wooteco.subway.admin.dto.res.LineResponse;
+import wooteco.subway.admin.dto.res.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 @RestController
@@ -31,7 +31,6 @@ public class LineController {
     @PostMapping(value = "/lines")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         Line persistLine = lineService.save(view.toLine());
-
         return ResponseEntity
             .created(URI.create("/lines/" + persistLine.getId()))
             .body(LineResponse.of(persistLine));

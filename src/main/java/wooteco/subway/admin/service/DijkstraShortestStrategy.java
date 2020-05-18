@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import wooteco.subway.admin.domain.CustomEdge;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.dto.GraphResultResponse;
+import wooteco.subway.admin.dto.res.GraphResultResponse;
 
 @Component
 public class DijkstraShortestStrategy extends BaseGraphStrategy {

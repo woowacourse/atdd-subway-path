@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.CustomEdge;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.GraphResultResponse;
+import wooteco.subway.admin.dto.res.GraphResultResponse;
 
 public abstract class BaseGraphStrategy implements PathStrategy {
     @Override

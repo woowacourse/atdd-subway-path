@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.GraphResultResponse;
-import wooteco.subway.admin.dto.PathRequest;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.req.PathRequest;
+import wooteco.subway.admin.dto.res.GraphResultResponse;
+import wooteco.subway.admin.dto.res.PathResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 

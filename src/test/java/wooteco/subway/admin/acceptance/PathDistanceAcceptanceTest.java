@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.res.LineResponse;
+import wooteco.subway.admin.dto.res.PathResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
 
 public class PathDistanceAcceptanceTest extends AcceptanceTest {
     private StationResponse jamsil;

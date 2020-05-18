@@ -7,10 +7,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.dto.res.LineDetailResponse;
+import wooteco.subway.admin.dto.res.LineResponse;
+import wooteco.subway.admin.dto.res.StationResponse;
+import wooteco.subway.admin.dto.res.WholeSubwayResponse;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
