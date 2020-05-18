@@ -40,21 +40,21 @@ public class PathServiceTest {
     void setUp() {
         pathService = new PathService(lineService, stationService);
 
-        Line line1 = new Line(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line1 = new Line(1L, "1호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 4L, 0, 0));
         line1.addLineStation(new LineStation(4L, 1L, 10, 1));
         line1.addLineStation(new LineStation(1L, 2L, 10, 1));
         line1.addLineStation(new LineStation(2L, 5L, 10, 1));
 
-        Line line2 = new Line(2L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line2 = new Line(2L, "2호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line2.addLineStation(new LineStation(null, 4L, 0, 0));
         line2.addLineStation(new LineStation(4L, 3L, 10, 10));
 
-        Line line3 = new Line(3L, "3호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line3 = new Line(3L, "3호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line3.addLineStation(new LineStation(null, 3L, 0, 0));
         line3.addLineStation(new LineStation(3L, 5L, 10, 10));
 
-        Line line4 = new Line(4L, "4호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line4 = new Line(4L, "4호선", "bg-green-500", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
         line4.addLineStation(new LineStation(null, 6L, 0, 0));
 
         lines = Lists.newArrayList(line1, line2, line3, line4);

@@ -1,15 +1,14 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
-
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다")
@@ -34,8 +33,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(line.getIntervalTime()).isNotNull();
 
         // when
-        LocalTime startTime = LocalTime.of(8, 00);
-        LocalTime endTime = LocalTime.of(22, 00);
+        LocalTime startTime = LocalTime.of(8, 0);
+        LocalTime endTime = LocalTime.of(22, 0);
         updateLine(line.getId(), "3호선", "bg-green-500", startTime, endTime);
         //then
         LineDetailResponse updatedLine = getLine(line.getId());
