@@ -11,23 +11,18 @@ import java.util.Map;
 @Service
 public class PathService {
     private LineService lineService;
+    private GraphService graphService;
 
-    public PathService(LineService lineService) {
+    public PathService(LineService lineService, GraphService graphService) {
         this.lineService = lineService;
+        this.graphService = graphService;
     }
 
     public PathResponse retrieveShortestPath(String sourceName, String targetName, PathType pathType) {
         Station source = lineService.findStationWithName(sourceName);
         Station target = lineService.findStationWithName(targetName);
 
-        Stations stations = Stations.of(lineService.findAllStations());
-        Map<Long, Station> stationCache = stations.convertMap();
-
-        Lines lines = Lines.of(lineService.showLines());
-        List<LineStation> edges = lines.getEdges();
-
-        Graph graph = Graph.of(stationCache, edges, pathType);
-        ShortestPath path = ShortestPath.of(graph, source, target);
+        ShortestPath path = graphService.getShortestPath(source, target, pathType);
         List<Station> shortestPath = path.findShortestPath();
         int totalDistance = path.getTotalDistance();
         int totalDuration = path.getTotalDuration();

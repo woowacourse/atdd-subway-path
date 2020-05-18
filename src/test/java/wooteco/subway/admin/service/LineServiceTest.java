@@ -35,6 +35,8 @@ public class LineServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
+    @Mock
+    private GraphService graphService;
 
     private LineService lineService;
 
@@ -46,7 +48,7 @@ public class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineRepository, stationRepository);
+        lineService = new LineService(lineRepository, stationRepository, graphService);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);

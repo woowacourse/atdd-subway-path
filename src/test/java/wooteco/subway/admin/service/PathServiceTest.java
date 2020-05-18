@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.NotExistPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
@@ -33,13 +30,15 @@ class PathServiceTest {
     @Mock
     private LineService lineService;
 
+    private GraphService graphService;
+
     private List<Line> lines;
     private List<Station> stations;
-    private List<LineStation> lineStations;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineService);
+        graphService = new GraphService();
+        pathService = new PathService(lineService, graphService);
 
         stations = Arrays.asList(
                 new Station(1L, "환-강남역"),
@@ -76,6 +75,8 @@ class PathServiceTest {
         line3.addLineStation(new LineStation(9L, 5L, 50, 50));
 
         lines = Arrays.asList(line1, line2, line3);
+        graphService.initialize(Stations.of(stations), Lines.of(lines));
+
     }
 
     @Test
@@ -147,6 +148,7 @@ class PathServiceTest {
         line4.addLineStation(new LineStation(10L, 11L, 10, 10));
         List<Line> lines = new ArrayList<>(this.lines);
         lines.add(line4);
+        graphService.initialize(Stations.of(stations), Lines.of(lines));
 
         when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));

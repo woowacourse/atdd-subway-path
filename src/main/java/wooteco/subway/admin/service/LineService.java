@@ -11,7 +11,6 @@ import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,13 @@ import java.util.stream.Collectors;
 public class LineService {
     private LineRepository lineRepository;
     private StationRepository stationRepository;
+    private GraphService graphService;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository, GraphService graphService) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.graphService = graphService;
+        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
     }
 
     public Line save(Line line) {
@@ -50,12 +52,14 @@ public class LineService {
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
+        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(() -> new LineNotFoundException(lineId));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
+        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {

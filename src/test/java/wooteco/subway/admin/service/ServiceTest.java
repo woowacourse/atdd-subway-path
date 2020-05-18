@@ -19,13 +19,16 @@ public class ServiceTest {
     @Mock
     LineService lineService;
 
+    @Mock
+    GraphService graphService;
+
     List<Line> lines;
     List<Station> stations;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineService);
-
+        graphService = new GraphService();
+        pathService = new PathService(lineService, graphService);
         stations = Arrays.asList(
                 new Station(1L, "환-강남역"),
                 new Station(2L, "1-역삼역"),
