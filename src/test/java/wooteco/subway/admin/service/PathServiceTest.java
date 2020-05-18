@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathCalculator;
 import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
@@ -21,8 +22,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,14 +30,15 @@ public class PathServiceTest {
 	private LineRepository lineRepository;
 	@Mock
 	private StationRepository stationRepository;
-
 	private PathService pathService;
 	private List<Station> stations;
 	private List<LineStation> lineStations;
+	private PathCalculator pathCalculator;
 
 	@BeforeEach
 	void setUp() {
-		pathService = new PathService(lineRepository, stationRepository);
+		pathCalculator = new PathCalculator();
+		pathService = new PathService(lineRepository, stationRepository, pathCalculator);
 		stations = Arrays.asList(new Station(1L, "강남역"),
 				new Station(2L, "역삼역"),
 				new Station(3L, "선릉역"),
@@ -52,9 +52,6 @@ public class PathServiceTest {
 	@DisplayName("출발역이 존재 하지 않은 역인 경우 예외 발생")
 	@Test
 	void existSourceStations() {
-		when(stationRepository.notExistsByName(eq("사당역"))).thenReturn(true);
-		when(stationRepository.notExistsByName(eq("역삼역"))).thenReturn(false);
-
 		assertThatThrownBy(() -> {
 			pathService.searchPath("사당역", "역삼역", SearchType.DISTANCE);
 		}).isInstanceOf(NotExistStationException.class);
@@ -63,9 +60,6 @@ public class PathServiceTest {
 	@DisplayName("도착역이 존재 하지 않은 역인 경우 예외 발생")
 	@Test
 	void existTargetStations() {
-		when(stationRepository.notExistsByName(eq("강남역"))).thenReturn(false);
-		when(stationRepository.notExistsByName(eq("의정부역"))).thenReturn(true);
-
 		assertThatThrownBy(() -> {
 			pathService.searchPath("강남역", "의정부역", SearchType.DISTANCE);
 		}).isInstanceOf(NotExistStationException.class);
@@ -104,7 +98,6 @@ public class PathServiceTest {
 	}
 
 	private void setUpMock() {
-		when(stationRepository.notExistsByName(any())).thenReturn(false);
 		when(stationRepository.findAll()).thenReturn(stations);
 		when(lineRepository.findAllLineStations()).thenReturn(lineStations);
 		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(new Station(1L, "강남역")));

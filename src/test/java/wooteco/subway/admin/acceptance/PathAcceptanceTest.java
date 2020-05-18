@@ -51,10 +51,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createStation(STATION_NAME_KANGNAM);
         createStation(STATION_NAME_YEOKSAM);
         createStation(STATION_NAME_SEOLLEUNG);
-        createStation(STATION_NAME_JAMSIL);
-        createStation(STATION_NAME_SEOUL);
-        createStation(STATION_NAME_YOUNGSAN);
-        createStation(STATION_NAME_NORYANGJIN);
+		createStation(STATION_NAME_JAMSIL); //3 12
+		createStation(STATION_NAME_SEOUL);
+		createStation(STATION_NAME_YOUNGSAN); //5 14
+		createStation(STATION_NAME_NORYANGJIN);
         createStation(STATION_NAME_CITYHALL);
 
         List<StationResponse> stations = getStations();
@@ -82,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addLineStation(lines.get(1).getId(), stations.get(5).getId(), stations.get(6).getId());
         addLineStation(lines.get(1).getId(), stations.get(6).getId(), stations.get(7).getId());
 
-        String result3 = searchPathWithUnconnectedStations(STATION_NAME_KANGNAM, STATION_NAME_SEOUL, SearchType.DISTANCE);
+		String result3 = searchPathWithUnconnectedStations(stations.get(1).getName(), stations.get(7).getName(), SearchType.DISTANCE);
         assertThat(result3).contains("출발역과 도착역 간에 경로를 찾을 수 없습니다.");
     }
 

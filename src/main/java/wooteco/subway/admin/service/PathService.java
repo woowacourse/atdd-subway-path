@@ -1,10 +1,8 @@
 package wooteco.subway.admin.service;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathCalculator;
 import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
@@ -23,12 +21,16 @@ import java.util.stream.Stream;
 
 @Service
 public class PathService {
+	private static final long START_VERTEX = 0L;
+
 	private final LineRepository lineRepository;
 	private final StationRepository stationRepository;
+	private final PathCalculator pathCalculator;
 
-	public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+	public PathService(final LineRepository lineRepository, final StationRepository stationRepository, final PathCalculator pathCalculator) {
 		this.lineRepository = lineRepository;
 		this.stationRepository = stationRepository;
+		this.pathCalculator = pathCalculator;
 	}
 
 	public PathResponse searchPath(final String source, final String target, final SearchType searchType) {
@@ -36,21 +38,21 @@ public class PathService {
 			throw new DuplicatedStationNamesException();
 		}
 
-		if (stationRepository.notExistsByName(source) | stationRepository.notExistsByName((target))) {
-			throw new NotExistStationException();
-		}
+		Station sourceStation = stationRepository.findByName(source).orElseThrow(NotExistStationException::new);
+		Station targetStation = stationRepository.findByName(target).orElseThrow(NotExistStationException::new);
 
 		List<Station> allStations = stationRepository.findAll();
 		List<LineStation> allLineStations = lineRepository.findAllLineStations();
 
-		List<String> stationIdsOfShortestPath = findShortestPath(source, target, searchType, allStations, allLineStations);
+		List<Long> pathResult = pathCalculator.findShortestPath(
+				sourceStation, targetStation, searchType, allStations, allLineStations);
 
-		if (stationIdsOfShortestPath.contains("")) {
+		if (isStationsUnconnected(pathResult)) {
 			throw new UnconnectedStationsException();
 		}
 
-		List<Station> stationsOnPath = stationIdsOfShortestPath.stream()
-				.map(it -> findStation(allStations, Long.valueOf(it)))
+		List<Station> stationsOnPath = pathResult.stream()
+				.map(it -> findStation(allStations, it))
 				.collect(Collectors.toList());
 
 		int totalDistance = calculateTotalDistance(stationsOnPath);
@@ -59,49 +61,15 @@ public class PathService {
 		return new PathResponse(stationsOnPath, totalDistance, totalDuration);
 	}
 
+	private boolean isStationsUnconnected(final List<Long> pathResult) {
+		return pathResult.contains(START_VERTEX);
+	}
+
 	private Station findStation(final List<Station> allStations, final Long stationId) {
 		return allStations.stream()
 				.filter(it -> Objects.equals(it.getId(), stationId))
 				.findFirst()
 				.orElseThrow(NoSuchElementException::new);
-	}
-
-	private List<String> findShortestPath(final String source, final String target, final SearchType searchType,
-										  final List<Station> allStations, final List<LineStation> allLineStations) {
-		Station sourceStation = stationRepository.findByName(source).orElseThrow(NoSuchElementException::new);
-		Station targetStation = stationRepository.findByName(target).orElseThrow(NoSuchElementException::new);
-
-		DijkstraShortestPath dijkstraShortestPath = findDijkstraPath(
-				allStations, allLineStations, searchType);
-
-		return dijkstraShortestPath.getPath(
-				String.valueOf(sourceStation.getId()), String.valueOf(targetStation.getId())).getVertexList();
-	}
-
-	private DijkstraShortestPath findDijkstraPath(final List<Station> allStations,
-												  final List<LineStation> allLineStations,
-												  final SearchType searchType) {
-
-		WeightedMultigraph<String, DefaultWeightedEdge> graph
-				= new WeightedMultigraph(DefaultWeightedEdge.class);
-
-		graph.addVertex("");
-		allStations.forEach(station -> graph.addVertex(String.valueOf(station.getId())));
-		allLineStations.forEach(it -> {
-			String preStationIdValue = createStringValueOf(it.getPreStationId());
-			String stationIdValue = String.valueOf(it.getStationId());
-			graph.setEdgeWeight(graph.addEdge(preStationIdValue, stationIdValue),
-			                    searchType.isDistance() ? it.getDistance() : it.getDuration());
-		});
-
-		return new DijkstraShortestPath(graph);
-	}
-
-	private String createStringValueOf(final Long preStationId) {
-		if (Objects.isNull(preStationId)) {
-			return "";
-		}
-		return String.valueOf(preStationId);
 	}
 
 	private int calculateTotalDistance(final List<Station> stationsOnPath) {
