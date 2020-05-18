@@ -7,6 +7,7 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -58,5 +59,10 @@ public class LineService {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
+    }
+
+    // TODO: 구현하세요 :)
+    public WholeSubwayResponse wholeLines() {
+        return null;
     }
 }

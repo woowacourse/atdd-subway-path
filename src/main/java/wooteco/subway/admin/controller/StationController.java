@@ -45,9 +45,9 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/stations/shortest-path")
-    public ResponseEntity<PathResponse> showShortestStationPath(@RequestParam String source, @RequestParam String target, @RequestParam String pathType) {
-        PathResponse path = pathService.findPath(source, target, PathType.valueOf(pathType));
+    @GetMapping("/stations/path")
+    public ResponseEntity<PathResponse> showShortestStationPath(@ModelAttribute PathRequest pathRequest) {
+        PathResponse path = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), PathType.valueOf(pathRequest.getPathType()));
         return ResponseEntity.ok().body(path);
     }
 }
