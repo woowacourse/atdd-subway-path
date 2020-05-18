@@ -56,22 +56,22 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse kangnam = createStation(STATION_NAME_KANGNAM);
+        StationResponse yeoksam = createStation(STATION_NAME_YEOKSAM);
+        StationResponse seolleung = createStation(STATION_NAME_SEOLLEUNG);
 
-        LineResponse lineResponse = createLine("2호선");
+        LineResponse lineNumberTwo = createLine("2호선");
 
-        addEdge(lineResponse.getId(), null, stationResponse1.getId());
-        addEdge(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addEdge(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addEdge(lineNumberTwo.getId(), null, kangnam.getId());
+        addEdge(lineNumberTwo.getId(), kangnam.getId(), yeoksam.getId());
+        addEdge(lineNumberTwo.getId(), yeoksam.getId(), seolleung.getId());
 
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
+        LineDetailResponse lineDetailResponse = getLine(lineNumberTwo.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        removeLineStation(lineNumberTwo.getId(), yeoksam.getId());
 
-        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
+        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineNumberTwo.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
 }
