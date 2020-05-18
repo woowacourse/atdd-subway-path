@@ -85,12 +85,12 @@ function Search() {
         document.querySelector('#distance').innerText = data['totalDistance'] + 'km';
         document.querySelector('#duration').innerText = data['totalDuration'] + '분';
 
-        const stations = data['stations'];
-        $sourceStation.innerText = stations[0].name;
+        const stations = data['stationNames'];
+        $sourceStation.innerText = stations[0];
         for (let i = 1; i < stations.length - 1; i++) {
-            $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i].name));
+            $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i]));
         }
-        $targetStations.innerText = await stations[stations.length - 1].name;
+        $targetStations.innerText = await stations[stations.length - 1];
         showSearchResult()
     }
 
