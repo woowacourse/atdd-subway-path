@@ -15,38 +15,38 @@ function Search() {
   const $middleStations = document.querySelector('#middle-stations');
   const $targetStations = document.querySelector('#target-station');
   const $favoriteButton = document.querySelector('#favorite-button')
-  let $typeName = 'distance';
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
+    let $typeName = 'DISTANCE';
+    const showSearchResult = () => {
+        const isHidden = $searchResultContainer.classList.contains('hidden')
+        if (isHidden) {
+            $searchResultContainer.classList.remove('hidden')
+        }
     }
-  }
 
   const highlightButton = () => {
-    if ($typeName === 'distance') {
-      $shortestDistanceHighlight.classList.add('border-l', 'border-t', 'border-r');
-      $shortestDistanceHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
-      $shortestDurationHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
-      $shortestDurationHighlight.classList.remove('border-l', 'border-t', 'border-r');
-    }
+      if ($typeName === 'DISTANCE') {
+          $shortestDistanceHighlight.classList.add('border-l', 'border-t', 'border-r');
+          $shortestDistanceHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDurationHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDurationHighlight.classList.remove('border-l', 'border-t', 'border-r');
+      }
 
-    if ($typeName === 'duration') {
-      $shortestDurationHighlight.classList.add('border-l', 'border-t', 'border-r');
-      $shortestDurationHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
-      $shortestDistanceHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
-      $shortestDistanceHighlight.classList.remove('border-l', 'border-t', 'border-r');
-    }
+      if ($typeName === 'DURATION') {
+          $shortestDurationHighlight.classList.add('border-l', 'border-t', 'border-r');
+          $shortestDurationHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDistanceHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDistanceHighlight.classList.remove('border-l', 'border-t', 'border-r');
+      }
   }
 
   const onShortestDistanceResult = event => {
-    $typeName = 'distance';
+      $typeName = 'DISTANCE';
       highlightButton();
       onSearch(event)
   }
 
   const onShortestDurationResult = event => {
-    $typeName = 'duration';
+      $typeName = 'DURATION';
       highlightButton();
       onSearch(event)
   }

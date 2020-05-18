@@ -20,8 +20,7 @@ public class PathController {
 	public ResponseEntity<PathResponse> searchPath(
 			@RequestParam("source") String source,
 			@RequestParam("target") String target,
-			@RequestParam("type") String typeName) {
-		SearchType searchType = SearchType.of(typeName);
+			@RequestParam("type") SearchType searchType) {
 		PathResponse pathResponse = pathService.searchPath(source, target, searchType);
 
 		return ResponseEntity.ok().body(pathResponse);
