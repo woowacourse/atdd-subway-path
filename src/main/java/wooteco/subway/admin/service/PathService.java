@@ -58,8 +58,8 @@ public class PathService {
         int weight = (int) dijkstraShortestPath.getPathWeight(source, target);
 
         int extraInformation = lineStations.stream()
-                .filter(lineStation -> shortestPath.contains(lineStation.getStationId()))
-                .filter(lineStation -> shortestPath.contains(lineStation.getPreStationId()))
+                .filter(lineStation -> shortestPath.contains(lineStation.getStationId()) &&
+                        shortestPath.contains(lineStation.getPreStationId()))
                 .mapToInt(type::getExtraInformation)
                 .sum();
 
@@ -76,7 +76,6 @@ public class PathService {
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
-
         for (LineStation station : lineStations) {
             graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), type.getWeight(station));
         }
