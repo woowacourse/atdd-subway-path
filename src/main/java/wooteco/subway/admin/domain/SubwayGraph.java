@@ -1,26 +1,18 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toMap;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 
 public class SubwayGraph {
     private WeightedMultigraph<Station, LineStationEdge> graph;
 
-    public SubwayGraph(List<Line> lines, List<Station> stations, Function<LineStation, Integer> weightStrategy) {
-        this.graph = initialize(lines, mapStations(stations), weightStrategy);
-    }
-
-    private Map<Long, Station> mapStations(List<Station> stations) {
-        return stations.stream()
-                .collect(toMap(Station::getId, Function.identity()));
+    public SubwayGraph(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {
+        this.graph = initialize(lines, stations, weightStrategy);
     }
 
     private WeightedMultigraph<Station, LineStationEdge> initialize(List<Line> lines, Map<Long, Station> stations, Function<LineStation, Integer> weightStrategy) {

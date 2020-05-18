@@ -1,13 +1,18 @@
 package wooteco.subway.admin.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.*;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.SubWayPath;
+import wooteco.subway.admin.domain.SubwayGraph;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.SourceTargetSameException;
-
-import java.util.List;
-import java.util.Objects;
+import wooteco.subway.admin.service.utils.StationMapper;
 
 @Service
 public class PathService {
@@ -27,7 +32,7 @@ public class PathService {
         PathType pathType = PathType.of(type);
 
         List<Line> lines = lineService.findLines();
-        List<Station> stations = stationService.findAll();
+        Map<Long, Station> stations = StationMapper.toMap(stationService.findAll());
 
         SubwayGraph subwayGraph = new SubwayGraph(lines, stations, pathType::weight);
         SubWayPath subWayPath = subwayGraph.generatePath(source, target);

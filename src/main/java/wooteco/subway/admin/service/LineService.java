@@ -1,5 +1,10 @@
 package wooteco.subway.admin.service;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -10,12 +15,7 @@ import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.*;
+import wooteco.subway.admin.service.utils.StationMapper;
 
 @Service
 public class LineService {
@@ -47,7 +47,8 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+                request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
@@ -61,22 +62,24 @@ public class LineService {
 
     public WholeSubwayResponse findAllLinesWithStations() {
         List<Line> lines = lineRepository.findAll();
+        Map<Long, Station> stations = StationMapper.toMap(stationRepository.findAll());
+
         return lines.stream()
-                .map(this::changeLineToLineDetailResponse)
+                .map(line -> changeLineToLineDetailResponse(line, stations))
                 .collect(collectingAndThen(toList(), WholeSubwayResponse::of));
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        return changeLineToLineDetailResponse(line);
+        Map<Long, Station> stations = StationMapper
+                .toMap(stationRepository.findAllById(line.getLineStationsId()));
+
+        return changeLineToLineDetailResponse(line, stations);
     }
 
-    private LineDetailResponse changeLineToLineDetailResponse(Line line) {
+    private LineDetailResponse changeLineToLineDetailResponse(Line line,
+            Map<Long, Station> stations) {
         List<Long> idsInOrder = line.getLineStationsId();
-
-        Map<Long, Station> stations = stationRepository.findAllById(idsInOrder)
-                .stream()
-                .collect(toMap(Station::getId, Function.identity()));
 
         List<Station> stationsInOrder = idsInOrder.stream()
                 .map(stations::get)
