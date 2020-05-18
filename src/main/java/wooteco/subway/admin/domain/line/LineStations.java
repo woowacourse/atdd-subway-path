@@ -2,6 +2,8 @@ package wooteco.subway.admin.domain.line;
 
 import static java.util.stream.Collectors.*;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jgrapht.Graphs;
@@ -35,5 +37,53 @@ public class LineStations {
         return lineStations.stream()
             .map(LineStation::getStationId)
             .collect(toSet());
+    }
+
+    public Set<LineStation> getLineStations() {
+        return lineStations;
+    }
+
+    public void add(LineStation lineStation) {
+        lineStations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+            .findAny()
+            .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+
+        lineStations.add(lineStation);
+    }
+
+    public void remove(Long stationId) {
+        LineStation targetLineStation = findById(stationId);
+
+        lineStations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), stationId))
+            .findFirst()
+            .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+
+        lineStations.remove(targetLineStation);
+    }
+
+    private LineStation findById(Long stationId) {
+        return lineStations.stream()
+            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
+    public boolean isEmpty() {
+        return lineStations.isEmpty();
+    }
+
+    public LineStation getFirst() {
+        return lineStations.stream()
+            .filter(it -> it.getPreStationId() == null)
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
+    public Optional<LineStation> getNextOf(Long stationId) {
+        return lineStations.stream()
+            .filter(it -> Objects.equals(it.getPreStationId(), stationId))
+            .findFirst();
     }
 }
