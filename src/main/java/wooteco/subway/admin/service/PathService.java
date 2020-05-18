@@ -49,7 +49,7 @@ public class PathService {
     }
 
     private void validateSourceTargetEquality(final Station source, final Station target) {
-        if (source.is(target)) {
+        if (source.hasSameStationIdWith(target)) {
             throw new InvalidSubwayPathException("출발역과 도착역은 같을 수 없습니다.");
         }
     }

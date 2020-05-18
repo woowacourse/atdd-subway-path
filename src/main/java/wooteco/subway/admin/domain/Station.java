@@ -24,7 +24,7 @@ public class Station {
         this.createdAt = LocalDateTime.now();
     }
 
-    public boolean is(Station other) {
+    public boolean hasSameStationIdWith(Station other) {
         return id.equals(other.id);
     }
 
