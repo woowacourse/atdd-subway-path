@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -255,7 +256,7 @@ public class LineServiceTest {
                 .thenReturn(Optional.of(station4.getId()));
 
         assertThatThrownBy(() -> lineService.findShortestPath(STATION_NAME1, STATION_NAME4, PathType.DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("존재하지 않는 경로입니다.");
     }
 
@@ -263,7 +264,7 @@ public class LineServiceTest {
     @Test
     void findShortestDistancePath_EqualStation() {
         assertThatThrownBy(() -> lineService.findShortestPath(STATION_NAME1, STATION_NAME1, PathType.DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 같습니다.");
     }
 }

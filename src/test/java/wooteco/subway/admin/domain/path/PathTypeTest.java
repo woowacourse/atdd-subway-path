@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.stream.Stream;
@@ -35,7 +36,8 @@ public class PathTypeTest {
     @ValueSource(strings = {"", " ", "time"})
     void of_Fail(String input) {
         assertThatThrownBy(() -> PathType.of(input))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CustomException.class)
+                .hasMessage("경로 찾기의 Type이 잘못되었습니다.");
     }
 
     @ParameterizedTest

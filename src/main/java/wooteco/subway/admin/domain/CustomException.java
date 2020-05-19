@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Objects;
+
 public class CustomException extends RuntimeException {
     private String message;
     private RuntimeException exception;
@@ -11,7 +13,7 @@ public class CustomException extends RuntimeException {
     }
 
     private static String getRuntimeMessage(String message, RuntimeException exception) {
-        if (exception.getMessage().isEmpty()) {
+        if (Objects.isNull(exception.getMessage()) || exception.getMessage().isEmpty()) {
             return message;
         }
         return exception.getMessage();

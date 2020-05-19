@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
@@ -8,8 +9,10 @@ import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.path.Path;
+import wooteco.subway.admin.domain.path.PathGraph;
 import wooteco.subway.admin.domain.path.PathType;
-import wooteco.subway.admin.domain.path.ShortestPath;
+import wooteco.subway.admin.domain.path.WeightedEdge;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -29,6 +32,7 @@ public class LineService {
     private final String NO_SUCH_STATION_EXCEPTION = "존재하지 않는 역입니다.";
     private LineRepository lineRepository;
     private StationRepository stationRepository;
+    private NoSuchElementException exception;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
@@ -106,7 +110,8 @@ public class LineService {
 
     public PathResponse findShortestPath(String sourceName, String targetName, PathType pathType) {
         if (sourceName.equals(targetName)) {
-            throw new CustomException("출발역과 도착역이 같습니다.", new NoSuchElementException());
+            exception = new NoSuchElementException();
+            throw new CustomException("출발역과 도착역이 같습니다.", exception);
         }
         Long sourceId = stationRepository.findIdByName(sourceName)
                 .orElseThrow(() -> new CustomException(NO_SUCH_STATION_EXCEPTION, new NoSuchElementException()));
@@ -114,13 +119,20 @@ public class LineService {
                 .orElseThrow(() -> new CustomException(NO_SUCH_STATION_EXCEPTION, new NoSuchElementException()));
 
         List<LineStation> lineStations = findAllLineStations();
-        ShortestPath shortestPath = ShortestPath.of(lineStations, pathType);
+        DijkstraShortestPath<Long, WeightedEdge> graph = new DijkstraShortestPath<>(PathGraph.getGraph(lineStations, pathType));
+        PathGraph pathGraph = new PathGraph(graph, pathType);
+        Path path;
+        try {
+            path = pathGraph.createPath(sourceId, targetId);
+        } catch (NullPointerException e) {
+            throw new CustomException("존재하지 않는 경로입니다.", e);
+        }
+        int distance = path.getDistance();
+        int duration = path.getDuration();
 
-        List<Long> pathStationIds = shortestPath.getVertexList(sourceId, targetId);
-        int distance = shortestPath.getDistance(sourceId, targetId);
-        int duration = shortestPath.getDuration(sourceId, targetId);
-
+        List<Long> pathStationIds = path.getVertexList();
         List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
+
         return new PathResponse(distance, duration, pathStationNames);
     }
 
