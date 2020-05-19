@@ -1,9 +1,9 @@
 package wooteco.subway.admin.domain.graph;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -74,12 +74,8 @@ public class SubwayShortestPath {
 	}
 
 	private List<Station> makeStationsById(Map<Long, Station> allStationsById, List<Long> shortestPathIds) {
-		List<Station> shortestPath = new ArrayList<>();
-
-		for (Long stationId : shortestPathIds) {
-			Station stationInPath = allStationsById.get(stationId);
-			shortestPath.add(stationInPath);
-		}
-		return shortestPath;
+        return shortestPathIds.stream()
+                .map(allStationsById::get)
+                .collect(Collectors.toList());
 	}
 }
