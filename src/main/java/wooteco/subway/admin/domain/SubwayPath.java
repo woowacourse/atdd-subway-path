@@ -7,10 +7,10 @@ import org.jgrapht.GraphPath;
 
 import wooteco.subway.admin.exception.VerticesNotConnectedException;
 
-public class ShortestPath {
+public class SubwayPath {
     private final GraphPath<Station, Edge> path;
 
-    public ShortestPath(GraphPath<Station, Edge> path) {
+    public SubwayPath(GraphPath<Station, Edge> path) {
         validateNull(path);
         this.path = path;
     }

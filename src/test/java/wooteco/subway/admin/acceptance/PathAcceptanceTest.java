@@ -47,9 +47,9 @@ public class PathAcceptanceTest {
 
     public PathResponse getShortestPath(PathType pathType) {
         return given().
-                        param("source", "포비").
-                        param("target", "브라운").
-                        param("pathType", pathType.name()).
+                        queryParam("source", "포비").
+                        queryParam("target", "브라운").
+                        queryParam("pathType", pathType.name()).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                 when().

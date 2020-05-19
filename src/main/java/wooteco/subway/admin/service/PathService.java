@@ -1,14 +1,12 @@
 package wooteco.subway.admin.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.PathType;
-import wooteco.subway.admin.domain.ShortestPath;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.domain.Subway;
+import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.ShortestPathStrategy;
+import wooteco.subway.admin.domain.Stations;
+import wooteco.subway.admin.domain.SubwayPath;
+import wooteco.subway.admin.dto.FindPathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -17,19 +15,20 @@ import wooteco.subway.admin.repository.StationRepository;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final ShortestPathStrategy shortestPathStrategy;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository,
+            ShortestPathStrategy shortestPathStrategy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.shortestPathStrategy = shortestPathStrategy;
     }
 
-    public PathResponse findShortestPath(String sourceName, String targetName, PathType pathType) {
-        List<Line> lines = lineRepository.findAll();
-        List<Station> stations = stationRepository.findAll();
+    public PathResponse findShortestPath(FindPathRequest findPathRequest) {
+        Lines lines = new Lines(lineRepository.findAll());
+        Stations stations = new Stations(stationRepository.findAll());
 
-        Subway subway = new Subway(lines, stations);
-        ShortestPath shortestDurationPath = subway.findShortestPath(sourceName, targetName, pathType);
-
-        return PathResponse.of(shortestDurationPath);
+        SubwayPath shortestPath = shortestPathStrategy.findShortestPath(lines, stations, findPathRequest);
+        return PathResponse.of(shortestPath);
     }
 }

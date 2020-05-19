@@ -2,8 +2,8 @@ package wooteco.subway.admin.dto;
 
 import java.util.List;
 
-import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.SubwayPath;
 
 public class PathResponse {
     private List<StationResponse> stations;
@@ -24,7 +24,7 @@ public class PathResponse {
         return new PathResponse(stationResponses, distance, duration);
     }
 
-    public static PathResponse of(ShortestPath shortestDistancePath) {
+    public static PathResponse of(SubwayPath shortestDistancePath) {
         return new PathResponse(StationResponse.listOf(shortestDistancePath.getVertices()),
                 shortestDistancePath.calculateTotalDistance(), shortestDistancePath.calculateTotalDuration());
     }

@@ -12,10 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.admin.domain.DijkstraShortestPathStrategy;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.FindPathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -64,7 +66,7 @@ public class PathServiceTest {
         LineStation lineStation3 = new LineStation(3L, 4L, 10, 10);
         LineStation lineStation4 = new LineStation(4L, 5L, 10, 10);
 
-        pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository, new DijkstraShortestPathStrategy());
 
         line1.addLineStation(lineStation1);
         line1.addLineStation(lineStation2);
@@ -77,7 +79,8 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
-        PathResponse shortestPath = pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DISTANCE);
+        PathResponse shortestPath = pathService.findShortestPath(
+                new FindPathRequest(STATION_NAME_1, STATION_NAME_5, PathType.DURATION.name()));
 
         assertThat(shortestPath.getStations().size()).isEqualTo(5);
         assertThat(shortestPath.getDistance()).isEqualTo(40);
@@ -89,7 +92,8 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
-        PathResponse shortestPath = pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DURATION);
+        PathResponse shortestPath = pathService.findShortestPath(
+                new FindPathRequest(STATION_NAME_1, STATION_NAME_5, PathType.DURATION.name()));
 
         assertThat(shortestPath.getStations().size()).isEqualTo(5);
         assertThat(shortestPath.getDistance()).isEqualTo(40);
