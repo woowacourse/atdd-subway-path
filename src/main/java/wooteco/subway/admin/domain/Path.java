@@ -1,9 +1,9 @@
 package wooteco.subway.admin.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-
 import java.util.List;
+
+import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 
 public class Path {
     private GraphPath<Long, LineStationEdge> path;
@@ -12,25 +12,26 @@ public class Path {
         this.path = path;
     }
 
-    public static Path of(Long sourceId, Long targetId, ShortestPathAlgorithm<Long, LineStationEdge> graph) {
-        return new Path(graph.getPath(sourceId, targetId));
-    }
-
-    public List<Long> getVertexList() {
-        return path.getVertexList();
+    public static Path of(Long sourceId, Long targetId, Graph<Long, LineStationEdge> graph,
+        PathStrategy pathStrategy) {
+        return new Path(pathStrategy.getPath(sourceId, targetId, graph));
     }
 
     public int totalDuration() {
         return path.getEdgeList()
-                .stream()
-                .mapToInt(LineStationEdge::getDuration)
-                .sum();
+            .stream()
+            .mapToInt(LineStationEdge::getDuration)
+            .sum();
     }
 
     public int totalDistance() {
         return path.getEdgeList()
-                .stream()
-                .mapToInt(LineStationEdge::getDistance)
-                .sum();
+            .stream()
+            .mapToInt(LineStationEdge::getDistance)
+            .sum();
+    }
+
+    public List<Long> getVertexList() {
+        return path.getVertexList();
     }
 }

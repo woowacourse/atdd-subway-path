@@ -1,6 +1,13 @@
 package wooteco.subway.admin.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -11,11 +18,6 @@ import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -31,6 +33,7 @@ public class LineService {
         return lineRepository.save(request.toLine());
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> showLines() {
         return LineResponse.listOf(lineRepository.findAll());
     }
@@ -56,15 +59,6 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    private void validateStations(Long preStationId, Long stationId) {
-        if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
-            throw new IllegalArgumentException("존재하지 않는 이전역입니다.");
-        }
-        if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
-            throw new IllegalArgumentException("존재하지 않는 다음역입니다.");
-        }
-    }
-
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         line.removeLineStationById(stationId);
@@ -77,6 +71,7 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
         Map<Long, Station> stations = stationRepository.findAll()
@@ -88,6 +83,14 @@ public class LineService {
         return WholeSubwayResponse.of(responses);
     }
 
+    private void validateStations(Long preStationId, Long stationId) {
+        if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
+            throw new IllegalArgumentException("존재하지 않는 이전역입니다.");
+        }
+        if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
+            throw new IllegalArgumentException("존재하지 않는 다음역입니다.");
+        }
+    }
 
     private LineDetailResponse getLineDetailResponse(Map<Long, Station> stations, Line line) {
         List<Station> stationsList = line.stationsIdStream()

@@ -7,10 +7,10 @@ public enum PathType {
     DISTANCE(LineStation::getDistance),
     DURATION(LineStation::getDuration);
 
-    private Function<LineStation, Integer> function;
+    private Function<LineStation, Integer> weight;
 
-    PathType(Function<LineStation, Integer> function) {
-        this.function = function;
+    PathType(Function<LineStation, Integer> weight) {
+        this.weight = weight;
     }
 
     public static PathType of(String name) {
@@ -18,10 +18,11 @@ public enum PathType {
                 .filter(val -> name.equals(val.name()))
                 .findFirst()
                 .orElseThrow(
-                        () -> new IllegalArgumentException(String.format("%s을(를) 찾을 수 없습니다.", name)));
+                        () -> new IllegalArgumentException(
+                                String.format("%s 역이 존재하지 않습니다.", name)));
     }
 
     public int getWeight(LineStation lineStation) {
-        return function.apply(lineStation);
+        return weight.apply(lineStation);
     }
 }

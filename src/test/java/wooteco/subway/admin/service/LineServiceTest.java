@@ -1,18 +1,8 @@
 package wooteco.subway.admin.service;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.request.LineStationCreateRequest;
-import wooteco.subway.admin.dto.response.LineDetailResponse;
-import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,10 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
+import wooteco.subway.admin.repository.LineRepository;
+import wooteco.subway.admin.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -163,7 +163,7 @@ public class LineServiceTest {
     @Test
     void wholeLines() {
         Line newLine = new Line(2L, "신분당선", "bg-green-500", LocalTime.of(5, 30),
-                LocalTime.of(22, 30), 5);
+            LocalTime.of(22, 30), 5);
         newLine.addLineStation(LineStation.of(null, 4L, 10, 10));
         newLine.addLineStation(LineStation.of(4L, 5L, 10, 10));
         newLine.addLineStation(LineStation.of(5L, 6L, 10, 10));
