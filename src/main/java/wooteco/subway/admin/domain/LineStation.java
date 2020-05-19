@@ -35,11 +35,11 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
-    public boolean hasPreStation() {
+    public boolean isNotFirstStation() {
         return Objects.nonNull(preStationId);
     }
 
     public boolean isSameStation(Long stationId) {
-        return hasPreStation() && preStationId.equals(stationId);
+        return isNotFirstStation() && preStationId.equals(stationId);
     }
 }

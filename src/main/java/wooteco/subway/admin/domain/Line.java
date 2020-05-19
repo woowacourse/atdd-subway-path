@@ -129,7 +129,7 @@ public class Line {
         }
 
         LineStation firstLineStation = lineStations.stream()
-                .filter(it -> !it.hasPreStation())
+                .filter(it -> !it.isNotFirstStation())
                 .findFirst()
                 .orElseThrow(LineStationNotFoundException::new);
 

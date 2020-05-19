@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import wooteco.subway.admin.exception.SameDepatureArrivalStationException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.exception.VerticesNotConnectedException;
 
@@ -43,7 +44,7 @@ public class SubwayTest {
         Subway subway = new Subway(Collections.emptyList(), Collections.emptyList());
         assertThatThrownBy(() -> {
             subway.findShortestPath("잠실", "잠실", DISTANCE);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(SameDepatureArrivalStationException.class);
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.exception.LineNotFoundException;
+import wooteco.subway.admin.exception.SameDepatureArrivalStationException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 
 public class Subway {
@@ -53,7 +54,7 @@ public class Subway {
 
     private void validateStationName(String sourceName, String targetName) {
         if (sourceName.equals(targetName)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new SameDepatureArrivalStationException();
         }
     }
 
@@ -90,7 +91,7 @@ public class Subway {
     private List<LineStation> generateLineStations() {
         return lines.stream()
                 .flatMap(line -> line.getLineStations().stream())
-                .filter(LineStation::hasPreStation)
+                .filter(LineStation::isNotFirstStation)
                 .collect(Collectors.toList());
     }
 }

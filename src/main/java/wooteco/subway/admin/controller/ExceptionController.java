@@ -4,30 +4,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.dto.ErrorResponse;
-import wooteco.subway.admin.exception.LineNotFoundException;
-import wooteco.subway.admin.exception.LineStationNotFoundException;
-import wooteco.subway.admin.exception.StationNotFoundException;
-import wooteco.subway.admin.exception.VerticesNotConnectedException;
+import wooteco.subway.admin.exception.*;
 
 @ControllerAdvice
-@RestController
 public class ExceptionController {
     @ExceptionHandler(value = {LineNotFoundException.class, LineStationNotFoundException.class,
-            StationNotFoundException.class})
+            StationNotFoundException.class, SameDepatureArrivalStationException.class})
     public ResponseEntity<ErrorResponse> handleLineNotFoundException(RuntimeException exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(VerticesNotConnectedException.class)
     public ResponseEntity<ErrorResponse> handleVerticesNotConnectedException(VerticesNotConnectedException exception) {
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalTime;
 import java.util.Arrays;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,9 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.LineNotFoundException;
+import wooteco.subway.admin.exception.SameDepatureArrivalStationException;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -48,11 +52,6 @@ public class PathServiceTest {
     private Line line1;
     private Line line2;
 
-    private LineStation lineStation1;
-    private LineStation lineStation2;
-    private LineStation lineStation3;
-    private LineStation lineStation4;
-
     @BeforeEach
     void setUp() {
         station1 = new Station(1L, STATION_NAME_1);
@@ -64,10 +63,10 @@ public class PathServiceTest {
         line1 = new Line(1L, LINE_NAME_1, LocalTime.now(), LocalTime.now(), 10, "black");
         line2 = new Line(2L, LINE_NAME_2, LocalTime.now(), LocalTime.now(), 10, "red");
 
-        lineStation1 = new LineStation(1L, 2L, 10, 10);
-        lineStation2 = new LineStation(2L, 3L, 10, 10);
-        lineStation3 = new LineStation(3L, 4L, 10, 10);
-        lineStation4 = new LineStation(4L, 5L, 10, 10);
+        LineStation lineStation1 = new LineStation(1L, 2L, 10, 10);
+        LineStation lineStation2 = new LineStation(2L, 3L, 10, 10);
+        LineStation lineStation3 = new LineStation(3L, 4L, 10, 10);
+        LineStation lineStation4 = new LineStation(4L, 5L, 10, 10);
 
         pathService = new PathService(lineRepository, stationRepository);
 
@@ -99,5 +98,45 @@ public class PathServiceTest {
         assertThat(shortestPath.getStations().size()).isEqualTo(5);
         assertThat(shortestPath.getDistance()).isEqualTo(40);
         assertThat(shortestPath.getDuration()).isEqualTo(40);
+    }
+
+    @Test
+    public void noLines() {
+        when(lineRepository.findAll()).thenReturn(null);
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        Assertions.assertThatThrownBy(() -> {
+            pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DURATION);
+        }).isInstanceOf(LineNotFoundException.class);
+    }
+
+    @Test
+    public void noStations() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(null);
+
+        Assertions.assertThatThrownBy(() -> {
+            pathService.findShortestPath(STATION_NAME_1, STATION_NAME_5, PathType.DURATION);
+        }).isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    public void duplicateArrivalDepartStation() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        Assertions.assertThatThrownBy(() -> {
+            pathService.findShortestPath(STATION_NAME_1, STATION_NAME_1, PathType.DURATION);
+        }).isInstanceOf(SameDepatureArrivalStationException.class);
+    }
+
+    @Test
+    public void noExistenceStation() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
+        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+
+        Assertions.assertThatThrownBy(() -> {
+            pathService.findShortestPath(STATION_NAME_1, "쌍문", PathType.DURATION);
+        }).isInstanceOf(StationNotFoundException.class);
     }
 }
