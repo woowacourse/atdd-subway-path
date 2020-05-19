@@ -1,6 +1,6 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.line.path.vo.PathInfo;
+import wooteco.subway.admin.domain.line.path.vo.PathSearchInfo;
 
 public class PathRequest {
     private final String source;
@@ -19,7 +19,7 @@ public class PathRequest {
         return target;
     }
 
-    public PathInfo toPathInfo() {
-        return new PathInfo(source, target);
+    public PathSearchInfo toPathInfo() {
+        return new PathSearchInfo(source, target);
     }
 }

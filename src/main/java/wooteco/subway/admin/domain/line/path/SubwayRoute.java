@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 
+import wooteco.subway.admin.domain.line.path.vo.PathInfo;
+
 public class SubwayRoute implements Path {
     private final GraphPath<Long, RouteEdge> path;
 
@@ -21,18 +23,14 @@ public class SubwayRoute implements Path {
     }
 
     @Override
-    public int calculateTotalDistance() {
-        return path.getEdgeList()
-            .stream()
-            .mapToInt(RouteEdge::getDistance)
-            .sum();
-    }
-
-    @Override
-    public int calculateTotalDuration() {
-        return path.getEdgeList()
-            .stream()
-            .mapToInt(RouteEdge::getDuration)
-            .sum();
+    public PathInfo createPathInfo() {
+        List<RouteEdge> edgeList = path.getEdgeList();
+        int totalDistance = 0;
+        int totalDuration = 0;
+        for (RouteEdge routeEdge : edgeList) {
+            totalDistance += routeEdge.getDistance();
+            totalDuration += routeEdge.getDuration();
+        }
+        return new PathInfo(totalDistance, totalDuration);
     }
 }

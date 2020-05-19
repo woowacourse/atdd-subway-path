@@ -16,6 +16,7 @@ import wooteco.subway.admin.domain.line.path.EdgeWeightType;
 import wooteco.subway.admin.domain.line.path.Path;
 import wooteco.subway.admin.domain.line.path.SubwayMap;
 import wooteco.subway.admin.domain.line.path.vo.PathInfo;
+import wooteco.subway.admin.domain.line.path.vo.PathSearchInfo;
 import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -84,9 +85,9 @@ public class LineService {
     }
 
     public PathResponses findPathsBy(PathRequest pathRequest) {
-        PathInfo pathInfo = pathRequest.toPathInfo();
-        Long departureId = findIdByName(pathInfo.getDepartureStationName());
-        Long arrivalId = findIdByName(pathInfo.getArrivalStationName());
+        PathSearchInfo pathSearchInfo = pathRequest.toPathInfo();
+        Long departureId = findIdByName(pathSearchInfo.getDepartureStationName());
+        Long arrivalId = findIdByName(pathSearchInfo.getArrivalStationName());
         return findPaths(departureId, arrivalId);
     }
 
@@ -106,8 +107,9 @@ public class LineService {
     private PathResponse toPathResponse(Path path) {
         List<Long> shortestPath = path.getPath();
         List<StationResponse> responses = toStationResponses(shortestPath);
-        return new PathResponse(responses, path.calculateTotalDuration(),
-            path.calculateTotalDistance());
+        PathInfo pathInfo = path.createPathInfo();
+        return new PathResponse(responses, pathInfo.getTotalDuration(),
+            pathInfo.getTotalDistance());
     }
 
     private List<StationResponse> toStationResponses(List<Long> shortestPath) {

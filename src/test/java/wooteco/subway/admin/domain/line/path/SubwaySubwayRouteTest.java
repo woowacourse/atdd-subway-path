@@ -36,14 +36,10 @@ class SubwaySubwayRouteTest {
     }
 
     @Test
-    void calculateTotalDistance() {
-        assertThat(distanceRoute.calculateTotalDistance()).isEqualTo(10);
-        assertThat(durationRoute.calculateTotalDistance()).isEqualTo(10);
-    }
-
-    @Test
-    void calculateTotalDuration() {
-        assertThat(distanceRoute.calculateTotalDuration()).isEqualTo(20);
-        assertThat(durationRoute.calculateTotalDuration()).isEqualTo(20);
+    void createPathInfo() {
+        assertThat(distanceRoute.createPathInfo().getTotalDistance()).isEqualTo(10);
+        assertThat(durationRoute.createPathInfo().getTotalDistance()).isEqualTo(10);
+        assertThat(distanceRoute.createPathInfo().getTotalDuration()).isEqualTo(20);
+        assertThat(durationRoute.createPathInfo().getTotalDuration()).isEqualTo(20);
     }
 }
