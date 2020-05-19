@@ -32,15 +32,17 @@ public class Lines {
         lines.stream()
             .map(Line::getStations)
             .flatMap(Collection::stream)
-            .forEach(lineStation -> addEdge(pathType, graph, lineStation));
+            .forEach(lineStation -> makeEdge(graph, lineStation, pathType));
 
         return graph;
     }
 
-    private void addEdge(PathType pathType, WeightedMultigraph<Long, LineStationEdge> graph,
-        LineStation lineStation) {
-        LineStationEdge edge = LineStationEdge.of(lineStation);
-        graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
-        graph.setEdgeWeight(edge, pathType.getWeight(lineStation));
+    private void makeEdge(WeightedMultigraph<Long, LineStationEdge> graph, LineStation lineStation,
+        PathType pathType) {
+        if (!lineStation.isFirstLineStation()) {
+            LineStationEdge edge = LineStationEdge.of(lineStation);
+            graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), edge);
+            graph.setEdgeWeight(edge, pathType.getWeight(lineStation));
+        }
     }
 }

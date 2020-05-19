@@ -6,11 +6,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,23 +56,23 @@ class PathServiceTest {
     @DisplayName("출발역이나 도착역을 입력하지 않은 경우")
     @Test
     void findPathNullException() {
-        assertThatThrownBy(() -> pathService.findPath(null, 1L, PathType.DURATION))
+        assertThatThrownBy(() -> pathService.findPath(null, 1L, PathType.DURATION.name()))
             .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> pathService.findPath(null, null, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(null, null, PathType.DISTANCE.name()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출발역, 도착역이 같은 경우")
     @Test
     void findPathSameStationsException() {
-        assertThatThrownBy(() -> pathService.findPath(1L, 1L, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(1L, 1L, PathType.DISTANCE.name()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
     @Test
     void findPathNotExistException() {
-        assertThatThrownBy(() -> pathService.findPath(1L, 7L, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(1L, 7L, PathType.DISTANCE.name()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -84,10 +80,10 @@ class PathServiceTest {
     @Test
     void findPathNotConnectedException() {
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(jamwon, yeoksam));
+        // when(stationRepository.findAll()).thenReturn(Arrays.asList(jamwon, yeoksam));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
         assertThatThrownBy(
-            () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE))
+            () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE.name()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -108,7 +104,7 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
 
-        PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE);
+        PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE.name());
         assertThat(pathResponse.getStations()).size().isEqualTo(6);
         assertThat(pathResponse.getDistance()).isEqualTo(130);
         assertThat(pathResponse.getDuration()).isEqualTo(70);
@@ -137,61 +133,13 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
 
-        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION);
-        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE);
+        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION.name());
+        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE.name());
         assertThat(durationResponse.getStations()).size().isEqualTo(4);
         assertThat(durationResponse.getDuration()).isEqualTo(3);
         assertThat(durationResponse.getDistance()).isEqualTo(302);
         assertThat(distanceResponse.getStations()).size().isEqualTo(6);
         assertThat(distanceResponse.getDuration()).isEqualTo(5);
         assertThat(distanceResponse.getDistance()).isEqualTo(5);
-    }
-
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
-    }
-
-    @DisplayName("등록되지 않은 경우")
-    @Test
-    public void dijkstraShortestPathNotExistException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("연결되지 않은 경우")
-    @Test
-    public void dijkstraShortestPathNotConnectedException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(NullPointerException.class);
     }
 }
