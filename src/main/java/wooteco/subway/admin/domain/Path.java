@@ -8,6 +8,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.admin.exception.DuplicateSourceTargetStationException;
+import wooteco.subway.admin.exception.InvalidPathException;
+
 public class Path {
     private WeightedMultigraph<Long, PathEdge> graph;
 
@@ -55,13 +58,13 @@ public class Path {
 
     private void validatePath(GraphPath<Long, PathEdge> shortestPath) {
         if (Objects.isNull(shortestPath)) {
-            throw new RuntimeException("출발역과 도착역이 연결되어 있지 않습니다.");
+            throw new InvalidPathException();
         }
     }
 
     private void validateSourceTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
+            throw new DuplicateSourceTargetStationException();
         }
     }
 

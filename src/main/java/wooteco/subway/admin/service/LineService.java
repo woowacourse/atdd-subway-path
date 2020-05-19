@@ -13,12 +13,12 @@ import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NotFoundLineException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 @Service
 public class LineService {
-    public static final String NO_EXIST_LINE = "존재하지 않는 노선입니다.";
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
@@ -36,8 +36,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new RuntimeException(
-            NO_EXIST_LINE));
+        Line persistLine = lineRepository.findById(id)
+            .orElseThrow(NotFoundLineException::new);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -47,8 +47,8 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new RuntimeException(
-            NO_EXIST_LINE));
+        Line line = lineRepository.findById(id)
+            .orElseThrow(NotFoundLineException::new);
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
@@ -56,15 +56,15 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(() -> new RuntimeException(
-            NO_EXIST_LINE));
+        Line line = lineRepository.findById(lineId)
+            .orElseThrow(NotFoundLineException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new RuntimeException(
-            NO_EXIST_LINE));
+        Line line = lineRepository.findById(id)
+            .orElseThrow(NotFoundLineException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
