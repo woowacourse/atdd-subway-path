@@ -18,19 +18,12 @@ import wooteco.subway.admin.dto.ShortestPath;
 
 @Sql("/truncate.sql")
 public class PathAcceptanceTest extends AcceptanceTest {
-	private static Stream<Arguments> giveCriteriaAndResults() {
-		return Stream.of(
-			Arguments.of("distance", Arrays.asList("시청", "충정로", "당산", "영등포구청", "신도림"), 40, 80),
-			Arguments.of("duration", Arrays.asList("시청", "충정로", "여의도", "신길", "신도림"), 60, 50)
-		);
-	}
 
 	@DisplayName("최단 경로를 조회")
 	@MethodSource("giveCriteriaAndResults")
 	@ParameterizedTest
 	void getShortestPath(String criteriaName, List<String> stationNames, int expectedDistance, int expectedDuration) {
 		//	Feature: 최단 경로를 구한다.
-
 		//		Given 지하철 노선들이 추가되어있다.
 		createLine("1호선");
 		createLine("2호선");
@@ -98,5 +91,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		assertEquals(distance, expectedDistance);
 		assertEquals(duration, expectedDuration);
+	}
+
+	private static Stream<Arguments> giveCriteriaAndResults() {
+		return Stream.of(
+			Arguments.of("distance", Arrays.asList("시청", "충정로", "당산", "영등포구청", "신도림"), 40, 80),
+			Arguments.of("duration", Arrays.asList("시청", "충정로", "여의도", "신길", "신도림"), 60, 50)
+		);
 	}
 }
