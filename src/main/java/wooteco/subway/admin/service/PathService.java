@@ -36,7 +36,7 @@ public class PathService {
     public PathResponse showPaths(PathRequest pathRequest) {
         String source = pathRequest.getSource();
         String target = pathRequest.getTarget();
-        CriteriaType criteria = CriteriaType.of(pathRequest.getCriteria());
+        CriteriaType criteria = pathRequest.getCriteria();
         validateSameStations(source, target);
 
         List<Line> lines = lineRepository.findAll();

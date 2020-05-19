@@ -24,6 +24,9 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.req.PathRequest;
 import wooteco.subway.admin.dto.res.PathResponse;
 import wooteco.subway.admin.dto.res.StationResponse;
+import wooteco.subway.admin.exception.DuplicateStationException;
+import wooteco.subway.admin.exception.NoEdgeBetweenException;
+import wooteco.subway.admin.exception.StationNotFoundException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -42,7 +45,7 @@ class PathServiceTest {
     @MockBean
     private StationRepository stationRepository;
 
-    private DijkstraShortestStrategy dijkstraShortestStrategy2 = new DijkstraShortestStrategy();
+    private PathStrategy pathStrategy = new DijkstraShortestStrategy();
 
     private PathService pathService;
 
@@ -57,7 +60,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository, dijkstraShortestStrategy2);
+        pathService = new PathService(lineRepository, stationRepository, pathStrategy);
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
@@ -101,8 +104,8 @@ class PathServiceTest {
             "distance");
         assertThatThrownBy(() -> {
             pathService.showPaths(pathRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("동일역으로는 조회할 수 없습니다.");
+        }).isInstanceOf(DuplicateStationException.class)
+            .hasMessageContaining("동일역으로는 이동할 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -111,7 +114,7 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(name1, name2, "distance");
         assertThatThrownBy(() -> {
             pathService.showPaths(pathRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(StationNotFoundException.class)
             .hasMessageContaining("존재하지 않는 역입니다.");
     }
 
@@ -127,8 +130,8 @@ class PathServiceTest {
             "distance");
         assertThatThrownBy(() -> {
             pathService.showPaths(pathRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("갈 수 없는 경로입니다.");
+        }).isInstanceOf(NoEdgeBetweenException.class)
+            .hasMessage("이어지지 않은 역입니다.(이동할 수 없습니다.)");
     }
 
 }
