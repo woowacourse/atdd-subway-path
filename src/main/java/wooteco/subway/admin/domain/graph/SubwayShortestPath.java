@@ -55,7 +55,9 @@ public class SubwayShortestPath {
 
 	public List<Station> getShortestPath() {
 		List<Long> shortestPathIds = shortestPath.getVertexList();
-		return makeStationsById(allStationsById, shortestPathIds);
+		return shortestPathIds.stream()
+			.map(allStationsById::get)
+			.collect(Collectors.toList());
 	}
 
 	private Graph<Long, SubwayEdge> createMultiGraph(List<LineStation> allLineStations,
@@ -71,11 +73,5 @@ public class SubwayShortestPath {
 			graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), subwayEdge);
 		}
 		return graph;
-	}
-
-	private List<Station> makeStationsById(Map<Long, Station> allStationsById, List<Long> shortestPathIds) {
-        return shortestPathIds.stream()
-                .map(allStationsById::get)
-                .collect(Collectors.toList());
 	}
 }
