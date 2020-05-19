@@ -95,8 +95,7 @@ public class LineServiceTest {
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line1.getId())).thenReturn(Optional.of(line1));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
-            station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
         lineService.addLineStation(line1.getId(), request);
 
         assertThat(line1.getStations()).hasSize(4);
