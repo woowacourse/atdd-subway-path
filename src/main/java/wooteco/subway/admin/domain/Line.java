@@ -2,17 +2,13 @@ package wooteco.subway.admin.domain;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-
-import wooteco.subway.admin.exception.LineStationNotFoundException;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Line {
     @Id
@@ -25,7 +21,8 @@ public class Line {
     private String backgroundColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> lineStations = new HashSet<>();
+    @Embedded.Empty
+    private LineStations lineStations = new LineStations();
 
     private Line() {
     }
@@ -70,7 +67,7 @@ public class Line {
     }
 
     public Set<LineStation> getLineStations() {
-        return lineStations;
+        return lineStations.getLineStations();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -101,54 +98,14 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        lineStations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
-
-        lineStations.add(lineStation);
+        lineStations.addLineStation(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = lineStations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(LineStationNotFoundException::new);
-
-        lineStations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
-
-        lineStations.remove(targetLineStation);
+        lineStations.removeLineStationById(stationId);
     }
 
     public List<Long> getLineStationsId() {
-        if (lineStations.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        LineStation firstLineStation = lineStations.stream()
-                .filter(it -> !it.hasPreStation())
-                .findFirst()
-                .orElseThrow(LineStationNotFoundException::new);
-
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = lineStations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
+        return lineStations.getLineStationsId();
     }
 }
