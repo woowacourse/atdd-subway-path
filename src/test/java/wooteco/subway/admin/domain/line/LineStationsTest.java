@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Sets;
 import wooteco.subway.admin.domain.line.path.SubwayGraph;
-import wooteco.subway.admin.domain.line.path.SubwayRoute;
 
 class LineStationsTest {
     private LineStation lineStation;

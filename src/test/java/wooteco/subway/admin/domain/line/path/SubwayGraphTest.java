@@ -13,7 +13,7 @@ class SubwayGraphTest {
     private LineStation lineStation1;
     private LineStation lineStation2;
     private LineStations lineStations;
-    private SubwayGraph subwayGraph;
+    private SubwayMap subwayMap;
 
     @BeforeEach
     void setUp() {
@@ -21,16 +21,16 @@ class SubwayGraphTest {
         lineStation1 = new LineStation(1L, 2L, 5, 10);
         lineStation2 = new LineStation(2L, 3L, 5, 10);
         lineStations = new LineStations(Sets.newHashSet(lineStation, lineStation1, lineStation2));
-        subwayGraph = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
+        subwayMap = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
     }
 
     @Test
     void constructor() {
-        assertThat(subwayGraph).isInstanceOf(SubwayGraph.class);
+        assertThat(subwayMap).isInstanceOf(SubwayGraph.class);
     }
 
     @Test
     void findShortestPath() {
-        assertThat(subwayGraph.findDijkstraShortestPath(1L, 3L)).isInstanceOf(SubwayRoute.class);
+        assertThat(subwayMap.findShortestPath(1L, 3L)).isInstanceOf(SubwayRoute.class);
     }
 }

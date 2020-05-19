@@ -2,6 +2,7 @@ package wooteco.subway.admin.domain.line;
 
 import wooteco.subway.admin.domain.line.path.EdgeWeightStrategy;
 import wooteco.subway.admin.domain.line.path.SubwayGraph;
+import wooteco.subway.admin.domain.line.path.SubwayMap;
 
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public class LineStations {
         this.lineStations = lineStations;
     }
 
-    public SubwayGraph toGraph(EdgeWeightStrategy edgeWeightStrategy) {
+    public SubwayMap toGraph(EdgeWeightStrategy edgeWeightStrategy) {
         return SubwayGraph.of(lineStations, edgeWeightStrategy);
     }
 }

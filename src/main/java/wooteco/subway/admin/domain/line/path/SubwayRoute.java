@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 
-public class SubwayRoute {
+public class SubwayRoute implements Path {
     private final GraphPath<Long, RouteEdge> path;
 
     public SubwayRoute(GraphPath<Long, RouteEdge> path) {
@@ -15,10 +15,12 @@ public class SubwayRoute {
         this.path = path;
     }
 
-    public List<Long> getShortestPath() {
+    @Override
+    public List<Long> getPath() {
         return path.getVertexList();
     }
 
+    @Override
     public int calculateTotalDistance() {
         return path.getEdgeList()
             .stream()
@@ -26,6 +28,7 @@ public class SubwayRoute {
             .sum();
     }
 
+    @Override
     public int calculateTotalDuration() {
         return path.getEdgeList()
             .stream()

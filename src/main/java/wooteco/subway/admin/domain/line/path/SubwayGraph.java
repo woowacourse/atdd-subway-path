@@ -7,14 +7,14 @@ import wooteco.subway.admin.domain.line.LineStation;
 
 import java.util.Set;
 
-public class SubwayGraph {
+public class SubwayGraph implements SubwayMap {
     private final WeightedGraph<Long, RouteEdge> graph;
 
     private SubwayGraph(WeightedGraph<Long, RouteEdge> graph) {
         this.graph = graph;
     }
 
-    public static SubwayGraph of(Set<LineStation> lineStations, EdgeWeightStrategy edgeWeightStrategy) {
+    public static SubwayMap of(Set<LineStation> lineStations, EdgeWeightStrategy edgeWeightStrategy) {
         WeightedGraph<Long, RouteEdge> graph = new WeightedMultigraph<>(RouteEdge.class);
         for (LineStation lineStation : lineStations) {
             setEdge(edgeWeightStrategy, graph, lineStation);
@@ -32,7 +32,8 @@ public class SubwayGraph {
         }
     }
 
-    public SubwayRoute findDijkstraShortestPath(Long departureId, Long arrivalId) {
+    @Override
+    public Path findShortestPath(Long departureId, Long arrivalId) {
         return new SubwayRoute(DijkstraShortestPath.findPathBetween(graph, departureId, arrivalId));
     }
 }

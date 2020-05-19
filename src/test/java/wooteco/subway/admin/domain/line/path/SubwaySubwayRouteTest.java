@@ -9,10 +9,10 @@ import com.google.common.collect.Sets;
 import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
 
-class SubwayRouteTest {
+class SubwaySubwayRouteTest {
 
-    private SubwayRoute distanceRoute;
-    private SubwayRoute durationRoute;
+    private Path distanceRoute;
+    private Path durationRoute;
     @BeforeEach
     void setUp() {
         LineStation lineStation = new LineStation(null, 1L, 5, 10);
@@ -20,18 +20,18 @@ class SubwayRouteTest {
         LineStation lineStation2 = new LineStation(2L, 3L, 5, 10);
         LineStations lineStations = new LineStations(
             Sets.newHashSet(lineStation, lineStation1, lineStation2));
-        SubwayGraph subwayGraph = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
-        SubwayGraph subwayGraph1 = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()));
+        SubwayMap subwayMap = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
+        SubwayMap subwayMap1 = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()));
 
-        distanceRoute = subwayGraph.findDijkstraShortestPath(1L, 3L);
+        distanceRoute = subwayMap.findShortestPath(1L, 3L);
 
-        durationRoute = subwayGraph1.findDijkstraShortestPath(1L, 3L);
+        durationRoute = subwayMap1.findShortestPath(1L, 3L);
     }
 
     @Test
     void getShortestPath() {
-        assertThat(distanceRoute.getShortestPath().size()).isEqualTo(3);
-        assertThat(durationRoute.getShortestPath().size()).isEqualTo(3);
+        assertThat(distanceRoute.getPath().size()).isEqualTo(3);
+        assertThat(durationRoute.getPath().size()).isEqualTo(3);
     }
 
     @Test
