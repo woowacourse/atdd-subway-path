@@ -27,13 +27,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(PathRequest pathRequest, AlgorithmStrategy algorithmStrategy) {
+    public PathResponse findShortestPath(PathRequest pathRequest,
+        AlgorithmStrategy algorithmStrategy) {
         final Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, station -> station));
         final List<Line> lines = lineRepository.findAll();
 
-        final GraphPath<Station, Edge> path = algorithmStrategy.getPath(stations, lines, pathRequest);
+        final GraphPath<Station, Edge> path = algorithmStrategy.getPath(stations, lines,
+            pathRequest);
 
         List<Station> shortestPath = path.getVertexList();
         List<Edge> edgeList = path.getEdgeList();

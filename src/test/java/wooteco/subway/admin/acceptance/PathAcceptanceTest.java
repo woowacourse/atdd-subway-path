@@ -5,9 +5,13 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
@@ -58,5 +62,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getStations().size()).isEqualTo(5);
         assertThat(pathResponse.getDistance()).isEqualTo(40);
         assertThat(pathResponse.getDuration()).isEqualTo(40);
+    }
+
+    @DisplayName("출발역과 도착역을 같은 역으로 입력했을 경우 예외처리")
+    @Test
+    void findSameStartEndPathTest() {
+        ErrorResponse errorResponse = findSameStartEndPath(1L, 1L, PathType.DISTANCE.name());
+        final List<ErrorResponse.FieldError> errors = errorResponse.getErrors();
+
+        assertThat(errors.get(0).getReason()).isEqualTo("출발역과 도착역이 동일합니다.");
+    }
+
+    ErrorResponse findSameStartEndPath(Long source, Long target, String type) {
+        return given().
+                log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+                get("/api/paths?source=" + source + "&target=" + target + "&type=" + type).
+            then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                extract().as(ErrorResponse.class);
     }
 }

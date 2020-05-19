@@ -19,7 +19,6 @@ public class LineRequest {
     @NotBlank(message = "노선의 배경색을 작성해주세요!")
     private String backgroundColor;
 
-
     public LineRequest() {
     }
 

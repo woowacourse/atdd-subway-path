@@ -4,12 +4,13 @@ import javax.validation.constraints.NotNull;
 
 import wooteco.subway.admin.domain.PathType;
 
+@PathForm
 public class PathRequest {
-    @NotNull(message = "출발역을 지정해주세요!")
+    @NotNull
     private Long source;
-    @NotNull(message = "도착역을 지정해주세요!")
+    @NotNull
     private Long target;
-    @NotNull(message = "최단 거리 또는 최단 시간을 클릭해주세요!")
+    @NotNull
     private PathType type;
 
     public PathRequest() {
@@ -25,20 +26,20 @@ public class PathRequest {
         return source;
     }
 
-    public Long getTarget() {
-        return target;
-    }
-
-    public PathType getType() {
-        return type;
-    }
-
     public void setSource(final Long source) {
         this.source = source;
     }
 
+    public Long getTarget() {
+        return target;
+    }
+
     public void setTarget(final Long target) {
         this.target = target;
+    }
+
+    public PathType getType() {
+        return type;
     }
 
     public void setType(PathType type) {

@@ -11,5 +11,6 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 
 public interface AlgorithmStrategy {
-    GraphPath<Station, Edge> getPath(Map<Long, Station> stations, List<Line> lines, PathRequest pathRequest);
+    GraphPath<Station, Edge> getPath(Map<Long, Station> stations, List<Line> lines,
+        PathRequest pathRequest);
 }

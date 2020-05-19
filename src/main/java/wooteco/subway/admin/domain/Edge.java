@@ -24,5 +24,4 @@ public class Edge extends DefaultWeightedEdge {
         return duration;
     }
 
-
 }
