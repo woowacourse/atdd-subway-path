@@ -13,6 +13,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NotFoundLineStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.utils.StationMapper;
@@ -36,7 +37,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(NotFoundLineStationException::new);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -46,7 +48,7 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineStationException::new);
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
                 request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
@@ -55,7 +57,7 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId).orElseThrow(NotFoundLineStationException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
@@ -70,7 +72,7 @@ public class LineService {
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineStationException::new);
         Map<Long, Station> stations = StationMapper
                 .toMap(stationRepository.findAllById(line.getLineStationsId()));
 

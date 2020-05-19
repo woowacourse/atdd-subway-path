@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.InvalidPathTypeException;
+import wooteco.subway.admin.exception.NotFoundLineStationException;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 import wooteco.subway.admin.exception.SourceTargetSameException;
@@ -32,6 +33,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFoundStationException(
             NotFoundStationException e) {
         ErrorResponse errorResponse = new ErrorResponse("입력한 역을 찾을 수 없습니다");
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundLineStationException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundLineStationException(
+            NotFoundLineStationException e) {
+        ErrorResponse errorResponse = new ErrorResponse("입력한 구간을 찾을 수 없습니다");
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
