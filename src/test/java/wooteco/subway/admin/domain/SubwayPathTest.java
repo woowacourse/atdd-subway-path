@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class SubwayPathTest {
-    List<Line> lines;
     Map<Long, Station> stations;
     SubwayPath subwayDistancePath;
     SubwayPath subwayDurationPath;
@@ -43,7 +42,7 @@ public class SubwayPathTest {
         line2.addLineStation(new LineStation(null, 2L, 0, 0));
         line2.addLineStation(new LineStation(2L, 4L, 10, 20));
 
-        lines = Lists.newArrayList(line1, line2);
+        List<Line> lines = Lists.newArrayList(line1, line2);
 
         SubwayGraph subwayDistanceGraph = new SubwayDijkstraGraph(lines, stations,
                 PathType.DISTANCE::weight);
