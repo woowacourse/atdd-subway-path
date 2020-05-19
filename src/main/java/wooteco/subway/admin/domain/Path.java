@@ -12,15 +12,18 @@ public class Path {
 	private final Lines lines;
 	private final Stations stations;
 
-	public Path(Lines lines, Stations stations) {
+	public Path(Lines lines, Stations stations, Criteria criteria) {
 		this.lines = lines;
 		this.stations = stations;
+		initGraph(criteria);
 	}
 
-	public ShortestPath findShortestPath(Station sourceStation, Station targetStation, Criteria criteria) {
-		// TODO: 2020-05-17 메서드 분리 등 리팩토링 필요
+	private void initGraph(Criteria criteria) {
 		Graphs.addAllVertices(graph, stations.getStations());
+		addEdges(criteria);
+	}
 
+	private void addEdges(Criteria criteria) {
 		for (LineStation lineStation : lines.toLineStations()) {
 			if (lineStation.getPreStationId() == null) {
 				continue;
@@ -33,19 +36,23 @@ public class Path {
 			graph.addEdge(preStation, station, edge);
 			graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
 		}
+	}
 
+	public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
 		GraphPath<Station, Edge> result = getDijkstraShortestPath(graph, sourceStation, targetStation);
+		return new ShortestPath(result.getVertexList(), getTotalDistance(result), getTotalDuration(result));
+	}
 
-		int totalDistance = result.getEdgeList().stream()
-			.mapToInt(Edge::getDistance)
-			.sum();
-
-		int totalDuration = result.getEdgeList().stream()
+	private int getTotalDuration(GraphPath<Station, Edge> result) {
+		return result.getEdgeList().stream()
 			.mapToInt(Edge::getDuration)
 			.sum();
+	}
 
-		return new ShortestPath(result.getVertexList(), totalDistance, totalDuration);
-
+	private int getTotalDistance(GraphPath<Station, Edge> result) {
+		return result.getEdgeList().stream()
+			.mapToInt(Edge::getDistance)
+			.sum();
 	}
 
 	private GraphPath<Station, Edge> getDijkstraShortestPath(WeightedMultigraph<Station, Edge> graph,

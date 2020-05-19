@@ -34,9 +34,9 @@ public class PathService {
 		}
 
 		Station sourceStation = stationRepository.findByName(sourceName)
-				.orElseThrow(NoStationNameExistsException::new);
+			.orElseThrow(NoStationNameExistsException::new);
 		Station targetStation = stationRepository.findByName(targetName)
-				.orElseThrow(NoStationNameExistsException::new);
+			.orElseThrow(NoStationNameExistsException::new);
 
 		if (sourceStation.equals(targetStation)) {
 			throw new SourceEqualsTargetException();
@@ -49,7 +49,7 @@ public class PathService {
 
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 
-		Path path = new Path(lines, stations);
-		return path.findShortestPath(sourceStation, targetStation, criteria);
+		Path path = new Path(lines, stations, criteria);
+		return path.findShortestPath(sourceStation, targetStation);
 	}
 }

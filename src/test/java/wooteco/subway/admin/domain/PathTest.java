@@ -78,9 +78,9 @@ public class PathTest {
 	@MethodSource("giveCriteriaAndResult")
 	@ParameterizedTest
 	void findShortestPath(Criteria criteria, List<String> expectedNames) {
-		Path path = new Path(lines, stations);
+		Path path = new Path(lines, stations, criteria);
 
-		ShortestPath shortestPath = path.findShortestPath(station1, station4, criteria);
+		ShortestPath shortestPath = path.findShortestPath(station1, station4);
 
 		List<String> stationNames = shortestPath.getPath().stream()
 			.map(Station::getName)
