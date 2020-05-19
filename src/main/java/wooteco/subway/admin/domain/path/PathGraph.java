@@ -4,11 +4,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.springframework.lang.Nullable;
 import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PathGraph {
     private ShortestPathAlgorithm<Long, WeightedEdge> graph;
@@ -39,16 +39,15 @@ public class PathGraph {
         return graph;
     }
 
-    @Nullable
-    private GraphPath<Long, WeightedEdge> getPath(Long source, Long target) {
+    private Optional<GraphPath<Long, WeightedEdge>> getPath(Long source, Long target) {
         try {
-            return graph.getPath(source, target);
+            return Optional.ofNullable(graph.getPath(source, target));
         } catch (IllegalArgumentException e) {
             throw new CustomException("경로가 존재하지 않습니다.", e);
         }
     }
 
     public Path createPath(Long source, Long target) {
-        return new Path(getPath(source, target), pathType);
+        return new Path(getPath(source, target).get(), pathType);
     }
 }
