@@ -20,10 +20,7 @@ public class SubwayShortestPath {
 
 	public SubwayShortestPath(List<LineStation> allLineStations,
 			Map<Long, Station> allStationsById,
-			String sourceName, String targetName, String type) {
-		WeightType weightType = WeightType.of(type);
-		Station source = findStationByName(sourceName, allStationsById);
-		Station target = findStationByName(targetName, allStationsById);
+			Station source, Station target, WeightType weightType) {
 
 		Graph<Long, SubwayEdge> graph = createMultiGraph(
 			allLineStations, allStationsById, weightType.getWeightStrategy());
@@ -59,14 +56,6 @@ public class SubwayShortestPath {
 	public List<Station> getShortestPath() {
 		List<Long> shortestPathIds = shortestPath.getVertexList();
 		return makeStationsById(allStationsById, shortestPathIds);
-	}
-
-	private Station findStationByName(String targetName, Map<Long, Station> stations) {
-		return stations.values().stream()
-			.filter(station -> station.isSameName(targetName))
-			.findAny()
-			.orElseThrow(() -> new IllegalArgumentException(
-				String.format("%s은 존재하지 않는 역입니다.", targetName)));
 	}
 
 	private Graph<Long, SubwayEdge> createMultiGraph(List<LineStation> allLineStations,

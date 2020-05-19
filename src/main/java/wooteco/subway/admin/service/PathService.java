@@ -8,6 +8,7 @@ import wooteco.subway.admin.domain.entity.Line;
 import wooteco.subway.admin.domain.entity.LineStation;
 import wooteco.subway.admin.domain.entity.Station;
 import wooteco.subway.admin.domain.graph.SubwayShortestPath;
+import wooteco.subway.admin.domain.type.WeightType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -30,8 +31,11 @@ public class PathService {
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
+		Station source = Station.findStationByName(sourceName, allStationsById);
+		Station target = Station.findStationByName(targetName, allStationsById);
+
 		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(
-			allLineStations, allStationsById, sourceName, targetName, type);
+			allLineStations, allStationsById, source, target, WeightType.of(type));
 
 		return PathResponse.from(subwayShortestPath);
 	}

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.admin.domain.graph.PathNotFoundException;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -62,5 +63,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// Then 출발지와 도착지가 같다는 에러를 내려준다.
 		assertThat(sendBadRequestForShortestPath(신정역, 신정역).getMessage())
 			.isEqualTo(PathService.ERROR_MESSAGE_START_IS_SAME_TO_END);
+	}
+
+	@DisplayName("경로가 존재하지 않는 경우")
+	@Test
+	void sideCase2() {
+		// Given 지하철 5호선 신정역, 잠실역 8호선이 추가되어있다. (두 역이 연결되어있지 않다.)
+		lineResponse1 = createLine("5호선");
+		신정역 = createStation("신정역");
+		addLineStation(lineResponse1.getId(), null, 신정역.getId());
+
+		lineResponse2 = createLine("8호선");
+		잠실역 = createStation("잠실역");
+		addLineStation(lineResponse2.getId(), null, 잠실역.getId());
+
+		// When 경로가 존재하지 않는 출발역과 도착역으로 최단경로 조회를 요청할 때,
+		// Then 경로가 존재하지 않는다는 에러를 내려준다.
+		assertThat(sendBadRequestForShortestPath(신정역, 잠실역).getMessage())
+			.isEqualTo(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
 	}
 }
