@@ -28,7 +28,7 @@ public class SubwayGraph implements SubwayMap {
         if (lineStation.isNotStart()) {
             graph.addVertex(lineStation.getPreStationId());
             graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), routeEdge);
-            edgeWeightStrategy.setWeight(graph, routeEdge);
+            graph.setEdgeWeight(routeEdge, edgeWeightStrategy.getWeight(routeEdge));
         }
     }
 

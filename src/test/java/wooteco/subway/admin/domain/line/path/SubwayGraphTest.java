@@ -21,7 +21,7 @@ class SubwayGraphTest {
         lineStation1 = new LineStation(1L, 2L, 5, 10);
         lineStation2 = new LineStation(2L, 3L, 5, 10);
         lineStations = new LineStations(Sets.newHashSet(lineStation, lineStation1, lineStation2));
-        subwayMap = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
+        subwayMap = lineStations.toGraph(RouteEdge::getDistance);
     }
 
     @Test

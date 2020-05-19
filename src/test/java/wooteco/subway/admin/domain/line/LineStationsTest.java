@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Sets;
+import wooteco.subway.admin.domain.line.path.RouteEdge;
 import wooteco.subway.admin.domain.line.path.SubwayGraph;
 
 class LineStationsTest {
@@ -29,6 +30,6 @@ class LineStationsTest {
 
     @Test
     void toGraph() {
-        assertThat(lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()))).isInstanceOf(SubwayGraph.class);
+        assertThat(lineStations.toGraph(RouteEdge::getDistance)).isInstanceOf(SubwayGraph.class);
     }
 }

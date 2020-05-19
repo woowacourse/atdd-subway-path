@@ -20,8 +20,8 @@ class SubwaySubwayRouteTest {
         LineStation lineStation2 = new LineStation(2L, 3L, 5, 10);
         LineStations lineStations = new LineStations(
             Sets.newHashSet(lineStation, lineStation1, lineStation2));
-        SubwayMap subwayMap = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDistance()));
-        SubwayMap subwayMap1 = lineStations.toGraph((graph, edge) -> graph.setEdgeWeight(edge, edge.getDuration()));
+        SubwayMap subwayMap = lineStations.toGraph(RouteEdge::getDistance);
+        SubwayMap subwayMap1 = lineStations.toGraph(RouteEdge::getDuration);
 
         distanceRoute = subwayMap.findShortestPath(1L, 3L);
 
