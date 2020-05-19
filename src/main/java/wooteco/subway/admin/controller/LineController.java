@@ -35,8 +35,8 @@ public class LineController {
         Line persistLine = lineService.save(view.toLine());
 
         return ResponseEntity
-                .created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+            .created(URI.create("/lines/" + persistLine.getId()))
+            .body(LineResponse.of(persistLine));
     }
 
     @GetMapping("/lines")

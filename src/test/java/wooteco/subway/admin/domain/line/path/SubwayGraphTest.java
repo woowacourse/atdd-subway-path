@@ -1,12 +1,13 @@
 package wooteco.subway.admin.domain.line.path;
 
-import com.google.common.collect.Sets;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.Sets;
 import wooteco.subway.admin.domain.line.LineStation;
 import wooteco.subway.admin.domain.line.LineStations;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class SubwayGraphTest {
     private LineStation lineStation;

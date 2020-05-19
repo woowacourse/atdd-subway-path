@@ -13,6 +13,7 @@ class SubwaySubwayRouteTest {
 
     private Path distanceRoute;
     private Path durationRoute;
+
     @BeforeEach
     void setUp() {
         LineStation lineStation = new LineStation(null, 1L, 5, 10);

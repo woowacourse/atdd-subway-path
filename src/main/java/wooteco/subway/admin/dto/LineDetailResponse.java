@@ -20,7 +20,8 @@ public class LineDetailResponse {
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+        LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -32,7 +33,8 @@ public class LineDetailResponse {
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
-        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+        return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(),
+            line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
     public Long getId() {

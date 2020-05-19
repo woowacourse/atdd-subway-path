@@ -28,9 +28,9 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), 4L))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> Objects.equals(it.getPreStationId(), 4L))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
         assertThat(lineStation.getStationId()).isEqualTo(1L);
     }
 

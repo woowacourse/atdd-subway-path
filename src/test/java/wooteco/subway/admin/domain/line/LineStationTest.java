@@ -1,9 +1,10 @@
 package wooteco.subway.admin.domain.line;
 
-import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.domain.line.path.RouteEdge;
+import static org.assertj.core.api.Assertions.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.admin.domain.line.path.RouteEdge;
 
 class LineStationTest {
     @Test

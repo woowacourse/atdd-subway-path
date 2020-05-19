@@ -53,13 +53,13 @@ public class PathSearchAcceptanceTest extends AcceptanceTest {
         params.put("target", arrival);
 
         return
-                given().
-                        params(params).
+            given().
+                params(params).
                 when().
-                        get("/lines/path/").
+                get("/lines/path/").
                 then().
-                        log().all().
-                        extract().
-                        as(PathResponses.class);
+                log().all().
+                extract().
+                as(PathResponses.class);
     }
 }

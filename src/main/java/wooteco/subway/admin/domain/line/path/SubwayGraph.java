@@ -1,11 +1,12 @@
 package wooteco.subway.admin.domain.line.path;
 
+import java.util.Set;
+
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.admin.domain.line.LineStation;
 
-import java.util.Set;
+import wooteco.subway.admin.domain.line.LineStation;
 
 public class SubwayGraph implements SubwayMap {
     private final WeightedGraph<Long, RouteEdge> graph;
@@ -22,7 +23,8 @@ public class SubwayGraph implements SubwayMap {
         return new SubwayGraph(graph);
     }
 
-    private static void setEdge(EdgeWeightStrategy edgeWeightStrategy, WeightedGraph<Long, RouteEdge> graph, LineStation lineStation) {
+    private static void setEdge(EdgeWeightStrategy edgeWeightStrategy, WeightedGraph<Long, RouteEdge> graph,
+        LineStation lineStation) {
         RouteEdge routeEdge = lineStation.toEdge();
         graph.addVertex(lineStation.getStationId());
         if (lineStation.isNotStart()) {

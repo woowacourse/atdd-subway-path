@@ -1,10 +1,10 @@
 package wooteco.subway.admin.domain.line;
 
+import java.util.Set;
+
 import wooteco.subway.admin.domain.line.path.EdgeWeightStrategy;
 import wooteco.subway.admin.domain.line.path.SubwayGraph;
 import wooteco.subway.admin.domain.line.path.SubwayMap;
-
-import java.util.Set;
 
 public class LineStations {
     private final Set<LineStation> lineStations;
