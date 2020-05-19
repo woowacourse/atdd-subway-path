@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import wooteco.subway.admin.exception.DisconnectedStationException;
+import wooteco.subway.admin.exception.NotFoundStationException;
+
 public class LineTest {
     private Line line;
 
@@ -54,5 +57,43 @@ public class LineTest {
         line.removeLineStationById(stationId);
 
         assertThat(line.getStations()).hasSize(2);
+    }
+
+    @ParameterizedTest
+    @DisplayName("삭제할 역이 존재하지 않는 경우 예외 발생")
+    @ValueSource(longs = {4L, 5L, 6L})
+    void removeLineStation_NotFoundTargetToRemove(Long stationId) {
+        assertThatThrownBy(() -> line.removeLineStationById(stationId)).isInstanceOf(
+            NotFoundStationException.class)
+            .hasMessage(String.format("id가 %d인 역이 존재하지 않습니다", stationId));
+    }
+
+    @Test
+    @DisplayName("첫번째 역이 존재하지 않는 경우 예외 발생")
+    void getLineStationsId_NotFoundFirstStation() {
+        //given
+        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5,
+            "bg-green-600");
+        line.addLineStation(new LineStation(1L, 2L, 10, 10));
+        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        //when & then
+        assertThatThrownBy(line::getLineStationsId)
+            .isInstanceOf(NotFoundStationException.class)
+            .hasMessage("첫번째 지하철역이 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("중간에 역이 연결되어 있지 않는 경우 예외 발생")
+    void name() {
+        //given
+        Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5,
+            "bg-green-600");
+        line.addLineStation(new LineStation(null, 1L, 10, 10));
+        line.addLineStation(new LineStation(1L, 2L, 10, 10));
+        line.addLineStation(new LineStation(3L, 4L, 10, 10));
+        //when & then
+        assertThatThrownBy(line::getLineStationsId)
+            .isInstanceOf(DisconnectedStationException.class)
+            .hasMessage(String.format("id가 %d인 역의 다음역이 존재하지 않습니다", 2L));
     }
 }

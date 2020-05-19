@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import wooteco.subway.admin.dto.ErrorResponse;
+import wooteco.subway.admin.exception.DisconnectedStationException;
 import wooteco.subway.admin.exception.DuplicateSourceTargetStationException;
 import wooteco.subway.admin.exception.InvalidPathException;
 import wooteco.subway.admin.exception.NotFoundLineException;
@@ -27,6 +28,12 @@ public class ExceptionController {
     @ExceptionHandler(value = {NotFoundStationException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundStationException(
         NotFoundStationException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {DisconnectedStationException.class})
+    public ResponseEntity<ErrorResponse> handleDisconnectedStationException(
+        DisconnectedStationException e) {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 

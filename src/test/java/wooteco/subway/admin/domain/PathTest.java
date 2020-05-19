@@ -16,6 +16,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import wooteco.subway.admin.exception.DuplicateSourceTargetStationException;
+import wooteco.subway.admin.exception.InvalidPathException;
+
 class PathTest {
     private Path path;
     private Line line2;
@@ -88,21 +91,38 @@ class PathTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideInvalidInput")
-    void getShortestDistancePathWithInvalidInput(Station source, Station target, PathType pathType,
-        String message) {
+    @MethodSource("provideDuplicateStations")
+    void getShortestDistancePathWithDuplicateStations(Station source, Station target,
+        PathType pathType, String message) {
         path.setEdges(Collections.singletonList(line3), pathType);
         assertThatThrownBy(() -> path.searchShortestPath(source, target))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(DuplicateSourceTargetStationException.class)
             .hasMessage(message);
     }
 
-    private static Stream<Arguments> provideInvalidInput() {
+    @ParameterizedTest
+    @MethodSource("provideDisconnectedStations")
+    void getShortestDistancePathWithDisconnectedStations(Station source, Station target,
+        PathType pathType, String message) {
+        path.setEdges(Collections.singletonList(line3), pathType);
+        assertThatThrownBy(() -> path.searchShortestPath(source, target))
+            .isInstanceOf(InvalidPathException.class)
+            .hasMessage(message);
+    }
+
+    private static Stream<Arguments> provideDuplicateStations() {
+        Station station = new Station(1L, "잠실역");
+        return Stream.of(
+            Arguments.of(station, station, PathType.DISTANCE, "출발역과 도착역은 같을 수 없습니다.")
+        );
+    }
+
+    private static Stream<Arguments> provideDisconnectedStations() {
         Station station = new Station(1L, "잠실역");
         Station station2 = new Station(7L, "서울역");
         return Stream.of(
-            Arguments.of(station, station, PathType.DISTANCE, "출발역과 도착역은 같을 수 없습니다."),
             Arguments.of(station, station2, PathType.DISTANCE, "출발역과 도착역이 연결되어 있지 않습니다.")
         );
     }
+
 }

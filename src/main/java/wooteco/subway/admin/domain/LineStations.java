@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import wooteco.subway.admin.exception.DisconnectedStationException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 
 public class LineStations {
@@ -87,7 +88,7 @@ public class LineStations {
         return lineStations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
             .findFirst()
-            .orElseThrow(() -> new NotFoundStationException(lastStationId));
+            .orElseThrow(() -> new DisconnectedStationException(lastStationId));
     }
 
     private LineStation findFirstLineStation() {
