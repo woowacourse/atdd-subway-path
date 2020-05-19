@@ -69,7 +69,7 @@ public class MapControllerTest {
 
         //when
         //then
-        mockMvc.perform(get("/map/path")
+        mockMvc.perform(get("/path")
             .param("source", "")
             .param("target", "강남역"))
             .andDo(print())
