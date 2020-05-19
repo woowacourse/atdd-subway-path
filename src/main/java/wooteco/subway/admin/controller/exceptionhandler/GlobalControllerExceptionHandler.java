@@ -13,6 +13,12 @@ import wooteco.subway.admin.exception.SameStationException;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleNotExpectedException() {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.of("개발자도 예상하지 못한 문제입니다!"));
+    }
+
     @ExceptionHandler(SameStationException.class)
     public ResponseEntity<ErrorResponse> handleSameStation(SameStationException e) {
         return ResponseEntity.badRequest()
