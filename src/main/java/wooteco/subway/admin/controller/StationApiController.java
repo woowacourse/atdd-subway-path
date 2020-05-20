@@ -17,10 +17,10 @@ import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.service.StationService;
 
 @RestController
-public class StationController {
+public class StationApiController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationApiController(StationService stationService) {
         this.stationService = stationService;
     }
 
@@ -36,8 +36,7 @@ public class StationController {
 
     @GetMapping("/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
-        List<Station> stations = stationService.showStations();
-        return ResponseEntity.ok().body(StationResponse.listOf(stations));
+        return ResponseEntity.ok().body(stationService.showStations());
     }
 
     @DeleteMapping("/stations/{id}")

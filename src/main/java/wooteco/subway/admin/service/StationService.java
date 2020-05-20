@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.station.Station;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
 
 @Service
@@ -19,8 +20,9 @@ public class StationService {
         return stationRepository.save(station);
     }
 
-    public List<Station> showStations() {
-        return stationRepository.findAll();
+    public List<StationResponse> showStations() {
+        List<Station> stations = stationRepository.findAll();
+        return StationResponse.listOf(stations);
     }
 
     public void deleteById(Long id) {
