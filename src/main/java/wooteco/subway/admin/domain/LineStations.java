@@ -3,9 +3,10 @@ package wooteco.subway.admin.domain;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import wooteco.subway.admin.exception.NonExistentDataException;
 
 /**
  *   class description
@@ -28,7 +29,7 @@ public class LineStations {
 		LineStation targetLineStation = stations.stream()
 			.filter(lineStation -> LineStation.isSameId(lineStation.getStationId(), stationId))
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 LineStation입니다."));
 
 		stations.stream()
 			.filter(lineStation -> LineStation.isSameId(lineStation.getPreStationId(), stationId))
@@ -46,7 +47,7 @@ public class LineStations {
 		LineStation firstLineStation = stations.stream()
 			.filter(LineStation::isFirstStation)
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 LineStation입니다."));
 
 		List<Long> stationIds = new ArrayList<>();
 		stationIds.add(firstLineStation.getStationId());

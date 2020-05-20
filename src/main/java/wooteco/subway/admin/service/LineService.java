@@ -47,7 +47,8 @@ public class LineService {
 	}
 
 	public void updateLine(Long id, LineRequest request) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = lineRepository.findById(id)
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Line입니다."));
 		persistLine.update(request.toLine());
 		lineRepository.save(persistLine);
 	}
@@ -57,7 +58,8 @@ public class LineService {
 	}
 
 	public void addLineStation(Long id, LineStationCreateRequest request) {
-		Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line line = lineRepository.findById(id)
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Line입니다."));
 		LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
 			request.getDistance(), request.getDuration());
 		line.addLineStation(lineStation);
@@ -66,17 +68,19 @@ public class LineService {
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
-		Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+		Line line = lineRepository.findById(lineId)
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Line입니다."));
 		line.removeLineStationById(stationId);
 		lineRepository.save(line);
 	}
 
 	public LineDetailResponse findLineWithStationsById(Long id) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = lineRepository.findById(id)
+			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Line입니다."));
 		List<Station> stations = persistLine.getLineStationsId()
 			.stream()
 			.map(stationId -> stationRepository.findById(stationId))
-			.map(station -> station.orElseThrow(NoSuchElementException::new))
+			.map(station -> station.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Station입니다.")))
 			.collect(Collectors.toList());
 
 		return LineDetailResponse.of(persistLine, StationResponse.listOf(stations));
@@ -102,7 +106,7 @@ public class LineService {
 		return Arrays.stream(EdgeWeightType.values())
 			.map(type -> Optional.of(getGraphPath(stations, lines, type))
 				.map(graph -> graph.getPath(departStationId, arrivalStationId))
-				.orElseThrow(() -> new InaccessibleStationException("도착 불가")))
+				.orElseThrow(() -> new InaccessibleStationException("갈 수 없는 역입니다.")))
 			.map(path -> PathResponse.of(mapToStationResponse(path.getVertexList()), sumDistance(path),
 				sumDuration(path)))
 			.collect(Collectors.toList());
@@ -110,7 +114,7 @@ public class LineService {
 
 	private Station getStationByName(String departStationName) {
 		return stationRepository.findByName(departStationName)
-			.orElseThrow(() -> new NonExistentDataException(departStationName));
+			.orElseThrow(() -> new NonExistentDataException(String.format("%s는 존재하지 않는 데이터입니다.", departStationName)));
 	}
 
 	private int sumDistance(GraphPath<Long, CustomEdge> path) {
@@ -129,7 +133,8 @@ public class LineService {
 
 	private List<StationResponse> mapToStationResponse(List<Long> shortestPath) {
 		return shortestPath.stream()
-			.map(id -> stationRepository.findById(id).orElseThrow(NoSuchElementException::new))
+			.map(id -> stationRepository.findById(id)
+				.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Station입니다.")))
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 	}
