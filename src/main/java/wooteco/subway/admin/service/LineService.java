@@ -90,19 +90,19 @@ public class LineService {
 			.collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
 	}
 
-	public List<PathResponse> findPath(String departStationName, String arrivalStationName) {
+	public List<PathResponse> findAllPath(String departStationName, String arrivalStationName) {
 		if (departStationName.equals(arrivalStationName)) {
 			throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다.");
 		}
-		Station departStation = getStationByName(departStationName);
-		Station arrivalStation = getStationByName(arrivalStationName);
+		Long departStationId = getStationByName(departStationName).getId();
+		Long arrivalStationId = getStationByName(arrivalStationName).getId();
 		List<Station> stations = stationRepository.findAll();
 		List<Line> lines = lineRepository.findAll();
 
 		return Arrays.stream(EdgeWeightType.values())
 			.map(type -> Optional.of(getGraphPath(stations, lines, type))
-				.map(graph -> graph.getPath(departStation.getId(), arrivalStation.getId()))
-				.orElseThrow(() -> new InaccessibleStationException(arrivalStation.getName())))
+				.map(graph -> graph.getPath(departStationId, arrivalStationId))
+				.orElseThrow(() -> new InaccessibleStationException("도착 불가")))
 			.map(path -> PathResponse.of(mapToStationResponse(path.getVertexList()), sumDistance(path),
 				sumDuration(path)))
 			.collect(Collectors.toList());
@@ -139,7 +139,7 @@ public class LineService {
 		WeightedMultigraph<Long, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 		stations.forEach(station -> graph.addVertex(station.getId()));
 		lines.stream()
-			.flatMap(line -> line.getStations().stream())
+			.flatMap(line -> line.getLineStations().getStations().stream())
 			.forEach(lineStation -> setGraph(graph, lineStation, type));
 
 		return new DijkstraShortestPath<>(graph);

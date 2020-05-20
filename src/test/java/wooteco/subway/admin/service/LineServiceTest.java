@@ -69,7 +69,7 @@ public class LineServiceTest {
 		LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
 		lineService.addLineStation(line.getId(), request);
 
-		assertThat(line.getStations()).hasSize(4);
+		assertThat(line.getLineStations().getStations()).hasSize(4);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(4L);
@@ -85,7 +85,7 @@ public class LineServiceTest {
 		LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
 		lineService.addLineStation(line.getId(), request);
 
-		assertThat(line.getStations()).hasSize(4);
+		assertThat(line.getLineStations().getStations()).hasSize(4);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -101,7 +101,7 @@ public class LineServiceTest {
 		LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
 		lineService.addLineStation(line.getId(), request);
 
-		assertThat(line.getStations()).hasSize(4);
+		assertThat(line.getLineStations().getStations()).hasSize(4);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -115,7 +115,7 @@ public class LineServiceTest {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 		lineService.removeLineStation(line.getId(), 1L);
 
-		assertThat(line.getStations()).hasSize(2);
+		assertThat(line.getLineStations().getStations()).hasSize(2);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(2L);
@@ -137,7 +137,7 @@ public class LineServiceTest {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 		lineService.removeLineStation(line.getId(), 3L);
 
-		assertThat(line.getStations()).hasSize(2);
+		assertThat(line.getLineStations().getStations()).hasSize(2);
 
 		List<Long> stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -187,7 +187,7 @@ public class LineServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
 		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
 
-		List<PathResponse> pathResponses = lineService.findPath("강남역", "선릉역");
+		List<PathResponse> pathResponses = lineService.findAllPath("강남역", "선릉역");
 		PathResponse pathResponse = pathResponses.get(0);
 
 		assertThat(pathResponse.getStations()).hasSize(3);
@@ -198,7 +198,7 @@ public class LineServiceTest {
 	@Test
 	@DisplayName("출발역과 도착역이 같은경우")
 	void findSamePathTest() {
-		assertThatThrownBy(() -> lineService.findPath("강남역", "강남역"))
+		assertThatThrownBy(() -> lineService.findAllPath("강남역", "강남역"))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("같을");
 	}
@@ -211,7 +211,7 @@ public class LineServiceTest {
 		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
 
-		assertThatThrownBy(() -> lineService.findPath("강남역", "삼성역"))
+		assertThatThrownBy(() -> lineService.findAllPath("강남역", "삼성역"))
 			.isInstanceOf(InaccessibleStationException.class)
 			.hasMessageContaining("갈 수 없는 역");
 	}

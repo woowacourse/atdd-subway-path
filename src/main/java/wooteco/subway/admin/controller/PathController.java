@@ -21,7 +21,7 @@ public class PathController {
 	@GetMapping("/path")
 	public ResponseEntity<List<PathResponse>> getPath(@RequestParam("source") String departStation,
 		@RequestParam("target") String arrivalStation) {
-		List<PathResponse> paths = lineService.findPath(departStation, arrivalStation);
+		List<PathResponse> paths = lineService.findAllPath(departStation, arrivalStation);
 		return ResponseEntity.ok().body(paths);
 	}
 }
