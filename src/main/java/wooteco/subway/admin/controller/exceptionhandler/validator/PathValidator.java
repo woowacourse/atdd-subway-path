@@ -1,4 +1,4 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.controller.exceptionhandler.validator;
 
 import java.util.Objects;
 
@@ -6,6 +6,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.stereotype.Component;
+
+import wooteco.subway.admin.dto.PathRequest;
 
 @Component
 public class PathValidator implements ConstraintValidator<PathForm, PathRequest> {
@@ -42,24 +44,6 @@ public class PathValidator implements ConstraintValidator<PathForm, PathRequest>
         }
 
         return invalidCount == 0;
-    }
-
-    private void addConstraintViolation(ConstraintValidatorContext context, String errorMessage,
-        String firstNode, String secondNode, String thirdNode) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(errorMessage)
-            .addPropertyNode(firstNode)
-            .addPropertyNode(secondNode)
-            .addPropertyNode(thirdNode)
-            .addConstraintViolation()
-        ;
-    }
-
-    private void addConstraintViolation(ConstraintValidatorContext context, String errorMessage) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(errorMessage)
-            .addConstraintViolation()
-        ;
     }
 
     private void addConstraintViolation(ConstraintValidatorContext context, String errorMessage,

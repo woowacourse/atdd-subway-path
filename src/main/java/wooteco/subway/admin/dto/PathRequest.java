@@ -2,6 +2,7 @@ package wooteco.subway.admin.dto;
 
 import javax.validation.constraints.NotNull;
 
+import wooteco.subway.admin.controller.exceptionhandler.validator.PathForm;
 import wooteco.subway.admin.domain.PathType;
 
 @PathForm

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.validation.BindingResult;
 
+import wooteco.subway.admin.controller.exceptionhandler.validator.ErrorCode;
+
 public class ErrorResponse {
     public static final int HTTP_STATUS_BAD_REQUEST = 400;
 

@@ -1,4 +1,4 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.controller.exceptionhandler.validator;
 
 public enum ErrorCode {
     INVALID_INPUT_VALUE(400, "입력값이 유효하지 않습니다!");

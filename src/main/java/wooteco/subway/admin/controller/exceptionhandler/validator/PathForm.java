@@ -1,4 +1,4 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.controller.exceptionhandler.validator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

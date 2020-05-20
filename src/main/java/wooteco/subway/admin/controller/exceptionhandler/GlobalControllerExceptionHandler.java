@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import wooteco.subway.admin.dto.ErrorCode;
+import wooteco.subway.admin.controller.exceptionhandler.validator.ErrorCode;
 import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.NotConnectEdgeException;
 import wooteco.subway.admin.exception.SameStationException;
