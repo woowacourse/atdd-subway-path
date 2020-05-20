@@ -1,10 +1,10 @@
 package wooteco.subway.admin.domain;
 
-public class LineStation {
+public class LineStation extends TimeEntity {
     private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+    private final Long stationId;
+    private final int distance;
+    private final int duration;
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
@@ -31,5 +31,15 @@ public class LineStation {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
+    }
+
+    @Override
+    public String toString() {
+        return "LineStation{" +
+            "preStationId=" + preStationId +
+            ", stationId=" + stationId +
+            ", distance=" + distance +
+            ", duration=" + duration +
+            '}';
     }
 }

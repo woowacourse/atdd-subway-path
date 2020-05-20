@@ -1,38 +1,34 @@
-import { optionTemplate, subwayLinesItemTemplate } from '../../utils/templates.js'
-import { defaultSubwayLines } from '../../utils/subwayMockData.js'
+import { subwayLinesItemTemplate } from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
+import api from '../../api/index.js'
 
 function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
   const initSubwayLinesSlider = () => {
-    $subwayLinesSlider.innerHTML = defaultSubwayLines.map(line => subwayLinesItemTemplate(line)).join('')
-    tns({
-      container: '.subway-lines-slider',
-      loop: true,
-      slideBy: 'page',
-      speed: 400,
-      fixedWidth: 300,
-      autoplayButtonOutput: false,
-      mouseDrag: true,
-      lazyload: true,
-      controlsContainer: '#slider-controls',
-      items: 3,
-      edgePadding: 25
-    })
-  }
-
-  const initSubwayLineOptions = () => {
-    const subwayLineOptionTemplate = defaultSubwayLines.map(line => optionTemplate(line.title)).join('')
-    const $stationSelectOptions = document.querySelector('#station-select-options')
-    $stationSelectOptions.insertAdjacentHTML('afterbegin', subwayLineOptionTemplate)
-  }
+    api.line.getAllDetail().then(data => {
+      const subwayLines = data.lineDetailResponse;
+      $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('');
+      tns({
+        container: '.subway-lines-slider',
+        loop: true,
+        slideBy: 'page',
+        speed: 400,
+        fixedWidth: 300,
+        autoplayButtonOutput: false,
+        mouseDrag: true,
+        lazyLoad: true,
+        controlsContainer: '#slider-controls',
+        items: 3,
+        edgePadding: 25
+      });
+    }).catch(error => error.json()).then(error => alert(error.errorMessage));
+  };
 
   this.init = () => {
-    initSubwayLinesSlider()
-    initSubwayLineOptions()
+    initSubwayLinesSlider();
   }
 }
 
-const edge = new Map()
-edge.init()
+const edge = new Map();
+edge.init();

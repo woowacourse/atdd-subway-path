@@ -2,40 +2,50 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import wooteco.subway.admin.repository.StationRepository;
-import wooteco.subway.admin.service.LineService;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
 public class PageController {
-    private LineService lineService;
-    private StationRepository stationRepository;
 
-    public PageController(LineService lineService, StationRepository stationRepository) {
-        this.lineService = lineService;
-        this.stationRepository = stationRepository;
+    @GetMapping
+    public String index() {
+        return "index";
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
+    @GetMapping(value = "/service")
+    public String serviceIndex() {
+        return "service/index";
+    }
+
+    @GetMapping(value = "/service/map")
+    public String map() {
+        return "service/map";
+    }
+
+    @GetMapping(value = "/service/search")
+    public String search() {
+        return "service/search";
+    }
+
+    @GetMapping(value = "/admin")
+    public String adminIndex() {
         return "admin/index";
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
-    public String stationPage(Model model) {
-        model.addAttribute("stations", stationRepository.findAll());
+    @GetMapping(value = "/admin/station")
+    public String stationPage() {
         return "admin/admin-station";
     }
 
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
-        model.addAttribute("lines", lineService.showLines());
+    @GetMapping(value = "/admin/line")
+    public String linePage() {
         return "admin/admin-line";
     }
 
-    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage(Model model) {
+    @GetMapping(value = "/admin/edge")
+    public String edgePage() {
         return "admin/admin-edge";
     }
 }

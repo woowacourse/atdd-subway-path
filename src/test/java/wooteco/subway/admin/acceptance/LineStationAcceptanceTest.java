@@ -23,12 +23,12 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
+        LineDetailResponse lineDetailResponse = getDetailLine(lineResponse.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
         removeLineStation(lineResponse.getId(), stationResponse2.getId());
 
-        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
+        LineDetailResponse lineResponseAfterRemoveLineStation = getDetailLine(lineResponse.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
 }

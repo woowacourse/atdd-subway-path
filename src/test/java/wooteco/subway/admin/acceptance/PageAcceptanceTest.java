@@ -2,6 +2,8 @@ package wooteco.subway.admin.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
-public class PageAcceptanceTest {
+public class PageAcceptanceTest extends AcceptanceTest{
     @LocalServerPort
     int port;
 
@@ -37,28 +39,57 @@ public class PageAcceptanceTest {
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
         when().
-                get("/lines").
+                get("/admin/line").
         then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    private void createLine(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
+    @Test
+    void stationPage() {
+        createStation("강남");
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                post("/lines").
-        then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/admin/station").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
     }
 
+    @Test
+    void edgePage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/admin/edge").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void mapPage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/service/map").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void searchPage() {
+
+        given().
+            accept(MediaType.TEXT_HTML_VALUE).
+            when().
+            get("/service/search").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
 }

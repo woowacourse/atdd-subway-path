@@ -1,15 +1,17 @@
-export const listItemTemplate = value =>
-  `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800">
-    ${value}
+export const listItemTemplate = (value, lineId) =>
+  `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-station-id='${value.id}' data-line-id='${lineId}'>
+    ${value.name}
     <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
        <span class="mdi mdi-delete"></span>
     </button>
   </div>`;
 
+
 export const subwayLinesTemplate = line =>
   `<div class="subway-line-item border border-gray-200 py-2 px-4 text-gray-800">
-      <span class="${line.bgColor} w-3 h-3 rounded-full inline-block mr-1"></span>
-      ${line.title}
+      <div class="line-id" hidden="hidden">${line.id}</div>
+      <span class="${line.backgroundColor} line-color w-3 h-3 rounded-full inline-block mr-1"></span>
+      ${line.name}
       <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
          <span class="mdi mdi-delete"></span>
       </button>
@@ -18,27 +20,57 @@ export const subwayLinesTemplate = line =>
       </button>
     </div>`;
 
-export const optionTemplate = value => `<option>${value}</option>`;
+export const innerSubwayLinesTemplate = line =>
+  `<div class="line-id" hidden="hidden">${line.id}</div>
+      <span class="${line.backgroundColor} w-3 h-3 rounded-full inline-block mr-1"></span>
+      ${line.name}
+      <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+         <span class="mdi mdi-delete"></span>
+      </button>
+      <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+         <span class="mdi mdi-pencil"></span>
+      </button>`;
+
+export const optionTemplate = value => `<option value="${value.id}">${value.name}</option>`;
 
 const navTemplate = `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4">
   <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
       <a href="/" class="mr-2">
-        <img src="/service/images/logo_small.png" class="w-6">
+        <img src="../../admin/images/logo_small.png" class="w-6">
       </a>
     <div class="flex justify-start">
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/stations" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/admin/station" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           역 관리
           </a>
       </div>
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-         <a href="/lines" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+         <a href="/admin/line" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           노선 관리
           </a>
       </div>
       <div class="hover:bg-yellow-400 px-2 py-1 rounded">
-          <a href="/edges" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          <a href="/admin/edge" class="block inline-block lg:mt-0 text-gray-800 text-sm">
           구간 관리
+          </a>
+      </div>
+    </div>
+</nav>`;
+
+const indexNavTemplate = `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4">
+  <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
+      <a href="/" class="mr-2">
+        <img src="../../admin/images/logo_small.png" class="w-6">
+      </a>
+    <div class="flex justify-start">
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/admin" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          Admin
+          </a>
+      </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/service" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          Service
           </a>
       </div>
     </div>
@@ -46,11 +78,11 @@ const navTemplate = `<nav class="flex items-center justify-between flex-wrap bg-
 
 export const subwayLinesItemTemplate = line => {
   const stationsTemplate = line.stations
-    .map(station => listItemTemplate(station))
-    .join("");
+  .map(station => listItemTemplate(station, line.id))
+  .join("");
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.bgColor} lint-title px-4 py-1">${line.title}</div>
+              <div class="border ${line.backgroundColor} line-info lint-title px-4 py-1 data-line-id='${line.id}'">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stationsTemplate}
               </div>
@@ -58,8 +90,13 @@ export const subwayLinesItemTemplate = line => {
           </div>`;
 };
 
+
 export const initNavigation = () => {
   document.querySelector("body").insertAdjacentHTML("afterBegin", navTemplate);
+};
+
+export const initIndexNavigation = () => {
+  document.querySelector("body").insertAdjacentHTML("afterBegin", indexNavTemplate);
 };
 
 export const colorSelectOptionTemplate = (option, index) => {
