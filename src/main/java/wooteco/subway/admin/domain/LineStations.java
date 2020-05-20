@@ -17,23 +17,23 @@ public class LineStations {
 
 	public void addLineStation(LineStation lineStation) {
 		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+			.filter(lineStation1 -> LineStation.isSameId(lineStation1.getPreStationId(), lineStation.getPreStationId()))
 			.findAny()
-			.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+			.ifPresent(lineStation1 -> lineStation1.updatePreLineStation(lineStation.getStationId()));
 
 		stations.add(lineStation);
 	}
 
 	public void removeLineStationById(Long stationId) {
 		LineStation targetLineStation = stations.stream()
-			.filter(it -> Objects.equals(it.getStationId(), stationId))
+			.filter(lineStation -> LineStation.isSameId(lineStation.getStationId(), stationId))
 			.findFirst()
 			.orElseThrow(RuntimeException::new);
 
 		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), stationId))
+			.filter(lineStation -> LineStation.isSameId(lineStation.getPreStationId(), stationId))
 			.findFirst()
-			.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+			.ifPresent(lineStation -> lineStation.updatePreLineStation(targetLineStation.getPreStationId()));
 
 		stations.remove(targetLineStation);
 	}
@@ -44,7 +44,7 @@ public class LineStations {
 		}
 
 		LineStation firstLineStation = stations.stream()
-			.filter(it -> it.getPreStationId() == null)
+			.filter(LineStation::isFirstStation)
 			.findFirst()
 			.orElseThrow(RuntimeException::new);
 
@@ -54,7 +54,7 @@ public class LineStations {
 		while (true) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
 			Optional<LineStation> nextLineStation = stations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+				.filter(lineStation -> LineStation.isSameId(lineStation.getPreStationId(), lastStationId))
 				.findFirst();
 
 			if (!nextLineStation.isPresent()) {
