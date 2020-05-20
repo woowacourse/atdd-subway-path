@@ -2,6 +2,8 @@ package wooteco.subway.admin.domain.line;
 
 import static java.util.stream.Collectors.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -70,18 +72,36 @@ public class LineStations {
             .orElseThrow(RuntimeException::new);
     }
 
-    public boolean isEmpty() {
-        return lineStations.isEmpty();
+    public List<Long> getIds() {
+        if (lineStations.isEmpty()) {
+            return new ArrayList<>();
+        }
+        LineStation firstLineStation = getFirst();
+
+        List<Long> stationIds = new ArrayList<>();
+        stationIds.add(firstLineStation.getStationId());
+
+        while (true) {
+            Long lastStationId = stationIds.get(stationIds.size() - 1);
+            Optional<LineStation> nextLineStation = getNextOf(lastStationId);
+
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+
+            stationIds.add(nextLineStation.get().getStationId());
+        }
+        return stationIds;
     }
 
-    public LineStation getFirst() {
+    private LineStation getFirst() {
         return lineStations.stream()
             .filter(it -> it.getPreStationId() == null)
             .findFirst()
             .orElseThrow(RuntimeException::new);
     }
 
-    public Optional<LineStation> getNextOf(Long stationId) {
+    private Optional<LineStation> getNextOf(Long stationId) {
         return lineStations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), stationId))
             .findFirst();
