@@ -1,8 +1,10 @@
 package wooteco.subway.admin.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,25 +46,17 @@ public class LineStations {
 			return new ArrayList<>();
 		}
 
-		LineStation firstLineStation = stations.stream()
-			.filter(LineStation::isFirstStation)
-			.findFirst()
-			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 LineStation입니다."));
-
 		List<Long> stationIds = new ArrayList<>();
-		stationIds.add(firstLineStation.getStationId());
+		Map<Long, Long> linkedStationIds = new HashMap<>();
+		for (LineStation lineStation : stations) {
+			linkedStationIds.put(lineStation.getPreStationId(), lineStation.getStationId());
+		}
 
-		while (true) {
+		Long firstLineStationId = linkedStationIds.get(null);
+		stationIds.add(firstLineStationId);
+		while (stationIds.size() != linkedStationIds.size()) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
-			Optional<LineStation> nextLineStation = stations.stream()
-				.filter(lineStation -> LineStation.isSameId(lineStation.getPreStationId(), lastStationId))
-				.findFirst();
-
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-
-			stationIds.add(nextLineStation.get().getStationId());
+			stationIds.add(linkedStationIds.get(lastStationId));
 		}
 
 		return stationIds;

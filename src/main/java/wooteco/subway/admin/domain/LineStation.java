@@ -19,10 +19,6 @@ public class LineStation {
         return Objects.equals(id1, id2);
     }
 
-    public boolean isFirstStation() {
-        return this.preStationId == null;
-    }
-
     public Long getPreStationId() {
         return preStationId;
     }
