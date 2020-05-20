@@ -1,11 +1,11 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.List;
 
 public class Line {
 	@Id
@@ -17,8 +17,8 @@ public class Line {
 	private String color;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	@MappedCollection
-	private List<LineStation> stations = new LinkedList<>();
+	@Embedded.Empty
+	private LineStations stations;
 
 	public Line() {
 	}
@@ -31,6 +31,7 @@ public class Line {
 		this.color = color;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
+		this.stations = LineStations.getInstance();
 	}
 
 	public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color) {
@@ -59,90 +60,50 @@ public class Line {
 	}
 
 	public void addLineStation(LineStation lineStation) {
-		stations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-				.findAny()
-				.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
-
-		stations.add(lineStation);
+		stations.addLineStation(lineStation);
 	}
 
 	public void removeLineStationById(Long stationId) {
-		LineStation targetLineStation = stations.stream()
-				.filter(it -> Objects.equals(it.getStationId(), stationId))
-				.findFirst()
-				.orElseThrow(RuntimeException::new);
-
-		stations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), stationId))
-				.findFirst()
-				.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
-
-		stations.remove(targetLineStation);
+		stations.removeLineStationById(stationId);
 	}
 
 	public List<Long> getLineStationsId() {
-		if (stations.isEmpty()) {
-			return new ArrayList<>();
-		}
-
-		LineStation firstLineStation = stations.stream()
-				.filter(it -> it.getPreStationId() == null)
-				.findFirst()
-				.orElseThrow(RuntimeException::new);
-
-		List<Long> stationIds = new ArrayList<>();
-		stationIds.add(firstLineStation.getStationId());
-
-		while (true) {
-			Long lastStationId = stationIds.get(stationIds.size() - 1);
-			Optional<LineStation> nextLineStation = stations.stream()
-					.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-					.findFirst();
-
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-
-			stationIds.add(nextLineStation.get().getStationId());
-		}
-
-		return stationIds;
+		return stations.getLineStationsId();
 	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 
-    public String getColor() {
-        return color;
-    }
+	public String getColor() {
+		return color;
+	}
 
-    public List<LineStation> getStations() {
-        return stations;
-    }
+	public List<LineStation> getStations() {
+		return stations.getLineStations();
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 }
