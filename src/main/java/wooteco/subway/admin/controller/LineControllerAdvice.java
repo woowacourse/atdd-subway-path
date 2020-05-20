@@ -20,8 +20,9 @@ public class LineControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> getUnExpectedException(Exception e) {
+    public ResponseEntity<ErrorMessage> getUnexpectedException(Exception e) {
+        System.out.println("Unexpected error : " + e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorMessage("예기치 못한 에러가 발생했습니다.\n" + e.getMessage()));
+            .body(new ErrorMessage("예기치 못한 에러가 발생했습니다.\n"));
     }
 }
