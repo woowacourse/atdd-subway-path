@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathCalculator;
-import wooteco.subway.admin.domain.SearchType;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
 import wooteco.subway.admin.exceptions.NotExistSourceStationException;
@@ -35,12 +32,12 @@ public class PathServiceTest {
 	private PathService pathService;
 	private List<Station> stations;
 	private List<LineStation> lineStations;
-	private PathCalculator pathCalculator;
+	private PathCalculator dijkstraPathCalculator;
 
 	@BeforeEach
 	void setUp() {
-		pathCalculator = new PathCalculator();
-		pathService = new PathService(lineRepository, stationRepository, pathCalculator);
+		dijkstraPathCalculator = new DijkstraPathCalculator(lineRepository);
+		pathService = new PathService(lineRepository, stationRepository, dijkstraPathCalculator);
 		stations = Arrays.asList(new Station(1L, "강남역"),
 				new Station(2L, "역삼역"),
 				new Station(3L, "선릉역"),
