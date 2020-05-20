@@ -26,14 +26,14 @@ const api = (() => {
   const request = (uri, config) => fetch(uri, config).then(data => data.json())
 
   const line = {
-    getAll() {
-      return request(`/lines/detail`)
-    }
+      getAll() {
+          return request(`/lines/map`)
+      },
   }
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+        return request(`/paths?source=${params.source}&target=${params.target}&key=${params.type}`)
     }
   }
 
