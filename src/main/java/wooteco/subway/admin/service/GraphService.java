@@ -47,12 +47,13 @@ public class GraphService {
 		if (Objects.isNull(path)) {
 			throw new IllegalArgumentException("출발지와 목적지가 연결되어있지 않습니다.");
 		}
-		int distance = path.getEdgeList().stream()
-			.mapToInt(Edge::getDistance)
-			.sum();
-		int duration = path.getEdgeList().stream()
-			.mapToInt(Edge::getDuration)
-			.sum();
+
+		int distance = 0;
+		int duration = 0;
+		for (Edge edge : path.getEdgeList()) {
+			distance += edge.getDistance();
+			duration += edge.getDuration();
+		}
 
 		return PathResponse.of(path.getVertexList(), distance, duration);
 	}
