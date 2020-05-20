@@ -4,7 +4,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -67,12 +66,12 @@ public class PathTest {
 	void findShortestDistancePath() {
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("distance"));
 
-		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4);
+		ShortestPath shortestPath = new ShortestPath(path.findShortestPath(station1, station4));
 
-		assertEquals(shortestPath.getPath().get(0), station1);
-		assertEquals(shortestPath.getPath().get(1), station2);
-		assertEquals(shortestPath.getPath().get(2), station3);
-		assertEquals(shortestPath.getPath().get(3), station4);
+		assertEquals(shortestPath.getShortestPath().get(0), station1);
+		assertEquals(shortestPath.getShortestPath().get(1), station2);
+		assertEquals(shortestPath.getShortestPath().get(2), station3);
+		assertEquals(shortestPath.getShortestPath().get(3), station4);
 	}
 
 	@DisplayName("최단시간 경로를 반환")
@@ -80,14 +79,14 @@ public class PathTest {
 	void findShortestDurationPath() {
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("duration"));
 
-		ShortestPathResponse shortestPath = path.findShortestPath(station1, station4);
+		ShortestPath shortestPath = new ShortestPath(path.findShortestPath(station1, station4));
 
-		assertEquals(shortestPath.getPath().get(0), station1);
-		assertEquals(shortestPath.getPath().get(1), station2);
-		assertEquals(shortestPath.getPath().get(2), station5);
-		assertEquals(shortestPath.getPath().get(3), station6);
-		assertEquals(shortestPath.getPath().get(4), station7);
-		assertEquals(shortestPath.getPath().get(5), station8);
-		assertEquals(shortestPath.getPath().get(6), station4);
+		assertEquals(shortestPath.getShortestPath().get(0), station1);
+		assertEquals(shortestPath.getShortestPath().get(1), station2);
+		assertEquals(shortestPath.getShortestPath().get(2), station5);
+		assertEquals(shortestPath.getShortestPath().get(3), station6);
+		assertEquals(shortestPath.getShortestPath().get(4), station7);
+		assertEquals(shortestPath.getShortestPath().get(5), station8);
+		assertEquals(shortestPath.getShortestPath().get(6), station4);
 	}
 }

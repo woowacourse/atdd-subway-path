@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.request.PathSearchRequest;
-import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -112,13 +112,13 @@ class PathServiceTest {
 		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
 				station5, station6, station7, station8, station9, station10));
 
-		ShortestPathResponse shortestPath = pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, criteria));
+		ShortestPath shortestPath = pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, criteria));
 
-		for (int i = 0; i < shortestPath.getPath().size(); i++) {
-			assertEquals(shortestPath.getPath().get(i), expectedPath.get(i));
+		for (int i = 0; i < shortestPath.getShortestPath().size(); i++) {
+			assertEquals(shortestPath.getShortestPath().get(i), expectedPath.get(i));
 		}
 
-		assertEquals(shortestPath.getDistance(), expectedDistance);
-		assertEquals(shortestPath.getDuration(), expectedDuration);
+		assertEquals(shortestPath.calculateShortestDistance(), expectedDistance);
+		assertEquals(shortestPath.calculateShortestDuration(), expectedDuration);
 	}
 }

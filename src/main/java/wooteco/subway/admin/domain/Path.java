@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.admin.dto.response.ShortestPathResponse;
 
 public class Path {
 	private final WeightedMultigraph<Station, Edge> graph;
@@ -35,12 +34,8 @@ public class Path {
 		graph.setEdgeWeight(graph.getEdge(preStation, station), edge.getWeight());
 	}
 
-	public ShortestPathResponse findShortestPath(Station sourceStation, Station targetStation) {
-		GraphPath<Station, Edge> result = getDijkstraShortestPath(sourceStation, targetStation);
-		int totalDistance = calculateTotalDistance(result);
-		int totalDuration = calculateTotalDuration(result);
-
-		return new ShortestPathResponse(result.getVertexList(), totalDistance, totalDuration);
+	public GraphPath<Station, Edge> findShortestPath(Station sourceStation, Station targetStation) {
+		return getDijkstraShortestPath(sourceStation, targetStation);
 	}
 
 
@@ -50,15 +45,5 @@ public class Path {
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);
 	}
 
-	private int calculateTotalDuration(GraphPath<Station, Edge> result) {
-		return result.getEdgeList().stream()
-				.mapToInt(Edge::getDuration)
-				.sum();
-	}
 
-	private int calculateTotalDistance(GraphPath<Station, Edge> result) {
-		return result.getEdgeList().stream()
-				.mapToInt(Edge::getDistance)
-				.sum();
-}
 }

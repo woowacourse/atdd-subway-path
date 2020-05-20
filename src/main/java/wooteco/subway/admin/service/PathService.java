@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.request.PathSearchRequest;
-import wooteco.subway.admin.dto.response.ShortestPathResponse;
 import wooteco.subway.admin.exception.EmptyStationNameException;
 import wooteco.subway.admin.exception.NoStationNameExistsException;
 import wooteco.subway.admin.exception.SourceEqualsTargetException;
@@ -25,7 +24,7 @@ public class PathService {
 	}
 
 	@Transactional
-	public ShortestPathResponse findShortestDistancePath(PathSearchRequest pathSearchRequest) {
+	public ShortestPath findShortestDistancePath(PathSearchRequest pathSearchRequest) {
 		if (pathSearchRequest.getSource().isEmpty() || pathSearchRequest.getTarget().isEmpty()) {
 			throw new EmptyStationNameException();
 		}
@@ -45,7 +44,8 @@ public class PathService {
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
-		return path.findShortestPath(sourceStation, targetStation);
+
+		return new ShortestPath(path.findShortestPath(sourceStation, targetStation));
 	}
 
 	private Station findStationByName(String source) {
