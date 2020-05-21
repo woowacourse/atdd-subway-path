@@ -17,9 +17,9 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<SearchPathResponse> searchPath(
-            @RequestParam(name = "startStationName") String startStationName,
-            @RequestParam(name = "targetStationName") String targetStationName,
-            @RequestParam(name = "type") String type
+            @RequestParam String startStationName,
+            @RequestParam String targetStationName,
+            @RequestParam String type
     ) {
         return ResponseEntity.ok().body(pathService.searchPath(startStationName, targetStationName, type));
     }
