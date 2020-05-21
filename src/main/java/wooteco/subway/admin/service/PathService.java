@@ -32,7 +32,6 @@ public class PathService {
 
         Graph graph = Graph.of(lines, stations, edgeType);
         ShortestValues shortestValues = graph.makeEdgeValueSumData(startStation, targetStation);
-
         return new SearchPathResponse(shortestValues);
     }
 
