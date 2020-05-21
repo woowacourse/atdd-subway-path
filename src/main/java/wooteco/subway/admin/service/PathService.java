@@ -57,8 +57,7 @@ public class PathService {
         return new ShortestPathResponse(stationResponses, distance, duration);
     }
 
-    @Transactional(readOnly = true)
-    List<Station> findStationsByIds(List<Long> shortestPath) {
+    private List<Station> findStationsByIds(List<Long> shortestPath) {
         return shortestPath.stream()
             .map(stationId -> stationRepository.findById(stationId)
                 .orElseThrow(IllegalAccessError::new))
