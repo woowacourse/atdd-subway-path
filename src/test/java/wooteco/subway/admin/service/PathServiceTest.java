@@ -77,6 +77,7 @@ public class PathServiceTest {
     }
 
     @Test
+    @DisplayName("최단경로를 순방향으로 찾기")
     void findShortestDistancePath() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
@@ -92,7 +93,8 @@ public class PathServiceTest {
     }
 
     @Test
-    void findShortestDistancePath2() {
+    @DisplayName("최단경로를 역방향으로 찾기")
+    void findShortestDistancePathReversed() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
 
