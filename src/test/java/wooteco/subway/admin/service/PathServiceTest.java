@@ -29,6 +29,9 @@ public class PathServiceTest {
     @Mock
     private StationRepository stationRepository;
 
+    @Mock
+    private GraphService graphService;
+
     private Line line2;
     private Line line7;
     private Line lineB;
@@ -67,7 +70,7 @@ public class PathServiceTest {
     void findPathTest() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, line7, lineB));
         when(stationRepository.findAll()).thenReturn(stations);
-        PathService pathService = new PathService(lineRepository, stationRepository);
+        PathService pathService = new PathService(lineRepository, stationRepository, graphService);
         PathResponse minimumDistancePath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DISTANCE"));
         PathResponse minimumDurationPath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DURATION"));
 
