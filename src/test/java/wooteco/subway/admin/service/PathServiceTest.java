@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +30,7 @@ public class PathServiceTest {
     @Mock
     private StationRepository stationRepository;
 
-    @Mock
-    private GraphService graphService;
+    private PathService pathService;
 
     private Line line2;
     private Line line7;
@@ -39,6 +39,8 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUP() {
+        GraphService graphService = new GraphService();
+        pathService = new PathService(lineRepository, stationRepository, graphService);
         stations = Arrays.asList(new Station(1L, "왕십리"), new Station(2L, "한양대"), new Station(3L, "뚝섬"),
                 new Station(4L, "성수"), new Station(5L, "건대입구"), new Station(6L, "뚝섬유원지"), new Station(7L, "청담"),
                 new Station(8L, "강남구청"), new Station(9L, "압구정로데오"), new Station(10L, "서울숲"));
@@ -70,11 +72,47 @@ public class PathServiceTest {
     void findPathTest() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, line7, lineB));
         when(stationRepository.findAll()).thenReturn(stations);
-        PathService pathService = new PathService(lineRepository, stationRepository, graphService);
         PathResponse minimumDistancePath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DISTANCE"));
         PathResponse minimumDurationPath = pathService.findPath("왕십리", "강남구청", PathType.valueOf("DURATION"));
 
         assertThat(minimumDistancePath.getStations().size()).isEqualTo(4);
         assertThat(minimumDurationPath.getStations().size()).isEqualTo(4);
     }
+
+    @Test
+    @DisplayName("출발역 도착역 같을 때 예외 확인")
+    void duplicationTest() {
+        assertThatThrownBy(() -> pathService.findPath("왕십리", "왕십리", PathType.of("DISTANCE")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역 입력 확인")
+    void noExistTest() {
+        assertThatThrownBy(() -> pathService.findPath("작은곰", "오렌지", PathType.of("DISTANCE")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("경로가 존재하지 않을 때 (역이 올바르지 않을 때)")
+    void noPath() {
+        assertThatThrownBy(() -> pathService.findPath("왕십리", "잠실", PathType.of("DISTANCE")))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("같은 역이지만 시간/거리 경로 다를 때 테스트")
+    void differentPathTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, line7, lineB));
+        when(stationRepository.findAll()).thenReturn(stations);
+        PathResponse minimumDistancePath = pathService.findPath("건대입구", "강남구청", PathType.of("DISTANCE"));
+        PathResponse minimumDurationPath = pathService.findPath("건대입구", "강남구청", PathType.of("DURATION"));
+
+        assertThat(minimumDistancePath.getDuration()).isEqualTo(12);
+        assertThat(minimumDistancePath.getDistance()).isEqualTo(21);
+        assertThat(minimumDurationPath.getDuration()).isEqualTo(11);
+        assertThat(minimumDurationPath.getDistance()).isEqualTo(29);
+    }
+
+
 }
