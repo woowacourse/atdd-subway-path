@@ -66,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         String noPathErrorMessage = findPathError("왕십리", "잠실").getMessage();
 
         //then
-        assertThat(noPathErrorMessage).isEqualTo("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
+        assertThat(noPathErrorMessage).isEqualTo("경로를 찾을 수 없습니다.");
 
         //when
         PathResponse minimumDistancePath = findPath("건대입구", "강남구청", "DISTANCE");

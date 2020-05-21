@@ -38,7 +38,7 @@ public class GraphService {
                 = new DijkstraShortestPath<>(graph);
         try {
             shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-        } catch (NullPointerException e) {
+        } catch (RuntimeException e) {
             throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
         }
         return shortestPath;
