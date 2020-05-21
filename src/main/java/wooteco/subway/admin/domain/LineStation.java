@@ -1,35 +1,39 @@
 package wooteco.subway.admin.domain;
 
 public class LineStation {
-    private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+	private final Long preStationId;
+	private final Long stationId;
+	private final int distance;
+	private final int duration;
 
-    public LineStation(Long preStationId, Long stationId, int distance, int duration) {
-        this.preStationId = preStationId;
-        this.stationId = stationId;
-        this.distance = distance;
-        this.duration = duration;
-    }
+	LineStation(Long preStationId, Long stationId, int distance, int duration) {
+		this.preStationId = preStationId;
+		this.stationId = stationId;
+		this.distance = distance;
+		this.duration = duration;
+	}
 
-    public Long getPreStationId() {
-        return preStationId;
-    }
+	public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
+		return new LineStation(preStationId, stationId, distance, duration);
+	}
 
-    public Long getStationId() {
-        return stationId;
-    }
+	public LineStation updatePreLineStation(Long preStationId) {
+		return new LineStation(preStationId, this.stationId, this.distance, this.duration);
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public Long getPreStationId() {
+		return preStationId;
+	}
 
-    public int getDuration() {
-        return duration;
-    }
+	public Long getStationId() {
+		return stationId;
+	}
 
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
-    }
+	public int getDistance() {
+		return distance;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
 }
