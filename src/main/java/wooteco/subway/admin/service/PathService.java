@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.request.PathSearchRequest;
 import wooteco.subway.admin.exception.EmptyStationNameException;
+import wooteco.subway.admin.exception.NoPathExistsException;
 import wooteco.subway.admin.exception.NoStationNameExistsException;
 import wooteco.subway.admin.exception.SourceEqualsTargetException;
 import wooteco.subway.admin.repository.LineRepository;
@@ -45,7 +46,13 @@ public class PathService {
 
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
 
-		return new ShortestPath(path.findShortestPath(sourceStation, targetStation));
+		ShortestPath shortestPath = new ShortestPath(path.findShortestPath(sourceStation, targetStation));
+
+		if (shortestPath.hasInvalidPath()) {
+			throw new NoPathExistsException();
+		}
+
+		return shortestPath;
 	}
 
 	private Station findStationByName(String source) {

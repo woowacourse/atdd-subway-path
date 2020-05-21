@@ -2,9 +2,11 @@ package wooteco.subway.admin.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,6 +15,10 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.request.PathSearchRequest;
+import wooteco.subway.admin.exception.EmptyStationNameException;
+import wooteco.subway.admin.exception.NoPathExistsException;
+import wooteco.subway.admin.exception.NoStationNameExistsException;
+import wooteco.subway.admin.exception.SourceEqualsTargetException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -22,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -120,5 +127,57 @@ class PathServiceTest {
 
 		assertEquals(shortestPath.calculateShortestDistance(), expectedDistance);
 		assertEquals(shortestPath.calculateShortestDuration(), expectedDuration);
+	}
+
+	@DisplayName("출발역과 도착역이 같을시 예외처리하는 테스트")
+	@Test
+	void getShortestPath_WhenSameSourceAndTarget_ThrowException() {
+		String sourceName = "신도림";
+		String targetName = "신도림";
+
+		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+				.isInstanceOf(SourceEqualsTargetException.class)
+				.hasMessage("출발역과 도착역이 같으면 안돼요.");
+	}
+
+	@DisplayName("출발역이나 도착역이 노선에 없을시 예외처리하는 테스트")
+	@CsvSource(value = {"우테코,신도림", "신도림,우테코", "우테코,루터회관"})
+	@ParameterizedTest
+	void getShortestPath_WhenNotExistSourceAndTarget_ThrowException(String sourceName, String targetName) {
+
+		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+				.isInstanceOf(NoStationNameExistsException.class)
+				.hasMessage("해당역이 존재하지 않아요.");
+	}
+
+	@DisplayName("출발역이나 도착역으로 빈 값입력시 예외처리하는 테스트")
+	@CsvSource(value = {"'',신도림", "신도림,''", "'',''"})
+	@ParameterizedTest
+	void getShortestPath_WhenEmptySourceAndTarget_ThrowException(String sourceName, String targetName) {
+
+		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+				.isInstanceOf(EmptyStationNameException.class)
+				.hasMessage("출발역과 도착역 모두를 입력해주세요.");
+	}
+
+	@DisplayName("출발역이나 도착역이 연결되어있지 않을 경우 예외처리하는 테스트")
+	@Test
+	void getShortestPath_WhenNotConnectedStations_ThrowException() {
+		String sourceName = "구로";
+		String targetName = "토니";
+		String targetNextName = "무늬";
+		Station station11 = new Station(11L, targetName);
+		Station station12 = new Station(12L, targetNextName);
+
+		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station1));
+		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station11));
+
+		Line line3 = new Line(3L, "토니호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-900");
+		line3.addLineStation(new LineStation(null, station11.getId(), 40, 10));
+		line3.addLineStation(new LineStation(station11.getId(), station12.getId(), 40, 10));
+
+		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+				.isInstanceOf(NoPathExistsException.class)
+				.hasMessage("해당 경로는 존재하지 않아요.");
 	}
 }

@@ -29,4 +29,8 @@ public class ShortestPath {
 				.mapToInt(Edge::getDistance)
 				.sum();
 	}
+
+	public boolean hasInvalidPath() {
+		return shortestPath == null;
+	}
 }

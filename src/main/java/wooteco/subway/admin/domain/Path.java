@@ -4,6 +4,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.exception.NoPathExistsException;
 
 public class Path {
 	private final WeightedMultigraph<Station, Edge> graph;
@@ -35,7 +36,12 @@ public class Path {
 	}
 
 	public GraphPath<Station, Edge> findShortestPath(Station sourceStation, Station targetStation) {
-		return getDijkstraShortestPath(sourceStation, targetStation);
+		try {
+			return getDijkstraShortestPath(sourceStation, targetStation);
+		} catch (IllegalArgumentException e) {
+			throw new NoPathExistsException();
+		}
+
 	}
 
 

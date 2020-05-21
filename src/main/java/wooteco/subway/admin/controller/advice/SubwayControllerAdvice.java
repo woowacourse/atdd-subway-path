@@ -25,7 +25,8 @@ public class SubwayControllerAdvice {
 	@ExceptionHandler({
 			NoStationNameExistsException.class,
 			NoCriteriaExistsException.class,
-			NoLineExistException.class
+			NoLineExistException.class,
+			NoPathExistsException.class
 	})
 	public ResponseEntity<ExceptionResponse> getResourceNotFoundException(RuntimeException e) {
 		LOGGER.error(e);
