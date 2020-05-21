@@ -1,7 +1,10 @@
 package wooteco.subway.admin.controller;
 
 public class ErrorMessage {
-    private final String message;
+    private String message;
+
+    private ErrorMessage() {
+    }
 
     public ErrorMessage(String message) {
         this.message = message;
