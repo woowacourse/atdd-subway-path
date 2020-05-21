@@ -22,15 +22,21 @@ import java.util.stream.Collectors;
 public class PathService {
 
     public static final String NO_EXIST_STATION_ERR_MSG = "존재하지 않는 역은 입력할 수 없습니다.";
+
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    private GraphService graphService;
+
+    public PathService(LineRepository lineRepository, StationRepository stationRepository, GraphService graphService) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.graphService = graphService;
     }
 
     public PathResponse findPath(String sourceName, String targetName, PathType type) {
+        Long source = null;
+        Long target = null;
         checkDuplicateName(sourceName, targetName);
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
@@ -41,22 +47,20 @@ public class PathService {
                 .filter(lineStation -> lineStation.getPreStationId() != null)
                 .collect(Collectors.toList());
 
-        Long source = null;
-        Long target = null;
         for (Station station : stations) {
             source = findIdByName(sourceName, source, station);
             target = findIdByName(targetName, target, station);
         }
-        if (source == null || target == null) {
-            throw new IllegalArgumentException(NO_EXIST_STATION_ERR_MSG);
-        }
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(type, stations, lineStations);
+        validateStations(source, target);
+
+
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = graphService.makeGraph(type, stations, lineStations);
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
                 = new DijkstraShortestPath<>(graph);
 
-        List<Long> shortestPath = findShortestPath(source, target, dijkstraShortestPath);
+        List<Long> shortestPath = graphService.findShortestPath(source, target, dijkstraShortestPath);
 
         List<Station> pathStations = shortestPath.stream()
                 .map(id -> findStation(stations, id))
@@ -77,6 +81,12 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(pathStations), weight, extraInformation);
     }
 
+    private void validateStations(Long source, Long target) {
+        if (source == null || target == null) {
+            throw new IllegalArgumentException(NO_EXIST_STATION_ERR_MSG);
+        }
+    }
+
     private Long findIdByName(String name, Long id, Station station) {
         if (station.getName().equals(name)) {
             return station.getId();
@@ -84,40 +94,10 @@ public class PathService {
         return id;
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(PathType type, List<Station> stations, List<LineStation> lineStations) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-        for (LineStation station : lineStations) {
-            graph.setEdgeWeight(graph.addEdge(station.getPreStationId(), station.getStationId()), type.getWeight(station));
-        }
-
-        return graph;
-    }
-
-    private List<Long> findShortestPath(Long source, Long target, DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
-        List<Long> shortestPath;
-        try {
-            shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
-        }
-        return shortestPath;
-    }
-
     private void checkDuplicateName(String sourceName, String targetName) {
         if (sourceName.equals(targetName)) {
             throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다.");
         }
-    }
-
-    private Long findStationIdWithStationName(String sourceName, List<Station> stations) {
-        return stations.stream()
-                .filter(station -> station.getName().equals(sourceName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NO_EXIST_STATION_ERR_MSG)).getId();
     }
 
     private Station findStation(List<Station> stations, Long id) {
