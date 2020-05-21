@@ -1,17 +1,33 @@
 package wooteco.subway.admin.service;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
+
+import wooteco.subway.admin.domain.line.Line;
+import wooteco.subway.admin.domain.line.LineStation;
+import wooteco.subway.admin.domain.line.LineStations;
+import wooteco.subway.admin.domain.line.path.EdgeWeightType;
+import wooteco.subway.admin.domain.line.path.Path;
+import wooteco.subway.admin.domain.line.path.SubwayMap;
+import wooteco.subway.admin.domain.line.path.vo.PathInfo;
+import wooteco.subway.admin.domain.line.path.vo.PathSearchInfo;
+import wooteco.subway.admin.domain.station.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathRequest;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.PathResponses;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
 
 @Service
 public class LineService {
@@ -43,7 +59,8 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
@@ -61,8 +78,58 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
+    public Long findIdByName(String name) {
+        return stationRepository.findByName(name)
+            .map(Station::getId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Station 입니다."));
+    }
+
+    public PathResponses findPathsBy(PathRequest pathRequest) {
+        PathSearchInfo pathSearchInfo = pathRequest.toPathInfo();
+        Long departureId = findIdByName(pathSearchInfo.getDepartureStationName());
+        Long arrivalId = findIdByName(pathSearchInfo.getArrivalStationName());
+        return findPaths(departureId, arrivalId);
+    }
+
+    private PathResponses findPaths(Long departureId, Long arrivalId) {
+        Map<EdgeWeightType, PathResponse> responses = new HashMap<>();
+
+        LineStations lineStations = new LineStations(lineRepository.findAllLineStations());
+
+        for (EdgeWeightType edgeWeightType : EdgeWeightType.values()) {
+            SubwayMap subwayMap = lineStations.toGraph(edgeWeightType);
+            responses.put(edgeWeightType, toPathResponse(subwayMap.findShortestPath(departureId, arrivalId)));
+        }
+
+        return new PathResponses(responses);
+    }
+
+    private PathResponse toPathResponse(Path path) {
+        List<Long> shortestPath = path.getPath();
+        List<StationResponse> responses = toStationResponses(shortestPath);
+        PathInfo pathInfo = path.createPathInfo();
+        return new PathResponse(responses, pathInfo.getTotalDuration(),
+            pathInfo.getTotalDistance());
+    }
+
+    private List<StationResponse> toStationResponses(List<Long> shortestPath) {
+        Map<Long, Station> stationMap = getStationMap();
+        return shortestPath.stream()
+            .map(stationMap::get)
+            .map(StationResponse::of)
+            .collect(toList());
+    }
+
+    private Map<Long, Station> getStationMap() {
+        return stationRepository.findAll()
+            .stream()
+            .collect(toMap(Station::getId, Function.identity()));
+    }
+
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+            .map(line -> LineDetailResponse.of(line, stationRepository.findAllById(line.getLineStationsId())))
+            .collect(collectingAndThen(toList(), WholeSubwayResponse::new));
     }
 }

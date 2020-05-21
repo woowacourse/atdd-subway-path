@@ -1,4 +1,8 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line;
+
+import java.util.Objects;
+
+import wooteco.subway.admin.domain.line.path.RouteEdge;
 
 public class LineStation {
     private Long preStationId;
@@ -31,5 +35,13 @@ public class LineStation {
 
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
+    }
+
+    public boolean isNotStart() {
+        return Objects.nonNull(preStationId);
+    }
+
+    public RouteEdge toEdge() {
+        return new RouteEdge(distance, duration);
     }
 }
