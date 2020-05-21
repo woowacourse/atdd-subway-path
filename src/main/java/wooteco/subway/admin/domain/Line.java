@@ -2,11 +2,9 @@ package wooteco.subway.admin.domain;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 
@@ -65,6 +63,10 @@ public class Line {
 
 	public void removeLineStationById(Long stationId) {
 		lineStations.removeLineStationById(stationId);
+	}
+
+	public void setGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
+		lineStations.setGraph(graph, type);
 	}
 
 	public List<Long> getLineStationsId() {

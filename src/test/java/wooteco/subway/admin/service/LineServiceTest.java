@@ -183,9 +183,6 @@ public class LineServiceTest {
 		when(stationRepository.findByName("선릉역")).thenReturn(Optional.of(station3));
 		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
-		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
-		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
-		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
 
 		List<PathResponse> pathResponses = lineService.findAllPath("강남역", "선릉역");
 		PathResponse pathResponse = pathResponses.get(0);

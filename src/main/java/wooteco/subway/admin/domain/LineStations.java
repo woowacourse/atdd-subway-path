@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
+
+import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.exception.NonExistentDataException;
 
@@ -60,6 +62,21 @@ public class LineStations {
 		}
 
 		return stationIds;
+	}
+
+	public void setGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
+		stations.forEach(lineStation -> setGraph(graph, lineStation, type));
+	}
+
+	private void setGraph(WeightedMultigraph<Long, CustomEdge> graph, LineStation lineStation, EdgeWeightType type) {
+		Long preStationId = lineStation.getPreStationId();
+		Long stationId = lineStation.getStationId();
+
+		if (Objects.nonNull(preStationId)) {
+			CustomEdge customEdge = new CustomEdge(lineStation, type);
+			graph.addEdge(preStationId, stationId, customEdge);
+			graph.setEdgeWeight(customEdge, customEdge.getWeight());
+		}
 	}
 
 	public Set<LineStation> getStations() {
