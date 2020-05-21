@@ -10,10 +10,10 @@ public class SearchPathResponse {
     public SearchPathResponse() {
     }
 
-    public SearchPathResponse(int durationSum, int distanceSum, List<String> pathStationNames) {
-        this.durationSum = durationSum;
-        this.distanceSum = distanceSum;
-        this.pathStationNames = pathStationNames;
+    public SearchPathResponse(ShortestValues shortestValues) {
+        this.durationSum = shortestValues.getDurationSum();
+        this.distanceSum = shortestValues.getDistanceSum();
+        this.pathStationNames = shortestValues.getStationNames();
     }
 
     public int getDurationSum() {

@@ -22,6 +22,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+import static wooteco.subway.admin.domain.EdgeType.DISTANCE;
+import static wooteco.subway.admin.domain.EdgeType.DURATION;
 
 @ExtendWith(SpringExtension.class)
 @DataJdbcTest
@@ -104,7 +106,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
 
-        SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "distance");
+        SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, DISTANCE);
         assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역", "가깝고느린역", "삼성역"));
     }
 
@@ -114,7 +116,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
 
-        SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, "duration");
+        SearchPathResponse searchPathResponse = pathService.searchPath(STATION_NAME1, STATION_NAME4, DURATION);
         assertThat(searchPathResponse.getPathStationNames()).isEqualTo(Arrays.asList("강남역", "역삼역", "선릉역", "삼성역"));
     }
 
@@ -124,7 +126,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1));
 
-        assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME1, "duration"))
+        assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME1, DURATION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("시작역과 도착역이 같습니다.");
     }
@@ -135,7 +137,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line3));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
 
-        assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME7, "duration"))
+        assertThatThrownBy(() -> pathService.searchPath(STATION_NAME1, STATION_NAME7, DURATION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("두 역이 연결되어있지 않습니다.");
     }
@@ -145,7 +147,7 @@ public class PathServiceTest {
     public void notExistStation() {
         when(stationRepository.findByName(STATION_NAME7)).thenReturn(Optional.of(station7));
 
-        assertThatThrownBy(() -> pathService.searchPath(NOT_EXIST_STATION, STATION_NAME7, "duration"))
+        assertThatThrownBy(() -> pathService.searchPath(NOT_EXIST_STATION, STATION_NAME7, DURATION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역이 존재하지 않습니다.");
     }

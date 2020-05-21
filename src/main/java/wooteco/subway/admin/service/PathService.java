@@ -1,15 +1,16 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.*;
+import wooteco.subway.admin.domain.EdgeType;
+import wooteco.subway.admin.domain.Graph;
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.SearchPathResponse;
+import wooteco.subway.admin.dto.ShortestValues;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
-
-import static wooteco.subway.admin.domain.EdgeType.DISTANCE;
-import static wooteco.subway.admin.domain.EdgeType.DURATION;
 
 @Service
 public class PathService {
@@ -30,12 +31,9 @@ public class PathService {
         Station targetStation = findStationByName(targetStationName, stations);
 
         Graph graph = Graph.of(lines, stations, edgeType);
+        ShortestValues shortestValues = graph.makeEdgeValueSumData(startStation, targetStation);
 
-        int durationSum = graph.getEdgeValueSum(startStation, targetStation, DURATION);
-        int distanceSum = graph.getEdgeValueSum(startStation, targetStation, DISTANCE);
-        List<String> stationNames = graph.getVertexName(startStation, targetStation);
-
-        return new SearchPathResponse(durationSum, distanceSum, stationNames);
+        return new SearchPathResponse(shortestValues);
     }
 
     private void validateStationSame(String startStationName, String targetStationName) {

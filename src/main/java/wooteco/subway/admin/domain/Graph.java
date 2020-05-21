@@ -4,9 +4,13 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.dto.ShortestValues;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static wooteco.subway.admin.domain.EdgeType.DISTANCE;
+import static wooteco.subway.admin.domain.EdgeType.DURATION;
 
 public class Graph {
     WeightedMultigraph<Station, Edge> graph;
@@ -39,25 +43,30 @@ public class Graph {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
     }
 
-    public int getEdgeValueSum(Station startStation, Station targetStation, EdgeType edgeType) {
+    public ShortestValues makeEdgeValueSumData(Station startStation, Station targetStation) {
         GraphPath<Station, Edge> shortestPath
                 = findShortestPath(new DijkstraShortestPath<>(graph), startStation, targetStation);
+        int distanceSum = getEdgeValueSum(shortestPath, DISTANCE);
+        int durationSum = getEdgeValueSum(shortestPath, DURATION);
+        List<String> stationsNames = getVertexName(shortestPath);
+
+        return new ShortestValues(distanceSum, durationSum, stationsNames);
+    }
+
+    public int getEdgeValueSum(GraphPath<Station, Edge> shortestPath, EdgeType edgeType) {
         return shortestPath.getEdgeList().stream()
                 .mapToInt(edge -> edgeType.getEdgeValue(edge.toLineStation()))
                 .sum();
     }
 
-    public List<String> getVertexName(Station startStation, Station targetStation) {
-        GraphPath<Station, Edge> shortestPath
-                = findShortestPath(new DijkstraShortestPath<>(graph), startStation, targetStation);
+    public List<String> getVertexName(GraphPath<Station, Edge> shortestPath) {
         return shortestPath.getVertexList().stream()
-                .map(edge -> edge.getName())
+                .map(Station::getName)
                 .collect(Collectors.toList());
     }
 
     private GraphPath<Station, Edge> findShortestPath(ShortestPathAlgorithm<Station, Edge> algorithm, Station startStation, Station targetStation) {
-        ShortestPathAlgorithm<Station, Edge> shortestPathAlgorithm = algorithm;
-        GraphPath<Station, Edge> path = shortestPathAlgorithm.getPath(startStation, targetStation);
+        GraphPath<Station, Edge> path = algorithm.getPath(startStation, targetStation);
         validatePath(path);
         return path;
     }
