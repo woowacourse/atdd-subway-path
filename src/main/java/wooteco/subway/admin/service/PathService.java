@@ -1,10 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.EdgeType;
-import wooteco.subway.admin.domain.Graph;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.SearchPathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -24,7 +21,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public SearchPathResponse searchPath(String startStationName, String targetStationName, String type) {
+    public SearchPathResponse searchPath(String startStationName, String targetStationName, EdgeType edgeType) {
         validateStationSame(startStationName, targetStationName);
 
         List<Line> lines = lineRepository.findAll();
@@ -32,7 +29,7 @@ public class PathService {
         Station startStation = findStationByName(startStationName, stations);
         Station targetStation = findStationByName(targetStationName, stations);
 
-        Graph graph = Graph.of(lines, stations, EdgeType.of(type));
+        Graph graph = Graph.of(lines, stations, edgeType);
 
         int durationSum = graph.getEdgeValueSum(startStation, targetStation, DURATION);
         int distanceSum = graph.getEdgeValueSum(startStation, targetStation, DISTANCE);
