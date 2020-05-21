@@ -1,9 +1,6 @@
 package wooteco.subway.admin.service;
 
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -16,6 +13,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,8 +33,8 @@ public class PathService {
     }
 
     public PathResponse findPath(String sourceName, String targetName, PathType type) {
-        Long source = null;
-        Long target = null;
+        Long targetStation = null;
+        Long sourceStation = null;
         checkDuplicateName(sourceName, targetName);
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
@@ -44,41 +42,36 @@ public class PathService {
         List<LineStation> lineStations = lines.stream()
                 .map(Line::getStations)
                 .flatMap(Collection::stream)
-                .filter(lineStation -> lineStation.getPreStationId() != null)
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
                 .collect(Collectors.toList());
 
         for (Station station : stations) {
-            source = findIdByName(sourceName, source, station);
-            target = findIdByName(targetName, target, station);
+            sourceStation = findIdByName(sourceName, sourceStation, station);
+            targetStation = findIdByName(targetName, targetStation, station);
         }
 
-        validateStations(source, target);
+        validateStations(sourceStation, targetStation);
 
-
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = graphService.makeGraph(type, stations, lineStations);
-
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath
-                = new DijkstraShortestPath<>(graph);
-
-        List<Long> shortestPath = graphService.findShortestPath(source, target, dijkstraShortestPath);
+        List<Long> shortestPath = graphService.findShortestPath(sourceStation, targetStation, type, lines);
 
         List<Station> pathStations = shortestPath.stream()
                 .map(id -> findStation(stations, id))
                 .collect(Collectors.toList());
 
-        int weight = (int) dijkstraShortestPath.getPathWeight(source, target);
+        int duration = 0;
+        int distance = 0;
 
-        int extraInformation = lineStations.stream()
-                .filter(lineStation -> shortestPath.contains(lineStation.getStationId()) &&
-                        shortestPath.contains(lineStation.getPreStationId()))
-                .mapToInt(type::getExtraInformation)
-                .sum();
-
-        if (type.equals(PathType.DISTANCE)) {
-            return new PathResponse(StationResponse.listOf(pathStations), extraInformation, weight);
+        if (PathType.DISTANCE.equals(type)) {
+            distance = calculateWeight(type, lineStations, shortestPath);
+            duration = calculateExtraInformation(type, lineStations, shortestPath);
         }
 
-        return new PathResponse(StationResponse.listOf(pathStations), weight, extraInformation);
+        if (PathType.DURATION.equals(type)) {
+            duration = calculateWeight(type, lineStations, shortestPath);
+            distance = calculateExtraInformation(type, lineStations, shortestPath);
+        }
+
+        return new PathResponse(StationResponse.listOf(pathStations), duration, distance);
     }
 
     private void validateStations(Long source, Long target) {
@@ -105,5 +98,21 @@ public class PathService {
                 .filter(station -> station.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(NO_EXIST_STATION_ERR_MSG));
+    }
+
+    private int calculateExtraInformation(PathType type, List<LineStation> lineStations, List<Long> shortestPath) {
+        return lineStations.stream()
+                .filter(lineStation -> shortestPath.contains(lineStation.getStationId()) &&
+                        shortestPath.contains(lineStation.getPreStationId()))
+                .mapToInt(type::getExtraInformation)
+                .sum();
+    }
+
+    private int calculateWeight(PathType type, List<LineStation> lineStations, List<Long> shortestPath) {
+        return lineStations.stream()
+                .filter(lineStation -> shortestPath.contains(lineStation.getStationId()) &&
+                        shortestPath.contains(lineStation.getPreStationId()))
+                .mapToInt(type::getWeight)
+                .sum();
     }
 }
