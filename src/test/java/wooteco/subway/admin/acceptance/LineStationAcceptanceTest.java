@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.LineResponse;
-import wooteco.subway.admin.dto.response.StationResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {

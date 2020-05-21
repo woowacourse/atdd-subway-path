@@ -18,7 +18,7 @@ public enum PathType {
     public static PathType of(String name) {
         try {
             return valueOf(name.toUpperCase());
-        } catch(IllegalArgumentException ie) {
+        } catch (IllegalArgumentException ie) {
             return DISTANCE;
         }
     }

@@ -38,7 +38,7 @@ public class PageAcceptanceTest {
         given().
             accept(MediaType.TEXT_HTML_VALUE).
             when().
-            get("/admin-lines").
+            get("/admin/lines").
             then().
             log().all().
             statusCode(HttpStatus.OK.value());
