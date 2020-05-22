@@ -18,6 +18,12 @@ public class Stations {
 		return stationsCache.get(stationId);
 	}
 
+	public List<Station> mapStationsBy(List<Long> lineStationsId) {
+		return stationsCache.values().stream()
+				.filter(station -> lineStationsId.contains(station.getId()))
+				.collect(Collectors.toList());
+	}
+
 	public List<Station> getStations() {
 		return new ArrayList<>(stationsCache.values());
 	}

@@ -34,4 +34,10 @@ public class Lines {
 				.collect(collectingAndThen(toList(),
 						Collections::unmodifiableList));
 	}
+
+	public List<LineDetail> toLineDetails(Stations stations) {
+		return lines.stream()
+				.map(line -> LineDetail.of(line, stations.mapStationsBy(line.getLineStationsId())))
+				.collect(toList());
+	}
 }

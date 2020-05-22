@@ -38,7 +38,7 @@ public class LineController {
 
 	@GetMapping("/lines/detail")
 	public ResponseEntity<WholeSubwayResponse> wholeLines() {
-		WholeSubwayResponse result = lineService.showLinesDetail();
+		WholeSubwayResponse result = WholeSubwayResponse.of(lineService.showLineDetails());
 		return ResponseEntity.ok().eTag(String.valueOf(result.hashCode())).body(result);
 	}
 

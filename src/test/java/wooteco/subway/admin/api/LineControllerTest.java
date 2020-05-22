@@ -10,9 +10,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineDetail;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.response.LineDetailResponse;
-import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 import java.util.Arrays;
@@ -35,8 +34,7 @@ public class LineControllerTest {
 
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
-        given(lineService.showLinesDetail()).willReturn(response);
+        given(lineService.showLineDetails()).willReturn(Arrays.asList(createMockResponse(), createMockResponse()));
 
         String uri = "/lines/detail";
 
@@ -55,8 +53,8 @@ public class LineControllerTest {
                 .andReturn();
     }
 
-    private LineDetailResponse createMockResponse() {
+    private LineDetail createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        return LineDetail.of(new Line(), stations);
     }
 }

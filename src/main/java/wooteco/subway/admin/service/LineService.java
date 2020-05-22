@@ -1,19 +1,15 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.request.LineRequest;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
-import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 import wooteco.subway.admin.exception.NoLineExistException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -71,25 +67,11 @@ public class LineService {
                 .orElseThrow(NoLineExistException::new);
     }
 
-    public WholeSubwayResponse showLinesDetail() {
-        List<Line> lines = lineRepository.findAll();
-        List<Long> stationIds = lines.stream()
-                .flatMap(line -> line.getStations().stream())
-                .map(LineStation::getStationId)
-                .collect(Collectors.toList());
+    public  List<LineDetail> showLineDetails() {
+        Lines lines = new Lines(lineRepository.findAll());
+        List<Long> stationIds = lines.toLineStationIds();
+        Stations stations = new Stations(stationRepository.findAllById(stationIds));
 
-        List<Station> stations = stationRepository.findAllById(stationIds);
-
-        List<LineDetailResponse> lineDetailResponses = lines.stream()
-                .map(line -> LineDetailResponse.of(line, mapStations(line.getLineStationsId(), stations)))
-                .collect(Collectors.toList());
-
-        return WholeSubwayResponse.of(lineDetailResponses);
-    }
-
-    private List<Station> mapStations(List<Long> lineStationsId, List<Station> stations) {
-        return stations.stream()
-                .filter(station -> lineStationsId.contains(station.getId()))
-                .collect(Collectors.toList());
+        return lines.toLineDetails(stations);
     }
 }

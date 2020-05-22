@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineDetail;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
@@ -175,7 +176,7 @@ public class LineServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        List<LineDetailResponse> lineDetails = lineService.showLinesDetail().getLineDetailResponses();
+        List<LineDetail> lineDetails = lineService.showLineDetails();
 
         assertThat(lineDetails).isNotNull();
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
