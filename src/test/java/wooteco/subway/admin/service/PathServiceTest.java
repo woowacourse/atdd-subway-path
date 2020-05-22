@@ -101,10 +101,8 @@ class PathServiceTest {
     @DisplayName("최소 시간 구간 조회")
     @Test
     void shortestDuration() {
-        when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
-        when(lineService.showLines()).thenReturn(lines);
 
         PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
         assertThat(paths.getStations()).hasSize(5);
@@ -115,10 +113,8 @@ class PathServiceTest {
     @DisplayName("최소 거리 구간 조회")
     @Test
     void shortestDistance() {
-        when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
-        when(lineService.showLines()).thenReturn(lines);
 
         PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
         assertThat(paths.getDistance()).isEqualTo(40);
@@ -127,9 +123,7 @@ class PathServiceTest {
     @DisplayName("같은 역일 경우 빈 배열")
     @Test
     void sameSourceAndTarget() {
-        when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
-        when(lineService.showLines()).thenReturn(lines);
 
         PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
         assertThat(paths.getStations()).hasSize(1);
@@ -150,10 +144,8 @@ class PathServiceTest {
         lines.add(line4);
         graphService.initialize(Stations.of(stations), Lines.of(lines));
 
-        when(lineService.findAllStations()).thenReturn(stations);
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(10).getName())).thenReturn(stations.get(10));
-        when(lineService.showLines()).thenReturn(lines);
 
         assertThatThrownBy(() -> {
             pathService.retrieveShortestPath("환-강남역", "4-오이도역", PathType.DISTANCE);
