@@ -11,7 +11,6 @@ import wooteco.subway.admin.dto.GraphResultResponse;
 
 @Service
 public class GraphService {
-
     public GraphResultResponse findPath(List<Line> lines, Long source, Long target, CriteriaType type) {
         SubwayGraph subwayGraph = new SubwayGraph(lines, type);
 
