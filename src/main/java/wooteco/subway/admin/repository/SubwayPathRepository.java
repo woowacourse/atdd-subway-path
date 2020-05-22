@@ -1,7 +1,6 @@
 package wooteco.subway.admin.repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
@@ -42,13 +41,13 @@ public class SubwayPathRepository implements PathRepository {
                         .addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
                                 new SubwayEdge(lineStation, pathType::weight)));
 
-        GraphPath<Long, Edge> path = DijkstraShortestPath
-                .findPathBetween(graph, source.getId(), target.getId());
+        try {
+            GraphPath<Long, Edge> path = DijkstraShortestPath
+                    .findPathBetween(graph, source.getId(), target.getId());
 
-        if (Objects.isNull(path)) {
+            return Optional.of(new Path(path.getVertexList(), path.getEdgeList()));
+        } catch (NullPointerException | IllegalArgumentException e) {
             return Optional.empty();
         }
-
-        return Optional.of(new Path(path.getVertexList(), path.getEdgeList()));
     }
 }
