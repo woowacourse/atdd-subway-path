@@ -1,27 +1,24 @@
 package wooteco.subway.admin.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.admin.domain.entity.Line;
 import wooteco.subway.admin.domain.entity.LineStation;
 import wooteco.subway.admin.domain.entity.Station;
 import wooteco.subway.admin.domain.graph.PathNotFoundException;
-import wooteco.subway.admin.domain.graph.SubwayShortestPath;
-import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.domain.type.WeightType;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -31,7 +28,7 @@ public class PathServiceTest {
 	private static final String STATION_NAME2 = "역삼역";
 	private static final String STATION_NAME3 = "선릉역";
 	private static final String STATION_NAME4 = "삼성역";
-	private static final String DURATION = "DURATION";
+	private static final WeightType DURATION = WeightType.of("DURATION");
 
 	private Line line;
 	private Station station1;

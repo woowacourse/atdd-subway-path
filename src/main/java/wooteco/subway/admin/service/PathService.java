@@ -24,10 +24,10 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse findPath(String sourceName, String targetName, String type) {
+	public PathResponse findPath(String sourceName, String targetName, WeightType type) {
 		validateStationNamesAreSame(sourceName, targetName);
 
-		List<LineStation> allLineStations = Line.findAllLineStationsOf(lineRepository.findAll());
+		List<LineStation> allLineStations = Line.findAllLineStationsWithoutStart(lineRepository.findAll());
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
@@ -35,7 +35,7 @@ public class PathService {
 		Station target = Station.findStationByName(targetName, allStationsById);
 
 		SubwayShortestPath subwayShortestPath = new SubwayShortestPath(
-			allLineStations, allStationsById, source, target, WeightType.of(type));
+			allLineStations, allStationsById, source, target, type);
 
 		return PathResponse.from(subwayShortestPath);
 	}
