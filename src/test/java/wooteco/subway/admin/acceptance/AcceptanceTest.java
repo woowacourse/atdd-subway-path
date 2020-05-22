@@ -46,34 +46,15 @@ public class AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+        return post("/stations", params, StationResponse.class);
     }
 
     List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
+        return getList("/stations", StationResponse.class);
     }
 
     void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-        then().
-                log().all();
+        delete("/stations/" + id);
     }
 
     LineResponse createLine(String name) {
@@ -83,26 +64,11 @@ public class AcceptanceTest {
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        return
-                given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+        return post("/lines", params, LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
+        return get("/lines/" + id, LineDetailResponse.class);
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -111,32 +77,15 @@ public class AcceptanceTest {
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                put("/lines/" + id).
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+        put("/lines/" + id, params);
     }
 
     List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
+        return getList("/lines", LineResponse.class);
     }
 
     void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
-        then().
-                log().all();
+        delete("/lines/" + id);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -154,22 +103,15 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
+                when().
                 post("/lines/" + lineId + "/stations").
-        then().
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
     void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-        then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+        delete("/lines/" + lineId + "/stations/" + stationId);
     }
 
     void setSubwayInformation() {
@@ -177,34 +119,92 @@ public class AcceptanceTest {
         LineResponse lineResponse7 = createLine("7호선");
         LineResponse lineResponseB = createLine("분당선");
 
-        StationResponse stationResponse = createStation("왕십리");
-        StationResponse stationResponse1 = createStation("한양대");
-        StationResponse stationResponse2 = createStation("뚝섬");
-        StationResponse stationResponse3 = createStation("성수");
-        StationResponse stationResponse4 = createStation("건대입구");
-        StationResponse stationResponse5 = createStation("뚝섬유원지");
-        StationResponse stationResponse6 = createStation("청담");
-        StationResponse stationResponse7 = createStation("강남구청");
-        StationResponse stationResponse8 = createStation("압구정로데오");
-        StationResponse stationResponse9 = createStation("서울숲");
-        StationResponse stationResponse10 = createStation("잠실");
+        StationResponse 왕십리 = createStation("왕십리");
+        StationResponse 한양대 = createStation("한양대");
+        StationResponse 뚝섬 = createStation("뚝섬");
+        StationResponse 성수 = createStation("성수");
+        StationResponse 건대입구 = createStation("건대입구");
+        StationResponse 뚝섬유원지 = createStation("뚝섬유원지");
+        StationResponse 청담 = createStation("청담");
+        StationResponse 강남구청 = createStation("강남구청");
+        StationResponse 압구정로데오 = createStation("압구정로데오");
+        StationResponse 서울숲 = createStation("서울숲");
+        StationResponse 잠실 = createStation("잠실");
 
-        addLineStation(lineResponse2.getId(), null, stationResponse.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse.getId(), stationResponse1.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), null, 왕십리.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), 왕십리.getId(), 한양대.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 한양대.getId(), 뚝섬.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 뚝섬.getId(), 성수.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 성수.getId(), 건대입구.getId(), 5, 2);
 
-        addLineStation(lineResponse7.getId(), null, stationResponse4.getId(), 0, 0);
-        addLineStation(lineResponse7.getId(), stationResponse4.getId(), stationResponse5.getId(), 7, 4);
-        addLineStation(lineResponse7.getId(), stationResponse5.getId(), stationResponse6.getId(), 7, 4);
-        addLineStation(lineResponse7.getId(), stationResponse6.getId(), stationResponse7.getId(), 7, 4);
+        addLineStation(lineResponse7.getId(), null, 건대입구.getId(), 0, 0);
+        addLineStation(lineResponse7.getId(), 건대입구.getId(), 뚝섬유원지.getId(), 7, 4);
+        addLineStation(lineResponse7.getId(), 뚝섬유원지.getId(), 청담.getId(), 7, 4);
+        addLineStation(lineResponse7.getId(), 청담.getId(), 강남구청.getId(), 7, 4);
 
-        addLineStation(lineResponseB.getId(), null, stationResponse7.getId(), 0, 0);
-        addLineStation(lineResponseB.getId(), stationResponse7.getId(), stationResponse8.getId(), 3, 1);
-        addLineStation(lineResponseB.getId(), stationResponse8.getId(), stationResponse9.getId(), 3, 1);
-        addLineStation(lineResponseB.getId(), stationResponse9.getId(), stationResponse.getId(), 3, 1);
+        addLineStation(lineResponseB.getId(), null, 강남구청.getId(), 0, 0);
+        addLineStation(lineResponseB.getId(), 강남구청.getId(), 압구정로데오.getId(), 3, 1);
+        addLineStation(lineResponseB.getId(), 압구정로데오.getId(), 서울숲.getId(), 3, 1);
+        addLineStation(lineResponseB.getId(), 서울숲.getId(), 왕십리.getId(), 3, 1);
     }
 
+    <T> T get(String path, Class<T> responseType) {
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        get(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(responseType);
+    }
+
+    <T> List<T> getList(String path, Class<T> responseType) {
+        return
+                given().when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", responseType);
+    }
+
+    <T> T post(String path, Map<String, String> params, Class<T> responseType) {
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(responseType);
+    }
+
+    <T> void put(String path, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    <T> void delete(String path) {
+        given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }
 

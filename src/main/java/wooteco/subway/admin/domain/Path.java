@@ -1,43 +1,47 @@
 package wooteco.subway.admin.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Path {
-    private List<Station> path;
-    private int totalDuration;
-    private int totalDistance;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Stations path;
+    private int totalWeight;
+    private int totalInformation;
+
+    public Path(Stations path, int totalWeight, int totalInformation) {
+        this.path = path;
+        this.totalWeight = totalWeight;
+        this.totalInformation = totalInformation;
+    }
 
     private Path() {
     }
 
-    public Path(List<Station> path, int totalDistance, int totalDuration, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.path = path;
-        this.totalDistance = totalDistance;
-        this.totalDuration = totalDuration;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public static Path makePath(Lines lines, Stations stations, PathType type,
+                                Long sourceId, Long targetId) {
+        LineStations lineStations = lines.makeLineStation();
+        SubwayMap subwayMap = SubwayGraph.makeGraph(type, stations, lineStations);
+        List<Long> shortestPath = subwayMap.findShortestPath(sourceId, targetId);
+
+        Stations pathStations = shortestPath.stream()
+                .map(stations::findStation)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
+
+        int weight = subwayMap.getPathWeight(sourceId, targetId);
+        int information = lineStations.getInformation(shortestPath, type);
+
+        return new Path(pathStations, weight, information);
     }
 
-    public List<Station> getPath() {
+    public Stations getPath() {
         return path;
     }
 
-    public int getTotalDistance() {
-        return totalDistance;
+    public int getTotalInformation() {
+        return totalInformation;
     }
 
-    public int getTotalDuration() {
-        return totalDuration;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public int getTotalWeight() {
+        return totalWeight;
     }
 }

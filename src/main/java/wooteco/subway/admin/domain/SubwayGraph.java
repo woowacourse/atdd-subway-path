@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.admin.domain.exception.InvalidFindPathException;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SubwayGraph implements SubwayMap {
             shortestPath = dijkstraShortestPath.getPath(source, target)
                     .getVertexList();
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException("경로를 찾을 수 없습니다. 노선도를 확인해주세요.");
+            throw new InvalidFindPathException(InvalidFindPathException.NO_PATH_ERROR_MSG);
         }
         return shortestPath;
     }

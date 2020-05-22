@@ -2,15 +2,16 @@ package wooteco.subway.admin.service;
 
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.*;
+import wooteco.subway.admin.domain.Lines;
+import wooteco.subway.admin.domain.Path;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.domain.Stations;
+import wooteco.subway.admin.domain.exception.InvalidFindPathException;
 import wooteco.subway.admin.domain.exception.NoExistStationException;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -26,32 +27,22 @@ public class PathService {
         checkDuplicateName(sourceName, targetName);
         Lines lines = new Lines(lineRepository.findAll());
         Stations stations = new Stations(stationRepository.findAll());
-        LineStations lineStations = lines.makeLineStation();
-
-        SubwayMap subwayMap = SubwayGraph.makeGraph(type, stations, lineStations);
 
         Long sourceId = findStationIdByStationName(sourceName);
         Long targetId = findStationIdByStationName(targetName);
 
-        List<Long> shortestPath = subwayMap.findShortestPath(sourceId, targetId);
-
-        Stations pathStations = shortestPath.stream()
-                .map(stations::findStation)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
-
-        int weight = subwayMap.getPathWeight(sourceId, targetId);
-        int information = lineStations.getInformation(shortestPath, type);
+        Path path = Path.makePath(lines, stations, type, sourceId, targetId);
 
         if (type.equals(PathType.DISTANCE)) {
-            return new PathResponse(StationResponse.listOf(pathStations.getStations()), information, weight);
+            return new PathResponse(StationResponse.listOf(path.getPath().getStations()), path.getTotalInformation(), path.getTotalWeight());
         }
 
-        return new PathResponse(StationResponse.listOf(pathStations.getStations()), weight, information);
+        return new PathResponse(StationResponse.listOf(path.getPath().getStations()), path.getTotalWeight(), path.getTotalInformation());
     }
 
     private void checkDuplicateName(String sourceName, String targetName) {
         if (sourceName.equals(targetName)) {
-            throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다.");
+            throw new InvalidFindPathException(InvalidFindPathException.DUPLICATE_SOURCE_WITH_TARGET_ERROR_MSG);
         }
     }
 
