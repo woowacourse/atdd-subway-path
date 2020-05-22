@@ -6,10 +6,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class DijkstraSPath {
+public class DijkstraSubwayShortestPath {
     private DijkstraShortestPath<Long, CustomEdge> dijkstraShortestPath;
 
-    public DijkstraSPath(WeightedMultigraph<Long, CustomEdge> graph) {
+    public DijkstraSubwayShortestPath(WeightedMultigraph<Long, CustomEdge> graph) {
         this.dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 

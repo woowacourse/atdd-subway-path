@@ -7,16 +7,16 @@ import org.jgrapht.GraphPath;
 import wooteco.subway.admin.dto.GraphResultResponse;
 
 public class SubwayGraph {
-    WeightedGraph weightedgraph;
+    WeightedSubwayGraph weightedSubwayGraph;
 
     public SubwayGraph(List<Line> lines, CriteriaType type) {
-        weightedgraph = new WeightedGraph(lines, type);
+        weightedSubwayGraph = new WeightedSubwayGraph(lines, type);
     }
 
     public GraphResultResponse findShortestPath(Long source, Long target) {
-        DijkstraSPath dijkstraSPath = weightedgraph.generateDijkstra();
+        DijkstraSubwayShortestPath dijkstraSubwayShortestPath = weightedSubwayGraph.generateDijkstra();
 
-        final GraphPath<Long, CustomEdge> shortestPath = dijkstraSPath.getShortestPath(source, target);
+        final GraphPath<Long, CustomEdge> shortestPath = dijkstraSubwayShortestPath.getShortestPath(source, target);
         return getPathLineStation(shortestPath.getEdgeList(), shortestPath.getVertexList());
     }
 

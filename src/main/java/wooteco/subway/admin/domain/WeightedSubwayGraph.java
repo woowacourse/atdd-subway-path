@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class WeightedGraph {
+public class WeightedSubwayGraph {
     private WeightedMultigraph<Long, CustomEdge> graph;
 
-    public WeightedGraph(List<Line> lines, CriteriaType type) {
+    public WeightedSubwayGraph(List<Line> lines, CriteriaType type) {
         this.graph = new WeightedMultigraph<>(CustomEdge.class);
 
         lines.stream()
@@ -24,7 +24,7 @@ public class WeightedGraph {
                 ));
     }
 
-    public DijkstraSPath generateDijkstra() {
-        return new DijkstraSPath(this.graph);
+    public DijkstraSubwayShortestPath generateDijkstra() {
+        return new DijkstraSubwayShortestPath(this.graph);
     }
 }
