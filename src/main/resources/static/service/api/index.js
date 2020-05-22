@@ -27,13 +27,13 @@ const api = (() => {
 
   const line = {
     getAll() {
-      return request(`/lines/detail`)
+      return request(`/map`)
     }
   }
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return request(`/path?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
   }
 
