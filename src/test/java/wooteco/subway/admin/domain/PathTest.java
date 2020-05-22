@@ -61,7 +61,7 @@ public class PathTest {
 		stations = new Stations(sourceStations);
 	}
 
-	@DisplayName("최단거리 경로를 반환")
+	@DisplayName("최단거리 경로를 반환한다.")
 	@Test
 	void findShortestDistancePath() {
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("distance"));
@@ -74,7 +74,7 @@ public class PathTest {
 		assertEquals(shortestPath.getShortestPath().get(3), station4);
 	}
 
-	@DisplayName("최단시간 경로를 반환")
+	@DisplayName("최단시간 경로를 반환한다.")
 	@Test
 	void findShortestDurationPath() {
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, Criteria.of("duration"));

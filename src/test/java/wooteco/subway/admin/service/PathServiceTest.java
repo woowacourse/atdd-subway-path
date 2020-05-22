@@ -105,7 +105,7 @@ class PathServiceTest {
 		);
 	}
 
-	@DisplayName("최단 거리와 시간 경로를 조회하는 테스트")
+	@DisplayName("최단 거리와 시간 경로를 조회한다.")
 	@ParameterizedTest
 	@MethodSource("provideCriteriaAndResult")
 	void getShortestPath(String criteria, List<Station> expectedPath, int expectedDistance, int expectedDuration) {
@@ -129,7 +129,7 @@ class PathServiceTest {
 		assertEquals(shortestPath.calculateShortestDuration(), expectedDuration);
 	}
 
-	@DisplayName("출발역과 도착역이 같을시 예외처리하는 테스트")
+	@DisplayName("출발역과 도착역이 같을시 예외처리한다.")
 	@Test
 	void getShortestPath_WhenSameSourceAndTarget_ThrowException() {
 		String sourceName = "신도림";
@@ -140,7 +140,7 @@ class PathServiceTest {
 				.hasMessage("출발역과 도착역이 같으면 안돼요.");
 	}
 
-	@DisplayName("출발역이나 도착역이 노선에 없을시 예외처리하는 테스트")
+	@DisplayName("출발역이나 도착역이 노선에 없을시 예외처리한다.")
 	@CsvSource(value = {"우테코,신도림", "신도림,우테코", "우테코,루터회관"})
 	@ParameterizedTest
 	void getShortestPath_WhenNotExistSourceAndTarget_ThrowException(String sourceName, String targetName) {
@@ -150,7 +150,7 @@ class PathServiceTest {
 				.hasMessage("해당역이 존재하지 않아요.");
 	}
 
-	@DisplayName("출발역이나 도착역으로 빈 값입력시 예외처리하는 테스트")
+	@DisplayName("출발역이나 도착역으로 빈 값입력시 예외처리한다.")
 	@CsvSource(value = {"'',신도림", "신도림,''", "'',''"})
 	@ParameterizedTest
 	void getShortestPath_WhenEmptySourceAndTarget_ThrowException(String sourceName, String targetName) {
@@ -160,7 +160,7 @@ class PathServiceTest {
 				.hasMessage("출발역과 도착역 모두를 입력해주세요.");
 	}
 
-	@DisplayName("출발역이나 도착역이 연결되어있지 않을 경우 예외처리하는 테스트")
+	@DisplayName("출발역이나 도착역이 연결되어있지 않을 경우 예외처리한다.")
 	@Test
 	void getShortestPath_WhenNotConnectedStations_ThrowException() {
 		String sourceName = "구로";

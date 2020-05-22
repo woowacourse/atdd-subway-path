@@ -19,7 +19,14 @@ class LinesTest {
 
 	@BeforeEach
 	void setUp() {
-		Line line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+		Line line1 = new Line(
+				1L,
+				"2호선",
+				LocalTime.of(05, 30),
+				LocalTime.of(22, 30),
+				5,
+				"bg-green-500"
+		);
 		line1.addLineStation(new LineStation(null, 1L, 10, 10));
 		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 10, 10));

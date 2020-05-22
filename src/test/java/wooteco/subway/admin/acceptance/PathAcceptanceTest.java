@@ -71,12 +71,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("최단거리 경로를 조회")
 	@Test
 	void getShortestPathByDistance() {
-		//	Feature: 최단거리 경로를 구한다.
+		// Feature: 최단거리 경로를 구한다.
 
-		//		When 시청역부터 신도림역까지 최단거리 경로를 구하고 싶다.
+		// When 시청역부터 신도림역까지 최단거리 경로를 구하고싶다.
 		ShortestPathResponse shortestPathResponse = findShortestDistancePath("시청", "신도림", "distance");
 
-		//		Then 시청역부터 신도림역까지 최단거리 경로가 구해졌다.
+		// Then 시청역부터 신도림역까지 최단거리 경로가 구해졌다.
 		List<Station> path = shortestPathResponse.getPath();
 		int distance = shortestPathResponse.getDistance();
 		int duration = shortestPathResponse.getDuration();
@@ -97,9 +97,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	void getShortestPathByDuration() {
 		// Feature: 최단시간 경로를 구한다.
 
-		//    When 시청역부터 신도림역까지 최단시간 경로를 구하고 싶다.
+		// When 시청역부터 신도림역까지 최단시간 경로를 구하고 싶다.
 		ShortestPathResponse shortestPathResponse = findShortestDistancePath("시청", "신도림", "duration");
-		//    Then 시청역부터 신도림역까지 최단시간 경로가 구해졌다.
+		// Then 시청역부터 신도림역까지 최단시간 경로가 구해졌다.
 		List<Station> path = shortestPathResponse.getPath();
 		int distance = shortestPathResponse.getDistance();
 		int duration = shortestPathResponse.getDuration();
