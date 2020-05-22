@@ -1,7 +1,10 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,24 +13,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 
+// @formatter:off
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class PageAcceptanceTest {
     @LocalServerPort
     int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     @Test
@@ -37,7 +39,7 @@ public class PageAcceptanceTest {
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
         when().
-                get("/lines").
+                get("/admin/lines").
         then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -49,6 +51,7 @@ public class PageAcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("backgroundColor", "bg-color-white-700");
 
         given().
                 body(params).
@@ -60,5 +63,4 @@ public class PageAcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
     }
-
 }

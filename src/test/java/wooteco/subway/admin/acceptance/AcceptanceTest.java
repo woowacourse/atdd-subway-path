@@ -1,21 +1,26 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
-
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
+
+// @formatter:off
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
@@ -31,13 +36,14 @@ public class AcceptanceTest {
     @LocalServerPort
     int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given()
+                .log().all();
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     StationResponse createStation(String name) {
@@ -59,7 +65,8 @@ public class AcceptanceTest {
 
     List<StationResponse> getStations() {
         return
-                given().when().
+                given().
+                when().
                         get("/stations").
                 then().
                         log().all().
@@ -68,7 +75,8 @@ public class AcceptanceTest {
     }
 
     void deleteStation(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/stations/" + id).
         then().
                 log().all();
@@ -83,20 +91,21 @@ public class AcceptanceTest {
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                    post("/lines").
+                        post("/lines").
                 then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
         return
-                given().when().
+                given().
+                when().
                         get("/lines/" + id).
                 then().
                         log().all().
@@ -105,6 +114,7 @@ public class AcceptanceTest {
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
+        params.put("name", "1호선");
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -122,7 +132,8 @@ public class AcceptanceTest {
 
     List<LineResponse> getLines() {
         return
-                given().when().
+                given().
+                when().
                         get("/lines").
                 then().
                         log().all().
@@ -131,7 +142,8 @@ public class AcceptanceTest {
     }
 
     void deleteLine(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/lines/" + id).
         then().
                 log().all();
@@ -152,9 +164,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -163,12 +175,22 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        return
+                given()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        get("/lines/details").
+                then().
+                        log().all().
+                        extract().as(WholeSubwayResponse.class);
+    }
 }
-
