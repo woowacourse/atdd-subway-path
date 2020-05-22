@@ -21,7 +21,7 @@ public class Line {
 	@MappedCollection(idColumn = "line", keyColumn = "sequence")
 	private List<LineStation> stations = new ArrayList<>();
 
-	public static List<LineStation> findAllLineStationsOf(List<Line> lines) {
+	public static List<LineStation> findAllLineStationsWithoutStart(List<Line> lines) {
 		List<LineStation> lineStations = new ArrayList<>();
 
 		for (Line line : lines) {
