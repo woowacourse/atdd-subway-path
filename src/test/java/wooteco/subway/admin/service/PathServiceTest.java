@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.*;
-import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.NotExistPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
 
@@ -104,8 +103,8 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
 
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
-        assertThat(paths.getStations()).hasSize(5);
+        PathInfo paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DURATION);
+        assertThat(paths.getPath()).hasSize(5);
         assertThat(paths.getDistance()).isEqualTo(80);
         assertThat(paths.getDuration()).isEqualTo(41);
     }
@@ -116,7 +115,7 @@ class PathServiceTest {
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(4).getName())).thenReturn(stations.get(4));
 
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
+        PathInfo paths = pathService.retrieveShortestPath("환-강남역", "환-지축역", PathType.DISTANCE);
         assertThat(paths.getDistance()).isEqualTo(40);
     }
 
@@ -125,9 +124,9 @@ class PathServiceTest {
     void sameSourceAndTarget() {
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
 
-        PathResponse paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
-        assertThat(paths.getStations()).hasSize(1);
-        assertThat(paths.getStations().get(0).getName()).isEqualTo("환-강남역");
+        PathInfo paths = pathService.retrieveShortestPath("환-강남역", "환-강남역", PathType.DISTANCE);
+        assertThat(paths.getPath()).hasSize(1);
+        assertThat(paths.getPath().get(0).getName()).isEqualTo("환-강남역");
     }
 
     @DisplayName("연결되지 않은 역은 예외")

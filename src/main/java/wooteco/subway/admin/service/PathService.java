@@ -1,11 +1,10 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.PathInfo;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.ShortestPath;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
-    public PathResponse retrieveShortestPath(String sourceName, String targetName, PathType pathType) {
+    public PathInfo retrieveShortestPath(String sourceName, String targetName, PathType pathType) {
         Station source = lineService.findStationWithName(sourceName);
         Station target = lineService.findStationWithName(targetName);
 
@@ -28,6 +27,6 @@ public class PathService {
         int totalDistance = path.getTotalDistance();
         int totalDuration = path.getTotalDuration();
 
-        return PathResponse.of(StationResponse.listOf(shortestPath), totalDuration, totalDistance);
+        return new PathInfo(shortestPath, totalDuration, totalDistance);
     }
 }

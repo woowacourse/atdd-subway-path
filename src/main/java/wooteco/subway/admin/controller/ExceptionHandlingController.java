@@ -1,5 +1,7 @@
 package wooteco.subway.admin.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,13 +13,20 @@ import java.io.UnsupportedEncodingException;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
-    @ExceptionHandler({UnsupportedEncodingException.class})
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+    @ExceptionHandler(UnsupportedEncodingException.class)
     public ResponseEntity<ErrorResponse> decodeFailureException(UnsupportedEncodingException error) {
         return ResponseEntity.badRequest().body(new ErrorResponse(error.getMessage()));
     }
 
-    @ExceptionHandler({NotFoundException.class})
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> pathNotExistHandler(NotFoundException error) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(error.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void unexpectedExceptionHandler(Exception error) {
+        logger.error(error.getMessage());
     }
 }
