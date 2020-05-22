@@ -19,7 +19,7 @@ public class StationService {
 
     @Transactional
     public StationResponse createStation(final StationCreateRequest stationRequest) {
-        Station station = stationRepository.save(Station.from(stationRequest));
+        Station station = stationRepository.save(stationRequest.toStation());
         return StationResponse.from(station);
     }
 

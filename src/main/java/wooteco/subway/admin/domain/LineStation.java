@@ -15,11 +15,6 @@ public class LineStation {
         this.duration = duration;
     }
 
-    public static LineStation from(final LineStationCreateRequest lineStationRequest) {
-        return new LineStation(lineStationRequest.getPreStationId(), lineStationRequest.getStationId(),
-                lineStationRequest.getDistance(), lineStationRequest.getDuration());
-    }
-
     public Long getPreStationId() {
         return preStationId;
     }

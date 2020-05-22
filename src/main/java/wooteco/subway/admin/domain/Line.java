@@ -34,10 +34,6 @@ public class Line {
         this(null, name, startTime, endTime, intervalTime);
     }
 
-    public static Line from(final LineRequest lineRequest) {
-        return new Line(lineRequest.getName(), lineRequest.getStartTime(), lineRequest.getEndTime(), lineRequest.getIntervalTime());
-    }
-
     public Long getId() {
         return id;
     }

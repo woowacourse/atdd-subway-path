@@ -25,10 +25,6 @@ public class Station {
         this.createdAt = LocalDateTime.now();
     }
 
-    public static Station from(final StationCreateRequest stationRequest) {
-        return new Station(stationRequest.getName());
-    }
-
     public Long getId() {
         return id;
     }

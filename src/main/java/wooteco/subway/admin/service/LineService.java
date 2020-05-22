@@ -25,7 +25,7 @@ public class LineService {
 
     @Transactional
     public LineResponse createLine(LineRequest lineRequest) {
-        Line line = lineRepository.save(Line.from(lineRequest));
+        Line line = lineRepository.save(lineRequest.toLine());
         return LineResponse.from(line);
     }
 
@@ -38,7 +38,7 @@ public class LineService {
     @Transactional
     public void updateLine(Long id, LineRequest request) {
         Line line = getLine(id);
-        line.update(Line.from(request));
+        line.update(request.toLine());
         lineRepository.save(line);
     }
 
@@ -54,7 +54,7 @@ public class LineService {
     @Transactional
     public void addLineStation(Long id, LineStationCreateRequest lineStationRequest) {
         Line line = getLine(id);
-        LineStation lineStation = LineStation.from(lineStationRequest);
+        LineStation lineStation = lineStationRequest.toLineStation();
         line.addLineStation(lineStation);
         lineRepository.save(line);
     }

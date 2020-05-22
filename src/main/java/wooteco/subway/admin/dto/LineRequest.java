@@ -1,5 +1,7 @@
 package wooteco.subway.admin.dto;
 
+import wooteco.subway.admin.domain.Line;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
@@ -22,6 +24,10 @@ public class LineRequest {
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+    }
+
+    public Line toLine() {
+        return new Line(name, startTime, endTime, intervalTime);
     }
 
     public String getName() {
