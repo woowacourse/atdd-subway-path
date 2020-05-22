@@ -20,7 +20,8 @@ public class ShortestPathResponse {
 	}
 
 	public static ShortestPathResponse of(ShortestPath shortestPath) {
-		return new ShortestPathResponse(shortestPath.getShortestPath(), shortestPath.calculateShortestDistance(), shortestPath.calculateShortestDuration());
+		return new ShortestPathResponse(shortestPath.getShortestPath(), shortestPath.calculateShortestDistance(),
+				shortestPath.calculateShortestDuration());
 	}
 
 	public List<Station> getPath() {

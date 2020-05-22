@@ -6,6 +6,7 @@ import org.springframework.data.relational.core.mapping.Embedded;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 public class Line {
 	@Id
@@ -105,5 +106,18 @@ public class Line {
 
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Line line = (Line) o;
+		return Objects.equals(id, line.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

@@ -1,8 +1,12 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.relational.core.mapping.MappedCollection;
+import wooteco.subway.admin.exception.NoLineStationExistsException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class LineStations {
 	@MappedCollection(idColumn = "line", keyColumn = "line_key")
@@ -16,25 +20,25 @@ public class LineStations {
 		return new LineStations(new LinkedList<>());
 	}
 
-	public void addLineStation(LineStation lineStation) {
+	public void addLineStation(LineStation inputLineStation) {
 		lineStations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
+				.filter(lineStation -> lineStation.hasEqualPreStationID(inputLineStation))
 				.findAny()
-				.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+				.ifPresent(lineStation -> lineStation.updatePreLineStation(inputLineStation.getStationId()));
 
-		lineStations.add(lineStation);
+		lineStations.add(inputLineStation);
 	}
 
 	public void removeLineStationById(Long stationId) {
 		LineStation targetLineStation = lineStations.stream()
-				.filter(it -> Objects.equals(it.getStationId(), stationId))
+				.filter(lineStation -> lineStation.hasEqualStationID(stationId))
 				.findFirst()
-				.orElseThrow(RuntimeException::new);
+				.orElseThrow(NoLineStationExistsException::new);
 
 		lineStations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), stationId))
+				.filter(lineStation -> lineStation.hasEqualPreStationID(stationId))
 				.findFirst()
-				.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+				.ifPresent(lineStation -> lineStation.updatePreLineStation(targetLineStation.getPreStationId()));
 
 		lineStations.remove(targetLineStation);
 	}
@@ -45,9 +49,9 @@ public class LineStations {
 		}
 
 		LineStation firstLineStation = lineStations.stream()
-				.filter(it -> it.getPreStationId() == null)
+				.filter(LineStation::isFirstLineStation)
 				.findFirst()
-				.orElseThrow(RuntimeException::new);
+				.orElseThrow(NoLineStationExistsException::new);
 
 		List<Long> stationIds = new ArrayList<>();
 		stationIds.add(firstLineStation.getStationId());
@@ -55,7 +59,7 @@ public class LineStations {
 		while (true) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
 			Optional<LineStation> nextLineStation = lineStations.stream()
-					.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+					.filter(lineStation -> lineStation.hasEqualPreStationID(lastStationId))
 					.findFirst();
 
 			if (!nextLineStation.isPresent()) {

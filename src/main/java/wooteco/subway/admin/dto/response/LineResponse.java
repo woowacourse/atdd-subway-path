@@ -20,7 +20,8 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color,
+                        LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -32,7 +33,8 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getColor(), line.getCreatedAt(), line.getUpdatedAt());
+        return new LineResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(),
+                line.getIntervalTime(), line.getColor(), line.getCreatedAt(), line.getUpdatedAt());
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {

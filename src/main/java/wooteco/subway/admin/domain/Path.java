@@ -22,7 +22,7 @@ public class Path {
 	}
 
 	private void addEdgeBy(LineStation lineStation, Stations stations, Criteria criteria) {
-		if (lineStation.getPreStationId() == null) {
+		if (lineStation.isFirstLineStation()) {
 			return;
 		}
 
@@ -41,15 +41,11 @@ public class Path {
 		} catch (IllegalArgumentException e) {
 			throw new NoPathExistsException();
 		}
-
 	}
-
 
 	private GraphPath<Station, Edge> getDijkstraShortestPath(Station sourceStation, Station targetStation) {
 		DijkstraShortestPath<Station, Edge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);
 	}
-
-
 }

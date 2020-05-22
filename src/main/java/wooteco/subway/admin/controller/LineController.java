@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 public class LineController {
-	private LineService lineService;
+	private final LineService lineService;
 
 	public LineController(LineService lineService) {
 		this.lineService = lineService;
@@ -32,7 +32,8 @@ public class LineController {
 
 	@GetMapping("/lines")
 	public ResponseEntity<List<LineResponse>> showLines() {
-		return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+		return ResponseEntity.ok()
+				.body(LineResponse.listOf(lineService.showLines()));
 	}
 
 	@GetMapping("/lines/detail")
@@ -43,30 +44,35 @@ public class LineController {
 
 	@GetMapping("/lines/{id}")
 	public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-		return ResponseEntity.ok().body(lineService.findLineWithStationsById(id));
+		return ResponseEntity.ok()
+				.body(lineService.findLineWithStationsById(id));
 	}
 
 	@PutMapping("/lines/{id}")
 	public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
 		lineService.updateLine(id, view);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok()
+				.build();
 	}
 
 	@DeleteMapping("/lines/{id}")
 	public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
 		lineService.deleteLineById(id);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent()
+				.build();
 	}
 
 	@PostMapping("/lines/{lineId}/stations")
 	public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
 		lineService.addLineStation(lineId, view);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok()
+				.build();
 	}
 
 	@DeleteMapping("/lines/{lineId}/stations/{stationId}")
 	public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
 		lineService.removeLineStation(lineId, stationId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent()
+				.build();
 	}
 }

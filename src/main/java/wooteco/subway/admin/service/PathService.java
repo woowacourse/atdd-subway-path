@@ -16,8 +16,8 @@ import java.util.List;
 
 @Service
 public class PathService {
-	private LineRepository lineRepository;
-	private StationRepository stationRepository;
+	private final LineRepository lineRepository;
+	private final StationRepository stationRepository;
 
 	public PathService(LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineRepository = lineRepository;
@@ -40,8 +40,8 @@ public class PathService {
 		Criteria criteria = Criteria.of(pathSearchRequest.getType());
 
 		Lines lines = new Lines(lineRepository.findAll());
-		List<Long> lineStationIds = lines.toLineStationIds();
 
+		List<Long> lineStationIds = lines.toLineStationIds();
 		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
 
 		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
