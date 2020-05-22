@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.DijkstraShortestPathAlgorithm;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -27,7 +28,7 @@ public class ServiceTest {
 
     @BeforeEach
     void setUp() {
-        graphService = new GraphService();
+        graphService = new GraphService(new DijkstraShortestPathAlgorithm());
         pathService = new PathService(lineService, graphService);
         stations = Arrays.asList(
                 new Station(1L, "환-강남역"),

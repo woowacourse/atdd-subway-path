@@ -36,7 +36,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        graphService = new GraphService();
+        graphService = new GraphService(new DijkstraShortestPathAlgorithm());
         pathService = new PathService(lineService, graphService);
 
         stations = Arrays.asList(

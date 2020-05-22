@@ -3,7 +3,6 @@ package wooteco.subway.admin.dto;
 import wooteco.subway.admin.domain.PathType;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class PathRequest {

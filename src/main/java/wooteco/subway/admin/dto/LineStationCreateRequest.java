@@ -1,8 +1,6 @@
 package wooteco.subway.admin.dto;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 public class LineStationCreateRequest {
     private Long preStationId;
