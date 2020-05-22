@@ -9,6 +9,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.SubwayDijkstraShortestPath;
 import wooteco.subway.admin.domain.SubwayShortestPath;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
@@ -88,8 +89,8 @@ public class LineService {
 		Station targetStation = stationRepository.findByName(target)
 			.orElseThrow(() -> new NotFoundException("도착역을 찾을 수 없습니다."));
 
-		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-			sourceStation, targetStation, pathType);
+		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+			.of(lines, stations, sourceStation, targetStation, pathType);
 
 		return PathResponse.of(subwayShortestPath.getVertexList(),
 			subwayShortestPath.getDistance(),

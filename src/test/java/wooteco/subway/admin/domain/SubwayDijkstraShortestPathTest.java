@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.domain.exceptions.IllegalPathException;
 
-class SubwayShortestPathTest extends domainTest {
+class SubwayDijkstraShortestPathTest extends domainTest {
 	Line line1;
 	Line line2;
 	Line line3;
@@ -85,8 +85,8 @@ class SubwayShortestPathTest extends domainTest {
 	@DisplayName("출발역에서 도착역으로 가는 최소 거리 경로를 조회한다.")
 	@Test
 	void findPath_happyCase_ShortestPath() {
-		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-			station4, station10, PathType.DISTANCE);
+		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+			.of(lines, stations, station4, station10, PathType.DISTANCE);
 		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
 			Arrays.asList(station4, station5, station6, station9, station10));
 		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
@@ -96,8 +96,8 @@ class SubwayShortestPathTest extends domainTest {
 	@DisplayName("출발역에서 도착역으로 가는 최단 시간 경로를 조회한다.")
 	@Test
 	void findPath_happyCase_MinimumTimePath() {
-		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-			station4, station10, PathType.DURATION);
+		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+			.of(lines, stations, station4, station10, PathType.DURATION);
 		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
 			Arrays.asList(station4, station5, station6, station9, station10));
 		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
@@ -108,8 +108,8 @@ class SubwayShortestPathTest extends domainTest {
 	@Test
 	void whenSamePath() {
 		assertThatThrownBy(() -> {
-			SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-				station1, station1, PathType.DISTANCE);
+			SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+				.of(lines, stations, station1, station1, PathType.DISTANCE);
 		}).isInstanceOf(IllegalPathException.class);
 	}
 
@@ -117,8 +117,8 @@ class SubwayShortestPathTest extends domainTest {
 	@Test
 	void whenNotConnected() {
 		assertThatThrownBy(() -> {
-			SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-				station1, station6, PathType.DISTANCE);
+			SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+				.of(lines, stations, station1, station6, PathType.DISTANCE);
 		}).isInstanceOf(IllegalPathException.class);
 	}
 
@@ -126,8 +126,8 @@ class SubwayShortestPathTest extends domainTest {
 	@Test
 	void whenNotExistBoth() {
 		assertThatThrownBy(() -> {
-			SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-				station7, station8, PathType.DISTANCE);
+			SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+				.of(lines, stations, station7, station8, PathType.DISTANCE);
 		}).isInstanceOf(IllegalPathException.class);
 	}
 
@@ -135,8 +135,9 @@ class SubwayShortestPathTest extends domainTest {
 	@Test
 	void whenNotExistSource() {
 		assertThatThrownBy(() -> {
-			SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-				station7, station1, PathType.DISTANCE);
+			SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+				.of(lines, stations,
+					station7, station1, PathType.DISTANCE);
 		}).isInstanceOf(IllegalPathException.class);
 	}
 
@@ -144,8 +145,8 @@ class SubwayShortestPathTest extends domainTest {
 	@Test
 	void whenNotExistTarget() {
 		assertThatThrownBy(() -> {
-			SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(lines, stations,
-				station1, station7, PathType.DISTANCE);
+			SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
+				.of(lines, stations, station1, station7, PathType.DISTANCE);
 		}).isInstanceOf(IllegalPathException.class);
 	}
 }
