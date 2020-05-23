@@ -18,6 +18,7 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
+    // @formatter:off
 
     @BeforeEach
     void setup() {

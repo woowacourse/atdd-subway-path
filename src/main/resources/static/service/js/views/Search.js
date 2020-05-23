@@ -1,6 +1,6 @@
-import {EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
-import {optionSubwayTemplate, searchResultTemplate} from '../../utils/templates.js'
+import { optionSubwayTemplate, searchResultTemplate } from '../../utils/templates.js'
 
 function Search() {
   const $departureStation = document.querySelector('#departure-station-name')
@@ -44,9 +44,9 @@ function Search() {
       type: pathType
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-        .catch(error => alert(error));
+    .find(searchInput)
+    .then(data => showSearchResult(data))
+    .catch(error => alert(error));
   }
 
   const onToggleFavorite = event => {
@@ -74,14 +74,14 @@ function Search() {
 
     api.station.show().then(data => {
       subwayStationOptionTemplate = data.map(
-              station => optionSubwayTemplate(station)).join("");
+        station => optionSubwayTemplate(station)).join("");
       $departureStation.insertAdjacentHTML(
-          "afterbegin",
-          subwayStationOptionTemplate
+        "afterbegin",
+        subwayStationOptionTemplate
       );
       $arrivalStation.insertAdjacentHTML(
-          "afterbegin",
-          subwayStationOptionTemplate
+        "afterbegin",
+        subwayStationOptionTemplate
       );
     });
   }

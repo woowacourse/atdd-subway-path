@@ -14,16 +14,18 @@ import io.restassured.specification.RequestSpecification;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class PageAcceptanceTest extends AcceptanceTest {
+    // @formatter:off
+
     @LocalServerPort
     int port;
+
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     @Test

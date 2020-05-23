@@ -1,4 +1,4 @@
-import {subwayLinesItemTemplate} from '../../utils/templates.js'
+import { subwayLinesItemTemplate } from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
 import api from '../../api/index.js'
 
@@ -9,7 +9,8 @@ function Map() {
     api.line.getAllDetail().then(data => {
       const subwayLines = data;
       console.log(subwayLines);
-      $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line)).join('');
+      $subwayLinesSlider.innerHTML = subwayLines.map(line => subwayLinesItemTemplate(line))
+      .join('');
     });
     tns({
       container: '.subway-lines-slider',

@@ -34,7 +34,8 @@ public class LineControllerTest {
 
     @Test
     void ETag() throws Exception {
-        List<LineDetailResponse> response = Arrays.asList(createMockResponse(), createMockResponse());
+        List<LineDetailResponse> response = Arrays.asList(createMockResponse(),
+            createMockResponse());
 
         given(lineService.wholeLines()).willReturn(response);
 

@@ -76,12 +76,15 @@ public class PathServiceTest {
     @DisplayName("최단 거리 경로를 조회하는 메서드 테스트")
     @Test
     void findShortestPathByDistanceTest() {
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
-        PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(), PathType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(),
+            PathType.DISTANCE);
 
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest, new DijkstraStrategy());
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest,
+            new DijkstraStrategy());
 
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);
@@ -94,7 +97,8 @@ public class PathServiceTest {
         Station station6 = new Station(6L, STATION_NAME6);
         Station station7 = new Station(7L, STATION_NAME7);
 
-        Line line3 = new Line(3L, "7호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5, "bg-blue-300");
+        Line line3 = new Line(3L, "7호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5,
+            "bg-blue-300");
 
         line3.addLineStation(new LineStation(null, 6L, 0, 0));
         line3.addLineStation(new LineStation(6L, 7L, 15, 15));
@@ -103,7 +107,8 @@ public class PathServiceTest {
             Arrays.asList(station1, station2, station3, station4, station5, station6, station7));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2, line3));
 
-        PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(), PathType.DISTANCE);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(),
+            PathType.DISTANCE);
 
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new DijkstraStrategy()))
             .isInstanceOf(NotConnectEdgeException.class)
@@ -115,7 +120,8 @@ public class PathServiceTest {
     @DisplayName("존재하지 않은 역이 들어왔을 경우 예외 처리")
     @Test
     void notExistStationTest() {
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(station1, station2, station3, station4, station5));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line1, line2));
 
         PathRequest pathRequest = new PathRequest(6L, station4.getId(), PathType.DISTANCE);
