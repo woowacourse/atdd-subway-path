@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -88,17 +89,11 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
-    public List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
+    private List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
         List<Station> stations = stationRepository.findAllById(lineStationsIds);
-        List<Station> sortedStations = new ArrayList<>();
 
-        lineStationsIds.forEach(lineStationsId ->
-            stations.stream()
-                .filter(station -> station.isExist(lineStationsId))
-                .findFirst()
-                .ifPresent(sortedStations::add)
-        );
+        stations.sort(Comparator.comparing(station -> lineStationsIds.indexOf(station.getId())));
 
-        return sortedStations;
+        return stations;
     }
 }
