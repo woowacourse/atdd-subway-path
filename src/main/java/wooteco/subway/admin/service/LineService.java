@@ -64,11 +64,27 @@ public class LineService {
     }
 
     public WholeSubwayResponse wholeLines() {
-        List<Line> lines = lineRepository.findAll();
+        List<Line> allLines = lineRepository.findAll();
+
         return WholeSubwayResponse.of(
-                lines.stream()
+                allLines.stream()
                         .map(line -> LineDetailResponse.of(
-                                line, stationRepository.findAllById(line.getLineStationsId())))
+                                line, findLineStationsId(line)))
                         .collect(Collectors.toList()));
+    }
+
+    private List<Station> findLineStationsId(Line line) {
+        List<Long> lineStationsId = line.getLineStationsId();
+        return lineStationsId.stream()
+                .map(this::findStation)
+                .collect(Collectors.toList());
+    }
+
+    private Station findStation(Long stationId) {
+        List<Station> allStations = stationRepository.findAll();
+        return allStations.stream()
+                .filter(station -> station.hasEqualId(stationId))
+                .findFirst()
+                .orElseThrow(() -> new NotExistStationException(stationId));
     }
 }

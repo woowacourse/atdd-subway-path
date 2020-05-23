@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -15,7 +17,9 @@ import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -23,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LineServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
@@ -64,10 +69,17 @@ public class LineServiceTest {
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
-        List<Station> stations1 = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"));
-        List<Station> stations2 = Lists.newArrayList(new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        List<Station> allStations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L
+                                                               , "삼성역"),
+                                                       new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
+                                                       new Station(6L, "청계산입구역"));
+        List<Station> stations1 = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L,
+                                                                                                                 "삼성역"));
+        List<Station> stations2 = Lists.newArrayList(new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
+                                                     new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+        when(stationRepository.findAll()).thenReturn(allStations);
         when(stationRepository.findAllById(line.getLineStationsId())).thenReturn(stations1);
         when(stationRepository.findAllById(newLine.getLineStationsId())).thenReturn(stations2);
 
