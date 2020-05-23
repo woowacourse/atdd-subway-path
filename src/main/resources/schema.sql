@@ -15,6 +15,7 @@ create table if not exists LINE
    interval_time int not null,
    created_at datetime,
    updated_at datetime,
+   bg_color varchar(64),
    primary key(id)
 );
 

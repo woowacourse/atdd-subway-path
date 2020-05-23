@@ -1,10 +1,18 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+
+import wooteco.subway.admin.exception.LineStationNotFoundException;
 
 public class Line {
     @Id
@@ -13,24 +21,28 @@ public class Line {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
+    @Column("bg_color")
+    private String backgroundColor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
+    private Set<LineStation> lineStations = new HashSet<>();
 
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+            String backgroundColor) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.backgroundColor = backgroundColor;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
+        this(null, name, startTime, endTime, intervalTime, backgroundColor);
     }
 
     public Long getId() {
@@ -53,8 +65,12 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public Set<LineStation> getLineStations() {
+        return lineStations;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -78,49 +94,51 @@ public class Line {
         if (line.getIntervalTime() != 0) {
             this.intervalTime = line.getIntervalTime();
         }
-
+        if (Objects.nonNull(line.getBackgroundColor())) {
+            this.backgroundColor = line.getBackgroundColor();
+        }
         this.updatedAt = LocalDateTime.now();
     }
 
     public void addLineStation(LineStation lineStation) {
-        stations.stream()
+        lineStations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
                 .findAny()
                 .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
-        stations.add(lineStation);
+        lineStations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
+        LineStation targetLineStation = lineStations.stream()
                 .filter(it -> Objects.equals(it.getStationId(), stationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(LineStationNotFoundException::new);
 
-        stations.stream()
+        lineStations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), stationId))
                 .findFirst()
                 .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
-        stations.remove(targetLineStation);
+        lineStations.remove(targetLineStation);
     }
 
     public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
+        if (lineStations.isEmpty()) {
             return new ArrayList<>();
         }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
+        LineStation firstLineStation = lineStations.stream()
+                .filter(it -> !it.isNotFirstStation())
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(LineStationNotFoundException::new);
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
 
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+            Optional<LineStation> nextLineStation = lineStations.stream()
                     .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
                     .findFirst();
 
