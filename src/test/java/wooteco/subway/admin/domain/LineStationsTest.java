@@ -3,6 +3,8 @@ package wooteco.subway.admin.domain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.LinkedList;
 import java.util.Set;
@@ -38,17 +40,11 @@ class LineStationsTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"1,2,2", "2,3,3", "3,4,4", "4,5,5", "5,6,6", "6,7,7", "7,8,8"})
     @DisplayName("LineStations에서 전 역의 아이디와 현 역의 아이디로 LineStation 가져오기 테스트")
-    void findLineStation() {
-        assertThat(lineStations.findLineStation(null, 1L).getStationId()).isEqualTo(1L);
-        assertThat(lineStations.findLineStation(1L, 2L).getStationId()).isEqualTo(2L);
-        assertThat(lineStations.findLineStation(2L, 3L).getStationId()).isEqualTo(3L);
-        assertThat(lineStations.findLineStation(3L, 4L).getStationId()).isEqualTo(4L);
-        assertThat(lineStations.findLineStation(4L, 5L).getStationId()).isEqualTo(5L);
-        assertThat(lineStations.findLineStation(5L, 6L).getStationId()).isEqualTo(6L);
-        assertThat(lineStations.findLineStation(6L, 7L).getStationId()).isEqualTo(7L);
-        assertThat(lineStations.findLineStation(7L, 8L).getStationId()).isEqualTo(8L);
+    void findLineStation(Long preStationId, Long stationId, Long expected) {
+        assertThat(lineStations.findLineStation(preStationId, stationId).getStationId()).isEqualTo(expected);
     }
 
 }
