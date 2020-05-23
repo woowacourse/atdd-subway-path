@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 
@@ -42,42 +43,6 @@ public class Line {
 		this(null, name, startTime, endTime, intervalTime, backgroundColor);
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-
-	public int getIntervalTime() {
-		return intervalTime;
-	}
-
-	public String getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public Set<LineStation> getStations() {
-		return stations;
-	}
-
 	public void update(Line line) {
 		if (!Objects.isNull(line.name)) {
 			this.name = line.name;
@@ -93,6 +58,12 @@ public class Line {
 		}
 
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	public List<LineStation> getStationsExcludeFirst() {
+		return stations.stream()
+			.filter(LineStation::isNotFirstStation)
+			.collect(Collectors.toList());
 	}
 
 	public void addLineStation(LineStation lineStation) {
@@ -142,5 +113,41 @@ public class Line {
 			stationIds.add(nextLineStation.get().getStationId());
 		}
 		return stationIds;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public Set<LineStation> getStations() {
+		return stations;
 	}
 }

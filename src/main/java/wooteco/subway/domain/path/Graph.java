@@ -2,9 +2,9 @@ package wooteco.subway.domain.path;
 
 import static wooteco.subway.exception.InvalidPathException.NOT_CONNECTED_PATH;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -36,10 +36,12 @@ public class Graph {
 	}
 
 	private List<LineStation> createPossibleEdges(List<Line> lines) {
-		return lines.stream()
-			.flatMap(line -> line.getStations().stream())
-			.filter(LineStation::isNotFirstStation)
-			.collect(Collectors.toList());
+		List<LineStation> possibleEdges = new ArrayList<>();
+		lines.stream()
+			.map(Line::getStationsExcludeFirst)
+			.map(possibleEdges::addAll)
+			.close();
+		return possibleEdges;
 	}
 
 	private void addEdge(WeightedMultigraph<Station, StationWeightEdge> graph, List<LineStation> edges,
