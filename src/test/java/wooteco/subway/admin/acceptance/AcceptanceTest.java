@@ -8,7 +8,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -152,9 +154,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -163,11 +165,45 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    void setSubwayInformation() {
+        LineResponse lineResponse1 = createLine("2호선");
+        LineResponse lineResponse2 = createLine("7호선");
+        LineResponse lineResponse3 = createLine("분당선");
+
+        StationResponse stationResponse = createStation("왕십리");
+        StationResponse stationResponse1 = createStation("한양대");
+        StationResponse stationResponse2 = createStation("뚝섬");
+        StationResponse stationResponse3 = createStation("성수");
+        StationResponse stationResponse4 = createStation("건대입구");
+        StationResponse stationResponse5 = createStation("뚝섬유원지");
+        StationResponse stationResponse6 = createStation("청담");
+        StationResponse stationResponse7 = createStation("강남구청");
+        StationResponse stationResponse8 = createStation("압구정로데오");
+        StationResponse stationResponse9 = createStation("서울숲");
+        StationResponse stationResponse10 = createStation("잠실");
+
+        addLineStation(lineResponse1.getId(), null, stationResponse.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponse.getId(), stationResponse1.getId(), 5, 2);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 2);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 2);
+        addLineStation(lineResponse1.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 2);
+
+        addLineStation(lineResponse2.getId(), null, stationResponse4.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 7, 4);
+        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId(), 7, 4);
+        addLineStation(lineResponse2.getId(), stationResponse6.getId(), stationResponse7.getId(), 7, 4);
+
+        addLineStation(lineResponse3.getId(), null, stationResponse7.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), stationResponse7.getId(), stationResponse8.getId(), 3, 1);
+        addLineStation(lineResponse3.getId(), stationResponse8.getId(), stationResponse9.getId(), 3, 1);
+        addLineStation(lineResponse3.getId(), stationResponse9.getId(), stationResponse.getId(), 3, 1);
     }
 
 }
