@@ -8,9 +8,9 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
-import wooteco.subway.admin.dto.domain.LineDto;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.dto.LineDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

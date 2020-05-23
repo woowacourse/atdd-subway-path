@@ -3,8 +3,8 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.dto.*;
-import wooteco.subway.admin.dto.domain.LineDto;
 import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.dto.LineDto;
 
 import java.net.URI;
 import java.util.List;
