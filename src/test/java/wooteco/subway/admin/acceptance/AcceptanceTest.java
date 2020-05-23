@@ -137,24 +137,20 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
-        addLineStation(lineId, preStationId, stationId, 10, 10);
-    }
-
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    void addLineStation(Long lineId, Long preStationId, Long stationId, int distance, int duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
+        params.put("distance", String.valueOf(distance));
+        params.put("duration", String.valueOf(duration));
 
         given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -163,12 +159,22 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    SearchPathResponse searchPath(String startStationName, String targetStationName, String type) {
+        return  given().
+                when().
+                        get("/paths?startStationName="+startStationName
+                        +"&targetStationName="+targetStationName
+                        +"&type="+type).
+                then().
+                        log().all().
+                        extract().as(SearchPathResponse.class);
+    }
 }
 

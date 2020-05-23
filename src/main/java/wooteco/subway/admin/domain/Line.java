@@ -4,9 +4,15 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Line {
+    private static Long NO_STATION = 0L;
+
     @Id
     private Long id;
     private String name;
@@ -53,7 +59,7 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
+    public Set<LineStation> getLineStations() {
         return stations;
     }
 
@@ -82,55 +88,67 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+    public void addLineStation(LineStation newLineStation) {
+        Set<LineStation> newLineStations = new LinkedHashSet<>();
+        for (LineStation lineStation : stations) {
+            addToNewLineStations(lineStation, newLineStation, newLineStations);
+        }
 
-        stations.add(lineStation);
+        if (notAddedYet(newLineStations)) {
+            newLineStations.add(newLineStation);
+        }
+        stations = newLineStations;
+    }
+
+    private void addToNewLineStations(LineStation lineStation, LineStation newLineStation, Set<LineStation> newStations) {
+        if (shouldAdd(newLineStation, lineStation)) {
+            newStations.add(newLineStation);
+            newStations.add(lineStation);
+            lineStation.updatePreLineStation(newLineStation.getStationId());
+            newLineStation.updatePreLineStation(NO_STATION);
+            return;
+        }
+        newStations.add(lineStation);
+    }
+
+    private boolean shouldAdd(LineStation newLineStation, LineStation lineStation) {
+        Long newLinePreStationId = newLineStation.getPreStationId();
+        if (newLinePreStationId == null) {
+            return true;
+        }
+        return newLinePreStationId.equals(lineStation.getPreStationId());
+    }
+
+    private boolean notAddedYet(Set<LineStation> newStations) {
+        return stations.size() == newStations.size()
+                || stations.isEmpty();
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        Set<LineStation> newStations = new LinkedHashSet<>();
+        for (LineStation station : stations) {
+            Long prevLineStationId = addLineStationIfNotTarget(stationId, station, newStations);
+            checkAndUpdateLink(station, prevLineStationId, stationId);
+        }
+        stations = newStations;
+    }
 
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+    private Long addLineStationIfNotTarget(Long stationId, LineStation station, Set<LineStation> newStations) {
+        if (!station.getStationId().equals(stationId)) {
+            newStations.add(station);
+        }
+        return station.getStationId();
+    }
 
-        stations.remove(targetLineStation);
+    private void checkAndUpdateLink(LineStation station, Long prevLineStationId, Long stationId) {
+        if (stationId.equals(prevLineStationId)) {
+            station.updatePreLineStation(prevLineStationId);
+        }
     }
 
     public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
+        return stations.stream()
+                .map(LineStation::getStationId)
+                .collect(Collectors.toList());
     }
 }

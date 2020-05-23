@@ -32,8 +32,8 @@ const api = (() => {
   }
 
   const path = {
-    find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+    find(data) {
+      return request(`/paths?startStationName=${data.startStationName}&targetStationName=${data.targetStationName}&type=${data.type}`);
     }
   }
 

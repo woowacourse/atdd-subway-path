@@ -61,7 +61,6 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
         return null;
     }

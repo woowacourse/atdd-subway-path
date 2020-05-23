@@ -1,4 +1,8 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
+import api from "../../api/index.js";
+import { middlePathTemplate } from "../../utils/templates.js";
+import { firstPathTemplate } from "../../utils/templates.js";
+import { lastPathTemplate } from "../../utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -6,22 +10,95 @@ function Search() {
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
+  const $durationSum = document.querySelector('#duration-sum')
+  const $distanceSum = document.querySelector('#distance-sum')
+  const $stationList = document.querySelector('#station-list')
+  const $shortestDistance = document.querySelector('#shortest-distance')
+  const $shortestTime = document.querySelector('#shortest-time')
 
-  const showSearchResult = () => {
+  const showSearchResult = (data) => {
+    $durationSum.innerText = data.durationSum + "분";
+    $distanceSum.innerText = data.distanceSum + "km";
+
+    $stationList.innerHTML = "";
+    const firstStationNameTemplate = firstPathTemplate(data.pathStationNames[0]);
+    const middleStationNameTemplate = data.pathStationNames.slice(1,data.pathStationNames.length -1)
+      .map(stationName => middlePathTemplate(stationName))
+      .join("");
+    const lastStationNameTemplate = lastPathTemplate(data.pathStationNames[data.pathStationNames.length -1]);
+
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      firstStationNameTemplate
+    );
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      middleStationNameTemplate
+    );
+    $stationList.insertAdjacentHTML(
+      "beforeend",
+      lastStationNameTemplate
+    );
+
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
   }
 
+  const setSelected = classList => {
+    classList.remove('bg-gray-200');
+    classList.remove('text-gray-500');
+    classList.add('text-gray-700');
+    classList.add('bg-white');
+    classList.add('border-l');
+    classList.add('border-t');
+    classList.add('border-r');
+  }
+
+  const setUnSelected = classList => {
+    classList.add('bg-gray-200');
+    classList.remove('text-gray-700');
+    classList.add('text-gray-500');
+    classList.remove('bg-white');
+    classList.remove('border-l');
+    classList.remove('border-t');
+    classList.remove('border-r');
+  }
+
   const onSearch = event => {
+    var value = $searchButton.dataset.selected;
+    if(event.target.id == 'shortest-time'){
+      setSelected($shortestTime.classList)
+      setUnSelected($shortestDistance.classList);
+      $searchButton.dataset.selected = 'duration';
+      value = 'duration';
+    }
+    if(event.target.id == 'shortest-distance'){
+      setSelected($shortestDistance.classList);
+      setUnSelected($shortestTime.classList);
+      $searchButton.dataset.selected = 'distance';
+      value = 'distance';
+    }
+
     event.preventDefault()
     const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value
+      startStationName: $departureStationName.value,
+      targetStationName: $arrivalStationName.value,
+      type: value
     }
-    console.log(searchInput)
-    showSearchResult(searchInput)
+    api.path.find(searchInput).then(data => {
+      console.log(data);
+      if(data.status == 400){
+        alert(data.message);
+        return;
+      }
+      if(data.status == 500){
+        alert("Unexpected Server Error");
+        return;
+      }
+      showSearchResult(data);
+    });
   }
 
   const onToggleFavorite = event => {
@@ -45,6 +122,8 @@ function Search() {
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+    $shortestTime.addEventListener(EVENT_TYPE.CLICK, onSearch)
+    $shortestDistance.addEventListener(EVENT_TYPE.CLICK, onSearch)
   }
 
   this.init = () => {
