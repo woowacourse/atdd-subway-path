@@ -13,9 +13,6 @@ import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Service
 public class PathService {
@@ -43,34 +40,27 @@ public class PathService {
 		List<LineStation> allLineStations = lineRepository.findAllLineStations();
 
 		ShortestPathFinder shortestPathFinder = new ShortestPathFinder(allStations, allLineStations);
-		List<Station> shortestPathStations = shortestPathFinder.findShortestPathStations(sourceStation, targetStation,
-		                                                                                 searchType);
-
-		List<String> shortestPathStationsNames = shortestPathStations.stream()
-				.map(Station::getName)
-				.collect(Collectors.toList());
-		int totalDistance = calculateTotalDistance(shortestPathStations);
-		int totalDuration = calculateTotalDuration(shortestPathStations);
+		List<String> shortestPathStationsNames = shortestPathFinder.findShortestPathStationsNames(sourceStationId,
+		                                                                                          targetStationId,
+		                                                                                          edgeWeightType);
+		List<LineStation> shortestPathLineStations = shortestPathFinder.findShortestPathLineStations(sourceStationId,
+		                                                                                             targetStationId,
+		                                                                                             edgeWeightType);
+		int totalDistance = calculateTotalDistance(shortestPathLineStations);
+		int totalDuration = calculateTotalDuration(shortestPathLineStations);
 
 		return new PathResponse(shortestPathStationsNames, totalDistance, totalDuration);
 	}
 
-	private int calculateTotalDistance(final List<Station> stationsOnPath) {
-		return findLineStations(stationsOnPath)
+	private int calculateTotalDistance(final List<LineStation> shortestPathLineStations) {
+		return shortestPathLineStations.stream()
 				.mapToInt(LineStation::getDistance)
 				.sum();
 	}
 
-	private int calculateTotalDuration(final List<Station> stationsOnPath) {
-		return findLineStations(stationsOnPath)
+	private int calculateTotalDuration(final List<LineStation> shortestPathLineStations) {
+		return shortestPathLineStations.stream()
 				.mapToInt(LineStation::getDuration)
 				.sum();
-	}
-
-	private Stream<LineStation> findLineStations(final List<Station> stationsOnPath) {
-		return IntStream.range(0, stationsOnPath.size() - 1)
-				.mapToObj(it -> lineRepository.findLineStationByPreStationIdAndStationId(
-						stationsOnPath.get(it).getId(),
-						stationsOnPath.get(it + 1).getId()));
 	}
 }
