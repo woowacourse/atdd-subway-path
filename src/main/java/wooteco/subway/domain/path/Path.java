@@ -27,7 +27,7 @@ public class Path {
             .sum();
     }
 
-    public List<Station> getVertexList() {
+    public List<Station> getStationList() {
         return path.getVertexList();
     }
 }

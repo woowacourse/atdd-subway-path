@@ -46,7 +46,7 @@ public class PathService {
 		List<Station> stations = stationRepository.findAll();
 
 		Path path = pathGenerator.generate(lines, stations);
-		return new PathResponse(StationResponse.listOf(path.getVertexList()), path.distance(),
+		return new PathResponse(StationResponse.listOf(path.getStationList()), path.distance(),
 			path.duration());
 	}
 }
