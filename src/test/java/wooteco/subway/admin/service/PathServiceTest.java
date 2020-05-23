@@ -27,7 +27,6 @@ import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.DisconnectedPathException;
 import wooteco.subway.admin.exception.NoSuchStationException;
 import wooteco.subway.admin.exception.SameSourceAndDestinationException;
-import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,15 +41,12 @@ public class PathServiceTest {
 	private static final String DURATION = "DURATION";
 
 	@Mock
-	private LineRepository lineRepository;
-	@Mock
 	private StationRepository stationRepository;
+	@Mock
+	private PathAlgorithmService pathAlgorithmService;
 
 	private PathService pathService;
 
-	private Line lineOne;
-	private Line lineTwo;
-	private Line lineThree;
 	private Station station1;
 	private Station station2;
 	private Station station3;
@@ -59,7 +55,7 @@ public class PathServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		pathService = new JGraphPathService(lineRepository, stationRepository);
+		pathService = new PathService(stationRepository, pathAlgorithmService);
 
 		station1 = new Station(1L, STATION_NAME1);
 		station2 = new Station(2L, STATION_NAME2);
@@ -67,9 +63,9 @@ public class PathServiceTest {
 		station4 = new Station(4L, STATION_NAME4);
 		station5 = new Station(5L, STATION_NAME5);
 
-		lineOne = new Line(1L, "수도권 1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-		lineTwo = new Line(2L, "수도권 2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-		lineThree = new Line(3L, "부산 1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		Line lineOne = new Line(1L, "수도권 1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		Line lineTwo = new Line(2L, "수도권 2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		Line lineThree = new Line(3L, "부산 1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
 
 		lineOne.addLineStation(new LineStation(FIRST_PRE_STATION_ID, station1.getId(), 0, 0));
 		lineOne.addLineStation(new LineStation(station1.getId(), station2.getId(), 5, 3));
@@ -85,24 +81,22 @@ public class PathServiceTest {
 	@DisplayName("최단거리 경로를 잘 찾아내는지 확인")
 	@Test
 	void shortestDistancePath() {
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(lineOne, lineTwo, lineThree));
-		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
-
 		ShortestPathResponse expected = new ShortestPathResponse(
 			StationResponse.listOf(Arrays.asList(station1, station2, station3, station4)), 13, 9
 		);
+		when(pathAlgorithmService.findShortestPath(any(), any())).thenReturn(expected);
+		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 		assertThat(pathService.findShortestPath(new PathRequest(STATION_NAME1, STATION_NAME4, DISTANCE))).isEqualTo(expected);
 	}
 
 	@DisplayName("최단시간 경로를 잘 찾아내는지 확인")
 	@Test
 	void shortestDurationPath() {
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(lineOne, lineTwo, lineThree));
-		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
-
 		ShortestPathResponse expected = new ShortestPathResponse(
 			StationResponse.listOf(Arrays.asList(station1, station2, station4)), 14, 4
 		);
+		when(pathAlgorithmService.findShortestPath(any(), any())).thenReturn(expected);
+		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 		assertThat(pathService.findShortestPath(new PathRequest(STATION_NAME1, STATION_NAME4, DURATION))).isEqualTo(expected);
 	}
 
@@ -149,7 +143,7 @@ public class PathServiceTest {
 	@ParameterizedTest
 	@CsvSource({"DISTANCE", "DURATION"})
 	void shortestDurationPathDisconnectedPath(String type) {
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(lineOne, lineTwo, lineThree));
+		when(pathAlgorithmService.findShortestPath(any(), any())).thenThrow(new DisconnectedPathException());
 		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
 		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(STATION_NAME1, STATION_NAME5, type)))
