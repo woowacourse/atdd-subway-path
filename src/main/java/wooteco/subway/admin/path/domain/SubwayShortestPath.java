@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 
+import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.station.domain.Station;
 
 public class SubwayShortestPath {
@@ -34,10 +35,10 @@ public class SubwayShortestPath {
 	public int getSubWeight(Station source, Station target) {
 		try {
 			return (int)shortestPathAlgorithm.getPath(source, target)
-				.getEdgeList()
-				.stream()
-				.mapToDouble(SubwayWeightedEdge::getSubWeight)
-				.sum();
+			                                 .getEdgeList()
+			                                 .stream()
+			                                 .mapToDouble(SubwayWeightedEdge::getSubWeight)
+			                                 .sum();
 		} catch (NullPointerException e) {
 			throw new InvalidSubwayPathException("지하철 경로를 조회할 수 없습니다.");
 		}

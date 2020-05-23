@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.line.domain.lineStation.LineStation;
-import wooteco.subway.admin.path.domain.InvalidSubwayPathException;
+import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.path.domain.SubwayGraphFactory;
 import wooteco.subway.admin.path.domain.SubwayShortestPath;
 import wooteco.subway.admin.path.domain.SubwayWeightedEdge;

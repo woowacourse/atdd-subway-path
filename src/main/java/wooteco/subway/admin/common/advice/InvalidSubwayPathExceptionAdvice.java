@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import wooteco.subway.admin.path.domain.InvalidSubwayPathException;
+import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
 
 @RestControllerAdvice
 public class InvalidSubwayPathExceptionAdvice {
