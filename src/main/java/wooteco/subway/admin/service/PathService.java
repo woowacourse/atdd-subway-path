@@ -18,6 +18,8 @@ import wooteco.subway.admin.repository.StationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -33,16 +35,39 @@ public class PathService {
     }
 
     public PathResponse calculatePath(String source, String target, String type) {
-
         Lines allLines = new Lines(lineRepository.findAll());
-
         LineStations lineStations = new LineStations(allLines.getAllLineStation());
-
         Stations stations = new Stations(stationRepository.findAll());
-
         Station sourceStation = stations.findStationByName(source);
         Station targetStation = stations.findStationByName(target);
 
+        ShortestPathAlgorithm<Long, DefaultEdge> shortestPathAlgorithm = prepareAlgorithm(type, lineStations);
+        List<Long> shortestPathIds = calculateshortestPathIDs(sourceStation, targetStation, shortestPathAlgorithm);
+
+        List<Station> shortestPathStations = shortestPathIds.stream()
+                .map(stations::findStationById)
+                .collect(Collectors.toList());
+
+        List<LineStation> shortestPathLineStations = calculateShortestPathLineStations(lineStations, sourceStation.getId(), shortestPathIds);
+
+        int distance = getAccumulateValue(shortestPathLineStations, LineStation::getDistance);
+        int duration = getAccumulateValue(shortestPathLineStations, LineStation::getDuration);
+
+        return new PathResponse(StationResponse.listOf(shortestPathStations), distance, duration);
+    }
+
+    private List<LineStation> calculateShortestPathLineStations(LineStations lineStations, Long sourceStationId, List<Long> shortestPathIds) {
+        Long preStationId = sourceStationId;
+
+        List<LineStation> shortestPathLineStations = new ArrayList<>();
+        for (Long stationId : shortestPathIds) {
+            shortestPathLineStations.add(lineStations.findLineStation(preStationId, stationId));
+            preStationId = stationId;
+        }
+        return shortestPathLineStations;
+    }
+
+    private ShortestPathAlgorithm<Long, DefaultEdge> prepareAlgorithm(String type, LineStations lineStations) {
         WeightedGraph<Long, DefaultEdge> graph;
 
         try {
@@ -51,29 +76,24 @@ public class PathService {
             throw new CanNotCreateGraphException();
         }
 
-        ShortestPathAlgorithm<Long, DefaultEdge> shortestPathAlgorithm = new DijkstraShortestPath<>(graph);
+        return new DijkstraShortestPath<>(graph);
+    }
 
+    private List<Long> calculateshortestPathIDs(Station sourceStation, Station targetStation, ShortestPathAlgorithm<Long, DefaultEdge> shortestPathAlgorithm) {
         List<Long> shortestPathIds;
         try {
             shortestPathIds = shortestPathAlgorithm.getPath(sourceStation.getId(), targetStation.getId()).getVertexList();
         } catch (NullPointerException e) {
             throw new LineNotConnectedException();
         }
+        return shortestPathIds;
+    }
 
-        List<Station> shortestPath = new ArrayList<>();
-        int distance = 0;
-        int duration = 0;
-        Long preStationId = sourceStation.getId();
-
-        for (Long stationId : shortestPathIds) {
-            shortestPath.add(stations.findStationById(stationId));
-            LineStation lineStation = lineStations.findLineStation(preStationId, stationId);
-            distance += lineStation.getDistance();
-            duration += lineStation.getDuration();
-            preStationId = stationId;
-        }
-
-        return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
+    private Integer getAccumulateValue(List<LineStation> shortestPathLineStations, Function<LineStation, Integer> strategy) {
+        return shortestPathLineStations.stream()
+                .map(strategy)
+                .reduce(Integer::sum)
+                .orElse(0);
     }
 
     private WeightedGraph<Long, DefaultEdge> initGraph(LineStations lineStations, String type) {
