@@ -6,7 +6,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.ShortestPathFinder;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
+import wooteco.subway.admin.exceptions.DuplicatedStationsException;
 import wooteco.subway.admin.exceptions.NotExistStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -31,13 +31,14 @@ public class PathService {
 		return stationRepository.findAll();
 	}
 
-	public PathResponse searchPath(final Long source, final Long target, final SearchType searchType) {
-		if (Objects.equals(source, target)) {
-			throw new DuplicatedStationNamesException();
+	public PathResponse searchPath(final Long sourceStationId, final Long targetStationId,
+	                               final DijkstraEdgeWeightType edgeWeightType) {
+		if (Objects.equals(sourceStationId, targetStationId)) {
+			throw new DuplicatedStationsException();
 		}
 
-		Station sourceStation = stationRepository.findById(source).orElseThrow(NotExistStationException::new);
-		Station targetStation = stationRepository.findById(target).orElseThrow(NotExistStationException::new);
+		stationRepository.findById(sourceStationId).orElseThrow(() -> new NotExistStationException(sourceStationId));
+		stationRepository.findById(targetStationId).orElseThrow(() -> new NotExistStationException(targetStationId));
 		List<Station> allStations = stationRepository.findAll();
 		List<LineStation> allLineStations = lineRepository.findAllLineStations();
 

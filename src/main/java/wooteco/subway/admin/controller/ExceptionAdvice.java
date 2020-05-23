@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import wooteco.subway.admin.dto.ExceptionResponse;
-import wooteco.subway.admin.exceptions.DuplicatedStationNamesException;
+import wooteco.subway.admin.exceptions.DuplicatedStationsException;
 import wooteco.subway.admin.exceptions.NotExistStationException;
 import wooteco.subway.admin.exceptions.UnconnectedStationsException;
 
@@ -22,8 +22,8 @@ public class ExceptionAdvice {
 
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(DuplicatedStationNamesException.class)
-	public ExceptionResponse duplicatedStation(DuplicatedStationNamesException e) {
+	@ExceptionHandler(DuplicatedStationsException.class)
+	public ExceptionResponse duplicatedStation(DuplicatedStationsException e) {
 		return new ExceptionResponse("DUPLICATED_STATION", e.getMessage());
 	}
 

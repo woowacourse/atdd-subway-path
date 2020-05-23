@@ -58,7 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		/** Scenario2: 잘못된 정보로 지하철 경로를 탐색하면 사용자에게 적절한 응답을 한다. **/
 		String result1 = searchPathWithNotExistStations(stationResponse1.getId(), 111L, TYPE_DISTANCE);
-		assertThat(result1).contains("저장되지 않은 역을 입력하셨습니다.");
+		assertThat(result1).contains("111를(을) id로 가진 역이 존재하지 않습니다.");
 
 		String result2 = searchPathWithSameStations(stationResponse3.getId(), stationResponse3.getId(), TYPE_DISTANCE);
 		assertThat(result2).contains("출발역과 도착역은 같을 수 없습니다.");
