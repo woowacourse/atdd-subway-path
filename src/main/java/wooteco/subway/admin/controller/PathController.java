@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.admin.domain.SearchType;
+import wooteco.subway.admin.domain.DijkstraEdgeWeightType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.service.PathService;
@@ -22,11 +22,11 @@ public class PathController {
 
 	@GetMapping("/paths")
 	public ResponseEntity<PathResponse> searchPath(
-			@RequestParam("source") Long source,
-			@RequestParam("target") Long target,
+			@RequestParam("source") Long sourceStationId,
+			@RequestParam("target") Long targetStationId,
 			@RequestParam("type") String typeName) {
-		SearchType searchType = SearchType.of(typeName);
-		PathResponse pathResponse = pathService.searchPath(source, target, searchType);
+		DijkstraEdgeWeightType edgeWeightType = DijkstraEdgeWeightType.of(typeName);
+		PathResponse pathResponse = pathService.searchPath(sourceStationId, targetStationId, edgeWeightType);
 
 		return ResponseEntity.ok().body(pathResponse);
 	}

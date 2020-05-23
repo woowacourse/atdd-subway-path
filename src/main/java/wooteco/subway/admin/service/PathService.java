@@ -1,8 +1,8 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.admin.domain.DijkstraEdgeWeightType;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.SearchType;
 import wooteco.subway.admin.domain.ShortestPathFinder;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
