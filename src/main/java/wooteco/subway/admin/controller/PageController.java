@@ -36,17 +36,17 @@ public class PageController {
 	}
 
 	@GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-	public String edgePage(Model model) {
+	public String edgePage() {
 		return "admin/admin-edge";
 	}
 
 	@GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
-	public String mapPage(Model model) {
+	public String mapPage() {
 		return "service/map";
 	}
 
 	@GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
-	public String searchPage(Model model) {
+	public String searchPage() {
 		return "service/search";
 	}
 }

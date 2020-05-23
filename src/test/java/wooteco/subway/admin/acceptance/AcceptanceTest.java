@@ -27,6 +27,7 @@ public class AcceptanceTest {
 	static final String STATION_NAME_SEOLLEUNG = "선릉역";
 	static final String STATION_NAME_SADANG = "사당역";
 	static final String STATION_NAME_JAMSIL = "잠실역";
+	static final String STATION_NAME_DANGGOGAE = "당고개역";
 
 	static final String LINE_NAME_2 = "2호선";
 	static final String LINE_NAME_3 = "3호선";
@@ -108,8 +109,9 @@ public class AcceptanceTest {
 				extract().as(LineDetailResponse.class);
 	}
 
-	void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+	void updateLine(Long id, String name, LocalTime startTime, LocalTime endTime) {
 		Map<String, String> params = new HashMap<>();
+		params.put("name", name);
 		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
