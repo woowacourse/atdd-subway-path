@@ -3,6 +3,7 @@ package wooteco.subway.admin.service;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,7 +16,7 @@ public class DijkstraLearningTest {
 
     @DisplayName("다익스트라 알고리즘 학습 테스트")
     @Test
-    public void getDijkstraShortestPath() {
+    void getDijkstraShortestPath() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
@@ -36,7 +37,7 @@ public class DijkstraLearningTest {
 
     @DisplayName("등록되지 않은 경우")
     @Test
-    public void dijkstraShortestPathNotExistException() {
+    void dijkstraShortestPathNotExistException() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
@@ -51,7 +52,7 @@ public class DijkstraLearningTest {
 
     @DisplayName("연결되지 않은 경우")
     @Test
-    public void dijkstraShortestPathNotConnectedException() {
+    void dijkstraShortestPathNotConnectedException() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
@@ -63,5 +64,21 @@ public class DijkstraLearningTest {
 
         assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
             .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void removeVertex() {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph
+            = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
+        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+        graph.removeVertex("v2");
+        Set<DefaultWeightedEdge> edges = graph.edgeSet();
+
+        assertThat(edges).size().isEqualTo(1);
     }
 }

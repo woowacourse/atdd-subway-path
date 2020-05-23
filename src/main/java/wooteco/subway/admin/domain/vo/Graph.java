@@ -32,16 +32,26 @@ public class Graph {
     private static void addEdge(List<Line> lines, PathType pathType,
         WeightedMultigraph<Long, LineStationEdge> graph) {
         for (Line line : lines) {
-            for (LineStation lineStation : line.getLineStations()) {
-                if (Objects.isNull(lineStation.getPreStationId())) {
-                    continue;
-                }
-                LineStationEdge lineStationEdge = LineStationEdge.of(lineStation);
-                graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
-                    lineStationEdge);
-                graph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
-            }
+            addEdgeByLine(pathType, graph, line);
         }
+    }
+
+    private static void addEdgeByLine(PathType pathType,
+        WeightedMultigraph<Long, LineStationEdge> graph, Line line) {
+        for (LineStation lineStation : line.getLineStations()) {
+            if (Objects.isNull(lineStation.getPreStationId())) {
+                continue;
+            }
+            addEdge(pathType, graph, lineStation);
+        }
+    }
+
+    private static void addEdge(PathType pathType, WeightedMultigraph<Long, LineStationEdge> graph,
+        LineStation lineStation) {
+        LineStationEdge lineStationEdge = LineStationEdge.of(lineStation);
+        graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
+            lineStationEdge);
+        graph.setEdgeWeight(lineStationEdge, pathType.getWeight(lineStation));
     }
 
     private static void addStationsAsVertex(Map<Long, Station> stationMatcher,
