@@ -1,25 +1,27 @@
 package wooteco.subway.admin.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import wooteco.subway.admin.domain.Criteria;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.ShortestPath;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -82,7 +84,7 @@ class PathServiceTest {
   	void getShortestDistancePath() {
 		String sourceName = "시청";
 		String targetName = "신도림";
-		String criteria = "distance";
+		Criteria criteria = Criteria.DISTANCE;
 
 		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
 		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));
@@ -109,7 +111,7 @@ class PathServiceTest {
 	void getShortestDurationPath() {
 		String sourceName = "시청";
 		String targetName = "신도림";
-		String criteria = "duration";
+		Criteria criteria = Criteria.DURATION;
 
 		when(stationRepository.findByName(sourceName)).thenReturn(Optional.of(station6));
 		when(stationRepository.findByName(targetName)).thenReturn(Optional.of(station2));

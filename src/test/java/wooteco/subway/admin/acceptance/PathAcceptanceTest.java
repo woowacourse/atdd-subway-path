@@ -95,8 +95,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private static Stream<Arguments> giveCriteriaAndResults() {
 		return Stream.of(
-			Arguments.of("distance", Arrays.asList("시청", "충정로", "당산", "영등포구청", "신도림"), 40, 80),
-			Arguments.of("duration", Arrays.asList("시청", "충정로", "여의도", "신길", "신도림"), 60, 50)
+			Arguments.of("DISTANCE", Arrays.asList("시청", "충정로", "당산", "영등포구청", "신도림"), 40, 80),
+			Arguments.of("DURATION", Arrays.asList("시청", "충정로", "여의도", "신길", "신도림"), 60, 50)
 		);
 	}
 }
