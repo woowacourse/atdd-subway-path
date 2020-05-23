@@ -29,6 +29,10 @@ public class PathService {
 
 	@Transactional
 	public ShortestPath findShortestDistancePath(String sourceName, String targetName, String criteriaType) {
+		if (sourceName.equals(targetName)) {
+			throw new SourceEqualsTargetException();
+		}
+
 		if (sourceName.isEmpty() || targetName.isEmpty()) {
 			throw new EmptyStationNameException();
 		}
@@ -37,10 +41,6 @@ public class PathService {
 			.orElseThrow(NoStationNameExistsException::new);
 		Station targetStation = stationRepository.findByName(targetName)
 			.orElseThrow(NoStationNameExistsException::new);
-
-		if (sourceStation.equals(targetStation)) {
-			throw new SourceEqualsTargetException();
-		}
 
 		Criteria criteria = Criteria.of(criteriaType);
 
