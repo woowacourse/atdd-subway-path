@@ -1,34 +1,43 @@
 package wooteco.subway.admin.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class LineStationCreateRequest {
-    private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
+	private Long preStationId;
 
-    public LineStationCreateRequest() {
-    }
+	@NotNull(message = "구간에 추가할 역을 입력해야 합니다.")
+	private Long stationId;
 
-    public LineStationCreateRequest(Long preStationId, Long stationId, int distance, int duration) {
-        this.preStationId = preStationId;
-        this.stationId = stationId;
-        this.distance = distance;
-        this.duration = duration;
-    }
+	@Positive(message = "구간 사이 거리값은 양수여야 합니다.")
+	private int distance;
 
-    public Long getPreStationId() {
-        return preStationId;
-    }
+	@Positive(message = "구간 사이 소요 시간은 양수여야 합니다.")
+	private int duration;
 
-    public Long getStationId() {
-        return stationId;
-    }
+	private LineStationCreateRequest() {
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public LineStationCreateRequest(Long preStationId, Long stationId, int distance, int duration) {
+		this.preStationId = preStationId;
+		this.stationId = stationId;
+		this.distance = distance;
+		this.duration = duration;
+	}
 
-    public int getDuration() {
-        return duration;
-    }
+	public Long getPreStationId() {
+		return preStationId;
+	}
+
+	public Long getStationId() {
+		return stationId;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
 }
