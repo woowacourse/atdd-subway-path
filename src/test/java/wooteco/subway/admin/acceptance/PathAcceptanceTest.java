@@ -9,18 +9,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
-import wooteco.subway.admin.exception.ValueRequiredException;
 
-/*
-Feature: 지하철 경로 조회
-    Scenario: 지하철 경로를 조회한다.
-        Given: 지하철 노선이 등록되어 있다.
-        And: 지하철 역이 등록되어 있다.
-        And: 지하철 노선에 역이 등록되어 있다.
-
-        When: 출발역과 도착역을 입력한다.
-        Then: 최단거리 경로와 총 소요시간, 총 거리를 응답한다.
-*/
 public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 경로를 조회한다.")
@@ -59,8 +48,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //When: 출발역이 입력되지 않으면
         //Then: 예외 발생
-        assertThatThrownBy(() -> findFailedPath(null, jamsil.getId()))
-            .isInstanceOf(ValueRequiredException.class);
+        findFailedPath(null, jamsil.getId());
+
+        //When: 출발역과 도착역이 같으면
+        //Then: 예외 발생
+        findFailedPath(kangnam.getId(), kangnam.getId());
+
+        //When: 갈 수 없는 역이면
+        //Then: 예외 발생
+        findFailedPath(kangnam.getId(), 100L);
     }
 
     private PathResponse findPath(Long source, Long target) {
