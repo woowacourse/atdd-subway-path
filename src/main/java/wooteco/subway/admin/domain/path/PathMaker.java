@@ -1,13 +1,14 @@
 package wooteco.subway.admin.domain.path;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import wooteco.subway.admin.domain.LineStations;
 import wooteco.subway.admin.domain.PathSearchType;
 import wooteco.subway.admin.domain.Stations;
-import wooteco.subway.admin.exception.CanNotCreateGraphException;
 import wooteco.subway.admin.exception.LineNotConnectedException;
 
 import java.util.List;
+import java.util.Objects;
 
 // 가장 짧은 경로를 생성하는 책임
 public class PathMaker {
@@ -20,7 +21,7 @@ public class PathMaker {
     }
 
     public Path computeShortestPath(Long sourceStationId, Long targetStationId, PathSearchType type) {
-        StationGraph pathGraph = getPathGraph(type, lineStations);
+        StationGraph pathGraph = StationGraph.of(lineStations, type);
         List<Long> shortestPathStationIds = getShortestPathStationIds(pathGraph, sourceStationId, targetStationId);
         Stations shortestPathStations = this.stations.listOf(shortestPathStationIds);
 
@@ -29,18 +30,16 @@ public class PathMaker {
 
     private List<Long> getShortestPathStationIds(StationGraph pathGraph, Long sourceStationId, Long targetStationId) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(pathGraph);
-        try {
-            return dijkstraShortestPath.getPath(sourceStationId, targetStationId).getVertexList();
-        } catch (NullPointerException e) {
-            throw new LineNotConnectedException();
-        }
+        GraphPath path = dijkstraShortestPath.getPath(sourceStationId, targetStationId);
+
+        validateGraphPathOfNull(path);
+
+        return path.getVertexList();
     }
 
-    private StationGraph getPathGraph(PathSearchType type, LineStations lineStations) {
-        try {
-            return StationGraph.of(lineStations, type);
-        } catch (IllegalArgumentException e) {
-            throw new CanNotCreateGraphException();
+    private void validateGraphPathOfNull(GraphPath path) {
+        if (Objects.isNull(path)) {
+            throw new LineNotConnectedException();
         }
     }
 }

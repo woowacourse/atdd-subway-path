@@ -31,7 +31,7 @@ class LineStationsTest {
     @Test
     @DisplayName("LineStations에서 모든 아이디를 가져오기 테스트")
     void getAllLineStationId() {
-        Set<Long> allLineStationId = lineStations.getAllLineStationId();
+        Set<Long> allLineStationId = lineStations.getAllStationId();
 
         for (long i = 1L; i < 7L; i++) {
             assertThat(allLineStationId.contains(i));

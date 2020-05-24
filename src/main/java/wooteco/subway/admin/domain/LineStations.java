@@ -43,7 +43,7 @@ public class LineStations {
     }
 
 
-    public Set<Long> getAllLineStationId() {
+    public Set<Long> getAllStationId() {
         return lineStations.stream()
                 .map(LineStation::getStationId)
                 .collect(Collectors.toSet());

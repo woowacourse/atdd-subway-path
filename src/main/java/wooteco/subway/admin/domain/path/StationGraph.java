@@ -5,6 +5,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.LineStations;
 import wooteco.subway.admin.domain.PathSearchType;
+import wooteco.subway.admin.exception.CanNotCreateGraphException;
 
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class StationGraph extends WeightedMultigraph<Long, DefaultWeightedEdge> 
 
     public static StationGraph of(LineStations lineStations, PathSearchType weightType) {
         StationGraph graph = new StationGraph(DefaultWeightedEdge.class);
-        Set<Long> allStationIds = lineStations.getAllLineStationId();
+        Set<Long> allStationIds = lineStations.getAllStationId();
 
         addAllVertex(graph, allStationIds);
 
@@ -24,19 +25,35 @@ public class StationGraph extends WeightedMultigraph<Long, DefaultWeightedEdge> 
         return graph;
     }
 
+    private static void addAllVertex(StationGraph graph, Set<Long> allStationIds) {
+        for (Long stationId : allStationIds) {
+            addVertex(graph, stationId);
+        }
+    }
+
+    private static void addVertex(StationGraph graph, Long stationId) {
+        try {
+            graph.addVertex(stationId);
+        } catch (NullPointerException e) {
+            throw new CanNotCreateGraphException();
+        }
+    }
+
     private static void setAllEdgeWeight(LineStations lineStations, PathSearchType weightType, StationGraph graph) {
         for (LineStation lineStation : lineStations.getLineStations()) {
             if (lineStation.isFirstStation()) {
                 continue;
             }
-            DefaultWeightedEdge edge = graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
+            DefaultWeightedEdge edge = getDefaultWeightedEdge(graph, lineStation);
             graph.setEdgeWeight(edge, weightType.getValueByPathSearchType(lineStation));
         }
     }
 
-    private static void addAllVertex(StationGraph graph, Set<Long> allStationIds) {
-        for (Long stationId : allStationIds) {
-            graph.addVertex(stationId);
+    private static DefaultWeightedEdge getDefaultWeightedEdge(StationGraph graph, LineStation lineStation) {
+        try {
+            return graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new CanNotCreateGraphException();
         }
     }
 }
