@@ -1,20 +1,23 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -139,6 +142,10 @@ public class AcceptanceTest {
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
+    }
+
+    void addLineStation(LineResponse lineResponse, StationResponse stationResponse, StationResponse preStationResponse) {
+        addLineStation(lineResponse.getId(), preStationResponse.getId(), stationResponse.getId(), 10, 10);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {

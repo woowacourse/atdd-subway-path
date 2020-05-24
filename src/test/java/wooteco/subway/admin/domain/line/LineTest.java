@@ -1,14 +1,15 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.line;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
     private Line line;
@@ -27,7 +28,7 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
-                .filter(it -> it.getPreStationId() == 4L)
+                .filter(it -> Objects.equals(it.getPreStationId(), 4L))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
         assertThat(lineStation.getStationId()).isEqualTo(1L);

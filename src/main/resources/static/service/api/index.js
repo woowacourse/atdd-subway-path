@@ -23,17 +23,27 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config)
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      response.json().then(res => alert(res.message));
+    }
+  });
 
   const line = {
     getAll() {
       return request(`/lines/detail`)
+    },
+    getAllDetail() {
+      return requestWithJsonData(`/lines/detail`)
     }
   }
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return requestWithJsonData(`/lines/path/${params.source}/${params.target}`)
     }
   }
 

@@ -1,11 +1,11 @@
 package wooteco.subway.admin.dto;
 
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.Station;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import wooteco.subway.admin.domain.line.Line;
+import wooteco.subway.admin.domain.station.Station;
 
 public class LineDetailResponse {
     private Long id;
