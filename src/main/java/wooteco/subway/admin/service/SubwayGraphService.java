@@ -1,4 +1,4 @@
-package wooteco.subway.admin.repository;
+package wooteco.subway.admin.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,19 +6,20 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.jgrapht.SubwayEdge;
+import wooteco.subway.admin.repository.LineRepository;
 
-@Component
-public class SubwayPathRepository implements PathRepository {
+@Service
+public class SubwayGraphService implements GraphService {
     private final LineRepository lineRepository;
 
-    public SubwayPathRepository(LineRepository lineRepository) {
+    public SubwayGraphService(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
     }
 
@@ -40,7 +41,7 @@ public class SubwayPathRepository implements PathRepository {
                 .forEach(lineStation -> graph
                         .addEdge(lineStation.getPreStationId(), lineStation.getStationId(),
                                 new SubwayEdge(lineStation, pathType::weight)));
-
+        
         try {
             GraphPath<Long, Edge> path = DijkstraShortestPath
                     .findPathBetween(graph, source.getId(), target.getId());

@@ -1,4 +1,4 @@
-package wooteco.subway.admin.repository;
+package wooteco.subway.admin.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -9,25 +9,27 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.repository.LineRepository;
 
-@SpringBootTest
-public class PathRepositoryTest {
-    @MockBean
+@ExtendWith(MockitoExtension.class)
+public class GraphServiceTest {
+    @Mock
     private LineRepository lineRepository;
 
-    @Autowired
-    private PathRepository pathRepository;
+    private GraphService graphService;
 
     @BeforeEach
     void setUp() {
+        graphService = new SubwayGraphService(lineRepository);
+
         Line line2 = new Line(1L, "8호선", "bg-pink-500", LocalTime.of(5, 30), LocalTime.of(22, 30),
                 5);
         line2.addLineStation(new LineStation(null, 1L, 0, 0));
@@ -56,7 +58,7 @@ public class PathRepositoryTest {
         Station moran = new Station(1L, "모란역");
         Station suseo = new Station(10L, "수서역");
 
-        Path path = pathRepository.findPath(moran, suseo, PathType.DISTANCE).get();
+        Path path = graphService.findPath(moran, suseo, PathType.DISTANCE).get();
 
         assertThat(path.vertices()).startsWith(1L, 8L, 9L, 7L, 10L);
         assertThat(path.distance()).isEqualTo(40);
@@ -69,7 +71,7 @@ public class PathRepositoryTest {
         Station moran = new Station(1L, "모란역");
         Station suseo = new Station(10L, "수서역");
 
-        Path path = pathRepository.findPath(moran, suseo, PathType.DURATION).get();
+        Path path = graphService.findPath(moran, suseo, PathType.DURATION).get();
 
         assertThat(path.vertices()).startsWith(1L, 2L, 3L, 4L, 5L, 6L, 7L, 10L);
         assertThat(path.distance()).isEqualTo(70);
@@ -82,7 +84,7 @@ public class PathRepositoryTest {
         Station moran = new Station(1L, "모란역");
         Station suseo = new Station(11L, "반월당역");
 
-        Optional<Path> path = pathRepository.findPath(moran, suseo, PathType.DURATION);
+        Optional<Path> path = graphService.findPath(moran, suseo, PathType.DURATION);
 
         assertThat(path.isPresent()).isFalse();
     }

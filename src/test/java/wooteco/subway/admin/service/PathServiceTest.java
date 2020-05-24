@@ -23,7 +23,6 @@ import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.NotFoundStationException;
 import wooteco.subway.admin.exception.SourceTargetSameException;
 import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.SubwayPathRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
@@ -40,7 +39,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationService, new SubwayPathRepository(lineRepository));
+        pathService = new PathService(stationService, new SubwayGraphService(lineRepository));
 
         Line line2 = new Line(1L, "8호선", "bg-pink-500", LocalTime.of(5, 30), LocalTime.of(22, 30),
                 5);

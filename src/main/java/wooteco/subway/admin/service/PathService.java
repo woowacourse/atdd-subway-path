@@ -12,17 +12,16 @@ import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.NotFoundPathException;
 import wooteco.subway.admin.exception.SourceTargetSameException;
-import wooteco.subway.admin.repository.PathRepository;
 import wooteco.subway.admin.service.utils.StationMapper;
 
 @Service
 public class PathService {
     private final StationService stationService;
-    private final PathRepository pathRepository;
+    private final GraphService graphService;
 
-    public PathService(StationService stationService, PathRepository pathRepository) {
+    public PathService(StationService stationService, GraphService graphService) {
         this.stationService = stationService;
-        this.pathRepository = pathRepository;
+        this.graphService = graphService;
     }
 
     public PathResponse findPath(String sourceName, String targetName, String type) {
@@ -32,7 +31,7 @@ public class PathService {
         Station target = stationService.findByName(targetName);
         PathType pathType = PathType.of(type);
 
-        Path path = pathRepository.findPath(source, target, pathType)
+        Path path = graphService.findPath(source, target, pathType)
                 .orElseThrow(() -> new NotFoundPathException(sourceName, targetName));
 
         Map<Long, Station> stations = StationMapper.toMap(stationService.findAll());
