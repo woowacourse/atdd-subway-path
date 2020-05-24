@@ -61,9 +61,11 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
-        lineService.addLineStation(lineId, view);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LineResponse> addEdge(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
+        Line line = lineService.addLineStation(lineId, view);
+        return ResponseEntity
+                .created(URI.create("/lines/" + lineId + "/stations"))
+                .body(LineResponse.of(line));
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")

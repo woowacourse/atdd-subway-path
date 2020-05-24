@@ -10,6 +10,7 @@ import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 
+import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EdgeAcceptanceTest extends AcceptanceTest {
@@ -69,20 +70,9 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         LineDetailResponse lineDetailResponse = getLine(lineNumberTwo.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineNumberTwo.getId(), yeoksam.getId());
+        removeEdge(lineNumberTwo.getId(), yeoksam.getId());
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineNumberTwo.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
-    }
-
-    void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
