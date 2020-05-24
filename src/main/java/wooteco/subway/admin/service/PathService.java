@@ -92,7 +92,7 @@ public class PathService {
 
     private void validateEmpty(Long sourceId, Long targetId) {
         if (Objects.isNull(sourceId) || Objects.isNull(targetId)) {
-            throw new IllegalArgumentException("비어있습니다.");
+            throw new IllegalArgumentException("소스와 타겟 정보가 비어있습니다.");
         }
     }
 

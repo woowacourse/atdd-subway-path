@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.vo.PathType;
+import wooteco.subway.admin.controller.QueryString;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.request.PathRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
@@ -27,10 +27,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam("source") Long sourceId,
-        @RequestParam("target") Long targetId, @RequestParam("type") String type) {
-        PathType pathType = PathType.of(type);
-        PathResponse response = pathService.findPath(sourceId, targetId, pathType);
+    public ResponseEntity<PathResponse> findPath(@QueryString PathRequest pathRequest) {
+        PathResponse response = pathService.findPath(pathRequest.getSource(),
+            pathRequest.getTarget(), pathRequest.getType());
         return ResponseEntity.ok(response);
     }
 
