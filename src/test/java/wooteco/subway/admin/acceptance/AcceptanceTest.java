@@ -109,8 +109,10 @@ public class AcceptanceTest {
                 .extract().as(LineDetailResponse.class);
     }
 
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+    void updateLine(LineDetailResponse line, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
+        params.put("name", line.getName());
+        params.put("color", line.getColor());
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -120,7 +122,7 @@ public class AcceptanceTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .put("/lines/" + id)
+            .put("/lines/" + line.getId())
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value());
