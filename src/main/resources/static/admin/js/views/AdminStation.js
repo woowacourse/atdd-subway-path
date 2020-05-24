@@ -23,8 +23,9 @@ function AdminStation() {
     api.station
     .create(newStation)
     .then(data => {
+      newStation.id = data;
+      $stationList.insertAdjacentHTML('beforeend', listItemTemplate(newStation))
       $stationInput.value = '';
-      $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
     })
     .catch(() => {
       alert('에러가 발생했습니다.')

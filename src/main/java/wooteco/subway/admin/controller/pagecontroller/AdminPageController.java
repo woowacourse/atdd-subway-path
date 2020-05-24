@@ -5,17 +5,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.LineService;
+import wooteco.subway.admin.service.StationService;
 
 @Controller
 public class AdminPageController {
     private LineService lineService;
-    private StationRepository stationRepository;
+    private StationService stationService;
 
-    public AdminPageController(LineService lineService, StationRepository stationRepository) {
+    public AdminPageController(LineService lineService, StationService stationService) {
         this.lineService = lineService;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
@@ -25,7 +25,7 @@ public class AdminPageController {
 
     @GetMapping(value = "/admin/stations", produces = MediaType.TEXT_HTML_VALUE)
     public String stationPage(Model model) {
-        model.addAttribute("stations", stationRepository.findAll());
+        model.addAttribute("stations", stationService.getAll());
         return "admin/admin-station";
     }
 
