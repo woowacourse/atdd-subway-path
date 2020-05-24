@@ -2,8 +2,6 @@ package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +11,16 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
-public class WholeLineStationAcceptanceTest {
-    private final LineAcceptanceTest lineAcceptanceTest = new LineAcceptanceTest();
+public class PathManageAcceptanceTest {
     private final StationAcceptanceTest stationAcceptanceTest = new StationAcceptanceTest();
+    private final LineAcceptanceTest lineAcceptanceTest = new LineAcceptanceTest();
     private final LineStationAcceptanceTest lineStationAcceptanceTest = new LineStationAcceptanceTest();
+    private final PathAcceptanceTest pathAcceptanceTest = new PathAcceptanceTest();
 
     @LocalServerPort
     int port;
@@ -28,17 +28,6 @@ public class WholeLineStationAcceptanceTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    @DisplayName("전체 노선별 지하철 역 전체 조회")
-    @Test
-    void showWholeLineStation() {
-        lineAcceptanceTest.createLine("신분당선");
-        lineAcceptanceTest.createLine("2호선");
-
-        LineDetailResponse shinBunDangLine = lineAcceptanceTest.getLine(1L);
-        LineDetailResponse line2 = lineAcceptanceTest.getLine(2L);
-
         stationAcceptanceTest.createStation("강남역");
         stationAcceptanceTest.createStation("역삼역");
         stationAcceptanceTest.createStation("선릉역");
@@ -51,18 +40,40 @@ public class WholeLineStationAcceptanceTest {
         StationResponse yangJaeStation = stationAcceptanceTest.getStation(4L);
         StationResponse yangJaeCitizensForestStation = stationAcceptanceTest.getStation(5L);
 
+        lineAcceptanceTest.createLine("신분당선");
+        lineAcceptanceTest.createLine("2호선");
+
+        LineDetailResponse shinBunDangLine = lineAcceptanceTest.getLine(1L);
+        LineDetailResponse line2 = lineAcceptanceTest.getLine(2L);
+
         lineStationAcceptanceTest.addLineStation(shinBunDangLine.getId(), null, gangNamStation.getId());
-        lineStationAcceptanceTest.addLineStation(shinBunDangLine.getId(), gangNamStation.getId(), yeokSamStation.getId());
-        lineStationAcceptanceTest.addLineStation(shinBunDangLine.getId(), yeokSamStation.getId(), seolLeungStation.getId());
+        lineStationAcceptanceTest.addLineStation(shinBunDangLine.getId(), gangNamStation.getId(),
+            yangJaeStation.getId());
+        lineStationAcceptanceTest.addLineStation(shinBunDangLine.getId(), yangJaeStation.getId(),
+            yangJaeCitizensForestStation.getId());
 
         lineStationAcceptanceTest.addLineStation(line2.getId(), null, gangNamStation.getId());
-        lineStationAcceptanceTest.addLineStation(line2.getId(), gangNamStation.getId(), yangJaeStation.getId());
-        lineStationAcceptanceTest.addLineStation(line2.getId(), yangJaeStation.getId(), yangJaeCitizensForestStation.getId());
+        lineStationAcceptanceTest.addLineStation(line2.getId(), gangNamStation.getId(), yeokSamStation.getId());
+        lineStationAcceptanceTest.addLineStation(line2.getId(), yeokSamStation.getId(), seolLeungStation.getId());
+    }
 
-        List<LineDetailResponse> lineDetailResponses = lineAcceptanceTest.getLineDetails();
+    @DisplayName("최단 거리 찾기")
+    @Test
+    void findShortestDistance() {
+        PathResponse pathResponse = pathAcceptanceTest.findShortestPath(5L, 3L, "DISTANCE");
 
-        assertThat(lineDetailResponses.size()).isEqualTo(2);
-        assertThat(lineDetailResponses.get(0).getStations().size()).isEqualTo(3);
-        assertThat(lineDetailResponses.get(1).getStations().size()).isEqualTo(3);
+        assertThat(pathResponse.getStations().size()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(40);
+        assertThat(pathResponse.getDuration()).isEqualTo(40);
+    }
+
+    @DisplayName("최단 시간 찾기")
+    @Test
+    void findShortestDuration() {
+        PathResponse pathResponse = pathAcceptanceTest.findShortestPath(5L, 3L, "DURATION");
+
+        assertThat(pathResponse.getStations().size()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(40);
+        assertThat(pathResponse.getDuration()).isEqualTo(40);
     }
 }

@@ -13,7 +13,9 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
-public class PageAcceptanceTest extends AcceptanceTest {
+public class PageAcceptanceTest {
+    private final LineAcceptanceTest lineAcceptanceTest = new LineAcceptanceTest();
+
     @LocalServerPort
     int port;
 
@@ -28,7 +30,7 @@ public class PageAcceptanceTest extends AcceptanceTest {
 
     @Test
     void linePage() {
-        createLine("신분당선");
+        lineAcceptanceTest.createLine("신분당선");
 
         given().
             accept(MediaType.TEXT_HTML_VALUE).

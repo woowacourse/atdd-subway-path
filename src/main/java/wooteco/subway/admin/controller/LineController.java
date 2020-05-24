@@ -29,12 +29,11 @@ public class LineController {
     }
 
     @PostMapping()
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
+    public ResponseEntity<Void> createLine(@RequestBody LineRequest view) {
         LineResponse line = lineService.save(view);
-
         return ResponseEntity
-                .created(URI.create("/lines/" + line.getId()))
-                .body(line);
+            .created(URI.create("/lines/" + line.getId()))
+            .build();
     }
 
     @GetMapping()
@@ -71,7 +70,7 @@ public class LineController {
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
         lineService.addLineStation(lineId, view);
         return ResponseEntity
-            .ok()
+            .created(URI.create("/lines/" + lineId))
             .build();
     }
 

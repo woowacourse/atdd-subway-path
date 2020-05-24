@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,14 @@ public class StationService {
     @Transactional(readOnly = true)
     public List<StationResponse> showStations() {
         return StationResponse.listOf(stationRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public StationResponse showStation(Long id){
+        Station station = stationRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
+
+        return StationResponse.of(station);
     }
 
     @Transactional

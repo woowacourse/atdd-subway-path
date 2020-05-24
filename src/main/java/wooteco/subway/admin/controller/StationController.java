@@ -29,6 +29,13 @@ public class StationController {
                 .body(stationResponse);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+        StationResponse stationResponse = stationService.showStation(id);
+        return ResponseEntity.ok()
+            .body(stationResponse);
+    }
+
     @GetMapping()
     public ResponseEntity<List<StationResponse>> showStations() {
         List<StationResponse> stationResponses = stationService.showStations();

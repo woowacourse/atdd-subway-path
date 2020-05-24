@@ -1,8 +1,5 @@
 package wooteco.subway.admin.acceptance;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +12,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.PathResponse;
-import wooteco.subway.admin.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -44,72 +37,54 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/api/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
-    }
-
-    LineResponse createLine(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-        params.put("backgroundColor", "bg-gray-300");
-
-        return
-                given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/api/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
-    }
-
-    LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/api/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
-    }
-
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
-        addLineStation(lineId, preStationId, stationId, 10, 10);
-    }
-
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
-
+    void post(Map<String, String> params, String path) {
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/api/lines/" + lineId + "/stations").
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post(path).
+            then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value());
+    }
+
+    <T> List<T> getList(String path, Class<T> responseType) {
+        return
+            given().when().
+                get(path).
+                then().
+                log().all()
+                .extract()
+                .jsonPath().getList(".", responseType);
+    }
+
+    <T> T get(String path, Class<T> responseType) {
+        return
+            given().when().
+                get(path).
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                extract().as(responseType);
+    }
+
+    void delete(String path) {
+        given().when().
+            delete(path).
+            then().
+            log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    void put(String path, Map<String, String> params) {
+        given()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put(path)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

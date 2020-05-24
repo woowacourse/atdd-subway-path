@@ -29,10 +29,10 @@ public class LineService {
 
     @Transactional
     public LineResponse save(LineRequest lineRequest) {
-        Line line = lineRequest.toLine();
-        Line persistLine = lineRepository.save(line);
+        Line persistLine = lineRepository.save(lineRequest.toLine());
+        Line line = findBy(persistLine.getId());
 
-        return LineResponse.of(persistLine);
+        return LineResponse.of(line);
     }
 
     @Transactional(readOnly = true)
