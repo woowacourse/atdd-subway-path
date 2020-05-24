@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.admin.domain.PathSearchType;
+import wooteco.subway.admin.domain.exception.IllegalPathSearchTypeException;
+import wooteco.subway.admin.domain.exception.NoSuchStationException;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.error.ErrorResponse;
+import wooteco.subway.admin.exception.CanNotCreateGraphException;
 import wooteco.subway.admin.exception.LineNotConnectedException;
 import wooteco.subway.admin.exception.OverlappedStationException;
 import wooteco.subway.admin.service.PathService;
@@ -16,6 +19,7 @@ import wooteco.subway.admin.service.PathService;
 import javax.validation.constraints.NotBlank;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @RestController
 @Validated
@@ -34,11 +38,19 @@ public class PathController {
                 .body(pathService.calculatePath(source, target, PathSearchType.of(type)));
     }
 
-    @ExceptionHandler({OverlappedStationException.class, LineNotConnectedException.class})
-    public ResponseEntity<ErrorResponse> overlappedStationExceptionHandler(Exception exception) {
+    @ExceptionHandler({OverlappedStationException.class, LineNotConnectedException.class, IllegalPathSearchTypeException.class})
+    public ResponseEntity<ErrorResponse> badRequestException(Exception exception) {
         final ErrorResponse response = ErrorResponse.of(BAD_REQUEST.value(), exception.getMessage());
         return ResponseEntity
                 .status(BAD_REQUEST)
+                .body(response);
+    }
+
+    @ExceptionHandler({CanNotCreateGraphException.class, NoSuchStationException.class})
+    public ResponseEntity<ErrorResponse> badReques2tException(Exception exception) {
+        final ErrorResponse response = ErrorResponse.of(SERVICE_UNAVAILABLE.value(), exception.getMessage());
+        return ResponseEntity
+                .status(SERVICE_UNAVAILABLE)
                 .body(response);
     }
 }
