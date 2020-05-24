@@ -15,12 +15,20 @@ public class LineStation {
         this.duration = duration;
     }
 
-    public void updatePreLineStation(Long preStationId) {
+    void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
     }
 
-    public boolean isNotFirstStation() {
-        return !Objects.isNull(preStationId);
+    boolean isFirstStation() {
+        return Objects.isNull(preStationId);
+    }
+
+    boolean isNotFirstStation() {
+        return !isFirstStation();
+    }
+
+    boolean isPreStationOf(LineStation lineStation) {
+        return stationId.equals(lineStation.preStationId);
     }
 
     public Long getPreStationId() {
