@@ -1,19 +1,18 @@
 package wooteco.subway.admin.service;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.PathDetail;
 import wooteco.subway.admin.domain.Stations;
-import wooteco.subway.admin.domain.SubwayGraphKey;
-import wooteco.subway.admin.domain.SubwayGraphs;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.IllegalPathRequestException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.Objects;
 
 @Service
 public class PathService {
@@ -28,18 +27,16 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(PathRequest pathRequest) {
-        String source = pathRequest.getSource();
-        String target = pathRequest.getTarget();
-        validateDuplicatedName(source, target);
+        String sourceName = pathRequest.getSource();
+        String targetName = pathRequest.getTarget();
+        validateDuplicatedName(sourceName, targetName);
 
         Stations stations = new Stations(stationRepository.findAll());
-        Long sourceId = stations.findIdByName(source);
-        Long targetId = stations.findIdByName(target);
-
         Lines lines = new Lines(lineRepository.findAll());
-        SubwayGraphs subwayGraphs = lines.makeSubwayGraphs(sourceId, targetId);
-        PathDetail path = subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
 
+        Long sourceId = stations.findIdByName(sourceName);
+        Long targetId = stations.findIdByName(targetName);
+        PathDetail path = lines.getShortestPath(sourceId, targetId, pathRequest);
         return PathResponse.of(path, stations);
     }
 

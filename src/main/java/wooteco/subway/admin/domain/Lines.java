@@ -7,6 +7,8 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import wooteco.subway.admin.dto.PathRequest;
+
 public class Lines implements Iterable<Line> {
     private final List<Line> lines;
 
@@ -22,7 +24,12 @@ public class Lines implements Iterable<Line> {
                 .collect(Collectors.toList());
     }
 
-    public SubwayGraphs makeSubwayGraphs() {
+    public PathDetail getShortestPath(Long sourceId, Long targetId, PathRequest pathRequest) {
+        SubwayGraphs subwayGraphs = makeSubwayGraphs();
+        return subwayGraphs.getPath(sourceId, targetId, SubwayGraphKey.of(pathRequest.getKey()));
+    }
+
+    private SubwayGraphs makeSubwayGraphs() {
         return lines.stream()
                 .map(Line::getEdges)
                 .flatMap(Collection::stream)
@@ -43,5 +50,4 @@ public class Lines implements Iterable<Line> {
     public Iterator<Line> iterator() {
         return lines.iterator();
     }
-
 }
