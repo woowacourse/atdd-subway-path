@@ -15,13 +15,19 @@ public class ControllerAdvice {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError notFoundException(EntityNotFoundException enfe) {
-        return new ApiError(HttpStatus.NOT_FOUND, enfe.getMessage());
+    public ApiError notFoundException(EntityNotFoundException e) {
+        return new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler({DuplicateNameException.class, LineStationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError duplicateNameException(IllegalArgumentException ie) {
-        return new ApiError(HttpStatus.BAD_REQUEST, ie.getMessage());
+    public ApiError duplicateNameException(IllegalArgumentException e) {
+        return new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError exception(Exception e) {
+        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 에러가 발생했습니다.");
     }
 }

@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -17,13 +19,13 @@ import wooteco.subway.admin.dto.response.StationResponse;
 @Component
 public class Graphs {
 
-    private EnumMap<PathType, Graph> graphs = new EnumMap<>(PathType.class);
-    private Map<Long, Station> stationMatcher = new HashMap<>();
+    private ConcurrentMap<PathType, Graph> graphs = new ConcurrentHashMap<>();
+    private ConcurrentMap<Long, Station> stationMatcher = new ConcurrentHashMap<>();
 
     public void initialize(List<Line> lines, List<Station> stations) {
         stationMatcher = stations
             .stream()
-            .collect(Collectors.toMap(Station::getId, station -> station));
+            .collect(Collectors.toConcurrentMap(Station::getId, station -> station));
         for (PathType pathType : PathType.values()) {
             graphs.put(pathType, Graph.of(lines, stationMatcher, pathType));
         }

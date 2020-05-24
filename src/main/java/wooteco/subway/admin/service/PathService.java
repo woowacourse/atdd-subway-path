@@ -64,19 +64,15 @@ public class PathService {
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
-        synchronized (graphs) {
-            graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
-        }
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
     }
 
     @Transactional
-    public synchronized void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
-        synchronized (graphs) {
-            graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
-        }
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
     }
 
     @Transactional
