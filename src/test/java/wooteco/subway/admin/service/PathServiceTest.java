@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -53,7 +54,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository, new DijkstraStrategy());
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -83,8 +84,7 @@ public class PathServiceTest {
         PathRequest pathRequest = new PathRequest(station1.getId(), station4.getId(),
             PathType.DISTANCE);
 
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest,
-            new DijkstraStrategy());
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
 
         assertThat(pathResponse.getStations().size()).isEqualTo(4);
         assertThat(pathResponse.getDistance()).isEqualTo(35);
@@ -110,7 +110,7 @@ public class PathServiceTest {
         PathRequest pathRequest = new PathRequest(station1.getId(), station7.getId(),
             PathType.DISTANCE);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new DijkstraStrategy()))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
             .isInstanceOf(NotConnectEdgeException.class)
             .hasMessageContaining("으로부터")
             .hasMessageContaining("까지 연결되어 있지 않습니다!");
@@ -126,7 +126,7 @@ public class PathServiceTest {
 
         PathRequest pathRequest = new PathRequest(6L, station4.getId(), PathType.DISTANCE);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new DijkstraStrategy()))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("해당 역은 등록되어있지 않은 역입니다.");
     }

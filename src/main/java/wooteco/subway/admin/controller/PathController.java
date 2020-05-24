@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.strategy.DijkstraStrategy;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.SameStationException;
@@ -29,8 +28,7 @@ public class PathController {
         if (bindingResult.hasErrors()) {
             throw new SameStationException(bindingResult);
         }
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest,
-            new DijkstraStrategy());
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
 
         return ResponseEntity
             .ok()

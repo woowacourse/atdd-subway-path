@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
@@ -18,6 +19,7 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.exception.NotConnectEdgeException;
 
+@Component
 public class DijkstraStrategy implements AlgorithmStrategy {
     @Override
     public GraphPath<Station, Edge> getPath(final Map<Long, Station> stations,

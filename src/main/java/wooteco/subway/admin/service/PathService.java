@@ -21,14 +21,16 @@ import wooteco.subway.admin.repository.StationRepository;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final AlgorithmStrategy algorithmStrategy;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository,
+        AlgorithmStrategy algorithmStrategy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.algorithmStrategy = algorithmStrategy;
     }
 
-    public PathResponse findShortestPath(PathRequest pathRequest,
-        AlgorithmStrategy algorithmStrategy) {
+    public PathResponse findShortestPath(PathRequest pathRequest) {
         final Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(toMap(Station::getId, station -> station));
