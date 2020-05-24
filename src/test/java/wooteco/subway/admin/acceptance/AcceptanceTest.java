@@ -125,14 +125,11 @@ public class AcceptanceTest {
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        LineRequest request = new LineRequest("신분당선", startTime, endTime, 10);
 
         // @formatter:off
         given().
-            body(params).
+            body(request).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
         when().
