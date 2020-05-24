@@ -1,7 +1,7 @@
 package wooteco.subway.admin.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.admin.acceptance.AcceptanceTest.*;
+import static wooteco.subway.admin.acceptance.util.AcceptanceTest.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +11,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
+import wooteco.subway.admin.acceptance.util.LineAcceptanceTest;
+import wooteco.subway.admin.acceptance.util.LineStationAcceptanceTest;
+import wooteco.subway.admin.acceptance.util.StationAcceptanceTest;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.StationResponse;
 

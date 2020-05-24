@@ -10,6 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.acceptance.util.LineAcceptanceTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -40,5 +41,4 @@ public class PageAcceptanceTest {
             log().all().
             statusCode(HttpStatus.OK.value());
     }
-
 }

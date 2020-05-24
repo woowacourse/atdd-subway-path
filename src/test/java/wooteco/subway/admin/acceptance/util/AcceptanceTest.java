@@ -1,4 +1,4 @@
-package wooteco.subway.admin.acceptance;
+package wooteco.subway.admin.acceptance.util;
 
 import java.util.List;
 import java.util.Map;
@@ -16,14 +16,14 @@ import io.restassured.specification.RequestSpecification;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
-    static final String STATION_NAME_KANGNAM = "강남역";
-    static final String STATION_NAME_YEOKSAM = "역삼역";
-    static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    public static final String STATION_NAME_KANGNAM = "강남역";
+    public static final String STATION_NAME_YEOKSAM = "역삼역";
+    public static final String STATION_NAME_SEOLLEUNG = "선릉역";
 
-    static final String LINE_NAME_2 = "2호선";
-    static final String LINE_NAME_3 = "3호선";
-    static final String LINE_NAME_BUNDANG = "분당선";
-    static final String LINE_NAME_SINBUNDANG = "신분당선";
+    protected static final String LINE_NAME_2 = "2호선";
+    protected final String LINE_NAME_3 = "3호선";
+    protected final String LINE_NAME_BUNDANG = "분당선";
+    protected final String LINE_NAME_SINBUNDANG = "신분당선";
 
     @LocalServerPort
     int port;
@@ -37,7 +37,7 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    void post(Map<String, String> params, String path) {
+    protected void post(Map<String, String> params, String path) {
         given().
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -49,7 +49,7 @@ public class AcceptanceTest {
             statusCode(HttpStatus.CREATED.value());
     }
 
-    <T> List<T> getList(String path, Class<T> responseType) {
+    protected <T> List<T> getList(String path, Class<T> responseType) {
         return
             given().when().
                 get(path).
@@ -59,7 +59,7 @@ public class AcceptanceTest {
                 .jsonPath().getList(".", responseType);
     }
 
-    <T> T get(String path, Class<T> responseType) {
+    protected <T> T get(String path, Class<T> responseType) {
         return
             given().when().
                 get(path).
@@ -68,7 +68,7 @@ public class AcceptanceTest {
                 extract().as(responseType);
     }
 
-    void delete(String path) {
+    protected void delete(String path) {
         given().when().
             delete(path).
             then().
@@ -76,7 +76,7 @@ public class AcceptanceTest {
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    void put(String path, Map<String, String> params) {
+    protected void put(String path, Map<String, String> params) {
         given()
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)

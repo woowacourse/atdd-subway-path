@@ -1,4 +1,4 @@
-package wooteco.subway.admin.acceptance;
+package wooteco.subway.admin.acceptance.util;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +11,7 @@ import wooteco.subway.admin.dto.LineResponse;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 
-    void createLine(String name) {
+    public void createLine(String name) {
         String path = "/api/lines";
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -23,18 +23,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         super.post(params, path);
     }
 
-    LineDetailResponse getLine(Long id) {
+    public LineDetailResponse getLine(Long id) {
         String path = "/api/lines/" + id;
         return super.get(path, LineDetailResponse.class);
     }
 
-    void deleteLine(Long id) {
+    protected void deleteLine(Long id) {
         String path = "/api/lines/" + id;
 
         super.delete(path);
     }
 
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+    protected void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
@@ -44,13 +44,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         super.put(path, params);
     }
 
-    List<LineResponse> getLines() {
+    protected List<LineResponse> getLines() {
         String path = "/api/lines";
 
         return super.getList(path, LineResponse.class);
     }
 
-    List<LineDetailResponse> getLineDetails() {
+    public List<LineDetailResponse> getLineDetails() {
         String path = "/api/lines/detail";
 
         return super.getList(path, LineDetailResponse.class);
