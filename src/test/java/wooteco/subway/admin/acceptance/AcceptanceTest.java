@@ -216,8 +216,13 @@ public class AcceptanceTest {
     PathResponse retrievePath(String departure, String arrival, PathType type) {
         // @formatter:off
         return given().
+            queryParam("source", departure).
+            queryParam("target", arrival).
+            queryParam("pathType", type).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-            get("/paths?source=" + departure + "&target=" + arrival + "&type=" + type).
+            get("/paths").
         then().
             log().all().
             statusCode(HttpStatus.OK.value()).

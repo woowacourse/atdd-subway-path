@@ -15,6 +15,7 @@ import wooteco.subway.admin.domain.PathEdge;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.SearchPathRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.exception.StationNotFoundException;
@@ -32,7 +33,11 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse getPath(final String sourceName, final String targetName, final PathType pathType) {
+    public PathResponse getPath(SearchPathRequest searchPathRequest) {
+        String sourceName = searchPathRequest.getSource();
+        String targetName = searchPathRequest.getTarget();
+        PathType pathType = searchPathRequest.getPathType();
+
         Station source = stationRepository.findByName(sourceName)
             .orElseThrow(() -> new StationNotFoundException(sourceName));
         Station target = stationRepository.findByName(targetName)

@@ -1,14 +1,18 @@
 package wooteco.subway.admin.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.SearchPathRequest;
 import wooteco.subway.admin.service.PathService;
 
+@RequestMapping("/paths")
 @RestController
 public class PathController {
     private final PathService pathService;
@@ -17,12 +21,9 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/paths")
+    @GetMapping
     public ResponseEntity<PathResponse> getPath(
-        @RequestParam("source") String source,
-        @RequestParam("target") String target,
-        @RequestParam("type") PathType type
-    ) {
-        return ResponseEntity.ok(pathService.getPath(source, target, type));
+        @ModelAttribute @Valid SearchPathRequest searchPathRequest) {
+        return ResponseEntity.ok(pathService.getPath(searchPathRequest));
     }
 }
