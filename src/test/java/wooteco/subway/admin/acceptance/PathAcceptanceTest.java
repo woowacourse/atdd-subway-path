@@ -9,6 +9,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
+import wooteco.subway.admin.exception.ValueRequiredException;
 
 /*
 Feature: 지하철 경로 조회
@@ -55,6 +56,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.getStations().get(3).getId()).isEqualTo(jamwon.getId());
         assertThat(path.getDuration()).isEqualTo(30);
         assertThat(path.getDistance()).isEqualTo(30);
+
+        //When: 출발역이 입력되지 않으면
+        //Then: 예외 발생
+        assertThatThrownBy(() -> findFailedPath(null, jamsil.getId()))
+            .isInstanceOf(ValueRequiredException.class);
     }
 
     private PathResponse findPath(Long source, Long target) {
@@ -68,5 +74,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .log().all()
             .extract()
             .as(PathResponse.class);
+    }
+
+    private void findFailedPath(Long source, Long target) {
+        given()
+            .queryParam("source", source)
+            .queryParam("target", target)
+            .queryParam("type", PathType.DISTANCE.name())
+            .when()
+            .get("/paths")
+            .then()
+            .log().all()
+            .statusCode(400)
+            .extract().response();
     }
 }

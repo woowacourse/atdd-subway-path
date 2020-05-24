@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.dto.response.PathResponse;
+import wooteco.subway.admin.exception.DuplicatedValueException;
 import wooteco.subway.admin.service.PathService;
 
 @RestController
@@ -35,7 +36,7 @@ public class PathController {
 
     private void validate(Long sourceId, Long targetId) {
         if (Objects.equals(sourceId, targetId)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new DuplicatedValueException("출발역과 도착역이 같습니다.");
         }
     }
 }

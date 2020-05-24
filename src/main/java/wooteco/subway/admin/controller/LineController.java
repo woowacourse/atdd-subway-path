@@ -40,8 +40,8 @@ public class LineController {
         Line persistLine = lineService.save(request);
 
         return ResponseEntity
-                .created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+            .created(URI.create("/lines/" + persistLine.getId()))
+            .body(LineResponse.of(persistLine));
     }
 
     @GetMapping("/{id}")
@@ -51,7 +51,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id,
-            @RequestBody LineRequest request) {
+        @RequestBody LineRequest request) {
         lineService.updateLine(id, request);
         return ResponseEntity.ok().build();
     }
@@ -70,14 +70,14 @@ public class LineController {
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId,
-            @RequestBody LineStationCreateRequest view) {
+        @RequestBody LineStationCreateRequest view) {
         lineService.addLineStation(lineId, view);
         return ResponseEntity.created(URI.create("/lines/" + lineId + "/stations/")).build();
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId,
-            @PathVariable Long stationId) {
+        @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }

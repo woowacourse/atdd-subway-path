@@ -19,6 +19,9 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.PathResponse;
+import wooteco.subway.admin.exception.DuplicatedValueException;
+import wooteco.subway.admin.exception.UnreachablePathException;
+import wooteco.subway.admin.exception.ValueRequiredException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -57,34 +60,33 @@ class PathServiceTest {
     @Test
     void findPathNullException() {
         assertThatThrownBy(() -> pathService.findPath(null, 1L, PathType.DURATION.name()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(ValueRequiredException.class);
         assertThatThrownBy(() -> pathService.findPath(null, null, PathType.DISTANCE.name()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(ValueRequiredException.class);
     }
 
     @DisplayName("출발역, 도착역이 같은 경우")
     @Test
     void findPathSameStationsException() {
         assertThatThrownBy(() -> pathService.findPath(1L, 1L, PathType.DISTANCE.name()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(DuplicatedValueException.class);
     }
 
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
     @Test
     void findPathNotExistException() {
         assertThatThrownBy(() -> pathService.findPath(1L, 7L, PathType.DISTANCE.name()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(UnreachablePathException.class);
     }
 
     @DisplayName("출발역, 도착역이 연결되어 있지 않은 경우")
     @Test
     void findPathNotConnectedException() {
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
-        // when(stationRepository.findAll()).thenReturn(Arrays.asList(jamwon, yeoksam));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
         assertThatThrownBy(
             () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE.name()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(UnreachablePathException.class);
     }
 
     @DisplayName("source stationId와 target stationId를 받아서 최단 경로를 구한다.")

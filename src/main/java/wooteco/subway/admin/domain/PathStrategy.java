@@ -6,5 +6,5 @@ import org.jgrapht.GraphPath;
 public interface PathStrategy {
 
     GraphPath<Long, LineStationEdge> getPath(Long sourceId, Long targetId,
-            Graph<Long, LineStationEdge> graph);
+        Graph<Long, LineStationEdge> graph);
 }

@@ -16,6 +16,7 @@ import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NoSuchValueException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -39,7 +40,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLine(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -50,23 +51,22 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         validateStations(request.getPreStationId(), request.getStationId());
-        Line line = lineRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+        Line line = findLine(id);
         LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
-                request.getDistance(), request.getDuration());
+            request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = findLine(lineId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = findLine(id);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
@@ -75,27 +75,32 @@ public class LineService {
     public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
         Map<Long, Station> stations = stationRepository.findAll()
-                .stream()
-                .collect(Collectors.toMap(Station::getId, station -> station));
+            .stream()
+            .collect(Collectors.toMap(Station::getId, station -> station));
         List<LineDetailResponse> responses = lines.stream()
-                .map(line -> getLineDetailResponse(stations, line))
-                .collect(Collectors.toList());
+            .map(line -> getLineDetailResponse(stations, line))
+            .collect(Collectors.toList());
         return WholeSubwayResponse.of(responses);
     }
 
     private void validateStations(Long preStationId, Long stationId) {
         if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
-            throw new IllegalArgumentException("존재하지 않는 이전역입니다.");
+            throw new NoSuchValueException("존재하지 않는 이전역입니다.");
         }
         if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
-            throw new IllegalArgumentException("존재하지 않는 다음역입니다.");
+            throw new NoSuchValueException("존재하지 않는 다음역입니다.");
         }
     }
 
     private LineDetailResponse getLineDetailResponse(Map<Long, Station> stations, Line line) {
         List<Station> stationsList = line.stationsIdStream()
-                .map(stations::get)
-                .collect(Collectors.toList());
+            .map(stations::get)
+            .collect(Collectors.toList());
         return LineDetailResponse.of(line, stationsList);
+    }
+
+    private Line findLine(Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new NoSuchValueException("존재하지 않는 노선입니다."));
     }
 }

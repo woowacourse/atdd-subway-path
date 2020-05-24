@@ -2,6 +2,7 @@ package wooteco.subway.admin.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.graph.WeightedMultigraph;
@@ -16,6 +17,9 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
+import wooteco.subway.admin.exception.DuplicatedValueException;
+import wooteco.subway.admin.exception.UnreachablePathException;
+import wooteco.subway.admin.exception.ValueRequiredException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -31,14 +35,24 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(Long sourceId, Long targetId, String pathType) {
+        validatePathIds(sourceId, targetId);
         Lines lines = Lines.of(lineRepository.findAll());
         WeightedMultigraph<Long, LineStationEdge> graph = lines.makeGraph(PathType.of(pathType));
 
         try {
             Path path = Path.of(sourceId, targetId, graph, new DijkstraShortestPathStrategy());
             return toResponse(path);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("갈 수 없는 역입니다.");
+        } catch (Exception e) {
+            throw new UnreachablePathException("갈 수 없는 역입니다.");
+        }
+    }
+
+    private void validatePathIds(Long sourceId, Long targetId) {
+        if (Objects.isNull(sourceId) || Objects.isNull(targetId)) {
+            throw new ValueRequiredException("출발역과 도착역을 모두 입력해주세요.");
+        }
+        if (sourceId.equals(targetId)) {
+            throw new DuplicatedValueException("출발역과 도착역은 같을 수 없습니다.");
         }
     }
 

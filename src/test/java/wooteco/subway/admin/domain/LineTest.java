@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import wooteco.subway.admin.exception.NoSuchValueException;
+
 public class LineTest {
     private Line line;
 
@@ -25,12 +27,14 @@ public class LineTest {
     @Test
     void addLineStation() {
         line.addLineStation(LineStation.of(null, 4L, 10, 10));
-        assertThat(line.getStations()).hasSize(4);
-        LineStation lineStation = line.getStations().stream()
+
+        LineStation addedLineStation = line.getStations().stream()
             .filter(it -> Objects.equals(it.getPreStationId(), 4L))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
-        assertThat(lineStation.getStationId()).isEqualTo(1L);
+            .orElseThrow(() -> new NoSuchValueException("해당 노선에 존재하지 않는 구간입니다."));
+
+        assertThat(line.getStations()).hasSize(4);
+        assertThat(addedLineStation.getStationId()).isEqualTo(1L);
     }
 
     @Test
