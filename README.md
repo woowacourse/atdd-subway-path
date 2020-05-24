@@ -207,3 +207,4 @@ public void getDijkstraShortestPath() {
 - [x] Enum으로 PathType 구현 후 리팩토링
 - [x] PathAcceptanceTest를 ParameterizedTest로 수정해보기
 - [x] PathService에 DijkstraShortestPath.findPathBetween() 메서드를 적용할 수 있는 부분 찾아보기
+- [x] 경로 검색시 css가 변경되지 않는 부분 수정
