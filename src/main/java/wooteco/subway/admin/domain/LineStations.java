@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,10 +12,12 @@ public class LineStations {
         this.lineStations = lineStations;
     }
 
-    public Set<Long> getAllLineStationId() {
-        return lineStations.stream()
-                .map(LineStation::getStationId)
-                .collect(Collectors.toSet());
+    public LineStations() {
+        this(new ArrayList<>());
+    }
+
+    public void add(LineStation lineStation) {
+        lineStations.add(lineStation);
     }
 
     public LineStation findLineStation(Long preStationId, Long stationId) {
@@ -25,6 +28,25 @@ public class LineStations {
             }
         }
         return LineStation.empty();
+    }
+
+    public int computeTotalDuration() {
+        return lineStations.stream()
+                .mapToInt(LineStation::getDuration)
+                .sum();
+    }
+
+    public int computeTotalDistance() {
+        return lineStations.stream()
+                .mapToInt(LineStation::getDistance)
+                .sum();
+    }
+
+
+    public Set<Long> getAllLineStationId() {
+        return lineStations.stream()
+                .map(LineStation::getStationId)
+                .collect(Collectors.toSet());
     }
 
     public List<LineStation> getLineStations() {

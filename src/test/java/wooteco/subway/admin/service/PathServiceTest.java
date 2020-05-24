@@ -66,12 +66,12 @@ public class PathServiceTest {
         line2 = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         bundangLine = new Line(2L, "분당선", "bg-gray-300", LocalTime.of(05, 00), LocalTime.of(23, 30), 7);
 
-        line2.addLineStation(new LineStation(null, 1L, 10, 10));
+        line2.addLineStation(new LineStation(null, 1L, 0, 0));
         line2.addLineStation(new LineStation(1L, 2L, 10, 10));
         line2.addLineStation(new LineStation(2L, 3L, 10, 10));
         line2.addLineStation(new LineStation(3L, 4L, 10, 10));
 
-        bundangLine.addLineStation(new LineStation(null, 5L, 10, 10));
+        bundangLine.addLineStation(new LineStation(null, 5L, 0, 0));
         bundangLine.addLineStation(new LineStation(5L, 6L, 10, 10));
         bundangLine.addLineStation(new LineStation(6L, 3L, 10, 10));
         bundangLine.addLineStation(new LineStation(3L, 7L, 10, 10));

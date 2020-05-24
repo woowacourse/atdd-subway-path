@@ -19,8 +19,16 @@ public class LineStation {
         return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
     }
 
+    public boolean isFirstStation() {
+        return Objects.isNull(this.preStationId);
+    }
+
     public static LineStation empty() {
         return new LineStation(null, null, 0, 0);
+    }
+
+    public void updatePreLineStation(Long preStationId) {
+        this.preStationId = preStationId;
     }
 
     public Long getPreStationId() {
@@ -37,9 +45,5 @@ public class LineStation {
 
     public int getDuration() {
         return duration;
-    }
-
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
     }
 }
