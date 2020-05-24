@@ -13,9 +13,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.exception.NotConnectEdgeException;
 
 public class Path {
-    private WeightedMultigraph<Station, Edge> graph;
-    private Map<Long, Station> stations;
-    private List<Line> lines;
+    private final WeightedMultigraph<Station, Edge> graph;
+    private final Map<Long, Station> stations;
+    private final List<Line> lines;
 
     public Path(Map<Long, Station> stations, List<Line> lines) {
         this.graph = new WeightedMultigraph<>(Edge.class);
@@ -32,15 +32,18 @@ public class Path {
             .map(Line::getStations)
             .flatMap(Collection::stream)
             .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
-            .forEach(lineStation -> {
-                Station preStation = getStationWithValidation(stations, lineStation.getPreStationId());
-                Station currentStation = getStationWithValidation(stations, lineStation.getStationId());
-                Edge edge = lineStation.toEdge();
+            .forEach(lineStation -> addEdgeAndSetEdgeWeight(stations, pathType, lineStation));
 
-                graph.addEdge(preStation, currentStation, edge);
-                graph.setEdgeWeight(edge, pathType.getValue(lineStation));
-            });
         return graph;
+    }
+
+    private void addEdgeAndSetEdgeWeight(Map<Long, Station> stations, PathType pathType, LineStation lineStation) {
+        Station preStation = getStationWithValidation(stations, lineStation.getPreStationId());
+        Station currentStation = getStationWithValidation(stations, lineStation.getStationId());
+        Edge edge = lineStation.toEdge();
+
+        graph.addEdge(preStation, currentStation, edge);
+        graph.setEdgeWeight(edge, pathType.getValue(lineStation));
     }
 
     private Station getStationWithValidation(Map<Long, Station> stations, Long stationId) {

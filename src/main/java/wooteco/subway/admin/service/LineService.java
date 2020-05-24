@@ -62,6 +62,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     private Line findBy(Long lineId) {
         return lineRepository.findById(lineId)
             .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
