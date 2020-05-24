@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Edge;
-import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.PathResponse;
@@ -31,18 +31,21 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPathByDistance(PathRequest pathRequest) {
-        final Map<Long, Station> stations = stationRepository.findAll()
-            .stream()
-            .collect(toMap(Station::getId, station -> station));
-        final List<Line> lines = lineRepository.findAll();
-        Path path = new Path(stations, lines);
-        GraphPath<Station, Edge> graphPath = path.getGraphPath(pathRequest.getSource(), pathRequest.getTarget(),
-            pathRequest.getType());
-        final List<Station> shortestPath = graphPath.getVertexList();
-        final List<Edge> edgeList = graphPath.getEdgeList();
-        final int distance = edgeList.stream().mapToInt(Edge::getDistance).sum();
-        final int duration = edgeList.stream().mapToInt(Edge::getDuration).sum();
+        Map<Long, Station> stations = getStations();
+        List<Line> lines = lineRepository.findAll();
+        Path path = new Path(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getType());
+        GraphPath<Station, Edge> graphPath = path.getGraphPath(stations, lines);
+        List<Station> shortestPath = graphPath.getVertexList();
+
+        int distance = path.getDistanceByWeight(graphPath);
+        int duration = path.getDurationByWeight(graphPath);
 
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
+    }
+
+    private Map<Long, Station> getStations() {
+        return stationRepository.findAll()
+            .stream()
+            .collect(toMap(Station::getId, station -> station));
     }
 }

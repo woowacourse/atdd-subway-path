@@ -3,8 +3,8 @@ package wooteco.subway.admin.domain;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Edge extends DefaultWeightedEdge {
-    int distance;
-    int duration;
+    private final int distance;
+    private final int duration;
 
     public Edge(final int distance, final int duration) {
         this.distance = distance;
@@ -23,6 +23,4 @@ public class Edge extends DefaultWeightedEdge {
     public int getDuration() {
         return duration;
     }
-
-
 }
