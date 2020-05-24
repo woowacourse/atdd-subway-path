@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,8 @@ import wooteco.subway.admin.station.domain.Station;
 class SubwayShortestPathTest {
 
     private Map<Long, Station> stations;
-    private DijkstraShortestPath<Station, SubwayWeightedEdge> shortestDistanceGraph;
-    private DijkstraShortestPath<Station, SubwayWeightedEdge> shortestDurationGraph;
+    private WeightedMultigraph<Station, SubwayWeightedEdge> shortestDistanceGraph;
+    private WeightedMultigraph<Station, SubwayWeightedEdge> shortestDurationGraph;
 
     @BeforeEach
     void setUp() {
@@ -48,119 +49,131 @@ class SubwayShortestPathTest {
         lineStations.add(new LineStation(null, station2.getId(), 0, 0));
         lineStations.add(new LineStation(station2.getId(), station3.getId(), 2, 1));
 
-        shortestDistanceGraph = new DijkstraShortestPath<>(
-            SubwayGraphFactory.createGraphBy(ShortestPathType.DISTANCE, stations, lineStations));
-        shortestDurationGraph = new DijkstraShortestPath<>(
-            SubwayGraphFactory.createGraphBy(ShortestPathType.DURATION, stations, lineStations));
+        shortestDistanceGraph = SubwayGraphFactory.createGraphBy(ShortestPathType.DISTANCE, stations, lineStations);
+        shortestDurationGraph = SubwayGraphFactory.createGraphBy(ShortestPathType.DURATION, stations, lineStations);
     }
 
     @DisplayName("서로 다른 2개의 역이 이어져있는 경우 - 최단 거리")
     @Test
     void getPathStations_ByDistance() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDistanceGraph);
+        final Station source = stations.get(1L);
+        final Station target = stations.get(3L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDistanceGraph, source, target));
 
-        assertThat(subwayShortestPath.getPathStations(stations.get(1L), stations.get(3L)))
-            .hasSize(3);
-        assertThat(subwayShortestPath.getWeight(stations.get(1L), stations.get(3L))).isEqualTo(4);
-        assertThat(subwayShortestPath.getSubWeight(stations.get(1L), stations.get(3L)))
-            .isEqualTo(3);
+        assertThat(subwayShortestPath.getPathStations()).hasSize(3);
+        assertThat(subwayShortestPath.getWeight()).isEqualTo(4);
+        assertThat(subwayShortestPath.getSubWeight()).isEqualTo(3);
     }
 
     @DisplayName("서로 다른 2개의 역이 이어져있는 경우 - 최소 시간")
     @Test
     void getPathStations_ByDuration() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDurationGraph);
+        final Station source = stations.get(1L);
+        final Station target = stations.get(3L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDurationGraph, source, target));
 
-        assertThat(subwayShortestPath.getPathStations(stations.get(1L), stations.get(3L)))
-            .hasSize(3);
-        assertThat(subwayShortestPath.getWeight(stations.get(1L), stations.get(3L))).isEqualTo(2);
-        assertThat(subwayShortestPath.getSubWeight(stations.get(1L), stations.get(3L)))
-            .isEqualTo(5);
+        assertThat(subwayShortestPath.getPathStations()).hasSize(3);
+        assertThat(subwayShortestPath.getWeight()).isEqualTo(2);
+        assertThat(subwayShortestPath.getSubWeight()).isEqualTo(5);
     }
 
     @DisplayName("source역이 없는 경우 - 최단 거리")
     @Test
     void getPathStations_ByDistance_sourceNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDistanceGraph);
+        final Station source = stations.get(5L);
+        final Station target = stations.get(3L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDistanceGraph, source, target));
 
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(5L), stations.get(3L)))
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(5L), stations.get(3L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(5L), stations.get(3L)))
+        assertThatThrownBy(subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("source역이 없는 경우 - 최소 시간")
     @Test
     void getPathStations_ByDuration_sourceNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDurationGraph);
+        final Station source = stations.get(5L);
+        final Station target = stations.get(3L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDurationGraph, source, target));
 
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(5L), stations.get(3L)))
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(5L), stations.get(3L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
         assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(5L), stations.get(3L)))
+            subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("target역이 없는 경우 - 최단 거리")
     @Test
     void getPathStations_ByDistance_targetNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDistanceGraph);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(1L), stations.get(5L)))
+        final Station source = stations.get(1L);
+        final Station target = stations.get(5L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDistanceGraph, source, target));
+
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(1L), stations.get(5L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
         assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(1L), stations.get(5L)))
+            subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("target역이 없는 경우 - 최소 시간")
     @Test
     void getPathStations_ByDuration_targetNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDurationGraph);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(1L), stations.get(5L)))
+        final Station source = stations.get(1L);
+        final Station target = stations.get(5L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDurationGraph, source, target));
+
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(1L), stations.get(5L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(1L), stations.get(5L)))
+        assertThatThrownBy(subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("target역과 source역이 모두 없는 경우 - 최단 거리")
     @Test
     void getPathStations_ByDistance_sourceAndTargetNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDistanceGraph);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(5L), stations.get(6L)))
+        final Station source = stations.get(5L);
+        final Station target = stations.get(6L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDistanceGraph, source, target));
+
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(5L), stations.get(6L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(5L), stations.get(6L)))
+        assertThatThrownBy(subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 
     @DisplayName("target역과 source역이 모두 없는 경우 - 최소 시간")
     @Test
     void getPathStations_ByDuration_sourceAndTargetNotExists() {
-        SubwayShortestPath subwayShortestPath = new SubwayShortestPath(shortestDurationGraph);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getPathStations(stations.get(5L), stations.get(6L)))
+        final Station source = stations.get(5L);
+        final Station target = stations.get(6L);
+        final SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(DijkstraShortestPath.findPathBetween(shortestDurationGraph, source, target));
+
+        assertThatThrownBy(subwayShortestPath::getPathStations)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(() -> subwayShortestPath.getWeight(stations.get(5L), stations.get(6L)))
+        assertThatThrownBy(subwayShortestPath::getWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
-        assertThatThrownBy(
-            () -> subwayShortestPath.getSubWeight(stations.get(5L), stations.get(6L)))
+        assertThatThrownBy(subwayShortestPath::getSubWeight)
             .isInstanceOf(InvalidSubwayPathException.class);
     }
 }

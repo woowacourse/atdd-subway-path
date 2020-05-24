@@ -32,7 +32,7 @@ public class PathControllerTest {
         given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
 
         mockMvc.perform(get(uri)
-            .param("source", "null")
+            .param("source", "1")
             .param("target", "2"))
                .andDo(print())
                .andExpect(status().isOk());

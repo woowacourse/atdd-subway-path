@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
@@ -55,14 +56,16 @@ public class PathService {
                                 .collect(toMap(Station::getId, station -> station));
     }
 
-    private PathResponse getPathResponse(Station source, Station target,
-        WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraph) {
-        final SubwayShortestPath subwayShortestPath = new SubwayShortestPath(new DijkstraShortestPath<>(subwayGraph));
+    private PathResponse getPathResponse(final Station source, final Station target,
+        final WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraph) {
+        final GraphPath<Station, SubwayWeightedEdge> graphPath =
+            DijkstraShortestPath.findPathBetween(subwayGraph, source, target);
+        final SubwayShortestPath subwayShortestPath = new SubwayShortestPath(graphPath);
 
-        final List<StationResponse> stations = StationResponse
-            .listOf(subwayShortestPath.getPathStations(source, target));
-        final int weight = subwayShortestPath.getWeight(source, target);
-        final int subWeight = subwayShortestPath.getSubWeight(source, target);
+        final List<StationResponse> stations =
+            StationResponse.listOf(subwayShortestPath.getPathStations());
+        final int weight = subwayShortestPath.getWeight();
+        final int subWeight = subwayShortestPath.getSubWeight();
 
         return new PathResponse(stations, weight, subWeight);
     }
