@@ -27,7 +27,7 @@ import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.DisconnectedPathException;
-import wooteco.subway.admin.exception.NoSuchStationException;
+import wooteco.subway.admin.exception.NotFoundResourceException;
 import wooteco.subway.admin.exception.SameSourceAndDestinationException;
 import wooteco.subway.admin.repository.LineRepository;
 
@@ -110,7 +110,7 @@ class PathAlgorithmServiceTest {
     @MethodSource("nonIncludingSourceTargetTypeSet")
     void shortestDurationPathNotConcludingStation(String source, String target, String type) {
         assertThatThrownBy(() -> pathAlgorithmService.findShortestPath(new PathRequest(source, target, type), stations))
-            .isInstanceOf(NoSuchStationException.class);
+            .isInstanceOf(NotFoundResourceException.class);
     }
 
     //@formatter:off

@@ -25,7 +25,7 @@ import wooteco.subway.admin.dto.PathRequest;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.exception.DisconnectedPathException;
-import wooteco.subway.admin.exception.NoSuchStationException;
+import wooteco.subway.admin.exception.NotFoundResourceException;
 import wooteco.subway.admin.exception.SameSourceAndDestinationException;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -107,7 +107,7 @@ public class PathServiceTest {
 		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4, station5));
 
 		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(source, target, type)))
-			.isInstanceOf(NoSuchStationException.class);
+			.isInstanceOf(NotFoundResourceException.class);
 	}
 
 	//@formatter:off

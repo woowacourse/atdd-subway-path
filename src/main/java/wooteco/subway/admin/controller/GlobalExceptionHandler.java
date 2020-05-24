@@ -9,7 +9,6 @@ import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.DisconnectedPathException;
 import wooteco.subway.admin.exception.IllegalPathSearchTypeException;
 import wooteco.subway.admin.exception.InvalidRequestDataException;
-import wooteco.subway.admin.exception.NoSuchStationException;
 import wooteco.subway.admin.exception.NotFoundResourceException;
 import wooteco.subway.admin.exception.SameSourceAndDestinationException;
 
@@ -24,7 +23,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {InvalidRequestDataException.class, IllegalPathSearchTypeException.class,
-        NoSuchStationException.class, SameSourceAndDestinationException.class, DisconnectedPathException.class})
+        SameSourceAndDestinationException.class, DisconnectedPathException.class})
 	public ResponseEntity<ErrorResponse> handleClientBadRequestException(RuntimeException e) {
     	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(ErrorResponse.of(e.getMessage()));
