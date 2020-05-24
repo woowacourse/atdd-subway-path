@@ -19,7 +19,7 @@ public class LineRepositoryTest {
 	@Test
 	void addLineStation() {
 		// given
-		Line line = new Line("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+		Line line = new Line(null, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
 		Line persistLine = lineRepository.save(line);
 		persistLine.addLineStation(new LineStation(null, 1L, 10, 10));
 		persistLine.addLineStation(new LineStation(1L, 2L, 10, 10));
@@ -28,6 +28,6 @@ public class LineRepositoryTest {
 		Line resultLine = lineRepository.save(persistLine);
 
 		// then
-		assertThat(resultLine.getStations()).hasSize(2);
+		assertThat(resultLine.getStations().getStations()).hasSize(2);
 	}
 }

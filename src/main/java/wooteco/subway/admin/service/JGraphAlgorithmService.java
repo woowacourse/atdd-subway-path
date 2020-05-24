@@ -58,7 +58,7 @@ public class JGraphAlgorithmService implements PathAlgorithmService {
 
     private void initGraphEdges(WeightedMultigraph<Station, SubwayEdge> graph, PathSearchType type, Stations stations) {
         lineRepository.findAll().stream()
-            .flatMap(line -> line.getStations().stream())
+            .flatMap(line -> line.getStations().getStations().stream())
             .filter(LineStation::isNotFirstLineStation)
             .forEach(lineStation -> addOneEdgeAndSetWeight(graph, type, stations, lineStation));
     }

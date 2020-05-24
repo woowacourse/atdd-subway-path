@@ -29,7 +29,7 @@ public class LineRequest {
 	}
 
 	public Line toLine() {
-		return new Line(name, startTime, endTime, intervalTime);
+		return new Line(null, name, startTime, endTime, intervalTime);
 	}
 
 	public String getName() {

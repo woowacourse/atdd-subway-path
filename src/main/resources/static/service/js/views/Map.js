@@ -25,10 +25,10 @@ function Map() {
     })
   }
 
-  this.init = () => {
-    initSubwayLinesSlider()
+  this.init = async () => {
+    await initSubwayLinesSlider()
   }
 }
 
 const edge = new Map()
-edge.init()
+await edge.init()

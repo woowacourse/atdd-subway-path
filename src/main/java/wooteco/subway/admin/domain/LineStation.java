@@ -26,8 +26,12 @@ public class LineStation {
 			.orElseThrow(IllegalArgumentException::new);
 	}
 
+	public boolean isFirstLineStation() {
+		return preStationId == null;
+	}
+
 	public boolean isNotFirstLineStation() {
-		return preStationId != null;
+		return !isFirstLineStation();
 	}
 
 	public Long getPreStationId() {
