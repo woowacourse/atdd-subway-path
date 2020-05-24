@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,10 +49,26 @@ class PathTest {
 		double expected = 20;
 
 		//when
-		Graph graph = new Graph(Arrays.asList(line),
+		Graph graph = new Graph(Collections.singletonList(line),
 			Arrays.asList(station1, station2, station3, station4), strategy);
 		Path path = graph.createPath(station1, station3);
 		double actual = path.duration();
+
+		//then
+		assertThat(actual).isEqualTo(expected);
+	}
+
+	@DisplayName("각 구간 거리가 10km이고, 경로의 총 거리가 20km인 경우 distance 확인")
+	@Test
+	void distance_GivenStations_CalculateDistance() {
+		//given
+		double expected = 20;
+
+		//when
+		Graph graph = new Graph(Collections.singletonList(line),
+			Arrays.asList(station1, station2, station3, station4), strategy);
+		Path path = graph.createPath(station1, station3);
+		double actual = path.distance();
 
 		//then
 		assertThat(actual).isEqualTo(expected);

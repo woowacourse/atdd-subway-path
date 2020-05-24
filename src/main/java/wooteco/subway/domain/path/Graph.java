@@ -39,8 +39,7 @@ public class Graph {
 		List<LineStation> possibleEdges = new ArrayList<>();
 		lines.stream()
 			.map(Line::getStationsExcludeFirst)
-			.map(possibleEdges::addAll)
-			.close();
+			.forEach(possibleEdges::addAll);
 		return possibleEdges;
 	}
 
