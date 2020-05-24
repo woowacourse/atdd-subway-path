@@ -26,6 +26,7 @@ import wooteco.subway.admin.exception.NotConnectEdgeException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+@Import({DijkstraStrategy.class})
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
     private static final String STATION_NAME1 = "양재시민역";
