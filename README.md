@@ -203,7 +203,7 @@ public void getDijkstraShortestPath() {
 ### 수정할 사항
 
 - [x] Bean으로 주입받는 변수들 final로 수정
-- [ ] PathController에 대한 테스트 코드 작성 (side case도 함께)
+- [x] PathController에 대한 테스트 코드 작성 (side case도 함께)
 - [ ] Enum으로 PathType 구현 후 리팩토링
 - [ ] PathAcceptanceTest를 ParameterizedTest로 수정해보기
 - [ ] PathService에 DijkstraShortestPath.findPathBetween() 메서드를 적용할 수 있는 부분 찾아보기

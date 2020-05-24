@@ -23,48 +23,48 @@ import wooteco.subway.admin.station.service.dto.StationResponse;
 @Service
 public class PathService {
 
-	private final LineStationRepository lineStationRepository;
-	private final StationRepository stationRepository;
+    private final LineStationRepository lineStationRepository;
+    private final StationRepository stationRepository;
 
-	public PathService(LineStationRepository lineStationRepository,
-		StationRepository stationRepository) {
-		this.lineStationRepository = lineStationRepository;
-		this.stationRepository = stationRepository;
-	}
+    public PathService(LineStationRepository lineStationRepository,
+        StationRepository stationRepository) {
+        this.lineStationRepository = lineStationRepository;
+        this.stationRepository = stationRepository;
+    }
 
-	public PathInfoResponse searchPath(Long source, Long target) {
-		List<LineStation> lineStations = lineStationRepository.findAll();
-		Map<Long, Station> stations = getStationsWithId();
-		Station sourceStation = stations.get(source);
-		Station targetStation = stations.get(target);
+    public PathInfoResponse searchPath(Long source, Long target) {
+        List<LineStation> lineStations = lineStationRepository.findAll();
+        Map<Long, Station> stations = getStationsWithId();
+        Station sourceStation = stations.get(source);
+        Station targetStation = stations.get(target);
 
-		WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraphByDistance =
-			SubwayGraphFactory.createDistanceGraph(lineStations, stations);
-		WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraphByDuration =
-			SubwayGraphFactory.createDurationGraph(lineStations, stations);
+        WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraphByDistance =
+            SubwayGraphFactory.createDistanceGraph(lineStations, stations);
+        WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraphByDuration =
+            SubwayGraphFactory.createDurationGraph(lineStations, stations);
 
-		return new PathInfoResponse(
-			getPathResponse(sourceStation, targetStation, subwayGraphByDistance),
-			getPathResponse(sourceStation, targetStation, subwayGraphByDuration)
-		);
-	}
+        return new PathInfoResponse(
+            getPathResponse(sourceStation, targetStation, subwayGraphByDistance),
+            getPathResponse(sourceStation, targetStation, subwayGraphByDuration)
+        );
+    }
 
-	private Map<Long, Station> getStationsWithId() {
-		return stationRepository.findAll()
-			.stream()
-			.collect(toMap(Station::getId, station -> station));
-	}
+    private Map<Long, Station> getStationsWithId() {
+        return stationRepository.findAll()
+                                .stream()
+                                .collect(toMap(Station::getId, station -> station));
+    }
 
-	private PathResponse getPathResponse(Station source, Station target,
-		WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraph) {
-		SubwayShortestPath subwayShortestPath =
-			new SubwayShortestPath(new DijkstraShortestPath<>(subwayGraph));
+    private PathResponse getPathResponse(Station source, Station target,
+        WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraph) {
+        SubwayShortestPath subwayShortestPath =
+            new SubwayShortestPath(new DijkstraShortestPath<>(subwayGraph));
 
-		List<StationResponse> stations =
-			StationResponse.listOf(subwayShortestPath.getPathStations(source, target));
-		int weight = subwayShortestPath.getWeight(source, target);
-		int subWeight = subwayShortestPath.getSubWeight(source, target);
+        List<StationResponse> stations =
+            StationResponse.listOf(subwayShortestPath.getPathStations(source, target));
+        int weight = subwayShortestPath.getWeight(source, target);
+        int subWeight = subwayShortestPath.getSubWeight(source, target);
 
-		return new PathResponse(stations, weight, subWeight);
-	}
+        return new PathResponse(stations, weight, subWeight);
+    }
 }
