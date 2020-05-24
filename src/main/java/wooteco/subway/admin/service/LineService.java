@@ -33,7 +33,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line line = findById(id);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
@@ -46,12 +46,12 @@ public class LineService {
     }
 
     @Transactional
-    public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    public Line addLineStation(Long id, LineStationCreateRequest request) {
+        Line line = findById(id);
         Edge edge = new Edge(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
         line.addEdge(edge);
 
-        lineRepository.save(line);
+        return lineRepository.save(line);
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findById(id);
         persistLine.update(request.toLine());
 
         lineRepository.save(persistLine);
@@ -74,9 +74,13 @@ public class LineService {
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = findById(lineId);
         line.removeLineStationById(stationId);
 
         lineRepository.save(line);
+    }
+
+    private Line findById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
