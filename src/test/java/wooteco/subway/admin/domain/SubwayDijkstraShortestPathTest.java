@@ -13,6 +13,7 @@ import wooteco.subway.admin.domain.exceptions.IllegalPathException;
 import wooteco.subway.admin.domain.subwayShortestPath.PathType;
 import wooteco.subway.admin.domain.subwayShortestPath.SubwayDijkstraShortestPath;
 import wooteco.subway.admin.domain.subwayShortestPath.SubwayShortestPath;
+import wooteco.subway.admin.domain.subwayShortestPath.Weight;
 
 class SubwayDijkstraShortestPathTest extends domainTest {
 	Line line1;
@@ -90,10 +91,11 @@ class SubwayDijkstraShortestPathTest extends domainTest {
 	void findPath_happyCase_ShortestPath() {
 		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
 			.of(lines, stations, station4, station10, PathType.DISTANCE);
+		Weight weight = subwayShortestPath.getWeight();
 		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
 			Arrays.asList(station4, station5, station6, station9, station10));
-		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
-		assertThat(subwayShortestPath.getDuration()).isEqualTo(40);
+		assertThat(weight.getDistance()).isEqualTo(40);
+		assertThat(weight.getDuration()).isEqualTo(40);
 	}
 
 	@DisplayName("출발역에서 도착역으로 가는 최단 시간 경로를 조회한다.")
@@ -101,10 +103,11 @@ class SubwayDijkstraShortestPathTest extends domainTest {
 	void findPath_happyCase_MinimumTimePath() {
 		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
 			.of(lines, stations, station4, station10, PathType.DURATION);
+		Weight weight = subwayShortestPath.getWeight();
 		assertThat(subwayShortestPath.getVertexList()).isEqualTo(
 			Arrays.asList(station4, station5, station6, station9, station10));
-		assertThat(subwayShortestPath.getDistance()).isEqualTo(40);
-		assertThat(subwayShortestPath.getDuration()).isEqualTo(40);
+		assertThat(weight.getDistance()).isEqualTo(40);
+		assertThat(weight.getDuration()).isEqualTo(40);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalPathException을 던진다.")

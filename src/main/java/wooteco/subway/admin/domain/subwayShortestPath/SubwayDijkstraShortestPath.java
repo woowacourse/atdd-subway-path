@@ -109,16 +109,11 @@ public class SubwayDijkstraShortestPath implements SubwayShortestPath {
 	}
 
 	@Override
-	public int getDistance() {
-		return graphPath.getEdgeList().stream()
-			.mapToInt(Edge::getDistance)
-			.sum();
-	}
-
-	@Override
-	public int getDuration() {
-		return graphPath.getEdgeList().stream()
-			.mapToInt(Edge::getDuration)
-			.sum();
+	public Weight getWeight() {
+		Weight weight = Weight.zero();
+		for (Edge edge : graphPath.getEdgeList()) {
+			weight = weight.addWeight(edge.getDistance(), edge.getDuration());
+		}
+		return weight;
 	}
 }

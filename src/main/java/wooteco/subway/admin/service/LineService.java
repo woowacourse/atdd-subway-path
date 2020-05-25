@@ -11,6 +11,7 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.subwayShortestPath.PathType;
 import wooteco.subway.admin.domain.subwayShortestPath.SubwayDijkstraShortestPath;
 import wooteco.subway.admin.domain.subwayShortestPath.SubwayShortestPath;
+import wooteco.subway.admin.domain.subwayShortestPath.Weight;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -91,9 +92,9 @@ public class LineService {
 
 		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
 			.of(lines, stations, sourceStation, targetStation, pathType);
+		Weight weight = subwayShortestPath.getWeight();
 
 		return PathResponse.of(subwayShortestPath.getVertexList(),
-			subwayShortestPath.getDistance(),
-			subwayShortestPath.getDuration());
+			weight.getDistance(), weight.getDuration());
 	}
 }
