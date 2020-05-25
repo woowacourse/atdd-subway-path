@@ -39,7 +39,7 @@ const api = (() => {
 
   const station = {
     getAll() {
-      return request(`/paths/stations`)
+      return request(`/stations`)
     }
   }
 
