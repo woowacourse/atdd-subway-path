@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +57,7 @@ public class PathServiceTest {
 	@Test
 	void existStations() {
 		assertThatThrownBy(() -> {
-			pathService.searchPath(6L, 7L, DijkstraEdgeWeightType.DISTANCE);
+			pathService.createPathResponse(6L, 7L, DijkstraEdgeWeightType.DISTANCE);
 		}).isInstanceOf(NotExistStationException.class);
 	}
 
@@ -65,7 +66,7 @@ public class PathServiceTest {
 	void searchPathByShortestDistance() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath(1L, 4L, DijkstraEdgeWeightType.DISTANCE);
+		PathResponse pathResponse = pathService.createPathResponse(1L, 4L, DijkstraEdgeWeightType.DISTANCE);
 
 		assertThat(pathResponse.getStationNames().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
@@ -77,7 +78,7 @@ public class PathServiceTest {
 	void searchPathByShortestDuration() {
 		setUpMock();
 
-		PathResponse pathResponse = pathService.searchPath(1L, 4L, DijkstraEdgeWeightType.DURATION);
+		PathResponse pathResponse = pathService.createPathResponse(1L, 4L, DijkstraEdgeWeightType.DURATION);
 
 		assertThat(pathResponse.getStationNames().size()).isEqualTo(4);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(30);
@@ -89,15 +90,15 @@ public class PathServiceTest {
 	void ifUnconnectedStationsInputThenThrowException() {
 		setUpMock();
 
-		assertThatThrownBy(() -> pathService.searchPath(1L, 5L, DijkstraEdgeWeightType.DISTANCE))
+		assertThatThrownBy(() -> pathService.createPathResponse(1L, 5L, DijkstraEdgeWeightType.DISTANCE))
 				.isInstanceOf(UnconnectedStationsException.class);
 	}
 
 	private void setUpMock() {
-		when(stationRepository.findAll()).thenReturn(stations);
 		when(lineRepository.findAllLineStations()).thenReturn(lineStations);
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(new Station(1L, "강남역")));
 		when(stationRepository.findById(4L)).thenReturn(Optional.of(new Station(4L, "잠실역")));
 		when(stationRepository.findById(5L)).thenReturn(Optional.of(new Station(5L, "서울역")));
+		when(stationRepository.findNamesByIds(any())).thenReturn(Arrays.asList("강남역", "역삼역", "선릉역", "잠실역"));
 	}
 }
