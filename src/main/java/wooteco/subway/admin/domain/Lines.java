@@ -15,13 +15,6 @@ public class Lines {
         return new Lines(lines);
     }
 
-    public List<LineStation> getEdges() {
-        return lines.stream()
-                .map(Line::getStations)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
     public List<Long> getWholeStationIds() {
         return lines.stream()
                 .map(Line::getLineStationsId)

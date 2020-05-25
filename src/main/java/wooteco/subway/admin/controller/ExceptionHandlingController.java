@@ -26,7 +26,9 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler(Exception.class)
-    public void unexpectedExceptionHandler(Exception error) {
+    public ResponseEntity<ErrorResponse> unexpectedExceptionHandler(Exception error) {
         logger.error(error.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("서버 오류가 발생했습니다. 지속해서 발생하면 관리자에게 문의 주세요."));
     }
 }

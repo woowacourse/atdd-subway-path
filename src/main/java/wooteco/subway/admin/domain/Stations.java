@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,14 +17,23 @@ public class Stations {
         return new Stations(stations);
     }
 
+    public static Stations empty() {
+        return new Stations(new ArrayList<>());
+    }
+
     public Map<Long, Station> convertMap() {
         return stations.stream()
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
-    public List<Station> getMatchingStationsByIds(List<Long> stationIds) {
-        return stations.stream()
+    public Stations getMatchingStationsByIds(List<Long> stationIds) {
+        List<Station> matchingStations = stations.stream()
                 .filter(station -> stationIds.contains(station.getId()))
                 .collect(Collectors.toList());
+        return Stations.of(matchingStations);
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }

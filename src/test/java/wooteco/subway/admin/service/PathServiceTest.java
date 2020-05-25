@@ -74,7 +74,7 @@ class PathServiceTest {
         line3.addLineStation(new LineStation(9L, 5L, 50, 50));
 
         lines = Arrays.asList(line1, line2, line3);
-        graphService.initialize(Stations.of(stations), Lines.of(lines));
+        graphService.initialize(Stations.of(stations), LineStations.from(lines));
 
     }
 
@@ -141,7 +141,7 @@ class PathServiceTest {
         line4.addLineStation(new LineStation(10L, 11L, 10, 10));
         List<Line> lines = new ArrayList<>(this.lines);
         lines.add(line4);
-        graphService.initialize(Stations.of(stations), Lines.of(lines));
+        graphService.initialize(Stations.of(stations), LineStations.from(lines));
 
         when(lineService.findStationWithName(stations.get(0).getName())).thenReturn(stations.get(0));
         when(lineService.findStationWithName(stations.get(10).getName())).thenReturn(stations.get(10));

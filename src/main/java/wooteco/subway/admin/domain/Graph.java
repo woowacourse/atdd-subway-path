@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.admin.exception.NotExistPathException;
 
-import java.util.List;
 import java.util.Map;
 
 public class Graph {
@@ -16,7 +15,7 @@ public class Graph {
         this.shortestPathAlgorithm = shortestPathAlgorithm;
     }
 
-    public static Graph of(Map<Long, Station> stations, List<LineStation> edges, PathType pathType,
+    public static Graph of(Map<Long, Station> stations, LineStations lineStations, PathType pathType,
                            CustomShortestPathAlgorithm shortestPathAlgorithm) {
         WeightedMultigraph<Station, LineStationEdge> graph = new WeightedMultigraph<>(LineStationEdge.class);
 
@@ -24,13 +23,12 @@ public class Graph {
             graph.addVertex(station);
         }
 
-        edges.stream()
-                .filter(edge -> edge.getPreStationId() != null)
-                .forEach(edge -> {
-                    Station sourceVertex = stations.get(edge.getPreStationId());
-                    Station targetVertex = stations.get(edge.getStationId());
-                    graph.addEdge(sourceVertex, targetVertex, LineStationEdge.of(edge, pathType));
-                });
+        for (LineStation edge : lineStations.getEdges()) {
+            Station sourceVertex = stations.get(edge.getPreStationId());
+            Station targetVertex = stations.get(edge.getStationId());
+            graph.addEdge(sourceVertex, targetVertex, LineStationEdge.of(edge, pathType));
+        }
+
         return new Graph(graph, shortestPathAlgorithm);
     }
 

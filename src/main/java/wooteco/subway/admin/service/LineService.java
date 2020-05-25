@@ -24,7 +24,7 @@ public class LineService {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.graphService = graphService;
-        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
+        graphService.initialize(Stations.of(findAllStations()), LineStations.from(showLines()));
     }
 
     public Line save(Line line) {
@@ -52,20 +52,20 @@ public class LineService {
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
-        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
+        graphService.initialize(Stations.of(findAllStations()), LineStations.from(showLines()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(() -> new LineNotFoundException(lineId));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
-        graphService.initialize(Stations.of(findAllStations()), Lines.of(showLines()));
+        graphService.initialize(Stations.of(findAllStations()), LineStations.from(showLines()));
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException(id));
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
+        return LineDetailResponse.of(line, Stations.of(stations));
     }
 
     public WholeSubwayResponse wholeLines() {

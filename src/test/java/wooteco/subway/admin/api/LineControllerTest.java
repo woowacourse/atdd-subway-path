@@ -13,6 +13,7 @@ import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
@@ -67,7 +68,7 @@ public class LineControllerTest {
                 .andExpect(header().exists("ETag"))
                 .andReturn();
 
-        WholeSubwayResponse updatedResponse = WholeSubwayResponse.of(Collections.singletonList(LineDetailResponse.of(new Line(1L, "1호선", LocalTime.NOON, LocalTime.MIDNIGHT, 10), new ArrayList<>())));
+        WholeSubwayResponse updatedResponse = WholeSubwayResponse.of(Collections.singletonList(LineDetailResponse.of(new Line(1L, "1호선", LocalTime.NOON, LocalTime.MIDNIGHT, 10), Stations.empty())));
         when(lineService.wholeLines()).thenReturn(updatedResponse);
         mockMvc.perform(post(postUri)
                 .contentType(new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), StandardCharsets.UTF_8))
@@ -102,6 +103,6 @@ public class LineControllerTest {
 
     private LineDetailResponse createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        return LineDetailResponse.of(new Line(), Stations.of(stations));
     }
 }

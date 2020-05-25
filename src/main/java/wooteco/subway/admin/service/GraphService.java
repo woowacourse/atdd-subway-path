@@ -3,7 +3,6 @@ package wooteco.subway.admin.service;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,12 +16,11 @@ public class GraphService {
         this.shortestPathAlgorithm = shortestPathAlgorithm;
     }
 
-    public void initialize(Stations stations, Lines lines) {
+    public void initialize(Stations stations, LineStations lineStations) {
         Map<Long, Station> stationsCache = stations.convertMap();
-        List<LineStation> edges = lines.getEdges();
 
-        graphs.put(PathType.DISTANCE, Graph.of(stationsCache, edges, PathType.DISTANCE, shortestPathAlgorithm));
-        graphs.put(PathType.DURATION, Graph.of(stationsCache, edges, PathType.DURATION, shortestPathAlgorithm));
+        graphs.put(PathType.DISTANCE, Graph.of(stationsCache, lineStations, PathType.DISTANCE, shortestPathAlgorithm));
+        graphs.put(PathType.DURATION, Graph.of(stationsCache, lineStations, PathType.DURATION, shortestPathAlgorithm));
     }
 
     public ShortestPath getShortestPath(Station source, Station target, PathType pathType) {

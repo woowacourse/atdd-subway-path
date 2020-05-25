@@ -1,6 +1,7 @@
 package wooteco.subway.admin.dto;
 
 import wooteco.subway.admin.domain.PathInfo;
+import wooteco.subway.admin.domain.Stations;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class PathResponse {
     }
 
     public static PathResponse from(PathInfo pathInfo) {
-        return new PathResponse(StationResponse.listOf(pathInfo.getPath()), pathInfo.getDuration(), pathInfo.getDistance());
+        return new PathResponse(StationResponse.listOf(Stations.of(pathInfo.getPath())), pathInfo.getDuration(), pathInfo.getDistance());
     }
 
     public List<StationResponse> getStations() {

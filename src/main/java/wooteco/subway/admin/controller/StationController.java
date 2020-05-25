@@ -3,6 +3,7 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
@@ -30,7 +31,7 @@ public class StationController {
 
     @GetMapping("/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationRepository.findAll()));
+        return ResponseEntity.ok().body(StationResponse.listOf(Stations.of(stationRepository.findAll())));
     }
 
     @DeleteMapping("/stations/{id}")
