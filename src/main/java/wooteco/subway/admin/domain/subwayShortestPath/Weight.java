@@ -1,8 +1,10 @@
 package wooteco.subway.admin.domain.subwayShortestPath;
 
 public class Weight {
-	final int distance;
-	final int duration;
+	private static final int ZERO = 0;
+
+	private final int distance;
+	private final int duration;
 
 	public Weight(int distance, int duration) {
 		this.distance = distance;
@@ -10,7 +12,7 @@ public class Weight {
 	}
 
 	public static Weight zero() {
-		return new Weight(0, 0);
+		return new Weight(ZERO, ZERO);
 	}
 
 	public Weight addWeight(int distance, int duration) {
