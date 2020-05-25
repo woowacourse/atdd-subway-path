@@ -1,4 +1,4 @@
-package wooteco.subway.controller;
+package wooteco.subway.controller.path;
 
 import javax.validation.constraints.NotBlank;
 

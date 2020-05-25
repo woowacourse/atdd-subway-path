@@ -9,7 +9,7 @@ import wooteco.subway.domain.Station;
 public class Path {
     private final GraphPath<Station, StationWeightEdge> path;
 
-    public Path(GraphPath<Station, StationWeightEdge> path) {
+    Path(GraphPath<Station, StationWeightEdge> path) {
         this.path = path;
     }
 

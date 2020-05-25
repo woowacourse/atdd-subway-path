@@ -24,17 +24,14 @@ class GraphTest {
 
 	private List<Line> lines;
 	private List<Station> stations;
-	private Station station1;
-	private Station station3;
-	private Station station4;
 	private WeightStrategy strategy;
 
 	@BeforeEach
 	void setUp() {
-		station1 = new Station(1L, STATION_NAME1);
+		Station station1 = new Station(1L, STATION_NAME1);
 		Station station2 = new Station(2L, STATION_NAME2);
-		station3 = new Station(3L, STATION_NAME3);
-		station4 = new Station(4L, STATION_NAME4);
+		Station station3 = new Station(3L, STATION_NAME3);
+		Station station4 = new Station(4L, STATION_NAME4);
 
 		Line line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-600");
 		line.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -46,7 +43,13 @@ class GraphTest {
 
 		lines = Arrays.asList(line, line2);
 		stations = Arrays.asList(station1, station2, station3, station4);
-		strategy = WeightType.findStrategy("DISTANCE");
+		strategy = PathType.findPathType("DISTANCE");
+	}
+
+	@DisplayName("그래프 생성")
+	@Test
+	void create() {
+		assertThat(new Graph(lines, stations, strategy)).isInstanceOf(Graph.class);
 	}
 
 	@DisplayName("올바른 경로 요청 시 경로 생성")
@@ -54,7 +57,7 @@ class GraphTest {
 	void createPath_GivenValidPath_ReturnPath() {
 		Graph graph = new Graph(lines, stations, strategy);
 
-		assertThat(graph.createPath(station1,station3)).isNotNull();
+		assertThat(graph.createPath(STATION_NAME1, STATION_NAME3)).isNotNull();
 	}
 
 	@DisplayName("예외테스트: 연결되지 않은 역의 경로를 요청 시, 예외 발생")
@@ -62,7 +65,7 @@ class GraphTest {
 	void createPath_GivenNotConnectedPath_ExceptionThrown() {
 		Graph graph = new Graph(lines, stations, strategy);
 
-		assertThatThrownBy(() -> graph.createPath(station1, station4))
+		assertThatThrownBy(() -> graph.createPath(STATION_NAME1, STATION_NAME4))
 			.isInstanceOf(InvalidPathException.class)
 			.hasMessage(String.format(InvalidPathException.NOT_CONNECTED_PATH, STATION_NAME1, STATION_NAME4));
 	}

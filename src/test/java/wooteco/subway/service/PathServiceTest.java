@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineStation;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.WeightType;
+import wooteco.subway.domain.path.Graph;
+import wooteco.subway.domain.path.Graphs;
+import wooteco.subway.domain.path.PathType;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.service.PathService;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
@@ -67,6 +69,9 @@ public class PathServiceTest {
 		line4 = new Line(2L, "4호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-600");
 		line4.addLineStation(new LineStation(1L, 5L, 10, 10));
 		line4.addLineStation(new LineStation(5L, 4L, 10, 10));
+
+
+
 	}
 
 	@DisplayName("경로 조회시, 최단 경로 기준으로 path생성")
@@ -74,15 +79,15 @@ public class PathServiceTest {
 	void searchPath_GivenDistanceWeight_CreatePath() {
 		// given
 		List<Station> stations = Arrays.asList(강남역, 역삼역, 선릉역, 삼성역, 양재역);
-		when(stationRepository.findAll()).thenReturn(stations);
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line4));
+		List<Line> lines = Arrays.asList(line, line4);
+		Graphs.getInstance().create(lines, stations);
 
 		List<StationResponse> expected = StationResponse.listOf(
 			Arrays.asList(강남역, 양재역, 삼성역));
 
 		//when
 		PathResponse pathResponse = pathService.searchPath(강남, 삼성,
-			WeightType.DISTANCE.name());
+			PathType.DISTANCE.name());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -94,13 +99,12 @@ public class PathServiceTest {
 	void searchPath_GivenDurationWeight_CreatePath() {
 		// given
 		List<Station> stations = Arrays.asList(강남역, 역삼역, 선릉역, 삼성역, 양재역);
-		when(stationRepository.findAll()).thenReturn(stations);
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line4));
+		Graphs.getInstance().create(Collections.singletonList(line), stations);
 
 		List<StationResponse> expected = StationResponse.listOf(Arrays.asList(강남역, 역삼역, 선릉역, 삼성역));
 
 		//when
-		PathResponse pathResponse = pathService.searchPath(강남, 삼성, WeightType.DURATION.name());
+		PathResponse pathResponse = pathService.searchPath(강남, 삼성, PathType.DURATION.name());
 
 		//then
 		List<StationResponse> actual = pathResponse.getStations();
@@ -111,7 +115,7 @@ public class PathServiceTest {
 	@Test
 	void searchPath_GivenSameStations_ExceptionThrown() {
 		assertThatThrownBy(
-			() -> pathService.searchPath(강남, 강남, WeightType.DISTANCE.name()))
+			() -> pathService.searchPath(강남, 강남, PathType.DISTANCE.name()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역은 같을 수 없습니다");
 	}

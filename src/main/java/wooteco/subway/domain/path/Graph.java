@@ -16,23 +16,22 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.exception.InvalidPathException;
 
 public class Graph {
-	private final WeightedMultigraph<Station, StationWeightEdge> graph;
-	private final List<Station> stations;
+	private WeightedMultigraph<Station, StationWeightEdge> graph;
+	private List<Station> stations;
 
 	public Graph(List<Line> lines, List<Station> stations, WeightStrategy strategy) {
 		this.stations = stations;
-		this.graph = createGraph(lines, strategy);
+		create(lines, stations, strategy);
 	}
 
-	private WeightedMultigraph<Station, StationWeightEdge> createGraph(List<Line> lines, WeightStrategy strategy) {
-		WeightedMultigraph<Station, StationWeightEdge> graph = new WeightedMultigraph<>(StationWeightEdge.class);
+	public void create(List<Line> lines, List<Station> stations, WeightStrategy pathType) {
+		this.stations = stations;
+		graph = new WeightedMultigraph<>(StationWeightEdge.class);
 
 		stations.forEach(graph::addVertex);
 
 		List<LineStation> possibleEdges = createPossibleEdges(lines);
-		addEdge(graph, possibleEdges, strategy);
-
-		return graph;
+		addEdge(graph, possibleEdges, pathType);
 	}
 
 	private List<LineStation> createPossibleEdges(List<Line> lines) {
@@ -64,14 +63,23 @@ public class Graph {
 			.orElseThrow(AssertionError::new);
 	}
 
-	public Path createPath(Station source, Station target) {
+	public Path createPath(String sourceName, String targetName) {
+		Station source = findStation(sourceName);
+		Station target = findStation(targetName);
+
 		GraphPath<Station, StationWeightEdge> path
 			= new DijkstraShortestPath<>(graph).getPath(source, target);
 
 		if (Objects.isNull(path)) {
-			throw new InvalidPathException(NOT_CONNECTED_PATH, source.getName(), target.getName());
+			throw new InvalidPathException(NOT_CONNECTED_PATH, sourceName, targetName);
 		}
 
 		return new Path(path);
+	}
+
+	private Station findStation(String target) {
+		return stations.stream().filter(station -> Objects.equals(station.getName(), target))
+			.findFirst()
+			.orElseThrow(IllegalArgumentException::new);
 	}
 }

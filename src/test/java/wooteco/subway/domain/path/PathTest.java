@@ -39,7 +39,7 @@ class PathTest {
 		line.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line.addLineStation(new LineStation(2L, 3L, 10, 10));
 
-		strategy = WeightType.findStrategy("DISTANCE");
+		strategy = PathType.findPathType("DISTANCE");
 	}
 
 	@DisplayName("각 구간 사이가 10분이고, 경로의 총 소요 시간이 20분인 경우 duration 확인")
@@ -51,7 +51,7 @@ class PathTest {
 		//when
 		Graph graph = new Graph(Collections.singletonList(line),
 			Arrays.asList(station1, station2, station3, station4), strategy);
-		Path path = graph.createPath(station1, station3);
+		Path path = graph.createPath(STATION_NAME1, STATION_NAME3);
 		double actual = path.duration();
 
 		//then
@@ -67,11 +67,10 @@ class PathTest {
 		//when
 		Graph graph = new Graph(Collections.singletonList(line),
 			Arrays.asList(station1, station2, station3, station4), strategy);
-		Path path = graph.createPath(station1, station3);
+		Path path = graph.createPath(STATION_NAME1, STATION_NAME3);
 		double actual = path.distance();
 
 		//then
 		assertThat(actual).isEqualTo(expected);
 	}
-
 }
