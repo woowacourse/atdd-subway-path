@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.dto.LineRequest;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

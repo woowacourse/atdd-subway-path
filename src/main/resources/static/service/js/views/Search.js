@@ -1,38 +1,108 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import api from '../../api/index.js'
+import {PathStationTemplate} from "../../utils/templates.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
   const $arrivalStationName = document.querySelector('#arrival-station-name')
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
+  const $shortestDistanceButton = document.querySelector('#shortest-distance-button')
+  const $shortestDurationButton = document.querySelector('#shortest-duration-button')
+  const $shortestDistanceHighlight = document.querySelector('#shortest-distance-highlight')
+  const $shortestDurationHighlight = document.querySelector('#shortest-duration-highlight')
+  const $sourceStation = document.querySelector('#source-station');
+  const $middleStations = document.querySelector('#middle-stations');
+  const $targetStations = document.querySelector('#target-station');
   const $favoriteButton = document.querySelector('#favorite-button')
-
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
-    if (isHidden) {
-      $searchResultContainer.classList.remove('hidden')
+    let $typeName = 'DISTANCE';
+    const showSearchResult = () => {
+        const isHidden = $searchResultContainer.classList.contains('hidden')
+        if (isHidden) {
+            $searchResultContainer.classList.remove('hidden')
+        }
     }
+
+  const highlightButton = () => {
+      if ($typeName === 'DISTANCE') {
+          $shortestDistanceHighlight.classList.add('border-l', 'border-t', 'border-r');
+          $shortestDistanceHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDurationHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDurationHighlight.classList.remove('border-l', 'border-t', 'border-r');
+      }
+
+      if ($typeName === 'DURATION') {
+          $shortestDurationHighlight.classList.add('border-l', 'border-t', 'border-r');
+          $shortestDurationHighlight.classList.remove('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDistanceHighlight.classList.add('bg-gray-200', 'text-gray-500', 'hover:text-gray-700');
+          $shortestDistanceHighlight.classList.remove('border-l', 'border-t', 'border-r');
+      }
   }
 
-  const onSearch = event => {
-    event.preventDefault()
-    const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value
-    }
-    console.log(searchInput)
-    showSearchResult(searchInput)
+  const onShortestDistanceResult = event => {
+      $typeName = 'DISTANCE';
+      highlightButton();
+      onSearch(event)
   }
 
-  const onToggleFavorite = event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+  const onShortestDurationResult = event => {
+      $typeName = 'DURATION';
+      highlightButton();
+      onSearch(event)
+  }
 
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.remove('mdi-star')
+    const onSearch = event => {
+        event.preventDefault()
+
+        $sourceStation.innerText = '';
+        $middleStations.innerHTML = '';
+        $targetStations.innerText = '';
+
+        const searchInput = {
+            source: $departureStationName.value,
+            target: $arrivalStationName.value,
+            type: $typeName
+    }
+
+        findPathResult(searchInput, $typeName)
+  }
+
+  const findPathResult = (searchInput, typeName) => {
+      searchInput.type = typeName;
+
+      api.path.find(searchInput).then(response => {
+          if (response.status === 200) {
+              response.json().then(data => onShowResult(data))
+          } else {
+              response.json().then(data => {
+                  alert(ERROR_MESSAGE[data.frontMessageKey]);
+              });
+          }
+      })
+  }
+
+    const onShowResult = async data => {
+        document.querySelector('#distance').innerText = data['totalDistance'] + 'km';
+        document.querySelector('#duration').innerText = data['totalDuration'] + '분';
+
+        const stations = data['stations'];
+        $sourceStation.innerText = stations[0].name;
+        for (let i = 1; i < stations.length - 1; i++) {
+            $middleStations.insertAdjacentHTML('beforeend', PathStationTemplate(stations[i].name));
+        }
+        $targetStations.innerText = await stations[stations.length - 1].name;
+        showSearchResult()
+    }
+
+    const onToggleFavorite = event => {
+        event.preventDefault()
+        const isFavorite = $favoriteButton.classList.contains('mdi-star')
+        const classList = $favoriteButton.classList
+
+        if (isFavorite) {
+            classList.add('mdi-star-outline')
+            classList.add('text-gray-600')
+            classList.remove('mdi-star')
       classList.remove('text-yellow-500')
     } else {
       classList.remove('mdi-star-outline')
@@ -45,6 +115,8 @@ function Search() {
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+    $shortestDistanceButton.addEventListener(EVENT_TYPE.CLICK, onShortestDistanceResult)
+    $shortestDurationButton.addEventListener(EVENT_TYPE.CLICK, onShortestDurationResult)
   }
 
   this.init = () => {
