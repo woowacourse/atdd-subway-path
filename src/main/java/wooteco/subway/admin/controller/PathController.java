@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.admin.domain.path.SubwayGraphStrategy;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.exception.DuplicatedValueException;
 import wooteco.subway.admin.service.PathService;
@@ -30,7 +31,8 @@ public class PathController {
         @RequestParam("target") @Valid @NotNull(message = "도착 역을 입력해주세요.") Long targetId,
         @RequestParam("type") String type) {
         validate(sourceId, targetId);
-        PathResponse response = pathService.findPath(sourceId, targetId, type);
+        PathResponse response = pathService.findPath(sourceId, targetId, type,
+            new SubwayGraphStrategy());
         return ResponseEntity.ok(response);
     }
 

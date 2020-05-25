@@ -1,8 +1,9 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.path;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
+import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.exception.NoSuchValueException;
 
 public enum PathType {

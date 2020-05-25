@@ -5,16 +5,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.admin.domain.DijkstraShortestPathStrategy;
-import wooteco.subway.admin.domain.LineStationEdge;
 import wooteco.subway.admin.domain.Lines;
-import wooteco.subway.admin.domain.Path;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.path.GraphStrategy;
+import wooteco.subway.admin.domain.path.Path;
+import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
 import wooteco.subway.admin.exception.DuplicatedValueException;
@@ -34,13 +32,14 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceId, Long targetId, String pathType) {
+    public PathResponse findPath(Long sourceId, Long targetId, String pathType,
+        GraphStrategy graphStrategy) {
         validatePathIds(sourceId, targetId);
         Lines lines = Lines.of(lineRepository.findAll());
-        WeightedMultigraph<Long, LineStationEdge> graph = lines.makeGraph(PathType.of(pathType));
 
         try {
-            Path path = Path.of(sourceId, targetId, graph, new DijkstraShortestPathStrategy());
+            Path path = lines.findPath(graphStrategy, sourceId, targetId, PathType.of(pathType));
+            // Path path = Path.of(sourceId, targetId, graph, pathStrategy);
             return toResponse(path);
         } catch (Exception e) {
             throw new UnreachablePathException("갈 수 없는 역입니다.");

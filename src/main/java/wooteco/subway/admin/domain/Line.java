@@ -172,7 +172,7 @@ public class Line {
     }
 
     private void validateAlreadyRegistered(LineStation lineStation) {
-        if (!lineStation.isFirstLineStation() && stations.isEmpty()) {
+        if (lineStation.notFirstStation() && stations.isEmpty()) {
             throw new ValueRequiredException("첫 노선을 먼저 등록해야 합니다.");
         }
     }

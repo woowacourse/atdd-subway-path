@@ -31,8 +31,8 @@ public class LineStation {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public boolean isFirstLineStation() {
-        return Objects.isNull(preStationId);
+    public boolean notFirstStation() {
+        return Objects.nonNull(preStationId);
     }
 
     public Long getPreStationId() {

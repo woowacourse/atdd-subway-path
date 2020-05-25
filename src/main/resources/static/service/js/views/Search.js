@@ -80,7 +80,9 @@ function Search() {
 
   const initStations = () => {
     api.station.getAll()
-    .then(data => stations = [...data])
+    .then(data => {
+      stations = [...data];
+    })
     .catch(error => alert(error.message));
   };
 

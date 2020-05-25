@@ -16,8 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.path.GraphStrategy;
+import wooteco.subway.admin.domain.path.PathType;
+import wooteco.subway.admin.domain.path.SubwayGraphStrategy;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.exception.DuplicatedValueException;
 import wooteco.subway.admin.exception.UnreachablePathException;
@@ -27,6 +29,7 @@ import wooteco.subway.admin.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
+    private static final GraphStrategy SUBWAY_GRAPH_STRATEGY = new SubwayGraphStrategy();
 
     @Mock
     private LineRepository lineRepository;
@@ -59,23 +62,27 @@ class PathServiceTest {
     @DisplayName("출발역이나 도착역을 입력하지 않은 경우")
     @Test
     void findPathNullException() {
-        assertThatThrownBy(() -> pathService.findPath(null, 1L, PathType.DURATION.name()))
+        assertThatThrownBy(() -> pathService.findPath(null, 1L, PathType.DURATION.name(),
+            SUBWAY_GRAPH_STRATEGY))
             .isInstanceOf(ValueRequiredException.class);
-        assertThatThrownBy(() -> pathService.findPath(null, null, PathType.DISTANCE.name()))
+        assertThatThrownBy(() -> pathService.findPath(null, null, PathType.DISTANCE.name(),
+            SUBWAY_GRAPH_STRATEGY))
             .isInstanceOf(ValueRequiredException.class);
     }
 
     @DisplayName("출발역, 도착역이 같은 경우")
     @Test
     void findPathSameStationsException() {
-        assertThatThrownBy(() -> pathService.findPath(1L, 1L, PathType.DISTANCE.name()))
+        assertThatThrownBy(() -> pathService.findPath(1L, 1L, PathType.DISTANCE.name(),
+            SUBWAY_GRAPH_STRATEGY))
             .isInstanceOf(DuplicatedValueException.class);
     }
 
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
     @Test
     void findPathNotExistException() {
-        assertThatThrownBy(() -> pathService.findPath(1L, 7L, PathType.DISTANCE.name()))
+        assertThatThrownBy(() -> pathService.findPath(1L, 7L, PathType.DISTANCE.name(),
+            SUBWAY_GRAPH_STRATEGY))
             .isInstanceOf(UnreachablePathException.class);
     }
 
@@ -85,7 +92,8 @@ class PathServiceTest {
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
         assertThatThrownBy(
-            () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE.name()))
+            () -> pathService.findPath(jamwon.getId(), yeoksam.getId(), PathType.DISTANCE.name(),
+                SUBWAY_GRAPH_STRATEGY))
             .isInstanceOf(UnreachablePathException.class);
     }
 
@@ -106,7 +114,8 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
 
-        PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE.name());
+        PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE.name(),
+            SUBWAY_GRAPH_STRATEGY);
         assertThat(pathResponse.getStations()).size().isEqualTo(6);
         assertThat(pathResponse.getDistance()).isEqualTo(130);
         assertThat(pathResponse.getDuration()).isEqualTo(70);
@@ -135,8 +144,10 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
 
-        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION.name());
-        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE.name());
+        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION.name(),
+            SUBWAY_GRAPH_STRATEGY);
+        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE.name(),
+            SUBWAY_GRAPH_STRATEGY);
         assertThat(durationResponse.getStations()).size().isEqualTo(4);
         assertThat(durationResponse.getDuration()).isEqualTo(3);
         assertThat(durationResponse.getDistance()).isEqualTo(302);

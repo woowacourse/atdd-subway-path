@@ -65,6 +65,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = findLine(id);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());

@@ -1,6 +1,8 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.path;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+
+import wooteco.subway.admin.domain.LineStation;
 
 public class LineStationEdge extends DefaultWeightedEdge {
     private int distance;
