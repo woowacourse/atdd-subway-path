@@ -43,7 +43,7 @@ public class WholeSubwayAcceptanceTest {
 
 	public static WholeSubwayResponse retrieveWholeSubway() {
 		return RestAssured.given().when().
-			get("/lineDetails").
+			get("/line-details").
 			then().
 			log().all().
 			extract().
