@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StationsTest {
 
-	@DisplayName("List<Station>을 받으면 Map을 저장한다.")
+	@DisplayName("List<Station>을 받으면 Map으로 저장한다.")
 	@Test
 	void create() {
 		List<Station> sourceStations = new ArrayList<>();

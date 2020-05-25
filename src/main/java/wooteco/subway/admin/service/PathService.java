@@ -25,7 +25,7 @@ public class PathService {
 	}
 
 	@Transactional
-	public ShortestPath findShortestDistancePath(PathSearchRequest pathSearchRequest) {
+	public ShortestPath findPath(PathSearchRequest pathSearchRequest) {
 		validatePathSearchRequest(pathSearchRequest);
 
 		Station sourceStation = findStationByName(pathSearchRequest.getSource());

@@ -71,8 +71,10 @@ class PathServiceTest {
 		station9 = new Station(9L, "영등포구청");
 		station10 = new Station(10L, "대림");
 
-		line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-800");
-		line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-blue-800");
+		line1 = new Line(1L, "1호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+				5, "bg-red-800");
+		line2 = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+				5, "bg-blue-800");
 
 		line1.addLineStation(new LineStation(null, station1.getId(), 10, 40));
 		line1.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 40));
@@ -119,7 +121,7 @@ class PathServiceTest {
 		when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(station1, station2, station3, station4,
 				station5, station6, station7, station8, station9, station10));
 
-		ShortestPath shortestPath = pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, criteria));
+		ShortestPath shortestPath = pathService.findPath(new PathSearchRequest(sourceName, targetName, criteria));
 
 		for (int i = 0; i < shortestPath.getShortestPath().size(); i++) {
 			assertEquals(shortestPath.getShortestPath().get(i), expectedPath.get(i));
@@ -135,7 +137,7 @@ class PathServiceTest {
 		String sourceName = "신도림";
 		String targetName = "신도림";
 
-		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+		assertThatThrownBy(() -> pathService.findPath(new PathSearchRequest(sourceName, targetName, "duration")))
 				.isInstanceOf(SourceEqualsTargetException.class)
 				.hasMessage("출발역과 도착역이 같으면 안돼요.");
 	}
@@ -145,7 +147,7 @@ class PathServiceTest {
 	@ParameterizedTest
 	void getShortestPath_WhenNotExistSourceAndTarget_ThrowException(String sourceName, String targetName) {
 
-		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+		assertThatThrownBy(() -> pathService.findPath(new PathSearchRequest(sourceName, targetName, "duration")))
 				.isInstanceOf(NoStationNameExistsException.class)
 				.hasMessage("해당역이 존재하지 않아요.");
 	}
@@ -155,7 +157,7 @@ class PathServiceTest {
 	@ParameterizedTest
 	void getShortestPath_WhenEmptySourceAndTarget_ThrowException(String sourceName, String targetName) {
 
-		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+		assertThatThrownBy(() -> pathService.findPath(new PathSearchRequest(sourceName, targetName, "duration")))
 				.isInstanceOf(EmptyStationNameException.class)
 				.hasMessage("출발역과 도착역 모두를 입력해주세요.");
 	}
@@ -176,7 +178,7 @@ class PathServiceTest {
 		line3.addLineStation(new LineStation(null, station11.getId(), 40, 10));
 		line3.addLineStation(new LineStation(station11.getId(), station12.getId(), 40, 10));
 
-		assertThatThrownBy(() -> pathService.findShortestDistancePath(new PathSearchRequest(sourceName, targetName, "duration")))
+		assertThatThrownBy(() -> pathService.findPath(new PathSearchRequest(sourceName, targetName, "duration")))
 				.isInstanceOf(NoPathExistsException.class)
 				.hasMessage("해당 경로는 존재하지 않아요.");
 	}

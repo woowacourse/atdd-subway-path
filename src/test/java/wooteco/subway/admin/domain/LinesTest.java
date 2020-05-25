@@ -3,6 +3,8 @@ package wooteco.subway.admin.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -45,10 +47,10 @@ class LinesTest {
 	}
 
 	@DisplayName("Subway 객체를 생성시 null 값이 주입되면 예외처리한다.")
-	@Test
-	void createSubway_WhenNull_ThrowException() {
-		List<Line> lines = null;
-		assertThatThrownBy(() -> new Lines(lines))
+	@NullSource
+	@ParameterizedTest
+	void createSubway_WhenNull_ThrowException(List<Line> nullLines) {
+		assertThatThrownBy(() -> new Lines(nullLines))
 				.isInstanceOf(IllegalArgumentException.class).hasMessage("노선들에 대한 정보를 가져올 수 없습니다.");
 	}
 
@@ -65,10 +67,10 @@ class LinesTest {
 	@DisplayName("lineStation들을 반환한다.")
 	@Test
 	void toLineStations_ReturnListLineStation() {
-		List<LineStation> lineStationIds = lines.toLineStations();
+		List<LineStation> lineStations = lines.toLineStations();
 
-		assertNull(lineStationIds.get(0).getPreStationId());
-		assertEquals(lineStationIds.get(1).getPreStationId(), 1L);
-		assertEquals(lineStationIds.get(2).getPreStationId(), 2L);
+		assertNull(lineStations.get(0).getPreStationId());
+		assertEquals(lineStations.get(1).getPreStationId(), 1L);
+		assertEquals(lineStations.get(2).getPreStationId(), 2L);
 	}
 }

@@ -22,7 +22,8 @@ public class LineDetailResponse {
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String color, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+                              String color, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -41,7 +42,8 @@ public class LineDetailResponse {
 
     public static LineDetailResponse of(LineDetail lineDetail) {
         return new LineDetailResponse(lineDetail.getId(), lineDetail.getName(), lineDetail.getStartTime(),
-                lineDetail.getEndTime(), lineDetail.getIntervalTime(), lineDetail.getColor(), lineDetail.getCreatedAt(), lineDetail.getUpdatedAt(), lineDetail.getStations());
+                lineDetail.getEndTime(), lineDetail.getIntervalTime(), lineDetail.getColor(), lineDetail.getCreatedAt(),
+                lineDetail.getUpdatedAt(), lineDetail.getStations());
     }
 
     public Long getId() {

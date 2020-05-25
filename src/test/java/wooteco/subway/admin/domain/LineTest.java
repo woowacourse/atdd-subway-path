@@ -16,7 +16,8 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+                5, "bg-green-500");
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -29,7 +30,7 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
-                .filter(it -> it.getPreStationId() == 4L)
+                .filter(each -> each.getPreStationId() == 4L)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
         assertThat(lineStation.getStationId()).isEqualTo(1L);

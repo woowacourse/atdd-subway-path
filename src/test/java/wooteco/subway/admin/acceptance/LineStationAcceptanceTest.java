@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
+    @DisplayName("지하철 노선에서 지하철역 추가 / 제외한다.")
     @Test
     void manageLineStation() {
         // given : 역과 노선이 존재한다.

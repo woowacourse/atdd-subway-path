@@ -54,8 +54,7 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = getLine(id);
-        List<Station> stations = stationRepository
-                .findAllById(line.getLineStationsId());
+        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 

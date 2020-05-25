@@ -31,14 +31,16 @@ public class PathTest {
 
 	@BeforeEach
 	void setUp() {
-		line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-green-500");
+		line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+				5, "bg-green-500");
 		line1.addLineStation(new LineStation(null, 1L, 10, 10));
 		line1.addLineStation(new LineStation(1L, 2L, 3, 10));
 		line1.addLineStation(new LineStation(2L, 3L, 3, 10));
 		line1.addLineStation(new LineStation(3L, 4L, 3, 10));
 		tempLines.add(line1);
 
-		line2 = new Line(1L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-red-500");
+		line2 = new Line(1L, "3호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+				5, "bg-red-500");
 		line2.addLineStation(new LineStation(null, 2L, 10, 10));
 		line2.addLineStation(new LineStation(2L, 5L, 10, 3));
 		line2.addLineStation(new LineStation(5L, 6L, 10, 3));

@@ -9,7 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AcceptanceTest {
-    @DisplayName("지하철역을 관리한다")
+    @DisplayName("지하철역을 관리한다.")
     @Test
     void manageStation() {
         // when : 지하철을 생성한다.

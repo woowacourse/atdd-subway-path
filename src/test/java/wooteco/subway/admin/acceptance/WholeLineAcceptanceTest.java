@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WholeLineAcceptanceTest extends AcceptanceTest {
-	@DisplayName("지하철 노선도 전체 정보 조회")
+	@DisplayName("지하철 노선도 전체 정보 조회한다.")
 	@Test
 	public void wholeSubway() {
 

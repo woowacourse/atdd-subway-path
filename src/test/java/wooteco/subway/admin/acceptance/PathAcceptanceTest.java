@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(5L, 10L, 11L, 30, 10);
 	}
 
-	@DisplayName("최단거리 경로를 조회")
+	@DisplayName("최단거리 경로를 조회한다.")
 	@Test
 	void getShortestPathByDistance() {
 		// Feature: 최단거리 경로를 구한다.
@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertEquals(duration, 80);
 	}
 
-	@DisplayName("최단시간 경로를 조회")
+	@DisplayName("최단시간 경로를 조회한다.")
 	@Test
 	void getShortestPathByDuration() {
 		// Feature: 최단시간 경로를 구한다.
