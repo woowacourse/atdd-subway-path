@@ -80,8 +80,8 @@ public class LineServiceTest {
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAll()).thenReturn(allStations);
-        when(stationRepository.findAllById(line.getLineStationsId())).thenReturn(stations1);
-        when(stationRepository.findAllById(newLine.getLineStationsId())).thenReturn(stations2);
+        when(stationRepository.findStationsByIds(line.getLineStationsId())).thenReturn(stations1);
+        when(stationRepository.findStationsByIds(newLine.getLineStationsId())).thenReturn(stations2);
 
         List<LineDetailResponse> lineDetails = lineService.wholeLines().getLineDetailResponse();
 
