@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Station {
     @Id
@@ -10,7 +11,7 @@ public class Station {
     private String name;
     private LocalDateTime createdAt;
 
-    public Station() {
+    private Station() {
     }
 
     public Station(String name) {
@@ -22,6 +23,14 @@ public class Station {
         this.id = id;
         this.name = name;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public boolean isSameId(final Long id) {
+        return Objects.equals(this.id, id);
+    }
+
+    public boolean isSameName(final String name) {
+        return Objects.equals(this.name, name);
     }
 
     public Long getId() {

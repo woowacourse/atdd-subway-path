@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.jdbc.Sql;
+
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -24,11 +26,13 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Sql("/truncate.sql")
 public class LineServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "삼성역";
+    private static final String STATION_NAME_KANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    private static final String STATION_NAME_SAMSUNG = "삼성역";
+
 
     @Mock
     private LineRepository lineRepository;
@@ -47,15 +51,15 @@ public class LineServiceTest {
     void setUp() {
         lineService = new LineService(lineRepository, stationRepository);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
+        station1 = new Station(1L, STATION_NAME_KANGNAM);
+        station2 = new Station(2L, STATION_NAME_YEOKSAM);
+        station3 = new Station(3L, STATION_NAME_SEOLLEUNG);
+        station4 = new Station(4L, STATION_NAME_SAMSUNG);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line.addEdge(new Edge(null, 1L, 10, 10));
+        line.addEdge(new Edge(1L, 2L, 10, 10));
+        line.addEdge(new Edge(2L, 3L, 10, 10));
     }
 
     @Test
@@ -65,7 +69,7 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdges()).hasSize(4);
 
         List<Long> stationIds = line.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(4L);
@@ -81,7 +85,7 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdges()).hasSize(4);
 
         List<Long> stationIds = line.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -97,7 +101,7 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdges()).hasSize(4);
 
         List<Long> stationIds = line.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -111,7 +115,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 1L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdges()).hasSize(2);
 
         List<Long> stationIds = line.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(2L);
@@ -133,7 +137,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 3L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdges()).hasSize(2);
 
         List<Long> stationIds = line.getLineStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);

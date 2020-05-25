@@ -15,6 +15,7 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,8 +39,7 @@ public class LineControllerTest {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
-        // TODO: 전체 지하철 노선도 정보를 조회하는 URI 입력하기
-        String uri = "";
+        String uri = "/lines/map";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
@@ -53,11 +53,12 @@ public class LineControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotModified())
                 .andExpect(header().exists("ETag"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        List<Station> stations = Arrays.asList(new Station("잠실"), new Station("강남"), new Station("삼성"));
+        return LineDetailResponse.of(new Line("2호선", LocalTime.of(5,30), LocalTime.of(23,30), 10), stations);
     }
 }

@@ -1,10 +1,14 @@
 package wooteco.subway.admin.dto;
 
+import wooteco.subway.admin.domain.Edges;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LineDetailResponse {
@@ -17,7 +21,7 @@ public class LineDetailResponse {
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
 
-    public LineDetailResponse() {
+    private LineDetailResponse() {
     }
 
     public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
@@ -33,6 +37,17 @@ public class LineDetailResponse {
 
     public static LineDetailResponse of(Line line, List<Station> stations) {
         return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
+    }
+
+    public static List<LineDetailResponse> listOf(final Lines lines, final Stations stations) {
+        List<LineDetailResponse> lineDetailResponses = new ArrayList<>();
+        for (Line line : lines) {
+            Edges edges = new Edges(line.getEdges());
+            List<Long> edgesStationIds = edges.getStationIds();
+            List<Station> stationResponses = stations.findAllById(edgesStationIds);
+            lineDetailResponses.add(LineDetailResponse.of(line, stationResponses));
+        }
+        return lineDetailResponses;
     }
 
     public Long getId() {
