@@ -1,4 +1,4 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.subwayShortestPath;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,6 +7,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.exceptions.IllegalPathException;
 
 public class SubwayDijkstraShortestPath implements SubwayShortestPath {

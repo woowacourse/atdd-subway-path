@@ -1,6 +1,8 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.subwayShortestPath;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+
+import wooteco.subway.admin.domain.LineStation;
 
 /**
  *    엣지 클래스입니다.

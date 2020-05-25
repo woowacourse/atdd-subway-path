@@ -10,6 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.domain.exceptions.IllegalPathException;
+import wooteco.subway.admin.domain.subwayShortestPath.PathType;
+import wooteco.subway.admin.domain.subwayShortestPath.SubwayDijkstraShortestPath;
+import wooteco.subway.admin.domain.subwayShortestPath.SubwayShortestPath;
 
 class SubwayDijkstraShortestPathTest extends domainTest {
 	Line line1;

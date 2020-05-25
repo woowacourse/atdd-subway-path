@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.exceptions.IllegalPathException;
+import wooteco.subway.admin.domain.subwayShortestPath.PathType;
 import wooteco.subway.admin.dto.ExceptionResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.service.LineService;

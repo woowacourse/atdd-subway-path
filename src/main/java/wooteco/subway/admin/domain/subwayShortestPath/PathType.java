@@ -1,6 +1,8 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.domain.subwayShortestPath;
 
 import java.util.function.Function;
+
+import wooteco.subway.admin.domain.LineStation;
 
 /**
  *    class description

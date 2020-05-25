@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.domain.SubwayDijkstraShortestPath;
-import wooteco.subway.admin.domain.SubwayShortestPath;
+import wooteco.subway.admin.domain.subwayShortestPath.PathType;
+import wooteco.subway.admin.domain.subwayShortestPath.SubwayDijkstraShortestPath;
+import wooteco.subway.admin.domain.subwayShortestPath.SubwayShortestPath;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
@@ -82,12 +82,12 @@ public class LineService {
 	}
 
 	public PathResponse searchPath(String source, String target, PathType pathType) {
-		List<Line> lines = lineRepository.findAll();
-		List<Station> stations = stationRepository.findAll();
 		Station sourceStation = stationRepository.findByName(source)
 			.orElseThrow(() -> new NotFoundException("출발역을 찾을 수 없습니다."));
 		Station targetStation = stationRepository.findByName(target)
 			.orElseThrow(() -> new NotFoundException("도착역을 찾을 수 없습니다."));
+		List<Line> lines = lineRepository.findAll();
+		List<Station> stations = stationRepository.findAll();
 
 		SubwayShortestPath subwayShortestPath = SubwayDijkstraShortestPath
 			.of(lines, stations, sourceStation, targetStation, pathType);
