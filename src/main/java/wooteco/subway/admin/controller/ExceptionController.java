@@ -4,23 +4,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import wooteco.subway.admin.dto.ErrorResponse;
 import wooteco.subway.admin.exception.InaccessibleStationException;
 import wooteco.subway.admin.exception.NonExistentDataException;
 
 @ControllerAdvice
 public class ExceptionController {
 	@ExceptionHandler(InaccessibleStationException.class)
-	public ResponseEntity<String> handleInaccessibleStationException() {
-		return ResponseEntity.badRequest().body("갈 수 없는 역입니다. 다시 입력해주세요.");
+	public ResponseEntity<ErrorResponse> handleInaccessibleStationException() {
+		ErrorResponse errorResponse = new ErrorResponse("INACCESSIBLE_STATION");
+		return ResponseEntity.badRequest().body(errorResponse);
 	}
 
 	@ExceptionHandler(NonExistentDataException.class)
-	public ResponseEntity<String> handleNonExistentDataException() {
-		return ResponseEntity.badRequest().body("존재하지 않는 데이터입니다.");
+	public ResponseEntity<ErrorResponse> handleNonExistentDataException() {
+		ErrorResponse errorResponse = new ErrorResponse("NON_EXISTENT_DATA");
+		return ResponseEntity.badRequest().body(errorResponse);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleException() {
-		return ResponseEntity.badRequest().body("시스템 에러");
+	public ResponseEntity<ErrorResponse> handleException() {
+		ErrorResponse errorResponse = new ErrorResponse("SYSTEM_ERROR");
+		return ResponseEntity.badRequest().body(errorResponse);
 	}
 }

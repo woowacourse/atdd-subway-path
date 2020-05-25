@@ -1,3 +1,5 @@
+import {ERROR_MESSAGE} from "../utils/constants.js";
+
 const METHOD = {
   PUT() {
     return {
@@ -23,11 +25,23 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(async data => {
-    if (!data.ok) {
-      alert(await data.text());
+  const request = (uri, config) => fetch(uri, config).then(response => {
+    if (!response.ok) {
+      response.json().then(data => {
+        const error = data.errorMessage;
+        if (error === "INACCESSIBLE_STATION") {
+          alert(ERROR_MESSAGE.INACCESSIBLE_STATION);
+        }
+        if (error === "NON_EXISTENT_DATA") {
+          alert(ERROR_MESSAGE.NON_EXISTENT_DATA);
+        }
+        if (error === "SYSTEM_ERROR") {
+          alert(ERROR_MESSAGE.SYSTEM_ERROR);
+        }
+      });
+      return;
     }
-    return data.json()
+    return response.json()
   });
 
   const line = {
