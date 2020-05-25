@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class LineStation {
@@ -21,6 +23,11 @@ public class LineStation {
 
     public boolean isSameLineStation(Long preStationId, Long stationId) {
         return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId);
+    }
+
+    @JsonIgnore
+    public LineStationKey getLineStationKey() {
+        return new LineStationKey(preStationId, stationId);
     }
 
     public Long getPreStationId() {
