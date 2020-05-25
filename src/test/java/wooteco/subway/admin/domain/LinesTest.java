@@ -49,7 +49,7 @@ class LinesTest {
 	void createSubway_WhenNull_ThrowException() {
 		List<Line> lines = null;
 		assertThatThrownBy(() -> new Lines(lines))
-				.isInstanceOf(IllegalArgumentException.class).hasMessage("List<Line>이 null일 수 없습니다.");
+				.isInstanceOf(IllegalArgumentException.class).hasMessage("노선들에 대한 정보를 가져올 수 없습니다.");
 	}
 
 	@DisplayName("lineStationId들을 반환한다.")
