@@ -43,15 +43,21 @@ function Search() {
         }
         api.path.find(searchInput)
             .then(data => {
-                console.log("정상")
-                console.log(data)
-                return showSearchResult(data)
-            })
-           .catch(error => {
-                console.log(error)
-                alert("입력이 올바르지 않습니다..")
-                $departureStationName.value = ""
-                $arrivalStationName.value = ""
+                if (!data.ok) {
+                    data.json().then(resolved => {
+                        console.log(resolved)
+                        throw new Error(resolved.message)
+                    }).catch(error => {
+                        console.log(error)
+                        alert(error.message)
+                        $departureStationName.value = ""
+                        $arrivalStationName.value = ""
+                    })
+                } else {
+                    console.log("정상")
+                    console.log(data)
+                    return showSearchResult(data)
+                }
             })
     }
 
