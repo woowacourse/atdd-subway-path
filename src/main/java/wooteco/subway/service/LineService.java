@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineStation;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.Graphs;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineStationCreateRequest;
@@ -25,13 +24,7 @@ public class LineService {
     }
 
     public Line save(Line line) {
-        Line savedLine = lineRepository.save(line);
-        updateGraphs();
-        return savedLine;
-    }
-
-    private void updateGraphs() {
-        Graphs.getInstance().create(lineRepository.findAll(), stationRepository.findAll());
+        return lineRepository.save(line);
     }
 
     public List<Line> showLines() {
@@ -46,7 +39,6 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
-        updateGraphs();
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
@@ -56,16 +48,13 @@ public class LineService {
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
-        updateGraphs();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
-        updateGraphs();
     }
-
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());

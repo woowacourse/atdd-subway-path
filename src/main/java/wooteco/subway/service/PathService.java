@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.Graphs;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -25,11 +25,6 @@ public class PathService {
 	public PathService(LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineRepository = lineRepository;
 		this.stationRepository = stationRepository;
-		createGraphs(lineRepository.findAll(), stationRepository.findAll());
-	}
-
-	private void createGraphs(List<Line> lines, List<Station> stations) {
-		Graphs.getInstance().create(lines, stations);
 	}
 
 	@Transactional(readOnly = true)
@@ -45,7 +40,12 @@ public class PathService {
 
 	@Transactional(readOnly = true)
 	public PathResponse searchPath(String source, String target, String type) {
-		Path path = Graphs.getInstance().findPath(source, target, type);
+		PathGenerator pathGenerator = new PathGenerator(source, target, type);
+
+		List<Line> lines = lineRepository.findAll();
+		List<Station> stations = stationRepository.findAll();
+
+		Path path = pathGenerator.generate(lines, stations);
 		return new PathResponse(StationResponse.listOf(path.getStationList()), path.distance(),
 			path.duration());
 	}
