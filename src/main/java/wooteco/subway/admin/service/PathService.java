@@ -26,6 +26,22 @@ public class PathService {
 
 	@Transactional
 	public ShortestPath findShortestDistancePath(PathSearchRequest pathSearchRequest) {
+		validatePathSearchRequest(pathSearchRequest);
+
+		Station sourceStation = findStationByName(pathSearchRequest.getSource());
+		Station targetStation = findStationByName(pathSearchRequest.getTarget());
+		Criteria criteria = Criteria.of(pathSearchRequest.getType());
+
+		Lines lines = new Lines(lineRepository.findAll());
+		List<Long> lineStationIds = lines.toLineStationIds();
+		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
+
+		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
+
+		return findShortestPath(sourceStation, targetStation, path);
+	}
+
+	private void validatePathSearchRequest(PathSearchRequest pathSearchRequest) {
 		if (pathSearchRequest.getSource().isEmpty() || pathSearchRequest.getTarget().isEmpty()) {
 			throw new EmptyStationNameException();
 		}
@@ -33,30 +49,24 @@ public class PathService {
 		if (pathSearchRequest.getSource().equals(pathSearchRequest.getTarget())) {
 			throw new SourceEqualsTargetException();
 		}
-
-		Station sourceStation = findStationByName(pathSearchRequest.getSource());
-		Station targetStation = findStationByName(pathSearchRequest.getTarget());
-
-		Criteria criteria = Criteria.of(pathSearchRequest.getType());
-
-		Lines lines = new Lines(lineRepository.findAll());
-
-		List<Long> lineStationIds = lines.toLineStationIds();
-		Stations stations = new Stations(stationRepository.findAllById(lineStationIds));
-
-		Path path = new Path(new WeightedMultigraph<>(Edge.class), lines, stations, criteria);
-
-		ShortestPath shortestPath = new ShortestPath(path.findShortestPath(sourceStation, targetStation));
-
-		if (shortestPath.hasInvalidPath()) {
-			throw new NoPathExistsException();
-		}
-
-		return shortestPath;
 	}
 
 	private Station findStationByName(String source) {
 		return stationRepository.findByName(source)
 				.orElseThrow(NoStationNameExistsException::new);
+	}
+
+	private ShortestPath findShortestPath(Station sourceStation, Station targetStation, Path path) {
+		ShortestPath shortestPath = new ShortestPath(path.findShortestPath(sourceStation, targetStation));
+
+		validateShortestPath(shortestPath);
+
+		return shortestPath;
+	}
+
+	private void validateShortestPath(ShortestPath shortestPath) {
+		if (shortestPath.hasInvalidPath()) {
+			throw new NoPathExistsException();
+		}
 	}
 }

@@ -48,19 +48,31 @@ public class LineStations {
 			return new ArrayList<>();
 		}
 
-		LineStation firstLineStation = lineStations.stream()
+		List<Long> stationIds = addFirstLineStationId();
+		addRestLineStationIds(stationIds);
+
+		return stationIds;
+	}
+
+	private LineStation findFirstLineStation() {
+		return lineStations.stream()
 				.filter(LineStation::isFirstLineStation)
 				.findFirst()
 				.orElseThrow(NoLineStationExistsException::new);
+	}
+
+	private List<Long> addFirstLineStationId() {
+		LineStation firstLineStation = findFirstLineStation();
 
 		List<Long> stationIds = new ArrayList<>();
 		stationIds.add(firstLineStation.getStationId());
+		return stationIds;
+	}
 
+	private void addRestLineStationIds(List<Long> stationIds) {
 		while (true) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
-			Optional<LineStation> nextLineStation = lineStations.stream()
-					.filter(lineStation -> lineStation.hasEqualPreStationID(lastStationId))
-					.findFirst();
+			Optional<LineStation> nextLineStation = findLineStation(lastStationId);
 
 			if (!nextLineStation.isPresent()) {
 				break;
@@ -68,8 +80,12 @@ public class LineStations {
 
 			stationIds.add(nextLineStation.get().getStationId());
 		}
+	}
 
-		return stationIds;
+	private Optional<LineStation> findLineStation(Long lastStationId) {
+		return lineStations.stream()
+				.filter(lineStation -> lineStation.hasEqualPreStationID(lastStationId))
+				.findFirst();
 	}
 
 	public List<LineStation> getLineStations() {
