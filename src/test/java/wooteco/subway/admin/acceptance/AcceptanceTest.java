@@ -87,16 +87,6 @@ public class AcceptanceTest {
 				.log().all();
 	}
 
-	List<StationResponse> getStations() {
-		return
-				given().when().
-						get("/stations").
-						then().
-						log().all().
-						extract().
-						jsonPath().getList(".", StationResponse.class);
-	}
-
 	StationResponse createStation(String name) {
 		Map<String, String> params = new HashMap<>();
 		params.put("name", name);
@@ -108,16 +98,8 @@ public class AcceptanceTest {
 		);
 	}
 
-	void deleteStation(Long id) {
-		delete("/stations/" + id);
-	}
-
 	LineDetailResponse getLine(Long id) {
 		return get("/lines/" + id).as(LineDetailResponse.class);
-	}
-
-	List<LineResponse> getLines() {
-		return get("/lines").jsonPath().getList(".", LineResponse.class);
 	}
 
 	LineResponse createLine(String name) {
@@ -132,22 +114,6 @@ public class AcceptanceTest {
 				params,
 				LineResponse.class
 		);
-	}
-
-	void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-		Map<String, String> params = new HashMap<>();
-		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-		params.put("intervalTime", "10");
-
-		update(
-				"/lines/" + id,
-				params
-		);
-	}
-
-	void deleteLine(Long id) {
-		delete("/lines/" + id);
 	}
 
 	void addEdge(Long lineId, Long preStationId, Long stationId) {
@@ -167,10 +133,6 @@ public class AcceptanceTest {
 				params,
 				LineResponse.class
 		);
-	}
-
-	void removeEdge(Long lineId, Long stationId) {
-		delete("/lines/" + lineId + "/stations/" + stationId);
 	}
 }
 

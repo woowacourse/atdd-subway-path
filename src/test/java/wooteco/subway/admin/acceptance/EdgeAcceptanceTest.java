@@ -75,4 +75,8 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineNumberTwo.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
+
+    void removeEdge(Long lineId, Long stationId) {
+        delete("/lines/" + lineId + "/stations/" + stationId);
+    }
 }

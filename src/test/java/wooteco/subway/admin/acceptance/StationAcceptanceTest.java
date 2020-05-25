@@ -6,6 +6,7 @@ import wooteco.subway.admin.dto.StationResponse;
 
 import java.util.List;
 
+import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -25,5 +26,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         List<StationResponse> stationsAfterDelete = getStations();
         assertThat(stationsAfterDelete.size()).isEqualTo(2);
+    }
+
+    List<StationResponse> getStations() {
+        return
+                given().when().
+                        get("/stations").
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", StationResponse.class);
+    }
+
+    void deleteStation(Long id) {
+        delete("/stations/" + id);
     }
 }
