@@ -17,7 +17,7 @@ public class Lines {
 
 	private void validateLines(List<Line> lines) {
 		if (Objects.isNull(lines)) {
-			throw new IllegalArgumentException("List<Line>이 null일 수 없습니다.");
+			throw new IllegalArgumentException("노선들에 대한 정보를 가져올 수 없습니다.");
 		}
 	}
 
