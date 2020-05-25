@@ -8,7 +8,6 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
-import wooteco.subway.admin.exceptions.NotExistStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -64,27 +63,16 @@ public class LineService {
     }
 
     public WholeSubwayResponse wholeLines() {
-        List<Line> allLines = lineRepository.findAll();
-
-        return WholeSubwayResponse.of(
-                allLines.stream()
-                        .map(line -> LineDetailResponse.of(
-                                line, findLineStationsId(line)))
-                        .collect(Collectors.toList()));
-    }
-
-    private List<Station> findLineStationsId(Line line) {
-        List<Long> lineStationsId = line.getLineStationsId();
-        return lineStationsId.stream()
-                .map(this::findStation)
+        List<LineDetailResponse> lineDetailResponses = lineRepository.findAll()
+                .stream()
+                .map(this::createLineDetailResponse)
                 .collect(Collectors.toList());
+
+        return WholeSubwayResponse.of(lineDetailResponses);
     }
 
-    private Station findStation(Long stationId) {
-        List<Station> allStations = stationRepository.findAll();
-        return allStations.stream()
-                .filter(station -> station.hasEqualId(stationId))
-                .findFirst()
-                .orElseThrow(() -> new NotExistStationException(stationId));
+    private LineDetailResponse createLineDetailResponse(Line line) {
+        List<Station> stations = stationRepository.findStationsByIds(line.getLineStationsId());
+        return LineDetailResponse.of(line, stations);
     }
 }
