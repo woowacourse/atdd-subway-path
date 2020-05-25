@@ -48,11 +48,8 @@ function Search() {
                 return showSearchResult(data)
             })
            .catch(error => {
-                error.then(error => {
-                    console.log(error)
-                    alert(error.message)
-                })
-
+                console.log(error)
+                alert("입력이 올바르지 않습니다..")
                 $departureStationName.value = ""
                 $arrivalStationName.value = ""
             })

@@ -27,7 +27,8 @@ const api = (() => {
     const requestWithJsonData = (uri, config) => {
       return fetch(uri, config).then(data => {
         if (!data.ok) {
-           throw data.json();
+            console.log(data)
+           throw new Error(data.message);
         }
         return data.json()
       });
