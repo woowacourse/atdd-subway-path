@@ -38,4 +38,22 @@ public class LineStation {
 	public boolean isStart() {
 		return Objects.isNull(this.preStationId);
 	}
+
+	public boolean isSameStation(Long stationId) {
+		return this.stationId.equals(stationId);
+	}
+
+	@Override
+	public String toString() {
+		return "LineStation{" +
+			"preStationId=" + preStationId +
+			", stationId=" + stationId +
+			", distance=" + distance +
+			", duration=" + duration +
+			'}';
+	}
+
+	public boolean isPreStation(Long stationId) {
+		return Objects.equals(this.preStationId, stationId);
+	}
 }

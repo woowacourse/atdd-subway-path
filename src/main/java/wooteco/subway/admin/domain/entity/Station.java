@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 
@@ -36,10 +37,6 @@ public class Station {
 		return createdAt;
 	}
 
-	public boolean isSameId(Long stationId) {
-		return id.equals(stationId);
-	}
-
 	public boolean isSameName(String sourceName) {
 		return this.name.equals(sourceName);
 	}
@@ -51,5 +48,20 @@ public class Station {
 			", name='" + name + '\'' +
 			", createdAt=" + createdAt +
 			'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Station station = (Station)o;
+		return Objects.equals(id, station.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

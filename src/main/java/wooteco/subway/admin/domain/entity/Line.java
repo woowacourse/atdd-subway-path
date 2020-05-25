@@ -20,7 +20,7 @@ public class Line {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	@MappedCollection(idColumn = "line", keyColumn = "sequence")
-	private List<LineStation> stations = new ArrayList<>();
+	private List<LineStation> lineStations = new ArrayList<>();
 
 	public Line() {
 	}
@@ -72,7 +72,7 @@ public class Line {
 	}
 
 	public List<LineStation> getLineStations() {
-		return stations;
+		return lineStations;
 	}
 
 	public LocalDateTime getCreatedAt() {
@@ -101,44 +101,44 @@ public class Line {
 	}
 
 	public void addLineStation(LineStation lineStation) {
-		stations.stream()
+		lineStations.stream()
 			.filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
 			.findAny()
 			.ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
-		stations.add(lineStation);
+		lineStations.add(lineStation);
 	}
 
 	public void removeLineStationById(Long stationId) {
-		LineStation targetLineStation = stations.stream()
-			.filter(it -> Objects.equals(it.getStationId(), stationId))
+		LineStation targetLineStation = lineStations.stream()
+			.filter(it -> it.isSameStation(stationId))
 			.findFirst()
 			.orElseThrow(RuntimeException::new);
 
-		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), stationId))
+		lineStations.stream()
+			.filter(it -> it.isPreStation(stationId)) // todo :
 			.findFirst()
 			.ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
 
-		stations.remove(targetLineStation);
+		lineStations.remove(targetLineStation);
 	}
 
 	public List<Long> getLineStationsId() {
-		if (stations.isEmpty()) {
+		if (lineStations.isEmpty()) {
 			return new ArrayList<>();
 		}
 
-		LineStation firstLineStation = stations.stream()
-			.filter(it -> it.getPreStationId() == null)
+		LineStation firstLineStation = lineStations.stream()
+			.filter(station -> station.isStart())
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new IllegalArgumentException("출발역을 찾을 수 없습니다."));
 
 		List<Long> stationIds = new ArrayList<>();
 		stationIds.add(firstLineStation.getStationId());
 
 		while (true) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
-			Optional<LineStation> nextLineStation = stations.stream()
+			Optional<LineStation> nextLineStation = lineStations.stream()
 				.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
 				.findFirst();
 
@@ -150,5 +150,20 @@ public class Line {
 		}
 
 		return stationIds;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Line line = (Line)o;
+		return Objects.equals(id, line.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

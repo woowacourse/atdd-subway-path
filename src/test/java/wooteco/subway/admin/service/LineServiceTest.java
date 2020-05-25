@@ -122,9 +122,11 @@ public class LineServiceTest {
 	@Test
 	void removeLineStationBetweenTwo() {
 		when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+		List<Long> stationIds = line.getLineStationsId();
+
 		lineService.removeLineStation(line.getId(), 2L);
 
-		List<Long> stationIds = line.getLineStationsId();
+		stationIds = line.getLineStationsId();
 		assertThat(stationIds.get(0)).isEqualTo(1L);
 		assertThat(stationIds.get(1)).isEqualTo(3L);
 	}

@@ -1,5 +1,6 @@
 package wooteco.subway.admin.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,12 +37,13 @@ public class PathService {
 		List<Line> allLines = lineRepository.findAll();
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
+		List<Station> stations = new ArrayList<>(allStationsById.values());
 
 		Station source = findStationByName(sourceName, allStationsById);
 		Station target = findStationByName(targetName, allStationsById);
 
 		List<LineStation> allLineStations = Line.toLineStations(allLines);
-		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(allLineStations, allStationsById, WeightType.of(type));
+		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(allLineStations, stations, WeightType.of(type));
 		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(subwayGraph, source, target);
 
 		int totalDuration = subwayShortestPath.calculateTotalDuration();

@@ -97,11 +97,11 @@ public class PathServiceTest {
 			.hasMessage("%s은 존재하지 않는 역입니다.", 히히역);
 	}
 
-	private void saveMockData(Line newLine, Station 연결되지않은_역) {
+	private void saveMockData(Line newLine, Station station) {
 		List<Line> mockLines = Arrays.asList(line, newLine);
 		when(lineRepository.findAll()).thenReturn(mockLines);
 
-		List<Station> mockStations = Arrays.asList(연결되지않은_역, station1, station2, station3, station4);
+		List<Station> mockStations = Arrays.asList(station, station1, station2, station3, station4);
 		when(stationRepository.findAll()).thenReturn(mockStations);
 	}
 }

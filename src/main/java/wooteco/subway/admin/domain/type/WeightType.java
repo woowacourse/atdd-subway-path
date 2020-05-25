@@ -7,20 +7,20 @@ import wooteco.subway.admin.domain.type.weightstrategy.DurationWeightStrategy;
 import wooteco.subway.admin.domain.type.weightstrategy.WeightStrategy;
 
 public enum WeightType {
-	DURATION("DURATION", new DurationWeightStrategy()),
-	DISTANCE("DISTANCE", new DistanceWeightStrategy());
+	DURATION(new DurationWeightStrategy()),
+	DISTANCE(new DistanceWeightStrategy());
 
-	private String weightType;
 	private WeightStrategy weightStrategy;
 
-	WeightType(String weightType, WeightStrategy weightStrategy) {
-		this.weightType = weightType;
+	WeightType(WeightStrategy weightStrategy) {
 		this.weightStrategy = weightStrategy;
 	}
 
 	public static WeightType of(String type) {
+		WeightType weightType = WeightType.valueOf(type);
+
 		return Arrays.stream(values())
-			.filter(it -> it.weightType.equals(type))
+			.filter(it -> it == weightType)
 			.findAny()
 			.orElseThrow(() -> new IllegalArgumentException(type + ": 찾을 수 없는 타입입니다."));
 	}

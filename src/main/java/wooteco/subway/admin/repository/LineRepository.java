@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import wooteco.subway.admin.domain.entity.Line;
 
-public interface LineRepository extends CrudRep`ository<Line, Long> {
+public interface LineRepository extends CrudRepository<Line, Long> {
 	@Override
 	List<Line> findAll();
 }
