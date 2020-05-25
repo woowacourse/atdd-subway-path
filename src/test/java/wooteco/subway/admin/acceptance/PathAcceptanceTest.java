@@ -4,7 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -100,5 +102,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(PathResponse.class);
+    }
+
+    void setSubwayInformation() {
+        LineResponse lineResponse2 = createLine("2호선");
+        LineResponse lineResponse7 = createLine("7호선");
+        LineResponse lineResponseB = createLine("분당선");
+
+        StationResponse 왕십리 = createStation("왕십리");
+        StationResponse 한양대 = createStation("한양대");
+        StationResponse 뚝섬 = createStation("뚝섬");
+        StationResponse 성수 = createStation("성수");
+        StationResponse 건대입구 = createStation("건대입구");
+        StationResponse 뚝섬유원지 = createStation("뚝섬유원지");
+        StationResponse 청담 = createStation("청담");
+        StationResponse 강남구청 = createStation("강남구청");
+        StationResponse 압구정로데오 = createStation("압구정로데오");
+        StationResponse 서울숲 = createStation("서울숲");
+        StationResponse 잠실 = createStation("잠실");
+
+        addLineStation(lineResponse2.getId(), null, 왕십리.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), 왕십리.getId(), 한양대.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 한양대.getId(), 뚝섬.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 뚝섬.getId(), 성수.getId(), 5, 2);
+        addLineStation(lineResponse2.getId(), 성수.getId(), 건대입구.getId(), 5, 2);
+
+        addLineStation(lineResponse7.getId(), null, 건대입구.getId(), 0, 0);
+        addLineStation(lineResponse7.getId(), 건대입구.getId(), 뚝섬유원지.getId(), 7, 4);
+        addLineStation(lineResponse7.getId(), 뚝섬유원지.getId(), 청담.getId(), 7, 4);
+        addLineStation(lineResponse7.getId(), 청담.getId(), 강남구청.getId(), 7, 4);
+
+        addLineStation(lineResponseB.getId(), null, 강남구청.getId(), 0, 0);
+        addLineStation(lineResponseB.getId(), 강남구청.getId(), 압구정로데오.getId(), 3, 1);
+        addLineStation(lineResponseB.getId(), 압구정로데오.getId(), 서울숲.getId(), 3, 1);
+        addLineStation(lineResponseB.getId(), 서울숲.getId(), 왕십리.getId(), 3, 1);
     }
 }

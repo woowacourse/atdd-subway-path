@@ -49,14 +49,6 @@ public class AcceptanceTest {
         return post("/stations", params, StationResponse.class);
     }
 
-    List<StationResponse> getStations() {
-        return getList("/stations", StationResponse.class);
-    }
-
-    void deleteStation(Long id) {
-        delete("/stations/" + id);
-    }
-
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -69,23 +61,6 @@ public class AcceptanceTest {
 
     LineDetailResponse getLine(Long id) {
         return get("/lines/" + id, LineDetailResponse.class);
-    }
-
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
-        put("/lines/" + id, params);
-    }
-
-    List<LineResponse> getLines() {
-        return getList("/lines", LineResponse.class);
-    }
-
-    void deleteLine(Long id) {
-        delete("/lines/" + id);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -108,44 +83,6 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
-    }
-
-    void removeLineStation(Long lineId, Long stationId) {
-        delete("/lines/" + lineId + "/stations/" + stationId);
-    }
-
-    void setSubwayInformation() {
-        LineResponse lineResponse2 = createLine("2호선");
-        LineResponse lineResponse7 = createLine("7호선");
-        LineResponse lineResponseB = createLine("분당선");
-
-        StationResponse 왕십리 = createStation("왕십리");
-        StationResponse 한양대 = createStation("한양대");
-        StationResponse 뚝섬 = createStation("뚝섬");
-        StationResponse 성수 = createStation("성수");
-        StationResponse 건대입구 = createStation("건대입구");
-        StationResponse 뚝섬유원지 = createStation("뚝섬유원지");
-        StationResponse 청담 = createStation("청담");
-        StationResponse 강남구청 = createStation("강남구청");
-        StationResponse 압구정로데오 = createStation("압구정로데오");
-        StationResponse 서울숲 = createStation("서울숲");
-        StationResponse 잠실 = createStation("잠실");
-
-        addLineStation(lineResponse2.getId(), null, 왕십리.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), 왕십리.getId(), 한양대.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), 한양대.getId(), 뚝섬.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), 뚝섬.getId(), 성수.getId(), 5, 2);
-        addLineStation(lineResponse2.getId(), 성수.getId(), 건대입구.getId(), 5, 2);
-
-        addLineStation(lineResponse7.getId(), null, 건대입구.getId(), 0, 0);
-        addLineStation(lineResponse7.getId(), 건대입구.getId(), 뚝섬유원지.getId(), 7, 4);
-        addLineStation(lineResponse7.getId(), 뚝섬유원지.getId(), 청담.getId(), 7, 4);
-        addLineStation(lineResponse7.getId(), 청담.getId(), 강남구청.getId(), 7, 4);
-
-        addLineStation(lineResponseB.getId(), null, 강남구청.getId(), 0, 0);
-        addLineStation(lineResponseB.getId(), 강남구청.getId(), 압구정로데오.getId(), 3, 1);
-        addLineStation(lineResponseB.getId(), 압구정로데오.getId(), 서울숲.getId(), 3, 1);
-        addLineStation(lineResponseB.getId(), 서울숲.getId(), 왕십리.getId(), 3, 1);
     }
 
     <T> T get(String path, Class<T> responseType) {
@@ -184,7 +121,7 @@ public class AcceptanceTest {
                         extract().as(responseType);
     }
 
-    <T> void put(String path, Map<String, String> params) {
+    void put(String path, Map<String, String> params) {
         given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -196,7 +133,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    <T> void delete(String path) {
+    void delete(String path) {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).

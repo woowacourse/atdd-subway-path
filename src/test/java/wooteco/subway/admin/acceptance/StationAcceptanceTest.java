@@ -26,4 +26,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         List<StationResponse> stationsAfterDelete = getStations();
         assertThat(stationsAfterDelete.size()).isEqualTo(2);
     }
+
+    List<StationResponse> getStations() {
+        return getList("/stations", StationResponse.class);
+    }
+
+    void deleteStation(Long id) {
+        delete("/stations/" + id);
+    }
 }

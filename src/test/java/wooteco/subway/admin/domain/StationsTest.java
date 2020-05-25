@@ -47,15 +47,17 @@ class StationsTest {
     }
 
     @Test
-    void findStation() {
-        assertThat(stations1.findStation(강남구청.getId())).isEqualTo(강남구청);
-        assertThat(stations1.findStation(성수.getId())).isEqualTo(성수);
-        assertThat(stations1.findStation(압구정로데오.getId())).isEqualTo(압구정로데오);
+    void makePathStations() {
+        List<Long> shortestPath = Arrays.asList(강남구청.getId(), 압구정로데오.getId(), 서울숲.getId(), 왕십리.getId());
+
+        assertThat(stations1.makePathStations(shortestPath)).isNotNull();
+        assertThat(stations1.makePathStations(shortestPath).getStations().size()).isEqualTo(4);
     }
 
     @Test
-    void findNoExistStation() {
-        assertThatThrownBy(() -> stations1.findStation(잠실.getId()))
-                .isInstanceOf(NoExistStationException.class);
+    void makePathStationsWithNoExistStation() {
+        List<Long> shortestPath = Arrays.asList(강남구청.getId(), 압구정로데오.getId(), 서울숲.getId(), 잠실.getId());
+
+        assertThatThrownBy(() -> stations1.makePathStations(shortestPath)).isInstanceOf(NoExistStationException.class);
     }
 }

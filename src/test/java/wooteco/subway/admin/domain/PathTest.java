@@ -66,8 +66,8 @@ class PathTest {
 
         Path path = Path.makePath(lines, stations, PathType.DISTANCE, 건대입구.getId(), 강남구청.getId());
 
-        assertThat(path.getPath().getStations().size()).isEqualTo(4);
-        assertThat(path.getTotalWeight()).isEqualTo(21);
-        assertThat(path.getTotalInformation()).isEqualTo(12);
+        assertThat(path.getPathStations().size()).isEqualTo(4);
+        assertThat(path.getDistance()).isEqualTo(21);
+        assertThat(path.getDuration()).isEqualTo(12);
     }
 }

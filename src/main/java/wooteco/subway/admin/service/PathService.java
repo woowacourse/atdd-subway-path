@@ -33,11 +33,7 @@ public class PathService {
 
         Path path = Path.makePath(lines, stations, type, sourceId, targetId);
 
-        if (type.equals(PathType.DISTANCE)) {
-            return new PathResponse(StationResponse.listOf(path.getPath().getStations()), path.getTotalInformation(), path.getTotalWeight());
-        }
-
-        return new PathResponse(StationResponse.listOf(path.getPath().getStations()), path.getTotalWeight(), path.getTotalInformation());
+        return new PathResponse(StationResponse.listOf(path.getPathStations()), path.getDuration(), path.getDistance());
     }
 
     private void checkDuplicateName(String sourceName, String targetName) {
