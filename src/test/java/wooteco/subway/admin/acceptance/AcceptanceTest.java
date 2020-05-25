@@ -86,53 +86,5 @@ public class AcceptanceTest {
 				.then()
 				.log().all();
 	}
-
-	StationResponse createStation(String name) {
-		Map<String, String> params = new HashMap<>();
-		params.put("name", name);
-
-		return post(
-				"/stations",
-				params,
-				StationResponse.class
-		);
-	}
-
-	LineDetailResponse getLine(Long id) {
-		return get("/lines/" + id).as(LineDetailResponse.class);
-	}
-
-	LineResponse createLine(String name) {
-		Map<String, String> params = new HashMap<>();
-		params.put("name", name);
-		params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-		params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-		params.put("intervalTime", "10");
-
-		return post(
-				"/lines",
-				params,
-				LineResponse.class
-		);
-	}
-
-	void addEdge(Long lineId, Long preStationId, Long stationId) {
-		addEdge(lineId, preStationId, stationId, 10, 10);
-	}
-
-	void addEdge(Long lineId, Long preStationId, Long stationId, Integer distance,
-			Integer duration) {
-		Map<String, String> params = new HashMap<>();
-		params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-		params.put("stationId", stationId.toString());
-		params.put("distance", distance.toString());
-		params.put("duration", duration.toString());
-
-		post(
-				"/lines/" + lineId + "/stations",
-				params,
-				LineResponse.class
-		);
-	}
 }
 

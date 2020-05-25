@@ -4,6 +4,11 @@ import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,5 +71,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getTotalDistance()).isEqualTo(23);
 		assertThat(pathResponse.getTotalDuration()).isEqualTo(23);
+	}
+
+	StationResponse createStation(String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("name", name);
+
+		return post(
+				"/stations",
+				params,
+				StationResponse.class
+		);
+	}
+
+	LineResponse createLine(String name) {
+		Map<String, String> params = new HashMap<>();
+		params.put("name", name);
+		params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+		params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+		params.put("intervalTime", "10");
+
+		return post(
+				"/lines",
+				params,
+				LineResponse.class
+		);
+	}
+
+	void addEdge(Long lineId, Long preStationId, Long stationId, Integer distance,
+			Integer duration) {
+		Map<String, String> params = new HashMap<>();
+		params.put("preStationId", preStationId == null ? "" : preStationId.toString());
+		params.put("stationId", stationId.toString());
+		params.put("distance", distance.toString());
+		params.put("duration", duration.toString());
+
+		post(
+				"/lines/" + lineId + "/stations",
+				params,
+				LineResponse.class
+		);
 	}
 }

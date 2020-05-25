@@ -54,8 +54,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }
 
+    LineDetailResponse getLine(Long id) {
+        return get("/lines/" + id).as(LineDetailResponse.class);
+    }
+
     List<LineResponse> getLines() {
         return get("/lines").jsonPath().getList(".", LineResponse.class);
+    }
+
+    LineResponse createLine(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", "10");
+
+        return post(
+                "/lines",
+                params,
+                LineResponse.class
+        );
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {

@@ -13,6 +13,11 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 public class EdgeAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("전체 지하철 노선도 정보 조회")
@@ -28,10 +33,10 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
         StationResponse seokchon = createStation("석촌역");
         StationResponse mongchon = createStation("몽촌토성역");
 
-        addEdge(lineNumberTwo.getId(), hongik.getId(), shinchon.getId());
-        addEdge(lineNumberTwo.getId(), shinchon.getId(), jamsil.getId());
-        addEdge(lineNumberEight.getId(), jamsil.getId(), seokchon.getId());
-        addEdge(lineNumberEight.getId(), seokchon.getId(), mongchon.getId());
+        addEdge(lineNumberTwo.getId(), hongik.getId(), shinchon.getId(), 10, 10);
+        addEdge(lineNumberTwo.getId(), shinchon.getId(), jamsil.getId(), 10, 10);
+        addEdge(lineNumberEight.getId(), jamsil.getId(), seokchon.getId(), 10, 10);
+        addEdge(lineNumberEight.getId(), seokchon.getId(), mongchon.getId(), 10, 10);
 
         //when
         WholeSubwayResponse wholeSubwayResponse = given().
@@ -63,9 +68,9 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
 
         LineResponse lineNumberTwo = createLine("2호선");
 
-        addEdge(lineNumberTwo.getId(), null, kangnam.getId());
-        addEdge(lineNumberTwo.getId(), kangnam.getId(), yeoksam.getId());
-        addEdge(lineNumberTwo.getId(), yeoksam.getId(), seolleung.getId());
+        addEdge(lineNumberTwo.getId(), null, kangnam.getId(), 10, 10);
+        addEdge(lineNumberTwo.getId(), kangnam.getId(), yeoksam.getId(), 10, 10);
+        addEdge(lineNumberTwo.getId(), yeoksam.getId(), seolleung.getId(), 10, 10);
 
         LineDetailResponse lineDetailResponse = getLine(lineNumberTwo.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
@@ -74,6 +79,50 @@ public class EdgeAcceptanceTest extends AcceptanceTest {
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineNumberTwo.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
+    }
+
+    StationResponse createStation(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+
+        return post(
+                "/stations",
+                params,
+                StationResponse.class
+        );
+    }
+
+    LineDetailResponse getLine(Long id) {
+        return get("/lines/" + id).as(LineDetailResponse.class);
+    }
+
+    LineResponse createLine(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", "10");
+
+        return post(
+                "/lines",
+                params,
+                LineResponse.class
+        );
+    }
+
+    void addEdge(Long lineId, Long preStationId, Long stationId, Integer distance,
+            Integer duration) {
+        Map<String, String> params = new HashMap<>();
+        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
+        params.put("stationId", stationId.toString());
+        params.put("distance", distance.toString());
+        params.put("duration", duration.toString());
+
+        post(
+                "/lines/" + lineId + "/stations",
+                params,
+                LineResponse.class
+        );
     }
 
     void removeEdge(Long lineId, Long stationId) {
