@@ -36,9 +36,9 @@ public class PageAcceptanceTest {
 
         given().
                 accept(MediaType.TEXT_HTML_VALUE).
-        when().
-                get("/lines").
-        then().
+                when().
+                get("/admin/lines").
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -46,6 +46,7 @@ public class PageAcceptanceTest {
     private void createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("color", "bg-yellow-500");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");

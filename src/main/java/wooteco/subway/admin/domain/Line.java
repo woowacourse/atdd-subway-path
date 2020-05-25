@@ -10,6 +10,7 @@ public class Line {
     @Id
     private Long id;
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -20,54 +21,32 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime, Set<LineStation> stations) {
+        this.id = id;
         this.name = name;
+        this.color = color;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.stations = stations;
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(Long id, String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(id, name, color, startTime, endTime, intervalTime, new HashSet<>());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public int getIntervalTime() {
-        return intervalTime;
-    }
-
-    public Set<LineStation> getStations() {
-        return stations;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public Line(String name, String color, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(null, name, color, startTime, endTime, intervalTime);
     }
 
     public void update(Line line) {
         if (line.getName() != null) {
             this.name = line.getName();
+        }
+        if (line.getColor() != null) {
+            this.color = line.getColor();
         }
         if (line.getStartTime() != null) {
             this.startTime = line.getStartTime();
@@ -132,5 +111,41 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public int getIntervalTime() {
+        return intervalTime;
+    }
+
+    public Set<LineStation> getStations() {
+        return stations;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

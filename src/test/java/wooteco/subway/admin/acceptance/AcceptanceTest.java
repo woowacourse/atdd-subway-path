@@ -8,7 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +80,7 @@ public class AcceptanceTest {
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("color", "bg-gray-300");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -168,6 +172,15 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    PathResponse getPath(String source, String target, String type) {
+        return
+                given().when().
+                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
+                        then().
+                        log().all().
+                        extract().as(PathResponse.class);
     }
 
 }
