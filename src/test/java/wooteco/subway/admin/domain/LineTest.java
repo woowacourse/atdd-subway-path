@@ -4,12 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/truncate.sql")
 public class LineTest {
     private Line line;
 
@@ -27,6 +29,7 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
+                .filter(it -> it.getPreStationId() != null)
                 .filter(it -> it.getPreStationId() == 4L)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);

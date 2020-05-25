@@ -8,7 +8,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,34 +46,7 @@ public class AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
-    }
-
-    List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
-    }
-
-    void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-        then().
-                log().all();
+        return post("/stations", params, StationResponse.class);
     }
 
     LineResponse createLine(String name) {
@@ -81,60 +56,11 @@ public class AcceptanceTest {
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        return
-                given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+        return post("/lines", params, LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
-    }
-
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                put("/lines/" + id).
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-    }
-
-    void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
-        then().
-                log().all();
+        return get("/lines/" + id, LineDetailResponse.class);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -159,16 +85,63 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    void removeLineStation(Long lineId, Long stationId) {
+    <T> T get(String path, Class<T> responseType) {
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        get(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(responseType);
+    }
+
+    <T> List<T> getList(String path, Class<T> responseType) {
+        return
+                given().when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", responseType);
+    }
+
+    <T> T post(String path, Map<String, String> params, Class<T> responseType) {
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(responseType);
+    }
+
+    void put(String path, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    void delete(String path) {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
+                delete(path).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
-
 }
 

@@ -11,6 +11,8 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -61,8 +63,15 @@ public class LineService {
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        return WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+    }
+
+    private LineDetailResponse createMockResponse() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station());
+        stations.add(new Station());
+        stations.add(new Station());
+        return LineDetailResponse.of(new Line(), stations);
     }
 }

@@ -35,7 +35,42 @@ public class PageController {
     }
 
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage(Model model) {
+    public String edgePage() {
         return "admin/admin-edge";
+    }
+
+    @GetMapping(value = "/service", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceIndexPage() {
+        return "service/index";
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceSearchPage() {
+        return "service/search";
+    }
+
+    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMapPage() {
+        return "service/map";
+    }
+
+    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceLogInPage() {
+        return "service/login";
+    }
+
+    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceJoinPage() {
+        return "service/join";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMyPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceMyPageEditPage() {
+        return "service/mypage-edit";
     }
 }
