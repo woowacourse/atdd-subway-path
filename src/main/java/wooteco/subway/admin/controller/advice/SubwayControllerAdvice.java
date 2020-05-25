@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.admin.dto.response.ExceptionResponse;
-import wooteco.subway.admin.exception.*;
+import wooteco.subway.admin.exception.EmptyStationNameException;
+import wooteco.subway.admin.exception.NoResourceExistException;
+import wooteco.subway.admin.exception.SourceEqualsTargetException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
@@ -23,11 +25,7 @@ public class SubwayControllerAdvice {
 	}
 
 	@ExceptionHandler({
-			NoStationNameExistsException.class,
-			NoCriteriaExistsException.class,
-			NoLineExistException.class,
-			NoPathExistsException.class,
-			NoLineStationExistsException.class
+			NoResourceExistException.class
 	})
 	public ResponseEntity<ExceptionResponse> getResourceNotFoundException(RuntimeException e) {
 		LOGGER.error(e);
