@@ -3,6 +3,7 @@ package wooteco.subway.admin.service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -83,12 +84,11 @@ public class LineService {
 
     public List<LineDetailResponse> wholeLines() {
         List<Line> lines = lineRepository.findAll();
-        List<Long> allStationOfLine = lines.stream()
+        Set<Long> allStationOfLines = lines.stream()
             .flatMap(line -> line.getLineStationsIds().stream())
-            .collect(Collectors.toList())
-            ;
+            .collect(Collectors.toSet());
 
-        List<Station> stations = stationRepository.findAllById(allStationOfLine);
+        List<Station> stations = stationRepository.findAllById(allStationOfLines);
 
         return lines.stream()
             .map(line -> LineDetailResponse.of(line,
