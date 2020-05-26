@@ -3,7 +3,6 @@ package wooteco.subway.admin.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,26 +42,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		addLineStation(line1.getId(), station3.getId(), station4.getId(), 1100, 6);
 
 		//when
-		List<PathResponse> paths = getPath("신길", "구리");
+		PathResponse pathAsDistance = getPath("신길", "구리", "distance");
+		PathResponse pathAsDuration = getPath("신길", "구리", "duration");
 
-		PathResponse distanceFirstPath = paths.get(0);
-		PathResponse durationFirstPath = paths.get(1);
 
 		//then
-		assertThat(distanceFirstPath.getDistance()).isEqualTo(2300);
-		assertThat(durationFirstPath.getDuration()).isEqualTo(13);
+		assertThat(pathAsDistance.getDistance()).isEqualTo(2300);
+		assertThat(pathAsDuration.getDuration()).isEqualTo(13);
 	}
 
-	public static List<PathResponse> getPath(String source, String target) {
+	public static PathResponse getPath(String source, String target, String type) {
 		Map<String, String> params = new HashMap<>();
 		params.put("source", source);
 		params.put("target", target);
+		params.put("type", type);
 		return RestAssured.given().
 			params(params).
 			when().
 			get("/path").
 			then().
 			log().all().
-			extract().jsonPath().getList(".", PathResponse.class);
+			extract().as(PathResponse.class);
 	}
 }

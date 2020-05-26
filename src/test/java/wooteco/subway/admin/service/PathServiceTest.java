@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -70,8 +69,7 @@ class PathServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
 		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
 
-		List<PathResponse> pathResponses = pathService.findPath("강남역", "선릉역");
-		PathResponse pathResponse = pathResponses.get(0);
+		PathResponse pathResponse = pathService.findPath("강남역", "선릉역", "distance");
 
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getDistance()).isEqualTo(20);
@@ -89,8 +87,7 @@ class PathServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
 		when(stationRepository.findById(3L)).thenReturn(Optional.of(station3));
 
-		List<PathResponse> pathResponses = pathService.findPath("강남역", "선릉역");
-		PathResponse pathResponse = pathResponses.get(1);
+		PathResponse pathResponse = pathService.findPath("강남역", "선릉역", "duration");
 
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getDistance()).isEqualTo(20);
@@ -100,7 +97,7 @@ class PathServiceTest {
 	@Test
 	@DisplayName("출발역과 도착역이 같은경우")
 	void findSamePathTest() {
-		assertThatThrownBy(() -> pathService.findPath("강남역", "강남역"))
+		assertThatThrownBy(() -> pathService.findPath("강남역", "강남역", "distance"))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("같을");
 	}
@@ -113,7 +110,7 @@ class PathServiceTest {
 		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
 
-		assertThatThrownBy(() -> pathService.findPath("강남역", "삼성역"))
+		assertThatThrownBy(() -> pathService.findPath("강남역", "삼성역", "distance"))
 			.isInstanceOf(InaccessibleStationException.class)
 			.hasMessageContaining("갈 수 없는 역");
 	}
@@ -121,7 +118,7 @@ class PathServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 역으로 조회하려는 경우")
 	void findWithNonExistentStation() {
-		assertThatThrownBy(() -> pathService.findPath("강남역", "이상한역"))
+		assertThatThrownBy(() -> pathService.findPath("강남역", "이상한역", "distance"))
 			.isInstanceOf(NonExistentDataException.class)
 			.hasMessageContaining("존재 하지 않습니다");
 	}

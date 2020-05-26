@@ -1,6 +1,5 @@
 package wooteco.subway.admin.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public List<PathResponse> findPath(String departStationName, String arrivalStationName) {
+	public PathResponse findPath(String departStationName, String arrivalStationName, String type) {
 		if (departStationName.equals(arrivalStationName)) {
 			throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다.");
 		}
@@ -43,13 +42,11 @@ public class PathService {
 		List<Station> stations = stationRepository.findAll();
 		List<Line> lines = lineRepository.findAll();
 
-		return Arrays.stream(EdgeWeightType.values())
-			.map(type -> Optional.of(getGraphPath(stations, lines, type))
-				.map(graph -> graph.getPath(departStation.getId(), arrivalStation.getId()))
-				.orElseThrow(() -> new InaccessibleStationException(arrivalStation.getName())))
+		return Optional.of(getGraphPath(stations, lines, EdgeWeightType.of(type)))
+			.map(graph -> graph.getPath(departStation.getId(), arrivalStation.getId()))
 			.map(path -> PathResponse.of(mapToStationResponse(path.getVertexList()), sumDistance(path),
 				sumDuration(path)))
-			.collect(Collectors.toList());
+			.orElseThrow(() -> new InaccessibleStationException(arrivalStation.getName()));
 	}
 
 	private Station getStationByName(String departStationName) {
