@@ -35,7 +35,7 @@ public class PathService {
             throw new IllegalArgumentException("Source can not be same with target.");
         }
 
-        WeightedMultigraph<String, PathWeightedEdge> pathGraph = new WeightedMultigraph(PathWeightedEdge.class);
+        WeightedMultigraph<String, PathWeightedEdge> pathGraph = new WeightedMultigraph<>(PathWeightedEdge.class);
 
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
@@ -53,7 +53,7 @@ public class PathService {
                     .forEach(lineStation -> setLineStationEdgeByType(pathGraph, stationMap, lineStation, type));
         });
 
-        GraphPath path = new DijkstraShortestPath(pathGraph).getPath(source, target);
+        GraphPath<String, PathWeightedEdge> path = DijkstraShortestPath.findPathBetween(pathGraph, source, target);
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException("Can not find path between " + source + "," + target + ".");
         }
