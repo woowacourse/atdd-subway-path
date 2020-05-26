@@ -1,8 +1,7 @@
 package wooteco.subway.admin.domain;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -19,17 +18,27 @@ import wooteco.subway.admin.exception.InaccessibleStationException;
  *   @author ParkDooWon
  */
 public class GraphService {
-	public List<PathResponse> findAllPath(Stations stations, Lines lines, Long departStationId, Long arrivalStationId) {
-		return Arrays.stream(EdgeWeightType.values())
-			.map(type -> Optional.of(getGraphPath(stations.getStations(), lines.getLines(), type))
-				.map(graph -> graph.getPath(departStationId, arrivalStationId))
-				.orElseThrow(() -> new InaccessibleStationException("갈 수 없는 역입니다.")))
-			.map(path -> PathResponse.of(mapToStationResponse(path.getVertexList(), stations), sumDistance(path),
-				sumDuration(path)))
-			.collect(Collectors.toList());
+	public PathResponse findPath(Stations stations, Lines lines, Long departStationId, Long arrivalStationId,
+		EdgeWeightType type) {
+		GraphPath<Long, CustomEdge> graphPath = getGraphPath(stations, lines, departStationId, arrivalStationId, type);
+		List<Long> stationIds = graphPath.getVertexList();
+
+		return PathResponse.of(mapToStationResponse(stationIds, stations), sumDistance(graphPath),
+			sumDuration(graphPath));
 	}
 
-	private DijkstraShortestPath<Long, CustomEdge> getGraphPath(List<Station> stations,
+	private GraphPath<Long, CustomEdge> getGraphPath(Stations stations, Lines lines, Long departStationId,
+		Long arrivalStationId, EdgeWeightType type) {
+		GraphPath<Long, CustomEdge> path = getDijkstraPath(stations.getStations(), lines.getLines(), type)
+			.getPath(departStationId, arrivalStationId);
+
+		if (Objects.isNull(path)) {
+			throw new InaccessibleStationException("갈 수 없는 역입니다.");
+		}
+		return path;
+	}
+
+	private DijkstraShortestPath<Long, CustomEdge> getDijkstraPath(List<Station> stations,
 		List<Line> lines, EdgeWeightType type) {
 		WeightedMultigraph<Long, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 		stations.forEach(station -> graph.addVertex(station.getId()));

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.admin.domain.EdgeWeightType;
 import wooteco.subway.admin.domain.GraphService;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -70,8 +71,7 @@ public class LineService {
 	public LineDetailResponse findLineWithStationsById(Long id) {
 		Line persistLine = lineRepository.findById(id)
 			.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Line입니다."));
-		List<Station> stations = persistLine.getLineStationsId()
-			.stream()
+		List<Station> stations = persistLine.getLineStationsId().stream()
 			.map(stationId -> stationRepository.findById(stationId))
 			.map(station -> station.orElseThrow(() -> new NonExistentDataException("존재하지 않는 Station입니다.")))
 			.collect(Collectors.toList());
@@ -87,21 +87,26 @@ public class LineService {
 			.collect(Collectors.collectingAndThen(Collectors.toList(), WholeSubwayResponse::of));
 	}
 
-	public List<PathResponse> findAllPath(String departStationName, String arrivalStationName) {
+	public PathResponse findPath(Station departStation, Station arrivalStation, Stations stations, Lines lines,
+		EdgeWeightType type) {
 		GraphService graphService = new GraphService();
-		if (departStationName.equals(arrivalStationName)) {
+		if (departStation.getName().equals(arrivalStation.getName())) {
 			throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다.");
 		}
-		Long departStationId = getStationByName(departStationName).getId();
-		Long arrivalStationId = getStationByName(arrivalStationName).getId();
-		Stations stations = Stations.of(stationRepository.findAll());
-		Lines lines = Lines.of(lineRepository.findAll());
 
-		return graphService.findAllPath(stations, lines, departStationId, arrivalStationId);
+		return graphService.findPath(stations, lines, departStation.getId(), arrivalStation.getId(), type);
 	}
 
-	private Station getStationByName(String departStationName) {
+	public Station getStationByName(String departStationName) {
 		return stationRepository.findByName(departStationName)
 			.orElseThrow(() -> new NonExistentDataException(String.format("%s는 존재하지 않는 데이터입니다.", departStationName)));
+	}
+
+	public Stations findAllStations() {
+		return Stations.of(stationRepository.findAll());
+	}
+
+	public Lines findAllLines() {
+		return Lines.of(lineRepository.findAll());
 	}
 }

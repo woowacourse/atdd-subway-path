@@ -16,9 +16,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.admin.domain.EdgeWeightType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.Stations;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.PathResponse;
@@ -179,13 +182,9 @@ public class LineServiceTest {
 
 	@Test
 	void findPathTest() {
-		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(station1));
-		when(stationRepository.findByName("선릉역")).thenReturn(Optional.of(station3));
-		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
-
-		List<PathResponse> pathResponses = lineService.findAllPath("강남역", "선릉역");
-		PathResponse pathResponse = pathResponses.get(0);
+		Stations stations = Stations.of(Arrays.asList(station1, station2, station3, station4));
+		Lines lines = Lines.of(Arrays.asList(line));
+		PathResponse pathResponse = lineService.findPath(station1, station3, stations, lines, EdgeWeightType.DISTANCE);
 
 		assertThat(pathResponse.getStations()).hasSize(3);
 		assertThat(pathResponse.getDistance()).isEqualTo(20);
@@ -195,7 +194,10 @@ public class LineServiceTest {
 	@Test
 	@DisplayName("출발역과 도착역이 같은경우")
 	void findSamePathTest() {
-		assertThatThrownBy(() -> lineService.findAllPath("강남역", "강남역"))
+		Stations stations = Stations.of(Arrays.asList(station1, station2, station3, station4));
+		Lines lines = Lines.of(Arrays.asList(line));
+
+		assertThatThrownBy(() -> lineService.findPath(station1, station1, stations, lines, EdgeWeightType.DISTANCE))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("같을");
 	}
@@ -203,12 +205,10 @@ public class LineServiceTest {
 	@Test
 	@DisplayName("길이 연결되어있지 않은 경우")
 	void findInaccessiblePathTest() {
-		when(stationRepository.findByName("강남역")).thenReturn(Optional.of(station1));
-		when(stationRepository.findByName("삼성역")).thenReturn(Optional.of(station4));
-		when(stationRepository.findAll()).thenReturn(Arrays.asList(station1, station2, station3, station4));
-		when(lineRepository.findAll()).thenReturn(Arrays.asList(line));
+		Stations stations = Stations.of(Arrays.asList(station1, station2, station3, station4));
+		Lines lines = Lines.of(Arrays.asList(line));
 
-		assertThatThrownBy(() -> lineService.findAllPath("강남역", "삼성역"))
+		assertThatThrownBy(() -> lineService.findPath(station1, station4, stations, lines, EdgeWeightType.DISTANCE))
 			.isInstanceOf(InaccessibleStationException.class)
 			.hasMessageContaining("갈 수 없는 역");
 	}
