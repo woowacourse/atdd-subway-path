@@ -36,12 +36,31 @@
             </button>
           </div>
           <div class="w-full h-full">
-            <div class="subway-lines-slider"></div>
+            <div class="subway-lines-slider">
+              {{#each lines}}
+              <div class="inline-block w-1/2 px-2">
+                <div class="rounded-sm w-full slider-list">
+                  <div class="border {{color}} lint-title px-4 py-1">{{name}}</div>
+                  <div class="overflow-y-auto height-90 target-line" data-line="{{id}}">
+                    {{#each stations}}
+                    <div class="list-item border border-gray-200 py-2 px-4 text-gray-800"
+                         data-station="{{this.id}}">
+                      {{this.name}}
+                      <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+                        <span class="mdi mdi-delete"></span>
+                      </button>
+                    </div>
+                    {{/each}}
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <script type="module" src="./js/App.js"></script>
-    <script type="module" src="./js/views/Edge.js"></script>
+    <script src="/service/js/App.js" type="module"></script>
+    <script src="/service/js/views/Map.js" type="module"></script>
   </body>
 </html>

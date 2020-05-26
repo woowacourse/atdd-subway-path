@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.Param;
 import wooteco.subway.admin.domain.Station;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StationRepository extends CrudRepository<Station, Long> {
     @Override
@@ -15,6 +14,9 @@ public interface StationRepository extends CrudRepository<Station, Long> {
     @Override
     List<Station> findAll();
 
-    @Query("select * from station where name = :stationName")
-    Optional<Station> findByName(@Param("stationName") String stationName);
+    @Query("SELECT name FROM STATION WHERE ID IN (:ids)")
+    List<String> findNamesByIds(@Param("ids") List<Long> ids);
+
+    @Query("SELECT * FROM STATION WHERE ID IN (:ids)")
+    List<Station> findStationsByIds(@Param("ids") List<Long> ids);
 }

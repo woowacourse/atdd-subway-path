@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/truncate.sql")
+@Sql("classpath:truncate.sql")
 public class PageAcceptanceTest {
     @LocalServerPort
     int port;
