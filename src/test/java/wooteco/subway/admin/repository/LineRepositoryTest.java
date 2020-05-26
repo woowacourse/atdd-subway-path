@@ -1,5 +1,6 @@
 package wooteco.subway.admin.repository;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -15,6 +16,7 @@ public class LineRepositoryTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @DisplayName("구간 추가")
     @Test
     void addLineStation() {
         // given
@@ -27,6 +29,6 @@ public class LineRepositoryTest {
         Line resultLine = lineRepository.save(persistLine);
 
         // then
-        assertThat(resultLine.getStations()).hasSize(2);
+        assertThat(resultLine.getLineStations()).hasSize(2);
     }
 }
