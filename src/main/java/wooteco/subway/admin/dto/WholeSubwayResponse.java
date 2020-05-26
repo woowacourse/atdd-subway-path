@@ -5,7 +5,7 @@ import java.util.List;
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponses;
 
-    public WholeSubwayResponse() {
+    private WholeSubwayResponse() {
     }
 
     public WholeSubwayResponse(

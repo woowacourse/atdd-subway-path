@@ -7,7 +7,7 @@ public class PathResponse {
     private int distance;
     private int duration;
 
-    public PathResponse() {
+    private PathResponse() {
     }
 
     public PathResponse(List<StationResponse> stations, int distance, int duration) {

@@ -14,10 +14,11 @@ public class LineResponse {
     private LocalTime endTime;
     private int intervalTime;
     private String bgColor;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
+
+    private LineResponse() {
+    }
 
     public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getStartTime(),
@@ -29,9 +30,6 @@ public class LineResponse {
         return lines.stream()
             .map(it -> LineResponse.of(it))
             .collect(Collectors.toList());
-    }
-
-    public LineResponse() {
     }
 
     public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime,

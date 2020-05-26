@@ -68,7 +68,7 @@ public class LineStations {
         List<LineStation> stations = new ArrayList<>();
         stations.add(findFirstLineStation());
 
-        while (stations.size() != lineStations.size()) {
+        while (stations.size() < lineStations.size()) {
             Long lastStationId = stations.get(stations.size() - 1).getStationId();
             stations.add(findNextLineStation(lastStationId));
         }

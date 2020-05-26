@@ -11,7 +11,7 @@ public class LineCreateRequest {
     private int intervalTime;
     private String bgColor;
 
-    public LineCreateRequest() {
+    private LineCreateRequest() {
     }
 
     public Line toLine() {

@@ -5,7 +5,7 @@ public class PathRequest {
     private String target;
     private String type;
 
-    public PathRequest() {
+    private PathRequest() {
     }
 
     public String getSource() {

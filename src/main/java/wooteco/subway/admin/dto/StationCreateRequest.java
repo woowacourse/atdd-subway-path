@@ -5,7 +5,7 @@ import wooteco.subway.admin.domain.Station;
 public class StationCreateRequest {
     private String name;
 
-    public StationCreateRequest() {
+    private StationCreateRequest() {
     }
 
     public StationCreateRequest(String name) {
