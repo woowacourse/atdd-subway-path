@@ -8,7 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.response.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +80,7 @@ public class AcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("color", String.valueOf(name.hashCode()));
 
         return
                 given().
@@ -130,6 +131,15 @@ public class AcceptanceTest {
                         jsonPath().getList(".", LineResponse.class);
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        return
+                given().when().
+                        get("/lines/detail").
+                then().
+                        log().all().
+                        extract().as(WholeSubwayResponse.class);
+    }
+
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
@@ -142,7 +152,8 @@ public class AcceptanceTest {
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        params.put("lineId", lineId);
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
         params.put("distance", distance.toString());
@@ -152,9 +163,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -163,12 +174,26 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    ShortestPathResponse findShortestDistancePath(String sourceName, String targetName, String criteria) {
+        return given().
+                contentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8").
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                queryParam("source", sourceName).
+                queryParam("target", targetName).
+                queryParam("type", criteria).
+            when().
+                    get("/paths").
+            then().
+                    log().all().
+                    statusCode(HttpStatus.OK.value()).
+                    extract().as(ShortestPathResponse.class);
+    }
 }
 

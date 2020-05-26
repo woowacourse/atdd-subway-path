@@ -2,19 +2,22 @@ package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
+import wooteco.subway.admin.domain.LineDetail;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.request.LineStationCreateRequest;
+import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,17 +55,20 @@ public class LineServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+                5, "bg-blue-800");
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("노선의 처음에 구간을 추가한다.")
     @Test
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(),
+                10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
@@ -74,6 +80,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("구간 사이에 구간을 추가한다.")
     @Test
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -90,6 +97,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선의 끝에 구간을 추가한다.")
     @Test
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -106,6 +114,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(4L);
     }
 
+    @DisplayName("노선의 처음 구간을 제거한다.")
     @Test
     void removeLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -118,6 +127,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
+    @DisplayName("구간 사이의 구간을 제거한다.")
     @Test
     void removeLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -128,6 +138,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
+    @DisplayName("노선 끝의 구간을 제거한다.")
     @Test
     void removeLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -140,6 +151,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
 
+    @DisplayName("id로 LineWithStation을 조회한다.")
     @Test
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
@@ -149,5 +161,33 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @DisplayName("LineDetails를 조회한다.")
+    @Test
+    void showLineDetails() {
+        Line newLine = new Line(2L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+                5, "bg-green-500");
+        newLine.addLineStation(new LineStation(null, 4L, 10, 10));
+        newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
+        newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
+
+        List<Station> stations = Arrays.asList(
+                new Station(1L, "강남역"),
+                new Station(2L, "역삼역"),
+                new Station(3L, "삼성역"),
+                new Station(4L, "양재역"),
+                new Station(5L, "양재시민의숲역"),
+                new Station(6L, "청계산입구역")
+        );
+
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        List<LineDetail> lineDetails = lineService.showLineDetails();
+
+        assertThat(lineDetails).isNotNull();
+        assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
+        assertThat(lineDetails.get(1).getStations().size()).isEqualTo(3);
     }
 }

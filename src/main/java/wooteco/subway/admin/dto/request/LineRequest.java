@@ -1,4 +1,4 @@
-package wooteco.subway.admin.dto;
+package wooteco.subway.admin.dto.request;
 
 import wooteco.subway.admin.domain.Line;
 
@@ -9,8 +9,13 @@ public class LineRequest {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
+    private String color;
 
     public LineRequest() {
+    }
+
+    public Line toLine() {
+        return new Line(name, startTime, endTime, intervalTime, color);
     }
 
     public String getName() {
@@ -29,7 +34,7 @@ public class LineRequest {
         return intervalTime;
     }
 
-    public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime);
+    public String getColor() {
+        return color;
     }
 }
