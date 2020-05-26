@@ -200,7 +200,7 @@ public void getDijkstraShortestPath() {
 
 ## 리팩토링
 
-### 수정할 사항
+### 1차 피드백 반영
 
 - [x] Bean으로 주입받는 변수들 final로 수정
 - [x] PathController에 대한 테스트 코드 작성 (side case도 함께)
@@ -208,3 +208,11 @@ public void getDijkstraShortestPath() {
 - [x] PathAcceptanceTest를 ParameterizedTest로 수정해보기
 - [x] PathService에 DijkstraShortestPath.findPathBetween() 메서드를 적용할 수 있는 부분 찾아보기
 - [x] 경로 검색시 css가 변경되지 않는 부분 수정
+
+
+
+### 2차 피드백 반영
+
+- [ ] `PathController` 의 `searchPath`  메서드의 `RequestParam` 을 커맨드 객체(RequestDto)로 변경 및 유효성 검사
+- [ ] 최단거리, 최소시간에 대한 조회 결과를 한 번에 보내지 말고 요청마다 전달하도록 수정(캐싱 적용이 필요)
+- [ ] 출발역과 도착역이 같은 경우, 존재하지 않는 출발역에 대한 조회 요청이 이루어질 경우에 대한 테스트 케이스 작성
