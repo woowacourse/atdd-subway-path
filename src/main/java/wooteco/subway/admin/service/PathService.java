@@ -21,9 +21,9 @@ import java.util.Objects;
 
 @Service
 public class PathService {
-    private LineRepository lineRepository;
+    private final LineRepository lineRepository;
 
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public PathService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
