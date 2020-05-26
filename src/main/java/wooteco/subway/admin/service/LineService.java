@@ -83,7 +83,12 @@ public class LineService {
 
     public List<LineDetailResponse> wholeLines() {
         List<Line> lines = lineRepository.findAll();
-        List<Station> stations = stationRepository.findAll();
+        List<Long> allStationOfLine = lines.stream()
+            .flatMap(line -> line.getLineStationsIds().stream())
+            .collect(Collectors.toList())
+            ;
+
+        List<Station> stations = stationRepository.findAllById(allStationOfLine);
 
         return lines.stream()
             .map(line -> LineDetailResponse.of(line,
