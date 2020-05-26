@@ -35,6 +35,19 @@ public class PathService {
             throw new IllegalArgumentException("Source can not be same with target.");
         }
 
+        WeightedMultigraph<String, PathWeightedEdge> pathGraph = getPathWeightedMultiGraph(type);
+
+        GraphPath<String, PathWeightedEdge> path = DijkstraShortestPath.findPathBetween(pathGraph, source, target);
+        if (Objects.isNull(path)) {
+            throw new IllegalArgumentException("Can not find path between " + source + "," + target + ".");
+        }
+
+        List<String> shortestPath = path.getVertexList();
+
+        return new PathSearchResponse(calculateDuration(path.getEdgeList()), calculateDistance(path.getEdgeList()), shortestPath);
+    }
+
+    private WeightedMultigraph<String, PathWeightedEdge> getPathWeightedMultiGraph(PathType type) {
         WeightedMultigraph<String, PathWeightedEdge> pathGraph = new WeightedMultigraph<>(PathWeightedEdge.class);
 
         List<Station> stations = stationRepository.findAll();
@@ -52,15 +65,7 @@ public class PathService {
                     .filter(lineStation -> !Objects.isNull(lineStation.getPreStationId()))
                     .forEach(lineStation -> setLineStationEdgeByType(pathGraph, stationMap, lineStation, type));
         });
-
-        GraphPath<String, PathWeightedEdge> path = DijkstraShortestPath.findPathBetween(pathGraph, source, target);
-        if (Objects.isNull(path)) {
-            throw new IllegalArgumentException("Can not find path between " + source + "," + target + ".");
-        }
-
-        List<String> shortestPath = path.getVertexList();
-
-        return new PathSearchResponse(calculateDuration(path.getEdgeList()), calculateDistance(path.getEdgeList()), shortestPath);
+        return pathGraph;
     }
 
     private void setLineStationEdgeByType(WeightedMultigraph<String, PathWeightedEdge> pathGraph,
