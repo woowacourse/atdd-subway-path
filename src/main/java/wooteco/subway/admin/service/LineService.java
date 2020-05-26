@@ -76,23 +76,25 @@ public class LineService {
 
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = findBy(lineId);
-        List<Long> lineStationsIds = line.getLineStationsIds();
-        return LineDetailResponse.of(line, sortBySubwayRule(lineStationsIds));
+        List<Station> stations = stationRepository.findAll();
+
+        return LineDetailResponse.of(line, sortBySubwayRule(line.getLineStationsIds(), stations));
     }
 
     public List<LineDetailResponse> wholeLines() {
         List<Line> lines = lineRepository.findAll();
+        List<Station> stations = stationRepository.findAll();
 
         return lines.stream()
-            .map(line -> LineDetailResponse.of(line, sortBySubwayRule(line.getLineStationsIds())))
+            .map(line -> LineDetailResponse.of(line,
+                sortBySubwayRule(line.getLineStationsIds(), stations)))
             .collect(Collectors.toList());
     }
 
-    private List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
-        List<Station> stations = stationRepository.findAllById(lineStationsIds);
-
-        stations.sort(Comparator.comparing(station -> lineStationsIds.indexOf(station.getId())));
-
-        return stations;
+    private List<Station> sortBySubwayRule(List<Long> lineStationsIds, List<Station> stations) {
+        return stations.stream()
+            .filter(station -> lineStationsIds.contains(station.getId()))
+            .sorted(Comparator.comparing(station -> lineStationsIds.indexOf(station.getId())))
+            .collect(Collectors.toList());
     }
 }

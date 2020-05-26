@@ -151,7 +151,7 @@ public class LineServiceTest {
         List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
             new Station(3L, "삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
-        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+        when(stationRepository.findAll()).thenReturn(stations);
 
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
