@@ -64,11 +64,11 @@ public class LineStations {
 		return stationIds;
 	}
 
-	public void setGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
-		stations.forEach(lineStation -> setGraph(graph, lineStation, type));
+	public void setUpGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
+		stations.forEach(lineStation -> setUpGraph(graph, lineStation, type));
 	}
 
-	private void setGraph(WeightedMultigraph<Long, CustomEdge> graph, LineStation lineStation, EdgeWeightType type) {
+	private void setUpGraph(WeightedMultigraph<Long, CustomEdge> graph, LineStation lineStation, EdgeWeightType type) {
 		Long preStationId = lineStation.getPreStationId();
 		Long stationId = lineStation.getStationId();
 

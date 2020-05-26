@@ -33,7 +33,7 @@ public class GraphService {
 		List<Line> lines, EdgeWeightType type) {
 		WeightedMultigraph<Long, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 		stations.forEach(station -> graph.addVertex(station.getId()));
-		lines.forEach(line -> line.setGraph(graph, type));
+		lines.forEach(line -> line.setUpGraph(graph, type));
 
 		return new DijkstraShortestPath<>(graph);
 	}

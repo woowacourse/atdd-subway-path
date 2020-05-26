@@ -65,8 +65,8 @@ public class Line {
 		lineStations.removeLineStationById(stationId);
 	}
 
-	public void setGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
-		lineStations.setGraph(graph, type);
+	public void setUpGraph(WeightedMultigraph<Long, CustomEdge> graph, EdgeWeightType type) {
+		lineStations.setUpGraph(graph, type);
 	}
 
 	public List<Long> getLineStationsId() {
