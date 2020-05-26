@@ -171,10 +171,17 @@ public class AcceptanceTest {
     }
 
     PathSearchResponse searchPath(String startStation, String targetStation, String type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", startStation);
+        params.put("target", targetStation);
+        params.put("type", type);
         return
             given().
+                    body(params).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-                    get("/paths/" + startStation + "/" + targetStation + "/type/" + type).
+                    get("/paths").
             then().
                     log().all().
                     extract().as(PathSearchResponse.class);
