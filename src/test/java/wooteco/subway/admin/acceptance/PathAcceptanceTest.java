@@ -19,6 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import wooteco.subway.admin.domain.CustomEdge;
+import wooteco.subway.admin.domain.EdgeWeightType;
+import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -59,38 +61,6 @@ public class PathAcceptanceTest {
 		assertThat(durationFirstPath.getDuration()).isEqualTo(13);
 	}
 
-	@Test
-	public void getDijkstraShortestPath() {
-		WeightedMultigraph<Long, CustomEdge> graph
-			= new WeightedMultigraph<>(CustomEdge.class);
-		CustomEdge customEdge1 = new CustomEdge(1,2);
-		CustomEdge customEdge2 = new CustomEdge(4,8);
-		CustomEdge customEdge3 = new CustomEdge(100,200);
-		graph.addVertex(1L);
-		graph.addVertex(2L);
-		graph.addVertex(3L);
-		graph.addEdge(1L, 2L, customEdge1);
-		graph.addEdge(2L, 3L, customEdge2);
-		graph.addEdge(1L, 3L, customEdge3);
-		graph.setEdgeWeight(customEdge1, customEdge1.getDistance());
-		graph.setEdgeWeight(customEdge2, customEdge2.getDistance());
-		graph.setEdgeWeight(customEdge3, customEdge3.getDistance());
-		DijkstraShortestPath<Long, CustomEdge> dijkstraShortestPath
-			= new DijkstraShortestPath<>(graph);
-		GraphPath<Long, CustomEdge> path = dijkstraShortestPath.getPath(1L, 3L);
-		List<Long> shortestPath = path.getVertexList();
-		shortestPath.forEach(x -> System.out.println(x));
-
-		List<CustomEdge> edgeList = path.getEdgeList();
-		System.out.println("##### "+edgeList.get(0).getDistance());
-		double sumDistance = edgeList.stream().mapToDouble(CustomEdge::getDistance).sum();
-		double sumDuration = edgeList.stream().mapToDouble(CustomEdge::getDuration).sum();
-		assertThat(sumDistance).isEqualTo(5);
-		assertThat(sumDuration).isEqualTo(10);
-
-		assertThat(shortestPath.size()).isEqualTo(3);
-	}
-
 	public static List<PathResponse> getPath(String source, String target) {
 		Map<String, String> params = new HashMap<>();
 		params.put("source", source);
@@ -101,6 +71,40 @@ public class PathAcceptanceTest {
 			get("/path").
 			then().
 			log().all().
-			extract().jsonPath().getList(".",PathResponse.class);
+			extract().jsonPath().getList(".", PathResponse.class);
+	}
+
+	@Test
+	public void getDijkstraShortestPath() {
+		WeightedMultigraph<Long, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
+		LineStation lineStation1 = new LineStation(1L, 2L, 1, 2);
+		LineStation lineStation2 = new LineStation(2L, 3L, 4, 8);
+		LineStation lineStation3 = new LineStation(3L, 4L, 100, 200);
+
+		CustomEdge customEdge1 = new CustomEdge(lineStation1, EdgeWeightType.DISTANCE);
+		CustomEdge customEdge2 = new CustomEdge(lineStation2, EdgeWeightType.DISTANCE);
+		CustomEdge customEdge3 = new CustomEdge(lineStation3, EdgeWeightType.DISTANCE);
+		graph.addVertex(1L);
+		graph.addVertex(2L);
+		graph.addVertex(3L);
+		graph.addEdge(1L, 2L, customEdge1);
+		graph.addEdge(2L, 3L, customEdge2);
+		graph.addEdge(1L, 3L, customEdge3);
+		graph.setEdgeWeight(customEdge1, customEdge1.getWeight());
+		graph.setEdgeWeight(customEdge2, customEdge2.getWeight());
+		graph.setEdgeWeight(customEdge3, customEdge3.getWeight());
+
+		DijkstraShortestPath<Long, CustomEdge> dijkstraShortestPath
+			= new DijkstraShortestPath<>(graph);
+		GraphPath<Long, CustomEdge> path = dijkstraShortestPath.getPath(1L, 3L);
+		List<Long> shortestPath = path.getVertexList();
+
+		List<CustomEdge> edgeList = path.getEdgeList();
+		double sumDistance = edgeList.stream().mapToDouble(CustomEdge::getDistance).sum();
+		double sumDuration = edgeList.stream().mapToDouble(CustomEdge::getDuration).sum();
+		assertThat(sumDistance).isEqualTo(5);
+		assertThat(sumDuration).isEqualTo(10);
+
+		assertThat(shortestPath.size()).isEqualTo(3);
 	}
 }

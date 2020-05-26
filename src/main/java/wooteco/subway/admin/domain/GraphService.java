@@ -39,16 +39,16 @@ public class GraphService {
 	}
 
 	private int sumDistance(GraphPath<Long, CustomEdge> path) {
-		return path.getEdgeList()
+		return (int)path.getEdgeList()
 			.stream()
-			.mapToInt(CustomEdge::getDistance)
+			.mapToDouble(CustomEdge::getDistance)
 			.sum();
 	}
 
 	private int sumDuration(GraphPath<Long, CustomEdge> path) {
-		return path.getEdgeList()
+		return (int)path.getEdgeList()
 			.stream()
-			.mapToInt(CustomEdge::getDuration)
+			.mapToDouble(CustomEdge::getDuration)
 			.sum();
 	}
 

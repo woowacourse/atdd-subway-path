@@ -3,39 +3,24 @@ package wooteco.subway.admin.domain;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class CustomEdge extends DefaultWeightedEdge {
-	private int distance;
-	private int duration;
+	LineStation lineStation;
 	private EdgeWeightType type;
 
-	public CustomEdge(int distance, int duration) {
-		this.distance = distance;
-		this.duration = duration;
-	}
-
 	public CustomEdge(LineStation lineStation, EdgeWeightType type) {
-		this.distance = lineStation.getDistance();
-		this.duration = lineStation.getDuration();
+		this.lineStation = lineStation;
 		this.type = type;
 	}
 
 	@Override
 	public double getWeight() {
-		if (type == EdgeWeightType.DURATION) {
-			return duration;
-		}
-		return distance;
+		return type.getWeight(lineStation);
 	}
 
 	public int getDistance() {
-		return distance;
+		return lineStation.getDistance();
 	}
 
 	public int getDuration() {
-		return duration;
-	}
-
-	@Override
-	public String toString() {
-		return "(" + distance + " , " + duration + ")";
+		return lineStation.getDuration();
 	}
 }
