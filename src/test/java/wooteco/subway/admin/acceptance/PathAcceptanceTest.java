@@ -37,9 +37,11 @@ public class PathAcceptanceTest extends AcceptanceTest{
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
         //when
-        PathSearchResponse pathSearchResponse = searchPath(stationResponse1.getName(), stationResponse3.getName(), "distance");
+        PathSearchResponse pathSearchByDistanceResponse = searchPath(stationResponse1.getName(), stationResponse3.getName(), "distance");
+        PathSearchResponse pathSearchByDurationResponse = searchPath(stationResponse1.getName(), stationResponse3.getName(), "duration");
 
         //then
-        assertThat(pathSearchResponse.getStations().size()).isEqualTo(3);
+        assertThat(pathSearchByDistanceResponse.getStations().size()).isEqualTo(3);
+        assertThat(pathSearchByDurationResponse.getStations().size()).isEqualTo(3);
     }
 }
