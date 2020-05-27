@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,6 +22,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.exception.NoExistPathTypeException;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -75,5 +77,17 @@ class PathServiceTest {
             Arguments.of("DISTANCE", 3, 10, 20),
             Arguments.of("DURATION", 2, 15, 10)
         );
+    }
+
+    @DisplayName("잘못된 타입 에러")
+    @Test
+    void searchPathWithInvalidType() {
+        when(lineService.findStationByName(STATION_NAME1)).thenReturn(stations.get(0));
+        when(lineService.findStationByName(STATION_NAME3)).thenReturn(stations.get(2));
+
+        assertThatThrownBy(() -> pathService.searchShortestPath(STATION_NAME1, STATION_NAME3,
+            "aaa"))
+            .isInstanceOf(NoExistPathTypeException.class)
+            .hasMessage("존재하지 않는 경로 타입입니다.");
     }
 }

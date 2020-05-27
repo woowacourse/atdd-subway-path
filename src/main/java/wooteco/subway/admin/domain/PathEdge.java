@@ -26,13 +26,7 @@ public class PathEdge extends DefaultWeightedEdge {
 
     @Override
     protected double getWeight() {
-        if (pathType.isDistance()) {
-            return distance;
-        }
-        if (pathType.isDuration()) {
-            return duration;
-        }
-        throw new RuntimeException();
+        return pathType.getWeight(this);
     }
 
     public Long getPreStationId() {

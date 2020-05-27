@@ -12,6 +12,7 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.exception.NoExistPathTypeException;
 
 @Service
 public class PathService {
@@ -25,7 +26,7 @@ public class PathService {
         String type) {
         Station sourceStation = lineService.findStationByName(source);
         Station targetStation = lineService.findStationByName(target);
-        PathType pathType = PathType.findPathType(type);
+        PathType pathType = findPathType(type);
 
         Path path = createPath(pathType);
         GraphPath<Long, PathEdge> shortestPath = path.searchShortestPath(sourceStation,
@@ -33,6 +34,14 @@ public class PathService {
         List<Long> stationIds = shortestPath.getVertexList();
         return new PathResponse(StationResponse.listOf(toStations(stationIds)),
             path.calculateDistance(shortestPath), path.calculateDuration(shortestPath));
+    }
+
+    private PathType findPathType(String type) {
+        try {
+            return PathType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new NoExistPathTypeException("존재하지 않는 경로 타입입니다.");
+        }
     }
 
     private Path createPath(PathType pathType) {

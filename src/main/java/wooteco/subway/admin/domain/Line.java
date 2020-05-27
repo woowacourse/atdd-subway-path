@@ -19,9 +19,9 @@ public class Line {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @Embedded.Empty
-    private LineStations lineStations = new LineStations();
+    private LineStations lineStations = LineStations.empty();
 
-    public Line() {
+    private Line() {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
@@ -39,6 +39,31 @@ public class Line {
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime,
         String bgColor) {
         this(null, name, startTime, endTime, intervalTime, bgColor);
+    }
+
+    public void update(Line line) {
+        if (line.getName() != null) {
+            this.name = line.getName();
+        }
+        if (line.getStartTime() != null) {
+            this.startTime = line.getStartTime();
+        }
+        if (line.getEndTime() != null) {
+            this.endTime = line.getEndTime();
+        }
+        if (line.getIntervalTime() != 0) {
+            this.intervalTime = line.getIntervalTime();
+        }
+
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void addLineStation(LineStation lineStation) {
+        lineStations.addLineStation(lineStation);
+    }
+
+    public void removeLineStationById(Long lineStationId) {
+        lineStations.removeLineStationById(lineStationId);
     }
 
     public Long getId() {
@@ -77,36 +102,11 @@ public class Line {
         return bgColor;
     }
 
-    public void update(Line line) {
-        if (line.getName() != null) {
-            this.name = line.getName();
-        }
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
-        }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
-        }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
-        }
-
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void addLineStation(LineStation lineStation) {
-        lineStations.addLineStation(lineStation);
-    }
-
-    public void removeLineStationById(Long lineStationId) {
-        lineStations.removeLineStationById(lineStationId);
-    }
-
     public List<LineStation> getSortedLineStations() {
         return lineStations.createSortedLineStations();
     }
 
     public List<Long> getSortedLineStationsId() {
-        return lineStations.createSortedLineStationsId();
+        return lineStations.createSortedLineStationIds();
     }
 }

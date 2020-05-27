@@ -1,31 +1,18 @@
 package wooteco.subway.admin.domain;
 
-import java.util.Arrays;
-
-import wooteco.subway.admin.exception.NoExistPathTypeException;
+import java.util.function.Function;
 
 public enum PathType {
-    DISTANCE("DISTANCE"),
-    DURATION("DURATION");
+    DISTANCE(PathEdge::getDistance),
+    DURATION(PathEdge::getDuration);
 
-    String name;
+    Function<PathEdge, Integer> weight;
 
-    PathType(String name) {
-        this.name = name;
+    PathType(Function<PathEdge, Integer> weight) {
+        this.weight = weight;
     }
 
-    public static PathType findPathType(String name) {
-        return Arrays.stream(values())
-            .filter(pathType -> pathType.name.equals(name))
-            .findFirst()
-            .orElseThrow(() -> new NoExistPathTypeException("존재하지 않는 경로 타입입니다."));
-    }
-
-    public boolean isDistance() {
-        return this.equals(DISTANCE);
-    }
-
-    public boolean isDuration() {
-        return this.equals(DURATION);
+    public int getWeight(PathEdge pathEdge) {
+        return weight.apply(pathEdge);
     }
 }

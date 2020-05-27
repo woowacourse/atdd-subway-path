@@ -11,7 +11,7 @@ public class LineStation {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public LineStation() {
+    private LineStation() {
     }
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
@@ -23,8 +23,16 @@ public class LineStation {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public boolean isTargetLineStation(Long stationId) {
+        return Objects.equals(this.stationId, stationId);
+    }
+
     public boolean isNotFirstLineStation() {
         return Objects.nonNull(preStationId);
+    }
+
+    public boolean isNextLineStation(Long stationId) {
+        return Objects.equals(this.preStationId, stationId);
     }
 
     public Long getPreStationId() {

@@ -16,7 +16,7 @@ class LineStationsTest {
 
     @BeforeEach
     void setUp() {
-        lineStations = new LineStations();
+        lineStations = LineStations.empty();
         lineStations.addLineStation(new LineStation(null, 1L, 10, 10));
         lineStations.addLineStation(new LineStation(1L, 3L, 10, 10));
         lineStations.addLineStation(new LineStation(3L, 2L, 10, 10));
@@ -58,7 +58,7 @@ class LineStationsTest {
     @DisplayName("노선에 속한 정렬된 역 id 조회")
     @Test
     void getSortedLineStationIds() {
-        List<Long> sortedLineStationIds = lineStations.createSortedLineStationsId();
+        List<Long> sortedLineStationIds = lineStations.createSortedLineStationIds();
 
         assertThat(sortedLineStationIds.size()).isEqualTo(3);
         assertThat(sortedLineStationIds.get(0)).isEqualTo(1L);
