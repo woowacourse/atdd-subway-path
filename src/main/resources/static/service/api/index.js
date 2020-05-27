@@ -23,7 +23,12 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(async response => {
+    if (response.ok) {
+      return response;
+    }
+    return Promise.reject(await response.json())
+  }).then(data => data.json())
 
   const line = {
     getAll() {

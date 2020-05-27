@@ -1,5 +1,10 @@
 package wooteco.subway.admin.service;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
@@ -8,10 +13,10 @@ import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.dto.WholeSubwayResponse;
+import wooteco.subway.admin.exception.NotFoundLineStationException;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
-
-import java.util.List;
+import wooteco.subway.admin.service.utils.StationMapper;
 
 @Service
 public class LineService {
@@ -27,12 +32,13 @@ public class LineService {
         return lineRepository.save(line);
     }
 
-    public List<Line> showLines() {
+    public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(NotFoundLineStationException::new);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -42,27 +48,45 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineStationException::new);
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+                request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId).orElseThrow(NotFoundLineStationException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
-    public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
-        return LineDetailResponse.of(line, stations);
+    public WholeSubwayResponse findAllLinesWithStations() {
+        List<Line> lines = lineRepository.findAll();
+        Map<Long, Station> stations = StationMapper.toMap(stationRepository.findAll());
+
+        return lines.stream()
+                .map(line -> changeLineToLineDetailResponse(line, stations))
+                .collect(collectingAndThen(toList(), WholeSubwayResponse::of));
     }
 
-    // TODO: 구현하세요 :)
-    public WholeSubwayResponse wholeLines() {
-        return null;
+    public LineDetailResponse findLineWithStationsById(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineStationException::new);
+        Map<Long, Station> stations = StationMapper
+                .toMap(stationRepository.findAllById(line.getLineStationsId()));
+
+        return changeLineToLineDetailResponse(line, stations);
+    }
+
+    private LineDetailResponse changeLineToLineDetailResponse(Line line,
+            Map<Long, Station> stations) {
+        List<Long> idsInOrder = line.getLineStationsId();
+
+        List<Station> stationsInOrder = idsInOrder.stream()
+                .map(stations::get)
+                .collect(toList());
+
+        return LineDetailResponse.of(line, stationsInOrder);
     }
 }
