@@ -3,8 +3,8 @@ package wooteco.subway.admin.domain;
 import java.util.function.Function;
 
 public enum PathType {
-    DISTANCE(lineStation -> lineStation.getDistance()),
-    DURATION(lineStation -> lineStation.getDuration());
+    DISTANCE(LineStation::getDistance),
+    DURATION(LineStation::getDuration);
 
     private final Function<LineStation, Integer> expression;
 

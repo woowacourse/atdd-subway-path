@@ -10,13 +10,13 @@ class StationTest {
     void isSameIdTest() {
         Station station = new Station(1L, "강남");
 
-        assertThat(station.is(1L)).isTrue();
+        assertThat(station.hasSameId(1L)).isTrue();
     }
 
     @Test
     void isSameNameTest() {
         Station station = new Station(1L, "강남");
 
-        assertThat(station.is("강남")).isTrue();
+        assertThat(station.hasSameName("강남")).isTrue();
     }
 }

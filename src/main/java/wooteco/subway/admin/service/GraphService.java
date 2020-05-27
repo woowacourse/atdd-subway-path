@@ -22,7 +22,7 @@ public class GraphService {
     public static final String DISTANCE = "DISTANCE";
     public static final String DURATION = "DURATION";
 
-    public List<Long> calculateshortestPathIDs(LineStations lineStations, Station sourceStation, Station targetStation, PathType type) {
+    public List<Long> calculateShortestPathIDs(LineStations lineStations, Station sourceStation, Station targetStation, PathType type) {
 
         ShortestPathAlgorithm<Long, DefaultEdge> shortestPathAlgorithm = prepareAlgorithm(type, lineStations);
         List<Long> shortestPathIds;

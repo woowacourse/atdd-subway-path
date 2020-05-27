@@ -13,14 +13,14 @@ public class Stations {
 
     public Station findStationById(Long id) {
         return stations.stream()
-                .filter(station -> station.is(id))
+                .filter(station -> station.hasSameId(id))
                 .findFirst()
                 .orElseThrow(NoSuchStationException::new);
     }
 
     public Station findStationByName(String name) {
         return stations.stream()
-                .filter(station -> station.is(name))
+                .filter(station -> station.hasSameName(name))
                 .findFirst()
                 .orElseThrow(NoSuchStationException::new);
     }

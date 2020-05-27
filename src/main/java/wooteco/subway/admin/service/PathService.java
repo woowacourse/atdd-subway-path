@@ -31,7 +31,7 @@ public class PathService {
         Station sourceStation = stations.findStationByName(source);
         Station targetStation = stations.findStationByName(target);
 
-        List<Long> shortestPathIds = graphService.calculateshortestPathIDs(lineStations, sourceStation, targetStation, type);
+        List<Long> shortestPathIds = graphService.calculateShortestPathIDs(lineStations, sourceStation, targetStation, type);
 
         List<Station> shortestPathStations = shortestPathIds.stream()
                 .map(stations::findStationById)
