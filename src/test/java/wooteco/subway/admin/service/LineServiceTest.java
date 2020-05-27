@@ -11,10 +11,12 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +54,7 @@ public class LineServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", "bg-gray-300", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
@@ -149,5 +151,17 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void findWholeSubwayLine() {
+        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"), new Station("삼성역"));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(new Line(), new Line()));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
+
+        assertThat(wholeSubwayResponse.getLineDetailResponses()).hasSize(2);
+        assertThat(wholeSubwayResponse.getLineDetailResponses().get(0).getStations()).hasSize(3);
     }
 }
