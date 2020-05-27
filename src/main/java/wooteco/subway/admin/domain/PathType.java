@@ -3,16 +3,16 @@ package wooteco.subway.admin.domain;
 import java.util.function.Function;
 
 public enum PathType {
-    DISTANCE(PathEdge::getDistance),
-    DURATION(PathEdge::getDuration);
+    DISTANCE(LineStation::getDistance),
+    DURATION(LineStation::getDuration);
 
-    Function<PathEdge, Integer> weight;
+    Function<LineStation, Integer> weight;
 
-    PathType(Function<PathEdge, Integer> weight) {
+    PathType(Function<LineStation, Integer> weight) {
         this.weight = weight;
     }
 
-    public int getWeight(PathEdge pathEdge) {
-        return weight.apply(pathEdge);
+    public int getWeight(LineStation lineStation) {
+        return weight.apply(lineStation);
     }
 }

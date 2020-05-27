@@ -41,7 +41,7 @@ public class Path {
     private void addEdgesWithWeight(List<LineStation> lineStations, PathType pathType) {
         for (LineStation lineStation : lineStations) {
             PathEdge pathEdge = PathEdge.of(lineStation, pathType);
-            graph.addEdge(pathEdge.getPreStationId(), pathEdge.getStationId(), pathEdge);
+            graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId(), pathEdge);
             graph.setEdgeWeight(pathEdge, pathEdge.getWeight());
         }
     }
