@@ -20,6 +20,14 @@ public class PathEdge extends DefaultWeightedEdge {
         return pathType.getWeight(lineStation);
     }
 
+    public int getDistance() {
+        return lineStation.getDistance();
+    }
+
+    public int getDuration() {
+        return lineStation.getDuration();
+    }
+
     public LineStation getLineStation() {
         return lineStation;
     }
