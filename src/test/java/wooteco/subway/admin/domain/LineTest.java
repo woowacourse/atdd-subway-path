@@ -27,10 +27,10 @@ public class LineTest {
 
         assertThat(line.getStations()).hasSize(4);
         LineStation lineStation = line.getStations().stream()
-                .filter(it -> it.getPreStationId() == 4L)
+                .filter(it -> it.getStationId() == 4L)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
-        assertThat(lineStation.getStationId()).isEqualTo(1L);
+        assertThat(lineStation.getStationId()).isEqualTo(4L);
     }
 
     @Test
