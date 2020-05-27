@@ -17,31 +17,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql({"/schema-test.sql","/truncate.sql"})
 public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역"; //환승역
-    private static final String STATION_NAME4 = "삼성역";
-    private static final String STATION_NAME5 = "종합운동장역";
-    private static final String STATION_NAME6 = "잠실새내역";
-    private static final String STATION_NAME7 = "잠실역";
-    private static final String STATION_NAME8 = "양재역";
-    private static final String STATION_NAME9 = "매봉역";
-    private static final String STATION_NAME10 = "도곡역";
-    private static final String STATION_NAME11 = "대치역";
-    private static final String STATION_NAME12 = "학여울역";
-    private static final String STATION_NAME13 = "대청역";
-    private static final String STATION_NAME14 = "수서역";
-    private static final String STATION_NAME15 = "가락시장역";
-    private static final String STATION_NAME16 = "송파역";
-    private static final String STATION_NAME17 = "석촌역";
-    private static final String STATION_NAME18 = "양재시민의숲역";
-    private static final String STATION_NAME19 = "청계산입구역";
-    private static final String STATION_NAME20 = "판교역";
-    private static final String STATION_NAME21 = "정자역";
-    private static final String STATION_NAME22 = "한티역";
-    private static final String STATION_NAME23 = "구룡역";
-    private static final String STATION_NAME24 = "개포동역";
-    private static final String STATION_NAME25 = "대모산입구역";
+    private static final String STATION_NAME_KANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLEUNG = "선릉역"; //환승역
+    private static final String STATION_NAME_SAMSUNG = "삼성역";
+    private static final String STATION_NAME_SPORTS_COMPLEX = "종합운동장역";
+    private static final String STATION_NAME_JAMSILSAENAE = "잠실새내역";
+    private static final String STATION_NAME_JAMSIL = "잠실역";
+    private static final String STATION_NAME_YANGJAE = "양재역";
+    private static final String STATION_NAME_MAEBONG = "매봉역";
+    private static final String STATION_NAME_DOGOK = "도곡역";
+    private static final String STATION_NAME_DAECHI = "대치역";
+    private static final String STATION_NAME_HANGNYEOUL = "학여울역";
+    private static final String STATION_NAME_DAECHUNG = "대청역";
+    private static final String STATION_NAME_SUSEO = "수서역";
+    private static final String STATION_NAME_GARAK_MARKET = "가락시장역";
+    private static final String STATION_NAME_SONGPA = "송파역";
+    private static final String STATION_NAME_SEOKCHON = "석촌역";
+    private static final String STATION_NAME_YANGJAE_CITIZEN_FOREST = "양재시민의숲역";
+    private static final String STATION_NAME_CHEONGGYESAN = "청계산입구역";
+    private static final String STATION_NAME_PANGYO = "판교역";
+    private static final String STATION_NAME_JUNGJA = "정자역";
+    private static final String STATION_NAME_HANTI = "한티역";
+    private static final String STATION_NAME_GURYONG = "구룡역";
+    private static final String STATION_NAME_GAEPODONG = "개포동역";
+    private static final String STATION_NAME_DAEMOSAN = "대모산입구역";
 
 
     @Autowired
@@ -59,31 +59,31 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(STATION_NAME1);
-        createStation(STATION_NAME2);
-        createStation(STATION_NAME3);
-        createStation(STATION_NAME4);
-        createStation(STATION_NAME5);
-        createStation(STATION_NAME6);
-        createStation(STATION_NAME7);
-        createStation(STATION_NAME8);
-        createStation(STATION_NAME9);
-        createStation(STATION_NAME10);
-        createStation(STATION_NAME11);
-        createStation(STATION_NAME12);
-        createStation(STATION_NAME13);
-        createStation(STATION_NAME14);
-        createStation(STATION_NAME15);
-        createStation(STATION_NAME16);
-        createStation(STATION_NAME17);
-        createStation(STATION_NAME18);
-        createStation(STATION_NAME19);
-        createStation(STATION_NAME20);
-        createStation(STATION_NAME21);
-        createStation(STATION_NAME22);
-        createStation(STATION_NAME23);
-        createStation(STATION_NAME24);
-        createStation(STATION_NAME25);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_SAMSUNG);
+        createStation(STATION_NAME_SPORTS_COMPLEX);
+        createStation(STATION_NAME_JAMSILSAENAE);
+        createStation(STATION_NAME_JAMSIL);
+        createStation(STATION_NAME_YANGJAE);
+        createStation(STATION_NAME_MAEBONG);
+        createStation(STATION_NAME_DOGOK);
+        createStation(STATION_NAME_DAECHI);
+        createStation(STATION_NAME_HANGNYEOUL);
+        createStation(STATION_NAME_DAECHUNG);
+        createStation(STATION_NAME_SUSEO);
+        createStation(STATION_NAME_GARAK_MARKET);
+        createStation(STATION_NAME_SONGPA);
+        createStation(STATION_NAME_SEOKCHON);
+        createStation(STATION_NAME_YANGJAE_CITIZEN_FOREST);
+        createStation(STATION_NAME_CHEONGGYESAN);
+        createStation(STATION_NAME_PANGYO);
+        createStation(STATION_NAME_JUNGJA);
+        createStation(STATION_NAME_HANTI);
+        createStation(STATION_NAME_GURYONG);
+        createStation(STATION_NAME_GAEPODONG);
+        createStation(STATION_NAME_DAEMOSAN);
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
         createLine("2호선");
         createLine("3호선");
@@ -138,31 +138,31 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findFastestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(STATION_NAME1);
-        createStation(STATION_NAME2);
-        createStation(STATION_NAME3);
-        createStation(STATION_NAME4);
-        createStation(STATION_NAME5);
-        createStation(STATION_NAME6);
-        createStation(STATION_NAME7);
-        createStation(STATION_NAME8);
-        createStation(STATION_NAME9);
-        createStation(STATION_NAME10);
-        createStation(STATION_NAME11);
-        createStation(STATION_NAME12);
-        createStation(STATION_NAME13);
-        createStation(STATION_NAME14);
-        createStation(STATION_NAME15);
-        createStation(STATION_NAME16);
-        createStation(STATION_NAME17);
-        createStation(STATION_NAME18);
-        createStation(STATION_NAME19);
-        createStation(STATION_NAME20);
-        createStation(STATION_NAME21);
-        createStation(STATION_NAME22);
-        createStation(STATION_NAME23);
-        createStation(STATION_NAME24);
-        createStation(STATION_NAME25);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_SAMSUNG);
+        createStation(STATION_NAME_SPORTS_COMPLEX);
+        createStation(STATION_NAME_JAMSILSAENAE);
+        createStation(STATION_NAME_JAMSIL);
+        createStation(STATION_NAME_YANGJAE);
+        createStation(STATION_NAME_MAEBONG);
+        createStation(STATION_NAME_DOGOK);
+        createStation(STATION_NAME_DAECHI);
+        createStation(STATION_NAME_HANGNYEOUL);
+        createStation(STATION_NAME_DAECHUNG);
+        createStation(STATION_NAME_SUSEO);
+        createStation(STATION_NAME_GARAK_MARKET);
+        createStation(STATION_NAME_SONGPA);
+        createStation(STATION_NAME_SEOKCHON);
+        createStation(STATION_NAME_YANGJAE_CITIZEN_FOREST);
+        createStation(STATION_NAME_CHEONGGYESAN);
+        createStation(STATION_NAME_PANGYO);
+        createStation(STATION_NAME_JUNGJA);
+        createStation(STATION_NAME_HANTI);
+        createStation(STATION_NAME_GURYONG);
+        createStation(STATION_NAME_GAEPODONG);
+        createStation(STATION_NAME_DAEMOSAN);
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
         createLine("2호선");
         createLine("3호선");
