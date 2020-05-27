@@ -14,11 +14,13 @@ public class Path {
     private final Long source;
     private final Long target;
     private final PathType pathType;
+    private GraphPath<Station, Edge> path;
 
-    public Path(Long source, Long target, PathType pathType) {
+    public Path(Long source, Long target, PathType pathType, Map<Long, Station> stations, List<Line> lines) {
         this.source = source;
         this.target = target;
         this.pathType = pathType;
+        this.path = getGraphPath(stations, lines);
     }
 
     public GraphPath<Station, Edge> getGraphPath(Map<Long, Station> stations, List<Line> lines) {
@@ -37,14 +39,18 @@ public class Path {
         return path;
     }
 
-    public int getDistanceByWeight(GraphPath<Station, Edge> graphPath) {
-        final List<Edge> edges = graphPath.getEdgeList();
+    public List<Station> getShortestPath() {
+        return path.getVertexList();
+    }
+
+    public int getDistanceByWeight() {
+        final List<Edge> edges = path.getEdgeList();
 
         return edges.stream().mapToInt(Edge::getDistance).sum();
     }
 
-    public int getDurationByWeight(GraphPath<Station, Edge> graphPath) {
-        final List<Edge> edges = graphPath.getEdgeList();
+    public int getDurationByWeight() {
+        final List<Edge> edges = path.getEdgeList();
 
         return edges.stream().mapToInt(Edge::getDuration).sum();
     }

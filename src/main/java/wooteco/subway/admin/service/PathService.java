@@ -5,11 +5,9 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.Map;
 
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.Station;
@@ -33,12 +31,11 @@ public class PathService {
     public PathResponse findShortestPathByDistance(PathRequest pathRequest) {
         Map<Long, Station> stations = getStations();
         List<Line> lines = lineRepository.findAll();
-        Path path = new Path(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getType());
-        GraphPath<Station, Edge> graphPath = path.getGraphPath(stations, lines);
-        List<Station> shortestPath = graphPath.getVertexList();
+        Path path = new Path(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getType(), stations, lines);
 
-        int distance = path.getDistanceByWeight(graphPath);
-        int duration = path.getDurationByWeight(graphPath);
+        List<Station> shortestPath = path.getShortestPath();
+        int distance = path.getDistanceByWeight();
+        int duration = path.getDurationByWeight();
 
         return new PathResponse(StationResponse.listOf(shortestPath), distance, duration);
     }
