@@ -63,7 +63,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    private Line findBy(Long lineId) {
+    public Line findBy(Long lineId) {
         return lineRepository.findById(lineId)
             .orElseThrow(() -> new NoSuchElementException("노선을 찾을 수 없습니다."));
     }
@@ -78,8 +78,8 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = findBy(lineId);
-        List<Long> lineStationsIds = line.getLineStationsIds();
-        return LineDetailResponse.of(line, sortBySubwayRule(lineStationsIds));
+
+        return LineDetailResponse.of(line, sortBySubwayRule(line));
     }
 
     @Transactional(readOnly = true)
@@ -87,23 +87,15 @@ public class LineService {
         List<Line> lines = lineRepository.findAll();
 
         return lines.stream()
-            .map(line -> LineDetailResponse.of(line, sortBySubwayRule(line.getLineStationsIds())))
+            .map(line -> LineDetailResponse.of(line, sortBySubwayRule(line)))
             .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Station> sortBySubwayRule(List<Long> lineStationsIds) {
+    public List<Station> sortBySubwayRule(Line line) {
+        List<Long> lineStationsIds = line.getLineStationsIds();
         List<Station> stations = stationRepository.findAllById(lineStationsIds);
 
-        return lineStationsIds.stream()
-            .map(lineStationsId -> getStationByEqualId(stations, lineStationsId))
-            .collect(Collectors.toList());
-    }
-
-    private Station getStationByEqualId(List<Station> stations, Long lineStationsId) {
-        return stations.stream()
-            .filter(station -> lineStationsId.equals(station.getId()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다"));
+        return line.findStations(stations);
     }
 }

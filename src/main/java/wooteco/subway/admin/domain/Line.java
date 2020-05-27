@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -144,6 +145,21 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public List<Station> findStations(List<Station> stations) {
+        List<Long> lineStationsIds = getLineStationsIds();
+
+        return lineStationsIds.stream()
+            .map(lineStationsId -> getStationByEqualId(stations, lineStationsId))
+            .collect(Collectors.toList());
+    }
+
+    private Station getStationByEqualId(List<Station> stations, Long lineStationsId) {
+        return stations.stream()
+            .filter(station -> lineStationsId.equals(station.getId()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다"));
     }
 
     public LineStation findLineStationByPreStationId(Long preStationId){
