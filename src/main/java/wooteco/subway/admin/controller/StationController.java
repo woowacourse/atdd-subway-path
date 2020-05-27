@@ -7,9 +7,8 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.repository.StationRepository;
-import wooteco.subway.admin.service.LineService;
 import wooteco.subway.admin.service.PathService;
+import wooteco.subway.admin.service.StationService;
 
 import java.net.URI;
 import java.util.List;
@@ -18,17 +17,17 @@ import java.util.List;
 public class StationController {
     private final PathService pathService;
 
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public StationController(PathService pathService, StationRepository stationRepository) {
+    public StationController(PathService pathService, StationService stationService) {
         this.pathService = pathService;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
         Station station = view.toStation();
-        Station persistStation = stationRepository.save(station);
+        Station persistStation = stationService.save(station);
 
         return ResponseEntity
                 .created(URI.create("/stations/" + persistStation.getId()))
@@ -37,12 +36,12 @@ public class StationController {
 
     @GetMapping("/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationRepository.findAll()));
+        return ResponseEntity.ok().body(StationResponse.listOf(stationService.findAll()));
     }
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationRepository.deleteById(id);
+        stationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 

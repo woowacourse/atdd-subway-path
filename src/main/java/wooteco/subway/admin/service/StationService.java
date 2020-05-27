@@ -17,4 +17,12 @@ public class StationService {
     public List<Station> findAll() {
         return stationRepository.findAll();
     }
+
+    public Station save(Station station) {
+        return stationRepository.save(station);
+    }
+
+    public void deleteById(Long id) {
+        stationRepository.deleteById(id);
+    }
 }
