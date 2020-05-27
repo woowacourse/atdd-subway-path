@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.exception.CanNotCreateGraphException;
@@ -53,7 +54,8 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository);
+        GraphService graphService = new GraphService();
+        pathService = new PathService(lineRepository, stationRepository, graphService);
         gangnam = new Station(1L, STATION_NAME_GANGNAM);
         yeoksam = new Station(2L, STATION_NAME_YEOKSAM);
         seollung = new Station(3L, STATION_NAME_SEOLLUNG);
@@ -82,7 +84,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
 
-        PathResponse response = pathService.calculatePath(STATION_NAME_GANGNAM, STATION_NAME_HANTI, "DISTANCE");
+        PathResponse response = pathService.calculatePath(STATION_NAME_GANGNAM, STATION_NAME_HANTI, PathType.DISTANCE);
         assertThat(response.getStations().size()).isEqualTo(4);
         assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME_GANGNAM);
         assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME_YEOKSAM);
@@ -98,7 +100,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti));
 
-        PathResponse response = pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_GANGNAM, "DISTANCE");
+        PathResponse response = pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_GANGNAM, PathType.DISTANCE);
         assertThat(response.getStations().size()).isEqualTo(4);
         assertThat(response.getStations().get(0).getName()).isEqualTo(STATION_NAME_HANTI);
         assertThat(response.getStations().get(1).getName()).isEqualTo(STATION_NAME_SEOLLUNG);
@@ -118,7 +120,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine, line4));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti, beomgye));
 
-        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_BEOMGYE, "DISTANCE"))
+        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_HANTI, STATION_NAME_BEOMGYE, PathType.DISTANCE))
                 .isInstanceOf(LineNotConnectedException.class)
                 .hasMessageContaining("연결되어 있지 않습니다");
     }
@@ -134,7 +136,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line2, bundangLine, line4));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(gangnam, yeoksam, seollung, samsong, gangnamOffice, seonjeonglung, hanti, beomgye, gumjung));
 
-        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_BEOMGYE, "금정", "DISTANCE"))
+        assertThatThrownBy(() -> pathService.calculatePath(STATION_NAME_BEOMGYE, "금정", PathType.DISTANCE))
                 .isInstanceOf(CanNotCreateGraphException.class)
                 .hasMessageContaining("그래프를 만들 수 없습니다.");
     }

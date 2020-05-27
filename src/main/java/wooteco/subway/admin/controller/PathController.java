@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.error.ErrorResponse;
 import wooteco.subway.admin.exception.LineNotConnectedException;
@@ -28,7 +29,7 @@ public class PathController {
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@RequestParam @NotBlank(message = "시작역이 없습니다!") String source,
                                                  @RequestParam @NotBlank(message = "끝역이 없습니다!") String target,
-                                                 @RequestParam @NotBlank(message = "검색 기준을 선택해주세요") String type) {
+                                                 @RequestParam PathType type) {
         validateOverlappedStation(source, target);
         return ResponseEntity.ok()
                 .body(pathService.calculatePath(source, target, type));
