@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.controller.QueryString;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.request.PathRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
@@ -27,7 +26,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@QueryString PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
         PathResponse response = pathService.findPath(pathRequest.getSource(),
             pathRequest.getTarget(), pathRequest.getType());
         return ResponseEntity.ok(response);

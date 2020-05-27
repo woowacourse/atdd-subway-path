@@ -18,7 +18,7 @@ public class DijkstraLearningTest {
     @Test
     void getDijkstraShortestPath() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
@@ -26,8 +26,9 @@ public class DijkstraLearningTest {
         graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
         graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath("v3", "v1");
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
+        GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath("v3", "v1");
         List<String> shortestPath = path.getVertexList();
         double weight = path.getWeight();
 
@@ -39,12 +40,13 @@ public class DijkstraLearningTest {
     @Test
     void dijkstraShortestPathNotExistException() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
 
         assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
             .isInstanceOf(IllegalArgumentException.class);
@@ -54,13 +56,14 @@ public class DijkstraLearningTest {
     @Test
     void dijkstraShortestPathNotConnectedException() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
         graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
 
         assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
             .isInstanceOf(NullPointerException.class);
@@ -69,7 +72,7 @@ public class DijkstraLearningTest {
     @Test
     void removeVertex() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");

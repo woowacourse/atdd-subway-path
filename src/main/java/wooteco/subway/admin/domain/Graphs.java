@@ -1,9 +1,6 @@
 package wooteco.subway.admin.domain;
 
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -32,15 +29,19 @@ public class Graphs {
     }
 
     public PathResponse getPath(Long source, Long target, PathType pathType) {
+        Graph graph = graphs.get(pathType);
+        Path path = graph.getPath(source, target);
+        List<Long> stationIds = getStations(path);
+        List<LineStationEdge> edges = path.getEdgeList();
+        List<StationResponse> responses = getStationResponses(stationIds);
+        int distance = getDistance(edges);
+        int duration = getDuration(edges);
+        return PathResponse.of(responses, duration, distance);
+    }
+
+    private List<Long> getStations(Path path) {
         try {
-            Graph graph = graphs.get(pathType);
-            Path path = graph.getPath(source, target);
-            List<Long> stationIds = path.getVertexList();
-            List<LineStationEdge> edges = path.getEdgeList();
-            List<StationResponse> responses = getStationResponses(stationIds);
-            int distance = getDistance(edges);
-            int duration = getDuration(edges);
-            return PathResponse.of(responses, duration, distance);
+            return path.getVertexList();
         } catch (IllegalArgumentException ie) {
             throw new IllegalArgumentException("등록되지 않은 역이 포함되어 있습니다.");
         } catch (NullPointerException ne) {
