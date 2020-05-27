@@ -46,7 +46,6 @@ class PathTest {
         line3.addLineStation(new LineStation(5L, 6L, 15, 1));
         line3.addLineStation(new LineStation(6L, 2L, 15, 1));
         path = new Path();
-        path.addVertexes(stations);
     }
 
     @DisplayName("최단 거리 경로 조회")

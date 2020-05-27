@@ -60,7 +60,6 @@ class PathServiceTest {
     void searchShortestDistancePath(String type, int size, int distance, int duration) {
         when(lineService.findStationByName(STATION_NAME1)).thenReturn(stations.get(0));
         when(lineService.findStationByName(STATION_NAME3)).thenReturn(stations.get(2));
-        when(lineService.showStations()).thenReturn(stations);
         when(lineService.showLines()).thenReturn(Arrays.asList(line, line2));
         when(lineService.findAllStationsByIds(anyList())).thenReturn(stations.subList(0, size));
 

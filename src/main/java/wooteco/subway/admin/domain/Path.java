@@ -2,7 +2,6 @@ package wooteco.subway.admin.domain;
 
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -18,17 +17,18 @@ public class Path {
         graph = new WeightedMultigraph<>(PathEdge.class);
     }
 
-    public void addVertexes(List<Station> stations) {
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-    }
-
     public void setEdges(List<Line> lines, PathType pathType) {
         for (Line line : lines) {
             List<LineStation> lineStations = line.getSortedLineStations();
+            addVertexes(lineStations);
             List<LineStation> edgeStations = filterValidEdgeStations(lineStations);
             addEdgesWithWeight(edgeStations, pathType);
+        }
+    }
+
+    private void addVertexes(List<LineStation> lineStations) {
+        for (LineStation lineStation : lineStations) {
+            graph.addVertex(lineStation.getStationId());
         }
     }
 
@@ -49,15 +49,13 @@ public class Path {
     public GraphPath<Long, PathEdge> searchShortestPath(Station source, Station target) {
         validateSourceTarget(source, target);
 
-        GraphPath<Long, PathEdge> shortestPath = DijkstraShortestPath.findPathBetween(graph,
-            source.getId(), target.getId());
-
-        validatePath(shortestPath);
-        return shortestPath;
+        return calculateShortestPath(source, target);
     }
 
-    private void validatePath(GraphPath<Long, PathEdge> shortestPath) {
-        if (Objects.isNull(shortestPath)) {
+    private GraphPath<Long, PathEdge> calculateShortestPath(Station source, Station target) {
+        try {
+            return DijkstraShortestPath.findPathBetween(graph, source.getId(), target.getId());
+        } catch (IllegalArgumentException e) {
             throw new NoExistPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }

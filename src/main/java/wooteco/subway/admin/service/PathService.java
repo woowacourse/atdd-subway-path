@@ -47,8 +47,6 @@ public class PathService {
     private Path createPath(PathType pathType) {
         Path path = new Path();
 
-        List<Station> stations = lineService.showStations();
-        path.addVertexes(stations);
         List<Line> lines = lineService.showLines();
         path.setEdges(lines, pathType);
 
