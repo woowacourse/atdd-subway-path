@@ -29,10 +29,10 @@ public class PathService {
     public PathResponse calculatePath(PathRequest request) {
         validate(request);
         Stations stations = new Stations(stationRepository.findAll());
-        Lines lines = new Lines(lineRepository.findAll());
-        LineStations lineStations = new LineStations(lines.getLineStations());
         Long sourceId = stations.findStationIdByName(request.getSource());
         Long targetId = stations.findStationIdByName(request.getTarget());
+        Lines lines = new Lines(lineRepository.findAll());
+        LineStations lineStations = new LineStations(lines.getLineStations());
 
         List<Long> shortestPath = graphService.createShortestPath(lines, sourceId, targetId, request.getType());
         return createPathResponse(shortestPath, stations, lineStations);

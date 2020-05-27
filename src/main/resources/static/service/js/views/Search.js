@@ -44,10 +44,7 @@ function Search() {
         api.path
             .find(searchInput)
             .then(data => showSearchResult(data))
-            .catch(error => {
-                    alert(error);
-                }
-            )
+            .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)));
     }
 
     const onToggleFavorite = event => {
