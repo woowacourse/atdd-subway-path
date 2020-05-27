@@ -1,23 +1,40 @@
 package wooteco.subway.admin.acceptance;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.StationResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class LineStationAcceptanceTest extends AcceptanceTest {
+    // @formatter:off
 
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
 
-        LineResponse lineResponse = createLine("2호선");
+        createLine("2호선");
+
+        List<LineResponse> lines = getLines();
+        assertThat(lines.size()).isEqualTo(1);
+
+        LineDetailResponse lineResponse = getLine(lines.get(0).getId());
+
+        List<StationResponse> stations = getStations();
+
+        assertThat(stations.size()).isEqualTo(3);
+
+        StationResponse stationResponse1 = stations.get(0);
+        StationResponse stationResponse2 = stations.get(1);
+        StationResponse stationResponse3 = stations.get(2);
 
         addLineStation(lineResponse.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
@@ -26,7 +43,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        removeLineStation(lineResponse.getId(), stations.get(2).getId());
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);

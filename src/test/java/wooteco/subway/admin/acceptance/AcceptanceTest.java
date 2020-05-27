@@ -1,14 +1,6 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import static org.hamcrest.Matchers.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,9 +8,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
+    // @formatter:off
+
     static final String STATION_NAME_KANGNAM = "강남역";
     static final String STATION_NAME_YEOKSAM = "역삼역";
     static final String STATION_NAME_SEOLLEUNG = "선릉역";
@@ -31,76 +39,78 @@ public class AcceptanceTest {
     @LocalServerPort
     int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
     }
 
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
-    }
-
-    StationResponse createStation(String name) {
+    void createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+        given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/api/stations").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value()).
+            header("location", notNullValue());
     }
 
     List<StationResponse> getStations() {
         return
-                given().when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
+            given().
+            when().
+                get("/api/stations").
+            then().
+                log().all().
+                extract().
+                jsonPath().getList(".", StationResponse.class);
     }
 
     void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
+        given().
+        when().
+            delete("/api/stations/" + id).
         then().
-                log().all();
+            log().all();
     }
 
-    LineResponse createLine(String name) {
+    void createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("backgroundColor", "bg-gray-300");
 
-        return
-                given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+        given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/api/lines").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value()).
+            header("location", notNullValue());
     }
 
     LineDetailResponse getLine(Long id) {
         return
-                given().when().
-                        get("/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
+            given().
+            when().
+                get("/api/lines/" + id).
+            then().
+                log().all().
+                extract().as(LineDetailResponse.class);
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -110,31 +120,45 @@ public class AcceptanceTest {
         params.put("intervalTime", "10");
 
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-                put("/lines/" + id).
+            put("/api/lines/" + id).
         then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     List<LineResponse> getLines() {
         return
-                given().when().
-                        get("/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
+            given().
+            when().
+                get("/api/lines").
+            then().
+                log().all().
+                extract().
+                jsonPath().getList(".", LineResponse.class);
+    }
+
+    List<LineDetailResponse> getLineDetails() {
+        return
+            given().
+            when().
+                get("/api/lines/detail").
+            then().
+                log().all().
+                extract().
+                jsonPath().
+                getList(".", LineDetailResponse.class);
     }
 
     void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
+        given().
+        when().
+            delete("/api/lines/" + id).
         then().
-                log().all();
+            log().all();
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -149,26 +173,39 @@ public class AcceptanceTest {
         params.put("duration", duration.toString());
 
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines/" + lineId + "/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/api/lines/" + lineId + "/stations").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value());
     }
 
     void removeLineStation(Long lineId, Long stationId) {
         given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            delete("/api/lines/" + lineId + "/stations/" + stationId).
+        then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    PathResponse findShortestPath(Long source, Long target, String type) {
+        return
+            given().
+                log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+                get("/api/paths?source=" + source + "&target=" + target + "&type=" + type).
+            then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(PathResponse.class);
+    }
 }
 

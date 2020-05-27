@@ -1,27 +1,52 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
+import api from '../../api/index.js'
+import { optionSubwayTemplate, searchResultTemplate } from '../../utils/templates.js'
 
 function Search() {
-  const $departureStationName = document.querySelector('#departure-station-name')
-  const $arrivalStationName = document.querySelector('#arrival-station-name')
+  const $departureStation = document.querySelector('#departure-station-name')
+  const $arrivalStation = document.querySelector('#arrival-station-name')
   const $searchButton = document.querySelector('#search-button')
   const $searchResultContainer = document.querySelector('#search-result-container')
   const $favoriteButton = document.querySelector('#favorite-button')
+  const $searchResult = document.querySelector('#search-result')
+  const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
+  const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
-  const showSearchResult = () => {
-    const isHidden = $searchResultContainer.classList.contains('hidden')
+  const showSearchResult = data => {
+    const isHidden = $searchResultContainer.classList.contains('hidden');
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
+    $searchResult.innerHTML = searchResultTemplate(data)
+  };
+
+  const onSearchShortestDistance = event => {
+    event.preventDefault();
+    $shortestDistanceTab.classList.add('active-tab')
+    $minimumTimeTab.classList.remove('active-tab')
+    getSearchResult(PATH_TYPE.DISTANCE)
+  };
+
+  const onSearchMinimumTime = event => {
+    event.preventDefault()
+    $minimumTimeTab.classList.add('active-tab')
+    $shortestDistanceTab.classList.remove('active-tab')
+    getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const onSearch = event => {
-    event.preventDefault()
+  const getSearchResult = pathType => {
+    const departureStationId = $departureStation.options[$departureStation.selectedIndex].dataset.optionStationId;
+    const arrivalStationId = $arrivalStation.options[$arrivalStation.selectedIndex].dataset.optionStationId;
+
     const searchInput = {
-      source: $departureStationName.value,
-      target: $arrivalStationName.value
+      source: departureStationId,
+      target: arrivalStationId,
+      type: pathType
     }
-    console.log(searchInput)
-    showSearchResult(searchInput)
+    api.path
+    .find(searchInput)
+    .then(data => showSearchResult(data))
+    .catch(error => alert(error));
   }
 
   const onToggleFavorite = event => {
@@ -32,25 +57,47 @@ function Search() {
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')
+      classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
+      classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
     }
   }
 
+  const initSubwayStationOptions = () => {
+    let subwayStationOptionTemplate;
+
+    api.station.show().then(data => {
+      subwayStationOptionTemplate = data.map(
+        station => optionSubwayTemplate(station)).join("");
+      $departureStation.insertAdjacentHTML(
+        "afterbegin",
+        subwayStationOptionTemplate
+      );
+      $arrivalStation.insertAdjacentHTML(
+        "afterbegin",
+        subwayStationOptionTemplate
+      );
+    });
+  }
+
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
-    $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearch)
+    $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
+    $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
+    $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime)
   }
 
   this.init = () => {
-    initEventListener()
+    initEventListener();
+    initSubwayStationOptions();
   }
 }
 
-const login = new Search()
-login.init()
+const search = new Search()
+search.init()
