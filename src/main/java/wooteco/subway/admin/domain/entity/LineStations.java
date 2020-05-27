@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class LineStations {
-	private final List<LineStation> lineStations;
+	@MappedCollection(idColumn = "line", keyColumn = "sequence")
+	private List<LineStation> lineStations = new ArrayList<>();
 
 	public LineStations() {
-		this.lineStations = new ArrayList<>();
 	}
 
 	public LineStations(List<LineStation> lineStations) {
@@ -66,5 +69,15 @@ public class LineStations {
 		}
 
 		return stationIds;
+	}
+
+	public List<LineStation> get() {
+		return lineStations;
+	}
+
+	public LineStations removeFirstStations() {
+		return lineStations.stream()
+			.filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+			.collect(Collectors.collectingAndThen(Collectors.toList(), LineStations::new));
 	}
 }

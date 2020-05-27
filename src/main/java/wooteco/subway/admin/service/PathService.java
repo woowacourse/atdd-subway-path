@@ -33,15 +33,16 @@ public class PathService {
 	public PathResponse findPath(String sourceName, String targetName, String type) {
 		validateStationNamesAreSame(sourceName, targetName);
 
-		List<Line> allLines = lineRepository.findAll();
+		List<Line> lines = lineRepository.findAll();
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
 		Station source = findStationByName(sourceName, allStationsById);
 		Station target = findStationByName(targetName, allStationsById);
 
-		LineStations LineStations = Line.toLineStations(allLines);
-		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(allLineStations, allStationsById, WeightType.of(type));
+		LineStations lineStations = Line.toLineStations(lines);
+		System.out.println(lineStations.get());
+		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(lineStations.get(), WeightType.of(type));
 		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(subwayGraph, source, target);
 
 		int totalDuration = subwayShortestPath.calculateTotalDuration();

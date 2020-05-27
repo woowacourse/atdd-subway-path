@@ -18,6 +18,8 @@ public class SubwayShortestPath {
 
 	public static SubwayShortestPath of(Graph<Long, SubwayEdge> subwayGraph, Station source, Station target) {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
+		System.out.println("소스: " + source.getId());
+		System.out.println("타겟: " + target.getId());
 		GraphPath shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
 
 		if (Objects.isNull(shortestPath)) {

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class Line {
 	@Id
@@ -19,8 +18,7 @@ public class Line {
 	private LocalDateTime updatedAt;
 
 	@Embedded.Nullable
-	@MappedCollection(idColumn = "line", keyColumn = "sequence")
-	private LineStations lineStations;
+	private LineStations lineStations = new LineStations();
 
 	public Line() {
 	}
@@ -42,6 +40,7 @@ public class Line {
 		// todo : start가 없는걸로 보내줘야함.
 		return allLines.stream()
 			.map(Line::getLineStations)
+			.map(LineStations::removeFirstStations)
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException("Linestations을 찾을 수 없습니다."));
 	}

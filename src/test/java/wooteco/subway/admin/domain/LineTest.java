@@ -28,8 +28,10 @@ public class LineTest {
 	void addLineStation() {
 		line.addLineStation(new LineStation(null, 4L, 10, 10));
 
-		assertThat(line.getLineStations()).hasSize(4);
-		LineStation lineStation = line.getLineStations().stream()
+		assertThat(line.getLineStations().get()).hasSize(4);
+		LineStation lineStation = line.getLineStations()
+			.get()
+			.stream()
 			.filter(it -> it.getPreStationId() == 4L)
 			.findFirst()
 			.orElseThrow(RuntimeException::new);
@@ -51,6 +53,6 @@ public class LineTest {
 	void removeLineStation(Long stationId) {
 		line.removeLineStationById(stationId);
 
-		assertThat(line.getLineStations()).hasSize(2);
+		assertThat(line.getLineStations().get()).hasSize(2);
 	}
 }
