@@ -17,15 +17,16 @@ public class Path {
         DefaultWeightedEdge.class);
     private final WeightedMultigraph<Long, DefaultWeightedEdge> distanceGraph = new WeightedMultigraph<>(
         DefaultWeightedEdge.class);
+    private final GraphPath<Long, DefaultWeightedEdge> graphPath = null;
 
     public Path(List<Line> lines) {
         init(lines);
     }
 
+    /** 초기화 */
+
     public void init(List<Line> lines) {
-        for (Line line : lines) {
-            setGraphWithLineStation(line);
-        }
+        lines.forEach(this::setGraphWithLineStation);
     }
 
     private void setGraphWithLineStation(Line line) {
@@ -47,12 +48,16 @@ public class Path {
         }
     }
 
+    /** 최단경로 그래프 */
+
     private GraphPath<Long, DefaultWeightedEdge> getShortestPath(Long source, Long target,
         PathSearchType type) {
-        GraphPath<Long, DefaultWeightedEdge> path;
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = null;
         validateNotNull(source, target);
         validateDifferentSourceAndDestination(source, target);
+
+        GraphPath<Long, DefaultWeightedEdge> path;
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = null;
+
         if (type == PathSearchType.DISTANCE) {
             dijkstraShortestPath = new DijkstraShortestPath<>(this.distanceGraph);
         }
@@ -68,9 +73,13 @@ public class Path {
         return path;
     }
 
+    /** 최단 경로 **/
+
     public List<Long> findShortestPath(Long source, Long target, PathSearchType type) {
         return getShortestPath(source, target, type).getVertexList();
     }
+
+    /** 최단시간 거리와 시간 **/
 
     public int calculateShortestDuration(Long source, Long target) {
         return (int)getShortestPath(source, target, PathSearchType.DURATION).getWeight();
@@ -86,6 +95,8 @@ public class Path {
         return wholeDistance;
     }
 
+    /** 최단거리 거리와 시간 **/
+
     public int calculateShortestDistance(Long source, Long target) {
         return (int)getShortestPath(source, target, PathSearchType.DISTANCE).getWeight();
     }
@@ -99,6 +110,8 @@ public class Path {
         }
         return wholeDuration;
     }
+
+    /** validation */
 
     private void validateConnectedPath(GraphPath<Long, DefaultWeightedEdge> path) {
         if (path == null) {

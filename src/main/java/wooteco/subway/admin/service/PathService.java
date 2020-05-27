@@ -33,14 +33,15 @@ public class PathService {
             .orElseThrow(() -> new NoSuchStationException("출발"));
         Station targetStation = stationRepository.findByName(target)
             .orElseThrow(() -> new NoSuchStationException("도착"));
-
         Long targetStationId = targetStation.getId();
         Long sourceStationId = sourceStation.getId();
+
         Path graphLines = new Path(lineRepository.findAll());
         List<Long> shortestPath = graphLines.findShortestPath(sourceStationId, targetStationId,
             type);
         List<StationResponse> stationResponses = StationResponse.listOf(
             findStationsByIds(shortestPath));
+
         int distance = 0;
         int duration = 0;
 
