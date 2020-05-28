@@ -26,6 +26,17 @@ class PathTest {
     private Line lineOne;
     private Line lineTwo;
 
+    @BeforeEach
+    void setUp() {
+        lineOne = new Line(1L, "1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+        lineTwo = new Line(2L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
+
+        lineOne.addLineStation(new LineStation(null, 1L, 0, 0));
+        lineOne.addLineStation(new LineStation(1L, 2L, 5, 3));
+        lineOne.addLineStation(new LineStation(2L, 3L, 5, 2));
+        lineOne.addLineStation(new LineStation(3L, 4L, 3, 4));
+    }
+
     private static Stream<Arguments> distancePathSets() {
         return Stream.of(
             Arguments.of(9, Arrays.asList(1L, 2L, 3L, 4L)),
@@ -79,17 +90,6 @@ class PathTest {
         );
     }
 
-    @BeforeEach
-    void setUp() {
-        lineOne = new Line(1L, "1호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-        lineTwo = new Line(2L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-
-        lineOne.addLineStation(new LineStation(null, 1L, 0, 0));
-        lineOne.addLineStation(new LineStation(1L, 2L, 5, 3));
-        lineOne.addLineStation(new LineStation(2L, 3L, 5, 2));
-        lineOne.addLineStation(new LineStation(3L, 4L, 3, 4));
-    }
-
     @DisplayName("최단거리 경로속에 포함되는 역의 ID를 순서대로 정확히 반환한다.")
     @ParameterizedTest
     @MethodSource("distancePathSets")
@@ -98,8 +98,8 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, distance, 10));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 10));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.findShortestPath(1L, 4L, DISTANCE)).isEqualTo(shortestPath);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DISTANCE);
+        assertThat(path.findShortestPath()).isEqualTo(shortestPath);
     }
 
     @DisplayName("최단시간 경로속에 포함되는 역의 ID를 순서대로 정확히 반환한다.")
@@ -110,8 +110,8 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, 9, duration));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.findShortestPath(1L, 4L, DURATION)).isEqualTo(shortestPath);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DURATION);
+        assertThat(path.findShortestPath()).isEqualTo(shortestPath);
     }
 
     @DisplayName("최단거리 경로 이동시 소요 거리를 정확히 반환한다.")
@@ -122,8 +122,8 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, distance, 1));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.calculateShortestDistance(1L, 4L)).isEqualTo(expected);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DISTANCE);
+        assertThat(path.calculateDistance(path.findShortestPath(), DISTANCE)).isEqualTo(expected);
     }
 
     @DisplayName("최단시간 경로를 이동하는데 걸리는 총 거리를 정확히 반환한다.")
@@ -134,8 +134,8 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, 9, duration));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.calculateDistanceForShortestDurationPath(1L, 4L)).isEqualTo(expected);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DURATION);
+        assertThat(path.calculateDistance(path.findShortestPath(), DURATION)).isEqualTo(expected);
     }
 
     @DisplayName("최단거리 경로 이동시 소요 시간을 정확히 반환한다.")
@@ -146,8 +146,8 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, distance, 1));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.calculateDurationForShortestDistancePath(1L, 4L)).isEqualTo(expected);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DISTANCE);
+        assertThat(path.calculateDuration(path.findShortestPath(), DISTANCE)).isEqualTo(expected);
     }
 
     @DisplayName("최단시간 경로를 이동하는데 걸리는 총 소요시간을 정확히 반환한다.")
@@ -158,16 +158,15 @@ class PathTest {
         lineTwo.addLineStation(new LineStation(4L, 2L, 9, duration));
         lineTwo.addLineStation(new LineStation(2L, 5L, 3, 5));
 
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThat(path.calculateShortestDuration(1L, 4L)).isEqualTo(expected);
+        path = new Path(Arrays.asList(lineOne, lineTwo), 1L, 4L, DURATION);
+        assertThat(path.calculateDuration(path.findShortestPath(), DURATION)).isEqualTo(expected);
     }
 
     @DisplayName("최단 경로/시간 조회시 출발역과 도착역이 같은 경우, 예외를 발생시킨다.")
     @ParameterizedTest
     @CsvSource({"DISTANCE", "DURATION"})
     void findShortestPathWithSameSourceAndDestination(PathSearchType type) {
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThatThrownBy(() -> path.findShortestPath(1L, 1L, type))
+        assertThatThrownBy(() -> new Path(Arrays.asList(lineOne, lineTwo), 1L, 1L, DISTANCE))
             .isInstanceOf(SameSourceAndDestinationException.class);
     }
 
@@ -176,8 +175,7 @@ class PathTest {
     @CsvSource({"DISTANCE", "DURATION"})
     void findShortestPathBetweenDisconnectedSourceAndDestination(PathSearchType type) {
         lineTwo.addLineStation(new LineStation(null, 100L, 3, 10));
-        path = new Path(Arrays.asList(lineOne, lineTwo));
-        assertThatThrownBy(() -> path.findShortestPath(1L, 100L, type))
+        assertThatThrownBy(() -> new Path(Arrays.asList(lineOne, lineTwo), 1L, 100L, DISTANCE))
             .isInstanceOf(DisconnectedPathException.class);
     }
 
@@ -186,8 +184,7 @@ class PathTest {
     @CsvSource({"DISTANCE,100,1", "DISTANCE,1,100", "DURATION,100,1", "DURATION,1,100"})
     void findShortestDurationPathWithNonExistentSourceOrDestination(PathSearchType type,
         Long source, Long target) {
-        path = new Path(Collections.singletonList(lineOne));
-        assertThatThrownBy(() -> path.findShortestPath(source, target, type))
+        assertThatThrownBy(() -> new Path(Collections.singletonList(lineOne), source, target, type))
             .isInstanceOf(NoSuchStationException.class);
     }
 
@@ -196,8 +193,8 @@ class PathTest {
     @MethodSource("sourceAndTargetIncludeNull")
     void findShortestPathWithNullSourceOrDestination(Long source, Long target,
         PathSearchType type) {
-        path = new Path(Collections.singletonList(lineOne));
-        assertThatThrownBy(() -> path.findShortestPath(source, target, type)).isInstanceOf(
+        assertThatThrownBy(() -> path = new Path(Collections.singletonList(lineOne), source, target,
+            type)).isInstanceOf(
             NullStationIdException.class);
     }
 }

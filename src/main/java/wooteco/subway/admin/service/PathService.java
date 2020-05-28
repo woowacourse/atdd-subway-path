@@ -33,28 +33,17 @@ public class PathService {
             .orElseThrow(() -> new NoSuchStationException("출발"));
         Station targetStation = stationRepository.findByName(target)
             .orElseThrow(() -> new NoSuchStationException("도착"));
-        Long targetStationId = targetStation.getId();
         Long sourceStationId = sourceStation.getId();
+        Long targetStationId = targetStation.getId();
 
-        Path graphLines = new Path(lineRepository.findAll());
-        List<Long> shortestPath = graphLines.findShortestPath(sourceStationId, targetStationId,
+        Path graphLines = new Path(lineRepository.findAll(), sourceStationId, targetStationId,
             type);
+        List<Long> shortestPath = graphLines.findShortestPath();
         List<StationResponse> stationResponses = StationResponse.listOf(
             findStationsByIds(shortestPath));
+        int distance = graphLines.calculateDistance(shortestPath, type);
+        int duration = graphLines.calculateDuration(shortestPath, type);
 
-        int distance = 0;
-        int duration = 0;
-
-        if (type == PathSearchType.DISTANCE) {
-            distance = graphLines.calculateShortestDistance(sourceStationId, targetStationId);
-            duration = graphLines.calculateDurationForShortestDistancePath(sourceStationId,
-                targetStationId);
-        }
-        if (type == PathSearchType.DURATION) {
-            duration = graphLines.calculateShortestDuration(sourceStationId, targetStationId);
-            distance = graphLines.calculateDistanceForShortestDurationPath(sourceStationId,
-                targetStationId);
-        }
         return new ShortestPathResponse(stationResponses, distance, duration);
     }
 
