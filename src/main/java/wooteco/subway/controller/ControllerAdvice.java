@@ -24,9 +24,14 @@ import wooteco.subway.exception.InvalidPathException;
  *
  * */
 @RestControllerAdvice()
-public class PathControllerAdvice {
+public class ControllerAdvice {
 	@ExceptionHandler({ConstraintViolationException.class, InvalidPathException.class})
 	public ResponseEntity<String> getRequestException(RuntimeException e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> getUnExpectedException(RuntimeException e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
