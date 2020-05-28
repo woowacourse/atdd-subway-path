@@ -30,7 +30,7 @@ class SubwayGraphTest {
         line3.addLineStation(new LineStation(5L, 6L, 1, 10));
         line3.addLineStation(new LineStation(6L, 3L, 1, 10));
 
-        translationGraph subwayGraph = new SubwayGraph(Arrays.asList(line1, line2, line3), CriteriaType.DISTANCE);
+        TranslationGraph subwayGraph = new SubwayGraph(Arrays.asList(line1, line2, line3), CriteriaType.DISTANCE);
 
         Long source = 3L;
         Long target = 1L;

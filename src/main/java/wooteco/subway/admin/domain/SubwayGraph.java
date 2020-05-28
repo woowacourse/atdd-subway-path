@@ -9,8 +9,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.dto.GraphResultResponse;
 
-public class SubwayGraph implements translationGraph {
-    WeightedMultigraph<Long, CustomEdge> graph;
+public class SubwayGraph implements TranslationGraph {
+    private WeightedMultigraph<Long, CustomEdge> graph;
 
     public SubwayGraph(List<Line> lines, CriteriaType type) {
         this.graph = new WeightedMultigraph<>(CustomEdge.class);
