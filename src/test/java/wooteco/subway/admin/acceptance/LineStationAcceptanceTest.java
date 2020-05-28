@@ -7,8 +7,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.restassured.mapper.TypeRef;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.LineResponse;
+import wooteco.subway.admin.dto.response.StandardResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
 import wooteco.subway.admin.dto.response.WholeSubwayResponse;
 
@@ -21,7 +23,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
         StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
 
-        LineResponse lineResponse = createLine("2호선");
+        LineResponse lineResponse = createLine("2호선").getData();
 
         addLineStation(lineResponse.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
@@ -39,7 +41,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선도 전체 정보 조회")
     @Test
     public void wholeSubway() {
-        LineResponse lineResponse1 = createLine("2호선");
+        LineResponse lineResponse1 = createLine("2호선").getData();
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("삼성역");
@@ -47,7 +49,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
-        LineResponse lineResponse2 = createLine("신분당선");
+        LineResponse lineResponse2 = createLine("신분당선").getData();
         StationResponse stationResponse4 = createStation("잠실역");
         StationResponse stationResponse5 = createStation("양재역");
         StationResponse stationResponse6 = createStation("양재시민의숲역");
@@ -62,12 +64,14 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     }
 
     private WholeSubwayResponse retrieveWholeSubway() {
-        return given().
+        StandardResponse<WholeSubwayResponse> response = given().
             when().
             get("/lines/detail").
             then().
             extract().
             body().
-            as(WholeSubwayResponse.class);
+            as(new TypeRef<StandardResponse<WholeSubwayResponse>>() {
+            });
+        return response.getData();
     }
 }

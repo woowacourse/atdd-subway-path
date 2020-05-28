@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.restassured.mapper.TypeRef;
 import wooteco.subway.admin.domain.path.PathType;
 import wooteco.subway.admin.dto.response.LineResponse;
 import wooteco.subway.admin.dto.response.PathResponse;
+import wooteco.subway.admin.dto.response.StandardResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -16,8 +18,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathTest() {
         //Given: 지하철 노선이 등록되어 있다.
-        LineResponse secondLine = createLine(LINE_NAME_2);
-        LineResponse thirdLine = createLine(LINE_NAME_3);
+        LineResponse secondLine = createLine(LINE_NAME_2).getData();
+        LineResponse thirdLine = createLine(LINE_NAME_3).getData();
         //And: 지하철 역이 등록되어 있다.
         StationResponse jamsil = createStation(STATION_NAME_JAMSIL);
         StationResponse seolleung = createStation(STATION_NAME_SEOLLEUNG);
@@ -60,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private PathResponse findPath(Long source, Long target) {
-        return given()
+        StandardResponse<PathResponse> response = given()
             .queryParam("source", source)
             .queryParam("target", target)
             .queryParam("type", PathType.DISTANCE.name())
@@ -69,7 +71,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .then()
             .log().all()
             .extract()
-            .as(PathResponse.class);
+            .as(new TypeRef<StandardResponse<PathResponse>>() {
+            });
+        return response.getData();
     }
 
     private void findFailedPath(Long source, Long target) {

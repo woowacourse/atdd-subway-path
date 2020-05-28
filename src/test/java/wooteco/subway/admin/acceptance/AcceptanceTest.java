@@ -14,9 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
+import io.restassured.mapper.TypeRef;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
 import wooteco.subway.admin.dto.response.LineResponse;
+import wooteco.subway.admin.dto.response.StandardResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,27 +53,28 @@ public class AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().as(StationResponse.class);
+        StandardResponse<StationResponse> response = given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/stations").
+            then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value()).
+            extract().as(new TypeRef<StandardResponse<StationResponse>>() {
+        });
+        return response.getData();
     }
 
     List<StationResponse> getStations() {
-        return
-            given().when().
-                get("/stations").
-                then().
-                log().all().
-                extract().
-                jsonPath().getList(".", StationResponse.class);
+        StandardResponse<List<StationResponse>> response = given().when().
+            get("/stations").
+            then().
+            log().all().
+            extract().as(new TypeRef<StandardResponse<List<StationResponse>>>() {
+        });
+        return response.getData();
     }
 
     void deleteStation(Long id) {
@@ -81,7 +84,7 @@ public class AcceptanceTest {
             log().all();
     }
 
-    LineResponse createLine(String name) {
+    StandardResponse<LineResponse> createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", "bg-green-500");
@@ -99,16 +102,19 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value()).
-                extract().as(LineResponse.class);
+                extract().as(new TypeRef<StandardResponse<LineResponse>>() {
+            });
     }
 
     LineDetailResponse getLine(Long id) {
-        return
-            given().when().
-                get("/lines/" + id).
-                then().
-                log().all().
-                extract().as(LineDetailResponse.class);
+        StandardResponse<LineDetailResponse> response = given().
+            when().
+            get("/lines/" + id).
+            then().
+            log().all().
+            extract().as(new TypeRef<StandardResponse<LineDetailResponse>>() {
+        });
+        return response.getData();
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -129,14 +135,15 @@ public class AcceptanceTest {
             statusCode(HttpStatus.OK.value());
     }
 
-    List<LineResponse> getLines() {
+    StandardResponse<List<LineResponse>> getLines() {
         return
             given().when().
                 get("/lines").
                 then().
                 log().all().
                 extract().
-                jsonPath().getList(".", LineResponse.class);
+                as(new TypeRef<StandardResponse<List<LineResponse>>>() {
+                });
     }
 
     void deleteLine(Long id) {

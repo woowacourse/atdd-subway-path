@@ -34,7 +34,7 @@ public class PathController {
         @RequestParam("target") @Valid @NotNull(message = "도착역을 입력해주세요.") Long targetId,
         @RequestParam("type") String type) {
         validate(sourceId, targetId);
-        PathResponse response = pathService.findPath(new SubwayGraphStrategy<>(), sourceId,
+        PathResponse response = pathService.findPath(new SubwayGraphStrategy(), sourceId,
             targetId, type);
         return StandardResponse.of(response);
     }

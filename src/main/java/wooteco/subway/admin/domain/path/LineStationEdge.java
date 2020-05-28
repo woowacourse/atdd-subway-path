@@ -13,6 +13,9 @@ public class LineStationEdge extends DefaultWeightedEdge {
         this.duration = duration;
     }
 
+    public LineStationEdge() {
+    }
+
     public static LineStationEdge of(LineStation lineStation) {
         return new LineStationEdge(lineStation.getDistance(), lineStation.getDuration());
     }
