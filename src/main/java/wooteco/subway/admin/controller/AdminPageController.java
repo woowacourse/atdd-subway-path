@@ -9,8 +9,8 @@ import wooteco.subway.admin.service.StationService;
 
 @Controller
 public class AdminPageController {
-    private LineService lineService;
-    private StationService stationService;
+    private final LineService lineService;
+    private final StationService stationService;
 
     public AdminPageController(LineService lineService, StationService stationService) {
         this.lineService = lineService;
