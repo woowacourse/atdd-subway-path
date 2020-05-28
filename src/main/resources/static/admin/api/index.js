@@ -31,17 +31,17 @@ const METHOD = {
 const api = (() => {
   const request = (uri, config) => fetch(uri, config);
   const requestWithJsonData = (uri, config) => fetch(uri, config)
-    .then(async response => {
-      if (response.status >= 400) {
-        const error = await response.json();
-        throw new Error(error.message)
-      }
-      const responseToJson = await response.json();
-      return responseToJson.data;
-    })
-    .catch(error => {
-      alert(error.message);
-    });
+  .then(async response => {
+    if (response.status >= 400) {
+      const error = await response.json();
+      throw new Error(error.message)
+    }
+    const responseToJson = await response.json();
+    return responseToJson.data;
+  })
+  .catch(error => {
+    alert(error.message);
+  });
 
   const line = {
     get(id) {

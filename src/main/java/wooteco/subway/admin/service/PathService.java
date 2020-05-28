@@ -32,7 +32,8 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId, String pathType) {
+    public PathResponse findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId,
+        String pathType) {
         validatePathIds(sourceId, targetId);
         Lines lines = Lines.of(lineRepository.findAll());
 

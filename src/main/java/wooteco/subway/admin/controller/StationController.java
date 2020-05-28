@@ -36,7 +36,8 @@ public class StationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StandardResponse<StationResponse> createStation(@RequestBody @Valid StationCreateRequest request) {
+    public StandardResponse<StationResponse> createStation(
+        @RequestBody @Valid StationCreateRequest request) {
         StationResponse response = stationService.createStation(request);
 
         return StandardResponse.of(response);

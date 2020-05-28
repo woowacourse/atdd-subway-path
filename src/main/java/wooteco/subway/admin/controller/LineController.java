@@ -1,13 +1,11 @@
 package wooteco.subway.admin.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.request.LineRequest;
 import wooteco.subway.admin.dto.request.LineStationCreateRequest;
 import wooteco.subway.admin.dto.response.LineDetailResponse;
@@ -44,7 +41,8 @@ public class LineController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StandardResponse<LineResponse> createLine(@RequestBody @Valid LineRequest request, HttpServletResponse response) {
+    public StandardResponse<LineResponse> createLine(@RequestBody @Valid LineRequest request,
+        HttpServletResponse response) {
         LineResponse lineResponse = lineService.save(request);
 
         response.addHeader("Location", "/lines/" + lineResponse.getId());
@@ -59,7 +57,8 @@ public class LineController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public StandardResponse<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest request) {
+    public StandardResponse<Void> updateLine(@PathVariable Long id,
+        @RequestBody LineRequest request) {
         lineService.updateLine(id, request);
         return StandardResponse.empty();
     }
@@ -79,14 +78,16 @@ public class LineController {
 
     @PostMapping("/{lineId}/stations")
     @ResponseStatus(HttpStatus.CREATED)
-    public StandardResponse<Void> addLineStation(@PathVariable Long lineId, @RequestBody @Valid LineStationCreateRequest request) {
+    public StandardResponse<Void> addLineStation(@PathVariable Long lineId,
+        @RequestBody @Valid LineStationCreateRequest request) {
         lineService.addLineStation(lineId, request);
         return StandardResponse.empty();
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public StandardResponse<Void> removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public StandardResponse<Void> removeLineStation(@PathVariable Long lineId,
+        @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return StandardResponse.empty();
     }

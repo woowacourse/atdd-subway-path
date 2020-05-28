@@ -24,7 +24,8 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<StandardResponse<Void>> handleValidationException(
+        MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult().getAllErrors()
             .stream()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)

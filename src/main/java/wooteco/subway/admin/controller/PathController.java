@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +34,8 @@ public class PathController {
         @RequestParam("target") @Valid @NotNull(message = "도착역을 입력해주세요.") Long targetId,
         @RequestParam("type") String type) {
         validate(sourceId, targetId);
-        PathResponse response = pathService.findPath(new SubwayGraphStrategy<>(), sourceId, targetId, type);
+        PathResponse response = pathService.findPath(new SubwayGraphStrategy<>(), sourceId,
+            targetId, type);
         return StandardResponse.of(response);
     }
 
