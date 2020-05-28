@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -49,19 +48,19 @@ public class LineServiceTest {
     void setUp() {
         lineService = new LineService(lineRepository, stationRepository);
 
-        station1 = new Station(1L, STATION_NAME1, LocalDateTime.now());
-        station2 = new Station(2L, STATION_NAME2, LocalDateTime.now());
-        station3 = new Station(3L, STATION_NAME3, LocalDateTime.now());
-        station4 = new Station(4L, STATION_NAME4, LocalDateTime.now());
+        station1 = Station.of(1L, STATION_NAME1);
+        station2 = Station.of(2L, STATION_NAME2);
+        station3 = Station.of(3L, STATION_NAME3);
+        station4 = Station.of(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = Line.of(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(LineStation.of(null, 1L, 10, 10));
         line.addLineStation(LineStation.of(1L, 2L, 10, 10));
         line.addLineStation(LineStation.of(2L, 3L, 10, 10));
     }
 
     @Test
-    void addLineStationAtTheFirstOfLine() {
+    void addLineStationAtTheFirstStation() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         when(stationRepository.existsById(anyLong())).thenReturn(true);
 
@@ -97,7 +96,7 @@ public class LineServiceTest {
     }
 
     @Test
-    void addLineStationAtTheEndOfLine() {
+    void addLineStationAtTheEndStation() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         when(stationRepository.existsById(anyLong())).thenReturn(true);
 
@@ -115,7 +114,7 @@ public class LineServiceTest {
     }
 
     @Test
-    void removeLineStationAtTheFirstOfLine() {
+    void removeLineStationAtTheFirstStation() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 1L);
 
@@ -137,7 +136,7 @@ public class LineServiceTest {
     }
 
     @Test
-    void removeLineStationAtTheEndOfLine() {
+    void removeLineStationAtTheEndStation() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 3L);
 
@@ -150,8 +149,8 @@ public class LineServiceTest {
 
     @Test
     void findLineWithStationsById() {
-        List<Station> stations = Lists.newArrayList(Station.of("강남역"), Station.of("역삼역"),
-            Station.of("삼성역"));
+        List<Station> stations = Lists.newArrayList(Station.from("강남역"), Station.from("역삼역"),
+            Station.from("삼성역"));
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
@@ -162,18 +161,18 @@ public class LineServiceTest {
 
     @Test
     void wholeLines() {
-        Line newLine = new Line(2L, "신분당선", "bg-green-500", LocalTime.of(05, 30),
+        Line newLine = Line.of(2L, "신분당선", "bg-green-500", LocalTime.of(05, 30),
             LocalTime.of(22, 30), 5);
         newLine.addLineStation(LineStation.of(null, 4L, 10, 10));
         newLine.addLineStation(LineStation.of(4L, 5L, 10, 10));
         newLine.addLineStation(LineStation.of(5L, 6L, 10, 10));
 
-        List<Station> stations = Arrays.asList(new Station(1L, "강남역", LocalDateTime.now()),
-            new Station(2L, "역삼역", LocalDateTime.now()),
-            new Station(3L, "삼성역", LocalDateTime.now()),
-            new Station(4L, "양재역", LocalDateTime.now()),
-            new Station(5L, "양재시민의숲역", LocalDateTime.now()),
-            new Station(6L, "청계산입구역", LocalDateTime.now()));
+        List<Station> stations = Arrays.asList(Station.of(1L, "강남역"),
+            Station.of(2L, "역삼역"),
+            Station.of(3L, "삼성역"),
+            Station.of(4L, "양재역"),
+            Station.of(5L, "양재시민의숲역"),
+            Station.of(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAll()).thenReturn(stations);

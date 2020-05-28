@@ -3,14 +3,10 @@ package wooteco.subway.admin.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +29,6 @@ class PathServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
-
     private PathService pathService;
     private Station kangnam;
     private Station yeoksam;
@@ -41,20 +36,17 @@ class PathServiceTest {
     private Station gyodae;
     private Station jamwon;
     private Station sinsa;
-    private Line firstLine;
 
     @BeforeEach
     void setUp() {
         pathService = new PathService(lineRepository, stationRepository);
 
-        seolleung = new Station(2L, "선릉역", LocalDateTime.now());
-        yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
-        kangnam = new Station(1L, "강남역", LocalDateTime.now());
-        gyodae = new Station(4L, "교대역", LocalDateTime.now());
-        jamwon = new Station(5L, "잠원역", LocalDateTime.now());
-        sinsa = new Station(6L, "신사역", LocalDateTime.now());
-        firstLine = new Line(1L, "1호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(23, 00),
-            10);
+        seolleung = Station.of(2L, "선릉역");
+        yeoksam = Station.of(3L, "역삼역");
+        kangnam = Station.of(1L, "강남역");
+        gyodae = Station.of(4L, "교대역");
+        jamwon = Station.of(5L, "잠원역");
+        sinsa = Station.of(6L, "신사역");
     }
 
     @DisplayName("출발역이나 도착역을 입력하지 않은 경우")
@@ -83,6 +75,8 @@ class PathServiceTest {
     @DisplayName("출발역, 도착역이 연결되어 있지 않은 경우")
     @Test
     void findPathNotConnectedException() {
+        Line firstLine = Line.of(1L, "1호선", "bg-green-500",
+            LocalTime.of(05, 30), LocalTime.of(23, 00), 10);
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
         when(stationRepository.findAll()).thenReturn(Arrays.asList(jamwon, yeoksam));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
@@ -91,37 +85,40 @@ class PathServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("source stationId와 target stationId를 받아서 최단 경로를 구한다.")
+    @DisplayName("최단거리 기준 기준 최단경로.")
     @Test
-    void findPath() {
-        firstLine.addLineStation(LineStation.of(null, seolleung.getId(), 10, 10));
-        firstLine.addLineStation(LineStation.of(seolleung.getId(), yeoksam.getId(), 20, 10));
-        firstLine.addLineStation(LineStation.of(yeoksam.getId(), kangnam.getId(), 20, 10));
-        firstLine.addLineStation(LineStation.of(kangnam.getId(), gyodae.getId(), 20, 10));
-        Line secondLine = new Line(2L, "2호선", "bg-green-500", LocalTime.of(06, 30),
-            LocalTime.of(23, 00), 10);
-        secondLine.addLineStation(LineStation.of(null, gyodae.getId(), 10, 10));
-        secondLine.addLineStation(LineStation.of(gyodae.getId(), jamwon.getId(), 40, 30));
-        secondLine.addLineStation(LineStation.of(jamwon.getId(), sinsa.getId(), 30, 10));
-
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine, secondLine));
+    void findPathByDistance() {
+        List<Line> lines = createLinesIncludedLineStations();
+        when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(
-            Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
+            Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
 
-        PathResponse pathResponse = pathService.findPath(2L, 6L, PathType.DISTANCE);
-        assertThat(pathResponse.getStations()).size().isEqualTo(6);
-        assertThat(pathResponse.getDistance()).isEqualTo(130);
-        assertThat(pathResponse.getDuration()).isEqualTo(70);
+        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE);
+        assertThat(distanceResponse.getStations()).size().isEqualTo(6);
+        assertThat(distanceResponse.getDuration()).isEqualTo(5);
+        assertThat(distanceResponse.getDistance()).isEqualTo(5);
     }
 
-    @DisplayName("최단시간과 최단거리 기준으로 path를 구할 수 있다.")
+    @DisplayName("최단시간 기준 최단경로")
     @Test
-    void findPathBy() {
-        Line first = new Line(1L, "1호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+    void findPathByDuration() {
+        List<Line> lines = createLinesIncludedLineStations();
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
+
+        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION);
+        assertThat(durationResponse.getStations()).size().isEqualTo(4);
+        assertThat(durationResponse.getDuration()).isEqualTo(3);
+        assertThat(durationResponse.getDistance()).isEqualTo(302);
+    }
+
+    private List<Line> createLinesIncludedLineStations() {
+        Line first = Line.of(1L, "1호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
-        Line second = new Line(2L, "2호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+        Line second = Line.of(2L, "2호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
-        Line third = new Line(3L, "3호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
+        Line third = Line.of(3L, "3호선", "bg-pink-600", LocalTime.of(10, 00), LocalTime.of(12, 00),
             1);
         first.addLineStation(LineStation.of(null, 1L, 1, 1));
         first.addLineStation(LineStation.of(1L, 3L, 1, 1));
@@ -133,65 +130,6 @@ class PathServiceTest {
         third.addLineStation(LineStation.of(null, 3L, 1, 1));
         third.addLineStation(LineStation.of(3L, 6L, 300, 1));
 
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(first, second, third));
-        when(stationRepository.findAll()).thenReturn(
-            Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
-
-        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION);
-        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE);
-        assertThat(durationResponse.getStations()).size().isEqualTo(4);
-        assertThat(durationResponse.getDuration()).isEqualTo(3);
-        assertThat(durationResponse.getDistance()).isEqualTo(302);
-        assertThat(distanceResponse.getStations()).size().isEqualTo(6);
-        assertThat(distanceResponse.getDuration()).isEqualTo(5);
-        assertThat(distanceResponse.getDistance()).isEqualTo(5);
-    }
-
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
-    }
-
-    @DisplayName("등록되지 않은 경우")
-    @Test
-    public void dijkstraShortestPathNotExistException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("연결되지 않은 경우")
-    @Test
-    public void dijkstraShortestPathNotConnectedException() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-        assertThatThrownBy(() -> dijkstraShortestPath.getPath("v3", "v1").getVertexList())
-            .isInstanceOf(NullPointerException.class);
+        return Arrays.asList(first, second, third);
     }
 }

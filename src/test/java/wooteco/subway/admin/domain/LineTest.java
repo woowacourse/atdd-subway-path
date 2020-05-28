@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import wooteco.subway.admin.exception.NotFoundLineException;
+
 public class LineTest {
     private Line line;
 
     @BeforeEach
     void setUp() {
-        line = new Line(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = Line.of(1L, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(LineStation.of(null, 1L, 10, 10));
         line.addLineStation(LineStation.of(1L, 2L, 10, 10));
         line.addLineStation(LineStation.of(2L, 3L, 10, 10));
@@ -29,7 +31,7 @@ public class LineTest {
         LineStation lineStation = line.getStations().stream()
             .filter(it -> Objects.equals(it.getPreStationId(), 4L))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NotFoundLineException::new);
         assertThat(lineStation.getStationId()).isEqualTo(1L);
     }
 

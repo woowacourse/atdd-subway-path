@@ -10,6 +10,6 @@ public class StationCreateRequest {
     }
 
     public Station toStation() {
-        return Station.of(name);
+        return Station.from(name);
     }
 }

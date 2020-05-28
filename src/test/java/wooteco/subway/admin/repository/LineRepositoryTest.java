@@ -21,7 +21,7 @@ public class LineRepositoryTest {
     @Test
     void addLineStation() {
         // given
-        Line line = Line.of("2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line line = Line.of(null, "2호선", "bg-green-500", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         Line persistLine = lineRepository.save(line);
         persistLine.addLineStation(LineStation.of(null, 1L, 10, 10));
         persistLine.addLineStation(LineStation.of(1L, 2L, 10, 10));

@@ -19,9 +19,9 @@ public class StationRepositoryTest {
     @Test
     void saveStation() {
         String stationName = "강남역";
-        stationRepository.save(Station.of(stationName));
+        stationRepository.save(Station.from(stationName));
 
         assertThrows(DbActionExecutionException.class,
-            () -> stationRepository.save(Station.of(stationName)));
+            () -> stationRepository.save(Station.from(stationName)));
     }
 }

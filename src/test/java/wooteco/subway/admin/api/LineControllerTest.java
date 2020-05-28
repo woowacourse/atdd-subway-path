@@ -58,8 +58,8 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        Line mockLine = Line.of("lineName", "bg-green-500", LocalTime.now(), LocalTime.now(), 1);
-        Station mockStation = Station.of("stationName");
+        Line mockLine = Line.of(null, "lineName", "bg-green-500", LocalTime.now(), LocalTime.now(), 1);
+        Station mockStation = Station.from("stationName");
         List<Station> stations = Arrays.asList(mockStation, mockStation, mockStation);
         return LineDetailResponse.of(mockLine, stations);
     }
