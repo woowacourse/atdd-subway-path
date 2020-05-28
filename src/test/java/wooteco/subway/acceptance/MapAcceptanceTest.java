@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import wooteco.subway.dto.LineDetailResponse;
@@ -45,11 +44,6 @@ public class MapAcceptanceTest extends AcceptanceTest {
 	}
 
 	private WholeSubwayResponse retrieveWholeSubway() {
-		return given()
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.get("/paths/detail")
-			.then()
-			.extract().as(WholeSubwayResponse.class);
+		return get("/paths/detail", WholeSubwayResponse.class);
 	}
 }
