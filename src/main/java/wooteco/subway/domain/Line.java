@@ -90,34 +90,29 @@ public class Line {
 	}
 
 	public List<Long> getLineStationsId() {
-		List<Long> sortedStationsId = new ArrayList<>();
 		if (stations.isEmpty()) {
-			return sortedStationsId;
+			return new ArrayList<>();
 		}
 
-		LineStation preStation = getFirstStation();
-		sortedStationsId.add(preStation.getStationId());
-
-		while (getNextStationOf(preStation).isPresent()) {
-			LineStation currentStation = getNextStationOf(preStation).get();
-			sortedStationsId.add(currentStation.getStationId());
-			preStation = currentStation;
-		}
-
-		return sortedStationsId;
-	}
-
-	private LineStation getFirstStation() {
-		return stations.stream()
-			.filter(LineStation::isFirstStation)
+		LineStation firstLineStation = stations.stream()
+			.filter(it -> it.getPreStationId() == null)
 			.findFirst()
-			.orElseThrow(AssertionError::new);
-	}
+			.orElseThrow(RuntimeException::new);
 
-	private Optional<LineStation> getNextStationOf(LineStation station) {
-		return stations.stream()
-			.filter(station::isPreStationOf)
-			.findFirst();
+		List<Long> stationIds = new ArrayList<>();
+		stationIds.add(firstLineStation.getStationId());
+
+		while (true) {
+			Long lastStationId = stationIds.get(stationIds.size() - 1);
+			Optional<LineStation> nextLineStation = stations.stream()
+				.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+				.findFirst();
+			if (!nextLineStation.isPresent()) {
+				break;
+			}
+			stationIds.add(nextLineStation.get().getStationId());
+		}
+		return stationIds;
 	}
 
 	public Long getId() {
