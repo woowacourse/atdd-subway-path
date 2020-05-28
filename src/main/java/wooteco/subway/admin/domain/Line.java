@@ -27,6 +27,7 @@ public class Line {
     public Line(Long id, String name, String color, LineSchedule lineSchedule,
         LineStations lineStations,
         LocalDateTime createdAt, LocalDateTime updatedAt) {
+        validateEmpty(name, color);
         this.id = id;
         this.name = name;
         this.color = color;
@@ -110,5 +111,11 @@ public class Line {
 
     public List<Long> getLineStationsId() {
         return lineStations.getStationIds();
+    }
+
+    private void validateEmpty(String name, String color) {
+        if (name.isEmpty() || color.isEmpty()) {
+            throw new IllegalArgumentException("이름과 색상은 비어있을 수 없습니다.");
+        }
     }
 }

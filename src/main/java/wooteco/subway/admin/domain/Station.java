@@ -11,6 +11,7 @@ public class Station {
     private LocalDateTime createdAt;
 
     public Station(Long id, String name, LocalDateTime createdAt) {
+        validateName(name);
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
@@ -30,5 +31,11 @@ public class Station {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    private void validateName(String name) {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("이름은 비어있을 수 없습니다.");
+        }
     }
 }
