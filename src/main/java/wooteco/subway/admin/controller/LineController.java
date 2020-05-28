@@ -3,10 +3,7 @@ package wooteco.subway.admin.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineRequest;
-import wooteco.subway.admin.dto.LineResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.*;
 import wooteco.subway.admin.service.LineService;
 
 import java.net.URI;
@@ -14,7 +11,7 @@ import java.util.List;
 
 @RestController
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -58,8 +55,14 @@ public class LineController {
     }
 
     @DeleteMapping("/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/lines/detail")
+    public ResponseEntity<WholeSubwayResponse> wholeLines() {
+        WholeSubwayResponse wholeSubwayResponse = lineService.wholeLines();
+        return ResponseEntity.ok().body(wholeSubwayResponse);
     }
 }

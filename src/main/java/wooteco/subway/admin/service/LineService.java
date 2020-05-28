@@ -7,10 +7,12 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -62,5 +64,15 @@ public class LineService {
 
     public List<Line> findAll() {
         return lineRepository.findAll();
+    }
+
+    public WholeSubwayResponse wholeLines() {
+        List<Line> allLines = lineRepository.findAll();
+        List<LineDetailResponse> collect = allLines.stream()
+                .map(line -> LineDetailResponse.of(line, stationRepository.findAllById(line.getLineStationsId())))
+                .collect(Collectors.toList());
+
+        return WholeSubwayResponse.of(collect);
+
     }
 }
