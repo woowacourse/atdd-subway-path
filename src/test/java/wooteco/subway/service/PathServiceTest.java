@@ -23,7 +23,6 @@ import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.service.PathService;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {

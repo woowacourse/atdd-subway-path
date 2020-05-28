@@ -6,14 +6,14 @@ import org.springframework.http.MediaType;
 
 public class PageAcceptanceTest extends AcceptanceTest {
 
-    @Test
-    void linePage() {
-        given().
-                accept(MediaType.TEXT_HTML_VALUE).
-        when().
-                get("/lines").
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
+	@Test
+	void linePage() {
+		given().
+			accept(MediaType.TEXT_HTML_VALUE).
+			when().
+			get("/lines").
+			then().
+			log().all().
+			statusCode(HttpStatus.OK.value());
+	}
 }

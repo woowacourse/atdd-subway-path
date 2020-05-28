@@ -54,7 +54,7 @@ class GraphTest {
 	void createPath_GivenValidPath_ReturnPath() {
 		Graph graph = new Graph(lines, stations, strategy);
 
-		assertThat(graph.createPath(station1,station3)).isNotNull();
+		assertThat(graph.createPath(station1, station3)).isNotNull();
 	}
 
 	@DisplayName("예외테스트: 연결되지 않은 역의 경로를 요청 시, 예외 발생")

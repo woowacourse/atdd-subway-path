@@ -5,36 +5,36 @@ import java.time.LocalTime;
 import wooteco.subway.domain.Line;
 
 public class LineRequest {
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
-    private String backgroundColor;
+	private String name;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private int intervalTime;
+	private String backgroundColor;
 
-    public LineRequest() {
-    }
+	public LineRequest() {
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
 
-    public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime, backgroundColor);
-    }
+	public Line toLine() {
+		return new Line(name, startTime, endTime, intervalTime, backgroundColor);
+	}
 }

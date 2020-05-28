@@ -23,7 +23,6 @@ import wooteco.subway.dto.LineDetailResponse;
 import wooteco.subway.dto.LineStationCreateRequest;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.service.LineService;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {

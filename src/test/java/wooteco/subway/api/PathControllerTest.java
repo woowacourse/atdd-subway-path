@@ -27,55 +27,55 @@ import wooteco.subway.service.PathService;
 
 @WebMvcTest(controllers = {PathController.class})
 public class PathControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockBean
-    private PathService pathService;
+	@MockBean
+	private PathService pathService;
 
-    @Test
-    void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(
-            Arrays.asList(createMockResponse(), createMockResponse()));
-        given(pathService.wholeLines()).willReturn(response);
+	@Test
+	void ETag() throws Exception {
+		WholeSubwayResponse response = WholeSubwayResponse.of(
+			Arrays.asList(createMockResponse(), createMockResponse()));
+		given(pathService.wholeLines()).willReturn(response);
 
-        String uri = "/paths/detail";
+		String uri = "/paths/detail";
 
-        MvcResult mvcResult = mockMvc.perform(get(uri))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().exists("ETag"))
-            .andReturn();
-        String eTag = mvcResult.getResponse().getHeader("ETag");
+		MvcResult mvcResult = mockMvc.perform(get(uri))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(header().exists("ETag"))
+			.andReturn();
+		String eTag = mvcResult.getResponse().getHeader("ETag");
 
-        mockMvc.perform(get(uri).header("If-None-Match", eTag))
-            .andDo(print())
-            .andExpect(status().isNotModified())
-            .andExpect(header().exists("ETag"))
-            .andReturn();
-    }
+		mockMvc.perform(get(uri).header("If-None-Match", eTag))
+			.andDo(print())
+			.andExpect(status().isNotModified())
+			.andExpect(header().exists("ETag"))
+			.andReturn();
+	}
 
-    private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
-    }
+	private LineDetailResponse createMockResponse() {
+		List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+		return LineDetailResponse.of(new Line(), stations);
+	}
 
-    @DisplayName("예외테스트: 경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생")
-    @Test
-    void searchPath_GivenBlankStation_ExceptionThrown() throws Exception {
-        //given
-        HashMap<String, String> params = new HashMap<>();
-        params.put("source", "");
-        params.put("target", "강남역");
+	@DisplayName("예외테스트: 경로 조회 시 출발역 혹은 도착역에 빈 문자열 혹은 Null이 들어온 경우 예외 발생")
+	@Test
+	void searchPath_GivenBlankStation_ExceptionThrown() throws Exception {
+		//given
+		HashMap<String, String> params = new HashMap<>();
+		params.put("source", "");
+		params.put("target", "강남역");
 
-        //when
-        //then
-        mockMvc.perform(get("/paths")
-            .param("source", "")
-            .param("target", "강남역")
-            .param("type", "DISTANCE"))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn();
-    }
+		//when
+		//then
+		mockMvc.perform(get("/paths")
+			.param("source", "")
+			.param("target", "강남역")
+			.param("type", "DISTANCE"))
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andReturn();
+	}
 }

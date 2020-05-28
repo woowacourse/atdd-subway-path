@@ -1,6 +1,6 @@
 package wooteco.subway.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import wooteco.subway.domain.Station;
 
 @DataJdbcTest
 public class StationRepositoryTest {
-    @Autowired
-    private StationRepository stationRepository;
+	@Autowired
+	private StationRepository stationRepository;
 
-    @Test
-    void saveStation() {
-        String stationName = "강남역";
-        stationRepository.save(new Station(stationName));
+	@Test
+	void saveStation() {
+		String stationName = "강남역";
+		stationRepository.save(new Station(stationName));
 
-        assertThrows(DbActionExecutionException.class, () -> stationRepository.save(new Station(stationName)));
-    }
+		assertThrows(DbActionExecutionException.class, () -> stationRepository.save(new Station(stationName)));
+	}
 }
