@@ -8,8 +8,6 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
-import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.errors.PathException;
 
 import java.util.ArrayList;
@@ -21,13 +19,13 @@ import java.util.stream.Collectors;
 public class PathService {
     private static final String KOREAN_WORD = "^[가-힣]*$";
 
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final GraphService graphService;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
-        this.stationRepository = stationRepository;
-        this.lineRepository = lineRepository;
+    public PathService(StationService stationService, LineService lineService, GraphService graphService) {
+        this.stationService = stationService;
+        this.lineService = lineService;
         this.graphService = graphService;
     }
 
@@ -39,13 +37,13 @@ public class PathService {
         checkSameStationName(source, target);
         checkKoreanStationName(source, target, KOREAN_WORD);
 
-        List<Line> lines = lineRepository.findAll();
+        List<Line> lines = lineService.findAll();
 
         Station sourceStation = findStationByName(source);
         Station targetStation = findStationByName(target);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), PathType.valueOf(pathType));
-        List<Station> stations = stationRepository.findAllById(path);
+        List<Station> stations = stationService.findAllById(path);
         List<LineStation> lineStations = calculateLineStations(lines);
         List<LineStation> paths = extractPathLineStation(path, lineStations);
 
@@ -90,8 +88,7 @@ public class PathService {
     }
 
     private Station findStationByName(String source) {
-        return stationRepository.findByName(source)
-                .orElseThrow(() -> new PathException("해당 역을 찾을 수 없습니다."));
+        return stationService.findByName(source);
     }
 
     private void checkKoreanStationName(String source, String target, String regExp) {
@@ -108,7 +105,7 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
+                .filter(it -> it.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
