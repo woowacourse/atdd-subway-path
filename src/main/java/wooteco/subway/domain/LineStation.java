@@ -19,8 +19,16 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
+    public boolean isFirstStation() {
+        return Objects.isNull(preStationId);
+    }
+
+    public boolean isPreStationOf(LineStation lineStation) {
+        return stationId.equals(lineStation.preStationId);
+    }
+
     public boolean isNotFirstStation() {
-        return !Objects.isNull(preStationId);
+        return !isFirstStation();
     }
 
     public Long getPreStationId() {
