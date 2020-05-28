@@ -10,6 +10,9 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
+import wooteco.subway.admin.exception.InvalidLineException;
+import wooteco.subway.admin.exception.NotFoundLineException;
+
 public class Line extends BaseTime {
     @Id
     private Long id;
@@ -70,7 +73,7 @@ public class Line extends BaseTime {
         LineStation targetLineStation = stations.stream()
             .filter(it -> Objects.equals(it.getStationId(), stationId))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NotFoundLineException::new);
 
         stations.stream()
             .filter(it -> Objects.equals(it.getPreStationId(), stationId))
@@ -88,7 +91,7 @@ public class Line extends BaseTime {
         LineStation firstLineStation = stations.stream()
             .filter(it -> it.getPreStationId() == null)
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NotFoundLineException::new);
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
@@ -117,26 +120,26 @@ public class Line extends BaseTime {
 
     private void validateStation(LineStation lineStation) {
         if (Objects.isNull(lineStation.getStationId())) {
-            throw new IllegalArgumentException("현재역은 비어있을 수 없습니다.");
+            throw new InvalidLineException("현재역은 비어있을 수 없습니다.");
         }
     }
 
     private void validateAlreadyRegistered(LineStation lineStation) {
         if (!lineStation.isFirstLineStation() && stations.isEmpty()) {
-            throw new IllegalArgumentException("첫 노선을 먼저 등록해야 합니다.");
+            throw new InvalidLineException("첫 노선을 먼저 등록해야 합니다.");
         }
     }
 
     private void validateStations(LineStation lineStation) {
         if (lineStation.getStationId().equals(lineStation.getPreStationId())) {
-            throw new IllegalArgumentException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
+            throw new InvalidLineException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
         }
     }
 
     private void validateHavingSame(LineStation lineStation) {
         for (LineStation station : stations) {
             if (station.hasSameStations(lineStation)) {
-                throw new IllegalArgumentException("이미 등록된 구간입니다.");
+                throw new InvalidLineException("이미 등록된 구간입니다.");
             }
         }
     }
