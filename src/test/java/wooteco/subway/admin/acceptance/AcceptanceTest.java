@@ -1,15 +1,9 @@
 package wooteco.subway.admin.acceptance;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -187,8 +181,6 @@ public class AcceptanceTest {
     void removeLineStation(Long id, Long stationId) {
         // @formatter:off
         given().
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
             delete("/lines/" + id + "/stations/" + stationId).
         then().
@@ -201,7 +193,6 @@ public class AcceptanceTest {
         // @formatter:off
         return given().
         when().
-            contentType(MediaType.APPLICATION_JSON_VALUE).
             get("/lines/detail").
         then().
             log().all().
@@ -216,8 +207,6 @@ public class AcceptanceTest {
             queryParam("source", departure).
             queryParam("target", arrival).
             queryParam("pathType", type).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
             get("/paths").
         then().

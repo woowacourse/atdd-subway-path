@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import wooteco.subway.admin.exception.LineStationNotFoundException;
+
 public class LineTest {
     private Line line;
 
@@ -29,7 +31,7 @@ public class LineTest {
         LineStation lineStation = line.getStations().stream()
             .filter(it -> Objects.equals(it.getPreStationId(), 4L))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(LineStationNotFoundException::new);
         assertThat(lineStation.getStationId()).isEqualTo(1L);
     }
 

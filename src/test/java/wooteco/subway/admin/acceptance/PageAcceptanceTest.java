@@ -37,7 +37,6 @@ public class PageAcceptanceTest {
 
         // @formatter:off
         given().
-            accept(MediaType.TEXT_HTML_VALUE).
         when().
             get("/lines").
         then().
