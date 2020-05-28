@@ -6,6 +6,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -30,7 +31,11 @@ public class PathService {
         this.graphService = graphService;
     }
 
-    public PathResponse findPath(String source, String target, PathType type) {
+    public PathResponse findPath(ShortestPathResponse shortestPathResponse) {
+        String source = shortestPathResponse.getSource();
+        String target = shortestPathResponse.getTarget();
+        String pathType = shortestPathResponse.getPathType();
+
         checkSameStationName(source, target);
         checkKoreanStationName(source, target, KOREAN_WORD);
 
@@ -39,7 +44,7 @@ public class PathService {
         Station sourceStation = findStationByName(source);
         Station targetStation = findStationByName(target);
 
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
+        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), PathType.valueOf(pathType));
         List<Station> stations = stationRepository.findAllById(path);
         List<LineStation> lineStations = calculateLineStations(lines);
         List<LineStation> paths = extractPathLineStation(path, lineStations);

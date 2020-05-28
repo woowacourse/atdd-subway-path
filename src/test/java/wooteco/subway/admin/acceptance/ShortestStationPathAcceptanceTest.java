@@ -43,12 +43,10 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAME_GAEPODONG = "개포동역";
     private static final String STATION_NAME_DAEMOSAN = "대모산입구역";
 
-
     @Autowired
     StationRepository stationRepository;
     @LocalServerPort
     int port;
-
 
     @BeforeEach
     void setUp() {
@@ -212,7 +210,6 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
 
         assertThat(shortestStationPath.getDuration()).isEqualTo(6);
     }
-
 
     private PathResponse getShortestStationPath(String source, String target, String pathType) {
         return given().

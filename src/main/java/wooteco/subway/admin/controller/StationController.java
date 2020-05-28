@@ -2,9 +2,9 @@ package wooteco.subway.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.service.PathService;
@@ -46,8 +46,8 @@ public class StationController {
     }
 
     @GetMapping("/stations/shortest-path")
-    public ResponseEntity<PathResponse> showShortestStationPath(@RequestParam String source, @RequestParam String target, @RequestParam String pathType) {
-        PathResponse path = pathService.findPath(source, target, PathType.valueOf(pathType));
+    public ResponseEntity<PathResponse> showShortestStationPath(@ModelAttribute ShortestPathResponse shortestPathResponse) {
+        PathResponse path = pathService.findPath(shortestPathResponse);
         return ResponseEntity.ok().body(path);
     }
 }

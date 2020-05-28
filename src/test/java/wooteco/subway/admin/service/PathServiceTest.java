@@ -10,6 +10,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.errors.PathException;
@@ -41,6 +42,8 @@ class PathServiceTest {
         //given
         Station source = new Station("강남역");
         Station target = new Station("홍대입구");
+        String pathType = "DISTANCE";
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source.getName(), target.getName(), pathType);
 
         List<Long> path = Arrays.asList(1L, 2L, 5L);
 
@@ -60,7 +63,7 @@ class PathServiceTest {
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
 
         //when
-        PathResponse pathResponse = pathService.findPath(source.getName(), target.getName(), PathType.DISTANCE);
+        PathResponse pathResponse = pathService.findPath(shortestPathResponse);
 
         //then
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
@@ -72,10 +75,12 @@ class PathServiceTest {
         //given
         String source = "강남역";
         String target = "강남역";
+        String pathType = "DISTANCE";
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
         //when
         //then
-        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class).hasMessage("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
     }
 
@@ -83,12 +88,13 @@ class PathServiceTest {
     void sourceAndTargetNotLinked() {
         String source = "강남역";
         String target = "잠실역";
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, "DISTANCE");
         Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
         when(stationRepository.findByName(source)).thenReturn(Optional.of(new Station(source)));
         when(stationRepository.findByName(target)).thenReturn(Optional.of(new Station(target)));
         when(lineRepository.findAll()).thenReturn(Collections.singletonList(line));
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
-        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
 
@@ -99,8 +105,10 @@ class PathServiceTest {
     void sourceAndTargetNotfound() {
         String source = "강남역";
         String target = "잠실역";
+        String pathType = "DISTANCE";
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
-        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("해당 역을 찾을 수 없습니다.");
     }
@@ -110,9 +118,10 @@ class PathServiceTest {
     void wrongInputExceptionTest() {
         String source = "gangNamyeok";
         String target = "잠실역";
-
+        String pathType = "DISTANCE";
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
         PathService pathService = new PathService(stationRepository, lineRepository, graphService);
-        assertThatThrownBy(() -> pathService.findPath(source, target, PathType.DISTANCE))
+        assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("출발역과 도착역은 한글만 입력가능합니다.");
     }
