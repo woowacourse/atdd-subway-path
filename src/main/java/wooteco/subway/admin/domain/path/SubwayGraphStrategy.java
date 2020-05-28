@@ -2,27 +2,20 @@ package wooteco.subway.admin.domain.path;
 
 import java.util.List;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.domain.LineStation;
 
-public class SubwayGraphStrategy<V, E> implements GraphStrategy {
+public class SubwayGraphStrategy implements GraphStrategy {
     private WeightedMultigraph<Long, LineStationEdge> graph;
 
     @Override
-    public void makeGraph(List<Long> vertexList, List<LineStation> edgeList, PathType pathType) {
-        graph = new WeightedMultigraph<>(LineStationEdge.class);
-        vertexList.forEach(graph::addVertex);
-        edgeList.forEach(edge -> makeEdge(edge, pathType));
-    }
-
-    @Override
-    public Path findPath(Long sourceId, Long targetId) {
-        GraphPath<Long, LineStationEdge> path = DijkstraShortestPath.findPathBetween(graph,
-            sourceId, targetId);
-        return new Path(path.getVertexList(), path.getEdgeList());
+    public Graph makeGraph(List vertexList, List edgeList, PathType pathType, Class weightClass) {
+        WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph<Long, LineStationEdge>(
+            weightClass);
+        vertexList.forEach(vertex -> graph.addVertex((Long)vertex));
+        edgeList.forEach(edge -> makeEdge((LineStation)edge, pathType));
+        return SubwayGraph.of(graph);
     }
 
     private void makeEdge(LineStation lineStation, PathType pathType) {

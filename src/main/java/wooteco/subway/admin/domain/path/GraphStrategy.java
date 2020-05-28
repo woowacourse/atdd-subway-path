@@ -2,10 +2,7 @@ package wooteco.subway.admin.domain.path;
 
 import java.util.List;
 
-import wooteco.subway.admin.domain.LineStation;
-
-public interface GraphStrategy {
-    void makeGraph(List<Long> vertexList, List<LineStation> edgeList, PathType pathType);
-
-    Path findPath(Long sourceId, Long targetId);
+public interface GraphStrategy<V, E> {
+    <W> Graph makeGraph(List<? extends V> vertexList, List<? extends E> edgeList, PathType pathType,
+        Class<W> weightClass);
 }
