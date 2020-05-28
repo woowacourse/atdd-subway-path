@@ -1,4 +1,4 @@
-package wooteco.subway.admin.acceptance.util;
+package wooteco.subway.admin.acceptance;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +20,10 @@ public class AcceptanceTest {
     public static final String STATION_NAME_YEOKSAM = "역삼역";
     public static final String STATION_NAME_SEOLLEUNG = "선릉역";
 
-    protected static final String LINE_NAME_2 = "2호선";
-    protected final String LINE_NAME_3 = "3호선";
-    protected final String LINE_NAME_BUNDANG = "분당선";
-    protected final String LINE_NAME_SINBUNDANG = "신분당선";
+    public static final String LINE_NAME_2 = "2호선";
+    public static final String LINE_NAME_3 = "3호선";
+    public static final String LINE_NAME_BUNDANG = "분당선";
+    public static final String LINE_NAME_SINBUNDANG = "신분당선";
 
     @LocalServerPort
     int port;

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,16 +41,14 @@ class PathTest {
     @DisplayName("최단 거리 테스트")
     @Test
     void getDistanceByWeight() {
-        Path path = new Path(1L, 3L, PathType.DISTANCE);
-        GraphPath<Station, Edge> graphPath = path.getGraphPath(stations, lines);
-        assertThat(path.getDistanceByWeight(graphPath)).isEqualTo(20);
+        Path path = new Path(1L, 3L, PathType.DISTANCE, stations, lines);
+        assertThat(path.getDistanceByWeight()).isEqualTo(20);
     }
 
     @DisplayName("최단 시간 테스트")
     @Test
     void getDurationByWeight() {
-        Path path = new Path(1L, 3L, PathType.DURATION);
-        GraphPath<Station, Edge> graphPath = path.getGraphPath(stations, lines);
-        assertThat(path.getDistanceByWeight(graphPath)).isEqualTo(20);
+        Path path = new Path(1L, 3L, PathType.DURATION, stations, lines);
+        assertThat(path.getDistanceByWeight()).isEqualTo(20);
     }
 }
