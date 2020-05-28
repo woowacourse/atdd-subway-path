@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import wooteco.subway.admin.domain.path.Graph;
 import wooteco.subway.admin.domain.path.GraphStrategy;
-import wooteco.subway.admin.domain.path.Path;
 import wooteco.subway.admin.domain.path.PathType;
+import wooteco.subway.admin.domain.path.SubwayPath;
 
 public class Lines {
     private List<Line> lines;
@@ -20,7 +20,7 @@ public class Lines {
         return new Lines(lines);
     }
 
-    public Path findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId,
+    public SubwayPath findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId,
         PathType pathType) {
         Graph graph = graphStrategy.makeGraph(findVertexes(), findEdges(), pathType);
         return graph.findPath(sourceId, targetId);

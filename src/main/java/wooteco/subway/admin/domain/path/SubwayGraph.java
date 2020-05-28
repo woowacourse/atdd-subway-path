@@ -16,9 +16,9 @@ public class SubwayGraph implements Graph {
     }
 
     @Override
-    public Path findPath(Long sourceId, Long targetId) {
+    public SubwayPath findPath(Long sourceId, Long targetId) {
         GraphPath<Long, LineStationEdge> path = DijkstraShortestPath.findPathBetween(graph,
             sourceId, targetId);
-        return new Path(path.getVertexList(), path.getEdgeList());
+        return new SubwayPath(path.getVertexList(), path.getEdgeList());
     }
 }

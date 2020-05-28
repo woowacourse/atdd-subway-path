@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Lines;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.domain.path.GraphStrategy;
-import wooteco.subway.admin.domain.path.Path;
 import wooteco.subway.admin.domain.path.PathType;
+import wooteco.subway.admin.domain.path.SubwayPath;
 import wooteco.subway.admin.dto.response.PathResponse;
 import wooteco.subway.admin.dto.response.StationResponse;
 import wooteco.subway.admin.exception.DuplicatedValueException;
@@ -38,7 +38,8 @@ public class PathService {
         Lines lines = Lines.of(lineRepository.findAll());
 
         try {
-            Path path = lines.findPath(graphStrategy, sourceId, targetId, PathType.of(pathType));
+            SubwayPath path = lines.findPath(graphStrategy, sourceId, targetId,
+                PathType.of(pathType));
             return toResponse(path);
         } catch (Exception e) {
             throw new UnreachablePathException("갈 수 없는 역입니다.");
@@ -54,7 +55,7 @@ public class PathService {
         }
     }
 
-    private PathResponse toResponse(Path path) {
+    private PathResponse toResponse(SubwayPath path) {
         Map<Long, Station> stations = stationRepository.findAll()
             .stream()
             .collect(Collectors.toMap(Station::getId, station -> station));

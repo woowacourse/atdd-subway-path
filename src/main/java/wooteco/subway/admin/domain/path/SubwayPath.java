@@ -2,11 +2,11 @@ package wooteco.subway.admin.domain.path;
 
 import java.util.List;
 
-public class Path {
+public class SubwayPath {
     private List<Long> path;
     private List<LineStationEdge> weight;
 
-    public Path(List<Long> path, List<LineStationEdge> weight) {
+    public SubwayPath(List<Long> path, List<LineStationEdge> weight) {
         this.path = path;
         this.weight = weight;
     }
