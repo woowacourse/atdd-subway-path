@@ -11,15 +11,12 @@ import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.ShortestPathResponse;
-import wooteco.subway.admin.repository.LineRepository;
-import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.errors.PathException;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,10 +26,10 @@ import static org.mockito.Mockito.when;
 class PathServiceTest {
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     @Mock
-    private LineRepository lineRepository;
+    private LineService lineService;
 
     @Mock
     private GraphService graphService;
@@ -41,7 +38,7 @@ class PathServiceTest {
     void findPath() {
         //given
         Station source = new Station("강남역");
-        Station target = new Station("홍대입구");
+        Station target = new Station("홍대 입구");
         String pathType = "DISTANCE";
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source.getName(), target.getName(), pathType);
 
@@ -54,32 +51,30 @@ class PathServiceTest {
 
         List<Line> lines = Collections.singletonList(line);
 
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findByName(source.getName())).thenReturn(Optional.of(source));
-        when(stationRepository.findByName(target.getName())).thenReturn(Optional.of(target));
+        when(this.lineService.findAll()).thenReturn(lines);
+        when(stationService.findByName(source.getName())).thenReturn(source);
+        when(stationService.findByName(target.getName())).thenReturn(target);
         when(graphService.findPath(lines, source.getId(), target.getId(), PathType.DISTANCE)).thenReturn(path);
-        when(stationRepository.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
+        when(stationService.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
 
-        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        PathService pathService = new PathService(stationService, this.lineService, graphService);
 
-        //when
         PathResponse pathResponse = pathService.findPath(shortestPathResponse);
 
-        //then
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(20);
     }
 
     @Test
     void sameStationNameTest() {
-        //given
+
         String source = "강남역";
         String target = "강남역";
         String pathType = "DISTANCE";
+
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
-        //when
-        //then
+        PathService pathService = new PathService(stationService, lineService, graphService);
+
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class).hasMessage("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
     }
@@ -88,17 +83,19 @@ class PathServiceTest {
     void sourceAndTargetNotLinked() {
         String source = "강남역";
         String target = "잠실역";
+
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, "DISTANCE");
         Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
-        when(stationRepository.findByName(source)).thenReturn(Optional.of(new Station(source)));
-        when(stationRepository.findByName(target)).thenReturn(Optional.of(new Station(target)));
-        when(lineRepository.findAll()).thenReturn(Collections.singletonList(line));
-        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+
+        when(stationService.findByName(source)).thenReturn(new Station(source));
+        when(stationService.findByName(target)).thenReturn(new Station(target));
+        when(this.lineService.findAll()).thenReturn(Collections.singletonList(line));
+
+        PathService pathService = new PathService(stationService, this.lineService, graphService);
+
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
-
-
     }
 
     @Test
@@ -106,8 +103,10 @@ class PathServiceTest {
         String source = "강남역";
         String target = "잠실역";
         String pathType = "DISTANCE";
+
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        PathService pathService = new PathService(stationService, lineService, graphService);
+
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("해당 역을 찾을 수 없습니다.");
@@ -119,8 +118,10 @@ class PathServiceTest {
         String source = "gangNamyeok";
         String target = "잠실역";
         String pathType = "DISTANCE";
+
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationRepository, lineRepository, graphService);
+        PathService pathService = new PathService(stationService, lineService, graphService);
+
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
                 .hasMessage("출발역과 도착역은 한글만 입력가능합니다.");
