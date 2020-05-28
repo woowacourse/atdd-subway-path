@@ -30,8 +30,10 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Line save(LineRequest request) {
-        return lineRepository.save(request.toLine());
+    @Transactional(readOnly = true)
+    public LineResponse save(LineRequest request) {
+        Line persistLine = lineRepository.save(request.toLine());
+        return LineResponse.of(persistLine);
     }
 
     @Transactional(readOnly = true)
@@ -39,16 +41,19 @@ public class LineService {
         return LineResponse.listOf(lineRepository.findAll());
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = findLine(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long id, LineStationCreateRequest request) {
         validateStations(request.getPreStationId(), request.getStationId());
         Line line = findLine(id);
@@ -59,6 +64,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLine(lineId);
         line.removeLineStationById(stationId);

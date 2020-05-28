@@ -26,9 +26,6 @@ function AdminStation() {
       $stationInput.value = '';
       $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
     })
-    .catch(() => {
-      alert('에러가 발생했습니다.')
-    })
   };
 
   const onDeleteStationHandler = event => {

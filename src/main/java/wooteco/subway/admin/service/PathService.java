@@ -32,14 +32,12 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceId, Long targetId, String pathType,
-        GraphStrategy graphStrategy) {
+    public PathResponse findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId, String pathType) {
         validatePathIds(sourceId, targetId);
         Lines lines = Lines.of(lineRepository.findAll());
 
         try {
             Path path = lines.findPath(graphStrategy, sourceId, targetId, PathType.of(pathType));
-            // Path path = Path.of(sourceId, targetId, graph, pathStrategy);
             return toResponse(path);
         } catch (Exception e) {
             throw new UnreachablePathException("갈 수 없는 역입니다.");

@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.admin.domain.LineStation;
 
-public class SubwayGraphStrategy implements GraphStrategy {
+public class SubwayGraphStrategy<V, E> implements GraphStrategy {
     private WeightedMultigraph<Long, LineStationEdge> graph;
 
     @Override

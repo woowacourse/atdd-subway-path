@@ -28,12 +28,9 @@ function AdminLine() {
     }
     api.line
     .create(newSubwayLine)
-    .then(response => {
-      $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(response))
+    .then(data => {
+      $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(data))
       subwayLineModal.toggle()
-    })
-    .catch(error => {
-      alert('에러가 발생했습니다.')
     })
   }
 
@@ -112,12 +109,11 @@ function AdminLine() {
     if (!isUpdateButton && !isDeleteButton) {
       const selectedLine = $target.closest(".subway-line-item");
       const selectedLineId = selectedLine.dataset.id;
-      console.log(selectedLineId);
 
       api.line.get(selectedLineId)
-      .then(response => fillLineInformation(response.startTime,
-        response.endTime,
-        response.intervalTime));
+      .then(response => {
+        fillLineInformation(response.startTime, response.endTime, response.intervalTime)
+      });
     }
   };
 
