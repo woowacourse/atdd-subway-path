@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +21,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> getPath(
-        @ModelAttribute @Valid SearchPathRequest searchPathRequest) {
+    public ResponseEntity<PathResponse> getPath(@Valid SearchPathRequest searchPathRequest) {
         return ResponseEntity.ok(pathService.getPath(searchPathRequest));
     }
 }
