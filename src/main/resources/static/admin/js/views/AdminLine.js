@@ -1,6 +1,6 @@
-import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
-import { colorSelectOptionTemplate, subwayLinesTemplate } from '../../utils/templates.js'
-import { subwayLineColorOptions } from '../../utils/defaultSubwayData.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {colorSelectOptionTemplate, subwayLinesTemplate} from '../../utils/templates.js'
+import {subwayLineColorOptions} from '../../utils/defaultSubwayData.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
 
@@ -83,6 +83,7 @@ function AdminLine() {
   const updateSubwayLine = () => {
     const updatedSubwayLine = {
       name: $subwayLineNameInput.value,
+      color: $subwayLineColorInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
       intervalTime: $subwayIntervalTime.value
