@@ -17,10 +17,15 @@ public class SubwayShortestPath {
 	}
 
 	public static SubwayShortestPath of(Graph<Long, SubwayEdge> subwayGraph, Station source, Station target) {
+		// todo : 개선 필요
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
-		System.out.println("소스: " + source.getId());
-		System.out.println("타겟: " + target.getId());
-		GraphPath shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
+		GraphPath shortestPath = null;
+
+		try {
+			shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
+		} catch (IllegalArgumentException e) {
+			throw new PathNotFoundException(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
+		}
 
 		if (Objects.isNull(shortestPath)) {
 			throw new PathNotFoundException(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);

@@ -3,6 +3,7 @@ package wooteco.subway.admin.domain.entity;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -37,12 +38,11 @@ public class Line {
 	}
 
 	public static LineStations toLineStations(List<Line> allLines) {
-		// todo : start가 없는걸로 보내줘야함.
 		return allLines.stream()
 			.map(Line::getLineStations)
-			.map(LineStations::removeFirstStations)
-			.findFirst()
-			.orElseThrow(() -> new IllegalStateException("Linestations을 찾을 수 없습니다."));
+			.flatMap(lineStation -> lineStation.get().stream())
+			.collect(Collectors.collectingAndThen(Collectors.toList(), LineStations::new))
+			.removeFirstEdges();
 	}
 
 	public Long getId() {

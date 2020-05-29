@@ -71,13 +71,13 @@ public class LineStations {
 		return stationIds;
 	}
 
-	public List<LineStation> get() {
-		return lineStations;
-	}
-
-	public LineStations removeFirstStations() {
+	public LineStations removeFirstEdges() {
 		return lineStations.stream()
 			.filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
 			.collect(Collectors.collectingAndThen(Collectors.toList(), LineStations::new));
+	}
+
+	public List<LineStation> get() {
+		return lineStations;
 	}
 }
