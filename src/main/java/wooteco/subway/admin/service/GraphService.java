@@ -12,9 +12,13 @@ import wooteco.subway.admin.dto.GraphResultResponse;
 
 @Service
 public class GraphService {
-    public GraphResultResponse findPath(List<Line> lines, Long source, Long target, CriteriaType type) {
-        TranslationGraph subwayGraph = new SubwayGraph(lines, type);
+    private final TranslationGraph subwayGraph;
 
-        return subwayGraph.findShortestPath(source, target);
+    public GraphService(SubwayGraph subwayGraph) {
+        this.subwayGraph = subwayGraph;
+    }
+
+    public GraphResultResponse findPath(List<Line> lines, Long source, Long target, CriteriaType type) {
+        return subwayGraph.findShortestPath(lines, source, target, type);
     }
 }

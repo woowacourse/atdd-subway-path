@@ -20,6 +20,7 @@ import wooteco.subway.admin.domain.CriteriaType;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.dto.GraphResultResponse;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
@@ -39,8 +40,8 @@ class PathServiceTest {
     private LineRepository lineRepository;
     @MockBean
     private StationRepository stationRepository;
-
-    private GraphService graphService = new GraphService();
+    @MockBean
+    private GraphService graphService;
 
     private PathService pathService;
 
@@ -80,6 +81,8 @@ class PathServiceTest {
             Arrays.asList(station1, station2, station3, station4));
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station3.getName())).thenReturn(Optional.of(station3));
+        when(graphService.findPath(anyList(), anyLong(), anyLong(), any()))
+            .thenReturn(new GraphResultResponse(Arrays.asList(1L, 2L, 3L), 20, 20));
 
         PathResponse pathResponse = pathService.showPaths(station1.getName(), station3.getName(),
             CriteriaType.DISTANCE);
@@ -123,6 +126,8 @@ class PathServiceTest {
             Arrays.asList(station1, station2, station3, station4));
         when(stationRepository.findByName(station1.getName())).thenReturn(Optional.of(station1));
         when(stationRepository.findByName(station6.getName())).thenReturn(Optional.of(station6));
+        when(graphService.findPath(anyList(), anyLong(), anyLong(), any()))
+            .thenThrow(new IllegalArgumentException("갈 수 없는 경로입니다."));
 
         assertThatThrownBy(
             () -> pathService.showPaths(station1.getName(), station6.getName(), CriteriaType.DISTANCE)).isInstanceOf(

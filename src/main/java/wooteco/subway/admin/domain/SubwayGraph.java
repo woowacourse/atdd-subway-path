@@ -6,14 +6,26 @@ import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import wooteco.subway.admin.dto.GraphResultResponse;
 
+@Component
 public class SubwayGraph implements TranslationGraph {
-    private WeightedMultigraph<Long, CustomEdge> graph;
+    public SubwayGraph() {
+    }
 
-    public SubwayGraph(List<Line> lines, CriteriaType type) {
-        this.graph = new WeightedMultigraph<>(CustomEdge.class);
+    @Override
+    public GraphResultResponse findShortestPath(List<Line> lines, Long source, Long target, CriteriaType type) {
+        WeightedMultigraph<Long, CustomEdge> graph = generateWeightedMultiGraph(lines, type);
+        final GraphPath<Long, CustomEdge> shortestPath = getShortestPath(graph, source, target);
+
+        validateNoConnection(shortestPath);
+        return getPathLineStation(shortestPath.getEdgeList(), shortestPath.getVertexList());
+    }
+
+    private WeightedMultigraph<Long, CustomEdge> generateWeightedMultiGraph(List<Line> lines, CriteriaType type) {
+        WeightedMultigraph<Long, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 
         lines.stream()
             .flatMap(it -> it.getLineStationsId().stream())
@@ -26,18 +38,15 @@ public class SubwayGraph implements TranslationGraph {
                 it -> graph.addEdge(it.getPreStationId(), it.getStationId(),
                     new CustomEdge(it, type)
                 ));
+
+        return graph;
     }
 
-    @Override
-    public GraphResultResponse findShortestPath(Long source, Long target) {
-        final GraphPath<Long, CustomEdge> shortestPath = getShortestPath(source, target);
+    private GraphPath<Long, CustomEdge> getShortestPath(WeightedMultigraph<Long, CustomEdge> graph, Long source,
+        Long target) {
+        DijkstraShortestPath<Long, CustomEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        validateNoConnection(shortestPath);
-        return getPathLineStation(shortestPath.getEdgeList(), shortestPath.getVertexList());
-    }
-
-    private GraphPath<Long, CustomEdge> getShortestPath(Long source, Long target) {
-        return generateDijkstraShortestPath().getPath(source, target);
+        return dijkstraShortestPath.getPath(source, target);
     }
 
     private GraphResultResponse getPathLineStation(List<CustomEdge> result, List<Long> stationIds) {
@@ -50,10 +59,6 @@ public class SubwayGraph implements TranslationGraph {
             .mapToInt(LineStation::getDuration)
             .sum();
         return new GraphResultResponse(stationIds, distance, duration);
-    }
-
-    private DijkstraShortestPath<Long, CustomEdge> generateDijkstraShortestPath() {
-        return new DijkstraShortestPath<>(this.graph);
     }
 
     private void validateNoConnection(GraphPath<Long, CustomEdge> path) {
