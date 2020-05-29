@@ -25,15 +25,17 @@ import wooteco.subway.admin.repository.StationRepository;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final GraphStrategy<?, ?> graphStrategy;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository,
+        GraphStrategy graphStrategy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.graphStrategy = graphStrategy;
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(GraphStrategy graphStrategy, Long sourceId, Long targetId,
-        String pathType) {
+    public PathResponse findPath(Long sourceId, Long targetId, String pathType) {
         validatePathIds(sourceId, targetId);
         Lines lines = Lines.of(lineRepository.findAll());
 

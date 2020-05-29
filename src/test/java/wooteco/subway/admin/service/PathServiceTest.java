@@ -47,7 +47,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineRepository, stationRepository);
+        pathService = new PathService(lineRepository, stationRepository, SUBWAY_GRAPH_STRATEGY);
 
         seolleung = new Station(2L, "선릉역", LocalDateTime.now());
         yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
@@ -63,10 +63,10 @@ class PathServiceTest {
     @Test
     void findPathNullException() {
         assertThatThrownBy(
-            () -> pathService.findPath(SUBWAY_GRAPH_STRATEGY, null, 1L, PathType.DURATION.name()))
+            () -> pathService.findPath(null, 1L, PathType.DURATION.name()))
             .isInstanceOf(ValueRequiredException.class);
         assertThatThrownBy(
-            () -> pathService.findPath(SUBWAY_GRAPH_STRATEGY, null, null, PathType.DISTANCE.name()))
+            () -> pathService.findPath(null, null, PathType.DISTANCE.name()))
             .isInstanceOf(ValueRequiredException.class);
     }
 
@@ -74,7 +74,7 @@ class PathServiceTest {
     @Test
     void findPathSameStationsException() {
         assertThatThrownBy(
-            () -> pathService.findPath(SUBWAY_GRAPH_STRATEGY, 1L, 1L, PathType.DISTANCE.name()))
+            () -> pathService.findPath(1L, 1L, PathType.DISTANCE.name()))
             .isInstanceOf(DuplicatedValueException.class);
     }
 
@@ -82,7 +82,7 @@ class PathServiceTest {
     @Test
     void findPathNotExistException() {
         assertThatThrownBy(
-            () -> pathService.findPath(SUBWAY_GRAPH_STRATEGY, 1L, 7L, PathType.DISTANCE.name()))
+            () -> pathService.findPath(1L, 7L, PathType.DISTANCE.name()))
             .isInstanceOf(UnreachablePathException.class);
     }
 
@@ -92,7 +92,7 @@ class PathServiceTest {
         firstLine.addLineStation(LineStation.of(null, jamwon.getId(), 10, 10));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(firstLine));
         assertThatThrownBy(
-            () -> pathService.findPath(SUBWAY_GRAPH_STRATEGY, jamwon.getId(), yeoksam.getId(),
+            () -> pathService.findPath(jamwon.getId(), yeoksam.getId(),
                 PathType.DISTANCE.name()))
             .isInstanceOf(UnreachablePathException.class);
     }
@@ -114,7 +114,7 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(seolleung, yeoksam, kangnam, gyodae, jamwon, sinsa));
 
-        PathResponse pathResponse = pathService.findPath(SUBWAY_GRAPH_STRATEGY, 2L, 6L,
+        PathResponse pathResponse = pathService.findPath(2L, 6L,
             PathType.DISTANCE.name());
         assertThat(pathResponse.getStations()).size().isEqualTo(6);
         assertThat(pathResponse.getDistance()).isEqualTo(130);
@@ -144,9 +144,9 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
 
-        PathResponse durationResponse = pathService.findPath(SUBWAY_GRAPH_STRATEGY, 1L, 5L,
+        PathResponse durationResponse = pathService.findPath(1L, 5L,
             PathType.DURATION.name());
-        PathResponse distanceResponse = pathService.findPath(SUBWAY_GRAPH_STRATEGY, 1L, 5L,
+        PathResponse distanceResponse = pathService.findPath(1L, 5L,
             PathType.DISTANCE.name());
         assertThat(durationResponse.getStations()).size().isEqualTo(4);
         assertThat(durationResponse.getDuration()).isEqualTo(3);

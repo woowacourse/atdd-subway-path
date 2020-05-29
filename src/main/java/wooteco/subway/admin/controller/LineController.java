@@ -1,11 +1,12 @@
 package wooteco.subway.admin.controller;
 
+import java.net.URI;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,13 +41,13 @@ public class LineController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public StandardResponse<LineResponse> createLine(@RequestBody @Valid LineRequest request,
-        HttpServletResponse response) {
+    public ResponseEntity<StandardResponse<LineResponse>> createLine(
+        @RequestBody @Valid LineRequest request) {
+
         LineResponse lineResponse = lineService.save(request);
 
-        response.addHeader("Location", "/lines/" + lineResponse.getId());
-        return StandardResponse.of(lineResponse);
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId()))
+            .body(StandardResponse.of(lineResponse));
     }
 
     @GetMapping("/{id}")

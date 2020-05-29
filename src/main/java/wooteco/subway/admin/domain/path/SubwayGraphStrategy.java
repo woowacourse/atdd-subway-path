@@ -3,14 +3,16 @@ package wooteco.subway.admin.domain.path;
 import java.util.List;
 
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import wooteco.subway.admin.domain.LineStation;
 
+@Component
 public class SubwayGraphStrategy implements GraphStrategy<Long, LineStation> {
 
     @Override
     public Graph makeGraph(List<Long> vertexList, List<LineStation> edgeList, PathType pathType) {
-        WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph(
+        WeightedMultigraph<Long, LineStationEdge> graph = new WeightedMultigraph<>(
             LineStationEdge.class);
         vertexList.forEach(vertex -> graph.addVertex(vertex));
         edgeList.forEach(edge -> makeEdge(graph, edge, pathType));
