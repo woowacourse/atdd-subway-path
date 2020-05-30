@@ -7,8 +7,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import wooteco.subway.admin.domain.entity.Station;
-
 public class SubwayShortestPath {
 	private final GraphPath shortestPath;
 
@@ -16,15 +14,14 @@ public class SubwayShortestPath {
 		this.shortestPath = shortestPath;
 	}
 
-	public static SubwayShortestPath of(Graph<Long, SubwayEdge> subwayGraph, Station source, Station target) {
-		// todo : 개선 필요
+	public static SubwayShortestPath of(Graph<Long, SubwayEdge> subwayGraph, Long source, Long target) {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
-		GraphPath shortestPath = null;
+		GraphPath shortestPath;
 
 		try {
-			shortestPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
+			shortestPath = dijkstraShortestPath.getPath(source, target);
 		} catch (IllegalArgumentException e) {
-			throw new PathNotFoundException(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
+			throw new PathNotFoundException(PathNotFoundException.STATION_NOT_FOUND_MESSAGE);
 		}
 
 		if (Objects.isNull(shortestPath)) {

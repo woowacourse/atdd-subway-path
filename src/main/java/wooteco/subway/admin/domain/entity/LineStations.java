@@ -47,10 +47,7 @@ public class LineStations {
 			return new ArrayList<>();
 		}
 
-		LineStation firstLineStation = lineStations.stream()
-			.filter(it -> it.getPreStationId() == null)
-			.findFirst()
-			.orElseThrow(RuntimeException::new);
+		LineStation firstLineStation = findFirstStation();
 
 		List<Long> stationIds = new ArrayList<>();
 		stationIds.add(firstLineStation.getStationId());
@@ -75,6 +72,13 @@ public class LineStations {
 		return lineStations.stream()
 			.filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
 			.collect(Collectors.collectingAndThen(Collectors.toList(), LineStations::new));
+	}
+
+	private LineStation findFirstStation() {
+		return lineStations.stream()
+			.filter(it -> it.getPreStationId() == null)
+			.findFirst()
+			.orElseThrow(RuntimeException::new);
 	}
 
 	public List<LineStation> get() {
