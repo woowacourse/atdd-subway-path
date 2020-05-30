@@ -176,10 +176,18 @@ public class AcceptanceTest {
 	}
 
 	PathResponse findShortestPath(StationResponse source, StationResponse target) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("sourceId", source.getId());
+		param.put("targetId", target.getId());
+		param.put("weightType", "DURATION");
+
 		return
 			given().
+				body(param).
+				contentType(MediaType.APPLICATION_JSON_VALUE).
+				accept(MediaType.APPLICATION_JSON_VALUE).
 				when().
-				get(String.format("/paths?source=%s&target=%s&type=DURATION", source.getName(), target.getName())).
+				get("/paths").
 				then().
 				log().all().
 				extract().as(PathResponse.class);

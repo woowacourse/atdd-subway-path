@@ -18,6 +18,7 @@ import wooteco.subway.admin.domain.entity.Line;
 import wooteco.subway.admin.domain.entity.LineStation;
 import wooteco.subway.admin.domain.entity.Station;
 import wooteco.subway.admin.domain.graph.PathNotFoundException;
+import wooteco.subway.admin.domain.type.WeightType;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -59,7 +60,7 @@ public class PathServiceTest {
 	@DisplayName("출발역과 도착역이 같은 경우")
 	@Test
 	void departStationIsArrivalStation() {
-		assertThatThrownBy(() -> pathService.findPath(STATION_NAME1, STATION_NAME1, DURATION))
+		assertThatThrownBy(() -> pathService.findPath(1L, 1L, WeightType.DURATION))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역이 같습니다.");
 	}
@@ -75,26 +76,26 @@ public class PathServiceTest {
 
 		newLine.addLineStation(new LineStation(null, 연결되지않은_역.getId(), 0, 0));
 
-		assertThatThrownBy(() -> pathService.findPath(STATION_NAME1, 석촌역, DURATION))
+		assertThatThrownBy(() -> pathService.findPath(1L, 연결되지않은_역.getId(), WeightType.DURATION))
 			.isInstanceOf(PathNotFoundException.class)
-			.hasMessage(PathNotFoundException.PATH_NOT_FOUND_MESSAGE);
+			.hasMessage(PathNotFoundException.STATION_NOT_FOUND_MESSAGE);
 	}
 
 	@DisplayName("출발역이나 도착역이 존재하지 않는 역인 경우")
 	@Test
 	void stationNotExist() {
-		// Line newLine = new Line(2L, "8호선", LocalTime.of(5, 30), LocalTime.of(23, 30), 8);
-		// String 석촌역 = "석촌역";
-		// Station 연결되지않은_역 = new Station(5L, 석촌역);
-		//
-		// saveMockData(newLine, 연결되지않은_역);
-		//
-		// String 히히역 = "히히역";
-		// assertThatThrownBy(() -> {
-		// 	pathService.findPath(STATION_NAME1, 히히역, DURATION);
-		// })
-		// 	.isInstanceOf(IllegalArgumentException.class)
-		// 	.hasMessage("%s은 존재하지 않는 역입니다.", 히히역);
+		Line newLine = new Line(2L, "8호선", LocalTime.of(5, 30), LocalTime.of(23, 30), 8);
+		String 석촌역 = "석촌역";
+		Station 연결되지않은_역 = new Station(5L, 석촌역);
+
+		saveMockData(newLine, 연결되지않은_역);
+
+		String 히히역 = "히히역";
+		assertThatThrownBy(() -> {
+			pathService.findPath(station1.getId(), 10L, WeightType.DURATION);
+		})
+			.isInstanceOf(PathNotFoundException.class)
+			.hasMessage("유효하지 않은 역을 입력했습니다.");
 	}
 
 	private void saveMockData(Line newLine, Station station) {

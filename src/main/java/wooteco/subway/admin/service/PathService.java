@@ -30,20 +30,16 @@ public class PathService {
 	}
 
 	@Transactional(readOnly = true)
-	public PathResponse findPath(String sourceName, String targetName, String type) {
-		validateStationNamesAreSame(sourceName, targetName);
+	public PathResponse findPath(Long sourceId, Long targetId, WeightType type) {
+		validateStationNamesAreSame(sourceId, targetId);
 
 		List<Line> lines = lineRepository.findAll();
 		Map<Long, Station> allStationsById = stationRepository.findAll().stream()
 			.collect(Collectors.toMap(Station::getId, station -> station));
 
-		Station source = findStationByName(sourceName, allStationsById);
-		Station target = findStationByName(targetName, allStationsById);
-
 		LineStations lineStations = Line.toLineStations(lines);
-		System.out.println(lineStations.get());
-		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(lineStations.get(), WeightType.of(type));
-		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(subwayGraph, source, target);
+		Graph<Long, SubwayEdge> subwayGraph = PathFactory.from(lineStations.get(), type);
+		SubwayShortestPath subwayShortestPath = SubwayShortestPath.of(subwayGraph, sourceId, targetId);
 
 		int totalDuration = subwayShortestPath.calculateTotalDuration();
 		int totalDistance = subwayShortestPath.calculateTotalDistance();
@@ -53,19 +49,10 @@ public class PathService {
 		return PathResponse.of(totalDistance, totalDuration, shortestPath);
 	}
 
-	private void validateStationNamesAreSame(String sourceName, String targetName) {
-		if (sourceName.equals(targetName)) {
+	private void validateStationNamesAreSame(Long source, Long target) {
+		if (source.equals(target)) {
 			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
 		}
-	}
-
-	private Station findStationByName(String targetName, Map<Long, Station> stations) {
-		return
-			stations.values()
-				.stream()
-				.filter(station -> station.isSameName(targetName))
-				.findAny()
-				.orElseThrow(() -> new IllegalArgumentException(String.format("%s은 존재하지 않는 역입니다.", targetName)));
 	}
 
 	private List<Station> makeStationsById(Map<Long, Station> allStationsById, List<Long> shortestPathIds) {
