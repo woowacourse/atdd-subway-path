@@ -1,10 +1,10 @@
-import { initNavigation } from '../utils/templates.js'
+import { initNavigation } from "../utils/templates.js";
 
 function SubwayApp() {
   this.init = () => {
-    initNavigation()
-  }
+    initNavigation();
+  };
 }
 
-const subwayApp = new SubwayApp()
-subwayApp.init()
+const subwayApp = new SubwayApp();
+subwayApp.init();

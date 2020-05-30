@@ -1,7 +1,10 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -34,13 +36,15 @@ public class PageAcceptanceTest {
     void linePage() {
         createLine("신분당선");
 
+        // @formatter:off
         given().
-                accept(MediaType.TEXT_HTML_VALUE).
+            accept(ContentType.HTML).
         when().
-                get("/lines").
+            get("/lines").
         then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            log().all().
+            statusCode(HttpStatus.OK.value());
+        // @formatter:on
     }
 
     private void createLine(String name) {
@@ -49,16 +53,19 @@ public class PageAcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        params.put("bgColor", "bg-teal-500");
 
+        // @formatter:off
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-                post("/lines").
+            post("/lines").
         then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
+            log().all().
+            statusCode(HttpStatus.CREATED.value());
+        // @formatter:on
     }
 
 }

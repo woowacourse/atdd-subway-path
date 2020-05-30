@@ -1,20 +1,26 @@
 package wooteco.subway.admin.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.admin.domain.PathType;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineRequest;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationCreateRequest;
+import wooteco.subway.admin.dto.StationResponse;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -32,7 +38,7 @@ public class AcceptanceTest {
     int port;
 
     @BeforeEach
-    void setUp() {
+    void setUp1() {
         RestAssured.port = port;
     }
 
@@ -41,134 +47,173 @@ public class AcceptanceTest {
     }
 
     StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
+        StationCreateRequest request = new StationCreateRequest(name);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+        // @formatter:off
+        return given().with().
+                body(request).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+                post("/stations").
+            then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).
+                extract().as(StationResponse.class);
+        // @formatter:on
     }
 
     List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
+        // @formatter:off
+        return given().
+        when().
+            get("/stations").
+        then().
+            log().all().
+            extract().
+            jsonPath().getList(".", StationResponse.class);
+        // @formatter:on
     }
 
     void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
+        // @formatter:off
+        given().
+        when().
+            delete("/stations/" + id).
         then().
-                log().all();
+            log().all();
+        // @formatter:on
     }
 
     LineResponse createLine(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        LineRequest request = new LineRequest(
+            name,
+            LocalTime.of(5, 30),
+            LocalTime.of(23, 30),
+            10,
+            "bg-teal-500");
 
-        return
-                given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+        // @formatter:off
+        return given().
+            body(request).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/lines").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value()).
+            extract().as(LineResponse.class);
+        // @formatter:on
     }
 
     LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
+        // @formatter:off
+        return given().
+        when().
+            get("/lines/" + id).
+        then().
+            log().all().
+            extract().as(LineDetailResponse.class);
+        // @formatter:on
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        LineRequest request = new LineRequest("신분당선", startTime, endTime, 10);
 
+        // @formatter:off
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
+            body(request).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-                put("/lines/" + id).
+            put("/lines/" + id).
         then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            log().all().
+            statusCode(HttpStatus.OK.value());
+        // @formatter:on
     }
 
     List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
+        // @formatter:off
+        return given().
+        when().
+            get("/lines").
+        then().
+            log().all().
+            extract().
+            jsonPath().getList(".", LineResponse.class);
+        // @formatter:on
     }
 
     void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
+        // @formatter:off
+        given().
+        when().
+            delete("/lines/" + id).
         then().
-                log().all();
+            log().all();
+        // @formatter:on
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
+    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+        Integer duration) {
+        LineStationCreateRequest request = new LineStationCreateRequest(
+            preStationId, stationId, distance, duration);
 
+        // @formatter:off
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines/" + lineId + "/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            body(request).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/lines/" + lineId + "/stations").
+        then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+        // @formatter:on
     }
 
-    void removeLineStation(Long lineId, Long stationId) {
+    void removeLineStation(Long id, Long stationId) {
+        // @formatter:off
         given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+        when().
+            delete("/lines/" + id + "/stations/" + stationId).
+        then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
+        // @formatter:on
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        // @formatter:off
+        return given().
+        when().
+            get("/lines/detail").
+        then().
+            log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract().as(WholeSubwayResponse.class);
+        // @formatter:on
+    }
+
+    PathResponse retrievePath(String departure, String arrival, PathType type) {
+        // @formatter:off
+        return given().
+            queryParam("source", departure).
+            queryParam("target", arrival).
+            queryParam("pathType", type).
+        when().
+            get("/paths").
+        then().
+            log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract().as(PathResponse.class);
+        // @formatter:on
+    }
 }
 
