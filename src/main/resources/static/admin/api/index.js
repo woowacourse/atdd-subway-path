@@ -1,48 +1,97 @@
 const METHOD = {
-  PUT() {
+  PUT(data) {
     return {
-      method: "PUT"
-    };
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    }
   },
   DELETE() {
     return {
-      method: "DELETE"
-    };
+      method: 'DELETE'
+    }
   },
   POST(data) {
     return {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        content: data
+        ...data
       })
-    };
+    }
   }
 };
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json());
+  const request = (uri, config) => fetch(uri, config);
+  const requestWithJsonData = (uri, config) => fetch(uri, config)
+  .then(async response => {
+    if (response.status >= 400) {
+      const error = await response.json();
+      throw new Error(error.message)
+    }
+    const responseToJson = await response.json();
+    return responseToJson.data;
+  })
+  .catch(error => {
+    alert(error.message);
+  });
 
-  const station = {
-    get() {
-      return request(`/stations`);
+  const line = {
+    get(id) {
+      return requestWithJsonData(`/lines/${id}`)
+    },
+    getAll() {
+      return requestWithJsonData(`/lines`)
+    },
+    getAllDetail() {
+      return requestWithJsonData(`/lines/detail`)
+    },
+    addLineStation(lineId, data) {
+      return request(`/lines/${lineId}/stations`, METHOD.POST(data))
     },
     create(data) {
-      return request(`/station`, METHOD.POST(data));
+      return requestWithJsonData(`/lines`, METHOD.POST(data))
     },
-    update(data, id) {
-      return request(`/station/${id}`, METHOD.PUT(data));
+    update(id, data) {
+      return request(`/lines/${id}`, METHOD.PUT(data))
+    },
+    deleteLineStation(lineId, stationId) {
+      return request(`/lines/${lineId}/stations/${stationId}`, METHOD.DELETE())
     },
     delete(id) {
-      return request(`/station/${id}`, METHOD.DELETE);
+      return request(`/lines/${id}`, METHOD.DELETE())
+    }
+  };
+
+  const station = {
+    get(id) {
+      return requestWithJsonData(`/stations/${id}`)
+    },
+    getAll() {
+      return requestWithJsonData(`/stations`)
+    },
+    create(data) {
+      return requestWithJsonData(`/stations`, METHOD.POST(data))
+    },
+    update(data, id) {
+      return requestWithJsonData(`/stations/${id}`, METHOD.PUT(data))
+    },
+    delete(id) {
+      return request(`/stations/${id}`, METHOD.DELETE())
     }
   };
 
   return {
-    station
-  };
+    station,
+    line
+  }
 })();
 
-export default api;
+export default api
