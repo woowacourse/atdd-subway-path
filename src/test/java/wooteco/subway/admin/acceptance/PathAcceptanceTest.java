@@ -40,7 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		PathResponse shortestPath = findShortestPath(신정역, 잠실역);
 
-		assertThat(shortestPath.getStations().size()).isEqualTo(4);
+		assertThat(shortestPath.getStationResponses().size()).isEqualTo(4);
 	}
 
 }

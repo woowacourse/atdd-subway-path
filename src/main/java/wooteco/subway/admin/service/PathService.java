@@ -16,6 +16,7 @@ import wooteco.subway.admin.domain.graph.SubwayEdge;
 import wooteco.subway.admin.domain.graph.SubwayShortestPath;
 import wooteco.subway.admin.domain.type.WeightType;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -46,7 +47,7 @@ public class PathService {
 		List<Long> shortestPathIds = subwayShortestPath.getShortestPath();
 		List<Station> shortestPath = makeStationsById(allStationsById, shortestPathIds);
 
-		return PathResponse.of(totalDistance, totalDuration, shortestPath);
+		return PathResponse.of(totalDistance, totalDuration, StationResponse.listOf(shortestPath));
 	}
 
 	private void validateStationNamesAreSame(Long source, Long target) {
