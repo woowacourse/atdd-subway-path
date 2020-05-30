@@ -1,12 +1,21 @@
 package wooteco.subway.admin.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.data.annotation.Id;
 
 public class Line {
+
+    public static final Long START_STATION_ID = null;
+
     @Id
     private Long id;
     private String name;
@@ -82,27 +91,36 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Optional<LineStation> findByStationId(Long stationId) {
+        return stations.stream().filter(it -> Objects.equals(it.getStationId(), stationId))
+            .findAny();
+    }
+
+    public Optional<LineStation> findByPreStationId(Long preStationId) {
+        return stations.stream().filter(it -> Objects.equals(it.getPreStationId(), preStationId))
+            .findAny();
+    }
+
     public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
+        findByPreStationId(lineStation.getPreStationId())
+            .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
 
         stations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        while (true) {
+            Optional<LineStation> lineStation = findByStationId(stationId);
 
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+            if (!lineStation.isPresent()) {
+                return;
+            }
+            LineStation targetLineStation = lineStation.orElseThrow(RuntimeException::new);
 
-        stations.remove(targetLineStation);
+            findByPreStationId(stationId).ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
+
+            stations.remove(targetLineStation);
+        }
     }
 
     public List<Long> getLineStationsId() {
@@ -110,10 +128,7 @@ public class Line {
             return new ArrayList<>();
         }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        LineStation firstLineStation = findByPreStationId(START_STATION_ID).orElseThrow(RuntimeException::new);
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.add(firstLineStation.getStationId());
@@ -121,8 +136,8 @@ public class Line {
         while (true) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
             Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                .findFirst();
 
             if (!nextLineStation.isPresent()) {
                 break;
@@ -132,5 +147,15 @@ public class Line {
         }
 
         return stationIds;
+    }
+
+    public List<Station> getMatchingStations(List<Station> wholeStations) {
+        List<Long> stationIds = stations.stream()
+            .map(LineStation::getStationId)
+            .collect(Collectors.toList());
+
+        return wholeStations.stream()
+            .filter(station -> stationIds.contains(station.getId()))
+            .collect(Collectors.toList());
     }
 }

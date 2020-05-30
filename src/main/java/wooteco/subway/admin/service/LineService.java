@@ -1,6 +1,12 @@
 package wooteco.subway.admin.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
@@ -11,9 +17,8 @@ import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
-import java.util.List;
-
 @Service
+@Transactional
 public class LineService {
     private LineRepository lineRepository;
     private StationRepository stationRepository;
@@ -27,6 +32,7 @@ public class LineService {
         return lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> showLines() {
         return lineRepository.findAll();
     }
@@ -43,7 +49,8 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
@@ -55,14 +62,34 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
 
-    // TODO: 구현하세요 :)
+    @Transactional(readOnly = true)
     public WholeSubwayResponse wholeLines() {
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        List<Long> wholeStationIds = getWholeStationIds(lines);
+        List<Station> wholeStations = stationRepository.findAllById(wholeStationIds);
+
+        List<LineDetailResponse> lineDetailResponses = getLineDetailResponses(lines, wholeStations);
+        return WholeSubwayResponse.of(lineDetailResponses);
+    }
+
+    private List<Long> getWholeStationIds(List<Line> lines) {
+        return lines.stream()
+            .map(Line::getLineStationsId)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
+    private List<LineDetailResponse> getLineDetailResponses(List<Line> lines,
+        List<Station> wholeStations) {
+        return lines.stream()
+            .map(line -> LineDetailResponse.of(line, line.getMatchingStations(wholeStations)))
+            .collect(Collectors.toList());
     }
 }
