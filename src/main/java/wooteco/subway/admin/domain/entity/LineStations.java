@@ -1,9 +1,10 @@
 package wooteco.subway.admin.domain.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -47,22 +48,19 @@ public class LineStations {
 			return new ArrayList<>();
 		}
 
-		LineStation firstLineStation = findFirstStation();
+		List<Long> stationIds = new ArrayList<>(Arrays.asList(findFirstStation().getStationId()));
 
-		List<Long> stationIds = new ArrayList<>();
-		stationIds.add(firstLineStation.getStationId());
+		Map<Long, LineStation> lineStationByPreId = lineStations.stream()
+			.collect(Collectors.toMap(LineStation::getPreStationId, lineStation -> lineStation));
 
 		while (true) {
 			Long lastStationId = stationIds.get(stationIds.size() - 1);
-			Optional<LineStation> nextLineStation = lineStations.stream()
-				.filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-				.findFirst();
 
-			if (!nextLineStation.isPresent()) {
+			if (!lineStationByPreId.containsKey(lastStationId)) {
 				break;
 			}
 
-			stationIds.add(nextLineStation.get().getStationId());
+			stationIds.add(lineStationByPreId.get(lastStationId).getStationId());
 		}
 
 		return stationIds;
