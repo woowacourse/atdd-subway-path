@@ -1,5 +1,7 @@
 package wooteco.subway.admin.domain;
 
+import java.util.Objects;
+
 public class Edge {
     private Long preStationId;
     private final Long stationId;
@@ -36,5 +38,19 @@ public class Edge {
 
     public int getDuration() {
         return duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge edge = (Edge) o;
+        return Objects.equals(preStationId, edge.preStationId) &&
+                Objects.equals(stationId, edge.stationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(preStationId, stationId);
     }
 }
