@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,6 +38,7 @@ public class PageAcceptanceTest {
 
         // @formatter:off
         given().
+            accept(ContentType.HTML).
         when().
             get("/lines").
         then().
