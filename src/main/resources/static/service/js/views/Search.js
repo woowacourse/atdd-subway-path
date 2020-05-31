@@ -1,4 +1,4 @@
-import { EVENT_TYPE } from '../../utils/constants.js';
+import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js';
 import api from '../../api/index.js';
 import { searchResultTemplate } from '../../utils/templates.js';
 
@@ -21,7 +21,6 @@ function Search() {
   const $minimumTimeTabConfig = document.querySelector("#minimum-time-tab-config");
 
   let subwayStations = null;
-  let searchPathInfo = null;
 
   const showSearchResult = (data) => {
     const isHidden = $searchResultContainer.classList.contains('hidden');
@@ -45,7 +44,7 @@ function Search() {
     tab.classList.remove('hover:text-gray-700');
   };
 
-  const setUnactiveTabConfigValue = (tab) => {
+  const setUnActiveTabConfigValue = (tab) => {
     tab.classList.remove('border-l');
     tab.classList.remove('border-t');
     tab.classList.remove('border-r');
@@ -60,8 +59,8 @@ function Search() {
     $shortestDistanceTab.classList.add('active-tab');
     $minimumTimeTab.classList.remove('active-tab');
     setActiveTabConfigValue($shortestDistanceTabConfig);
-    setUnactiveTabConfigValue($minimumTimeTabConfig);
-    showSearchResult(searchPathInfo.shortestDistancePath);
+    setUnActiveTabConfigValue($minimumTimeTabConfig);
+    getSearchResult(PATH_TYPE.DISTANCE);
   };
 
   const onSearchMinimumTime = (event) => {
@@ -69,15 +68,15 @@ function Search() {
     $minimumTimeTab.classList.add('active-tab');
     $shortestDistanceTab.classList.remove('active-tab');
     setActiveTabConfigValue($minimumTimeTabConfig);
-    setUnactiveTabConfigValue($shortestDistanceTabConfig);
-    showSearchResult(searchPathInfo.shortestDurationPath);
+    setUnActiveTabConfigValue($shortestDistanceTabConfig);
+    getSearchResult(PATH_TYPE.DURATION);
   };
 
-  const onSearchShortestPath = (event) => {
-    event.preventDefault();
+  const getSearchResult = (pathType) => {
     const searchInput = {
       source: findStationIdByName($departureStationName.value),
       target: findStationIdByName($arrivalStationName.value),
+      type: pathType
     };
 
     api.path
@@ -89,8 +88,7 @@ function Search() {
       return data.json();
     })
     .then((data) => {
-      searchPathInfo = data;
-      showSearchResult(data.shortestDistancePath);
+      showSearchResult(data);
     })
     .catch((error) => {
       error.text().then((error) => {
@@ -121,11 +119,8 @@ function Search() {
 
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
-    $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestPath);
-    $shortestDistanceTab.addEventListener(
-      EVENT_TYPE.CLICK,
-      onSearchShortestDistance,
-    );
+    $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance);
+    $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance);
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime);
   };
 
