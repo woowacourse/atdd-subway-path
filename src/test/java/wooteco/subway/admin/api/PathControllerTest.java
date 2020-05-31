@@ -33,7 +33,8 @@ public class PathControllerTest {
 
         mockMvc.perform(get(uri)
             .param("source", "1")
-            .param("target", "2"))
+            .param("target", "2")
+            .param("type", "DISTANCE"))
                .andDo(print())
                .andExpect(status().isOk());
     }
@@ -45,8 +46,9 @@ public class PathControllerTest {
         given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
 
         mockMvc.perform(get(uri)
-            .param("source", "null")
-            .param("target", "2"))
+            .param("source", "")
+            .param("target", "2")
+            .param("type", "DISTANCE"))
                .andDo(print())
                .andExpect(status().isBadRequest());
     }
@@ -59,7 +61,22 @@ public class PathControllerTest {
 
         mockMvc.perform(get(uri)
             .param("source", "1")
-            .param("target", "null"))
+            .param("target", "")
+            .param("type", "DISTANCE"))
+               .andDo(print())
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void searchPath_TypeIsNull() throws Exception {
+        String uri = "/paths";
+
+        given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
+
+        mockMvc.perform(get(uri)
+            .param("source", "1")
+            .param("target", "")
+            .param("type", ""))
                .andDo(print())
                .andExpect(status().isBadRequest());
     }
