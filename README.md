@@ -214,5 +214,6 @@ public void getDijkstraShortestPath() {
 ### 2차 피드백 반영
 
 - [ ] `PathController` 의 `searchPath`  메서드의 `RequestParam` 을 커맨드 객체(RequestDto)로 변경 및 유효성 검사
+  - Dto의 변수로 type도 함께 저장하도록 수정
 - [ ] 최단거리, 최소시간에 대한 조회 결과를 한 번에 보내지 말고 요청마다 전달하도록 수정(캐싱 적용이 필요)
 - [ ] 출발역과 도착역이 같은 경우, 존재하지 않는 출발역에 대한 조회 요청이 이루어질 경우에 대한 테스트 케이스 작성

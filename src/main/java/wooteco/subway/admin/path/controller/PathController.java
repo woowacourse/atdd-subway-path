@@ -1,16 +1,16 @@
 package wooteco.subway.admin.path.controller;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.path.service.PathService;
 import wooteco.subway.admin.path.service.dto.PathInfoResponse;
+import wooteco.subway.admin.path.service.dto.PathRequest;
 
 @RequestMapping("/paths")
 @Validated
@@ -24,10 +24,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathInfoResponse> searchPath(
-        @RequestParam(value = "source") @NotNull(message = "출발역이 존재하지 않습니다.") Long source,
-        @RequestParam("target") @NotNull(message = "도착역이 존재하지 않습니다.") Long target) {
-        PathInfoResponse pathInfoResponse = pathService.searchPath(source, target);
+    public ResponseEntity<PathInfoResponse> searchPath(@Valid PathRequest request) {
+        PathInfoResponse pathInfoResponse = pathService.searchPath(request.getSource(), request.getTarget());
 
         return ResponseEntity
             .ok()
