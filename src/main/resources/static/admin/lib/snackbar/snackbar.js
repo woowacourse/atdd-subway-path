@@ -72,7 +72,7 @@
     $p.style.lineHeight = "1em";
     $p.innerHTML = options.text;
     Snackbar.snackbar.appendChild($p);
-    Snackbar.snackbar.style.background = options.backgroundColor;
+    Snackbar.snackbar.style.background = options.background;
 
     if (options.showSecondButton) {
       var secondButton = document.createElement("button");
