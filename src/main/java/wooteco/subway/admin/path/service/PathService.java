@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
@@ -45,8 +44,10 @@ public class PathService {
         validateRequest(source, target);
 
         final ShortestPathType type = ShortestPathType.of(request.getType());
+        final GraphPath<Station, SubwayWeightedEdge> graphPath = DijkstraShortestPath
+            .findPathBetween(SubwayGraphFactory.createGraphBy(type, stations, lineStations), source, target);
 
-        return getPathResponse(source, target, SubwayGraphFactory.createGraphBy(type, stations, lineStations));
+        return getPathResponse(graphPath, type);
     }
 
     private void validateRequest(final Station source, final Station target) {
@@ -65,10 +66,8 @@ public class PathService {
                                 .collect(toMap(Station::getId, station -> station));
     }
 
-    private PathResponse getPathResponse(final Station source, final Station target,
-        final WeightedMultigraph<Station, SubwayWeightedEdge> subwayGraph) {
-        final GraphPath<Station, SubwayWeightedEdge> graphPath =
-            DijkstraShortestPath.findPathBetween(subwayGraph, source, target);
+    private PathResponse getPathResponse(final GraphPath<Station, SubwayWeightedEdge> graphPath,
+        final ShortestPathType type) {
         final SubwayShortestPath subwayShortestPath = new SubwayShortestPath(graphPath);
 
         final List<StationResponse> stations =
@@ -76,6 +75,10 @@ public class PathService {
         final int weight = subwayShortestPath.getWeight();
         final int subWeight = subwayShortestPath.getSubWeight();
 
-        return new PathResponse(stations, weight, subWeight);
+        if (type.isDistanceType()) {
+            return new PathResponse(stations, weight, subWeight);
+        }
+        return new PathResponse(stations, subWeight, weight);
     }
+
 }

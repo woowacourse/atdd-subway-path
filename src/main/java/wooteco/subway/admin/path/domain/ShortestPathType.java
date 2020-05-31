@@ -40,4 +40,12 @@ public enum ShortestPathType {
         graph.setEdgeWeight(edge, this.weight.apply(lineStation));
     }
 
+    public boolean isDistanceType() {
+        return this.equals(DISTANCE);
+    }
+
+    public boolean isDurationType() {
+        return this.equals(DURATION);
+    }
+
 }
