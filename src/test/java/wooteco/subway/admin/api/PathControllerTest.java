@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import wooteco.subway.admin.path.controller.PathController;
 import wooteco.subway.admin.path.service.PathService;
-import wooteco.subway.admin.path.service.dto.PathInfoResponse;
+import wooteco.subway.admin.path.service.dto.PathResponse;
 
 @WebMvcTest(controllers = PathController.class)
 public class PathControllerTest {
@@ -29,7 +29,7 @@ public class PathControllerTest {
     void searchPath() throws Exception {
         String uri = "/paths";
 
-        given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
+        given(pathService.searchPath(any())).willReturn(new PathResponse());
 
         mockMvc.perform(get(uri)
             .param("source", "1")
@@ -43,7 +43,7 @@ public class PathControllerTest {
     void searchPath_SourceIsNull() throws Exception {
         String uri = "/paths";
 
-        given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
+        given(pathService.searchPath(any())).willReturn(new PathResponse());
 
         mockMvc.perform(get(uri)
             .param("source", "")
@@ -57,7 +57,7 @@ public class PathControllerTest {
     void searchPath_TargetIsNull() throws Exception {
         String uri = "/paths";
 
-        given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
+        given(pathService.searchPath(any())).willReturn(new PathResponse());
 
         mockMvc.perform(get(uri)
             .param("source", "1")
@@ -71,7 +71,7 @@ public class PathControllerTest {
     void searchPath_TypeIsNull() throws Exception {
         String uri = "/paths";
 
-        given(pathService.searchPath(anyLong(), anyLong())).willReturn(new PathInfoResponse());
+        given(pathService.searchPath(any())).willReturn(new PathResponse());
 
         mockMvc.perform(get(uri)
             .param("source", "1")

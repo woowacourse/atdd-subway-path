@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.admin.path.service.PathService;
-import wooteco.subway.admin.path.service.dto.PathInfoResponse;
 import wooteco.subway.admin.path.service.dto.PathRequest;
+import wooteco.subway.admin.path.service.dto.PathResponse;
 
 @RequestMapping("/paths")
 @RestController
@@ -22,12 +22,12 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathInfoResponse> searchPath(@Valid PathRequest request) {
-        PathInfoResponse pathInfoResponse = pathService.searchPath(request.getSource(), request.getTarget());
+    public ResponseEntity<PathResponse> searchPath(@Valid PathRequest request) {
+        PathResponse response = pathService.searchPath(request);
 
         return ResponseEntity
             .ok()
-            .body(pathInfoResponse);
+            .body(response);
     }
 
 }

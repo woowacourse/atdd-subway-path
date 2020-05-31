@@ -11,7 +11,7 @@ public class PathRequest {
     @NotNull(message = "도착역이 존재하지 않습니다.")
     private Long target;
 
-    @NotBlank(message = "최단 경로를 검색할 형식이 존재하지 않습니다.")
+    @NotBlank(message = "최단 경로를 검색할 타입이 존재하지 않습니다.")
     private String type;
 
     public PathRequest() {

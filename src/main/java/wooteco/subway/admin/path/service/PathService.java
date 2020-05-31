@@ -2,22 +2,23 @@ package wooteco.subway.admin.path.service;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.line.domain.lineStation.LineStation;
 import wooteco.subway.admin.line.repository.lineStation.LineStationRepository;
 import wooteco.subway.admin.path.domain.ShortestPathType;
 import wooteco.subway.admin.path.domain.SubwayGraphFactory;
 import wooteco.subway.admin.path.domain.SubwayShortestPath;
 import wooteco.subway.admin.path.domain.SubwayWeightedEdge;
-import wooteco.subway.admin.path.service.dto.PathInfoResponse;
+import wooteco.subway.admin.path.service.dto.PathRequest;
 import wooteco.subway.admin.path.service.dto.PathResponse;
 import wooteco.subway.admin.station.domain.Station;
 import wooteco.subway.admin.station.repository.StationRepository;
@@ -35,19 +36,27 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathInfoResponse searchPath(Long source, Long target) {
+    public PathResponse searchPath(PathRequest request) {
         final List<LineStation> lineStations = lineStationRepository.findAll();
         final Map<Long, Station> stations = getStationsWithId();
-        final Station sourceStation = stations.get(source);
-        final Station targetStation = stations.get(target);
 
-        final List<PathResponse> pathResponses =
-            Arrays.stream(ShortestPathType.values())
-                  .map(weightType -> SubwayGraphFactory.createGraphBy(weightType, stations, lineStations))
-                  .map(graph -> getPathResponse(sourceStation, targetStation, graph))
-                  .collect(toList());
+        final Station source = stations.get(request.getSource());
+        final Station target = stations.get(request.getTarget());
+        validateRequest(source, target);
 
-        return PathInfoResponse.of(pathResponses);
+        final ShortestPathType type = ShortestPathType.of(request.getType());
+
+        return getPathResponse(source, target, SubwayGraphFactory.createGraphBy(type, stations, lineStations));
+    }
+
+    private void validateRequest(final Station source, final Station target) {
+        if (Objects.isNull(source)) {
+            throw new InvalidSubwayPathException("출발역이 존재하지 않습니다.");
+        }
+
+        if (Objects.isNull(target)) {
+            throw new InvalidSubwayPathException("도착역이 존재하지 않습니다.");
+        }
     }
 
     private Map<Long, Station> getStationsWithId() {
