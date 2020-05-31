@@ -1,3 +1,5 @@
+import {ERROR_MESSAGE} from "../utils/constants.js";
+
 const METHOD = {
   PUT() {
     return {
@@ -23,17 +25,26 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(response => {
+    if (!response.ok) {
+      response.json().then(data => {
+        const error = data.errorMessage;
+        alert(ERROR_MESSAGE[error]);
+      });
+      return;
+    }
+    return response.json()
+  });
 
   const line = {
     getAll() {
-      return request(`/lines/detail`)
+      return request(`/line-details`)
     }
   }
 
   const path = {
-    find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+    findPath(params) {
+      return request(`/path?source=${params.source}&target=${params.target}`)
     }
   }
 
@@ -41,6 +52,6 @@ const api = (() => {
     line,
     path
   }
-})()
+})();
 
 export default api

@@ -1,12 +1,14 @@
 import { optionTemplate, subwayLinesItemTemplate } from '../../utils/templates.js'
 import { defaultSubwayLines } from '../../utils/subwayMockData.js'
 import tns from '../../lib/slider/tiny-slider.js'
+import api from "../../../service/api/index.js";
 
 function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')
 
-  const initSubwayLinesSlider = () => {
-    $subwayLinesSlider.innerHTML = defaultSubwayLines.map(line => subwayLinesItemTemplate(line)).join('')
+  const initSubwayLinesSlider = async () => {
+    let lineDetails = (await api.line.getAll()).lineDetailResponses;
+    $subwayLinesSlider.innerHTML = lineDetails.map(line => subwayLinesItemTemplate(line)).join('')
     tns({
       container: '.subway-lines-slider',
       loop: true,
@@ -22,15 +24,8 @@ function Map() {
     })
   }
 
-  const initSubwayLineOptions = () => {
-    const subwayLineOptionTemplate = defaultSubwayLines.map(line => optionTemplate(line.title)).join('')
-    const $stationSelectOptions = document.querySelector('#station-select-options')
-    $stationSelectOptions.insertAdjacentHTML('afterbegin', subwayLineOptionTemplate)
-  }
-
   this.init = () => {
     initSubwayLinesSlider()
-    initSubwayLineOptions()
   }
 }
 

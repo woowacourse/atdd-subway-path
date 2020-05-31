@@ -1,16 +1,24 @@
 package wooteco.subway.admin.controller;
 
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 public class LineController {
@@ -32,6 +40,12 @@ public class LineController {
     @GetMapping("/lines")
     public ResponseEntity<List<LineResponse>> showLine() {
         return ResponseEntity.ok().body(LineResponse.listOf(lineService.showLines()));
+    }
+
+    @GetMapping("/line-details")
+    public ResponseEntity<WholeSubwayResponse> showLineDetails() {
+        WholeSubwayResponse response = lineService.wholeLines();
+        return ResponseEntity.ok().eTag(Long.toString(response.hashCode())).body(response);
     }
 
     @GetMapping("/lines/{id}")
