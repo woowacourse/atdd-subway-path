@@ -1,4 +1,4 @@
-import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js';
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js';
 import api from '../../api/index.js';
 import { searchResultTemplate } from '../../utils/templates.js';
 
@@ -31,7 +31,12 @@ function Search() {
   };
 
   const findStationIdByName = (name) => {
-    return subwayStations.find((station) => station.name === name).id;
+    const station = subwayStations.find((station) => station.name === name);
+    if (station === undefined) {
+      alert(ERROR_MESSAGE.NOT_EXIST_STATION);
+      return null;
+    }
+    return station.id;
   };
 
   const setActiveTabConfigValue = (tab) => {
@@ -73,9 +78,14 @@ function Search() {
   };
 
   const getSearchResult = (pathType) => {
+    const source = findStationIdByName($departureStationName.value);
+    const target = findStationIdByName($arrivalStationName.value);
+    if (source === null || target === null) {
+      return;
+    }
     const searchInput = {
-      source: findStationIdByName($departureStationName.value),
-      target: findStationIdByName($arrivalStationName.value),
+      source: source,
+      target: target,
       type: pathType
     };
 
