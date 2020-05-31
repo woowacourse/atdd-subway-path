@@ -58,6 +58,10 @@ public class PathService {
         if (Objects.isNull(target)) {
             throw new InvalidSubwayPathException("도착역이 존재하지 않습니다.");
         }
+
+        if (source.equals(target)) {
+            throw new InvalidSubwayPathException("출발역과 도착역이 같습니다.");
+        }
     }
 
     private Map<Long, Station> getStationsWithId() {

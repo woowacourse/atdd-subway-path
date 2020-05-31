@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.admin.common.exception.InvalidSubwayPathException;
 import wooteco.subway.admin.line.domain.lineStation.LineStation;
 import wooteco.subway.admin.line.repository.lineStation.LineStationRepository;
 import wooteco.subway.admin.path.service.PathService;
@@ -87,7 +88,44 @@ class PathServiceTest {
         PathResponse response = pathService.searchPath(request);
 
         assertThat(response.getStations()).hasSize(3);
-        assertThat(response.getDistance()).isEqualTo(2);
-        assertThat(response.getDuration()).isEqualTo(5);
+        assertThat(response.getDistance()).isEqualTo(5);
+        assertThat(response.getDuration()).isEqualTo(2);
     }
+
+    @Test
+    void searchPath_NotExistSourceStation() {
+        when(lineStationRepository.findAll()).thenReturn(lineStations);
+        when(stationRepository.findAll()).thenReturn(stations);
+
+        final PathRequest request = new PathRequest(6L, station3.getId(), DISTANCE_PATH_TYPE);
+
+        assertThatThrownBy(() -> pathService.searchPath(request))
+            .isInstanceOf(InvalidSubwayPathException.class)
+            .hasMessage("출발역이 존재하지 않습니다.");
+    }
+
+    @Test
+    void searchPath_NotExistTargetStation() {
+        when(lineStationRepository.findAll()).thenReturn(lineStations);
+        when(stationRepository.findAll()).thenReturn(stations);
+
+        final PathRequest request = new PathRequest(station1.getId(), 6L, DISTANCE_PATH_TYPE);
+
+        assertThatThrownBy(() -> pathService.searchPath(request))
+            .isInstanceOf(InvalidSubwayPathException.class)
+            .hasMessage("도착역이 존재하지 않습니다.");
+    }
+
+    @Test
+    void searchPath_SameSourceAndTarget() {
+        when(lineStationRepository.findAll()).thenReturn(lineStations);
+        when(stationRepository.findAll()).thenReturn(stations);
+
+        final PathRequest request = new PathRequest(station1.getId(), station1.getId(), DISTANCE_PATH_TYPE);
+
+        assertThatThrownBy(() -> pathService.searchPath(request))
+            .isInstanceOf(InvalidSubwayPathException.class)
+            .hasMessage("출발역과 도착역이 같습니다.");
+    }
+
 }
