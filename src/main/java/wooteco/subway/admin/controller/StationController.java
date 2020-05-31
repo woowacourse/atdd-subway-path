@@ -6,36 +6,51 @@ import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.StationCreateRequest;
 import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
+import wooteco.subway.admin.service.StationService;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/stations")
 public class StationController {
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public StationController(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
+    public StationController(StationService stationService) {
+        this.stationService = stationService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping()
     public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station station = view.toStation();
-        Station persistStation = stationRepository.save(station);
+        StationResponse stationResponse = stationService.createStation(view);
 
         return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
+                .created(URI.create("/api/stations/" + stationResponse.getId()))
+                .body(stationResponse);
     }
 
-    @GetMapping("/stations")
+    @GetMapping("/{id}")
+    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+        StationResponse stationResponse = stationService.showStation(id);
+        return ResponseEntity.ok()
+            .body(stationResponse);
+    }
+
+    @GetMapping()
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationRepository.findAll()));
+        List<StationResponse> stationResponses = stationService.showStations();
+
+        return ResponseEntity
+            .ok()
+            .body(stationResponses);
     }
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+        stationService.removeStation(id);
+
+        return ResponseEntity
+            .noContent()
+            .build();
     }
 }

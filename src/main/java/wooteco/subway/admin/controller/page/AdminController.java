@@ -1,18 +1,21 @@
-package wooteco.subway.admin.controller;
+package wooteco.subway.admin.controller.page;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.LineService;
 
 @Controller
-public class PageController {
-    private LineService lineService;
-    private StationRepository stationRepository;
+@RequestMapping("/admin")
+public class AdminController {
+    private final LineService lineService;
+    private final StationRepository stationRepository;
 
-    public PageController(LineService lineService, StationRepository stationRepository) {
+    public AdminController(LineService lineService, StationRepository stationRepository) {
         this.lineService = lineService;
         this.stationRepository = stationRepository;
     }

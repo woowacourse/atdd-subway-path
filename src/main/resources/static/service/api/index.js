@@ -20,27 +20,38 @@ const METHOD = {
       })
     }
   }
-}
+};
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config)
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json());
+
+  const station = {
+    show() {
+      return requestWithJsonData(`api/stations`);
+    },
+  };
 
   const line = {
     getAll() {
-      return request(`/lines/detail`)
+      return request(`api/lines/detail`)
+    },
+    getAllDetail() {
+      return requestWithJsonData(`api/lines/detail`)
     }
-  }
+  };
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return requestWithJsonData(`api/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
-  }
+  };
 
   return {
     line,
-    path
+    path,
+    station
   }
-})()
+})();
 
 export default api
