@@ -9,7 +9,6 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.admin.line.service.dto.line.LineResponse;
-import wooteco.subway.admin.path.service.dto.PathInfoResponse;
 import wooteco.subway.admin.path.service.dto.PathResponse;
 import wooteco.subway.admin.station.service.dto.StationResponse;
 
@@ -81,15 +80,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = searchShortestDurationPath(stationAll.get("교대"), stationAll.get("양재"));
         // then
         assertThat(pathResponse.getStations()).hasSize(3);
-        assertThat(pathResponse.getDistance()).isEqualTo(2);
-        assertThat(pathResponse.getDuration()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getDuration()).isEqualTo(2);
 
         // when
         pathResponse = searchShortestDurationPath(stationAll.get("교대"), stationAll.get("종합운동장"));
         // then
         assertThat(pathResponse.getStations()).isNotNull();
         assertThat(pathResponse.getDistance()).isNotNull();
-        assertThat(pathResponse.getDuration()).isEqualTo(16);
+        assertThat(pathResponse.getDuration()).isEqualTo(5);
     }
 
     private Map<String, StationResponse> createStationAll() {
@@ -167,12 +166,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // @formatter:off
         return
             given()
+                .param("source", source.getId())
+                .param("target", target.getId())
+                .param("type", "DISTANCE")
             .when()
-                .get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId())
+                .get("/paths")
             .then()
                 .log().all()
-                .extract().as(PathInfoResponse.class)
-                .getShortestDistancePath();
+                .extract().as(PathResponse.class);
         // @formatter:on
     }
 
@@ -181,12 +182,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // @formatter:off
         return
             given()
+                .param("source", source.getId())
+                .param("target", target.getId())
+                .param("type", "DURATION")
             .when()
-                .get("/paths/" + "?source=" + source.getId() + "&target=" + target.getId())
+                .get("/paths")
             .then()
                 .log().all()
-                .extract().as(PathInfoResponse.class)
-                .getShortestDurationPath();
+                .extract().as(PathResponse.class);
         // @formatter:on
     }
 }
