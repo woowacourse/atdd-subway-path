@@ -67,7 +67,7 @@ public class LineServiceTest {
         EdgeCreateRequest request = new EdgeCreateRequest(null, station4.getId(), 10, 10);
         lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getEdges()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
         List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(4L);
@@ -83,7 +83,7 @@ public class LineServiceTest {
         EdgeCreateRequest request = new EdgeCreateRequest(station1.getId(), station4.getId(), 10, 10);
         lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getEdges()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
         List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -99,7 +99,7 @@ public class LineServiceTest {
         EdgeCreateRequest request = new EdgeCreateRequest(station3.getId(), station4.getId(), 10, 10);
         lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getEdges()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
         List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
@@ -113,7 +113,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeEdge(line.getId(), 1L);
 
-        assertThat(line.getEdges()).hasSize(2);
+        assertThat(line.getEdgesSize()).isEqualTo(2);
 
         List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(2L);
@@ -135,7 +135,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeEdge(line.getId(), 3L);
 
-        assertThat(line.getEdges()).hasSize(2);
+        assertThat(line.getEdgesSize()).isEqualTo(2);
 
         List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);

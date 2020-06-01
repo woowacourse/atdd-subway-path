@@ -51,7 +51,7 @@ public class LineService {
 
     public void removeEdge(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(LineNotFoundException::new);
-        line.removeEdgeById(stationId);
+        line.removeEdgeByStationId(stationId);
         lineRepository.save(line);
     }
 

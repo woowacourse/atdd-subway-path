@@ -27,6 +27,6 @@ public class LineRepositoryTest {
         Line resultLine = lineRepository.save(persistLine);
 
         // then
-        assertThat(resultLine.getEdges()).hasSize(2);
+        assertThat(resultLine.getEdgesSize()).isEqualTo(2);
     }
 }

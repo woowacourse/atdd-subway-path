@@ -1,12 +1,15 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.data.annotation.Id;
-import wooteco.subway.admin.exception.StationNotFoundException;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 public class Line {
     @Id
@@ -17,7 +20,8 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<Edge> edges = new HashSet<>();
+    @Embedded.Nullable
+    private Edges edges;
 
     public Line() {
     }
@@ -29,6 +33,7 @@ public class Line {
         this.intervalTime = intervalTime;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.edges = new Edges(new HashSet<>());
     }
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
@@ -55,14 +60,12 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<Edge> getEdges() {
+    public Edges getEdges() {
         return edges;
     }
 
-    public Set<Edge> getEdgesExceptFirst() {
-        return edges.stream()
-                .filter(edge -> Objects.nonNull(edge.getPreStationId()))
-                .collect(Collectors.toSet());
+    public Edges getEdgesExceptFirst() {
+        return edges.getEdgesExceptFirst();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,59 +94,27 @@ public class Line {
     }
 
     public void addEdge(Edge edge) {
-        edges.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), edge.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreEdge(edge.getStationId()));
-
         edges.add(edge);
     }
 
-    public void removeEdgeById(Long stationId) {
-        Edge targetEdge = edges.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(StationNotFoundException::new);
+    public void removeEdgeByStationId(Long stationId) {
+        edges.removeByStationId(stationId);
+    }
 
-        edges.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreEdge(targetEdge.getPreStationId()));
-
-        edges.remove(targetEdge);
+    public void setAllEdgeWeight(WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
+        getEdgesExceptFirst().setAllEdgeWeight(graph, type);
     }
 
     public List<Long> getSortedStationIds() {
-        if (edges.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Edge firstEdge = edges.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(StationNotFoundException::new);
-
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstEdge.getStationId());
-
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<Edge> nextEdge = edges.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
-
-            if (!nextEdge.isPresent()) {
-                break;
-            }
-            stationIds.add(nextEdge.get().getStationId());
-        }
-        return stationIds;
+        return edges.getSortedStationIds();
     }
 
     public List<Long> getStationIds() {
-        return this.edges.stream()
-                .map(Edge::getStationId)
-                .collect(Collectors.toList());
+        return edges.getStationIds();
+    }
+
+    public int getEdgesSize() {
+        return edges.size();
     }
 
     @Override

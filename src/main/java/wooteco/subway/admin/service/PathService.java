@@ -27,20 +27,20 @@ public class PathService {
     public PathResponse calculatePath(PathRequest request) {
         Lines wholeLines = new Lines(lineRepository.findAll());
         Stations wholeStations = new Stations(stationRepository.findAll());
-        Edges wholeEdges = new Edges(wholeLines.findWholeEdges());
+        Edges wholeEdges = wholeLines.findWholeEdges();
         Long sourceStationId = request.getSource();
         Long targetStationId = request.getTarget();
 
-        validate(request, wholeStations, sourceStationId, targetStationId);
+        validate(wholeStations, sourceStationId, targetStationId);
 
-        List<Long> StationIdsInShortestPath
+        List<Long> stationIdsInShortestPath
                 = wholeLines.createShortestPath(sourceStationId, targetStationId, request.getType());
 
-        Stations stationsInShortestPath = StationIdsInShortestPath.stream()
+        Stations stationsInShortestPath = stationIdsInShortestPath.stream()
                 .map(wholeStations::findStationById)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
 
-        Edges edgesInShortestPath = wholeEdges.extractPathEdges(StationIdsInShortestPath);
+        Edges edgesInShortestPath = wholeEdges.extractPathEdges(stationIdsInShortestPath);
         return new PathResponse(
                 stationsInShortestPath.getStations(),
                 edgesInShortestPath.getDistance(),
@@ -48,8 +48,8 @@ public class PathService {
         );
     }
 
-    private void validate(PathRequest request, Stations wholeStations, Long sourceStationId, Long targetStationId) {
-        if (wholeStations.isNotContains(request.getSource()) || wholeStations.isNotContains(request.getTarget())) {
+    private void validate(Stations wholeStations, Long sourceStationId, Long targetStationId) {
+        if (wholeStations.isNotContains(sourceStationId) || wholeStations.isNotContains(targetStationId)) {
             throw new StationNotFoundException();
         }
         if (sourceStationId.equals(targetStationId)) {

@@ -16,10 +16,10 @@ public class Lines {
         this.lines = lines;
     }
 
-    public List<Edge> findWholeEdges() {
+    public Edges findWholeEdges() {
         return lines.stream()
-                .flatMap(line -> line.getEdgesExceptFirst().stream())
-                .collect(Collectors.toList());
+                .flatMap(line -> line.getEdgesExceptFirst().getEdges().stream())
+                .collect(Collectors.collectingAndThen(Collectors.toSet(), Edges::new));
     }
 
     public List<Long> createShortestPath(Long sourceStationId, Long targetStationId, PathType type) {
@@ -43,16 +43,12 @@ public class Lines {
     }
 
     private void setAllEdgeWeight(WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
-        lines.stream()
-                .flatMap(line -> line.getEdgesExceptFirst().stream())
-                .forEach(edge
-                        -> graph.setEdgeWeight(graph.addEdge(edge.getPreStationId(), edge.getStationId()), type.getWeight(edge)));
+        lines.forEach(line -> line.setAllEdgeWeight(graph, type));
     }
 
     public List<Long> getStationIds() {
         return lines.stream()
-                .flatMap(line -> line.getEdges().stream())
-                .map(Edge::getStationId)
+                .flatMap(line -> line.getStationIds().stream())
                 .distinct()
                 .collect(Collectors.toList());
     }
