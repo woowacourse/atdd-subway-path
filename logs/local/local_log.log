@@ -1,0 +1,402 @@
+INFO  20-06-01 13:37:00[main] [SubwayAdminApplication:55] - Starting SubwayAdminApplication on Sonys-MacBook-Pro.local with PID 2243 (/Users/sony/wootech-course/level2/atdd-subway-path/out/production/classes started by sony in /Users/sony/wootech-course/level2/atdd-subway-path)
+INFO  20-06-01 13:37:00[main] [SubwayAdminApplication:655] - The following profiles are active: local
+INFO  20-06-01 13:37:01[main] [RepositoryConfigurationDelegate:127] - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+INFO  20-06-01 13:37:01[main] [RepositoryConfigurationDelegate:187] - Finished Spring Data repository scanning in 42ms. Found 2 JDBC repository interfaces.
+INFO  20-06-01 13:37:01[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration$$EnhancerBySpringCGLIB$$30914dbf] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:37:01[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars.resolver-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:37:01[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:37:01[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration$$EnhancerBySpringCGLIB$$4378785d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:37:01[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebarsViewResolver' of type [com.github.jknack.handlebars.springmvc.HandlebarsViewResolver] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:37:01[main] [TomcatWebServer:92] - Tomcat initialized with port(s): 8080 (http)
+INFO  20-06-01 13:37:01[main] [Http11NioProtocol:173] - Initializing ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:37:01[main] [StandardService:173] - Starting service [Tomcat]
+INFO  20-06-01 13:37:01[main] [StandardEngine:173] - Starting Servlet engine: [Apache Tomcat/9.0.31]
+INFO  20-06-01 13:37:01[main] [[/]:173] - Initializing Spring embedded WebApplicationContext
+INFO  20-06-01 13:37:01[main] [ContextLoader:284] - Root WebApplicationContext: initialization completed in 933 ms
+INFO  20-06-01 13:37:01[main] [HikariDataSource:110] - HikariPool-1 - Starting...
+INFO  20-06-01 13:37:01[main] [HikariDataSource:123] - HikariPool-1 - Start completed.
+INFO  20-06-01 13:37:01[main] [H2ConsoleAutoConfiguration:74] - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+INFO  20-06-01 13:37:01[main] [LogbackAccessContext:149] - Configured the Logback-access: context=[default], config=[classpath:logback-access.xml]
+INFO  20-06-01 13:37:02[main] [ThreadPoolTaskExecutor:181] - Initializing ExecutorService 'applicationTaskExecutor'
+INFO  20-06-01 13:37:02[main] [Http11NioProtocol:173] - Starting ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:37:02[main] [TomcatWebServer:204] - Tomcat started on port(s): 8080 (http) with context path ''
+INFO  20-06-01 13:37:02[main] [SubwayAdminApplication:61] - Started SubwayAdminApplication in 1.96 seconds (JVM running for 2.354)
+INFO  20-06-01 13:37:04[http-nio-8080-exec-1] [[/]:173] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  20-06-01 13:37:04[http-nio-8080-exec-1] [DispatcherServlet:525] - Initializing Servlet 'dispatcherServlet'
+INFO  20-06-01 13:37:04[http-nio-8080-exec-1] [DispatcherServlet:547] - Completed initialization in 4 ms
+DEBUG 20-06-01 13:37:04[http-nio-8080-exec-1] [PageController:27] - DEBUG Test
+INFO  20-06-01 13:37:04[http-nio-8080-exec-1] [PageController:28] - INFO Test
+WARN  20-06-01 13:37:04[http-nio-8080-exec-1] [PageController:29] - WARN Test
+ERROR 20-06-01 13:37:04[http-nio-8080-exec-1] [PageController:30] - ERROR Test
+INFO  20-06-01 13:40:36[SpringContextShutdownHook] [ThreadPoolTaskExecutor:218] - Shutting down ExecutorService 'applicationTaskExecutor'
+INFO  20-06-01 13:40:36[SpringContextShutdownHook] [HikariDataSource:350] - HikariPool-1 - Shutdown initiated...
+INFO  20-06-01 13:40:36[SpringContextShutdownHook] [HikariDataSource:352] - HikariPool-1 - Shutdown completed.
+INFO  20-06-01 13:40:39[main] [SubwayAdminApplication:55] - Starting SubwayAdminApplication on Sonys-MacBook-Pro.local with PID 2267 (/Users/sony/wootech-course/level2/atdd-subway-path/out/production/classes started by sony in /Users/sony/wootech-course/level2/atdd-subway-path)
+INFO  20-06-01 13:40:39[main] [SubwayAdminApplication:655] - The following profiles are active: local
+INFO  20-06-01 13:40:39[main] [RepositoryConfigurationDelegate:127] - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+INFO  20-06-01 13:40:39[main] [RepositoryConfigurationDelegate:187] - Finished Spring Data repository scanning in 42ms. Found 2 JDBC repository interfaces.
+INFO  20-06-01 13:40:39[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration$$EnhancerBySpringCGLIB$$f5d80b1d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:40:39[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars.resolver-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:40:39[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:40:39[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration$$EnhancerBySpringCGLIB$$8bf35bb] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:40:39[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebarsViewResolver' of type [com.github.jknack.handlebars.springmvc.HandlebarsViewResolver] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:40:40[main] [TomcatWebServer:92] - Tomcat initialized with port(s): 8080 (http)
+INFO  20-06-01 13:40:40[main] [Http11NioProtocol:173] - Initializing ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:40:40[main] [StandardService:173] - Starting service [Tomcat]
+INFO  20-06-01 13:40:40[main] [StandardEngine:173] - Starting Servlet engine: [Apache Tomcat/9.0.31]
+INFO  20-06-01 13:40:40[main] [[/]:173] - Initializing Spring embedded WebApplicationContext
+INFO  20-06-01 13:40:40[main] [ContextLoader:284] - Root WebApplicationContext: initialization completed in 943 ms
+INFO  20-06-01 13:40:40[main] [HikariDataSource:110] - HikariPool-1 - Starting...
+INFO  20-06-01 13:40:40[main] [HikariDataSource:123] - HikariPool-1 - Start completed.
+INFO  20-06-01 13:40:40[main] [H2ConsoleAutoConfiguration:74] - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+INFO  20-06-01 13:40:40[main] [LogbackAccessContext:149] - Configured the Logback-access: context=[default], config=[classpath:logback-access.xml]
+INFO  20-06-01 13:40:40[main] [ThreadPoolTaskExecutor:181] - Initializing ExecutorService 'applicationTaskExecutor'
+INFO  20-06-01 13:40:40[main] [Http11NioProtocol:173] - Starting ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:40:40[main] [TomcatWebServer:204] - Tomcat started on port(s): 8080 (http) with context path ''
+INFO  20-06-01 13:40:40[main] [SubwayAdminApplication:61] - Started SubwayAdminApplication in 2.04 seconds (JVM running for 2.458)
+INFO  20-06-01 13:41:00[SpringContextShutdownHook] [ThreadPoolTaskExecutor:218] - Shutting down ExecutorService 'applicationTaskExecutor'
+INFO  20-06-01 13:41:00[SpringContextShutdownHook] [HikariDataSource:350] - HikariPool-1 - Shutdown initiated...
+INFO  20-06-01 13:41:00[SpringContextShutdownHook] [HikariDataSource:352] - HikariPool-1 - Shutdown completed.
+INFO  20-06-01 13:41:03[main] [SubwayAdminApplication:55] - Starting SubwayAdminApplication on Sonys-MacBook-Pro.local with PID 2273 (/Users/sony/wootech-course/level2/atdd-subway-path/out/production/classes started by sony in /Users/sony/wootech-course/level2/atdd-subway-path)
+INFO  20-06-01 13:41:03[main] [SubwayAdminApplication:655] - The following profiles are active: local
+INFO  20-06-01 13:41:04[main] [RepositoryConfigurationDelegate:127] - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+INFO  20-06-01 13:41:04[main] [RepositoryConfigurationDelegate:187] - Finished Spring Data repository scanning in 36ms. Found 2 JDBC repository interfaces.
+INFO  20-06-01 13:41:04[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelpersAutoConfiguration$$EnhancerBySpringCGLIB$$8a3d6f1f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:41:04[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars.resolver-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsValueResolversProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:41:04[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebars-pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:41:04[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration' of type [pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsAutoConfiguration$HandlebarsViewResolverConfiguration$$EnhancerBySpringCGLIB$$9d2499bd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:41:04[main] [PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330] - Bean 'handlebarsViewResolver' of type [com.github.jknack.handlebars.springmvc.HandlebarsViewResolver] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+INFO  20-06-01 13:41:04[main] [TomcatWebServer:92] - Tomcat initialized with port(s): 8080 (http)
+INFO  20-06-01 13:41:04[main] [Http11NioProtocol:173] - Initializing ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:41:04[main] [StandardService:173] - Starting service [Tomcat]
+INFO  20-06-01 13:41:04[main] [StandardEngine:173] - Starting Servlet engine: [Apache Tomcat/9.0.31]
+INFO  20-06-01 13:41:04[main] [[/]:173] - Initializing Spring embedded WebApplicationContext
+INFO  20-06-01 13:41:04[main] [ContextLoader:284] - Root WebApplicationContext: initialization completed in 920 ms
+INFO  20-06-01 13:41:04[main] [HikariDataSource:110] - HikariPool-1 - Starting...
+INFO  20-06-01 13:41:04[main] [HikariDataSource:123] - HikariPool-1 - Start completed.
+INFO  20-06-01 13:41:04[main] [H2ConsoleAutoConfiguration:74] - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+INFO  20-06-01 13:41:04[main] [LogbackAccessContext:149] - Configured the Logback-access: context=[default], config=[classpath:logback-access.xml]
+INFO  20-06-01 13:41:05[main] [ThreadPoolTaskExecutor:181] - Initializing ExecutorService 'applicationTaskExecutor'
+INFO  20-06-01 13:41:05[main] [Http11NioProtocol:173] - Starting ProtocolHandler ["http-nio-8080"]
+INFO  20-06-01 13:41:05[main] [TomcatWebServer:204] - Tomcat started on port(s): 8080 (http) with context path ''
+INFO  20-06-01 13:41:05[main] [SubwayAdminApplication:61] - Started SubwayAdminApplication in 1.949 seconds (JVM running for 2.342)
+INFO  20-06-01 13:41:14[http-nio-8080-exec-1] [[/]:173] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  20-06-01 13:41:14[http-nio-8080-exec-1] [DispatcherServlet:525] - Initializing Servlet 'dispatcherServlet'
+INFO  20-06-01 13:41:14[http-nio-8080-exec-1] [DispatcherServlet:547] - Completed initialization in 4 ms
+DEBUG 20-06-01 13:41:14[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:14[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:15[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:15[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:20[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:20[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO station (name, created_at) VALUES (?, ?)]
+DEBUG 20-06-01 13:41:22[http-nio-8080-exec-4] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:22[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO station (name, created_at) VALUES (?, ?)]
+DEBUG 20-06-01 13:41:24[http-nio-8080-exec-5] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:24[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:34[http-nio-8080-exec-7] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:34[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line (name, start_time, end_time, interval_time, bg_color, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:35[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:35[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:35[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:35[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:36[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:36[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:36[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:36[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:37[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:41[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?)]
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:42[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?)]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:46[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?)]
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:51[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?)]
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:53[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:56[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?)]
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:41:57[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?)]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:00[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:01[http-nio-8080-exec-5] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:02[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+ERROR 20-06-01 13:42:02[http-nio-8080-exec-2] [ExceptionController:43] - error >> id가 1인 역의 다음역이 존재하지 않습니다
+wooteco.subway.admin.exception.DisconnectedStationException: id가 1인 역의 다음역이 존재하지 않습니다
+	at wooteco.subway.admin.domain.LineStations.lambda$findNextLineStation$7(LineStations.java:91)
+	at java.util.Optional.orElseThrow(Optional.java:290)
+	at wooteco.subway.admin.domain.LineStations.findNextLineStation(LineStations.java:91)
+	at wooteco.subway.admin.domain.LineStations.sortedLineStations(LineStations.java:80)
+	at wooteco.subway.admin.domain.LineStations.getLineStationsId(LineStations.java:67)
+	at wooteco.subway.admin.domain.Line.getLineStationsId(Line.java:110)
+	at wooteco.subway.admin.service.LineService.findLineWithStationsById(LineService.java:68)
+	at wooteco.subway.admin.controller.LineController.retrieveLine(LineController.java:49)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:106)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:879)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:793)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at net.rakugakibox.spring.boot.logback.access.tomcat.LogbackAccessTomcatValve.invoke(LogbackAccessTomcatValve.java:91)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:367)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1639)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-8] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:04[http-nio-8080-exec-7] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?)]
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-9] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-9] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:05[http-nio-8080-exec-10] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?)]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [UPDATE line SET name = ?, start_time = ?, end_time = ?, interval_time = ?, bg_color = ?, created_at = ?, updated_at = ? WHERE line.id = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:860] - Executing prepared SQL update
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [DELETE FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:891] - Executing SQL update and returning generated keys
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-1] [JdbcTemplate:609] - Executing prepared SQL statement [INSERT INTO line_station (pre_station_id, station_id, distance, duration, line) VALUES (?, ?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:07[http-nio-8080-exec-4] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line WHERE line.id = ?]
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:08[http-nio-8080-exec-3] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station WHERE station.id IN (?, ?, ?, ?)]
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-2] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line.id AS id, line.name AS name, line.end_time AS end_time, line.bg_color AS bg_color, line.start_time AS start_time, line.updated_at AS updated_at, line.created_at AS created_at, line.interval_time AS interval_time FROM line]
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-2] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT station.id AS id, station.name AS name, station.created_at AS created_at FROM station]
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-6] [JdbcTemplate:667] - Executing prepared SQL query
+DEBUG 20-06-01 13:42:10[http-nio-8080-exec-6] [JdbcTemplate:609] - Executing prepared SQL statement [SELECT line_station.distance AS distance, line_station.duration AS duration, line_station.station_id AS station_id, line_station.pre_station_id AS pre_station_id FROM line_station WHERE line_station.line = ?]
