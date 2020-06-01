@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private static final String KOREAN_WORD = "^[가-힣]*$";
-
     private final StationService stationService;
     private final LineService lineService;
 
@@ -25,14 +23,12 @@ public class PathService {
     }
 
     public PathResponse findPath(ShortestPathResponse shortestPathResponse) {
-        System.out.println(shortestPathResponse.getSource() + " 소오스 " + shortestPathResponse.getTarget() + " 타아겟");
         Graph graph = new Graph();
         String source = shortestPathResponse.getSource();
         String target = shortestPathResponse.getTarget();
         String pathType = shortestPathResponse.getPathType();
 
         checkSameStationName(source, target);
-        checkKoreanStationName(source, target, KOREAN_WORD);
 
         List<Line> lines = lineService.findAll();
         Station sourceStation = findStationByName(source);
@@ -77,12 +73,6 @@ public class PathService {
 
     private Station findStationByName(String source) {
         return stationService.findByName(source);
-    }
-
-    private void checkKoreanStationName(String source, String target, String regExp) {
-        if (!source.matches(regExp) || !target.matches(regExp)) {
-            throw new PathException("출발역과 도착역은 한글만 입력가능합니다.");
-        }
     }
 
     private void checkSameStationName(String source, String target) {
