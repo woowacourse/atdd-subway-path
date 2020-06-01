@@ -1,11 +1,6 @@
-package wooteco.subway.admin.service;
+package wooteco.subway.admin.domain;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,12 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-
-@ExtendWith(MockitoExtension.class)
-class GraphServiceTest {
-    private final GraphService graphService = new GraphService();
+class GraphTest {
+    private final Graph graph = new Graph();
 
     @Test
     void findPath() {
@@ -43,7 +35,7 @@ class GraphServiceTest {
         List<Line> lines = new ArrayList<>(Arrays.asList(from, to));
 
         //when
-        List<Long> path = graphService.findPath(lines, 1L, 5L, PathType.DISTANCE);
+        List<Long> path = graph.findPath(lines, 1L, 5L, PathType.DISTANCE);
 
         //then
         assertThat(path.size()).isEqualTo(3);

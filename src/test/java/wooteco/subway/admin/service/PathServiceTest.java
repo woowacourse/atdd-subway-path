@@ -1,64 +1,60 @@
 package wooteco.subway.admin.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.ShortestPathResponse;
+import wooteco.subway.admin.repository.LineRepository;
+import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.errors.PathException;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class PathServiceTest {
 
-    @Mock
+    @Autowired
+    StationRepository stationRepository;
+    @Autowired
+    LineRepository lineRepository;
+    @Autowired
     private StationService stationService;
-
-    @Mock
+    @Autowired
     private LineService lineService;
+    private PathService pathService;
 
-    @Mock
-    private GraphService graphService;
+    @BeforeEach()
+    void setUp() {
+        stationRepository.deleteAll();
+        lineRepository.deleteAll();
+        pathService = new PathService(stationService, lineService);
+    }
 
     @Test
     void findPath() {
-        //given
-        Station source = new Station("강남역");
-        Station target = new Station("홍대 입구");
+        Station source = stationService.save(new Station("강남역"));
+        Station middle = stationService.save(new Station("사당역"));
+        Station target = stationService.save(new Station("홍대입구역"));
         String pathType = "DISTANCE";
+
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source.getName(), target.getName(), pathType);
 
-        List<Long> path = Arrays.asList(1L, 2L, 5L);
+        Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
+        line.addLineStation(new LineStation(null, source.getId(), 10, 10));
+        line.addLineStation(new LineStation(source.getId(), middle.getId(), 10, 10));
+        line.addLineStation(new LineStation(middle.getId(), target.getId(), 10, 10));
+        lineService.save(line);
 
-        Line line = new Line(1L, "1호선", LocalTime.now(), LocalTime.now(), 10);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 5L, 10, 10));
-
-        List<Line> lines = Collections.singletonList(line);
-
-        when(this.lineService.findAll()).thenReturn(lines);
-        when(stationService.findByName(source.getName())).thenReturn(source);
-        when(stationService.findByName(target.getName())).thenReturn(target);
-        when(graphService.findPath(lines, source.getId(), target.getId(), PathType.DISTANCE)).thenReturn(path);
-        when(stationService.findAllById(path)).thenReturn(Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(5L, "홍대입구")));
-
-        PathService pathService = new PathService(stationService, this.lineService, graphService);
-
+        PathService pathService = new PathService(stationService, lineService);
         PathResponse pathResponse = pathService.findPath(shortestPathResponse);
 
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
@@ -67,13 +63,11 @@ class PathServiceTest {
 
     @Test
     void sameStationNameTest() {
-
         String source = "강남역";
         String target = "강남역";
         String pathType = "DISTANCE";
 
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationService, lineService, graphService);
 
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class).hasMessage("출발역과 도착역은 같은 지하철역이 될 수 없습니다.");
@@ -81,21 +75,22 @@ class PathServiceTest {
 
     @Test
     void sourceAndTargetNotLinked() {
-        String source = "강남역";
-        String target = "잠실역";
+        Station sourceStation = stationService.save(new Station("강남역"));
+        Station targetStation = stationService.save(new Station("잠실역"));
 
-        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, "DISTANCE");
+        LineStation lineStation = new LineStation(null, sourceStation.getId(), 10, 10);
+        LineStation lineStation2 = new LineStation(sourceStation.getId() + 1L, targetStation.getId(), 10, 10);
+
         Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
+        line.addLineStation(lineStation);
+        line.addLineStation(lineStation2);
+        lineService.save(line);
 
-        when(stationService.findByName(source)).thenReturn(new Station(source));
-        when(stationService.findByName(target)).thenReturn(new Station(target));
-        when(this.lineService.findAll()).thenReturn(Collections.singletonList(line));
-
-        PathService pathService = new PathService(stationService, this.lineService, graphService);
+        ShortestPathResponse shortestPathResponse = new ShortestPathResponse(sourceStation.getName(), targetStation.getName(), "DISTANCE");
 
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
-                .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
+                .hasMessage("역이 연결되있지 않습니다.");
     }
 
     @Test
@@ -105,7 +100,7 @@ class PathServiceTest {
         String pathType = "DISTANCE";
 
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationService, lineService, graphService);
+        PathService pathService = new PathService(stationService, lineService);
 
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)
@@ -120,7 +115,6 @@ class PathServiceTest {
         String pathType = "DISTANCE";
 
         ShortestPathResponse shortestPathResponse = new ShortestPathResponse(source, target, pathType);
-        PathService pathService = new PathService(stationService, lineService, graphService);
 
         assertThatThrownBy(() -> pathService.findPath(shortestPathResponse))
                 .isInstanceOf(PathException.class)

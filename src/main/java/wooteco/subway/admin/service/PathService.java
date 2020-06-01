@@ -1,10 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
-import wooteco.subway.admin.domain.PathType;
-import wooteco.subway.admin.domain.Station;
+import wooteco.subway.admin.domain.*;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.dto.ShortestPathResponse;
 import wooteco.subway.admin.dto.StationResponse;
@@ -21,15 +18,15 @@ public class PathService {
 
     private final StationService stationService;
     private final LineService lineService;
-    private final GraphService graphService;
 
-    public PathService(StationService stationService, LineService lineService, GraphService graphService) {
+    public PathService(StationService stationService, LineService lineService) {
         this.stationService = stationService;
         this.lineService = lineService;
-        this.graphService = graphService;
     }
 
     public PathResponse findPath(ShortestPathResponse shortestPathResponse) {
+        System.out.println(shortestPathResponse.getSource() + " 소오스 " + shortestPathResponse.getTarget() + " 타아겟");
+        Graph graph = new Graph();
         String source = shortestPathResponse.getSource();
         String target = shortestPathResponse.getTarget();
         String pathType = shortestPathResponse.getPathType();
@@ -38,16 +35,13 @@ public class PathService {
         checkKoreanStationName(source, target, KOREAN_WORD);
 
         List<Line> lines = lineService.findAll();
-
         Station sourceStation = findStationByName(source);
         Station targetStation = findStationByName(target);
-
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), PathType.valueOf(pathType));
+        List<Long> path = graph.findPath(lines, sourceStation.getId(), targetStation.getId(), PathType.valueOf(pathType));
         List<Station> stations = stationService.findAllById(path);
         List<LineStation> lineStations = calculateLineStations(lines);
         List<LineStation> paths = extractPathLineStation(path, lineStations);
 
-        checkEmptyPath(paths);
         int duration = calculateFastestDuration(paths);
         int distance = calculateShortestDistance(paths);
 
@@ -72,12 +66,6 @@ public class PathService {
         return paths.stream()
                 .mapToInt(LineStation::getDuration)
                 .sum();
-    }
-
-    private void checkEmptyPath(List<LineStation> paths) {
-        if (paths.isEmpty()) {
-            throw new PathException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
     }
 
     private List<LineStation> calculateLineStations(List<Line> lines) {

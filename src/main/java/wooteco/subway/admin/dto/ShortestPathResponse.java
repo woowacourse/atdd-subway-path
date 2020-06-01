@@ -2,7 +2,6 @@ package wooteco.subway.admin.dto;
 
 public class ShortestPathResponse {
     private String source;
-
     private String target;
     private String pathType;
 

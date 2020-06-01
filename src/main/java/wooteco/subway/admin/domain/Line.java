@@ -1,6 +1,7 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.service.errors.PathException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,24 +75,23 @@ public class Line {
     }
 
     public List<Long> getLineStationsId() {
+        List<Long> stationIds = new ArrayList<>();
         if (stations.isEmpty()) {
-            return new ArrayList<>();
+            return stationIds;
         }
 
         LineStation firstLineStation = getFirstLineStation();
-        List<Long> stationIds = new ArrayList<>();
 
         stationIds.add(firstLineStation.getStationId());
-
-        while (true) {
+        for (int i = 1; i < stations.size(); i++) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = getNextLineStation(lastStationId);
 
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+            LineStation nextLineStation = stations.stream()
+                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
+                    .findFirst()
+                    .orElseThrow(() -> new PathException("역이 연결되있지 않습니다."));
 
-            stationIds.add(nextLineStation.get().getStationId());
+            stationIds.add(nextLineStation.getStationId());
         }
 
         return stationIds;
