@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +27,14 @@ public class LinesTest {
         line2.addEdge(new Edge(4L, 5L, 10, 10));
 
         lines = new Lines(Arrays.asList(line1, line2));
+    }
+
+    @DisplayName("최단거리에 해당하는 역 id를 잘 구하는지 테스트")
+    @Test
+    void createShortestPathTest() {
+        List<Long> shortestPath = lines.createShortestPath(1L, 3L, PathType.DISTANCE);
+        assertThat(shortestPath).hasSize(3);
+        assertThat(shortestPath).containsExactly(1L, 2L, 3L);
     }
 
     @DisplayName("모든 역의 id를 중복없이 잘 가져오는지 테스트")

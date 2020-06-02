@@ -43,7 +43,7 @@ public class EdgesTest {
     @DisplayName("역id로 edge를 삭제했을때 개수가 감소하는지 테스트")
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L})
-    void removeTest(Long stationId) {
+    void removeByStationIdTest(Long stationId) {
         edges.removeByStationId(stationId);
 
         assertThat(edges.getEdges()).hasSize(2);

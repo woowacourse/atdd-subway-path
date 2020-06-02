@@ -25,12 +25,12 @@ public class Stations {
                 .collect(Collectors.toList());
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
     public boolean isNotContains(Long stationId) {
         return stations.stream()
                 .noneMatch(station -> station.getId().equals(stationId));
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }

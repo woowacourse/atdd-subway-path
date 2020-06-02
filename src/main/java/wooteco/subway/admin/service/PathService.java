@@ -28,6 +28,7 @@ public class PathService {
         Lines wholeLines = new Lines(lineRepository.findAll());
         Stations wholeStations = new Stations(stationRepository.findAll());
         Edges wholeEdges = wholeLines.findWholeEdges();
+
         Long sourceStationId = request.getSource();
         Long targetStationId = request.getTarget();
 
