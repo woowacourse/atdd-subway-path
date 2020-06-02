@@ -1,0 +1,16 @@
+logging:
+  level:
+    org:
+      springframework: INFO
+      springframework.web: DEBUG
+      springframework.jdbc.core.JdbcTemplate: DEBUG
+
+spring:
+  profiles:
+    active: local
+  h2:
+    console:
+      enabled: true
+
+handlebars:
+  suffix: .html
