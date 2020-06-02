@@ -17,7 +17,7 @@ public class Station {
     }
 
     public Station(String name) {
-        this.name = checkKoreanStationName(name, KOREAN_WORD);
+        this.name = checkKoreanStationName(name);
         this.createdAt = LocalDateTime.now();
     }
 
@@ -27,8 +27,8 @@ public class Station {
         this.createdAt = LocalDateTime.now();
     }
 
-    private String checkKoreanStationName(String name, String regExp) {
-        if (name.matches(regExp)) {
+    public String checkKoreanStationName(String name) {
+        if (name.matches(Station.KOREAN_WORD)) {
             return name;
         }
         throw new PathException("지하철 역은 한국어만 가능합니다");
