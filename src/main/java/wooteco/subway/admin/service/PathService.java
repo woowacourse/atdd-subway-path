@@ -50,11 +50,11 @@ public class PathService {
     }
 
     private void validate(Stations wholeStations, Long sourceStationId, Long targetStationId) {
-        if (wholeStations.isNotContains(sourceStationId) || wholeStations.isNotContains(targetStationId)) {
-            throw new StationNotFoundException();
-        }
         if (sourceStationId.equals(targetStationId)) {
             throw new WrongPathException();
+        }
+        if (wholeStations.isNotContains(sourceStationId) || wholeStations.isNotContains(targetStationId)) {
+            throw new StationNotFoundException();
         }
     }
 }
