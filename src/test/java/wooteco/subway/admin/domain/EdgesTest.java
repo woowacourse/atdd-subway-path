@@ -12,12 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class EdgesTest {
     private Edges edges;
+    private Edge edge1;
+    private Edge edge2;
+    private Edge edge3;
 
     @BeforeEach
     void setUp() {
-        Edge edge1 = new Edge(null, 1L, 10, 10);
-        Edge edge2 = new Edge(1L, 2L, 10, 10);
-        Edge edge3 = new Edge(2L, 3L, 10, 10);
+        edge1 = new Edge(null, 1L, 10, 10);
+        edge2 = new Edge(1L, 2L, 10, 10);
+        edge3 = new Edge(2L, 3L, 10, 10);
         edges = new Edges();
         edges.add(edge1);
         edges.add(edge2);
@@ -57,4 +60,9 @@ public class EdgesTest {
         assertThat(stationIds.get(2)).isEqualTo(3L);
     }
 
+    @DisplayName("역 id 목록을 구할 수 있는지 테스트")
+    @Test
+    void getStationIdsTest() {
+        assertThat(edges.getStationIds()).containsExactlyInAnyOrder(1L, 2L, 3L);
+    }
 }
