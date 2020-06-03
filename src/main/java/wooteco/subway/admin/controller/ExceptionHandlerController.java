@@ -16,23 +16,14 @@ import wooteco.subway.admin.exception.NotFoundLineException;
 public class ExceptionHandlerController {
     private Logger logger = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
-    @ExceptionHandler(value = InvalidLineException.class)
-    public ResponseEntity<ErrorResponse> HandleInvalidLineException(InvalidLineException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(value = InvalidPathException.class)
-    public ResponseEntity<ErrorResponse> HandleInvalidPathException(InvalidPathException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(value = InvalidStationException.class)
-    public ResponseEntity<ErrorResponse> HandleInvalidStationException(InvalidStationException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(value = NotFoundLineException.class)
-    public ResponseEntity<ErrorResponse> HandleNotFoundLineException(NotFoundLineException e) {
+    @ExceptionHandler(
+        {
+            InvalidLineException.class,
+            InvalidPathException.class,
+            InvalidStationException.class,
+            NotFoundLineException.class
+        })
+    public ResponseEntity<ErrorResponse> HandleCustomException(InvalidLineException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
