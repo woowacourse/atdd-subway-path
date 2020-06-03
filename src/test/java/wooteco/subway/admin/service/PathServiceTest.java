@@ -6,11 +6,16 @@ import static org.mockito.Mockito.*;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -85,32 +90,42 @@ class PathServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("최단거리 기준 기준 최단경로.")
-    @Test
-    void findPathByDistance() {
-        List<Line> lines = createLinesIncludedLineStations();
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findAll()).thenReturn(
-            Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
-
-        PathResponse distanceResponse = pathService.findPath(1L, 5L, PathType.DISTANCE);
-        assertThat(distanceResponse.getStations()).size().isEqualTo(6);
-        assertThat(distanceResponse.getDuration()).isEqualTo(5);
-        assertThat(distanceResponse.getDistance()).isEqualTo(5);
+    private static Stream<Arguments> findPathSource() {
+        return Stream.of(
+            Arguments.of(PathType.DISTANCE, 6, 5, 5),
+            Arguments.of(PathType.DURATION, 4, 3, 302)
+        );
     }
 
-    @DisplayName("최단시간 기준 최단경로")
-    @Test
-    void findPathByDuration() {
+    @ParameterizedTest
+    @CsvSource({
+        "DISTANCE, 6, 5, 5",
+        "DURATION, 4, 3, 302"
+    })
+    void findByPathByCsvSource(PathType pathType, int stationSize, int duration, int distance) {
         List<Line> lines = createLinesIncludedLineStations();
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(
             Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
 
-        PathResponse durationResponse = pathService.findPath(1L, 5L, PathType.DURATION);
-        assertThat(durationResponse.getStations()).size().isEqualTo(4);
-        assertThat(durationResponse.getDuration()).isEqualTo(3);
-        assertThat(durationResponse.getDistance()).isEqualTo(302);
+        PathResponse durationResponse = pathService.findPath(1L, 5L, pathType);
+        assertThat(durationResponse.getStations()).size().isEqualTo(stationSize);
+        assertThat(durationResponse.getDuration()).isEqualTo(duration);
+        assertThat(durationResponse.getDistance()).isEqualTo(distance);
+    }
+
+    @ParameterizedTest
+    @MethodSource("findPathSource")
+    void findByPathByMethodSource(PathType pathType, int stationSize, int duration, int distance) {
+        List<Line> lines = createLinesIncludedLineStations();
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findAll()).thenReturn(
+            Arrays.asList(jamwon, sinsa, gyodae, seolleung, yeoksam, kangnam));
+
+        PathResponse durationResponse = pathService.findPath(1L, 5L, pathType);
+        assertThat(durationResponse.getStations()).size().isEqualTo(stationSize);
+        assertThat(durationResponse.getDuration()).isEqualTo(duration);
+        assertThat(durationResponse.getDistance()).isEqualTo(distance);
     }
 
     private List<Line> createLinesIncludedLineStations() {
