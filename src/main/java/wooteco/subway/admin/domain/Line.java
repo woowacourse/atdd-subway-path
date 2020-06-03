@@ -113,7 +113,6 @@ public class Line extends BaseTime {
 
     private void validateLineStation(LineStation lineStation) {
         validateStation(lineStation);
-        validateStations(lineStation);
         validateAlreadyRegistered(lineStation);
         validateHavingSame(lineStation);
     }
@@ -122,17 +121,14 @@ public class Line extends BaseTime {
         if (Objects.isNull(lineStation.getStationId())) {
             throw new InvalidLineException("현재역은 비어있을 수 없습니다.");
         }
+        if (Objects.equals(lineStation.getStationId(), lineStation.getPreStationId())) {
+            throw new InvalidLineException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
+        }
     }
 
     private void validateAlreadyRegistered(LineStation lineStation) {
         if (!lineStation.isFirstLineStation() && stations.isEmpty()) {
             throw new InvalidLineException("첫 노선을 먼저 등록해야 합니다.");
-        }
-    }
-
-    private void validateStations(LineStation lineStation) {
-        if (lineStation.getStationId().equals(lineStation.getPreStationId())) {
-            throw new InvalidLineException("같은 역을 출발지점과 도착지점으로 정할 수 없습니다.");
         }
     }
 
