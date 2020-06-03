@@ -10,4 +10,10 @@ class PathTypeTest {
         PathType distance = PathType.valueOf("DISTANCE");
         assertThat(distance).isEqualTo(PathType.DISTANCE);
     }
+
+    @Test
+    void valueOfDuration() {
+        PathType duration = PathType.valueOf("DURATION");
+        assertThat(duration).isEqualTo(PathType.DURATION);
+    }
 }

@@ -1,12 +1,14 @@
 package wooteco.subway.admin.domain;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,5 +51,23 @@ public class LineTest {
         line.removeLineStationById(stationId);
 
         assertThat(line.getStations()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("시작노선역을 제외한 나머지 노선역들이 리스트형태로 반환된다")
+    void lineStationsWithOutSourceLineStationTest() {
+        List<LineStation> lineStations = line.lineStationsWithOutSourceLineStation();
+        Set<LineStation> stations = line.getStations();
+        assertThat(lineStations.size()).isEqualTo(stations.size() - 1);
+    }
+
+    @Test
+    @DisplayName("노선의 정보가 갱신된다 ")
+    void updateLineTest() {
+        Line line = new Line("1호선", LocalTime.now(), LocalTime.now(), 10);
+        Line updateLine = new Line("2호선", LocalTime.now(), LocalTime.now(), 20);
+        line.update(updateLine);
+
+        assertThat(line.getName()).isEqualTo("2호선");
     }
 }
