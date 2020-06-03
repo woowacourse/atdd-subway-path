@@ -40,9 +40,13 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
+        Line persistLine = findById(id);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
+    }
+
+    private Line findById(Long lineId) {
+        return lineRepository.findById(lineId).orElseThrow(NotFoundLineException::new);
     }
 
     public void deleteLineById(Long id) {
@@ -51,7 +55,7 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         validateStations(request.getPreStationId(), request.getStationId());
-        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
+        Line line = findById(id);
         LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
@@ -69,13 +73,13 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(NotFoundLineException::new);
+        Line line = findById(lineId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
 
     public LineDetailResponse findLineWithStationsById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
+        Line line = findById(id);
         List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
         return LineDetailResponse.of(line, stations);
     }
