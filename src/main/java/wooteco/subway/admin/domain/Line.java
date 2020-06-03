@@ -6,6 +6,7 @@ import wooteco.subway.admin.service.errors.PathException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
     @Id
@@ -97,10 +98,10 @@ public class Line {
         return stationIds;
     }
 
-    private Optional<LineStation> getNextLineStation(Long lastStationId) {
+    public List<LineStation> lineStationsWithOutSourceLineStation() {
         return stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                .findFirst();
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .collect(Collectors.toList());
     }
 
     private LineStation getFirstLineStation() {

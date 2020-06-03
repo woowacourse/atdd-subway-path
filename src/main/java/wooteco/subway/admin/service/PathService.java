@@ -35,18 +35,18 @@ public class PathService {
         Station targetStation = findStationByName(target);
         List<Long> path = graph.findPath(lines, sourceStation.getId(), targetStation.getId(), PathType.valueOf(pathType));
         List<Station> stations = stationService.findAllById(path);
-        List<LineStation> lineStations = calculateLineStations(lines);
+        List<LineStation> lineStations = findLineStationsWithOutSourceLineStation(lines);
         List<LineStation> paths = extractPathLineStation(path, lineStations);
 
         int duration = calculateFastestDuration(paths);
         int distance = calculateShortestDistance(paths);
 
-        List<Station> pathStation = calculateStationPath(path, stations);
+        List<Station> pathStation = findStationPath(path, stations);
 
         return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
     }
 
-    private List<Station> calculateStationPath(List<Long> path, List<Station> stations) {
+    private List<Station> findStationPath(List<Long> path, List<Station> stations) {
         return path.stream()
                 .map(it -> extractStation(it, stations))
                 .collect(Collectors.toList());
@@ -64,11 +64,12 @@ public class PathService {
                 .sum();
     }
 
-    private List<LineStation> calculateLineStations(List<Line> lines) {
-        return lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .collect(Collectors.toList());
+    private List<LineStation> findLineStationsWithOutSourceLineStation(List<Line> lines) {
+        List<LineStation> lineStations = new ArrayList<>();
+        lines.stream()
+                .map(Line::lineStationsWithOutSourceLineStation)
+                .forEach(lineStations::addAll);
+        return lineStations;
     }
 
     private Station findStationByName(String source) {
@@ -89,20 +90,14 @@ public class PathService {
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
-        Long preStationId = null;
         List<LineStation> paths = new ArrayList<>();
 
-        for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
-
-            Long finalPreStationId = preStationId;
+        for (int i = 1; i < path.size(); i++) {
+            Long stationId = path.get(i);
+            Long finalPreStationId = path.get(i - 1);
             LineStation lineStation = calculateLineStation(lineStations, stationId, finalPreStationId);
 
             paths.add(lineStation);
-            preStationId = stationId;
         }
 
         return paths;

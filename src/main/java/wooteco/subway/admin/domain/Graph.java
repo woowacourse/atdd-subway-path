@@ -16,7 +16,8 @@ public class Graph {
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         lines.stream()
                 .flatMap(it -> it.getLineStationsId().stream())
-                .forEach(it -> graph.addVertex(it));
+                .forEach(graph::addVertex);
+
         lines.stream()
                 .flatMap(it -> it.getStations().stream())
                 .filter(it -> Objects.nonNull(it.getPreStationId()))
