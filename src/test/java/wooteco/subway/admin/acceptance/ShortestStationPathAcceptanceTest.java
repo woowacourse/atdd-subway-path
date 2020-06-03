@@ -17,32 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql({"/schema-test.sql","/truncate.sql"})
 public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
-    private static final String STATION_NAME_KANGNAM = "강남역";
-    private static final String STATION_NAME_YEOKSAM = "역삼역";
-    private static final String STATION_NAME_SEOLLEUNG = "선릉역"; //환승역
-    private static final String STATION_NAME_SAMSUNG = "삼성역";
-    private static final String STATION_NAME_SPORTS_COMPLEX = "종합운동장역";
-    private static final String STATION_NAME_JAMSILSAENAE = "잠실새내역";
-    private static final String STATION_NAME_JAMSIL = "잠실역";
-    private static final String STATION_NAME_YANGJAE = "양재역";
-    private static final String STATION_NAME_MAEBONG = "매봉역";
-    private static final String STATION_NAME_DOGOK = "도곡역";
-    private static final String STATION_NAME_DAECHI = "대치역";
-    private static final String STATION_NAME_HANGNYEOUL = "학여울역";
-    private static final String STATION_NAME_DAECHUNG = "대청역";
-    private static final String STATION_NAME_SUSEO = "수서역";
-    private static final String STATION_NAME_GARAK_MARKET = "가락시장역";
-    private static final String STATION_NAME_SONGPA = "송파역";
-    private static final String STATION_NAME_SEOKCHON = "석촌역";
-    private static final String STATION_NAME_YANGJAE_CITIZEN_FOREST = "양재시민의숲역";
-    private static final String STATION_NAME_CHEONGGYESAN = "청계산입구역";
-    private static final String STATION_NAME_PANGYO = "판교역";
-    private static final String STATION_NAME_JUNGJA = "정자역";
-    private static final String STATION_NAME_HANTI = "한티역";
-    private static final String STATION_NAME_GURYONG = "구룡역";
-    private static final String STATION_NAME_GAEPODONG = "개포동역";
-    private static final String STATION_NAME_DAEMOSAN = "대모산입구역";
-
     @Autowired
     StationRepository stationRepository;
     @LocalServerPort

@@ -8,12 +8,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -22,6 +22,28 @@ public class AcceptanceTest {
     static final String STATION_NAME_KANGNAM = "강남역";
     static final String STATION_NAME_YEOKSAM = "역삼역";
     static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    static final String STATION_NAME_SAMSUNG = "삼성역";
+    static final String STATION_NAME_SPORTS_COMPLEX = "종합운동장역";
+    static final String STATION_NAME_JAMSILSAENAE = "잠실새내역";
+    static final String STATION_NAME_JAMSIL = "잠실역";
+    static final String STATION_NAME_YANGJAE = "양재역";
+    static final String STATION_NAME_MAEBONG = "매봉역";
+    static final String STATION_NAME_DOGOK = "도곡역";
+    static final String STATION_NAME_DAECHI = "대치역";
+    static final String STATION_NAME_HANGNYEOUL = "학여울역";
+    static final String STATION_NAME_DAECHUNG = "대청역";
+    static final String STATION_NAME_SUSEO = "수서역";
+    static final String STATION_NAME_GARAK_MARKET = "가락시장역";
+    static final String STATION_NAME_SONGPA = "송파역";
+    static final String STATION_NAME_SEOKCHON = "석촌역";
+    static final String STATION_NAME_YANGJAE_CITIZEN_FOREST = "양재시민의숲역";
+    static final String STATION_NAME_CHEONGGYESAN = "청계산입구역";
+    static final String STATION_NAME_PANGYO = "판교역";
+    static final String STATION_NAME_JUNGJA = "정자역";
+    static final String STATION_NAME_HANTI = "한티역";
+    static final String STATION_NAME_GURYONG = "구룡역";
+    static final String STATION_NAME_GAEPODONG = "개포동역";
+    static final String STATION_NAME_DAEMOSAN = "대모산입구역";
 
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";
@@ -40,40 +62,6 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
-    }
-
-    List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
-    }
-
-    void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-        then().
-                log().all();
-    }
-
     LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -83,58 +71,32 @@ public class AcceptanceTest {
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
-    }
-
-    LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                then().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/lines").
+                        then().
                         log().all().
-                        extract().as(LineDetailResponse.class);
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
-    void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+    StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        params.put("name", name);
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                put("/lines/" + id).
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    List<LineResponse> getLines() {
         return
-                given().when().
-                        get("/lines").
-                then().
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/stations").
+                        then().
                         log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-    }
-
-    void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
-        then().
-                log().all();
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(StationResponse.class);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -159,16 +121,4 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
 }
-
