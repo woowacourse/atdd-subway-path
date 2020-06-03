@@ -6,13 +6,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.admin.domain.Graph;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStationEdge;
 import wooteco.subway.admin.domain.Path;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
@@ -36,11 +34,9 @@ public class PathService {
     public PathResponse findPath(Long sourceId, Long targetId, PathType pathType) {
         try {
             validate(sourceId, targetId);
-            Graph graph = new Graph(new WeightedMultigraph<>(LineStationEdge.class));
             List<Line> lines = lineRepository.findAll();
             List<Station> stations = stationRepository.findAll();
-            graph.addVertex(stations);
-            graph.readyToEdge(lines, pathType);
+            Graph graph = Graph.of(stations, lines, pathType);
             Path path = graph.createPath(sourceId, targetId);
             Map<Long, Station> idToStation = stations.stream()
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
@@ -74,6 +70,5 @@ public class PathService {
             throw new InvalidPathException("출발역과 도착역이 같습니다.");
         }
     }
-
 
 }

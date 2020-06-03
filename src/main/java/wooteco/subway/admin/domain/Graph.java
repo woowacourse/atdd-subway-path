@@ -10,17 +10,24 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class Graph {
     private final WeightedMultigraph<Long, LineStationEdge> graph;
 
-    public Graph(WeightedMultigraph<Long, LineStationEdge> graph) {
+    private Graph(WeightedMultigraph<Long, LineStationEdge> graph) {
         this.graph = graph;
     }
 
-    public void addVertex(List<Station> stations) {
+    public static Graph of(List<Station> stations, List<Line> lines, PathType pathType) {
+        Graph graph = new Graph(new WeightedMultigraph<>(LineStationEdge.class));
+        graph.addVertex(stations);
+        graph.readyToEdge(lines, pathType);
+        return graph;
+    }
+
+    private void addVertex(List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
     }
 
-    public void readyToEdge(List<Line> lines, PathType pathType) {
+    private void readyToEdge(List<Line> lines, PathType pathType) {
         List<LineStation> lineStations = lines.stream()
             .flatMap(line -> line.getStations().stream())
             .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
