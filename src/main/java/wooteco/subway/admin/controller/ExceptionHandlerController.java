@@ -27,8 +27,9 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(value = Exception.class)
-    public void HandleException(Exception e) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> HandleException(Exception e) {
         logger.error("error", e);
+        return ResponseEntity.badRequest().body(new ErrorResponse("알 수 없는 에러입니다."));
     }
 }
