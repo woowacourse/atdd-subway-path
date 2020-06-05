@@ -38,7 +38,7 @@ public class LineService {
 
 	@Transactional
 	public void updateLine(Long id, LineRequest request) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = findLineById(id);
 		persistLine.update(request.toLine());
 		lineRepository.save(persistLine);
 	}
@@ -50,7 +50,7 @@ public class LineService {
 
 	@Transactional
 	public void addLineStation(Long id, LineStationCreateRequest request) {
-		Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line line = findLineById(id);
 		LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
 			request.getDistance(), request.getDuration());
 		line.addLineStation(lineStation);
@@ -60,14 +60,14 @@ public class LineService {
 
 	@Transactional
 	public void removeLineStation(Long lineId, Long stationId) {
-		Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+		Line line = findLineById(lineId);
 		line.removeLineStationById(stationId);
 		lineRepository.save(line);
 	}
 
 	@Transactional(readOnly = true)
 	public LineDetailResponse findLineWithStationsById(Long id) {
-		Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line line = findLineById(id);
 		List<Station> stations = stationRepository.findAllById(line.getLineStationsId());
 		return LineDetailResponse.of(line, stations);
 	}
@@ -83,5 +83,9 @@ public class LineService {
 		}
 
 		return WholeSubwayResponse.of(lineDetailResponses);
+	}
+
+	private Line findLineById(Long id) {
+		return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다 id=" + id));
 	}
 }

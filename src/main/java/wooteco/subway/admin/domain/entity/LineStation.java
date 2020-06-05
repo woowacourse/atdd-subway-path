@@ -1,18 +1,34 @@
 package wooteco.subway.admin.domain.entity;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 public class LineStation {
 	private Long preStationId;
 	private Long stationId;
 	private int distance;
 	private int duration;
+	@CreatedDate
+	private LocalDateTime createdAt;
+	@LastModifiedDate
+	private LocalDateTime updatedAt;
 
 	public LineStation(Long preStationId, Long stationId, int distance, int duration) {
 		this.preStationId = preStationId;
 		this.stationId = stationId;
 		this.distance = distance;
 		this.duration = duration;
+	}
+
+	public void updatePreLineStation(Long preStationId) {
+		this.preStationId = preStationId;
+	}
+
+	public boolean isStart() {
+		return Objects.isNull(this.preStationId);
 	}
 
 	public Long getPreStationId() {
@@ -31,16 +47,12 @@ public class LineStation {
 		return duration;
 	}
 
-	public void updatePreLineStation(Long preStationId) {
-		this.preStationId = preStationId;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public boolean isStart() {
-		return Objects.isNull(this.preStationId);
-	}
-
-	public boolean isSameStation(Long stationId) {
-		return this.stationId.equals(stationId);
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 
 	@Override
@@ -51,9 +63,5 @@ public class LineStation {
 			", distance=" + distance +
 			", duration=" + duration +
 			'}';
-	}
-
-	public boolean isPreStation(Long stationId) {
-		return Objects.equals(this.preStationId, stationId);
 	}
 }

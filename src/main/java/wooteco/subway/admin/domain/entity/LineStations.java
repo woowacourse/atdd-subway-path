@@ -2,6 +2,7 @@ package wooteco.subway.admin.domain.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,12 +75,12 @@ public class LineStations {
 
 	private LineStation findFirstStation() {
 		return lineStations.stream()
-			.filter(it -> it.getPreStationId() == null)
+			.filter(LineStation::isStart)
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new IllegalArgumentException("첫 역을 찾을 수 없습니다."));
 	}
 
 	public List<LineStation> get() {
-		return lineStations;
+		return Collections.unmodifiableList(lineStations);
 	}
 }

@@ -3,12 +3,14 @@ package wooteco.subway.admin.domain.entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
 public class Station {
 	@Id
 	private Long id;
 	private String name;
+	@CreatedDate
 	private LocalDateTime createdAt;
 
 	public Station() {
@@ -35,10 +37,6 @@ public class Station {
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
-	}
-
-	public boolean isSameName(String sourceName) {
-		return this.name.equals(sourceName);
 	}
 
 	@Override
