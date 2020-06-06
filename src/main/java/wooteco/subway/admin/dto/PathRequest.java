@@ -1,8 +1,13 @@
 package wooteco.subway.admin.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class PathRequest {
+    @NotBlank
     private String source;
+    @NotBlank
     private String target;
+    @NotBlank
     private String pathType;
 
     public PathRequest() {

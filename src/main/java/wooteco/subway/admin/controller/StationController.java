@@ -4,13 +4,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.PathRequest;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationCreateRequest;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
-import wooteco.subway.admin.service.LineService;
 import wooteco.subway.admin.service.PathService;
 
+import javax.validation.Valid;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -46,7 +48,7 @@ public class StationController {
     }
 
     @GetMapping("/stations/path")
-    public ResponseEntity<PathResponse> showShortestStationPath(@ModelAttribute PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> showShortestStationPath(@ModelAttribute @Valid PathRequest pathRequest) {
         PathType pathType = PathType.valueOf(pathRequest.getPathType());
         PathResponse path = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathType);
         return ResponseEntity.ok().body(path);
