@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class PathService {
     private static final String KOREAN_WORD = "^[가-힣]*$";
+    private static final int FIRST_INDEX = 0;
+    private static final int SECOND_INDEX = 1;
 
     private StationRepository stationRepository;
     private LineRepository lineRepository;
@@ -103,21 +105,17 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
+                .filter(it -> it.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
-        Long preStationId = null;
+        Long preStationId = setupPreStationId(path);
         List<LineStation> paths = new ArrayList<>();
 
-        for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
-
+        for (int i = SECOND_INDEX; i < path.size(); i++) {
+            Long stationId = path.get(i);
             Long finalPreStationId = preStationId;
             LineStation lineStation = calculateLineStation(lineStations, stationId, finalPreStationId);
 
@@ -126,6 +124,10 @@ public class PathService {
         }
 
         return paths;
+    }
+
+    private Long setupPreStationId(List<Long> path) {
+        return path.isEmpty() ? null : path.get(FIRST_INDEX);
     }
 
     private LineStation calculateLineStation(List<LineStation> lineStations, Long stationId, Long finalPreStationId) {
