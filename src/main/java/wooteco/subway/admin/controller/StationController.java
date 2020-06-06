@@ -47,12 +47,8 @@ public class StationController {
 
     @GetMapping("/stations/path")
     public ResponseEntity<PathResponse> showShortestStationPath(@ModelAttribute PathRequest pathRequest) {
-        try {
-            PathType pathType = PathType.valueOf(pathRequest.getPathType());
-            PathResponse path = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathType);
-            return ResponseEntity.ok().body(path);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        PathType pathType = PathType.valueOf(pathRequest.getPathType());
+        PathResponse path = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathType);
+        return ResponseEntity.ok().body(path);
     }
 }
