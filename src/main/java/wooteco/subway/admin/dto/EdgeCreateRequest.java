@@ -1,12 +1,17 @@
-package wooteco.subway.admin.domain;
+package wooteco.subway.admin.dto;
 
-public class LineStation {
+import wooteco.subway.admin.domain.Edge;
+
+public class EdgeCreateRequest {
     private Long preStationId;
     private Long stationId;
     private int distance;
     private int duration;
 
-    public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+    public EdgeCreateRequest() {
+    }
+
+    public EdgeCreateRequest(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
@@ -29,7 +34,7 @@ public class LineStation {
         return duration;
     }
 
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
+    public Edge toEdge() {
+        return new Edge(preStationId, stationId, distance, duration);
     }
 }

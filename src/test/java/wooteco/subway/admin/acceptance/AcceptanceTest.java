@@ -8,6 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.admin.domain.PathType;
 import wooteco.subway.admin.dto.*;
 
 import java.time.LocalTime;
@@ -49,9 +50,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+                        when().
                         post("/stations").
-                then().
+                        then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -61,7 +62,7 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/stations").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
@@ -70,7 +71,7 @@ public class AcceptanceTest {
     void deleteStation(Long id) {
         given().when().
                 delete("/stations/" + id).
-        then().
+                then().
                 log().all();
     }
 
@@ -83,24 +84,24 @@ public class AcceptanceTest {
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/lines").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
-    LineDetailResponse getLine(Long id) {
+    LineWithStationsResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
-                then().
+                        then().
                         log().all().
-                        extract().as(LineDetailResponse.class);
+                        extract().as(LineWithStationsResponse.class);
     }
 
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -113,9 +114,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
+                when().
                 put("/lines/" + id).
-        then().
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -124,7 +125,7 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/lines").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
@@ -133,15 +134,15 @@ public class AcceptanceTest {
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
-        then().
+                then().
                 log().all();
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId) {
-        addLineStation(lineId, preStationId, stationId, 10, 10);
+    void addEdge(Long lineId, Long preStationId, Long stationId) {
+        addEdge(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    void addEdge(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -159,7 +160,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    void removeLineStation(Long lineId, Long stationId) {
+    void removeEdge(Long lineId, Long stationId) {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -170,5 +171,30 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        return
+                given().when().
+                        get("/lines/detail").
+                        then().
+                        extract().as(WholeSubwayResponse.class);
+    }
+
+    PathResponse calculatePath(Long source, Long target, PathType type) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+        params.put("type", type);
+
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/paths?source="+ source +"&target=" +target + "&type="+type.toString()).
+                        then().
+                        log().all().
+                        extract().as(PathResponse.class);
+
+    }
 }
 

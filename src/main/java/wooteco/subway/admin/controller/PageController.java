@@ -19,7 +19,19 @@ public class PageController {
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
-        return "admin/index";
+        return "service/index";
+    }
+
+    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+    public String mapPage(Model model) {
+        model.addAttribute("stations", stationRepository.findAll());
+        return "service/map";
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+    public String searchPage(Model model) {
+        model.addAttribute("stations", stationRepository.findAll());
+        return "service/search";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)

@@ -2,19 +2,21 @@ package wooteco.subway.admin.service;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.admin.domain.Edge;
 import wooteco.subway.admin.domain.Line;
-import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
-import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.EdgeCreateRequest;
+import wooteco.subway.admin.dto.LineWithStationsResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,21 +55,21 @@ public class LineServiceTest {
         station4 = new Station(4L, STATION_NAME4);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line.addEdge(new Edge(null, 1L, 10, 10));
+        line.addEdge(new Edge(1L, 2L, 10, 10));
+        line.addEdge(new Edge(2L, 3L, 10, 10));
     }
 
     @Test
-    void addLineStationAtTheFirstOfLine() {
+    void addEdgeAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
-        lineService.addLineStation(line.getId(), request);
+        EdgeCreateRequest request = new EdgeCreateRequest(null, station4.getId(), 10, 10);
+        lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(4L);
         assertThat(stationIds.get(1)).isEqualTo(1L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -75,15 +77,15 @@ public class LineServiceTest {
     }
 
     @Test
-    void addLineStationBetweenTwo() {
+    void addEdgeBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
-        lineService.addLineStation(line.getId(), request);
+        EdgeCreateRequest request = new EdgeCreateRequest(station1.getId(), station4.getId(), 10, 10);
+        lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(4L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -91,15 +93,15 @@ public class LineServiceTest {
     }
 
     @Test
-    void addLineStationAtTheEndOfLine() {
+    void addEdgeAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
-        lineService.addLineStation(line.getId(), request);
+        EdgeCreateRequest request = new EdgeCreateRequest(station3.getId(), station4.getId(), 10, 10);
+        lineService.addEdge(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getEdgesSize()).isEqualTo(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
@@ -107,35 +109,35 @@ public class LineServiceTest {
     }
 
     @Test
-    void removeLineStationAtTheFirstOfLine() {
+    void removeEdgeAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-        lineService.removeLineStation(line.getId(), 1L);
+        lineService.removeEdge(line.getId(), 1L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdgesSize()).isEqualTo(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(2L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
     @Test
-    void removeLineStationBetweenTwo() {
+    void removeEdgeBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-        lineService.removeLineStation(line.getId(), 2L);
+        lineService.removeEdge(line.getId(), 2L);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
     @Test
-    void removeLineStationAtTheEndOfLine() {
+    void removeEdgeAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-        lineService.removeLineStation(line.getId(), 3L);
+        lineService.removeEdge(line.getId(), 3L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getEdgesSize()).isEqualTo(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getSortedStationIds();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
@@ -146,8 +148,29 @@ public class LineServiceTest {
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
+        LineWithStationsResponse lineWithStationsResponse = lineService.findLineWithStationsById(1L);
 
-        assertThat(lineDetailResponse.getStations()).hasSize(3);
+        assertThat(lineWithStationsResponse.getStations()).hasSize(3);
+    }
+
+    @DisplayName("전체 노선 조회 테스트")
+    @Test
+    void wholeLinesTest() {
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        newLine.addEdge(new Edge(null, 4L, 10, 10));
+        newLine.addEdge(new Edge(4L, 5L, 10, 10));
+        newLine.addEdge(new Edge(5L, 6L, 10, 10));
+
+        List<Station> stations = Arrays.asList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
+                new Station(3L, "삼성역"), new Station(4L, "양재역")
+                , new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
+        when(stationRepository.findAllById(anyList())).thenReturn(stations);
+
+        List<LineWithStationsResponse> responses = lineService.wholeLines().getLineWithStationsResponse();
+
+        assertThat(responses).isNotNull();
+        assertThat(responses.get(0).getStations().size()).isEqualTo(3);
+        assertThat(responses.get(1).getStations().size()).isEqualTo(3);
     }
 }

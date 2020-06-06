@@ -1,10 +1,17 @@
 package wooteco.subway.admin.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 public class Line {
     @Id
@@ -13,9 +20,12 @@ public class Line {
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
     private LocalDateTime updatedAt;
-    private Set<LineStation> stations = new HashSet<>();
+    @Embedded.Nullable
+    private Edges edges;
 
     public Line() {
     }
@@ -25,8 +35,7 @@ public class Line {
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.edges = new Edges(new HashSet<>());
     }
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
@@ -53,8 +62,12 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public Edges getEdges() {
+        return edges;
+    }
+
+    public Edges getEdgesExceptFirst() {
+        return edges.getEdgesExceptFirst();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -78,59 +91,42 @@ public class Line {
         if (line.getIntervalTime() != 0) {
             this.intervalTime = line.getIntervalTime();
         }
-
-        this.updatedAt = LocalDateTime.now();
     }
 
-    public void addLineStation(LineStation lineStation) {
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), lineStation.getPreStationId()))
-                .findAny()
-                .ifPresent(it -> it.updatePreLineStation(lineStation.getStationId()));
-
-        stations.add(lineStation);
+    public void addEdge(Edge edge) {
+        edges.add(edge);
     }
 
-    public void removeLineStationById(Long stationId) {
-        LineStation targetLineStation = stations.stream()
-                .filter(it -> Objects.equals(it.getStationId(), stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        stations.stream()
-                .filter(it -> Objects.equals(it.getPreStationId(), stationId))
-                .findFirst()
-                .ifPresent(it -> it.updatePreLineStation(targetLineStation.getPreStationId()));
-
-        stations.remove(targetLineStation);
+    public void removeEdgeByStationId(Long stationId) {
+        edges.removeByStationId(stationId);
     }
 
-    public List<Long> getLineStationsId() {
-        if (stations.isEmpty()) {
-            return new ArrayList<>();
-        }
+    public void setAllEdgeWeight(WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
+        getEdgesExceptFirst().setAllEdgeWeight(graph, type);
+    }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+    public List<Long> getSortedStationIds() {
+        return edges.getSortedStationIds();
+    }
 
-        List<Long> stationIds = new ArrayList<>();
-        stationIds.add(firstLineStation.getStationId());
+    public List<Long> getStationIds() {
+        return edges.getStationIds();
+    }
 
-        while (true) {
-            Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
-                    .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+    public int getEdgesSize() {
+        return edges.size();
+    }
 
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
 
-            stationIds.add(nextLineStation.get().getStationId());
-        }
-
-        return stationIds;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
