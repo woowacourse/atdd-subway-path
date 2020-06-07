@@ -55,7 +55,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         RestAssured.port = port;
     }
 
-    @DisplayName("강남역 부터 잠실역 까지 실제 노선도를 만들어 최단거리를 계산한다.")
+    @DisplayName("강남역 부터 잠실역 까지 거리(DISTANCE) 기준 최단거리를 계산한다.")
     @Test
     void findShortestStationPath() {
         setupLinesAndStations();
@@ -65,7 +65,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         assertThat(shortestStationPath.getDistance()).isEqualTo(11);
     }
 
-    @DisplayName("강남역 부터 잠실역 까지 실제 노선도를 만들어 최단거리를 계산한다.")
+    @DisplayName("강남역 부터 잠실역 까지 지속 기간(DURATION) 기준 최단거리를 계산한다.")
     @Test
     void findFastestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
