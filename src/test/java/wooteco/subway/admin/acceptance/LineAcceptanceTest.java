@@ -2,6 +2,7 @@ package wooteco.subway.admin.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineResponse;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql({"/schema-test.sql","/truncate.sql"})
 public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다")
     @Test
