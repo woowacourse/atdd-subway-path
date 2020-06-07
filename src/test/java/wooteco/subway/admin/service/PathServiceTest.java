@@ -23,12 +23,16 @@ class PathServiceTest {
 
     @Autowired
     StationRepository stationRepository;
+
     @Autowired
     LineRepository lineRepository;
+
     @Autowired
     private StationService stationService;
+
     @Autowired
     private LineService lineService;
+
     private PathService pathService;
 
     @BeforeEach()

@@ -14,6 +14,7 @@ import wooteco.subway.admin.dto.StationResponse;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,57 +69,108 @@ public class AcceptanceTest {
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
+        String path = "lines";
+        return post(path, params, LineResponse.class);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/lines").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(LineResponse.class);
     }
 
     StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/stations").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+        String path = "/stations";
+        return post(path, params, StationResponse.class);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    Void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
         params.put("distance", distance.toString());
         params.put("duration", duration.toString());
+        String path = "/lines/" + lineId + "/stations";
+        return post(path, params, Void.class);
 
+
+    }
+
+    <T> T post(String path, Map<String, String> params, Class<T> responseType) {
+        if (responseType.equals(Void.class)) {
+            okStatusPost(path, params);
+            return null;
+        }
+        return createStatusPost(path, params, responseType);
+    }
+
+    private <T> T createStatusPost(String path, Map<String, String> params, Class<T> responseType) {
+        return given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).
+                extract().as(responseType);
+    }
+
+    private void okStatusPost(String path, Map<String, String> params) {
         given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/lines/" + lineId + "/stations").
+                post(path).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
+    }
+
+    void delete(String path) {
+        given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    <T> T get(String path, Class<T> responseType) {
+        return
+                given().
+                        when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().as(responseType);
+    }
+
+    void put(String path, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    <T> List<T> getList(String path, Class<T> responseType) {
+        return
+                given().when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", responseType);
     }
 
 }

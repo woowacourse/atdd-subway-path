@@ -30,19 +30,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                        then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
+        String path = "/stations";
+        return getList(path, StationResponse.class);
     }
 
     void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-                then().
-                log().all();
+        String path = "/stations/" + id;
+        delete(path);
     }
 }

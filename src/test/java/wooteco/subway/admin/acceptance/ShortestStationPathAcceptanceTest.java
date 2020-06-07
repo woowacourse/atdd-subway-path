@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.admin.dto.PathResponse;
 import wooteco.subway.admin.repository.StationRepository;
@@ -31,37 +30,9 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(강남역);
-        createStation(역삼역);
-        createStation(선릉역);
-        createStation(삼성역);
-        createStation(종합운동장역);
-        createStation(잠실새내역);
-        createStation(잠실역);
-        createStation(양재역);
-        createStation(매봉역);
-        createStation(도곡역);
-        createStation(대치역);
-        createStation(학여울역);
-        createStation(대청역);
-        createStation(수서역);
-        createStation(가락시장역);
-        createStation(송파역);
-        createStation(석촌역);
-        createStation(양재시민의숲역);
-        createStation(청계산입구역);
-        createStation(판교역);
-        createStation(정자역);
-        createStation(한티역);
-        createStation(구룡역);
-        createStation(개포동역);
-        createStation(대모산입구역);
+        createStations();
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
-        createLine("2호선");
-        createLine("3호선");
-        createLine("8호선");
-        createLine("신분당선");
-        createLine("분당선");
+        createLines();
         //And 2개의 노선은 같은 환승역이 존재 한다.
 
         //2호선
@@ -110,37 +81,9 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findFastestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(강남역);
-        createStation(역삼역);
-        createStation(선릉역);
-        createStation(삼성역);
-        createStation(종합운동장역);
-        createStation(잠실새내역);
-        createStation(잠실역);
-        createStation(양재역);
-        createStation(매봉역);
-        createStation(도곡역);
-        createStation(대치역);
-        createStation(학여울역);
-        createStation(대청역);
-        createStation(수서역);
-        createStation(가락시장역);
-        createStation(송파역);
-        createStation(석촌역);
-        createStation(양재시민의숲역);
-        createStation(청계산입구역);
-        createStation(판교역);
-        createStation(정자역);
-        createStation(한티역);
-        createStation(구룡역);
-        createStation(개포동역);
-        createStation(대모산입구역);
+        createStations();
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
-        createLine("2호선");
-        createLine("3호선");
-        createLine("8호선");
-        createLine("신분당선");
-        createLine("분당선");
+        createLines();
         //And 2개의 노선은 같은 환승역이 존재 한다.
 
         //2호선
@@ -186,13 +129,44 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     }
 
     private PathResponse getShortestStationPath(String source, String target, String pathType) {
-        return given().
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get(String.format("/stations/shortest-path?source=%s&target=%s&pathType=%s",source, target, pathType)).
-                then().
-                log().all().
-                extract().as(PathResponse.class);
+        String path = String.format("/stations/shortest-path?source=%s&target=%s&pathType=%s", source, target, pathType);
+        return get(path, PathResponse.class);
+    }
+
+    private void createLines() {
+        createLine("2호선");
+        createLine("3호선");
+        createLine("8호선");
+        createLine("신분당선");
+        createLine("분당선");
+    }
+
+    private void createStations() {
+        createStation(강남역);
+        createStation(역삼역);
+        createStation(선릉역);
+        createStation(삼성역);
+        createStation(종합운동장역);
+        createStation(잠실새내역);
+        createStation(잠실역);
+        createStation(양재역);
+        createStation(매봉역);
+        createStation(도곡역);
+        createStation(대치역);
+        createStation(학여울역);
+        createStation(대청역);
+        createStation(수서역);
+        createStation(가락시장역);
+        createStation(송파역);
+        createStation(석촌역);
+        createStation(양재시민의숲역);
+        createStation(청계산입구역);
+        createStation(판교역);
+        createStation(정자역);
+        createStation(한티역);
+        createStation(구룡역);
+        createStation(개포동역);
+        createStation(대모산입구역);
     }
 }
 
