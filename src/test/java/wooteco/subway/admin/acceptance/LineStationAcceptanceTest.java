@@ -17,9 +17,9 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponse1 = createStation(강남역);
+        StationResponse stationResponse2 = createStation(역삼역);
+        StationResponse stationResponse3 = createStation(선릉역);
 
         LineResponse lineResponse = createLine("2호선");
 

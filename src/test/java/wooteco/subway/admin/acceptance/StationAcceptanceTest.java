@@ -15,9 +15,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void manageStation() {
         // when
-        createStation(STATION_NAME_KANGNAM);
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(강남역);
+        createStation(역삼역);
+        createStation(선릉역);
         // then
         List<StationResponse> stations = getStations();
         assertThat(stations.size()).isEqualTo(3);

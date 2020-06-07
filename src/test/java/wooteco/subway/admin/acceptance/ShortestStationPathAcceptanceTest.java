@@ -31,31 +31,31 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(STATION_NAME_KANGNAM);
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
-        createStation(STATION_NAME_SAMSUNG);
-        createStation(STATION_NAME_SPORTS_COMPLEX);
-        createStation(STATION_NAME_JAMSILSAENAE);
-        createStation(STATION_NAME_JAMSIL);
-        createStation(STATION_NAME_YANGJAE);
-        createStation(STATION_NAME_MAEBONG);
-        createStation(STATION_NAME_DOGOK);
-        createStation(STATION_NAME_DAECHI);
-        createStation(STATION_NAME_HANGNYEOUL);
-        createStation(STATION_NAME_DAECHUNG);
-        createStation(STATION_NAME_SUSEO);
-        createStation(STATION_NAME_GARAK_MARKET);
-        createStation(STATION_NAME_SONGPA);
-        createStation(STATION_NAME_SEOKCHON);
-        createStation(STATION_NAME_YANGJAE_CITIZEN_FOREST);
-        createStation(STATION_NAME_CHEONGGYESAN);
-        createStation(STATION_NAME_PANGYO);
-        createStation(STATION_NAME_JUNGJA);
-        createStation(STATION_NAME_HANTI);
-        createStation(STATION_NAME_GURYONG);
-        createStation(STATION_NAME_GAEPODONG);
-        createStation(STATION_NAME_DAEMOSAN);
+        createStation(강남역);
+        createStation(역삼역);
+        createStation(선릉역);
+        createStation(삼성역);
+        createStation(종합운동장역);
+        createStation(잠실새내역);
+        createStation(잠실역);
+        createStation(양재역);
+        createStation(매봉역);
+        createStation(도곡역);
+        createStation(대치역);
+        createStation(학여울역);
+        createStation(대청역);
+        createStation(수서역);
+        createStation(가락시장역);
+        createStation(송파역);
+        createStation(석촌역);
+        createStation(양재시민의숲역);
+        createStation(청계산입구역);
+        createStation(판교역);
+        createStation(정자역);
+        createStation(한티역);
+        createStation(구룡역);
+        createStation(개포동역);
+        createStation(대모산입구역);
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
         createLine("2호선");
         createLine("3호선");
@@ -65,7 +65,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         //And 2개의 노선은 같은 환승역이 존재 한다.
 
         //2호선
-        addLineStation(1L, null, 1L,10,10);
+        addLineStation(1L, null, 1L, 10, 10);
         addLineStation(1L, 1L, 2L,10,10);
         addLineStation(1L, 2L, 3L,10,10);
         addLineStation(1L, 3L, 4L,10,10);
@@ -110,31 +110,31 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
     @Test
     void findFastestStationPath() {
         //Given 출발역부 종착역사이의 역들이 저장돼있다.
-        createStation(STATION_NAME_KANGNAM);
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
-        createStation(STATION_NAME_SAMSUNG);
-        createStation(STATION_NAME_SPORTS_COMPLEX);
-        createStation(STATION_NAME_JAMSILSAENAE);
-        createStation(STATION_NAME_JAMSIL);
-        createStation(STATION_NAME_YANGJAE);
-        createStation(STATION_NAME_MAEBONG);
-        createStation(STATION_NAME_DOGOK);
-        createStation(STATION_NAME_DAECHI);
-        createStation(STATION_NAME_HANGNYEOUL);
-        createStation(STATION_NAME_DAECHUNG);
-        createStation(STATION_NAME_SUSEO);
-        createStation(STATION_NAME_GARAK_MARKET);
-        createStation(STATION_NAME_SONGPA);
-        createStation(STATION_NAME_SEOKCHON);
-        createStation(STATION_NAME_YANGJAE_CITIZEN_FOREST);
-        createStation(STATION_NAME_CHEONGGYESAN);
-        createStation(STATION_NAME_PANGYO);
-        createStation(STATION_NAME_JUNGJA);
-        createStation(STATION_NAME_HANTI);
-        createStation(STATION_NAME_GURYONG);
-        createStation(STATION_NAME_GAEPODONG);
-        createStation(STATION_NAME_DAEMOSAN);
+        createStation(강남역);
+        createStation(역삼역);
+        createStation(선릉역);
+        createStation(삼성역);
+        createStation(종합운동장역);
+        createStation(잠실새내역);
+        createStation(잠실역);
+        createStation(양재역);
+        createStation(매봉역);
+        createStation(도곡역);
+        createStation(대치역);
+        createStation(학여울역);
+        createStation(대청역);
+        createStation(수서역);
+        createStation(가락시장역);
+        createStation(송파역);
+        createStation(석촌역);
+        createStation(양재시민의숲역);
+        createStation(청계산입구역);
+        createStation(판교역);
+        createStation(정자역);
+        createStation(한티역);
+        createStation(구룡역);
+        createStation(개포동역);
+        createStation(대모산입구역);
         //And 출발역부터 종착역사이의 노선이 2개가 있다.
         createLine("2호선");
         createLine("3호선");
@@ -144,7 +144,7 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         //And 2개의 노선은 같은 환승역이 존재 한다.
 
         //2호선
-        addLineStation(1L, null, 1L,10,1);
+        addLineStation(1L, null, 1L, 10, 1);
         addLineStation(1L, 1L, 2L,10,1);
         addLineStation(1L, 2L, 3L,10,1);
         addLineStation(1L, 3L, 4L,10,1);

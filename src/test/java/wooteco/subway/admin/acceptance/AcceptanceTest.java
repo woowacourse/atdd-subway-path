@@ -19,36 +19,36 @@ import java.util.Map;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
-    static final String STATION_NAME_KANGNAM = "강남역";
-    static final String STATION_NAME_YEOKSAM = "역삼역";
-    static final String STATION_NAME_SEOLLEUNG = "선릉역";
-    static final String STATION_NAME_SAMSUNG = "삼성역";
-    static final String STATION_NAME_SPORTS_COMPLEX = "종합운동장역";
-    static final String STATION_NAME_JAMSILSAENAE = "잠실새내역";
-    static final String STATION_NAME_JAMSIL = "잠실역";
-    static final String STATION_NAME_YANGJAE = "양재역";
-    static final String STATION_NAME_MAEBONG = "매봉역";
-    static final String STATION_NAME_DOGOK = "도곡역";
-    static final String STATION_NAME_DAECHI = "대치역";
-    static final String STATION_NAME_HANGNYEOUL = "학여울역";
-    static final String STATION_NAME_DAECHUNG = "대청역";
-    static final String STATION_NAME_SUSEO = "수서역";
-    static final String STATION_NAME_GARAK_MARKET = "가락시장역";
-    static final String STATION_NAME_SONGPA = "송파역";
-    static final String STATION_NAME_SEOKCHON = "석촌역";
-    static final String STATION_NAME_YANGJAE_CITIZEN_FOREST = "양재시민의숲역";
-    static final String STATION_NAME_CHEONGGYESAN = "청계산입구역";
-    static final String STATION_NAME_PANGYO = "판교역";
-    static final String STATION_NAME_JUNGJA = "정자역";
-    static final String STATION_NAME_HANTI = "한티역";
-    static final String STATION_NAME_GURYONG = "구룡역";
-    static final String STATION_NAME_GAEPODONG = "개포동역";
-    static final String STATION_NAME_DAEMOSAN = "대모산입구역";
+    static final String 강남역 = "강남역";
+    static final String 역삼역 = "역삼역";
+    static final String 선릉역 = "선릉역";
+    static final String 삼성역 = "삼성역";
+    static final String 종합운동장역 = "종합운동장역";
+    static final String 잠실새내역 = "잠실새내역";
+    static final String 잠실역 = "잠실역";
+    static final String 양재역 = "양재역";
+    static final String 매봉역 = "매봉역";
+    static final String 도곡역 = "도곡역";
+    static final String 대치역 = "대치역";
+    static final String 학여울역 = "학여울역";
+    static final String 대청역 = "대청역";
+    static final String 수서역 = "수서역";
+    static final String 가락시장역 = "가락시장역";
+    static final String 송파역 = "송파역";
+    static final String 석촌역 = "석촌역";
+    static final String 양재시민의숲역 = "양재시민의숲역";
+    static final String 청계산입구역 = "청계산입구역";
+    static final String 판교역 = "판교역";
+    static final String 정자역 = "정자역";
+    static final String 한티역 = "한티역";
+    static final String 구룡역 = "구룡역";
+    static final String 개포동역 = "개포동역";
+    static final String 대모산입구역 = "대모산입구역";
 
     static final String LINE_NAME_2 = "2호선";
     static final String LINE_NAME_3 = "3호선";
-    static final String LINE_NAME_BUNDANG = "분당선";
-    static final String LINE_NAME_SINBUNDANG = "신분당선";
+    static final String 분당선 = "분당선";
+    static final String 신분당선 = "신분당선";
 
     @LocalServerPort
     int port;
