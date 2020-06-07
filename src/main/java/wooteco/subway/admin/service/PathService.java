@@ -47,8 +47,13 @@ public class PathService {
         List<LineStation> paths = extractPathLineStation(path, lineStations);
 
         checkEmptyPath(paths);
-        int duration = calculateFastestDuration(paths);
-        int distance = calculateShortestDistance(paths);
+
+        int duration = 0;
+        int distance = 0;
+        for (LineStation lineStation : paths) {
+            duration += lineStation.getDuration();
+            distance += lineStation.getDistance();
+        }
 
         List<Station> pathStation = calculateStationPath(path, stations);
 
@@ -59,18 +64,6 @@ public class PathService {
         return path.stream()
                 .map(it -> extractStation(it, stations))
                 .collect(Collectors.toList());
-    }
-
-    private int calculateShortestDistance(List<LineStation> paths) {
-        return paths.stream()
-                .mapToInt(LineStation::getDistance)
-                .sum();
-    }
-
-    private int calculateFastestDuration(List<LineStation> paths) {
-        return paths.stream()
-                .mapToInt(LineStation::getDuration)
-                .sum();
     }
 
     private void checkEmptyPath(List<LineStation> paths) {
