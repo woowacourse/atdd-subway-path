@@ -82,7 +82,6 @@ public class Line {
         }
 
         LineStation firstLineStation = getFirstLineStation();
-
         stationIds.add(firstLineStation.getStationId());
         for (int i = 1; i < stations.size(); i++) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);

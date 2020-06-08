@@ -18,20 +18,20 @@ public class ShortestPathResponse {
         return source;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
-
     public String getTarget() {
         return target;
+    }
+
+    public String getPathType() {
+        return pathType;
     }
 
     public void setTarget(String target) {
         this.target = target;
     }
 
-    public String getPathType() {
-        return pathType;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public void setPathType(String pathType) {

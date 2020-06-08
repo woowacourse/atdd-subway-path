@@ -14,6 +14,7 @@ public class Lines {
     }
 
     public void addVertex(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+        lines.stream().forEach(it -> System.out.print(it.getLineStationsId()));
         lines.stream()
                 .flatMap(it -> it.getLineStationsId().stream())
                 .forEach(graph::addVertex);
@@ -30,5 +31,9 @@ public class Lines {
         lines.stream()
                 .map(Line::lineStationsWithOutSourceLineStation)
                 .forEach(lineStations::addAll);
+    }
+
+    public List<Line> getLines() {
+        return lines;
     }
 }

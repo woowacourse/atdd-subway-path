@@ -16,7 +16,7 @@ public class Graph {
 
         lines.addVertex(graph);
         lines.setEdgeWeight(graph, type);
-
+        System.out.println(graph.toString());
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
     }
