@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.repository.StationRepository;
 import wooteco.subway.admin.service.errors.PathException;
@@ -19,10 +20,12 @@ public class StationService {
         return stationRepository.findAll();
     }
 
+    @Transactional
     public Station save(Station station) {
         return stationRepository.save(station);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         stationRepository.deleteById(id);
     }
