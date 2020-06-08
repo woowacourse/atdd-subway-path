@@ -53,6 +53,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }
 
+    LineResponse createLine(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", "10");
+        String path = "lines";
+        return post(path, params, LineResponse.class);
+    }
+
     void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));

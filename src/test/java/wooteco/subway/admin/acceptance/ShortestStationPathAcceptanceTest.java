@@ -8,8 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.admin.dto.LineResponse;
 import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 import wooteco.subway.admin.repository.StationRepository;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -141,6 +148,16 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         createLine("분당선");
     }
 
+    LineResponse createLine(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", "10");
+        String path = "lines";
+        return post(path, params, LineResponse.class);
+    }
+
     private void createStations() {
         createStation(강남역);
         createStation(역삼역);
@@ -167,6 +184,23 @@ public class ShortestStationPathAcceptanceTest extends AcceptanceTest {
         createStation(구룡역);
         createStation(개포동역);
         createStation(대모산입구역);
+    }
+
+    StationResponse createStation(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        String path = "/stations";
+        return post(path, params, StationResponse.class);
+    }
+
+    Void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+        Map<String, String> params = new HashMap<>();
+        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
+        params.put("stationId", stationId.toString());
+        params.put("distance", distance.toString());
+        params.put("duration", duration.toString());
+        String path = "/lines/" + lineId + "/stations";
+        return post(path, params, Void.class);
     }
 }
 
