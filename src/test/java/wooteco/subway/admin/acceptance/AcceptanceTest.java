@@ -58,7 +58,7 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
     <T> T post(String path, Map<String, String> params, Class<T> responseType) {
-        if (responseType.equals(Void.class)) {
+        if (responseType.equals(void.class)) {
             okStatusPost(path, params);
             return null;
         }

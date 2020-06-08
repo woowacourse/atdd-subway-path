@@ -66,14 +66,14 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         delete(path);
     }
 
-    Void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
         params.put("distance", distance.toString());
         params.put("duration", duration.toString());
         String path = "/lines/" + lineId + "/stations";
-        return post(path, params, Void.class);
+        post(path, params, void.class);
     }
 
     void addLineStation(Long lineId, Long preStationId, Long stationId) {
