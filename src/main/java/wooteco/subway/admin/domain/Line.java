@@ -1,5 +1,6 @@
 package wooteco.subway.admin.domain;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -84,6 +85,7 @@ public class Line {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @CacheEvict(value="PathGraph")
     public void addLineStation(LineStation lineStation) {
         if (lineStation.isFirst()) {
             addFirst(lineStation);

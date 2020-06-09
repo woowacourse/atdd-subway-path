@@ -1,6 +1,7 @@
 package wooteco.subway.admin.service;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
@@ -118,9 +119,7 @@ public class LineService {
         Long targetId = stationRepository.findIdByName(targetName)
                 .orElseThrow(() -> new CustomException(NO_SUCH_STATION_EXCEPTION, new NoSuchElementException()));
 
-        List<LineStation> lineStations = findAllLineStations();
-        DijkstraShortestPath<Long, WeightedEdge> graph = new DijkstraShortestPath<>(PathGraph.getGraph(lineStations, pathType));
-        PathGraph pathGraph = new PathGraph(graph, pathType);
+        PathGraph pathGraph = findPathGraph(pathType);
         Path path = pathGraph.createPath(sourceId, targetId);
         int distance = path.getDistance();
         int duration = path.getDuration();
@@ -129,6 +128,14 @@ public class LineService {
         List<String> pathStationNames = stationRepository.findAllNameById(pathStationIds);
 
         return new PathResponse(distance, duration, pathStationNames);
+    }
+
+    @Cacheable(value = "PathGraph")
+    public PathGraph findPathGraph(PathType pathType) {
+        System.out.println("Call");
+        List<LineStation> lineStations = findAllLineStations();
+        DijkstraShortestPath<Long, WeightedEdge> graph = new DijkstraShortestPath<>(PathGraph.getGraph(lineStations, pathType));
+        return new PathGraph(graph, pathType);
     }
 
     private List<LineStation> findAllLineStations() {
