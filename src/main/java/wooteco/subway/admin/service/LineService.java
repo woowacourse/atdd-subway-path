@@ -121,12 +121,7 @@ public class LineService {
         List<LineStation> lineStations = findAllLineStations();
         DijkstraShortestPath<Long, WeightedEdge> graph = new DijkstraShortestPath<>(PathGraph.getGraph(lineStations, pathType));
         PathGraph pathGraph = new PathGraph(graph, pathType);
-        Path path;
-        try {
-            path = pathGraph.createPath(sourceId, targetId);
-        } catch (NullPointerException e) {
-            throw new CustomException("존재하지 않는 경로입니다.", e);
-        }
+        Path path = pathGraph.createPath(sourceId, targetId);
         int distance = path.getDistance();
         int duration = path.getDuration();
 

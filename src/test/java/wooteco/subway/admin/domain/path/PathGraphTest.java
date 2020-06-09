@@ -26,7 +26,7 @@ public class PathGraphTest extends PathSetup {
         PathGraph pathGraph = new PathGraph(graph, PathType.DISTANCE);
         assertThatThrownBy(() -> pathGraph.createPath(1L, 9L))
                 .isInstanceOf(CustomException.class)
-                .hasMessage("경로가 존재하지 않습니다.");
+                .hasMessage("존재하지 않는 경로입니다.");
     }
 
     @DisplayName("(예외) Vertex가 없어 존재하지 않는 경로")

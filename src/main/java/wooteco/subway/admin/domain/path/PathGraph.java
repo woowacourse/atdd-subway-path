@@ -8,6 +8,7 @@ import wooteco.subway.admin.domain.CustomException;
 import wooteco.subway.admin.domain.LineStation;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class PathGraph {
@@ -48,6 +49,10 @@ public class PathGraph {
     }
 
     public Path createPath(Long source, Long target) {
-        return new Path(getPath(source, target).get(), pathType);
+        try {
+            return new Path(getPath(source, target).get(), pathType);
+        } catch (NoSuchElementException e) {
+            throw new CustomException("존재하지 않는 경로입니다.", e);
+        }
     }
 }
