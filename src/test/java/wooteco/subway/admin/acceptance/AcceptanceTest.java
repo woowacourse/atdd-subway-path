@@ -8,7 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.admin.dto.*;
+import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineResponse;
+import wooteco.subway.admin.dto.PathResponse;
+import wooteco.subway.admin.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -49,9 +52,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+                        when().
                         post("/stations").
-                then().
+                        then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -61,7 +64,7 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/stations").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
@@ -70,7 +73,7 @@ public class AcceptanceTest {
     void deleteStation(Long id) {
         given().when().
                 delete("/stations/" + id).
-        then().
+                then().
                 log().all();
     }
 
@@ -83,22 +86,22 @@ public class AcceptanceTest {
 
         return
                 given().
-                    body(params).
-                    contentType(MediaType.APPLICATION_JSON_VALUE).
-                    accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                    post("/lines").
-                then().
-                    log().all().
-                    statusCode(HttpStatus.CREATED.value()).
-                    extract().as(LineResponse.class);
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/lines").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(LineResponse.class);
     }
 
     LineDetailResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
-                then().
+                        then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -113,9 +116,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
+                when().
                 put("/lines/" + id).
-        then().
+                then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -124,16 +127,26 @@ public class AcceptanceTest {
         return
                 given().when().
                         get("/lines").
-                then().
+                        then().
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
     }
 
+    List<LineDetailResponse> getDetailLines() {
+        return
+                given().when().
+                        get("/lines/detail").
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", LineDetailResponse.class);
+    }
+
     void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
-        then().
+                then().
                 log().all();
     }
 
@@ -168,6 +181,17 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    PathResponse calculatePath(String sourceName, String targetName, String type) {
+        return given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/paths?source=" + sourceName + "&target=" + targetName + "&type=" + type).
+                then().
+                log().all().
+                extract().as(PathResponse.class);
     }
 
 }

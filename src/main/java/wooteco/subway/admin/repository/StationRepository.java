@@ -15,6 +15,12 @@ public interface StationRepository extends CrudRepository<Station, Long> {
     @Override
     List<Station> findAll();
 
+    @Query("select name from station where id in (:id)")
+    List<String> findAllNameById(@Param("id") List<Long> id);
+
     @Query("select * from station where name = :stationName")
     Optional<Station> findByName(@Param("stationName") String stationName);
+
+    @Query("select id from station where name = :name")
+    Optional<Long> findIdByName(@Param("name") String name);
 }

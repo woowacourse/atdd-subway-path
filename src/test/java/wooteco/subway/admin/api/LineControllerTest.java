@@ -12,7 +12,6 @@ import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
-import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.service.LineService;
 
 import java.util.Arrays;
@@ -35,11 +34,11 @@ public class LineControllerTest {
 
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
-        given(lineService.wholeLines()).willReturn(response);
+        List<LineDetailResponse> response = Arrays.asList(createMockResponse(), createMockResponse());
+        given(lineService.findDetailLines()).willReturn(response);
 
         // TODO: 전체 지하철 노선도 정보를 조회하는 URI 입력하기
-        String uri = "";
+        String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
