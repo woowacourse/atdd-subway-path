@@ -33,9 +33,9 @@ const api = (() => {
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
-    }
-  }
+      return request(`/stations/shortest-path?source=${params.source}&target=${params.target}&pathType=${params.pathType}`)
+    },
+  };
 
   return {
     line,

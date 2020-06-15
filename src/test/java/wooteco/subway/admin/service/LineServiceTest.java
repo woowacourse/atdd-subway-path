@@ -10,6 +10,7 @@ import wooteco.subway.admin.domain.Line;
 import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
+import wooteco.subway.admin.dto.LineRequest;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
@@ -34,6 +35,8 @@ public class LineServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
+    @Mock
+    private LineRequest lineRequest;
 
     private LineService lineService;
 

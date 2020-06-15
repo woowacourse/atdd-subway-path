@@ -1,10 +1,12 @@
 package wooteco.subway.admin.domain;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.admin.service.errors.PathException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Line {
     @Id
@@ -31,38 +33,6 @@ public class Line {
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this(null, name, startTime, endTime, intervalTime);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public int getIntervalTime() {
-        return intervalTime;
-    }
-
-    public Set<LineStation> getStations() {
-        return stations;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void update(Line line) {
@@ -106,31 +76,69 @@ public class Line {
     }
 
     public List<Long> getLineStationsId() {
+        List<Long> stationIds = new ArrayList<>();
         if (stations.isEmpty()) {
-            return new ArrayList<>();
+            return stationIds;
         }
 
-        LineStation firstLineStation = stations.stream()
-                .filter(it -> it.getPreStationId() == null)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        List<Long> stationIds = new ArrayList<>();
+        LineStation firstLineStation = getFirstLineStation();
         stationIds.add(firstLineStation.getStationId());
-
-        while (true) {
+        for (int i = 1; i < stations.size(); i++) {
             Long lastStationId = stationIds.get(stationIds.size() - 1);
-            Optional<LineStation> nextLineStation = stations.stream()
+
+            LineStation nextLineStation = stations.stream()
                     .filter(it -> Objects.equals(it.getPreStationId(), lastStationId))
-                    .findFirst();
+                    .findFirst()
+                    .orElseThrow(() -> new PathException("역이 연결되있지 않습니다."));
 
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-
-            stationIds.add(nextLineStation.get().getStationId());
+            stationIds.add(nextLineStation.getStationId());
         }
 
         return stationIds;
+    }
+
+    public List<LineStation> lineStationsWithOutSourceLineStation() {
+        return stations.stream()
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .collect(Collectors.toList());
+    }
+
+    private LineStation getFirstLineStation() {
+        return stations.stream()
+                .filter(it -> it.getPreStationId() == null)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public int getIntervalTime() {
+        return intervalTime;
+    }
+
+    public Set<LineStation> getStations() {
+        return stations;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

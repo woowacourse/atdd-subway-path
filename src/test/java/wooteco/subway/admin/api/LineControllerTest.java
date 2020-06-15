@@ -1,5 +1,7 @@
 package wooteco.subway.admin.api;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -7,6 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.admin.config.ETagHeaderFilter;
 import wooteco.subway.admin.controller.LineController;
 import wooteco.subway.admin.domain.Line;
@@ -31,15 +36,22 @@ public class LineControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private LineService lineService;
+    LineService lineService;
+
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilter(new ShallowEtagHeaderFilter())
+                .build();
+    }
 
     @Test
+    @DisplayName("ETag가 변경되지 않을경우")
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
-        // TODO: 전체 지하철 노선도 정보를 조회하는 URI 입력하기
-        String uri = "";
+        String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
@@ -52,6 +64,32 @@ public class LineControllerTest {
         mockMvc.perform(get(uri).header("If-None-Match", eTag))
                 .andDo(print())
                 .andExpect(status().isNotModified())
+                .andExpect(header().exists("ETag"))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("ETag가 변경될 경우")
+    void ETag1() throws Exception {
+        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+        given(lineService.wholeLines()).willReturn(response);
+
+        String uri = "/lines/detail";
+
+        MvcResult mvcResult = mockMvc.perform(get(uri))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().exists("ETag"))
+                .andReturn();
+
+        String eTag = mvcResult.getResponse().getHeader("ETag");
+
+        WholeSubwayResponse anotherResponse = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse(), createMockResponse()));
+        given(lineService.wholeLines()).willReturn(anotherResponse);
+
+        mockMvc.perform(get(uri).header("If-None-Match", eTag))
+                .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(header().exists("ETag"))
                 .andReturn();
     }
