@@ -18,7 +18,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathSearchResponse> searchPath(@RequestBody PathSearchRequest pathSearchRequest) {
+    public ResponseEntity<PathSearchResponse> searchPath(PathSearchRequest pathSearchRequest) {
         return ResponseEntity.ok().body(pathService.searchPath(pathSearchRequest.getSource(), pathSearchRequest.getTarget(), pathSearchRequest.getType()));
     }
 }
