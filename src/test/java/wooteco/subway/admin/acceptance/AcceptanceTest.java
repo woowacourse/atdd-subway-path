@@ -170,18 +170,17 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    PathSearchResponse searchPath(String startStation, String targetStation, String type) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", startStation);
-        params.put("target", targetStation);
-        params.put("type", type);
+    PathSearchResponse searchPath(String sourceStation, String targetStation, String type) {
+//        String jsonData = "{" +
+//                "\"source\" : \"" + sourceStation + "\"," +
+//                "\"target\" : \"" + targetStation + "\"," +
+//                "\"type\" : \"" + type + "\"}";
         return
             given().
-                    body(params).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-                    get("/paths").
+                    get("/paths?source="+sourceStation+"&target="+targetStation+"&type="+type).
             then().
                     log().all().
                     extract().as(PathSearchResponse.class);
