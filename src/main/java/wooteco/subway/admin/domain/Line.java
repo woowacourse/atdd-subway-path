@@ -53,7 +53,7 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
+    public Set<LineStation> getLineStations() {
         return stations;
     }
 
@@ -105,7 +105,7 @@ public class Line {
         stations.remove(targetLineStation);
     }
 
-    public List<Long> getLineStationsId() {
+    public List<Long> getStationsId() {
         if (stations.isEmpty()) {
             return new ArrayList<>();
         }

@@ -11,6 +11,7 @@ import wooteco.subway.admin.domain.LineStation;
 import wooteco.subway.admin.domain.Station;
 import wooteco.subway.admin.dto.LineDetailResponse;
 import wooteco.subway.admin.dto.LineStationCreateRequest;
+import wooteco.subway.admin.dto.WholeSubwayResponse;
 import wooteco.subway.admin.repository.LineRepository;
 import wooteco.subway.admin.repository.StationRepository;
 
@@ -65,9 +66,9 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getLineStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(4L);
         assertThat(stationIds.get(1)).isEqualTo(1L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -81,9 +82,9 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getLineStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(4L);
         assertThat(stationIds.get(2)).isEqualTo(2L);
@@ -97,9 +98,9 @@ public class LineServiceTest {
         LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
-        assertThat(line.getStations()).hasSize(4);
+        assertThat(line.getLineStations()).hasSize(4);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
@@ -111,9 +112,9 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 1L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getLineStations()).hasSize(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(2L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -123,7 +124,7 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 2L);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
@@ -133,9 +134,9 @@ public class LineServiceTest {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 3L);
 
-        assertThat(line.getStations()).hasSize(2);
+        assertThat(line.getLineStations()).hasSize(2);
 
-        List<Long> stationIds = line.getLineStationsId();
+        List<Long> stationIds = line.getStationsId();
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
@@ -149,5 +150,16 @@ public class LineServiceTest {
         LineDetailResponse lineDetailResponse = lineService.findLineWithStationsById(1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
+    }
+
+    @Test
+    void findWholeLineService() {
+        List<Line> lines = Lists.newArrayList(new Line(), new Line(), new Line());
+        when(lineRepository.findAll()).thenReturn(lines);
+
+        WholeSubwayResponse wholeSubwayResponse = lineService.findWholeLines();
+
+        assertThat(wholeSubwayResponse.getLineDetailResponses()).hasSize(3);
+
     }
 }

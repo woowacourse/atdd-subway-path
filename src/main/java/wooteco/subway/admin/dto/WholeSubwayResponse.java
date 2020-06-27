@@ -2,9 +2,18 @@ package wooteco.subway.admin.dto;
 
 import java.util.List;
 
-// TODO 구현하세요 :)
 public class WholeSubwayResponse {
+    private List<LineDetailResponse> lineDetailResponses;
+
+    public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponses) {
+        this.lineDetailResponses = lineDetailResponses;
+    }
+
     public static WholeSubwayResponse of(List<LineDetailResponse> responses) {
-        return null;
+        return new WholeSubwayResponse(responses);
+    }
+
+    public List<LineDetailResponse> getLineDetailResponses() {
+        return lineDetailResponses;
     }
 }

@@ -170,5 +170,20 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    PathSearchResponse searchPath(String sourceStation, String targetStation, String type) {
+//        String jsonData = "{" +
+//                "\"source\" : \"" + sourceStation + "\"," +
+//                "\"target\" : \"" + targetStation + "\"," +
+//                "\"type\" : \"" + type + "\"}";
+        return
+            given().
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+                    get("/paths?source="+sourceStation+"&target="+targetStation+"&type="+type).
+            then().
+                    log().all().
+                    extract().as(PathSearchResponse.class);
+    }
 }
 
