@@ -28,6 +28,10 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
+    public static LineRequest of(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
+        return new LineRequest(name, color, upStationId, downStationId, distance, extraFare);
+    }
+
     public String getName() {
         return name;
     }
@@ -46,5 +50,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
