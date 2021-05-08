@@ -9,26 +9,23 @@
 </template>
 
 <script>
-import Header from '@/views/base/header/Header'
-import Snackbar from '@/components/snackbars/Snackbar'
-import { FETCH_MEMBER } from '@/store/shared/actionTypes'
-import { mapActions } from 'vuex'
+import Header from "./pages/shared/Header";
+import Snackbar from "./components/snackbar/Snackbar";
 
 export default {
-  name: 'App',
-  components: {
-    Header,
-    Snackbar
+  name: "App",
+  components: { Snackbar, Header },
+  data() {
+    return {};
   },
-  created() {
-    const accessToken = localStorage.getItem('token')
-    if (!accessToken) {
-      return
-    }
-    this.fetchMember()
-  },
-  methods: {
-    ...mapActions([FETCH_MEMBER])
-  }
-}
+};
 </script>
+<style lang="scss">
+a {
+  text-decoration: none;
+}
+
+.w-100 {
+  width: 100%;
+}
+</style>

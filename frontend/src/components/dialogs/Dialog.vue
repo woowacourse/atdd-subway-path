@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: 'Dialog',
+  name: "Dialog",
   props: {
     width: {
       type: Number,
@@ -56,26 +56,26 @@ export default {
   },
   watch: {
     close() {
-      this.closeDialog()
+      this.closeDialog();
     },
     isShow() {
       if (this.isShow) {
-        this.showDialog()
+        this.showDialog();
       }
     }
   },
   methods: {
     closeDialog() {
-      this.dialog = !this.dialog
+      this.dialog = !this.dialog;
     },
     showDialog() {
-      this.dialog = true
+      this.dialog = true;
     }
   },
   data() {
     return {
       dialog: false
-    }
+    };
   }
-}
+};
 </script>

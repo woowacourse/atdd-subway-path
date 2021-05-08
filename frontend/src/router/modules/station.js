@@ -1,9 +1,10 @@
-import StationPage from '@/views/station/StationPage'
+import StationPage from "../../pages/station/StationPage";
 
 const stationRoutes = [
   {
-    path: '/stations',
+    path: "/stations",
     component: StationPage
   }
-]
-export default stationRoutes
+];
+
+export default stationRoutes;

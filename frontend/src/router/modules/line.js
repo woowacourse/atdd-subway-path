@@ -1,9 +1,10 @@
-import LinePage from '@/views/line/LinePage'
+import LinePage from "../../pages/line/LinePage";
 
 const lineRoutes = [
   {
-    path: '/lines',
+    path: "/lines",
     component: LinePage
   }
-]
-export default lineRoutes
+];
+
+export default lineRoutes;

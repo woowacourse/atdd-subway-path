@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-model="show" :max-width="options.width" :style="{ zIndex: options.zIndex }" @keydown.esc="cancel">
+  <v-dialog
+    v-model="show"
+    :max-width="options.width"
+    :style="{ zIndex: options.zIndex }"
+    @keydown.esc="cancel"
+  >
     <v-card>
       <v-toolbar :color="options.color" dark dense flat>
         <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
@@ -18,39 +23,39 @@
 
 <script>
 export default {
-  name: 'ConfirmDialog',
+  name: "ConfirmDialog",
   computed: {
     show: {
       get() {
-        return this.dialog
+        return this.dialog;
       },
       set(value) {
-        this.dialog = value
+        this.dialog = value;
         if (value === false) {
-          this.cancel()
+          this.cancel();
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     open(title, message, options) {
-      this.dialog = true
-      this.title = title
-      this.message = message
-      this.options = Object.assign(this.options, options)
+      this.dialog = true;
+      this.title = title;
+      this.message = message;
+      this.options = Object.assign(this.options, options);
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
     agree() {
-      this.resolve(true)
-      this.dialog = false
+      this.resolve(true);
+      this.dialog = false;
     },
     cancel() {
-      this.resolve(false)
-      this.dialog = false
-    }
+      this.resolve(false);
+      this.dialog = false;
+    },
   },
   data() {
     return {
@@ -60,11 +65,11 @@ export default {
       message: null,
       title: null,
       options: {
-        color: 'primary',
+        color: "primary",
         width: 290,
-        zIndex: 200
-      }
-    }
-  }
-}
+        zIndex: 200,
+      },
+    };
+  },
+};
 </script>

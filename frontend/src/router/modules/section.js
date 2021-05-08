@@ -1,9 +1,10 @@
-import SectionPage from '@/views/section/SectionPage'
+import SectionPage from "../../pages/section/SectionPage";
 
 const sectionRoutes = [
   {
-    path: '/sections',
-    component: SectionPage
-  }
-]
-export default sectionRoutes
+    path: "/sections",
+    component: SectionPage,
+  },
+];
+
+export default sectionRoutes;

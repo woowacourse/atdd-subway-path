@@ -1,25 +1,19 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import station from '@/store/modules/station'
-import line from '@/store/modules/line'
-import snackbar from '@/store/modules/snackbar'
-import map from '@/store/modules/map'
-import path from '@/store/modules/path'
-import member from '@/store/modules/member'
-import auth from '@/store/modules/auth'
-import favorite from '@/store/modules/favorite'
+import Vue from "vue";
+import Vuex from "vuex";
+import station from "./modules/station";
+import line from "./modules/line";
+import member from "./modules/member";
+import auth from "./modules/auth";
+import snackbar from "./modules/snackbar";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    snackbar,
     station,
     line,
-    snackbar,
-    map,
-    path,
     member,
-    favorite,
-    auth
-  }
-})
+    auth,
+  },
+});

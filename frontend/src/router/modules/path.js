@@ -1,9 +1,10 @@
-import PathPage from '../../views/path/PathPage'
+import PathPage from "../../pages/path/PathPage";
 
 const pathRoutes = [
   {
-    path: '/path',
-    component: PathPage
-  }
-]
-export default pathRoutes
+    path: "/path",
+    component: PathPage,
+  },
+];
+
+export default pathRoutes;

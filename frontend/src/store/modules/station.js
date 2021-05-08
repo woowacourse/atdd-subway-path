@@ -1,40 +1,23 @@
-import { SET_STATIONS } from '@/store/shared/mutationTypes'
-import { CREATE_STATION, DELETE_STATION, FETCH_STATIONS } from '@/store/shared/actionTypes'
-import StationService from '@/api/modules/station'
+import { SET_STATIONS } from "../shared/mutationTypes";
 
 const state = {
-  stations: []
-}
+  stations: [],
+};
 
 const getters = {
   stations(state) {
-    return state.stations
-  }
-}
+    return state.stations;
+  },
+};
 
 const mutations = {
   [SET_STATIONS](state, stations) {
-    state.stations = stations
-  }
-}
-
-const actions = {
-  async [CREATE_STATION]({ commit }, newStationName) {
-    return StationService.create(newStationName)
+    state.stations = stations;
   },
-  async [FETCH_STATIONS]({ commit }) {
-    return StationService.getAll().then(({ data }) => {
-      commit(SET_STATIONS, data)
-    })
-  },
-  async [DELETE_STATION]({ commit }, stationId) {
-    return StationService.delete(stationId)
-  }
-}
+};
 
 export default {
   state,
   getters,
-  actions,
-  mutations
-}
+  mutations,
+};

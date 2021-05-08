@@ -1,31 +1,31 @@
-import { SHOW_SNACKBAR, HIDE_SNACKBAR } from '@/store/shared/mutationTypes'
+import { HIDE_SNACKBAR, SHOW_SNACKBAR } from "../shared/mutationTypes";
 
 const state = {
   isShow: false,
-  message: ''
-}
+  message: ""
+};
 
 const getters = {
   isShow(state) {
-    return state.isShow
+    return state.isShow;
   },
   message(state) {
-    return state.message
+    return state.message;
   }
-}
+};
 
 const mutations = {
   [SHOW_SNACKBAR](state, message) {
-    state.isShow = !state.isShow
-    state.message = message
+    state.isShow = true;
+    state.message = message;
   },
   [HIDE_SNACKBAR](state) {
-    state.isShow = !state.isShow
+    state.isShow = false;
   }
-}
+};
 
 export default {
   state,
   getters,
   mutations
-}
+};
