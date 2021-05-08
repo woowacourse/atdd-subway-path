@@ -130,7 +130,7 @@ export default {
     async initAllStationsView() {
       try {
         // TODO Station 목록을 불러와주세요.
-        // const stations = await fetch('/api/stations')
+        // const stations = await fetch("/api/stations");
         // this.setStations(stations)
         if (this.stations.length < 1) {
           return;
@@ -159,12 +159,12 @@ export default {
       }
       try {
         // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch('/api/section', {
+        // await fetch("/api/section", {
         //   lineId: this.selectedLine.id,
         //   section: this.sectionForm,
         // });
         // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch('/api/lines')
+        // const lines = await fetch("/api/lines");
         // this.setLines(lines)
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);

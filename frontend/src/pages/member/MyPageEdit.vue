@@ -107,10 +107,9 @@ export default {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
         // const { email, age, password } = this.editingMember;
-        // const updateMemberView = { email, age, password };
-        // await fetch("/api/users", updateMemberView)
+        // await fetch("/api/users/{this.member.id}", { email, age, password })
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
-        this.$router.replace("/mypage");
+        await this.$router.replace("/mypage");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);
         throw new Error(e);

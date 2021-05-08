@@ -31,7 +31,7 @@ export default {
         // stationId: this.stationId,
         // })
         // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        // const line = await fetch("/api/line/{id}")
+        // const line = await fetch("/api/line/{lineId}")
         // this.setLine({ ...line })
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {

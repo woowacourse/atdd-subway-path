@@ -64,9 +64,14 @@ export default {
   computed: {
     ...mapGetters(["stations"]),
   },
-  created() {
+  async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    this.setStations([...this.stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+    const response = await fetch("/api/stations")
+    if (!response.ok) {
+      throw new Error(`${response.status}`);
+    }
+    const stations = await response.json();
+    this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
     ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),

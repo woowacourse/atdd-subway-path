@@ -11,10 +11,10 @@
             <LineCreateButton />
           </div>
           <div class="overflow-y-auto">
-            <v-list-item-group v-model="line" color="grey darken-3">
-              <v-list-item v-for="line in lines" :key="line.name">
+            <v-list-item-group color="grey darken-3">
+              <v-list-item v-for="line in lines" :key="line.id">
                 <v-list-item-content>
-                  <v-list-item-title @click="setLineDetail(line)">
+                  <v-list-item-title>
                     <v-avatar
                       :color="line.color"
                       size="10"
@@ -57,16 +57,7 @@ export default {
   },
   methods: {
     ...mapMutations([SET_LINES]),
-    setLineDetail(line) {
-      this.lineDetail = line;
-    },
-  },
-  data() {
-    return {
-      line: {},
-      lineDetail: null,
-    };
-  },
+  }
 };
 </script>
 

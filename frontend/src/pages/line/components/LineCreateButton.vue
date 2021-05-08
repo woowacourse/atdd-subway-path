@@ -194,7 +194,6 @@ export default {
   data() {
     return {
       rules: { ...validator },
-      isOption: true,
       lineForm: {
         name: "",
         color: "",

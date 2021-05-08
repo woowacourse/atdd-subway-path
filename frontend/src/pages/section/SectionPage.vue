@@ -84,7 +84,7 @@ export default {
   async created() {
     // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
     // const lines = await fetch("/api/lines");
-    // this.setLines([lines]);
+    // this.setLines([...lines]);
     this.initLinesView();
   },
   computed: {
@@ -119,7 +119,6 @@ export default {
       try {
         // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
         // this.activeLine = await fetch("/lines/{id}");
-        this.activeLine = this.lines.find(({ id }) => id === this.activeLineId); // TODO 위 API를 추가한 후에는 이 코드를 제거해 주세요.
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
