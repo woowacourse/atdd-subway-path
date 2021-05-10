@@ -13,6 +13,6 @@ export const stationApiService = {
     return apiService.post(`${BASE_URL}`, data);
   },
   delete(id) {
-    return apiService.delete(`${BASE_URL}/${id}`);
+    return apiService.delete(`${BASE_URL}/${id}`, false);
   },
 };
