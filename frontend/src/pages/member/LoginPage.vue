@@ -58,7 +58,6 @@ import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
 import { authApiService } from "../../api/modules/auth";
-import member from "../../store/modules/member";
 import { memberApiService } from "../../api/modules/member";
 
 export default {
