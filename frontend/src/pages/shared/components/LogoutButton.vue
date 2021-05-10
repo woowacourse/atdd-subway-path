@@ -31,7 +31,7 @@ export default {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.FAIL);
-        console.error(e);
+        throw new Error(e);
       }
     },
   },
