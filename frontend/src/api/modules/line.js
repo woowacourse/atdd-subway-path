@@ -13,7 +13,7 @@ export const lineApiService = {
     return apiService.post(`${BASE_URL}`, data);
   },
   update(id, data) {
-    return apiService.update(`${BASE_URL}/${id}`, data);
+    return apiService.update(`${BASE_URL}/${id}`, data, false);
   },
   delete(id) {
     return apiService.delete(`${BASE_URL}/${id}`);
