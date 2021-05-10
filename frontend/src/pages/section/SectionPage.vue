@@ -73,18 +73,25 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {
+  SET_LINES,
+  SET_STATIONS,
+  SHOW_SNACKBAR,
+} from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
+import { lineApiService } from "../../api/modules/line";
+import { stationApiService } from "../../api/modules/station";
 
 export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    const stations = await stationApiService.getAll();
+    this.setStations([...stations]);
+    const lines = await lineApiService.getAll();
+    this.setLines([...lines]);
     this.initLinesView();
   },
   computed: {
@@ -98,7 +105,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR]),
+    ...mapMutations([SHOW_SNACKBAR, SET_LINES, SET_STATIONS]),
     initLinesView() {
       try {
         if (this.lines.length < 1) {
@@ -117,8 +124,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{id}");
+        this.activeLine = await lineApiService.get(this.activeLineId);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

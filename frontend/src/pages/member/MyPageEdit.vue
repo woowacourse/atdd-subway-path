@@ -80,9 +80,10 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
+import { memberApiService } from "../../api/modules/member";
 
 export default {
   name: "MypageEdit",
@@ -99,15 +100,19 @@ export default {
     };
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR]),
+    ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
     isValid() {
       return this.$refs.memberEditForm.validate();
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        if (!this.isValid()) {
+          return;
+        }
+        const { email, age, password } = this.editingMember;
+        await memberApiService.update({ email, age, password });
+        const member = await memberApiService.get();
+        this.setMember(member);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {

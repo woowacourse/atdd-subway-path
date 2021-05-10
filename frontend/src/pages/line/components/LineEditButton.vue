@@ -78,9 +78,10 @@ import dialog from "../../../mixins/dialog";
 import { mapGetters, mapMutations } from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
 import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
+import { lineApiService } from "../../../api/modules/line";
 
 export default {
   name: "LineEditButton",
@@ -105,7 +106,7 @@ export default {
     });
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR]),
+    ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     setLineColor(color) {
       this.lineEditForm.color = color;
     },
@@ -114,11 +115,14 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const { name, color, extraFare = 0 } = this.lineEditForm;
+        await lineApiService.update(this.line.id, {
+          name,
+          color,
+          extraFare,
+        });
+        const lines = await lineApiService.getAll();
+        this.setLines([...lines]);
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {

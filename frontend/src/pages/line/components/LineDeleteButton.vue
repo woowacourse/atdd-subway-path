@@ -6,8 +6,9 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import { lineApiService } from "../../../api/modules/line";
 
 export default {
   name: "LineDeleteButton",
@@ -18,17 +19,16 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR]),
+    ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        // TODO Line을 삭제하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}")
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        await lineApiService.delete(this.line.id);
+        const lines = await lineApiService.getAll();
+        this.setLines([...lines]);
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.FAIL);
+        throw new Error(e);
       }
     },
   },
