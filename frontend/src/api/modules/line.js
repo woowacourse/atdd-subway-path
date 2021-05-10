@@ -16,7 +16,7 @@ export const lineApiService = {
     return apiService.update(`${BASE_URL}/${id}`, data, false);
   },
   delete(id) {
-    return apiService.delete(`${BASE_URL}/${id}`);
+    return apiService.delete(`${BASE_URL}/${id}`, false);
   },
   createSection({ lineId, section }) {
     return apiService.post(`${BASE_URL}/${lineId}/sections`, section, false);
