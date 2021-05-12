@@ -6,6 +6,8 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -22,6 +24,14 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
         return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        Optional<Member> member = memberDao.findByEmail(email);
+        if (member.isPresent()) {
+            return MemberResponse.of(member.get());
+        }
+        throw new IllegalStateException("없는 이메일임!");
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
