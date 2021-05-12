@@ -12,17 +12,16 @@ import wooteco.subway.member.application.MemberService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/login/token")
+@RequestMapping("/api")
 public class AuthController {
     // 로그인(토큰 발급) 요청 처리하기
-
     private final MemberService memberService;
 
     public AuthController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping
+    @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@Valid @RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = memberService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
