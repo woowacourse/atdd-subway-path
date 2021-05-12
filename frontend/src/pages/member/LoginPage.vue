@@ -79,14 +79,21 @@ export default {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.member),
+          body: JSON.stringify(this.member)
         });
         // TODO member 데이터를 불러와 주세요.
         const body = await response.json();
-        console.log("테스트 ");
+        const accessToken = body.accessToken;
 
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const memberResponse = await fetch("/api/members/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + accessToken
+          }
+        });
+        const member = await memberResponse.json();
+        this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {

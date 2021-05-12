@@ -13,8 +13,6 @@ import wooteco.auth.web.dto.TokenResponse;
 @RequestMapping("/api/login/token")
 @RestController
 public class AuthController {
-    // TODO: 로그인(토큰 발급) 요청 처리하기
-
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
