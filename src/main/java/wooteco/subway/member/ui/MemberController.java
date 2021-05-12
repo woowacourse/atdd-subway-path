@@ -8,6 +8,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -51,9 +52,12 @@ public class MemberController {
     }
 
     // TODO: 구현 하기
-    @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    @PutMapping("/me/{id}")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@PathVariable Long id, @Valid @RequestBody MemberRequest memberRequest, HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request);
+        memberService.updateMember(id, memberRequest, token);
+        MemberResponse memberResponse = memberService.findMemberByEmail(token);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     // TODO: 구현 하기

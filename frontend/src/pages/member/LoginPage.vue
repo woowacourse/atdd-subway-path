@@ -96,7 +96,7 @@ export default {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer' + tokenResponse.accessToken
+            'Authorization': 'Bearer ' + tokenResponse.accessToken
           }
         });
         if (!memberResponse.ok) {
@@ -104,6 +104,7 @@ export default {
         }
         memberResponse = await memberResponse.json();
         this.setMember(memberResponse);
+        localStorage.setItem("token", tokenResponse.accessToken);
 
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);

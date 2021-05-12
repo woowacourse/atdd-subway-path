@@ -43,6 +43,14 @@ public class MemberService {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
+    public void updateMember(Long id, MemberRequest memberRequest, String token) {
+        if(authService.validateToken(token)){
+            memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+            return;
+        }
+        throw new InvalidTokenException();
+    }
+
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
