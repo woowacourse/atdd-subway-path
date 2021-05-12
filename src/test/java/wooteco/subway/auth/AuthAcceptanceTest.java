@@ -21,7 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer Auth 성공")
     @Test
     void myInfoWithBearerAuth() {
         // given
