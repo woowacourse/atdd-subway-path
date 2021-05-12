@@ -14,6 +14,7 @@ import wooteco.member.controller.dto.response.MemberResponseDto;
 @Service
 public class AuthService {
     private static final String INVALID_TOKEN_ERROR_MESSAGE = "유효하지 않은 토큰입니다.";
+
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
 
