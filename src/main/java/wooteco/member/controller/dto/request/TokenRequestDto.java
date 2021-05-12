@@ -1,7 +1,11 @@
 package wooteco.member.controller.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class TokenRequestDto {
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
 
     public TokenRequestDto() {

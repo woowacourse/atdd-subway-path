@@ -1,10 +1,15 @@
 package wooteco.member.controller.dto.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import wooteco.member.domain.Member;
 
 public class MemberRequestDto {
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
+    @NotNull
     private Integer age;
 
     public MemberRequestDto() {
