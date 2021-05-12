@@ -105,7 +105,7 @@ export default {
     },
     async onEditMember() {
       try {
-        let response = await fetch("http://localhost:8080/members/me", {
+        let response = await fetch("/api/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
