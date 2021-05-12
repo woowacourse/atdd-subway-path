@@ -38,6 +38,15 @@ npm run serve
 ```
 <br>
 
+## 요구사항
+
+> 1단계
+
+- [ ] JWT 라이브러리를 활용하여 액세스 토큰 발급 기능을 구현하기
+- [ ] 프론트엔드 코드 중 API를 호출하는 부분을 구현하여 기능이 잘 동작하도록 완성하기
+
+<br>
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
