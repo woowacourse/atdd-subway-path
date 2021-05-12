@@ -42,7 +42,8 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestBody String accessToken) {
+        // memberService.
         return ResponseEntity.ok().build();
     }
 

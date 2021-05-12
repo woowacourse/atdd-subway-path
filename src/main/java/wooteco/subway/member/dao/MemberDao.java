@@ -1,5 +1,8 @@
 package wooteco.subway.member.dao;
 
+import java.util.Optional;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -50,5 +53,14 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        try {
+            String sql = "select * from MEMBER where email = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
