@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;

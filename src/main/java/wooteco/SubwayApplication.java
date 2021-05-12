@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
