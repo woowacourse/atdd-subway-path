@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class SubwayAdvice {
 
     @ExceptionHandler(RuntimeException.class)
-    public void handle(RuntimeException e){
+    public void handle(RuntimeException e) {
         System.out.println(e.getMessage());
     }
 
