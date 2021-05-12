@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -40,5 +41,16 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+
+    public void validateMember(TokenRequest request) {
+        Member member = findByEmail(request.getEmail());
+        if(!member.samePassword(request.getPassword())) {
+            throw new IllegalStateException("잘못된 패스워드임!");
+        }
+    }
+
+    private Member findByEmail(String email) {
+        return memberDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 이메일임!"));
     }
 }

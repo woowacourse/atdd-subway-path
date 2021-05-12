@@ -39,4 +39,8 @@ public class Member {
     public Integer getAge() {
         return age;
     }
+
+    public boolean samePassword(String password) {
+        return this.password.equals(password);
+    }
 }
