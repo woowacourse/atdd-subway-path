@@ -105,24 +105,20 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        const { email, age, password } = this.editingMember;
-
-        let response = await fetch("http://localhost:8080/members/{this.member.id}", {
-          method: "POST",
+        let response = await fetch("http://localhost:8080/members/me", {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
           },
-          body: JSON.stringify({
-            email: email,
-            password: password
-          })
+          body: JSON.stringify(
+            this.editingMember
+          )
         });
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
-
-        await fetch("/members/{this.member.id}", { email, age, password })
+        this.setMember(this.editingMember);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
