@@ -29,14 +29,14 @@ public class AuthService {
             //TODO : errorResponse 에 정확한 에러 정보 넘겨주기
             throw new PasswordIncorrectException(new ErrorResponse());
         }
-        return new Token(jwtTokenProvider.createToken(email));
+        return new Token(jwtTokenProvider.createToken(member.getId().toString()));
     }
 
     public Member findMemberWithToken(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new InvalidTokenException();
         }
-        String email = jwtTokenProvider.getPayload(accessToken);
-        return memberDao.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
+        return memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }

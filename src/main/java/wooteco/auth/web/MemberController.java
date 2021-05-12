@@ -43,10 +43,8 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
-
         return ResponseEntity.ok(MemberResponse.of(member));
     }
 
