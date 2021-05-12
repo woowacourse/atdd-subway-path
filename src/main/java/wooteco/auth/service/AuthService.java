@@ -25,8 +25,7 @@ public class AuthService {
     public Token login(String email, String password) {
         Member member = memberDao.findByEmail(email).orElseThrow(LoginFailException::new);
         if(member.invalidPassword(password)) {
-            //TODO : errorResponse 에 정확한 에러 정보 넘겨주기
-            throw new PasswordIncorrectException(new ErrorResponse());
+            throw new PasswordIncorrectException();
         }
         return new Token(jwtTokenProvider.createToken(member.getId().toString()));
     }
