@@ -10,6 +10,10 @@ public class MemberResponse {
     public MemberResponse() {
     }
 
+    public MemberResponse(String email) {
+        this.email = email;
+    }
+
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;

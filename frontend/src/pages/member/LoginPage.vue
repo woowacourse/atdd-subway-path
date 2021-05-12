@@ -74,27 +74,36 @@ export default {
       }
       try {
         const { email, password } = this.member;
-        const response = await fetch("http://localhost:8080/login/token", {
+        const tokenResponse = await fetch("http://localhost:8080/login/token", {
           method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
           headers: {
             'content-type': 'application/json',
             'accept': 'application/json'
           },
           body: await JSON.stringify({
-            'email': email,
-            'password': password
+            email: email,
+            password: password
           })
         })
         .then(response => {
           return response.json();
         })
+        const token = tokenResponse["accessToken"];
 
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const memberResponse = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'authorization': `bearer ${token}`
+          },
+        })
+        .then(response => {
+          return response.json();
+        })
+        this.setMember({
+          email: memberResponse['email'],
+          password: memberResponse['password']
+        });
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {

@@ -50,9 +50,9 @@ npm run serve
 <br>
 
 ## 🛠 기능 요구사항
-- [ ] 로그인 기능 구현하기
-    - [ ] 프론트엔드 API 호출 기능 구현
-    - [ ] 토큰 발급 API 구현하기
+- [x] 로그인 기능 구현하기
+    - [x] 프론트엔드 API 호출 기능 구현
+    - [x] 토큰 발급 API 구현하기
     ```json
     POST /login/token HTTP/1.1
     content-type: application/json; charset=UTF-8
