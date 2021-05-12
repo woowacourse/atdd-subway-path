@@ -3,13 +3,12 @@ package wooteco.member.service;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import wooteco.exception.HttpException;
 import wooteco.member.controller.dto.request.TokenRequestDto;
 import wooteco.member.controller.dto.response.TokenResponseDto;
-import wooteco.member.infrastructure.JwtTokenProvider;
-import wooteco.exception.HttpException;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
-import wooteco.member.controller.dto.response.MemberResponseDto;
+import wooteco.member.infrastructure.JwtTokenProvider;
 
 @Service
 public class AuthService {

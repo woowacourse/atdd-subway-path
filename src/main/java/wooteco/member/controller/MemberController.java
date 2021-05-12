@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.member.controller.dto.request.MemberRequestDto;
+import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.member.domain.AuthenticationPrincipal;
 import wooteco.member.domain.Member;
 import wooteco.member.service.MemberService;
-import wooteco.member.controller.dto.request.MemberRequestDto;
-import wooteco.member.controller.dto.response.MemberResponseDto;
 
 @RequestMapping("/api/members")
 @RestController

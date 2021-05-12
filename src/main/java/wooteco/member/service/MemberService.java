@@ -1,10 +1,10 @@
 package wooteco.member.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.member.dao.MemberDao;
-import wooteco.member.domain.Member;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
+import wooteco.member.dao.MemberDao;
+import wooteco.member.domain.Member;
 
 @Service
 public class MemberService {

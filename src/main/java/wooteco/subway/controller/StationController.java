@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.service.StationService;
 import wooteco.subway.controller.dto.request.StationRequestDto;
 import wooteco.subway.controller.dto.response.StationResponseDto;
+import wooteco.subway.service.StationService;
 
 @RestController
 public class StationController {
