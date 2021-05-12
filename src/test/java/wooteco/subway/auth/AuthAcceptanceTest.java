@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -65,6 +67,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("토큰을 발급하는 기능 테스트")
+    @Test
+    void name() {
+        //given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        //when
+        final String token = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest(EMAIL, PASSWORD))
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().as(TokenResponse.class).getAccessToken();
+
+        //then
+        assertThat(token).isNotNull();
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
