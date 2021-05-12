@@ -31,7 +31,7 @@ public class MemberService {
     public MemberResponse findMemberByToken(String token) {
         validateToken(token);
         String payload = jwtTokenProvider.getPayload(token);
-        return findMemberByEmail(payload);
+        return MemberResponse.of(findMemberByEmail(payload));
     }
 
     private void validateToken(String token) {
@@ -40,9 +40,17 @@ public class MemberService {
         }
     }
 
-    private MemberResponse findMemberByEmail(String email) {
+    private Member findMemberByEmail(String email) {
         Member member = memberDao.findByEmail(email);
-        return MemberResponse.of(member);
+        return member;
+    }
+
+    public MemberResponse updateMemberByToken(String token, MemberRequest memberRequest) {
+        validateToken(token);
+        String payload = jwtTokenProvider.getPayload(token);
+        Member member = findMemberByEmail(payload);
+        updateMember(member.getId(), memberRequest);
+        return new MemberResponse(member.getId(), memberRequest.getEmail(), memberRequest.getAge());
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
