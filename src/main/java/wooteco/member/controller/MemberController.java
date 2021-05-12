@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.member.domain.AuthenticationPrincipal;
+import wooteco.member.domain.Member;
 import wooteco.member.service.MemberService;
-import wooteco.member.controller.dto.request.LoginMember;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
 
@@ -27,43 +27,42 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequestDto memberRequestDto) {
-        MemberResponseDto member = memberService.createMember(memberRequestDto);
-        return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
+        MemberResponseDto memberResponseDto = memberService.createMember(memberRequestDto);
+        return ResponseEntity.created(URI.create("/api/members/" + memberResponseDto.getId())).build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponseDto> findMember(@PathVariable Long id) {
-        MemberResponseDto member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+        MemberResponseDto memberResponseDto = memberService.findMember(id);
+        return ResponseEntity.ok().body(memberResponseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long id, @RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberRequestDto memberRequestDto) {
         memberService.updateMember(id, memberRequestDto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponseDto member = memberService.findMember(loginMember.getId());
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponseDto> findMemberOfMine(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.ok().body(new MemberResponseDto(member));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponseDto> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequestDto memberRequestDto) {
-        memberService.updateMember(loginMember.getId(), memberRequestDto);
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequestDto memberRequestDto) {
+        memberService.updateMember(member.getId(), memberRequestDto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<MemberResponseDto> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getId());
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }

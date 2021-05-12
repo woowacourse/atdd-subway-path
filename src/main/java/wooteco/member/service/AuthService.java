@@ -33,19 +33,14 @@ public class AuthService {
             .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀렸습니다."));
     }
 
-    public MemberResponseDto findMemberByToken(String token) {
+    public Member findMemberByToken(String token) {
         try {
             checkValidation(token);
             String payload = jwtTokenProvider.getPayload(token);
-            return findMember(Long.valueOf(payload));
+            return memberDao.findById(Long.valueOf(payload));
         } catch (JwtException | IllegalArgumentException e) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE);
         }
-    }
-
-    public MemberResponseDto findMember(Long id) {
-        Member foundMember = memberDao.findById(id);
-        return new MemberResponseDto(foundMember);
     }
 
     public void checkValidation(String token) {
