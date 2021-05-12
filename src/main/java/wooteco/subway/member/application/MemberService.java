@@ -1,10 +1,13 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -21,6 +24,12 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
+        return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMember1(String email) {
+        final Member member = memberDao.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         return MemberResponse.of(member);
     }
 

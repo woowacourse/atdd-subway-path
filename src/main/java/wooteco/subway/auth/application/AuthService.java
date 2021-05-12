@@ -29,4 +29,8 @@ public class AuthService {
 
         return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
     }
+
+    public String getEmailByToken(String token) {
+        return jwtTokenProvider.getPayload(token);
+    }
 }

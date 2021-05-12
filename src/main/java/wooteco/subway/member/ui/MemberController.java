@@ -2,6 +2,8 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -40,10 +42,11 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
+    // TODO: 구현 하기 (겉만 멀쩡함)
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) { // LoginMember 파라미터로
+        final MemberResponse member = memberService.findMember1(loginMember.getEmail());
+        return ResponseEntity.ok(member);
     }
 
     // TODO: 구현 하기
