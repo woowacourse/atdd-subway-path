@@ -51,18 +51,19 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/me/{id}")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@PathVariable Long id, @Valid @RequestBody MemberRequest memberRequest, HttpServletRequest request) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@PathVariable Long id,
+                                                             @Valid @RequestBody MemberRequest memberRequest, HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
         memberService.updateMember(id, memberRequest, token);
         MemberResponse memberResponse = memberService.findMemberByEmail(token);
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    // TODO: 구현 하기
-    @DeleteMapping("/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@PathVariable Long id, HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request);
+        memberService.deleteMember(id, token);
         return ResponseEntity.noContent().build();
     }
 }

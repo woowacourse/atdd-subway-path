@@ -44,7 +44,7 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest memberRequest, String token) {
-        if(authService.validateToken(token)){
+        if (authService.validateToken(token)) {
             memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
             return;
         }
@@ -53,6 +53,14 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+
+    public void deleteMember(Long id, String token) {
+        if (authService.validateToken(token)) {
+            memberDao.deleteById(id);
+            return;
+        }
+        throw new InvalidTokenException();
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
