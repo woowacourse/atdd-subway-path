@@ -25,9 +25,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int NEW_AGE = 30;
 
 
-    @DisplayName("회원 정보를 관리한다.")
+    @DisplayName("회원 생성 - 성공")
     @Test
-    void manageMember() {
+    void createMember_success() {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
@@ -42,6 +42,39 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
     }
+
+    @DisplayName("회원 수정 - 성공")
+    @Test
+    void updateMember_success() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
+
+        MemberResponse memberResponse = findResponse.body().as(MemberResponse.class);
+
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(memberResponse.getAge()).isEqualTo(NEW_AGE);
+    }
+
+    @DisplayName("회원 삭제 - 성공")
+    @Test
+    void deleteMember_success() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
+
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -62,7 +95,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(MEMBERS_BASE_URL + "/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 

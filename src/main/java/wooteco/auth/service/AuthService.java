@@ -1,11 +1,10 @@
 package wooteco.auth.service;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.auth.domain.Token;
+import wooteco.exception.unauthorized.MemberAlreadyDeletedException;
 import wooteco.exception.badRequest.ErrorResponse;
 import wooteco.exception.badRequest.PasswordIncorrectException;
-import wooteco.exception.notFound.MemberNotFoundException;
 import wooteco.exception.unauthorized.InvalidTokenException;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.dao.MemberDao;
@@ -37,6 +36,6 @@ public class AuthService {
             throw new InvalidTokenException();
         }
         Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
-        return memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
+        return memberDao.findById(id).orElseThrow(MemberAlreadyDeletedException::new);
     }
 }
