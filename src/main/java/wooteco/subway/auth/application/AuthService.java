@@ -1,7 +1,6 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -32,11 +31,11 @@ public class AuthService {
         }
     }
 
-    public wooteco.subway.member.dto.MemberResponse findMemberByToken(String token) {
+    public Member findMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException("만료된 토큰입니다.");
         }
         String email = jwtTokenProvider.getEmailFromPayload(token);
-        return wooteco.subway.member.dto.MemberResponse.of(memberDao.findByEmail(email));
+        return memberDao.findByEmail(email);
     }
 }

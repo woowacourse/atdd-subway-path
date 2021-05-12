@@ -1,15 +1,18 @@
 package wooteco.subway.auth.infrastructure;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.member.dto.MemberResponse;
 
 @Component
 public class JwtTokenProvider {
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
@@ -20,16 +23,17 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .claim("email", tokenRequest.getEmail())
-                .claim("passwrod", tokenRequest.getPassword())
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .claim("email", tokenRequest.getEmail())
+            .claim("passwrod", tokenRequest.getPassword())
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
     }
 
     public String getEmailFromPayload(String token) {
-        final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+            .getBody();
         return claims.get("email", String.class);
     }
 

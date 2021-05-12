@@ -1,6 +1,7 @@
 package wooteco.subway.member.domain;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
