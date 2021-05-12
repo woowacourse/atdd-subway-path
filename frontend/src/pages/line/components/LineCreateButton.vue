@@ -154,7 +154,7 @@ export default {
       }
       try {
         // TODO 노선을 추가하는 API를 추가해주세요.
-        const newLine = await fetch("http://localhost:8080/lines", {
+        const response = await fetch("http://localhost:8080/lines", {
           method:"POST",
           headers: {
             "Content-Type": "application/json",
@@ -167,6 +167,10 @@ export default {
             distance: this.lineForm.distance
           })
         })
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+        const newLine = await response.json();
         this.setLines([...this.lines, { ...newLine }]);
         // setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
         this.initLineForm();
