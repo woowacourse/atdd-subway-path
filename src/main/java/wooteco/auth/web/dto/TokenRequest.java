@@ -1,6 +1,7 @@
 package wooteco.auth.web.dto;
 
 public class TokenRequest {
+
     private String email;
     private String password;
 

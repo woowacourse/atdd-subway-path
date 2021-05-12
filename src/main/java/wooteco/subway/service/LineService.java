@@ -1,20 +1,20 @@
 package wooteco.subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.LineRequest;
 import wooteco.subway.web.dto.LineResponse;
 import wooteco.subway.web.dto.SectionRequest;
-import wooteco.subway.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
@@ -44,8 +44,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+            .map(line -> LineResponse.of(line))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {

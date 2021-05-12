@@ -3,6 +3,7 @@ package wooteco.auth.web.dto;
 import wooteco.auth.domain.Token;
 
 public class TokenResponse {
+
     private String accessToken;
 
     public TokenResponse() {

@@ -17,8 +17,8 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity badRequest(BadRequestException badRequest) {
-        return ResponseEntity.badRequest().body(badRequest.errorResponse());
+    public ResponseEntity badRequest(BadRequestException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(UnauthorizedException.class)

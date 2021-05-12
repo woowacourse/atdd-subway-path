@@ -1,18 +1,25 @@
 package wooteco.auth.web;
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.domain.Member;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
 
-import java.net.URI;
-
 @RestController
 @RequestMapping("/api")
 public class MemberController {
+
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {
@@ -32,7 +39,8 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+        @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -49,13 +57,15 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member,
+        @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(member.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(
+        @AuthenticationPrincipal Member member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }

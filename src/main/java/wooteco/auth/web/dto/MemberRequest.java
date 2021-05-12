@@ -3,6 +3,7 @@ package wooteco.auth.web.dto;
 import wooteco.auth.domain.Member;
 
 public class MemberRequest {
+
     private String email;
     private String password;
     private Integer age;

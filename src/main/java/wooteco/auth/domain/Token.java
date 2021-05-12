@@ -8,7 +8,7 @@ public class Token {
         this.accessToken = accessToken;
     }
 
-    public String accessToken(){
+    public String accessToken() {
         return accessToken;
     }
 }
