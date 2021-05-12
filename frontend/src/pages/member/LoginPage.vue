@@ -73,8 +73,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        alert("로그인 시도 했음!")
         const { email, password } = this.member;
         const response = await fetch("http://localhost:8080/login/token", {
           method: "POST",
@@ -87,8 +85,6 @@ export default {
           })
         });
         if (!response.ok) {
-          console.log("로키!");
-          console.log(response);
           throw new Error(`${response.status}`);
         }
         // TODO member 데이터를 불러와 주세요.
