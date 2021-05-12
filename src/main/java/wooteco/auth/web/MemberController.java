@@ -2,6 +2,8 @@ package wooteco.auth.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.auth.domain.AuthenticationPrincipal;
+import wooteco.auth.domain.Member;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
@@ -43,8 +45,9 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
+
+        return ResponseEntity.ok(MemberResponse.of(member));
     }
 
     // TODO: 구현 하기

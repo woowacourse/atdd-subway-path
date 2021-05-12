@@ -1,11 +1,13 @@
 package wooteco.subway.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.auth.domain.Token;
+import wooteco.exception.badRequest.ErrorResponse;
+import wooteco.exception.badRequest.PasswordIncorrectException;
+import wooteco.exception.notFound.MemberNotFoundException;
+import wooteco.exception.unauthorized.InvalidTokenException;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.auth.exception.badRequest.ErrorResponse;
-import wooteco.auth.exception.badRequest.PasswordIncorrectException;
-import wooteco.auth.exception.notFound.MemberNotFoundException;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 
@@ -27,5 +29,13 @@ public class AuthService {
             throw new PasswordIncorrectException(new ErrorResponse());
         }
         return new Token(jwtTokenProvider.createToken(email));
+    }
+
+    public Member findMemberWithToken(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new InvalidTokenException();
+        }
+        String email = jwtTokenProvider.getPayload(accessToken);
+        return memberDao.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
 }

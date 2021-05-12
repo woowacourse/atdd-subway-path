@@ -1,11 +1,11 @@
 package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.auth.exception.notFound.MemberNotFoundException;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
+import wooteco.exception.notFound.MemberNotFoundException;
 
 @Service
 public class MemberService {

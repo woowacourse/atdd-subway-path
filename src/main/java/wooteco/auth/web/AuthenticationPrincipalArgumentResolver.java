@@ -1,10 +1,13 @@
 package wooteco.auth.web;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import wooteco.auth.domain.Member;
+import wooteco.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.service.AuthService;
 import wooteco.auth.domain.AuthenticationPrincipal;
 
@@ -25,7 +28,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
-        return null;
+        String accessToken = AuthorizationExtractor
+            .extract((HttpServletRequest) webRequest.getNativeRequest());
+        return authService.findMemberWithToken(accessToken);
     }
 }
