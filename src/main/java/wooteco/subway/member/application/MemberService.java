@@ -2,6 +2,8 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.exception.JwtLoginEmailException;
+import wooteco.subway.auth.exception.JwtLoginPasswordException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -32,7 +34,7 @@ public class MemberService {
         if (member.isPresent()) {
             return MemberResponse.of(member.get());
         }
-        throw new IllegalStateException("없는 이메일임!");
+        throw new JwtLoginEmailException();
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
@@ -44,9 +46,9 @@ public class MemberService {
     }
 
     public void validateMember(TokenRequest request) {
-        Member member = findByEmail(request.getEmail());
+        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(JwtLoginEmailException::new);
         if(!member.samePassword(request.getPassword())) {
-            throw new IllegalStateException("잘못된 패스워드임!");
+            throw new JwtLoginPasswordException();
         }
     }
 
