@@ -6,9 +6,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.auth.domain.Member;
 import wooteco.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.service.AuthService;
+import wooteco.auth.service.AuthService;
 import wooteco.auth.domain.AuthenticationPrincipal;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {

@@ -3,7 +3,7 @@ package wooteco.auth;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import wooteco.subway.service.AuthService;
+import wooteco.auth.service.AuthService;
 import wooteco.auth.web.AuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
