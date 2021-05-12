@@ -71,7 +71,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("토큰을 발급하는 기능 테스트")
     @Test
-    void name() {
+    void createToken() {
         //given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
