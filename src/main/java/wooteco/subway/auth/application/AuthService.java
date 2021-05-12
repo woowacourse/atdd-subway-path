@@ -23,13 +23,13 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword());
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        Member member = getUserInfo(tokenRequest.getEmail(), tokenRequest.getPassword());
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
 
-    public void checkInvalidLogin(String principal, String credentials) {
-        memberDao.findByEmailAndPassword(principal, credentials)
+    public Member getUserInfo(String principal, String credentials) {
+        return memberDao.findByEmailAndPassword(principal, credentials)
             .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀렸습니다."));
     }
 
@@ -37,15 +37,14 @@ public class AuthService {
         try {
             checkValidation(token);
             String payload = jwtTokenProvider.getPayload(token);
-            return findMember(payload);
+            return findMember(Long.valueOf(payload));
         } catch (JwtException | IllegalArgumentException e) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE);
         }
     }
 
-    public MemberResponse findMember(String principal) {
-        Member foundMember = memberDao.findByEmail(principal)
-            .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE));
+    public MemberResponse findMember(Long id) {
+        Member foundMember = memberDao.findById(id);
         return new MemberResponse(foundMember);
     }
 
