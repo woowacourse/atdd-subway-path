@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -50,5 +51,11 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+
+    public boolean checkFrom(String email, String password) {
+        String sql = "select count(*) from MEMBER where email = ? AND password = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email, password) > 0;
     }
 }

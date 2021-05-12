@@ -1,10 +1,13 @@
 package wooteco.subway.member.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.InvalidMemberException;
 
 import java.net.URI;
 
@@ -57,4 +60,21 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/members/authentication")
+    public ResponseEntity<Void> memberAuthenticate(@RequestBody TokenRequest tokenRequest) {
+        memberService.authenticate(tokenRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(InvalidMemberException.class)
+    private ResponseEntity<Void> handlerInvalidMemberException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    private ResponseEntity<Void> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
 }
