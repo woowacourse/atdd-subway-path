@@ -1,5 +1,7 @@
 package wooteco.subway.member.dao;
 
+import java.util.Optional;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -35,6 +37,22 @@ public class MemberDao {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+    }
+
+    public Optional<Member> findByEmailAndPassword(String email, String password) {
+        String query = "select * from MEMBER where email = ? and password = ?";
+        Member result = DataAccessUtils.singleResult(
+            jdbcTemplate.query(query, rowMapper, email, password)
+        );
+        return Optional.ofNullable(result);
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        String query = "select * from MEMBER where email = ?";
+        Member result = DataAccessUtils.singleResult(
+            jdbcTemplate.query(query, rowMapper, email)
+        );
+        return Optional.ofNullable(result);
     }
 
     public void update(Member member) {
