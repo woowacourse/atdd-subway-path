@@ -20,7 +20,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping(value = "/login/token", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
         TokenResponse tokenResponse = authService.login(request);
         return ResponseEntity.ok().body(tokenResponse);
