@@ -7,9 +7,9 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.controller.dto.request.LineRequest;
-import wooteco.subway.controller.dto.response.LineResponse;
-import wooteco.subway.controller.dto.request.SectionRequest;
+import wooteco.subway.controller.dto.request.LineRequestDto;
+import wooteco.subway.controller.dto.response.LineResponseDto;
+import wooteco.subway.controller.dto.request.SectionRequestDto;
 import wooteco.subway.domain.Station;
 
 @Service
@@ -24,13 +24,13 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponseDto saveLine(LineRequestDto request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        return LineResponseDto.of(persistLine);
     }
 
-    private Section addInitSection(Line line, LineRequest request) {
+    private Section addInitSection(Line line, LineRequestDto request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
@@ -40,10 +40,10 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineResponseDto> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(line -> LineResponse.of(line))
+            .map(line -> LineResponseDto.of(line))
             .collect(Collectors.toList());
     }
 
@@ -51,16 +51,16 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponseDto findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponseDto.of(persistLine);
     }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequestDto lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -68,7 +68,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addLineStation(Long lineId, SectionRequestDto request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());

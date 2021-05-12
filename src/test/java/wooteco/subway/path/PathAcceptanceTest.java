@@ -9,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.controller.dto.response.LineResponse;
-import wooteco.subway.controller.dto.response.PathResponse;
-import wooteco.subway.controller.dto.response.StationResponse;
+import wooteco.subway.controller.dto.response.LineResponseDto;
+import wooteco.subway.controller.dto.response.PathResponseDto;
+import wooteco.subway.controller.dto.response.StationResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +24,13 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 교대역;
-    private StationResponse 남부터미널역;
+    private LineResponseDto 신분당선;
+    private LineResponseDto 이호선;
+    private LineResponseDto 삼호선;
+    private StationResponseDto 강남역;
+    private StationResponseDto 양재역;
+    private StationResponseDto 교대역;
+    private StationResponseDto 남부터미널역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -75,22 +75,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
-        PathResponse pathResponse = response.as(PathResponse.class);
+    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponseDto> expectedPathStationResponseDtos) {
+        PathResponseDto pathResponseDto = response.as(PathResponseDto.class);
 
-        List<Long> stationIds = pathResponse.getStations().stream()
-                .map(StationResponse::getId)
+        List<Long> stationIds = pathResponseDto.getStations().stream()
+                .map(StationResponseDto::getId)
                 .collect(Collectors.toList());
 
-        List<Long> expectedPathIds = expectedPath.stream()
-                .map(StationResponse::getId)
+        List<Long> expectedPathIds = expectedPathStationResponseDtos.stream()
+                .map(StationResponseDto::getId)
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+        PathResponseDto pathResponseDto = response.as(PathResponseDto.class);
+        assertThat(pathResponseDto.getDistance()).isEqualTo(totalDistance);
     }
 }

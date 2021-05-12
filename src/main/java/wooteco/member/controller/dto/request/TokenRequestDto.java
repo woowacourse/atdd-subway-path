@@ -1,13 +1,13 @@
 package wooteco.member.controller.dto.request;
 
-public class TokenRequest {
+public class TokenRequestDto {
     private String email;
     private String password;
 
-    public TokenRequest() {
+    public TokenRequestDto() {
     }
 
-    public TokenRequest(String email, String password) {
+    public TokenRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
     }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.service.StationService;
-import wooteco.subway.controller.dto.request.StationRequest;
-import wooteco.subway.controller.dto.response.StationResponse;
+import wooteco.subway.controller.dto.request.StationRequestDto;
+import wooteco.subway.controller.dto.response.StationResponseDto;
 
 @RestController
 public class StationController {
@@ -25,13 +25,13 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
+    public ResponseEntity<StationResponseDto> createStation(@RequestBody StationRequestDto stationRequestDto) {
+        StationResponseDto station = stationService.saveStation(stationRequestDto);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations() {
+    public ResponseEntity<List<StationResponseDto>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 

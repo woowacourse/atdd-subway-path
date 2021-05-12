@@ -3,13 +3,13 @@ package wooteco.member.service;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import wooteco.member.controller.dto.request.TokenRequest;
-import wooteco.member.controller.dto.response.TokenResponse;
+import wooteco.member.controller.dto.request.TokenRequestDto;
+import wooteco.member.controller.dto.response.TokenResponseDto;
 import wooteco.member.infrastructure.JwtTokenProvider;
 import wooteco.exception.HttpException;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
-import wooteco.member.controller.dto.response.MemberResponse;
+import wooteco.member.controller.dto.response.MemberResponseDto;
 
 @Service
 public class AuthService {
@@ -22,10 +22,10 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        Member member = getUserInfo(tokenRequest.getEmail(), tokenRequest.getPassword());
+    public TokenResponseDto createToken(TokenRequestDto tokenRequestDto) {
+        Member member = getUserInfo(tokenRequestDto.getEmail(), tokenRequestDto.getPassword());
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-        return new TokenResponse(accessToken);
+        return new TokenResponseDto(accessToken);
     }
 
     public Member getUserInfo(String principal, String credentials) {
@@ -33,7 +33,7 @@ public class AuthService {
             .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀렸습니다."));
     }
 
-    public MemberResponse findMemberByToken(String token) {
+    public MemberResponseDto findMemberByToken(String token) {
         try {
             checkValidation(token);
             String payload = jwtTokenProvider.getPayload(token);
@@ -43,9 +43,9 @@ public class AuthService {
         }
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponseDto findMember(Long id) {
         Member foundMember = memberDao.findById(id);
-        return new MemberResponse(foundMember);
+        return new MemberResponseDto(foundMember);
     }
 
     public void checkValidation(String token) {

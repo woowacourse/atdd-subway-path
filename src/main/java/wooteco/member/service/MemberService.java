@@ -3,8 +3,8 @@ package wooteco.member.service;
 import org.springframework.stereotype.Service;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
-import wooteco.member.controller.dto.request.MemberRequest;
-import wooteco.member.controller.dto.response.MemberResponse;
+import wooteco.member.controller.dto.request.MemberRequestDto;
+import wooteco.member.controller.dto.response.MemberResponseDto;
 
 @Service
 public class MemberService {
@@ -14,18 +14,18 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+    public MemberResponseDto createMember(MemberRequestDto memberRequestDto) {
+        Member member = memberDao.insert(memberRequestDto.toMember());
+        return MemberResponseDto.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponseDto findMember(Long id) {
         Member member = memberDao.findById(id);
-        return MemberResponse.of(member);
+        return MemberResponseDto.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public void updateMember(Long id, MemberRequestDto memberRequestDto) {
+        memberDao.update(new Member(id, memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getAge()));
     }
 
     public void deleteMember(Long id) {

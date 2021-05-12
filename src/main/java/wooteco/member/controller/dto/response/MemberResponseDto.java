@@ -2,28 +2,28 @@ package wooteco.member.controller.dto.response;
 
 import wooteco.member.domain.Member;
 
-public class MemberResponse {
+public class MemberResponseDto {
     private Long id;
     private String email;
     private Integer age;
 
-    public MemberResponse() {
+    public MemberResponseDto() {
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
+    public MemberResponseDto(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public MemberResponse(Member member) {
+    public MemberResponseDto(Member member) {
         id = member.getId();
         email = member.getEmail();
         age = member.getAge();
     }
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    public static MemberResponseDto of(Member member) {
+        return new MemberResponseDto(member.getId(), member.getEmail(), member.getAge());
     }
 
     public Long getId() {

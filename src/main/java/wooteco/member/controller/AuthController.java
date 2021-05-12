@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.member.service.AuthService;
-import wooteco.member.controller.dto.request.TokenRequest;
-import wooteco.member.controller.dto.response.TokenResponse;
+import wooteco.member.controller.dto.request.TokenRequestDto;
+import wooteco.member.controller.dto.response.TokenResponseDto;
 
 @RestController
 public class AuthController {
@@ -17,8 +17,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> loginWithToken(@RequestBody TokenRequest tokenRequest) {
-        TokenResponse tokenResponse = authService.createToken(tokenRequest);
+    public ResponseEntity<TokenResponseDto> loginWithToken(@RequestBody TokenRequestDto tokenRequestDto) {
+        TokenResponseDto tokenResponse = authService.createToken(tokenRequestDto);
         return ResponseEntity.ok().body(tokenResponse);
     }
 }

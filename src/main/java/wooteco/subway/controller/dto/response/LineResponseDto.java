@@ -4,29 +4,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.Line;
 
-public class LineResponse {
+public class LineResponseDto {
     private Long id;
     private String name;
     private String color;
-    private List<StationResponse> stations;
+    private List<StationResponseDto> stations;
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+    public LineResponseDto(Long id, String name, String color, List<StationResponseDto> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
     }
 
-    public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
-            .map(it -> StationResponse.of(it))
+    public static LineResponseDto of(Line line) {
+        List<StationResponseDto> stations = line.getStations().stream()
+            .map(it -> StationResponseDto.of(it))
             .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponseDto(line.getId(), line.getName(), line.getColor(), stations);
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
+    public static List<LineResponseDto> listOf(List<Line> lines) {
         return lines.stream()
-            .map(LineResponse::of)
+            .map(LineResponseDto::of)
             .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class LineResponse {
         return color;
     }
 
-    public List<StationResponse> getStations() {
+    public List<StationResponseDto> getStations() {
         return stations;
     }
 }

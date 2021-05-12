@@ -9,7 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.member.service.AuthService;
 import wooteco.member.domain.AuthenticationPrincipal;
 import wooteco.member.controller.dto.request.LoginMember;
-import wooteco.member.controller.dto.response.MemberResponse;
+import wooteco.member.controller.dto.response.MemberResponseDto;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -27,7 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String accessToken = webRequest.getHeader("Authorization");
         String splitToken = Objects.requireNonNull(accessToken).split(" ")[1];
-        MemberResponse member = authService.findMemberByToken(splitToken);
+        MemberResponseDto member = authService.findMemberByToken(splitToken);
         return new LoginMember(member.getId());
     }
 }

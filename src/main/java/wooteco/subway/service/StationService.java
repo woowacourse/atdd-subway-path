@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.controller.dto.request.StationRequest;
-import wooteco.subway.controller.dto.response.StationResponse;
+import wooteco.subway.controller.dto.request.StationRequestDto;
+import wooteco.subway.controller.dto.response.StationResponseDto;
 
 @Service
 public class StationService {
@@ -16,20 +16,20 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationResponseDto saveStation(StationRequestDto stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        return StationResponseDto.of(station);
     }
 
     public Station findStationById(Long id) {
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponseDto> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-            .map(StationResponse::of)
+            .map(StationResponseDto::of)
             .collect(Collectors.toList());
     }
 

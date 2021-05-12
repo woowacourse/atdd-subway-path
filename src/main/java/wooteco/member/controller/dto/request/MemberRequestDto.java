@@ -2,15 +2,15 @@ package wooteco.member.controller.dto.request;
 
 import wooteco.member.domain.Member;
 
-public class MemberRequest {
+public class MemberRequestDto {
     private String email;
     private String password;
     private Integer age;
 
-    public MemberRequest() {
+    public MemberRequestDto() {
     }
 
-    public MemberRequest(String email, String password, Integer age) {
+    public MemberRequestDto(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
