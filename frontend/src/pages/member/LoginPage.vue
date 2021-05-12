@@ -87,7 +87,7 @@ export default {
           body: JSON.stringify(jsonData)
         };
 
-        const data = await fetch("http://localhost:8080/login/token", option);
+        await fetch("http://localhost:8080/login/token", option);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
