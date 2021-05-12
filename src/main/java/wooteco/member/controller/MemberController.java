@@ -16,7 +16,7 @@ import wooteco.member.controller.dto.request.LoginMember;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
 
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @RestController
 public class MemberController {
     private final MemberService memberService;
@@ -28,7 +28,7 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequestDto memberRequestDto) {
         MemberResponseDto member = memberService.createMember(memberRequestDto);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
 
     @GetMapping("/{id}")
