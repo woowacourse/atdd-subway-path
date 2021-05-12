@@ -31,4 +31,9 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
+
+    public MemberResponse findMemberByEmail(final String email) {
+        final Member member = memberDao.findByEmail(email);
+        return MemberResponse.of(member);
+    }
 }

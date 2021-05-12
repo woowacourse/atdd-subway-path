@@ -18,4 +18,12 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
         return new TokenResponse(accessToken);
     }
+
+    public void verifyToken(String accessToken) {
+        jwtTokenProvider.validateToken(accessToken);
+    }
+
+    public String parseEmail(String accessToken) {
+        return jwtTokenProvider.getPayload(accessToken);
+    }
 }

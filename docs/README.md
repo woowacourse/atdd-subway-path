@@ -11,7 +11,7 @@
     
 ### 백엔드
 - [x] 토큰 발급하기
-- [ ] 유효한 로그인인 경우 LoginMember 만들어서 응답하기
+- [x] 유효한 로그인인 경우 LoginMember 만들어서 응답하기
 - [ ] 멤버 컨트롤러 구현하기
 
 ## Commit Convention

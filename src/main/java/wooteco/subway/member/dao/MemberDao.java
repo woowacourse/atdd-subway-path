@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.MemberResponse;
 
 import javax.sql.DataSource;
 
@@ -50,5 +51,10 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Member findByEmail(final String email) {
+        String sql = "select m.id, m.email, m.age from MEMBER m WHERE m.email = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }
