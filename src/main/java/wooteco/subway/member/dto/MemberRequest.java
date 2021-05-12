@@ -1,10 +1,18 @@
 package wooteco.subway.member.dto;
 
+import com.sun.istack.internal.NotNull;
 import wooteco.subway.member.domain.Member;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class MemberRequest {
+    @NotBlank
+    @Email
     private String email;
+    @NotBlank
     private String password;
+    @NotNull
     private Integer age;
 
     public MemberRequest() {
