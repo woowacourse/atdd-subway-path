@@ -54,7 +54,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import { SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
 
@@ -64,7 +64,7 @@ export default {
     ...mapGetters(["accessToken"]),
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
+    ...mapMutations([SHOW_SNACKBAR, SET_ACCESS_TOKEN, SET_MEMBER]),
     isValid() {
       return this.$refs.loginForm.validate();
     },
@@ -73,7 +73,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const response = await fetch("/api/login/token", {
           method: "POST",
           headers: {
@@ -81,17 +80,17 @@ export default {
           },
           body: JSON.stringify(this.member)
         });
-        // TODO member 데이터를 불러와 주세요.
         const body = await response.json();
-        const accessToken = body.accessToken;
-
+        this.setAccessToken(body.accessToken);
+        localStorage.setItem("token", this.accessToken);
         const memberResponse = await fetch("/api/members/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + accessToken
+            "Authorization": "Bearer " + this.accessToken
           }
         });
+
         const member = await memberResponse.json();
         this.setMember(member);
         await this.$router.replace(`/`);
