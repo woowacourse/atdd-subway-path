@@ -21,6 +21,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    @DisplayName("JWT Token 생성 테스트")
+    @Test
+    void getToken() {
+        로그인_요청(EMAIL, PASSWORD);
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
@@ -81,15 +87,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured.given().log().all()
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
+                          .body(params)
+                          .when()
+                          .post("/login/token")
+                          .then()
+                          .log()
+                          .all()
+                          .statusCode(HttpStatus.OK.value())
+                          .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
