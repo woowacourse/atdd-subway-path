@@ -77,8 +77,14 @@ export default {
         // const { email, password } = this.member;
         // const data = await fetch("/login")
         // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const member = await fetch(`http://localhost:8080/members/me`)
+        .then(response => {
+          if(!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+          return response.json();
+        });
+        this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
