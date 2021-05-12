@@ -1,18 +1,23 @@
 package wooteco.subway.member.ui;
 
-import org.springframework.http.HttpStatus;
+import java.net.URI;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-
 @RestController
 public class MemberController {
+
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {
@@ -32,7 +37,8 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+        @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -52,15 +58,16 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(HttpServletRequest request,
-                                                             @RequestBody MemberRequest memberRequest) {
+        @RequestBody MemberRequest memberRequest) {
         String token = AuthorizationExtractor.extract(request);
         MemberResponse memberResponse = memberService.updateMemberByToken(token, memberRequest);
         return ResponseEntity.ok(memberResponse);
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<Void> deleteMemberOfMine(HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request);
+        memberService.deleteMemberByToken(token);
         return ResponseEntity.noContent().build();
     }
 }

@@ -63,4 +63,9 @@ public class MemberDao {
         String sql = "select * from MEMBER where email=?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
+
+    public void deleteByEmail(String email) {
+        String sql = "delete from MEMBER where email = ?";
+        jdbcTemplate.update(sql, email);
+    }
 }
