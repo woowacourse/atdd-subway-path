@@ -35,7 +35,7 @@ public class AuthService {
 
     public Member findMemberByToken(String token) {
         try {
-            checkValidation(token);
+            validateToken(token);
             String payload = jwtTokenProvider.getPayload(token);
             return memberDao.findById(Long.valueOf(payload));
         } catch (JwtException | IllegalArgumentException e) {
@@ -43,7 +43,7 @@ public class AuthService {
         }
     }
 
-    public void checkValidation(String token) {
+    public void validateToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE);
         }
