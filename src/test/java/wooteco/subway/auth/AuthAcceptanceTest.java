@@ -21,12 +21,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("JWT Token 생성 테스트")
-    @Test
-    void getToken() {
-        로그인_요청(EMAIL, PASSWORD);
-    }
-
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {

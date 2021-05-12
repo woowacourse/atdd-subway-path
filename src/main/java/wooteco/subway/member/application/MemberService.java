@@ -1,6 +1,8 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -33,7 +35,12 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByEmail(final String email) {
-        final Member member = memberDao.findByEmail(email);
+        final Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));;
         return MemberResponse.of(member);
+    }
+
+    public void authorize(final TokenRequest tokenRequest) {
+        final String email = tokenRequest.getEmail();
+        findMemberByEmail(email);
     }
 }
