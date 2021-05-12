@@ -26,7 +26,7 @@ public class AuthService {
 
     public void checkInvalidLogin(TokenRequest tokenRequest) {
         final Member member = memberDao.findByEmail(tokenRequest.getEmail());
-        if (member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+        if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException(tokenRequest.getEmail());
         }
     }
