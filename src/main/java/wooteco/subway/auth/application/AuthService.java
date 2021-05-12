@@ -3,6 +3,7 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.JwtNotAuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberResponse;
@@ -24,6 +25,9 @@ public class AuthService {
     }
 
     public MemberResponse findByToken(String token) {
+        if(!jwtTokenProvider.validateToken(token)) {
+            throw new JwtNotAuthorizationException();
+        }
         String email = jwtTokenProvider.getPayload(token);
         return memberService.findMemberByEmail(email);
     }
