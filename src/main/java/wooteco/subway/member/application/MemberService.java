@@ -8,6 +8,8 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
+
+    private static final int NONE_USER_COUNT = 0;
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -25,7 +27,8 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {
@@ -35,5 +38,10 @@ public class MemberService {
     public MemberResponse findMemberByEmail(String email) {
         Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
+    }
+
+    public boolean isExist(String email) {
+        long count = memberDao.count(email);
+        return count > NONE_USER_COUNT;
     }
 }
