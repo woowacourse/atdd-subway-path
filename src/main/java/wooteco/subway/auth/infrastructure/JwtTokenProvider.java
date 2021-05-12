@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import wooteco.subway.auth.exception.UserLoginFailException;
 
 @Component
 public class JwtTokenProvider {
@@ -27,10 +28,13 @@ public class JwtTokenProvider {
     }
 
     public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        if(validateToken(token)){
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        }
+        throw new UserLoginFailException();
     }
 
-    public boolean validateToken(String token) {
+    private boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
