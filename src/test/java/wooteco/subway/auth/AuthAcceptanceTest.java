@@ -20,6 +20,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
+    private static final String LOGIN_BASE_URL = "/api/login";
+    private static final String MEMBER_BASE_URL = "/api/members";
 
     @DisplayName("Bearer Auth")
     @Test
@@ -48,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/token")
+                .when().post(LOGIN_BASE_URL + "/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -62,7 +64,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get(MEMBER_BASE_URL + "/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -85,7 +87,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
-                post("/login/token").
+                post(LOGIN_BASE_URL + "/token").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -97,7 +99,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/members/me").
+                get(MEMBER_BASE_URL + "/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).

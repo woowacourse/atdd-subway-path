@@ -16,12 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+    private static final String MEMBERS_BASE_URL = "/api/lines";
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
     public static final String NEW_EMAIL = "new_email@email.com";
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
+
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -48,7 +50,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
+                .when().post(MEMBERS_BASE_URL + "")
                 .then().log().all()
                 .extract();
     }
@@ -58,7 +60,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get(MEMBERS_BASE_URL + "/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -72,7 +74,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().put("/members/me")
+                .when().put(MEMBERS_BASE_URL + "/me")
                 .then().log().all()
                 .extract();
     }
@@ -81,7 +83,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/members/me")
+                .when().delete(MEMBERS_BASE_URL + "/me")
                 .then().log().all()
                 .extract();
     }
