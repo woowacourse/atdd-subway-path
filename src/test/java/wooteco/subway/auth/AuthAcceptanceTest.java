@@ -21,8 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password,
-        Integer age) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
 
