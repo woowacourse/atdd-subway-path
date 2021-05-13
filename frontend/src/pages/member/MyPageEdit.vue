@@ -64,7 +64,7 @@
               취소
             </v-btn>
             <v-btn
-              @click.prevent="onEditMember"
+              @click.prevent="onEditMember(member.id)"
               :disabled="!valid"
               color="amber"
               depressed
@@ -105,9 +105,32 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        // TODO member 정보를 update하는 API를 추가해주세요 (v)
+        const { email, age, password } = this.editingMember;
+
+        const token = `bearer ${localStorage.getItem("token")}`;
+        await fetch("http://localhost:8080/members/me", {
+          method: "PUT",
+          headers: {
+            "Content-Type" : "application/json",
+            "Authorization" : token
+          },
+          body: JSON.stringify({
+            email: email,
+            age: age,
+            password: password
+          }),
+        });
+
+        const response  = await fetch("http://localhost:8080/members/me", {
+              headers: {
+                "Authorization": token
+              }
+            }
+        );
+        const member = await response.json();
+        this.setMember(member);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
