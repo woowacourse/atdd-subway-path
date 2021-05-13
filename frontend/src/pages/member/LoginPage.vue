@@ -74,7 +74,7 @@ export default {
       }
       try {
         const { email, password } = this.member;
-        let token_response = await fetch("/api/login/token", {
+        let token_response = await fetch("/api/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
