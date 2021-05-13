@@ -4,7 +4,7 @@
 - [ ] 토큰 발급 요청 API 구현하기
 
 ### 백엔드
-- [ ] 토큰 발급 API 구현하기
+- [x] 토큰 발급 API 구현하기
 - request
 ```json
 POST /login/token HTTP/1.1
