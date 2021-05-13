@@ -105,7 +105,9 @@ export default {
     },
     async onEditMember() {
       try {
+        // TODO member 정보를 update하는 API를 추가해주세요
         const { email, age, password } = this.editingMember;
+        // await fetch("/api/users/{this.member.id}", { email, age, password })
 
         await fetch("http://localhost:8080/members/me", {
           method: "PUT",
@@ -118,31 +120,7 @@ export default {
             password: password,
             age: age
           })
-        }).then(function (response) {
-          if (!response.ok) {
-            alert("회원이 아닙니다.");
-            throw new Error("회원이 아닙니다.");
-          }
-          alert("수정 성공");
         })
-
-        await fetch("http://localhost:8080/login/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password
-          })
-        }).then(function (response) {
-          if(response.status == 401){
-            alert("로그인 문제 발생 / 아이디와 비밀번호를 다시 확인해주세요.");
-          }
-          return response.json();
-        }).then((data) =>{
-          localStorage.setItem("token", JSON.stringify(data));
-        });
 
         await fetch("http://localhost:8080/members/me", {
           method: "GET",

@@ -1,8 +1,6 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
@@ -11,7 +9,6 @@ import wooteco.subway.member.domain.Member;
 @Service
 public class AuthService {
 
-    // XXX :: MemberService와 MemberDao 중 선택의 근거
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
 
@@ -20,23 +17,20 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    @Transactional(readOnly = true)
     public String createToken(final TokenRequest tokenRequest) {
-        if(memberDao.isNotExistUser(tokenRequest.getEmail(), tokenRequest.getPassword())){
-            throw new AuthorizedException("올바른 사용자가 아닙니다.");
+        if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+            return jwtTokenProvider.createToken(tokenRequest.getPassword());
         }
-        return jwtTokenProvider.createToken(tokenRequest.getEmail());
+        throw new IllegalArgumentException("적절하지 않은 사용자입력");
     }
 
-    public AuthorizationPayLoad getPayLoad(final String token) {
-        jwtTokenProvider.validateToken(token);
-        final String payload = jwtTokenProvider.getPayload(token);
-        return new AuthorizationPayLoad(payload);
+    private boolean checkValidLogin(final String email, final String password) {
+        return memberDao.isExist(email, password);
     }
 
     public Member findMemberByToken(String token) {
         final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByEmail(payload);
+        return memberDao.findByPassword(payload);
     }
 
 }
