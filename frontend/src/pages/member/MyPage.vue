@@ -48,7 +48,7 @@ export default {
   name: "MyPage",
   components: { ConfirmDialog },
   computed: {
-    ...mapGetters(["member"]),
+    ...mapGetters(["member", "accessToken"]),
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
@@ -64,11 +64,10 @@ export default {
         return;
       }
       try {
-        const auth = this.$store.getters.accessToken;
         const response = await fetch("http://localhost:8080/members/me", {
           method: "DELETE",
           headers: {
-            "Authorization": "Bearer " + JSON.parse(JSON.stringify(auth)).accessToken,
+            "Authorization": "Bearer " + this.accessToken,
             "Content-Type": "application/json",
           }
         });
