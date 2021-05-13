@@ -1,14 +1,10 @@
 package wooteco.subway.auth.infrastructure;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.auth.dto.TokenRequest;
+
+import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
@@ -23,16 +19,16 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-            .claim("id", id)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+                .claim("id", id)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public Long getIdFromPayLoad(String token) {
         final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-            .getBody();
+                .getBody();
         return claims.get("id", Long.class);
     }
 

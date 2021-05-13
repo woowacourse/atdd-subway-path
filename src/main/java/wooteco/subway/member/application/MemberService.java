@@ -9,7 +9,7 @@ import wooteco.subway.member.dto.MemberResponse;
 @Service
 public class MemberService {
 
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -27,7 +27,7 @@ public class MemberService {
 
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
-            memberRequest.getAge()));
+                memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {

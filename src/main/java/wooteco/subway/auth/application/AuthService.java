@@ -24,17 +24,17 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public long  getIdWhenValidLogin(TokenRequest tokenRequest) {
+    public long getIdWhenValidLogin(TokenRequest tokenRequest) {
         final Member member = memberDao.findByEmail(tokenRequest.getEmail());
         if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());
+            throw new AuthorizationException("올바르지 않은 회원정보 입니다. 입력된 값: " + tokenRequest.getEmail());
         }
         return member.getId();
     }
 
     public Member findMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException("만료된 토큰입니다.");
+            throw new AuthorizationException("토큰 인증에 실패했습니다.");
         }
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
         return memberDao.findById(id);

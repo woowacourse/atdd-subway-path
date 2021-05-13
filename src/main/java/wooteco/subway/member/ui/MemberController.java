@@ -1,19 +1,14 @@
 package wooteco.subway.member.ui;
 
-import java.net.URI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.net.URI;
 
 @RestController
 public class MemberController {
@@ -55,7 +50,7 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-        @RequestBody MemberRequest memberRequest) {
+                                                   @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(loginMember.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }

@@ -28,7 +28,7 @@ public class MemberResponse {
 
     public static MemberResponse from(LoginMember loginMember) {
         return new MemberResponse(loginMember.getId(), loginMember.getEmail(),
-            loginMember.getAge());
+                loginMember.getAge());
     }
 
     public Long getId() {

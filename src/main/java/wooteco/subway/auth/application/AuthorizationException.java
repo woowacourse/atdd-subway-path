@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class AuthorizationException extends RuntimeException {
 
     public AuthorizationException(String message) {
-        super("인증에 실패했습니다. " + message);
+        super(message);
     }
 }

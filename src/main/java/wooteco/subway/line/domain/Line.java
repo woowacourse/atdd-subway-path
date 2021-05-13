@@ -1,7 +1,8 @@
 package wooteco.subway.line.domain;
 
-import java.util.List;
 import wooteco.subway.station.domain.Station;
+
+import java.util.List;
 
 public class Line {
 
