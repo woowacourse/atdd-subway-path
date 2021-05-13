@@ -28,7 +28,7 @@ public class AuthService {
         return new TokenResponseDto(accessToken);
     }
 
-    public Member getUserInfo(String principal, String credentials) {
+    private Member getUserInfo(String principal, String credentials) {
         return memberDao.findByEmailAndPassword(principal, credentials)
             .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀렸습니다."));
     }
