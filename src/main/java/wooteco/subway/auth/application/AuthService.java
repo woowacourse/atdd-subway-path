@@ -7,12 +7,12 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
-    private JwtTokenProvider jwtTokenProvider;
-    private MemberDao memberDao;
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
