@@ -57,11 +57,11 @@ public class Sections {
             .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
-    private void addSectionDownToDown(Section section) {
+    private void addSectionDownToDown(Section newSection) {
         this.sections.stream()
-            .filter(it -> it.getDownStation().equals(section.getDownStation()))
+            .filter(section -> section.isSameDownStation(newSection))
             .findFirst()
-            .ifPresent(it -> replaceSectionWithUpStation(section, it));
+            .ifPresent(section -> replaceSectionWithUpStation(newSection, section));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {

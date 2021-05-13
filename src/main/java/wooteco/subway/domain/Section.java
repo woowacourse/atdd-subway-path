@@ -37,4 +37,8 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public boolean isSameDownStation(Section otherSection) {
+        return downStation.isSameStation(otherSection.getDownStation());
+    }
 }
