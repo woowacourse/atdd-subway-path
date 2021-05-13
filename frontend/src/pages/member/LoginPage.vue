@@ -73,10 +73,10 @@ export default {
         return;
       }
       try {
-        // const { email, password } = this.member;
+        const { email, password } = this.member;
         const loginRequest = {
-          "password": "password",
-          "email": "email@email.com"
+          "password": password,
+          "email": email
         };
 
         let option = {
@@ -88,6 +88,11 @@ export default {
         };
 
         let response = await fetch("http://localhost:8080/login/token", option);
+        if (!response.ok) {
+          this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
+          return;
+        }
+
         const accessToken = await response.text();
         option = {
           method: 'GET',
@@ -96,18 +101,14 @@ export default {
           }
         }
         response = await fetch("http://localhost:8080/members/me", option)
-        await this.$router.replace(`/`);
-
-        if (!response.ok) {
-          this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
-          return;
-        }
         const member = await response.json();
         this.setMember(member);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
         throw new Error(e);
+      } finally {
+        await this.$router.replace(`/`);
       }
     },
   },
