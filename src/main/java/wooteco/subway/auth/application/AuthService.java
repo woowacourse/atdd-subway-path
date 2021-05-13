@@ -25,4 +25,15 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createToken(Long.toString(member.getId()));
         return new TokenResponse(accessToken);
     }
+
+    public String getPayload(String accessToken) {
+        validateToken(accessToken);
+        return jwtTokenProvider.getPayload(accessToken);
+    }
+
+    private void validateToken(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new AuthorizationException();
+        }
+    }
 }
