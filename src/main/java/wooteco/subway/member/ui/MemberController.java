@@ -51,8 +51,10 @@ public class MemberController {
 
     // TODO: 구현 하기
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(member.getId(), memberRequest);
+        MemberResponse updatedMemberResponse = memberService.findMember(member.getId());
+        return ResponseEntity.ok(updatedMemberResponse);
     }
 
     // TODO: 구현 하기

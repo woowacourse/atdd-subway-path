@@ -98,10 +98,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(memberResponse.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(NEW_AGE);
     }
 }
