@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
         final Object handler) throws Exception {
         String accessToken = AuthorizationExtractor.extract(request);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        return jwtTokenProvider.validateToken(accessToken);
+        jwtTokenProvider.validateToken(accessToken);
+        return true;
     }
 }

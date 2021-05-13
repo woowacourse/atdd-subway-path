@@ -37,9 +37,7 @@ public class AuthService {
     }
 
     public Member findMemberByToken(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException();
-        }
+        jwtTokenProvider.validateToken(token);
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
         return memberDao.findById(id);
     }
