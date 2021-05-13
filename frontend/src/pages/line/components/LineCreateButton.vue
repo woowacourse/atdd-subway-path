@@ -118,11 +118,11 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import shortid from "shortid";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 
 export default {

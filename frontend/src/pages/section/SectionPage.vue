@@ -72,13 +72,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import {
-  SET_LINES,
-  SET_STATIONS,
-  SHOW_SNACKBAR,
-} from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_LINES, SET_STATIONS, SHOW_SNACKBAR,} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 

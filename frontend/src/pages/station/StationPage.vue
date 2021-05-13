@@ -55,9 +55,9 @@
 
 <script>
 import validator from "../../utils/validator";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "StationPage",
