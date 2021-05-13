@@ -40,7 +40,17 @@ public class MemberService {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
+    public void updateMember(String email, MemberRequest memberRequest) {
+        if (!memberRequest.getEmail().equals(email)) {
+            throw new IllegalArgumentException("Email은 수정할 수 없습니다.");
+        }
+        memberDao.update(memberRequest.toMember());
+    }
+
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+    public void deleteMember(String email) {
+        memberDao.deleteByEmail(email);
     }
 }

@@ -40,13 +40,18 @@ public class MemberDao {
     }
 
     public void update(Member member) {
-        String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        String sql = "update MEMBER set password = ?, age = ? where email = ?";
+        jdbcTemplate.update(sql, new Object[]{member.getPassword(), member.getAge(), member.getEmail()});
     }
 
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public void deleteByEmail(String email) {
+        String sql = "delete from MEMBER where email = ?";
+        jdbcTemplate.update(sql, email);
     }
 
     public Member findById(Long id) {

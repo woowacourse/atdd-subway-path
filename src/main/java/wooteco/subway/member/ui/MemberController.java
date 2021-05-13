@@ -52,15 +52,17 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        final String email = loginMember.getEmail();
+        memberService.updateMember(email, param);
         return ResponseEntity.ok().build();
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        final String email = loginMember.getEmail();
+        memberService.deleteMember(email);
         return ResponseEntity.noContent().build();
     }
 }

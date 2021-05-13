@@ -46,13 +46,13 @@ npm run serve
     - [ ] 멤버 정보 업데이트 API 호출
     - [ ] 멤버 정보 삭제 API 호출
         
-- [ ] 백엔드 작업
+- [x] 백엔드 작업
     - [x] JWT 라이브러리를 통한 액세스 토큰 발급하기
         - [x] POST: /login/token 구현하기
-    - [ ] 발급한 토큰을 기반으로 회원 관리 기능 추가하기    
+    - [x] 발급한 토큰을 기반으로 회원 관리 기능 추가하기    
         - [x] GET: /members/me 구현하기
-        - [ ] PUT: /members/me 구현하기
-        - [ ] DELETE: /members/me 구현하기
+        - [x] PUT: /members/me 구현하기
+        - [x] DELETE: /members/me 구현하기
         
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
