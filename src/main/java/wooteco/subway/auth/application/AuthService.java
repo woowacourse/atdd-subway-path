@@ -1,6 +1,7 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthorizationException;
@@ -30,7 +31,13 @@ public class AuthService {
         return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
     }
 
-    public String getEmailByToken(String token) {
-        return jwtTokenProvider.getPayload(token);
+    public LoginMember findLoginMemberByToken(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
+        }
+        String email = jwtTokenProvider.getPayload(accessToken);
+        Member member = memberDao.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
+        return new LoginMember(member);
     }
 }

@@ -83,22 +83,24 @@ export default {
             email: email,
             password: password
           })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+          return response.json();
         });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
-        }
-        response.json()
-            .then((data) => {
-              const name = "accessToken";
-              document.cookie = `${name}=${data.accessToken};`;
-            });
 
-        // TODO member 데이터를 불러와 주세요.
+        const name = "accessToken";
+        document.cookie = `${name}=${response.accessToken};`;
+
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
+          headers: {
+            "Content-Type": " application/json",
+            "Authorization" : `Bearer ${response.accessToken}`
+          }
         });
-        console.log(member);
-        // this.setMember(member);
+        this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
