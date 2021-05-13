@@ -21,7 +21,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
-        System.out.println("@@@@@@@" + tokenResponse.getAccessToken());
         return ResponseEntity.ok().body(tokenResponse);
     }
 }

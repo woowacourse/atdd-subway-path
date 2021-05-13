@@ -85,9 +85,18 @@ export default {
           return res.json();
         });
 
-        console.log(data.accessToken);
         // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : "Bearer " + data.accessToken
+          }
+        }).then(res => {
+          return res.json();
+        });
+
+        console.log(member)
         // this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
