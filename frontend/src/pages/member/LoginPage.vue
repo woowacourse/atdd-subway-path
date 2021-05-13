@@ -96,15 +96,13 @@ export default {
           }
         }
         response = await fetch("http://localhost:8080/members/me", option)
-
-        const member = await response.json();
-
         await this.$router.replace(`/`);
 
-        if (!member.ok) {
+        if (!response.ok) {
           this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
           return;
         }
+        const member = await response.json();
         this.setMember(member);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
