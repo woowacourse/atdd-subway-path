@@ -1,9 +1,12 @@
 package wooteco.subway.member.application;
 
+import java.util.Optional;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.EmailNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -29,6 +32,13 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
         return MemberResponse.of(member);
+    }
+
+    public MemberResponse findByEmail(String email) {
+        Optional<Member> optionalMember = memberDao.findByEmail(email);
+        Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
+
+        return new MemberResponse(member);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

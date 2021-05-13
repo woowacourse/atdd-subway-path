@@ -87,10 +87,24 @@ export default {
             .then(data => {
               return data.accessToken;
             });
+
+        let setCookie = function (name, value, exp) {
+          let date = new Date();
+          date.setTime(date.getTime() + exp*60*60*1000);
+          document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+        };
+
+        setCookie("JWT", token, 1);
+
+        let getCookie = function (name) {
+          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+          return value? value[2] : null;
+        };
+
         const member = await fetch("http://localhost:8080/members/me", {
           method: 'GET',
           headers: {
-            "Authorization": "Bearer " + token
+            "Authorization": "Bearer " + getCookie("JWT")
           }
         }).then(res => res.json())
             .then(data => {
