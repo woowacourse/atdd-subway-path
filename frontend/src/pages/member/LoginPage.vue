@@ -97,11 +97,16 @@ export default {
             "Content-Type": "application/json",
             "Authorization":"Bearer "+ JSON.parse(localStorage.getItem("token")).accessToken
           }
-        }).then((response) => response.json())
-            .then((data) =>{
-              console.log(data);
-              this.setMember(data);
-            });
+        }).then(function (response) {
+          if (!response.ok) {
+            alert("회원이 아닙니다.");
+            throw new Error("회원이 아닙니다.");
+          }
+          return response.json();
+        }).then((data) => {
+          console.log(data);
+          this.setMember(data);
+        })
 
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
