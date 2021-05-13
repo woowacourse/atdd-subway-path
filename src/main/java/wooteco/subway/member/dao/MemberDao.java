@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
@@ -50,5 +51,11 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Optional<Member> findByEmailAndPassword(String email, String password) {
+        String sql = "select * from MEMBER where email = ? and password = ?";
+        return jdbcTemplate.query(sql, rowMapper, email, password)
+                .stream().findAny();
     }
 }
