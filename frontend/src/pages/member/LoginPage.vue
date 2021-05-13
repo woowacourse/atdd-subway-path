@@ -69,6 +69,8 @@ export default {
       return this.$refs.loginForm.validate();
     },
     async onLogin() {
+      const CONTENT_JSON = "application/json";
+
       if (!this.isValid()) {
         return;
       }
@@ -77,7 +79,7 @@ export default {
         const response = await fetch("http://localhost:8080/login/member", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": CONTENT_JSON
           },
           body: JSON.stringify({
             email: email,
@@ -95,7 +97,7 @@ export default {
         const memberResponse = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": CONTENT_JSON,
             "Authorization": "Bearer " + this.accessToken
           }
         })

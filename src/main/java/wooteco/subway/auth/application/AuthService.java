@@ -2,7 +2,7 @@ package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.domain.LoginMember;
-import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.dto.LoginRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
@@ -19,8 +19,8 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        Member member = findMemberByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
+    public TokenResponse createToken(LoginRequest loginRequest) {
+        Member member = findMemberByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }

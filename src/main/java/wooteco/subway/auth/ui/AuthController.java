@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.dto.LoginRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
 @RestController
@@ -18,8 +18,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/member")
-    public ResponseEntity<TokenResponse> loginToken(@RequestBody TokenRequest tokenRequest) {
-        TokenResponse tokenResponse = authService.createToken(tokenRequest);
+    public ResponseEntity<TokenResponse> loginToken(@RequestBody LoginRequest loginRequest) {
+        TokenResponse tokenResponse = authService.createToken(loginRequest);
         return ResponseEntity.ok(tokenResponse);
     }
 }
