@@ -37,7 +37,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
 
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
+        TokenResponse 수정된사용자 = 로그인되어_있음(EMAIL, NEW_PASSWORD);
+
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(수정된사용자);
         회원_삭제됨(deleteResponse);
     }
 
