@@ -1,6 +1,5 @@
 package wooteco.subway.member.ui;
 
-import org.apache.juli.logging.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -14,7 +13,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -47,8 +46,8 @@ public class MemberController {
     // TODO: 구현 하기 (v)
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-            Member member = memberService.findMember(loginMember);
-            return ResponseEntity.ok().body(MemberResponse.of(member));
+        Member member = memberService.findMember(loginMember);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     // TODO: 구현 하기
