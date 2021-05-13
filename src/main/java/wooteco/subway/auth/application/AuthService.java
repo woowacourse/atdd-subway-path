@@ -3,6 +3,7 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -33,9 +34,7 @@ public class AuthService {
     }
 
     public Member findMemberByToken(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException("만료된 토큰입니다.");
-        }
+        jwtTokenProvider.validateToken(token);
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
         return memberDao.findById(id);
     }
