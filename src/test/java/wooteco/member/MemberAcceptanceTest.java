@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.member.controller.dto.request.MemberRequestDto;
-import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.member.controller.dto.response.LoginTokenResponseDto;
+import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.subway.AcceptanceTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
