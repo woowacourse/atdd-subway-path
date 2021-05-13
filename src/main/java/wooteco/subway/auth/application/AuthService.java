@@ -1,11 +1,12 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.application.AuthorizationException;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -19,18 +20,8 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        memberService.authorize(tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        MemberResponse memberResponse = memberService.authorize(tokenRequest);
+        String accessToken = jwtTokenProvider.createToken(memberResponse.getId());
         return new TokenResponse(accessToken);
-    }
-
-    public void validateToken(String accessToken) {
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다");
-        }
-    }
-
-    public String parseEmail(String accessToken) {
-        return jwtTokenProvider.getPayload(accessToken);
     }
 }
