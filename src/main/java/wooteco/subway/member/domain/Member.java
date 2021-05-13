@@ -6,19 +6,10 @@ public class Member {
     private String password;
     private Integer age;
 
-    public Member() {
-    }
-
     public Member(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.age = age;
-    }
-
-    public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
         this.age = age;
     }
 
