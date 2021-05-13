@@ -57,7 +57,7 @@ public class MemberController {
     @PutMapping("/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequestDto memberRequestDto) {
         memberService.updateMember(member.getId(), memberRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
