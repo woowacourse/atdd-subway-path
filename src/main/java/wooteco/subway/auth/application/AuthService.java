@@ -4,11 +4,12 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.InvalidPasswordException;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
-
     private JwtTokenProvider jwtTokenProvider;
     private MemberService memberService;
 
@@ -18,19 +19,21 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+        Member member = memberService.findMemberByEmail(tokenRequest.getEmail());
+        if (member.invalidPassword(tokenRequest.getPassword())) {
+            throw new InvalidPasswordException();
         }
 
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
         return new TokenResponse(accessToken);
     }
 
-    private boolean checkInvalidLogin(String email, String password) {
-        return !(memberService.doesEmailExist(email) && memberService.doesPasswordExist(password));
-    }
+    public Member findMemberByToken(final String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthorizationException();
+        }
 
-    public String getPayload(String token) {
-        return jwtTokenProvider.getPayload(token);
+        String email = jwtTokenProvider.getPayload(token);
+        return memberService.findMemberByEmail(email);
     }
 }
