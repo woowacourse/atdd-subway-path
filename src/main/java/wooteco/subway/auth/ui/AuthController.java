@@ -1,10 +1,7 @@
 package wooteco.subway.auth.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
@@ -13,6 +10,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
+@CrossOrigin
 @RestController
 public class AuthController {
     AuthService authService;

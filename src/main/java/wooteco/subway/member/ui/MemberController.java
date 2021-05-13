@@ -11,6 +11,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
+@CrossOrigin
 @RestController
 public class MemberController {
     private final MemberService memberService;
