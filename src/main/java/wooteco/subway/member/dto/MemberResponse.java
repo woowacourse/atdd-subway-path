@@ -7,13 +7,14 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
-    }
-
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public MemberResponse(Member member) {
+        this(member.getId(), member.getEmail(), member.getAge());
     }
 
     public static MemberResponse of(Member member) {

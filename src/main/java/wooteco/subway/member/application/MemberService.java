@@ -51,4 +51,8 @@ public class MemberService {
             throw new InvalidMemberException();
         }
     }
+
+    public Member findByEmail(String email) {
+        return memberDao.findByEmail(email);
+    }
 }

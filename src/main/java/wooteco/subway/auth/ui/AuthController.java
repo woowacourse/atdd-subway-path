@@ -1,18 +1,19 @@
 package wooteco.subway.auth.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jdk.internal.vm.compiler.collections.EconomicMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import sun.tools.jstat.Token;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.dto.LoginRequest;
+import wooteco.subway.auth.dto.LoginResponse;
 import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.InvalidMemberException;
-
-import java.io.IOException;
+import wooteco.subway.auth.exception.InvalidTokenException;
 
 @RestController
 public class AuthController {
@@ -25,10 +26,17 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) throws IOException {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok().body(
-                new TokenResponse(authService.createToken(tokenRequest))
+                new LoginResponse(authService.createToken(loginRequest))
         );
+    }
+
+    @PostMapping("/auth/token")
+    public ResponseEntity<Void> validateToken(@RequestBody TokenRequest tokenRequest) {
+        authService.validateToken(tokenRequest.getToken());
+
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(InvalidMemberException.class)
@@ -39,6 +47,11 @@ public class AuthController {
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Void> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    private ResponseEntity<Void> handleInvalidTokenException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }

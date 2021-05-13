@@ -58,4 +58,16 @@ public class MemberDao {
         String sql = "select count(*) from MEMBER where email = ? AND password = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, email, password) > 0;
     }
+
+    public Member findByEmail(String email) {
+        String sql = "SELECT * FROM MEMBER WHERE email = ?";
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("age")
+                ), email);
+    }
 }

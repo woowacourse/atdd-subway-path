@@ -1,4 +1,4 @@
-package wooteco.subway.auth.infrastructure;
+package wooteco.subway.member.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
@@ -10,38 +10,33 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Component
-public class MemberAuthentication {
+public class TokenAuthentication {
 
-    private static final String AUTHENTICATION_URL = "http://localhost:8080/members/authentication";
+    private static final String AUTHENTICATION_URL = "http://localhost:8080/auth/token";
     private static final String POST = "POST";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static class TokenRequest {
-        private final String email;
-        private final String password;
 
-        public TokenRequest(String email, String password) {
-            this.email = email;
-            this.password = password;
+        private final String token;
+
+        public TokenRequest(String token) {
+            this.token = token;
         }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public String getPassword() {
-            return password;
+        public String getToken() {
+            return token;
         }
 
     }
 
-    public boolean authenticate(String email, String password) {
+    public boolean validate(String token) {
         try {
             URL url = new URL(AUTHENTICATION_URL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            initializeHttpRequest(new TokenRequest(email, password), urlConnection);
+            initializeHttpRequest(new TokenRequest(token), urlConnection);
 
             return urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {

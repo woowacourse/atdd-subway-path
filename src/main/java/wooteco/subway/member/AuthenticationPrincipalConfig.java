@@ -1,19 +1,20 @@
-package wooteco.subway.auth;
+package wooteco.subway.member;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import wooteco.subway.member.infrastructure.TokenAuthentication;
+import wooteco.subway.member.ui.AuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
-    private final AuthService authService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
-        this.authService = authService;
+    private final TokenAuthentication tokenAuthentication;
+
+    public AuthenticationPrincipalConfig(TokenAuthentication tokenAuthentication) {
+        this.tokenAuthentication = tokenAuthentication;
     }
 
     @Override
@@ -23,6 +24,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
+        return new AuthenticationPrincipalArgumentResolver(tokenAuthentication);
     }
 }

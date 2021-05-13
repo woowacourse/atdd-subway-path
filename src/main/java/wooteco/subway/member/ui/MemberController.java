@@ -4,11 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.AuthenticationPrincipal;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.InvalidMemberException;
+import wooteco.subway.member.exception.InvalidTokenException;
+import wooteco.subway.member.infrastructure.AuthorizationExtractor;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -45,8 +51,13 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        String email = loginMember.getEmail();
+        Member member = memberService.findByEmail(email);
+
+        return ResponseEntity.ok().body(
+                new MemberResponse(member)
+        );
     }
 
     // TODO: 구현 하기
@@ -75,6 +86,11 @@ public class MemberController {
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Void> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    private ResponseEntity<Void> handleInvalidTokenException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }
