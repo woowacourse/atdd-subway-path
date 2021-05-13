@@ -19,7 +19,7 @@ public class LineResponseDto {
 
     public static LineResponseDto of(Line line) {
         List<StationResponseDto> stations = line.getStations().stream()
-            .map(it -> StationResponseDto.of(it))
+            .map(StationResponseDto::of)
             .collect(Collectors.toList());
         return new LineResponseDto(line.getId(), line.getName(), line.getColor(), stations);
     }
