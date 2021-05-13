@@ -27,15 +27,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     // parameter에 @AuthenticationPrincipal이 붙어있는 경우 동작
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
-        // LoginMember: 유저의 정보와 권한이 필요한 메소드에 사용된다.
-        // 토큰의 검증은 LoginInterceptor에 의해 이미 검증된다.
-        // 따라서 토큰을 decoding하여 나온 id,
-//        return new LoginMember(1L, "email@email.com", 27);
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String token = AuthorizationExtractor.extract(httpServletRequest);
-        authService.validate(token);
         LoginMember loginMember = authService.parseLoginMember(token);
+
         return loginMember;
     }
 }
