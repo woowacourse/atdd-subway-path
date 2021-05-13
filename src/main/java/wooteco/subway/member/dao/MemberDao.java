@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.auth.application.AuthenticationException;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 import javax.sql.DataSource;
 
@@ -54,18 +54,12 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public int countExistingByEmailAndPassword(String email, String password) {
-        String sql = "select count(*) from MEMBER where email=? AND password=?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, email, password);
-    }
-
-    public Member findByEmail(String email) {
-        String sql = "select * from MEMBER where email=?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email);
-    }
-
-    public void deleteByEmail(String email) {
-        String sql = "delete from MEMBER where email = ?";
-        jdbcTemplate.update(sql, email);
+    public Member findByEmailAndPassword(String email, String password) {
+        try {
+            String sql = "select * from MEMBER where email=? AND password=?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AuthenticationException();
+        }
     }
 }

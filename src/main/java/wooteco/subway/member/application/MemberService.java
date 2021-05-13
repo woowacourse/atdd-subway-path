@@ -1,7 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.auth.domain.LoginMember;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -28,42 +28,24 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByToken(String token) {
-        validateToken(token);
-        String payload = jwtTokenProvider.getPayload(token);
-        return MemberResponse.of(findMemberByEmail(payload));
+    public MemberResponse findMemberOfMine(LoginMember loginMember) {
+        return MemberResponse.of(memberDao.findById(loginMember.getId()));
     }
 
-    private void validateToken(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException();
-        }
-    }
-
-    private Member findMemberByEmail(String email) {
-        Member member = memberDao.findByEmail(email);
-        return member;
-    }
-
-    public MemberResponse updateMemberByToken(String token, MemberRequest memberRequest) {
-        validateToken(token);
-        String payload = jwtTokenProvider.getPayload(token);
-        Member member = findMemberByEmail(payload);
-        updateMember(member.getId(), memberRequest);
-        return new MemberResponse(member.getId(), memberRequest.getEmail(), memberRequest.getAge());
+    public MemberResponse updateMemberOfMine(LoginMember loginMember, MemberRequest memberRequest) {
+        updateMember(loginMember.getId(), memberRequest);
+        return new MemberResponse(loginMember.getId(), memberRequest.getEmail(), memberRequest.getAge());
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(Long id) {
-        memberDao.deleteById(id);
+    public void deleteMemberOfMine(LoginMember loginMember) {
+        deleteMember(loginMember.getId());
     }
 
-    public void deleteMemberByToken(String token) {
-        validateToken(token);
-        String payload = jwtTokenProvider.getPayload(token);
-        memberDao.deleteByEmail(payload);
+    public void deleteMember(Long id) {
+        memberDao.deleteById(id);
     }
 }
