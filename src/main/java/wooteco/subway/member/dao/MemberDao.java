@@ -10,7 +10,6 @@ import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
 import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 public class MemberDao {

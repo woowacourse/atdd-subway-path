@@ -1,14 +1,10 @@
 package wooteco.subway.auth.application;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -39,6 +35,5 @@ public class AuthService {
             throw new AuthorizationException();
         }
         return jwtTokenProvider.getPayload(token);
-//        return new MemberRequest(email, null, 0);
     }
 }
