@@ -17,13 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
-    private AuthService authService;
+    private final MemberService memberService;
 
-
-    public MemberController(MemberService memberService, AuthService authService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authService = authService;
     }
 
     @PostMapping("/members")
@@ -50,7 +47,6 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
@@ -58,9 +54,9 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<Void> deleteMemberOfMine() {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -64,9 +64,14 @@ export default {
         return;
       }
       try {
-        // TODO 유저를 삭제하는 API를 추가해주세요
-        // await fetch("/api/users/{this.member.id}")
+        await fetch("http://localhost:8080/members/me", {
+          method: 'DELETE',
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
         this.setMember(null);
+        deleteCookie("JWT");
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
@@ -76,4 +81,13 @@ export default {
     },
   },
 };
+
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value? value[2] : null;
+};
+
+let deleteCookie = function(name) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+}
 </script>
