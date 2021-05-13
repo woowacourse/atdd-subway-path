@@ -19,7 +19,7 @@ public class AuthService {
 
     public String createToken(final TokenRequest tokenRequest) {
         if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            return jwtTokenProvider.createToken(tokenRequest.getEmail());
+            return jwtTokenProvider.createToken(tokenRequest.getPassword());
         }
         throw new IllegalArgumentException("적절하지 않은 사용자입력");
     }
@@ -30,7 +30,7 @@ public class AuthService {
 
     public Member findMemberByToken(String token) {
         final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByEmail(payload);
+        return memberDao.findByPassword(payload);
     }
 
 }
