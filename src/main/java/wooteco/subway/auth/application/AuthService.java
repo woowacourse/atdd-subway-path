@@ -29,7 +29,7 @@ public class AuthService {
         Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
         member.checkValidPassword(tokenRequest.getPassword());
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
 }

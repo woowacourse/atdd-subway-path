@@ -30,19 +30,16 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findById(id).orElseThrow(EmailNotFoundException::new);
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findByEmail(String email) {
-        Optional<Member> optionalMember = memberDao.findByEmail(email);
-        Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
 
-        return new MemberResponse(member);
-    }
-
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public void updateMember(long id, MemberRequest memberRequest) {
+        Member member = memberDao.findById(id).orElseThrow(EmailNotFoundException::new);
+        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge());
+        memberDao.update(newMember);
     }
 
     public void deleteMember(Long id) {

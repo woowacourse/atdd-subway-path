@@ -106,8 +106,20 @@ export default {
     async onEditMember() {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const { email, age, password } = this.editingMember;
+        await fetch("http://localhost:8080/members/me", {
+          method: 'PUT',
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT"),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            age: age,
+            password: password
+          }),
+        });
+        this.setMember(this.editingMember);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
@@ -123,5 +135,16 @@ export default {
       rules: { ...validator },
     };
   },
+};
+
+// let setCookie = function (name, value, exp) {
+//   let date = new Date();
+//   date.setTime(date.getTime() + exp*60*60*1000);
+//   document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+// };
+//
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value? value[2] : null;
 };
 </script>

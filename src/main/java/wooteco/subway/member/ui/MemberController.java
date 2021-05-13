@@ -38,12 +38,6 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/members/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
@@ -52,13 +46,14 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findByEmail(loginMember.getEmail());
+        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(memberResponse);
     }
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<Void> updateMemberOfMine(HttpServletRequest request) {
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.getId(), param);
 
         return ResponseEntity.ok().build();
     }

@@ -35,8 +35,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String token = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
 
         if (jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getPayload(token);
-            return new LoginMember(email);
+            String id = jwtTokenProvider.getPayload(token);
+            return new LoginMember(Long.parseLong(id));
         }
 
         throw new AuthorizationException();
