@@ -35,6 +35,5 @@ public class AuthService {
             throw new AuthorizationException();
         }
         return jwtTokenProvider.getPayload(token);
-//        return new MemberRequest(email, null, 0);
     }
 }
