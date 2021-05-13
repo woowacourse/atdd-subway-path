@@ -21,6 +21,6 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> loginWithToken(@RequestBody TokenRequestDto tokenRequestDto) {
         TokenResponseDto tokenResponse = authService.createToken(tokenRequestDto);
-        return ResponseEntity.ok().body(tokenResponse);
+        return ResponseEntity.ok(tokenResponse);
     }
 }
