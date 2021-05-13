@@ -17,7 +17,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // TODO: 로그인(토큰 발급) 요청 처리하기
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         TokenResponse response = authService.login(tokenRequest.getEmail(), tokenRequest.getPassword());
