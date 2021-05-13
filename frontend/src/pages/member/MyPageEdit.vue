@@ -90,8 +90,9 @@ export default {
     ...mapGetters(["member"]),
   },
   created() {
-    const { email, age } = this.member;
+    const { id, email, age } = this.member;
     this.editingMember = {
+      id,
       email,
       age,
       password: "",
@@ -115,8 +116,8 @@ export default {
           if (!response.ok) {
             alert("수정을 실패했습니다.");
           }
+          this.setMember(this.editingMember);
         });
-        this.setMember(this.editingMember);
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
