@@ -42,7 +42,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
         @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/{id}")
@@ -60,7 +60,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member,
         @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(member.getId(), memberRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/me")
