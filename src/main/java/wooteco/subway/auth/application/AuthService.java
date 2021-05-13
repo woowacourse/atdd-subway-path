@@ -42,7 +42,7 @@ public class AuthService {
 
     private MemberResponse findMember(String payload) {
         Member member = memberDao.findById(Long.valueOf(payload)).orElseThrow(() ->
-                new IllegalArgumentException("[ERROR] 존재하지 않는 회원입니다."));
+                new AuthorizationException("[ERROR] 존재하지 않는 회원입니다."));
         return new MemberResponse(member);
     }
 
@@ -50,5 +50,10 @@ public class AuthService {
         MemberResponse memberResponse = findMemberByToken(token);
         Member member = new Member(memberResponse.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
         memberDao.update(member);
+    }
+
+    public void deleteMemberByToken(String token) {
+        MemberResponse member = findMemberByToken(token);
+        memberDao.deleteById(member.getId());
     }
 }

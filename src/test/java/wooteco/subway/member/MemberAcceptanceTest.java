@@ -38,7 +38,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse, 사용자);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
-        회원_삭제됨(deleteResponse);
+        회원_삭제됨(deleteResponse, 사용자);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -105,7 +105,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+    public static void 회원_삭제됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> memberResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        assertThat(memberResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

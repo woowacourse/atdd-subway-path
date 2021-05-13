@@ -56,8 +56,8 @@ public class MemberController {
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine
-        (HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<MemberResponse> updateMemberOfMin(
+            HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
         String token = AuthorizationExtractor.extract(request);
         authService.updateMemberByToken(token, memberRequest);
         return ResponseEntity.ok().build();
@@ -65,7 +65,9 @@ public class MemberController {
 
     // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request);
+        authService.deleteMemberByToken(token);
         return ResponseEntity.noContent().build();
     }
 }
