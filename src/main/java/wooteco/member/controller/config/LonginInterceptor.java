@@ -14,9 +14,9 @@ public class LonginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = request.getHeader("Authorization");
         authService.validateToken(accessToken);
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 }
