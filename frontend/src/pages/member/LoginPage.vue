@@ -93,11 +93,11 @@ export default {
           return;
         }
 
-        const accessToken = await response.text();
+        const data = await response.json();
         option = {
           method: 'GET',
           headers: {
-            "Authorization": "Bearer " + accessToken
+            "Authorization": "Bearer " + data.accessToken
           }
         }
         response = await fetch("http://localhost:8080/members/me", option)
