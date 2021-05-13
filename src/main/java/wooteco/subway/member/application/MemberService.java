@@ -31,4 +31,6 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
+
+
 }

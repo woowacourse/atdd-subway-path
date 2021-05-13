@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -27,10 +29,19 @@ public class AuthService {
     }
 
     public boolean checkInvalidLogin(String email, String password) {
-        if(memberDao.existByEmail(email)){
+        if (memberDao.existByEmail(email)) {
             Member member = memberDao.findByEmail(email);
             return member.incorrectPassword(password);
         }
         return true;
+    }
+
+    public MemberResponse findMemberByToken(String token) {
+        String payload = jwtTokenProvider.getPayload(token);
+        if (!memberDao.existByEmail(payload)) {
+            throw new AuthorizationException();
+        }
+        Member member = memberDao.findByEmail(payload);
+        return MemberResponse.of(member);
     }
 }
