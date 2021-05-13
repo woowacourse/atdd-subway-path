@@ -34,6 +34,30 @@ export async function requestPost(uri = '', data = {}, token) {
   })
 }
 
+export async function requestDelete(uri = '', data = {}, token) {
+  const headers = await makeHeaders({
+    'content-type': 'application/json',
+    'accept': 'application/json'
+  }, token);
+  return await fetch(`${URL}${uri}`, {
+    method: 'DELETE',
+    headers: headers,
+    body: JSON.stringify(data)
+  })
+}
+
+export async function requestPut(uri = '', data = {}, token) {
+  const headers = await makeHeaders({
+    'content-type': 'application/json',
+    'accept': 'application/json'
+  }, token);
+  return await fetch(`${URL}${uri}`, {
+    method: 'PUT',
+    headers: headers,
+    body: JSON.stringify(data)
+  })
+}
+
 async function makeHeaders(headers, token) {
   if (token) {
     headers['authorization'] = `bearer ${token}`;

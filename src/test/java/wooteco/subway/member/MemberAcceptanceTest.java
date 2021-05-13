@@ -24,8 +24,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password,
-        Integer age) {
+    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured

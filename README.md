@@ -62,7 +62,7 @@ npm run serve
         "email": "email@email.com"
     }
     ```
-
+- [x] 멤버 관련 기능 구현
 <br>
 ## 📝 License
 

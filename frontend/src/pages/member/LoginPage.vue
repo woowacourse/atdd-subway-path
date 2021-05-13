@@ -57,7 +57,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
-import {requestGet, requestPost} from "../../utils/fetcher.js";
+import {requestGet, requestPost} from "@/utils/fetcher";
 
 export default {
   name: "LoginPage",
@@ -84,7 +84,7 @@ export default {
         const memberResponse = await requestGet('/members/me', {}, token);
         this.setMember({
           email: memberResponse['email'],
-          password: memberResponse['password']
+          age: memberResponse['age']
         });
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
