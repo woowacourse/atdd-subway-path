@@ -89,8 +89,6 @@ export default {
               localStorage.setItem("token", JSON.stringify(data));
             });
 
-        // TODO member 데이터를 불러와 주세요.
-
         await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
