@@ -75,36 +75,37 @@ export default {
       try {
         // login API를 작성해주세요.
         const { email, password } = this.member;
-        let data = {
-          email: email,
-          password: password
-        }
         let tokenResponse = await fetch("/api/login/token", {
           method: 'POST',
-          body: JSON.stringify(data),
           headers: {
             'Content-Type': 'application/json'
-          }
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
         });
         if (!tokenResponse.ok) {
           throw new Error(`${tokenResponse.status}`);
         }
-        tokenResponse = await tokenResponse.json();
+        let token = await tokenResponse.json();
+
+        console.log(token.accessToken);
+        localStorage.setItem("token", token.accessToken);
 
         // member 데이터를 불러와 주세요.
         let memberResponse = await fetch("/api/members/me", {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + tokenResponse.accessToken
+            'Authorization': 'Bearer ' + token.accessToken
           }
         });
         if (!memberResponse.ok) {
           throw new Error(`${memberResponse.status}`);
         }
-        memberResponse = await memberResponse.json();
-        this.setMember(memberResponse);
-        localStorage.setItem("token", tokenResponse.accessToken);
+        let member = await memberResponse.json();
+        this.setMember(member);
 
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);

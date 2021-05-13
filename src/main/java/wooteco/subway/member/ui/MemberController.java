@@ -2,8 +2,10 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -44,11 +46,17 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+//    @GetMapping("/me")
+//    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+//        String token = AuthorizationExtractor.extract(request);
+//        MemberResponse memberResponse = memberService.findMemberByEmail(token);
+//        return ResponseEntity.ok().body(memberResponse);
+//    }
+
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = memberService.findMemberByEmail(token);
-        return ResponseEntity.ok().body(memberResponse);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = memberService.findMember(loginMember);
+        return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/me/{id}")

@@ -2,11 +2,9 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.exception.InvalidMemberException;
 import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -31,10 +29,15 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMember(LoginMember loginMember) {
+        Member member = memberDao.findById(loginMember.getId());
+        return MemberResponse.of(member);
+    }
+
     public MemberResponse findMemberByEmail(String token) {
         if (authService.validateToken(token)) {
             String email = authService.getPayload(token);
-            return MemberResponse.of(memberDao.findByEmail(email));
+            return MemberResponse.of(memberDao.findById(email));
         }
         throw new InvalidTokenException();
     }
@@ -61,15 +64,5 @@ public class MemberService {
             return;
         }
         throw new InvalidTokenException();
-    }
-
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateEmailAndPassword(tokenRequest);
-        return new TokenResponse(authService.createToken(tokenRequest.getEmail()));
-    }
-
-    private void validateEmailAndPassword(TokenRequest tokenRequest) {
-        memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
-                .orElseThrow(() -> new InvalidMemberException(tokenRequest.getEmail()));
     }
 }
