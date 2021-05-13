@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -23,8 +22,18 @@ public class AuthService {
         if (!tokenProvider.validateToken(accessToken)) {
             throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
-        String email = tokenProvider.getPayload(accessToken);
-        MemberResponse member = memberService.findMemberByEmail(email);
+        long id = payloadToLong(accessToken);
+
+        MemberResponse member = memberService.findMember(id);
         return member.toMember();
+    }
+
+    private long payloadToLong(String accessToken) {
+        String payload = tokenProvider.getPayload(accessToken);
+        try {
+            return Long.parseLong(payload);
+        } catch (NumberFormatException e) {
+            throw new UnauthorizedException(String.format("토큰의 payload 값이 id가 아닙니다. payload값 : %s", payload));
+        }
     }
 }

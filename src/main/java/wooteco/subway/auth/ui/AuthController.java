@@ -11,6 +11,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dto.MemberResponse;
 
 @RestController
 public class AuthController {
@@ -30,9 +31,10 @@ public class AuthController {
             HttpServletResponse response) {
         if (!memberService.isExist(tokenRequest.getEmail())) {
             throw new UnauthorizedException(
-                    String.format("해당 이메일로 된 유저가 없습니다. 이메일 : %s", tokenRequest.getEmail()));
+                    String.format("해당 이메일로 가입한 유저가 없습니다. 이메일 : %s", tokenRequest.getEmail()));
         }
-        String accessToken = tokenProvider.createToken(tokenRequest.getEmail());
+        MemberResponse memberByEmail = memberService.findMemberByEmail(tokenRequest.getEmail());
+        String accessToken = tokenProvider.createToken(String.valueOf(memberByEmail.getId()));
 
         setAccessTokenToCookie(response, accessToken);
 
