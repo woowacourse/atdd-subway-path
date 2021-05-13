@@ -33,9 +33,9 @@ Connection: keep-alive
 
 ### 2단계
 #### 프론트엔드
-- [ ] 내 정보 기능에 관한 API 호출 기능 구현하기
+- [x] 내 정보 기능에 관한 API 호출 기능 구현하기
   
-#### 백엔드
-- [ ] 토큰을 통한 인증 - 내 정보 기능 
-    - [ ] "/members/me" 요청 시 토큰을 확인하여 로그인 정보를 받아오기
-    - [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+###x 백엔드
+- [x] 토큰을 통한 인증 - 내 정보 기능 
+    - [x] "/members/me" 요청 시 토큰을 확인하여 로그인 정보를 받아오기
+    - [x] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
