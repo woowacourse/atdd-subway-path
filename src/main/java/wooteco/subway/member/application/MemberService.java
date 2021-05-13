@@ -1,7 +1,6 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;

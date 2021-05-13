@@ -4,7 +4,6 @@ public class LoginMember {
     private Long id;
 
     public LoginMember() {
-
     }
 
     public LoginMember(Long id) {
