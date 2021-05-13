@@ -96,8 +96,7 @@ export default {
           return res.json();
         });
 
-        console.log(member)
-        // this.setMember(member);
+        this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
