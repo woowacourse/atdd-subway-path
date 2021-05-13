@@ -27,7 +27,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember1(String email) {
+    public MemberResponse findMemberByEmail(String email) {
         final Member member = memberDao.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         return MemberResponse.of(member);

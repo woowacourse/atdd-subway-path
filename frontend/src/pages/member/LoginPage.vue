@@ -90,15 +90,15 @@ export default {
           return response.json();
         });
 
-        const name = "accessToken";
-        document.cookie = `${name}=${response.accessToken};`;
-
+        localStorage.setItem("token", response.accessToken);
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
             "Content-Type": " application/json",
-            "Authorization" : `Bearer ${response.accessToken}`
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
           }
+        }).then(data => {
+          return data.json();
         });
         this.setMember(member);
         await this.$router.replace(`/`);

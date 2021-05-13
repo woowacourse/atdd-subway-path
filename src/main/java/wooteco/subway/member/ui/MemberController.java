@@ -42,17 +42,18 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기 (겉만 멀쩡함)
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) { // LoginMember 파라미터로
-        final MemberResponse member = memberService.findMember1(loginMember.getEmail());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        final MemberResponse member = memberService.findMemberByEmail(loginMember.getEmail());
         return ResponseEntity.ok(member);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+            @AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.getId(), param);
+        final MemberResponse member = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok(member);
     }
 
     // TODO: 구현 하기
