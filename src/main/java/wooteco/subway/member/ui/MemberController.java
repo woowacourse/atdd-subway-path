@@ -2,19 +2,28 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class MemberController {
     private MemberService memberService;
+    private AuthService authService;
 
-    public MemberController(MemberService memberService) {
+
+    public MemberController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
+        this.authService = authService;
     }
+
 
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
@@ -42,9 +51,10 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestBody String accessToken) {
-        // memberService.
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+        String accessToken = AuthorizationExtractor.extract(request);
+        MemberResponse memberResponse = authService.findMemberByToken(accessToken);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     // TODO: 구현 하기

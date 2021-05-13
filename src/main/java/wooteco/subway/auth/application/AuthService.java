@@ -11,6 +11,7 @@ import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.EmailNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -30,5 +31,17 @@ public class AuthService {
 
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
         return new TokenResponse(accessToken);
+    }
+
+
+    public MemberResponse findMemberByToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            String email = jwtTokenProvider.getPayload(token);
+            Optional<Member> optionalMember = memberDao.findByEmail(email);
+            Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
+
+            return new MemberResponse(member);
+        }
+        throw new AuthorizationException();
     }
 }
