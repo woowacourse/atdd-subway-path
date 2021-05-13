@@ -22,6 +22,4 @@ public class AuthController {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok(tokenResponse);
     }
-
-
 }
