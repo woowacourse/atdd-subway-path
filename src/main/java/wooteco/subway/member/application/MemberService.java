@@ -34,24 +34,14 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(String token) {
-        if (authService.validateToken(token)) {
-            String email = authService.getPayload(token);
-            return MemberResponse.of(memberDao.findById(email));
-        }
-        throw new InvalidTokenException();
-    }
-
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(id, memberRequest.getEmail(),
+                memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest, String token) {
-        if (authService.validateToken(token)) {
-            memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
-            return;
-        }
-        throw new InvalidTokenException();
+    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        memberDao.update(new Member(loginMember.getId(), memberRequest.getEmail(),
+                memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {

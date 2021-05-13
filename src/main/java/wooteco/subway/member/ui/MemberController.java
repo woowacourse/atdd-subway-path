@@ -46,26 +46,17 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/me")
-//    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-//        String token = AuthorizationExtractor.extract(request);
-//        MemberResponse memberResponse = memberService.findMemberByEmail(token);
-//        return ResponseEntity.ok().body(memberResponse);
-//    }
-
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/me/{id}")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@PathVariable Long id,
-                                                             @Valid @RequestBody MemberRequest memberRequest, HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        memberService.updateMember(id, memberRequest, token);
-        MemberResponse memberResponse = memberService.findMemberByEmail(token);
-        return ResponseEntity.ok().body(memberResponse);
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+                                                             @Valid @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(loginMember, memberRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me/{id}")

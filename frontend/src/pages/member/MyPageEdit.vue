@@ -107,22 +107,20 @@ export default {
       try {
         // member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
-        let data = {
-          email: email,
-          age: age,
-          password: password
-        }
-        let memberResponse = await fetch("/api/members/me/" + this.member.id, {
+        await fetch("/api/members/me", {
           method: 'PUT',
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            email: email,
+            age: age,
+            password: password
+          }),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + localStorage.getItem("token")
           }
-        }).then(res => {
-          return res.json();
-        })
-        this.setMember(memberResponse);
+        });
+        this.setMember(this.editingMember);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
