@@ -86,14 +86,13 @@ export default {
         if (!loginResponse.ok) {
           throw new Error(`${loginResponse.status}`);
         }
-        const accessToken = await loginResponse.json();
-        this.setAccessToken(accessToken);
+        const token = await loginResponse.json();
+        this.setAccessToken(token.accessToken);
 
-        const auth = this.$store.getters.accessToken;
         const memberResponse = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
-            "Authorization": "Bearer " + JSON.parse(JSON.stringify(auth)).accessToken,
+            "Authorization": "Bearer " + this.accessToken,
             "Content-Type": "application/json"
           }
           });

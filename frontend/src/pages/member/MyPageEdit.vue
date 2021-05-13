@@ -87,7 +87,7 @@ import validator from "../../utils/validator";
 export default {
   name: "MypageEdit",
   computed: {
-    ...mapGetters(["member"]),
+    ...mapGetters(["member", "accessToken"]),
   },
   created() {
     const { email, age } = this.member;
@@ -105,11 +105,10 @@ export default {
     },
     async onEditMember() {
       try {
-        const auth = this.$store.getters.accessToken;
         const response = await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {
-            "Authorization": "Bearer " + JSON.parse(JSON.stringify(auth)).accessToken,
+            "Authorization": "Bearer " + this.accessToken,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
