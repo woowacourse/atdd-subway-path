@@ -1,4 +1,4 @@
-package wooteco.subway.auth.config;
+package wooteco.subway;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
