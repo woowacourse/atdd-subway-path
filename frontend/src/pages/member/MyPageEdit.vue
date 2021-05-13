@@ -125,6 +125,24 @@ export default {
         });
         this.setMember(member);
 
+        const response = await fetch("http://localhost:8080/login/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": " application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+          return response.json();
+        });
+
+        localStorage.setItem("token", response.accessToken);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
