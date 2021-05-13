@@ -11,30 +11,30 @@
     <template slot="text">
       <v-form ref="lineEditForm" v-model="valid" @submit.prevent>
         <v-text-field
-          v-model="lineEditForm.name"
-          :rules="rules.line.name"
-          color="grey darken-1"
-          label="노선 이름"
-          placeholder="노선 이름"
-          outlined
+            v-model="lineEditForm.name"
+            :rules="rules.line.name"
+            color="grey darken-1"
+            label="노선 이름"
+            placeholder="노선 이름"
+            outlined
         ></v-text-field>
         <div class="d-flex">
           <v-text-field
-            v-model="lineEditForm.extraFare"
-            color="grey darken-1"
-            label="추가 요금"
-            placeholder="(선택) 추가 요금"
-            outlined
+              v-model="lineEditForm.extraFare"
+              color="grey darken-1"
+              label="추가 요금"
+              placeholder="(선택) 추가 요금"
+              outlined
           ></v-text-field>
         </div>
         <div>
           <v-text-field
-            v-model="lineEditForm.color"
-            :rules="rules.line.color"
-            :value="lineEditForm.color"
-            label="노선 색상"
-            filled
-            disabled
+              v-model="lineEditForm.color"
+              :rules="rules.line.color"
+              :value="lineEditForm.color"
+              label="노선 색상"
+              filled
+              disabled
           ></v-text-field>
           <p>
             노선의 색상을 아래 팔레트에서 선택해주세요.
@@ -43,17 +43,17 @@
             <div>
               <template v-for="(option, index) in lineColors">
                 <v-btn
-                  :key="option._id"
-                  small
-                  class="color-button ma-1"
-                  depressed
-                  min-width="30"
-                  :color="option.color"
-                  @click="setLineColor(option.color)"
+                    :key="option._id"
+                    small
+                    class="color-button ma-1"
+                    depressed
+                    min-width="30"
+                    :color="option.color"
+                    @click="setLineColor(option.color)"
                 ></v-btn>
                 <br
-                  v-if="index === 8 || index % 9 === 8"
-                  :key="`${option._id}-${index}`"
+                    v-if="index === 8 || index % 9 === 8"
+                    :key="`${option._id}-${index}`"
                 />
               </template>
             </div>
@@ -63,11 +63,12 @@
     </template>
     <template slot="action">
       <v-btn
-        :disabled="!valid"
-        @click.prevent="onEditLine"
-        color="amber"
-        depressed
-        >확인</v-btn
+          :disabled="!valid"
+          @click.prevent="onEditLine"
+          color="amber"
+          depressed
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
@@ -75,10 +76,10 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
 
@@ -90,13 +91,13 @@ export default {
       required: true,
     },
   },
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["lines"]),
   },
   created() {
-    this.lineEditForm = { ...this.line };
+    this.lineEditForm = {...this.line};
     this.lineColors = LINE_COLORS.map((color) => {
       return {
         _id: shortid.generate(),
@@ -110,15 +111,35 @@ export default {
       this.lineEditForm.color = color;
     },
     initEditingLine() {
-      this.lineEditForm = { ...this.line };
+      this.lineEditForm = {...this.line};
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const updateLineRequest = {
+          "name": this.lineEditForm.name,
+          "color": this.lineEditForm.color,
+          "upStationId": this.lineEditForm.upStationId,
+          "downStationId": this.lineEditForm.downStationId,
+          "distance": this.lineEditForm.distance,
+          "extraFare": this.lineEditForm.extraFare
+        };
+        const line_update_response = await fetch(`http://localhost:8080/lines/${this.line.id}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updateLineRequest)
+        });
+        if (!line_update_response.ok) {
+          throw new Error(`${line_update_response.status}`);
+        }
+        const lines_response = await fetch("http://localhost:8080/lines");
+        if (!lines_response.ok) {
+          throw new Error(`${lines_response.status}`);
+        }
+        const lines = JSON.stringify(lines_response);
+
+        this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {
@@ -129,7 +150,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       lineEditForm: {
         name: "",
         color: "",
