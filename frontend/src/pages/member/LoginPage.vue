@@ -57,6 +57,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
+import jsonFetch from "../../utils/fetch";
 
 export default {
   name: "LoginPage",
@@ -73,13 +74,7 @@ export default {
         return;
       }
       try {
-        const response = await fetch("/api/login/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.member)
-        });
+        const response = await jsonFetch("/api/login/token", "POST", this.member);
         const body = await response.json();
         this.setAccessToken(body.accessToken);
         localStorage.setItem("token", this.accessToken);

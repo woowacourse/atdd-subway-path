@@ -55,9 +55,11 @@
 
 <script>
 import validator from "../../utils/validator";
+import jsonFetch from "../../utils/fetch";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import { mapGetters, mapMutations } from "vuex";
 import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+
 
 export default {
   name: "StationPage",
@@ -82,15 +84,9 @@ export default {
         return;
       }
       try {
-        const response = await fetch("/api/stations", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.stationName,
-          }),
-        });
+        const response = await jsonFetch("/api/stations", "POST", {
+          name: this.stationName,
+        })
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }

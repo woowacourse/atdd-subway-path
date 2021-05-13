@@ -86,6 +86,7 @@ import {
 } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
 import validator from "../../../utils/validator";
+import jsonFetch from "../../../utils/fetch";
 
 export default {
   name: "SectionCreateButton",
@@ -155,16 +156,10 @@ export default {
         return;
       }
       try {
-        await fetch(`/api/lines/${this.selectedLine.id}/sections`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            upStationId: this.sectionForm.upStationId,
-            downStationId: this.sectionForm.downStationId,
-            distance: this.sectionForm.distance
-          }),
+        await jsonFetch(`/api/lines/${this.selectedLine.id}/sections`, "POST", {
+          upStationId: this.sectionForm.upStationId,
+          downStationId: this.sectionForm.downStationId,
+          distance: this.sectionForm.distance
         });
         const linesResponse = await fetch("/api/lines");
         const lines = await linesResponse.json();
