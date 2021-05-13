@@ -22,7 +22,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/**", "/members/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/**", "/members/?*");
     }
 
     @Override

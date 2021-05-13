@@ -29,8 +29,8 @@ public class Member {
         this.age = age;
     }
 
-    public boolean haveSameInfo(String email, String password) {
-        return this.email.equals(email) && this.password.equals(password);
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {

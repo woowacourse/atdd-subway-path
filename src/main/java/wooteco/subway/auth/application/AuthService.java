@@ -20,21 +20,21 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Long id = getIdWhenValidLogin(tokenRequest);
+        Long id = obtainVerifiedId(tokenRequest);
         String accessToken = jwtTokenProvider.createToken(id);
         return new TokenResponse(accessToken);
     }
 
-    public long getIdWhenValidLogin(TokenRequest tokenRequest) {
-        Member member = memberDao.findByEmail(tokenRequest.getEmail());
-        if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());
+    private long obtainVerifiedId(TokenRequest tokenRequest) {
+        Member member = memberDao.findByEmail(tokenRequest.getEmail())
+            .orElseThrow(() -> new AuthorizationException(String.format("없는 이메일: %s", tokenRequest.getEmail())));
+        if (!member.checkPassword(tokenRequest.getPassword())) {
+            throw new AuthorizationException(String.format("비밀번호 불일치: %s", tokenRequest.getEmail()));
         }
         return member.getId();
     }
 
     public Member findMemberByToken(String token) {
-        jwtTokenProvider.validateToken(token);
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
         return memberDao.findById(id);
     }
