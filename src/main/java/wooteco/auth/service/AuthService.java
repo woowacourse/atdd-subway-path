@@ -8,7 +8,7 @@ import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.exception.badRequest.PasswordIncorrectException;
 import wooteco.exception.unauthorized.InvalidTokenException;
 import wooteco.exception.unauthorized.LoginFailException;
-import wooteco.exception.unauthorized.MemberAlreadyDeletedException;
+import wooteco.exception.unauthorized.MemberInTokenNotExistingException;
 
 @Service
 public class AuthService {
@@ -34,6 +34,6 @@ public class AuthService {
             throw new InvalidTokenException();
         }
         Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
-        return memberDao.findById(id).orElseThrow(MemberAlreadyDeletedException::new);
+        return memberDao.findById(id).orElseThrow(MemberInTokenNotExistingException::new);
     }
 }
