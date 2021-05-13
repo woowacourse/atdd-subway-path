@@ -1,6 +1,6 @@
 package wooteco.subway.member.dto;
 
-import  wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.Member;
 
 public class MemberRequest {
     private String email;

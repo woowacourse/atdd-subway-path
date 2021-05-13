@@ -8,7 +8,8 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {}
+    public LoginMember() {
+    }
 
     public LoginMember(Member member) {
         this(member.getId(), member.getEmail(), member.getAge());
