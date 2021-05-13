@@ -47,8 +47,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse,
-        String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email,
+        String password, Integer age) {
+
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
