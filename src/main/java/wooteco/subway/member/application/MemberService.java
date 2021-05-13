@@ -1,7 +1,6 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -10,7 +9,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;

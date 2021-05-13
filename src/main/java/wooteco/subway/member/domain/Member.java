@@ -51,8 +51,8 @@ public class Member {
 
     public void authorize(TokenRequest tokenRequest) {
         final boolean isEmailEqual = this.email.equals(tokenRequest.getEmail());
-        final boolean isPasswordEual = this.password.equals(tokenRequest.getPassword());
-        if (!(isEmailEqual && isPasswordEual)) {
+        final boolean isPasswordEqual = this.password.equals(tokenRequest.getPassword());
+        if (!(isEmailEqual && isPasswordEqual)) {
             throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
         }
     }

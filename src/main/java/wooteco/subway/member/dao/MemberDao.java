@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,10 +15,10 @@ import java.util.Optional;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
                     rs.getLong("id"),
                     rs.getString("email"),
@@ -42,22 +41,22 @@ public class MemberDao {
     }
 
     public void update(Member member) {
-        String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
+        String sql = "update MEMBER m set m.email = ?, m.password = ?, m.age = ? where m.id = ?";
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from MEMBER where id = ?";
+        String sql = "delete from MEMBER m where m.id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
+        String sql = "select m.id, m.email, m.password, m.age from MEMBER m where m.id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Optional<Member> findByEmail(final String email) {
-        String sql = "select * from MEMBER WHERE email = ?";
+        String sql = "select m.id, m.email, m.password, m.age from MEMBER m WHERE m.email = ?";
         final List<Member> members = jdbcTemplate.query(sql, rowMapper, email);
         return Optional.ofNullable(DataAccessUtils.singleResult(members));
     }

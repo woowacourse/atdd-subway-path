@@ -13,15 +13,14 @@ import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,17 +36,17 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select s.id, s.name from STATION s";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
+        String sql = "delete from STATION s where s.id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
+        String sql = "select s.id, s.name from STATION s where s.id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 }
