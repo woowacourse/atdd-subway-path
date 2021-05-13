@@ -24,6 +24,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member findMember(String email) {
+        Member member = memberDao.findByEmail(email);
+        return member;
+    }
+
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
