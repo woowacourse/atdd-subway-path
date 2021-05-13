@@ -75,7 +75,7 @@ export default {
       try {
         // TODO login API를 작성해주세요.
         const { email, password } = this.member;
-        const data = await fetch("http://localhost:8080/login", {
+        const data = await fetch("http://localhost:8080/login/token", {
           method: 'POST',
           body: JSON.stringify({ email, password }),
           headers: {

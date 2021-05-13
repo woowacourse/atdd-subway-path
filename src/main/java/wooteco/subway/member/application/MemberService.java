@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -10,11 +11,11 @@ import wooteco.subway.member.dto.MemberResponse;
 @Service
 public class MemberService {
     private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
-    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberDao memberDao, AuthService authService) {
         this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.authService = authService;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -36,8 +37,16 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByToken(String token) {
-        String payload = jwtTokenProvider.getPayload(token);
+        String payload = authService.getPayload(token);
         Member member = memberDao.findByEmail(payload);
         return MemberResponse.of(member);
+    }
+
+    public boolean doesEmailExist(String email) {
+        return memberDao.doesEmailExist(email);
+    }
+
+    public boolean doesPasswordExist(String password) {
+        return memberDao.doesPasswordExist(password);
     }
 }

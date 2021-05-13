@@ -18,7 +18,7 @@ public class AuthController {
     }
 
     // TODO: 로그인(토큰 발급) 요청 처리하기
-    @PostMapping("/login")
+    @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
