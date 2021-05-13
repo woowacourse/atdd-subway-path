@@ -10,12 +10,11 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private final MemberDao memberDao;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+    private final MemberDao memberDao;
+
+    public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -28,24 +27,28 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public void updateMember(Long id, MemberRequest memberRequest) {
+        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge()));
+    }
+
+    public void deleteMember(Long id) {
+        memberDao.deleteById(id);
+    }
+
     public MemberResponse findMemberOfMine(LoginMember loginMember) {
         return MemberResponse.of(memberDao.findById(loginMember.getId()));
     }
 
     public MemberResponse updateMemberOfMine(LoginMember loginMember, MemberRequest memberRequest) {
-        updateMember(loginMember.getId(), memberRequest);
-        return new MemberResponse(loginMember.getId(), memberRequest.getEmail(), memberRequest.getAge());
-    }
-
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(
+            new Member(loginMember.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getAge()));
+        return new MemberResponse(loginMember.getId(), memberRequest.getEmail(),
+            memberRequest.getAge());
     }
 
     public void deleteMemberOfMine(LoginMember loginMember) {
-        deleteMember(loginMember.getId());
-    }
-
-    public void deleteMember(Long id) {
-        memberDao.deleteById(id);
+        memberDao.deleteById(loginMember.getId());
     }
 }
