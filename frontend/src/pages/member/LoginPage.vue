@@ -74,8 +74,25 @@ export default {
       }
       try {
         // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
+        const { email, password } = this.member;
+
+        const bodyValue = {
+          email: email,
+          password: password
+        }
+
+        const response = await fetch("http://localhost:8080/login/token", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyValue)
+        })
+
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
         // TODO member 데이터를 불러와 주세요.
         // const member = wait fetch("/members/me")
         // this.setMember(member);
