@@ -15,6 +15,9 @@ export async function requestGet(uri = '', params = {}, token) {
     headers: headers
   })
   .then(response => {
+    if (!response.ok) {
+      throw new Error(`${response.status}`);
+    }
     return response.json();
   })
 }
@@ -30,6 +33,12 @@ export async function requestPost(uri = '', data = {}, token) {
     body: JSON.stringify(data)
   })
   .then(response => {
+    if (!response.ok) {
+      throw new Error(`${response.status}`);
+    }
+    if (response.status === 201 || response.status === 204){
+      return response;
+    }
     return response.json();
   })
 }

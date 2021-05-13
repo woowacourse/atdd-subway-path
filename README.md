@@ -63,6 +63,7 @@ npm run serve
     }
     ```
 - [x] 멤버 관련 기능 구현
+- [x] 역, 노선, 구간 프론트엔드 API 호출 기능 구현
 <br>
 ## 📝 License
 
