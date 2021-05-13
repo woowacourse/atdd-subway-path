@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
@@ -26,4 +27,10 @@ public class AuthService {
     private boolean checkValidLogin(final String email, final String password) {
         return memberDao.isExist(email, password);
     }
+
+    public Member findMemberByToken(String token) {
+        String payload = jwtTokenProvider.getPayload(token);
+        return memberDao.findByEmail(payload);
+    }
+
 }

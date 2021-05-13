@@ -31,7 +31,7 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public boolean isExist(final String email, final String password){
+    public boolean isExist(final String email, final String password) {
         final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
@@ -55,5 +55,10 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Member findByEmail(String email) {
+        String sql = "select * from MEMBER where email = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }
