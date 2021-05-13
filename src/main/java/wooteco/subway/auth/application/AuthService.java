@@ -1,25 +1,46 @@
 package wooteco.subway.auth.application;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.InvalidMemberException;
+import wooteco.subway.exception.InvalidTokenException;
+import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.LoginMember;
 
 @Service
 public class AuthService {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberDao = memberDao;
     }
 
-    public String createToken(String email) {
-        return jwtTokenProvider.createToken(email);
+    public TokenResponse createToken(TokenRequest tokenRequest) {
+        Member member = findMemberEmailAndPassword(tokenRequest);
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
     }
 
-    public String getPayload(String token) {
-        return jwtTokenProvider.getPayload(token);
+    private Member findMemberEmailAndPassword(TokenRequest tokenRequest) {
+        return memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
+                .orElseThrow(() -> new InvalidMemberException(tokenRequest.getEmail()));
     }
 
-    public boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
+    public LoginMember findMemberByToken(String token) {
+        try {
+            String payload = jwtTokenProvider.getPayload(token);
+            return new LoginMember(memberDao.findById(Long.valueOf(payload)));
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    public void validateToken(String token) {
+        jwtTokenProvider.validateToken(token);
     }
 }

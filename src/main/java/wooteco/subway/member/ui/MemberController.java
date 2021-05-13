@@ -2,13 +2,12 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -45,25 +44,20 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = memberService.findMemberByEmail(token);
-        return ResponseEntity.ok().body(memberResponse);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok(member);
     }
 
-    @PutMapping("/me/{id}")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@PathVariable Long id,
-                                                             @Valid @RequestBody MemberRequest memberRequest, HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        memberService.updateMember(id, memberRequest, token);
-        MemberResponse memberResponse = memberService.findMemberByEmail(token);
-        return ResponseEntity.ok().body(memberResponse);
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(loginMember.getId(), memberRequest);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/me/{id}")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@PathVariable Long id, HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        memberService.deleteMember(id, token);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }
