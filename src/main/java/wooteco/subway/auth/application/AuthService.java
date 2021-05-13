@@ -2,6 +2,7 @@ package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.application.exception.AuthorizationException;
+import wooteco.subway.auth.application.exception.MemberNotFoundException;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -19,8 +20,10 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Member member = memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
-                .orElseThrow(AuthorizationException::new);
+        Member member = memberDao.findByEmail(tokenRequest.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.validatePassword(tokenRequest.getPassword());
 
         String accessToken = jwtTokenProvider.createToken(Long.toString(member.getId()));
         return new TokenResponse(accessToken);
