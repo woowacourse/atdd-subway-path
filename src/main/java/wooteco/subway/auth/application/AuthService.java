@@ -6,6 +6,7 @@ import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
@@ -32,4 +33,10 @@ public class AuthService {
         final String payload = jwtTokenProvider.getPayload(token);
         return new AuthorizationPayLoad(payload);
     }
+
+    public Member findMemberByToken(String token) {
+        String payload = jwtTokenProvider.getPayload(token);
+        return memberDao.findByEmail(payload);
+    }
+
 }

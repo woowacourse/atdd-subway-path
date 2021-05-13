@@ -3,7 +3,6 @@ package wooteco.subway.member.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -27,8 +26,8 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        Member member = memberService.findMember(id);
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+        MemberResponse member = memberService.findMember(id);
+        return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/{id}")
@@ -43,25 +42,26 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // XXX :: 포장의 의미가 있을까?
+    // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad) {
-        final Member loginMember = memberService.findMemberByPayLoad(payLoad);
-        return ResponseEntity.ok(MemberResponse.of(loginMember));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
+
+
+        return ResponseEntity.ok(MemberResponse.of(member));
     }
 
+    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad,
-                                                             @RequestBody MemberRequest updateMember) {
-        final Member loginMember = memberService.findMemberByPayLoad(payLoad);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member loginMember, @RequestBody MemberRequest updateMember) {
         memberService.updateMember(loginMember.getId(), updateMember);
         return ResponseEntity.ok().build();
     }
 
+    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad) {
-        final Member loginMember = memberService.findMemberByPayLoad(payLoad);
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal Member loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
+
 }
