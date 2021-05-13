@@ -74,11 +74,35 @@ export default {
       }
       try {
         // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
+        const {email, password} = this.member;
+        await fetch("http://localhost:8080/login/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        }).then((response) => response.json())
+            .then((data) =>{
+              localStorage.setItem("token", JSON.stringify(data));
+            });
+
         // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+
+        await fetch("http://localhost:8080/members/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization":"Bearer "+ JSON.parse(localStorage.getItem("token")).accessToken
+          }
+        }).then((response) => response.json())
+            .then((data) =>{
+              console.log(data);
+              this.setMember(data);
+            });
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
