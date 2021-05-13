@@ -2,8 +2,10 @@ package wooteco.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import wooteco.auth.domain.Member;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.AuthService;
 import wooteco.auth.web.AuthenticationInterceptor;
@@ -41,6 +43,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         return new AuthenticationPrincipalArgumentResolver(authService);
     }
 
+    @Bean
     public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor(jwtTokenProvider);
     }

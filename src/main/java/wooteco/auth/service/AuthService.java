@@ -16,11 +16,15 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
+    private final Member member;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao,
+        Member member) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+        this.member = member;
     }
+
 
     public Token login(String email, String password) {
         Member member = memberDao.findByEmail(email).orElseThrow(LoginFailException::new);
@@ -32,6 +36,13 @@ public class AuthService {
 
     public Member findMemberWithToken(String accessToken) {
         Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
-        return memberDao.findById(id).orElseThrow(MemberAlreadyDeletedException::new);
+        if(member.emptyMember()) {
+            Member foundMember = memberDao.findById(id).orElseThrow(MemberAlreadyDeletedException::new);
+            member.setMemberInfo(
+                foundMember.getId(), foundMember.getEmail(),
+                foundMember.getPassword(), foundMember.getAge()
+            );
+        }
+        return member;
     }
 }

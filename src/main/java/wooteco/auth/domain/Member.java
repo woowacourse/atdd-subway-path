@@ -28,6 +28,10 @@ public class Member {
         this.age = age;
     }
 
+    public static Member empty() {
+        return new Member(Long.MIN_VALUE, "", 0);
+    }
+
     public Long getId() {
         return id;
     }
@@ -46,5 +50,16 @@ public class Member {
 
     public boolean invalidPassword(String password) {
         return !this.password.equals(password);
+    }
+
+    public void setMemberInfo(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public boolean emptyMember() {
+        return id.equals(Long.MIN_VALUE);
     }
 }
