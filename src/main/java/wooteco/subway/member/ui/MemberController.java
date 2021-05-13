@@ -3,12 +3,11 @@ package wooteco.subway.member.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @CrossOrigin
@@ -48,21 +47,21 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = authService.findMemberByToken(token);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse) {
         return ResponseEntity.ok().body(memberResponse);
     }
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse, @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(memberResponse.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse) {
+        memberService.deleteMember(memberResponse.getId());
         return ResponseEntity.noContent().build();
     }
 }
