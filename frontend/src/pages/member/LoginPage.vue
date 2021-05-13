@@ -94,9 +94,11 @@ export default {
           }
         }).then(res => res.json())
             .then(data => {
-              this.member.id = data.id;
-              this.member.email = data.email;
-              this.member.age = data.age;
+              return {
+                id: data.id,
+                email: data.email,
+                age: data.age
+              }
             });
 
         this.setMember(member);
