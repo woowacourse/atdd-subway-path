@@ -34,8 +34,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        회원_정보_수정됨(updateResponse, 사용자);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
@@ -97,7 +97,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
+        MemberResponse memberResponse = 내_회원_정보_조회_요청(tokenResponse).as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(NEW_AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

@@ -7,6 +7,7 @@ import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.util.Optional;
@@ -24,11 +25,9 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException("[ERROR] 로그인 실패입니다.");
-        }
-
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        Member member = memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
+                .orElseThrow(() -> new AuthorizationException("[ERROR] 로그인 실패입니다."));
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
 
@@ -42,8 +41,14 @@ public class AuthService {
     }
 
     private MemberResponse findMember(String payload) {
-        Member member = memberDao.findByEmail(payload).orElseThrow(() ->
+        Member member = memberDao.findById(Long.valueOf(payload)).orElseThrow(() ->
                 new IllegalArgumentException("[ERROR] 존재하지 않는 회원입니다."));
         return new MemberResponse(member);
+    }
+
+    public void updateMemberByToken(String token, MemberRequest memberRequest) {
+        MemberResponse memberResponse = findMemberByToken(token);
+        Member member = new Member(memberResponse.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(member);
     }
 }

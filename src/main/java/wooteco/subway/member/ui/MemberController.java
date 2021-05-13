@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -55,7 +56,10 @@ public class MemberController {
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine
+        (HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
+        String token = AuthorizationExtractor.extract(request);
+        authService.updateMemberByToken(token, memberRequest);
         return ResponseEntity.ok().build();
     }
 

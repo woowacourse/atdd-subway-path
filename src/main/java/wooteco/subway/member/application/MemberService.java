@@ -20,7 +20,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findById(id).orElseThrow(() -> new IllegalArgumentException());
         return MemberResponse.of(member);
     }
 
