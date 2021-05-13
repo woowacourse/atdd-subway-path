@@ -11,11 +11,9 @@ import wooteco.subway.member.dto.MemberResponse;
 @Service
 public class MemberService {
     private final MemberDao memberDao;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
