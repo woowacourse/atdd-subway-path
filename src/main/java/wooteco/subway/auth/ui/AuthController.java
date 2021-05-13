@@ -13,7 +13,6 @@ import wooteco.subway.auth.exception.AuthorizationException;
 
 @RestController
 public class AuthController {
-    // TODO: 로그인(토큰 발급) 요청 처리하기
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
