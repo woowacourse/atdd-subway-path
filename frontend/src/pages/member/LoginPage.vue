@@ -74,7 +74,7 @@ export default {
       }
       try {
         const { email, password } = this.member;
-        const response = await fetch("http://localhost:8080/login/token", {
+        const response = await fetch("http://localhost:8080/login/member", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
