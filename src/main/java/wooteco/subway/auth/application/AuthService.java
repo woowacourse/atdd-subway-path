@@ -24,7 +24,7 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public long  getIdWhenValidLogin(TokenRequest tokenRequest) {
+    public long getIdWhenValidLogin(TokenRequest tokenRequest) {
         final Member member = memberDao.findByEmail(tokenRequest.getEmail());
         if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());

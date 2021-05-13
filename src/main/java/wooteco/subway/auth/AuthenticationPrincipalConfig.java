@@ -15,8 +15,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
     private final LoginInterceptor loginInterceptor;
 
-    public AuthenticationPrincipalConfig(final AuthService authService,
-        final LoginInterceptor loginInterceptor) {
+    public AuthenticationPrincipalConfig(final AuthService authService, final LoginInterceptor loginInterceptor) {
         this.authService = authService;
         this.loginInterceptor = loginInterceptor;
     }
