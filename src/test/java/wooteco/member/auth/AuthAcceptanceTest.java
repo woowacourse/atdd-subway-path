@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.member.controller.dto.response.TokenResponseDto;
+import wooteco.member.controller.dto.response.LoginTokenResponseDto;
 import wooteco.subway.AcceptanceTest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -25,10 +25,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponseDto tokenResponseDto = 로그인되어_있음(EMAIL, PASSWORD);
+        LoginTokenResponseDto loginTokenResponseDto = 로그인되어_있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponseDto);
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(loginTokenResponseDto);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -55,11 +55,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponseDto tokenResponseDto = new TokenResponseDto("accesstoken");
+        LoginTokenResponseDto loginTokenResponseDto = new LoginTokenResponseDto("accesstoken");
 
         RestAssured
             .given().log().all()
-            .auth().oauth2(tokenResponseDto.getAccessToken())
+            .auth().oauth2(loginTokenResponseDto.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/members/me")
             .then().log().all()
@@ -70,9 +70,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 회원_생성을_요청(email, password, age);
     }
 
-    public static TokenResponseDto 로그인되어_있음(String email, String password) {
+    public static LoginTokenResponseDto 로그인되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponseDto.class);
+        return response.as(LoginTokenResponseDto.class);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -91,9 +91,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponseDto tokenResponseDto) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(LoginTokenResponseDto loginTokenResponseDto) {
         return RestAssured.given().log().all().
-            auth().oauth2(tokenResponseDto.getAccessToken()).
+            auth().oauth2(loginTokenResponseDto.getAccessToken()).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
             get("/api/members/me").
