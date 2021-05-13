@@ -5,6 +5,7 @@ import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
@@ -18,12 +19,12 @@ public class AuthService {
         this.memberService = memberService;
     }
 
-    public LoginMember getLoginMember(String accessToken) {
+    public Member getMember(String accessToken) {
         if (!tokenProvider.validateToken(accessToken)) {
-            throw new UnauthorizedException("유효하지 않은 토큰이얌");
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
         String email = tokenProvider.getPayload(accessToken);
         MemberResponse member = memberService.findMemberByEmail(email);
-        return member.toLoginMember();
+        return member.toMember();
     }
 }
