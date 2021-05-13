@@ -36,7 +36,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
@@ -56,7 +56,7 @@ public class MemberController {
 
     // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }

@@ -31,7 +31,7 @@ public class JwtTokenProvider {
         if (validateToken(token)) {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-        throw new AuthorizationException("유효하지 않은 토큰입니다.");
+        throw new AuthorizationException("[ERROR] 유효하지 않은 토큰입니다.");
     }
 
     public boolean validateToken(String token) {

@@ -25,7 +25,6 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -62,15 +61,6 @@ public class MemberDao {
         String sql = "select * from MEMBER where email = ? AND password = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, email, password));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Member> findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, email));
         } catch (DataAccessException e) {
             return Optional.empty();
         }
