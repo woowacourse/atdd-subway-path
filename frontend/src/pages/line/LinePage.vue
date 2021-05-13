@@ -51,10 +51,11 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    const response = await fetch("http://localhost:8080/lines");
+    let response = await fetch("http://localhost:8080/stations");
+    const stations = await response.json();
+    this.setStations([...stations])
+
+    response = await fetch("http://localhost:8080/lines");
     const lines = await response.json();
     this.setLines([...lines])
   },
