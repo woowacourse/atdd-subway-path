@@ -50,7 +50,7 @@ npm run serve
     - [x] JWT 라이브러리를 통한 액세스 토큰 발급하기
         - [x] POST: /login/token 구현하기
     - [ ] 발급한 토큰을 기반으로 회원 관리 기능 추가하기    
-        - [ ] GET: /members/me 구현하기
+        - [x] GET: /members/me 구현하기
         - [ ] PUT: /members/me 구현하기
         - [ ] DELETE: /members/me 구현하기
         
