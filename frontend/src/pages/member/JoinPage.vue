@@ -94,7 +94,6 @@ export default {
         return;
       }
       try {
-        // TODO member를 생성하는 API를 추가해주세요.
         await fetch("http://localhost:8080/members", {
           method: "POST",
           headers: {

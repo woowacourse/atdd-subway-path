@@ -86,7 +86,7 @@ export default {
             return response.json();
           }
         });
-        
+
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
