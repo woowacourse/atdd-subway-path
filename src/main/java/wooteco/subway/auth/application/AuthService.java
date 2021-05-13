@@ -7,6 +7,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -25,16 +27,18 @@ public class AuthService {
     }
 
     public long  getIdWhenValidLogin(TokenRequest tokenRequest) {
-        final Member member = memberDao.findByEmail(tokenRequest.getEmail());
-        if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());
+        final Optional<Member> member = memberDao.findByEmail(tokenRequest.getEmail());
+        if (!member.isPresent() ||
+                !member.get().haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+            throw new AuthorizationException();
         }
-        return member.getId();
+
+        return member.get().getId();
     }
 
     public Member findMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException("만료된 토큰입니다.");
+            throw new AuthorizationException();
         }
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
         return memberDao.findById(id);
