@@ -1,10 +1,14 @@
 package wooteco.subway.auth.application;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
@@ -27,8 +31,11 @@ public class AuthService {
     }
 
     public MemberResponse findMemberByToken(String token) {
-        String payload = jwtTokenProvider.getPayload(token);
-        return findMember(payload);
+        if (jwtTokenProvider.validateToken(token)) {
+            String payload = jwtTokenProvider.getPayload(token);
+            return findMember(payload);
+        }
+        throw new InvalidTokenException();
     }
 
     public MemberResponse findMember(String principal) {
