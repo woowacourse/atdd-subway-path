@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -22,11 +23,6 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
         return MemberResponse.of(member);
-    }
-
-    public Member findMember(String email) {
-        Member member = memberDao.findByEmail(email);
-        return member;
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

@@ -2,28 +2,43 @@ package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberService memberService;
+    private final MemberDao memberDao;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider,
-        MemberService memberService) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberService = memberService;
+        this.memberDao = memberDao;
     }
 
     public TokenResponse login(String email, String password) {
-        Member member = memberService.findMember(email);
-        if (!password.equals(member.getPassword())) {
+        Member member = memberDao.findByEmail(email)
+            .orElseThrow(UnauthorizedException::new);
+
+        validatePassword(password, member.getPassword());
+
+        String jws = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        return new TokenResponse(jws);
+    }
+
+    private void validatePassword(String password, String savedPassword) {
+        if (!password.equals(savedPassword)) {
             throw new IllegalArgumentException("로그인 실패");
         }
-        String jws = jwtTokenProvider.createToken(email);
-        return new TokenResponse(jws);
+    }
+
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
+
+    public Long getPayload(String token) {
+        return Long.parseLong(jwtTokenProvider.getPayload(token));
     }
 }
