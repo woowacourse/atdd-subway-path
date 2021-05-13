@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
@@ -17,14 +20,14 @@ import wooteco.subway.domain.Station;
 @Repository
 public class LineDao {
 
-    private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public LineDao(DataSource dataSource) {
         this.insertAction = new SimpleJdbcInsert(dataSource)
             .withTableName("line")
             .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Line insert(Line line) {
@@ -46,16 +49,16 @@ public class LineDao {
             "left outer join SECTION S on L.id = S.line_id " +
             "left outer join STATION UST on S.up_station_id = UST.id " +
             "left outer join STATION DST on S.down_station_id = DST.id " +
-            "WHERE L.id = ?";
-
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+            "WHERE L.id = :id";
+        Map<String, Long> params = Collections.singletonMap("id", id);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate
-            .update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        String sql = "update LINE set name = :name, color = :color where id = :id";
+        SqlParameterSource params = new BeanPropertySqlParameterSource(newLine);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public List<Line> findAll() {
@@ -67,8 +70,8 @@ public class LineDao {
             "left outer join SECTION S on L.id = S.line_id " +
             "left outer join STATION UST on S.up_station_id = UST.id " +
             "left outer join STATION DST on S.down_station_id = DST.id ";
-
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate
+            .queryForList(sql, Collections.emptyMap());
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
             .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
         return resultByLine.entrySet().stream()
@@ -110,6 +113,7 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        Map<String, Long> params = Collections.singletonMap("id", id);
+        namedParameterJdbcTemplate.update("delete from Line where id = :id", params);
     }
 }
