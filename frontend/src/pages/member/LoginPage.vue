@@ -74,7 +74,7 @@ export default {
         return;
       }
       try {
-        const response = await jsonFetch("/api/login/token", "POST", this.member);
+        const response = await jsonFetch("/api/login", "POST", this.member);
         const body = await response.json();
         this.setAccessToken(body.accessToken);
         localStorage.setItem("token", this.accessToken);

@@ -10,7 +10,7 @@ import wooteco.auth.service.AuthService;
 import wooteco.auth.web.dto.TokenRequest;
 import wooteco.auth.web.dto.TokenResponse;
 
-@RequestMapping("/api/login/token")
+@RequestMapping("/api/login")
 @RestController
 public class AuthController {
 
