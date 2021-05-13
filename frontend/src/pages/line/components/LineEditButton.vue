@@ -137,7 +137,7 @@ export default {
         if (!lines_response.ok) {
           throw new Error(`${lines_response.status}`);
         }
-        const lines = JSON.stringify(lines_response);
+        const lines = await lines_response.json();
 
         this.setLines([...lines])
         this.closeDialog();
