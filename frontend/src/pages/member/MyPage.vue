@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 
 export default {
   name: "MyPage",
@@ -65,7 +65,7 @@ export default {
       }
       try {
         // TODO 유저를 삭제하는 API를 추가해주세요
-        await fetch(`http://localhost:8080/members/${this.member.id}`)
+        await fetch(`api/members/${this.member.id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`${respone.status}`);

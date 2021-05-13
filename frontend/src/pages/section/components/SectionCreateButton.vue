@@ -76,15 +76,11 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import dialog from "../../../mixins/dialog";
 import Dialog from "../../../components/dialogs/Dialog";
-import {
-  SET_LINE,
-  SET_LINES,
-  SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
 export default {
@@ -110,7 +106,7 @@ export default {
     async initLineStationsView() {
       try {
         // TODO 선택된 노선의 데이터를 불러와주세요.
-        this.selectedLine = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`)
+        this.selectedLine = await fetch(`api/lines/${this.sectionForm.lineId}`)
         .then(response => {
           if(!response.ok) {
             throw new Error(`${response.status}`);
@@ -163,7 +159,7 @@ export default {
       }
       try {
         // TODO 구간을 추가하는 API를 작성해주세요.
-        await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}/sections`, {
+        await fetch(`api/lines/${this.sectionForm.lineId}/sections`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
@@ -176,7 +172,7 @@ export default {
           }
         })
         // TODO 전체 line을 불러오는 API를 작성해주세요.
-        const lines = await fetch("http://localhost:8080/lines")
+        const lines = await fetch("api/lines")
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);

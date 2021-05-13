@@ -9,6 +9,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -16,44 +17,44 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    @PostMapping
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
     // TODO: 구현 하기
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine() {
         return ResponseEntity.ok().build();
     }
 
     // TODO: 구현 하기
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine() {
         return ResponseEntity.ok().build();
     }
 
     // TODO: 구현 하기
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
     }

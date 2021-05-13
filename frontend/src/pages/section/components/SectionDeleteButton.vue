@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import {mapMutations} from "vuex";
 import {SET_LINE, SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "SectionDeleteButton",
@@ -26,7 +26,7 @@ export default {
     async onDeleteLine() {
       try {
         // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        await fetch(`http://localhost:8080/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
+        await fetch(`api/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
           method: "DELETE",
         })
         .then(response => {
@@ -35,7 +35,7 @@ export default {
           }
         });
         // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        const line = await fetch(`http://localhost:8080/lines/${this.lineId}`)
+        const line = await fetch(`api/lines/${this.lineId}`)
         .then(response => {
           if(!response.ok) {
             throw new Error(`${response.status}`);

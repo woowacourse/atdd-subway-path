@@ -53,9 +53,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -77,7 +77,7 @@ export default {
         // const { email, password } = this.member;
         // const data = await fetch("/login")
         // TODO member 데이터를 불러와 주세요.
-        const member = await fetch(`http://localhost:8080/members/me`)
+        const member = await fetch(`api/members/me`)
         .then(response => {
           if(!response.ok) {
             throw new Error(`${response.status}`);

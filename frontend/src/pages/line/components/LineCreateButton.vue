@@ -156,7 +156,7 @@ export default {
       }
       try {
         // TODO 노선을 추가하는 API를 추가해주세요.
-        const newLine = await fetch("http://localhost:8080/lines")
+        const newLine = await fetch("api/lines")
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);
