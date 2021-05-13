@@ -1,4 +1,4 @@
-package wooteco.subway.auth.ui;
+package wooteco.subway.auth.config;
 
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
