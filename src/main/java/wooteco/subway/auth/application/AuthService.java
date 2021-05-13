@@ -29,13 +29,17 @@ public class AuthService {
     }
 
     private void validatePassword(String password, String savedPassword) {
-        if (!password.equals(savedPassword)) {
-            throw new IllegalArgumentException("로그인 실패");
+        if (password.equals(savedPassword)) {
+            return;
         }
+        throw new IllegalArgumentException("로그인 실패");
     }
 
-    public boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
+    public void validateToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            return;
+        }
+        throw new UnauthorizedException();
     }
 
     public Long getPayload(String token) {
