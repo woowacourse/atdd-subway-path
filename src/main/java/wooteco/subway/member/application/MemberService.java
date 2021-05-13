@@ -41,6 +41,7 @@ public class MemberService {
 
     public void authorize(final TokenRequest tokenRequest) {
         final String email = tokenRequest.getEmail();
-        findMemberByEmail(email);
+        final Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));;
+        member.authorize(tokenRequest);
     }
 }

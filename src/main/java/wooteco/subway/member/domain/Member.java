@@ -1,5 +1,10 @@
 package wooteco.subway.member.domain;
 
+import org.apache.tomcat.websocket.AuthenticationException;
+
+import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.member.application.AuthorizationException;
+
 public class Member {
     private Long id;
     private String email;
@@ -42,5 +47,13 @@ public class Member {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void authorize(TokenRequest tokenRequest) {
+        final boolean isEmailEqual = this.email.equals(tokenRequest.getEmail());
+        final boolean isPasswordEual = this.password.equals(tokenRequest.getPassword());
+        if (!(isEmailEqual && isPasswordEual)) {
+            throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
+        }
     }
 }
