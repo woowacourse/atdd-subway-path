@@ -24,7 +24,6 @@ public class MemberController {
         this.authService = authService;
     }
 
-
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
@@ -49,7 +48,6 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
         String accessToken = AuthorizationExtractor.extract(request);
