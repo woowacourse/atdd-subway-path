@@ -162,8 +162,7 @@ export default {
           'distance' : this.lineForm.distance
         }
 
-        const response = await requestPost("/lines", requestBody);
-        const newLine = await response.json();
+        const newLine = await requestPost("/lines", requestBody);
         this.setLines([...this.lines, { ...newLine }]);
 
         this.initLineForm();

@@ -18,8 +18,13 @@ export async function requestGet(uri = '', params = {}, token) {
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
-    return response.json();
+    return response.text();
   })
+  .then(text => {
+    if (text)
+      return JSON.parse(text)
+    else return {};
+  });
 }
 
 export async function requestPost(uri = '', data = {}, token) {
@@ -36,11 +41,13 @@ export async function requestPost(uri = '', data = {}, token) {
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
-    if (response.status === 201 || response.status === 204){
-      return response;
-    }
-    return response.json();
+    return response.text();
   })
+  .then(text => {
+    if (text)
+      return JSON.parse(text);
+    else return {};
+  });
 }
 
 export async function requestDelete(uri = '', data = {}, token) {
