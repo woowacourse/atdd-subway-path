@@ -12,7 +12,6 @@ import wooteco.subway.auth.dto.TokenResponse;
 @RestController
 @RequestMapping("/login")
 public class AuthController {
-    // TODO: 로그인(토큰 발급) 요청 처리하기
     private final AuthService authService;
 
     public AuthController(final AuthService authService) {
@@ -20,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<TokenResponse> getTokenResponseByUserInfo (@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> getTokenResponseByUserInfo(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
     }

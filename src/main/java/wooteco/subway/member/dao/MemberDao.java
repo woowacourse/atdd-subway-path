@@ -52,7 +52,7 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByPayload(final String payload){
+    public Member findByPayload(final String payload) {
         String query = "SELECT * FROM member where email = ?";
         return jdbcTemplate.queryForObject(query, rowMapper, payload);
     }
