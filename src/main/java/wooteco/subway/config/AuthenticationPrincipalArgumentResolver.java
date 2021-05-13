@@ -5,8 +5,12 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import wooteco.subway.dto.LoginMember;
+import wooteco.subway.infrastructure.AuthorizationExtractor;
+import wooteco.subway.infrastructure.JwtTokenProvider;
 import wooteco.subway.service.AuthService;
-import wooteco.subway.domain.AuthenticationPrincipal;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -28,6 +32,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         // 토큰의 검증은 LoginInterceptor에 의해 이미 검증된다.
         // 따라서 토큰을 decoding하여 나온 id,
 //        return new LoginMember(1L, "email@email.com", 27);
-        return null;
+        HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
+        String token = AuthorizationExtractor.extract(httpServletRequest);
+        authService.validate(token);
+        LoginMember loginMember = authService.parseLoginMember(token);
+        return loginMember;
     }
 }

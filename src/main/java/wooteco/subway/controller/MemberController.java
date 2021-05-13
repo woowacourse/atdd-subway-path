@@ -2,6 +2,8 @@ package wooteco.subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.config.AuthenticationPrincipal;
+import wooteco.subway.dto.LoginMember;
 import wooteco.subway.service.MemberService;
 import wooteco.subway.dto.MemberRequest;
 import wooteco.subway.dto.MemberResponse;
@@ -35,6 +37,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
+    
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
@@ -44,19 +47,19 @@ public class MemberController {
     // 프론트엔드가 LoginMember를 리턴받아 상단의 메소드를 다시 요청하도록 되어있다고 한다. by 제리
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(MemberResponse.from(loginMember));
     }
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(MemberResponse.from(loginMember));
     }
 
     // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.noContent().build();
     }
 }

@@ -6,6 +6,8 @@ import wooteco.subway.domain.Member;
 import wooteco.subway.dto.MemberRequest;
 import wooteco.subway.dto.MemberResponse;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -30,5 +32,13 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+
+    public MemberResponse logIn(String email, String password) {
+        Member member = memberDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("이메일을 잘못 입력하셨습니다."));
+        if (member.getPassword().equals(password)) {
+            return MemberResponse.of(member);
+        }
+        throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
     }
 }
