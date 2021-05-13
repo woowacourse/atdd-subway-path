@@ -17,14 +17,9 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // TODO: 로그인(토큰 발급) 요청 처리하기
     @PostMapping("/login/token")
     public ResponseEntity tokenLogin(@RequestBody TokenRequest tokenRequest) {
-        // TODO: TokenRequest 값을 메서드 파라미터로 받아오기 (hint: @RequestBody)
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
     }
-
 }
-
-

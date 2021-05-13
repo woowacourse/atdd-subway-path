@@ -46,7 +46,6 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
@@ -54,10 +53,13 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
+        String token = AuthorizationExtractor.extract(request);
+        MemberResponse memberResponse = authService.findMemberByToken(token);
+        memberService.updateMember(memberResponse.getId(), memberRequest);
+        MemberResponse updatedMember = memberService.findMember(memberResponse.getId());
+        return ResponseEntity.ok().body(updatedMember);
     }
 
     // TODO: 구현 하기
