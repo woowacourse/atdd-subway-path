@@ -3,6 +3,7 @@ package wooteco.member.controller.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
+import wooteco.member.infrastructure.AuthorizationExtractor;
 import wooteco.member.service.AuthService;
 
 
@@ -15,7 +16,7 @@ public class LonginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String accessToken = request.getHeader("Authorization");
+        String accessToken = AuthorizationExtractor.extract(request);
         authService.validateToken(accessToken);
         return true;
     }
