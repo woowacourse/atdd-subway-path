@@ -1,11 +1,14 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -26,8 +29,11 @@ public class MemberService {
     }
 
     public MemberResponse findMember(String email) {
-        Member member = memberDao.findByEmail(email);
-        return MemberResponse.of(member);
+        final Optional<Member> member = memberDao.findByEmail(email);
+        if (!member.isPresent()) {
+            throw new AuthorizationException();
+        }
+        return MemberResponse.of(member.get());
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

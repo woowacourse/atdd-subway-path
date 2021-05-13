@@ -7,6 +7,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -19,18 +21,17 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (!validateLogin(tokenRequest)) {
-            throw new AuthorizationException();
-        }
-
+        validateLogin(tokenRequest);
         final String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
         return new TokenResponse(accessToken);
     }
 
-    private boolean validateLogin(TokenRequest tokenRequest) {
+    private void validateLogin(TokenRequest tokenRequest) {
         final String email = tokenRequest.getEmail();
         final String password = tokenRequest.getPassword();
-        final Member member = memberDao.findByEmail(email);
-        return member.getPassword().equals(password);
+        final Optional<Member> member = memberDao.findByEmail(email);
+        if (!(member.isPresent() && member.get().getPassword().equals(password))) {
+            throw new AuthorizationException();
+        }
     }
 }
