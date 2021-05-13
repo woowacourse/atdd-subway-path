@@ -1,5 +1,8 @@
 package wooteco.subway.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +17,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.auth.domain.Member;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.LineAndSection;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -43,6 +48,7 @@ public class LineDao {
     }
 
     public Line findById(Long id) {
+
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
             "S.id as section_id, S.distance as section_distance, " +
             "UST.id as up_station_id, UST.name as up_station_name, " +
@@ -53,8 +59,19 @@ public class LineDao {
             "left outer join STATION DST on S.down_station_id = DST.id " +
             "WHERE L.id = :id";
         Map<String, Long> params = Collections.singletonMap("id", id);
-        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
-        return mapLine(result);
+        List<LineAndSection> result = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) ->
+            new LineAndSection(
+                rs.getLong("line_id"),
+                rs.getString("line_name"),
+                rs.getString("line_color"),
+                new Section(
+                    rs.getLong("section_id"),
+                    new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
+                    new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
+                    rs.getInt("section_distance")
+                )
+            ));
+        return mapLineFromLineAndSection(result);
     }
 
     public void update(Line newLine) {
@@ -95,6 +112,20 @@ public class LineDao {
             new Sections(sections));
     }
 
+    private Line mapLineFromLineAndSection(List<LineAndSection> result) {
+        if (result.size() == 0) {
+            throw new RuntimeException();
+        }
+
+        List<Section> sections = extractSectionsFromLineAndSection(result);
+
+        return new Line(
+            result.get(0).getId(),
+            result.get(0).getName(),
+            result.get(0).getColor(),
+            new Sections(sections));
+    }
+
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
             return Collections.EMPTY_LIST;
@@ -104,6 +135,15 @@ public class LineDao {
             .entrySet()
             .stream()
             .map(mappingResultToLine())
+            .collect(Collectors.toList());
+    }
+
+    private List<Section> extractSectionsFromLineAndSection(List<LineAndSection> result) {
+        if (result.isEmpty() || result.get(0).getId() == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return result.stream()
+            .map(line -> line.getSection())
             .collect(Collectors.toList());
     }
 
@@ -117,7 +157,6 @@ public class LineDao {
                     (String) it.getValue().get(0).get("DOWN_STATION_Name")),
                 (int) it.getValue().get(0).get("SECTION_DISTANCE"));
     }
-
 
     public void deleteById(Long id) {
         Map<String, Long> params = Collections.singletonMap("id", id);
