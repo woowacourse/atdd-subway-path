@@ -30,14 +30,7 @@ public class AuthService {
     }
 
     public LoginMember findLoginMemberByToken(String token) {
-        validateToken(token);
         Long payload = Long.parseLong(jwtTokenProvider.getPayload(token));
         return new LoginMember(payload);
-    }
-
-    private void validateToken(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException();
-        }
     }
 }
