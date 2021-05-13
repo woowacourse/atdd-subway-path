@@ -25,7 +25,6 @@ public class StationDao {
             rs.getString("name")
         );
 
-
     public StationDao(DataSource dataSource) {
         this.insertAction = new SimpleJdbcInsert(dataSource)
             .withTableName("station")

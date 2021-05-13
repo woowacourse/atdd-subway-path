@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -27,7 +25,6 @@ public class MemberDao {
             rs.getString("password"),
             rs.getInt("age")
         );
-
 
     public MemberDao(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)

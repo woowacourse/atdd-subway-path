@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -101,16 +103,21 @@ public class LineDao {
             .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
             .entrySet()
             .stream()
-            .map(it ->
-                new Section(
-                    (Long) it.getKey(),
-                    new Station((Long) it.getValue().get(0).get("UP_STATION_ID"),
-                        (String) it.getValue().get(0).get("UP_STATION_Name")),
-                    new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"),
-                        (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                    (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+            .map(mappingResultToLine())
             .collect(Collectors.toList());
     }
+
+    private Function<Entry<Object, List<Map<String, Object>>>, Section> mappingResultToLine() {
+        return it ->
+            new Section(
+                (Long) it.getKey(),
+                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"),
+                    (String) it.getValue().get(0).get("UP_STATION_Name")),
+                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"),
+                    (String) it.getValue().get(0).get("DOWN_STATION_Name")),
+                (int) it.getValue().get(0).get("SECTION_DISTANCE"));
+    }
+
 
     public void deleteById(Long id) {
         Map<String, Long> params = Collections.singletonMap("id", id);
