@@ -79,9 +79,10 @@ export default {
         return;
       }
       try {
-        const newStation = await requestPost('/stations', {
+        const response = await requestPost('/stations', {
           name: this.stationName
         })
+        const newStation = await response.json();
         this.setStations([...this.stations, newStation]);
         this.initStationForm();
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.SUCCESS);
