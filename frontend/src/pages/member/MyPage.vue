@@ -68,7 +68,7 @@ export default {
         await fetch(`api/members/${this.member.id}`)
         .then(response => {
           if (!response.ok) {
-            throw new Error(`${respone.status}`);
+            throw new Error(`${response.status}`);
           }
         });
         this.setMember(null);
