@@ -39,6 +39,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+
+        ExtractableResponse<Response> findResponseAfterDeleted = RestAssured
+                .given().log().all()
+                .auth().oauth2(사용자.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+
+        assertThat(findResponseAfterDeleted.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
