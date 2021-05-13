@@ -155,9 +155,13 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        const newLine = await fetch("api/lines")
-        .then(response => {
+        const newLine = await fetch("api/lines", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify(this.lineForm),
+        }).then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);
           }

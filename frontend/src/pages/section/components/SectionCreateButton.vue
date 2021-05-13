@@ -105,7 +105,6 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
         this.selectedLine = await fetch(`api/lines/${this.sectionForm.lineId}`)
         .then(response => {
           if(!response.ok) {
@@ -158,7 +157,6 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
         await fetch(`api/lines/${this.sectionForm.lineId}/sections`, {
           method: "POST",
           headers: {
@@ -171,7 +169,7 @@ export default {
             throw new Error(`${response.status}`);
           }
         })
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
+
         const lines = await fetch("api/lines")
         .then(response => {
           if (!response.ok) {

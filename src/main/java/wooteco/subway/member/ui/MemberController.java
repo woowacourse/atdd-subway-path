@@ -49,7 +49,6 @@ public class MemberController {
         return ResponseEntity.ok(MemberResponse.of(member));
     }
 
-    // TODO: 구현 하기
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(member.getId(), memberRequest);
@@ -57,7 +56,6 @@ public class MemberController {
         return ResponseEntity.ok(updatedMemberResponse);
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
         memberService.deleteMember(member.getId());

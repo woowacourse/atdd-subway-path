@@ -13,11 +13,11 @@ export default {
   name: "SectionDeleteButton",
   props: {
     lineId: {
-      type: String,
+      type: Number,
       required: true,
     },
     stationId: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
@@ -25,7 +25,6 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE, SET_LINES]),
     async onDeleteLine() {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
         await fetch(`api/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
           method: "DELETE",
         })
@@ -34,7 +33,7 @@ export default {
             throw new Error(`${response.status}`);
           }
         });
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
+
         const line = await fetch(`api/lines/${this.lineId}`)
         .then(response => {
           if(!response.ok) {

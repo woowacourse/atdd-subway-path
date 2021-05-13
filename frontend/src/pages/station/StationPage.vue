@@ -65,13 +65,12 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
     const response = await fetch("api/stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
     const stations = await response.json();
-    this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+    this.setStations([...stations]);
   },
   methods: {
     ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),
@@ -83,7 +82,6 @@ export default {
         return;
       }
       try {
-        // TODO 역을 추가하는 API Sample
         const response = await fetch("api/stations", {
           method: "POST",
           headers: {
@@ -112,7 +110,6 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
         await fetch(`api/stations/${stationId}`, {
           method: "DELETE",
         })
