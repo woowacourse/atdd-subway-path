@@ -31,6 +31,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                 webRequest.getNativeRequest(HttpServletRequest.class));
         final String accessToken = AuthorizationExtractor.extract(request);
 
-        return authService.findLoginMemberByToken(accessToken);
+        return authService.findByToken(accessToken);
     }
 }
