@@ -12,17 +12,17 @@ import wooteco.subway.auth.ui.LoginInterceptor;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
-    private final AuthService authService;
-    private final LoginInterceptor loginInterceptor;
+    private AuthService authService;
+    private LoginInterceptor loginInterceptor;
 
-    public AuthenticationPrincipalConfig(final AuthService authService, final LoginInterceptor loginInterceptor) {
+    public AuthenticationPrincipalConfig(AuthService authService, LoginInterceptor loginInterceptor) {
         this.authService = authService;
         this.loginInterceptor = loginInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/**", "/members/**");
     }
 
     @Override

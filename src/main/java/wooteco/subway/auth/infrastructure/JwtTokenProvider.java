@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     }
 
     public Long getIdFromPayLoad(String token) {
-        final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             .getBody();
         return claims.get("id", Long.class);
     }

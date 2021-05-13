@@ -18,9 +18,9 @@ import wooteco.subway.member.dto.MemberResponse;
 @RestController
 public class MemberController {
 
-    private final MemberService memberService;
+    private MemberService memberService;
 
-    public MemberController(final MemberService memberService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 

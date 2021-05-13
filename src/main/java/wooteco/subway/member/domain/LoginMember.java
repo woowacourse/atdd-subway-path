@@ -9,13 +9,13 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public LoginMember(final Long id, final String email, final Integer age) {
+    public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public static LoginMember from(final Member member) {
+    public static LoginMember from(Member member) {
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 

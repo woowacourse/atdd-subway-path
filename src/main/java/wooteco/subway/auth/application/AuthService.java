@@ -10,8 +10,8 @@ import wooteco.subway.member.domain.Member;
 @Service
 public class AuthService {
 
-    private final MemberDao memberDao;
-    private final JwtTokenProvider jwtTokenProvider;
+    private MemberDao memberDao;
+    private JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -25,7 +25,7 @@ public class AuthService {
     }
 
     public long getIdWhenValidLogin(TokenRequest tokenRequest) {
-        final Member member = memberDao.findByEmail(tokenRequest.getEmail());
+        Member member = memberDao.findByEmail(tokenRequest.getEmail());
         if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());
         }
