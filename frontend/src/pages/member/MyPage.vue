@@ -64,11 +64,11 @@ export default {
         return;
       }
       try {
-        const data = localStorage.getItem("token");
-        await fetch(`/api/members/${this.member.id}`,{
+        const accessToken = localStorage.getItem("token");
+        await fetch(`/api/members/me`,{
           method: "DELETE",
           headers: new Headers({
-            'Authorization': 'Bearer ' + data.accessToken,
+            'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json'
           })
         });

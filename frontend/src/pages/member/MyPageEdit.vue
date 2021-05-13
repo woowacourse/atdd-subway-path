@@ -105,21 +105,21 @@ export default {
     },
     onEditMember: async function () {
       try {
-        const {email, age, password} = this.editingMember;
-        const data = localStorage.getItem("token");
-        await fetch(`/api/members/${this.member.id}`, {
+        const {email, password, age} = this.editingMember;
+        const accessToken = localStorage.getItem("token");
+        await fetch(`/api/members/me`, {
           method: "PUT",
-          body: JSON.stringify({email, age, password}),
+          body: JSON.stringify({email, password, age}),
           headers: new Headers({
-            'Authorization': 'Bearer ' + data.accessToken,
+            'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json'
           })
         });
 
-        const member = await fetch(`/api/members/${this.member.id}`, {
+        const member = await fetch(`/api/members/me`, {
           method: "GET",
           headers: new Headers({
-            'Authorization': 'Bearer ' + data.accessToken,
+            'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json'
           })
         }).then(result => result.json());

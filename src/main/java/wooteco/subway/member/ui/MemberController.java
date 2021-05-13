@@ -3,8 +3,10 @@ package wooteco.subway.member.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -48,26 +50,20 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = authService.findMemberByToken(token);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
+        MemberResponse memberResponse = MemberResponse.of(member);
         return ResponseEntity.ok().body(memberResponse);
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = authService.findMemberByToken(token);
-        memberService.updateMember(memberResponse.getId(), memberRequest);
-        MemberResponse updatedMember = memberService.findMember(memberResponse.getId());
-        return ResponseEntity.ok().body(updatedMember);
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequest request) {
+        memberService.updateMember(member.getId(), request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMemberOfMine(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse memberResponse = authService.findMemberByToken(token);
-        memberService.deleteMember(memberResponse.getId());
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -89,6 +89,7 @@ export default {
             'Content-Type': 'application/json'
           })
         }).then(result => result.json());
+
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);

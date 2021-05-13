@@ -36,12 +36,11 @@ public class AuthService {
         return true;
     }
 
-    public MemberResponse findMemberByToken(String token) {
+    public Member findMemberByToken(String token) {
         String payload = jwtTokenProvider.getPayload(token);
         if (!memberDao.existByEmail(payload)) {
             throw new AuthorizationException();
         }
-        Member member = memberDao.findByEmail(payload);
-        return MemberResponse.of(member);
+        return memberDao.findByEmail(payload);
     }
 }
