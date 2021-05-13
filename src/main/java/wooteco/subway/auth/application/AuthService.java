@@ -19,23 +19,24 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        checkInvalidLogin(tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(tokenRequest);
+        Long id = getIdWhenValidLogin(tokenRequest);
+        String accessToken = jwtTokenProvider.createToken(id);
         return new TokenResponse(accessToken);
     }
 
-    public void checkInvalidLogin(TokenRequest tokenRequest) {
+    public long  getIdWhenValidLogin(TokenRequest tokenRequest) {
         final Member member = memberDao.findByEmail(tokenRequest.getEmail());
         if (!member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException("입력된 값: " + tokenRequest.getEmail());
         }
+        return member.getId();
     }
 
     public Member findMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException("만료된 토큰입니다.");
         }
-        String email = jwtTokenProvider.getEmailFromPayload(token);
-        return memberDao.findByEmail(email);
+        Long id = jwtTokenProvider.getIdFromPayLoad(token);
+        return memberDao.findById(id);
     }
 }

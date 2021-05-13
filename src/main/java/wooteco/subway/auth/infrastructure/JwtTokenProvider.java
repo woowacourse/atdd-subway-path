@@ -18,23 +18,22 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(TokenRequest tokenRequest) {
+    public String createToken(Long id) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-            .claim("email", tokenRequest.getEmail())
-            .claim("password", tokenRequest.getPassword())
+            .claim("id", id)
             .setIssuedAt(now)
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
 
-    public String getEmailFromPayload(String token) {
+    public Long getIdFromPayLoad(String token) {
         final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             .getBody();
-        return claims.get("email", String.class);
+        return claims.get("id", Long.class);
     }
 
     public boolean validateToken(String token) {
