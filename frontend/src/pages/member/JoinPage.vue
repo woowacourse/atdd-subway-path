@@ -95,8 +95,14 @@ export default {
       }
       try {
         // TODO member를 생성하는 API를 추가해주세요.
-        // const { email, age, password } = this.member;
-        // await fetch("/join", { email, age, password })
+        const { email, age, password } = this.member;
+        await fetch("http://localhost:8080/members", {
+          method: 'POST',
+          body: JSON.stringify({ email, age, password }),
+          headers: {
+            'Content-Type' : 'application/json'
+          }
+      });
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {
