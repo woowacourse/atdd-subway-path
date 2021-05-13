@@ -94,7 +94,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse tokenResponse = new TokenResponse("accesstoken");
+        TokenResponse tokenResponse = new TokenResponse("Bearer accesstoken");
 
         RestAssured
             .given().log().all()

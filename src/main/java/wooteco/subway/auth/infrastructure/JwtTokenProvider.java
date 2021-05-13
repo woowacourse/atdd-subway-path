@@ -3,7 +3,9 @@ package wooteco.subway.auth.infrastructure;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import wooteco.subway.auth.application.AuthorizationException;
 
+import javax.naming.AuthenticationException;
 import java.util.Date;
 
 @Component
@@ -32,12 +34,11 @@ public class JwtTokenProvider {
         return claims.get("id", Long.class);
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthorizationException("토큰 인증에 실패했습니다.");
         }
     }
 }

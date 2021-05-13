@@ -3,7 +3,7 @@ package wooteco.subway.auth.application;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
+@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "dsaf")
 public class AuthorizationException extends RuntimeException {
 
     public AuthorizationException(String message) {
