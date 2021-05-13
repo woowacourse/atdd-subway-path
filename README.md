@@ -38,6 +38,10 @@ npm run serve
 ```
 <br>
 
+## 구현할 기능 목록
+- [ ] JWT 라이브러리를 통한 액세스 토큰 발급하기
+    - [ ] POST: /login/token 구현하기
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
