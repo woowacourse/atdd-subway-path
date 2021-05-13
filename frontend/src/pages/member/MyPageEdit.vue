@@ -111,7 +111,7 @@ export default {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `bearer ${localStorage.getItem("token")}`
+            "Authorization": `bearer ${this.$cookies.get("token")}`
           },
           body: JSON.stringify({
             email: email,

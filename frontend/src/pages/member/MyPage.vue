@@ -67,7 +67,7 @@ export default {
         // TODO 유저를 삭제하는 API를 추가해주세요
         await fetch(`http://localhost:8080/members/me`, {
           headers: {
-            "Authorization": `bearer ${localStorage.getItem("token")}`
+            "Authorization": `bearer ${this.$cookies.get("token")}`
           },
           method:"DELETE"
         }).then(response => {

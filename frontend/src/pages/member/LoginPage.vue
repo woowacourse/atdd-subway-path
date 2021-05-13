@@ -89,13 +89,15 @@ export default {
           throw new Error(`${response1.status}`);
         }
         const data = await response1.json()
-        await localStorage.setItem("token", data.accessToken)
+        // await localStorage.setItem("token", data.accessToken)
+        this.$cookies.set("token", data.accessToken);
         console.log(data.accessToken)
         // TODO member 데이터를 불러와 주세요.
         const response2 = await fetch("http://localhost:8080/members/me", {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `bearer ${localStorage.getItem("token")}`
+            // "Authorization": `bearer ${localStorage.getItem("token")}`
+            "Authorization": `bearer ${this.$cookies.get("token")}`
           }
         })
         if (!response2.ok) {
