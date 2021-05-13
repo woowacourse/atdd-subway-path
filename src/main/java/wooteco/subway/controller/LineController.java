@@ -20,7 +20,7 @@ import wooteco.subway.controller.dto.response.LineResponseDto;
 import wooteco.subway.service.LineService;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 public class LineController {
 
     private LineService lineService;

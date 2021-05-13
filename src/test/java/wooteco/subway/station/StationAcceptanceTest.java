@@ -83,7 +83,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .body(stationRequestDto)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/stations")
+            .when().post("/api/stations")
             .then().log().all()
             .extract();
     }
@@ -91,7 +91,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
             .given().log().all()
-            .when().get("/stations")
+            .when().get("/api/stations")
             .then().log().all()
             .extract();
     }
@@ -99,7 +99,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponseDto stationResponseDto) {
         return RestAssured
             .given().log().all()
-            .when().delete("/stations/" + stationResponseDto.getId())
+            .when().delete("/api/stations/" + stationResponseDto.getId())
             .then().log().all()
             .extract();
     }

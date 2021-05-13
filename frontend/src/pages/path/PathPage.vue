@@ -159,13 +159,13 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        this.pathResult = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`, {
+        let pathResponse = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
           }
         })
+        this.pathResult = await pathResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -173,7 +173,6 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
         let stationsResponse = await fetch("/api/stations", {
           method: "GET",
           headers: {
