@@ -31,9 +31,6 @@ public class AuthService {
     }
 
     public Member findMemberWithToken(String accessToken) {
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new InvalidTokenException();
-        }
         Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
         return memberDao.findById(id).orElseThrow(MemberAlreadyDeletedException::new);
     }
