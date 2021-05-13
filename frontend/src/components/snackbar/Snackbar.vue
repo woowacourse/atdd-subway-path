@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { HIDE_SNACKBAR } from "../../store/shared/mutationTypes";
+import {mapGetters, mapMutations} from "vuex";
+import {HIDE_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "Snackbar",

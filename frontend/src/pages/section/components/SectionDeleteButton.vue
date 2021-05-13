@@ -1,13 +1,13 @@
 <template>
-  <v-btn @click="onDeleteLine" icon>
+  <v-btn icon @click="onDeleteLine">
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { SET_LINE, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "SectionDeleteButton",

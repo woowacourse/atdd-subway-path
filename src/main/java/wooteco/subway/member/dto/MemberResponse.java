@@ -16,10 +16,6 @@ public class MemberResponse {
         this.age = age;
     }
 
-    public MemberResponse(Member member) {
-        this(member.getId(), member.getEmail(), member.getAge());
-    }
-
     public static MemberResponse of(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }

@@ -1,9 +1,9 @@
 <template>
   <v-dialog
-    v-model="show"
-    :max-width="options.width"
-    :style="{ zIndex: options.zIndex }"
-    @keydown.esc="cancel"
+      v-model="show"
+      :max-width="options.width"
+      :style="{ zIndex: options.zIndex }"
+      @keydown.esc="cancel"
   >
     <v-card>
       <v-toolbar :color="options.color" dark dense flat>
@@ -14,8 +14,8 @@
       </v-card-text>
       <v-card-actions class="pt-0 px-4 pb-4">
         <v-spacer></v-spacer>
-        <v-btn @click.native="cancel" color="grey" text>취소</v-btn>
-        <v-btn @click.native="agree" color="error">탈퇴</v-btn>
+        <v-btn color="grey" text @click.native="cancel">취소</v-btn>
+        <v-btn color="error" @click.native="agree">탈퇴</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

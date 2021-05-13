@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
-    private Long id;
+    private final Long id;
 
     public LoginMember(Long id) {
         this.id = id;
