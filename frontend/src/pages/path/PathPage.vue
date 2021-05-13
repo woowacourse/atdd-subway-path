@@ -169,8 +169,14 @@ export default {
     async initAllStationsView() {
       try {
         // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        let stationsResponse = await fetch("/api/stations", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        stationsResponse = await stationsResponse.json()
+        this.setStations(stationsResponse)
         if (this.stations.length < 1) {
           return;
         }

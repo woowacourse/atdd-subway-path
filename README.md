@@ -17,11 +17,10 @@
 
 # 기능 요구사항
 - [ ] 프론트엔드 API 호출 기능 구현
+    - [ ] 최단 거리를 검색하는 API
+    - [ ] 최소 시간을 검색하는 API
+    - [x] 모든 역을 불러오는 API
 - [ ] 경로 조회 API 기능 구현
     - [ ] PathController 구현
     - [ ] PathService 구현
     - [ ] Path 도메인 구현 (jgrapht graph-algorithms)
-    - [ ] 
-    - [ ]
-    - [ ]
-    - [ ]
