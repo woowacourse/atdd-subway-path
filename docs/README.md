@@ -13,8 +13,8 @@
 
 ### 프론트앤드
 - [x] member 데이터 조회
-- [ ] member 정보 update
-- [ ] member 삭제
+- [x] member 정보 update
+- [x] member 삭제
 
 ### 백엔드
 - [x] 유효한 로그인인 경우 LoginMember 만들어서 응답
