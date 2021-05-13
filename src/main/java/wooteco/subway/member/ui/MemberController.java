@@ -53,6 +53,7 @@ public class MemberController {
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());

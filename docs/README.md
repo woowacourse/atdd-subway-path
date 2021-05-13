@@ -3,7 +3,7 @@
 ## Step1 로그인 기능
 
 ### 프론트앤드
-- [ ] member 생성 API
+- [x] member 생성 API
 - [ ] login API
 
 ### 벡앤드
