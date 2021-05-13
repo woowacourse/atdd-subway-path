@@ -35,10 +35,6 @@ public class AuthService {
         return memberDao.findById(Long.valueOf(id));
     }
 
-    public boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
-    }
-
     public String getPayload(String token) {
         return jwtTokenProvider.getPayload(token);
     }

@@ -65,7 +65,7 @@ export default {
       }
       try {
         // 유저를 삭제하는 API를 추가해주세요
-        await fetch("/api/members/me/" + this.member.id, {
+        await fetch("/api/members/me", {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -73,6 +73,7 @@ export default {
           }
         });
         this.setMember(null);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {

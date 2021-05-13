@@ -1,8 +1,6 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -11,11 +9,9 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private final AuthService authService;
     private final MemberDao memberDao;
 
-    public MemberService(AuthService authService, MemberDao memberDao) {
-        this.authService = authService;
+    public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
@@ -48,11 +44,7 @@ public class MemberService {
         memberDao.deleteById(id);
     }
 
-    public void deleteMember(Long id, String token) {
-        if (authService.validateToken(token)) {
-            memberDao.deleteById(id);
-            return;
-        }
-        throw new InvalidTokenException();
+    public void deleteMember(LoginMember loginMember) {
+        memberDao.deleteById(loginMember.getId());
     }
 }

@@ -54,15 +54,14 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                             @Valid @RequestBody MemberRequest memberRequest) {
+                                                   @Valid @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(loginMember, memberRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/me/{id}")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@PathVariable Long id, HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        memberService.deleteMember(id, token);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
 }
