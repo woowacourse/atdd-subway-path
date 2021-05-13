@@ -1,0 +1,42 @@
+const URL = "http://localhost:8080";
+
+export async function requestGet(uri = '', params = {}, token) {
+  let urlSearchParams = new URLSearchParams();
+  for (let key in params) {
+    urlSearchParams.append(key, params[key])
+  }
+
+  const headers = await makeHeaders({
+    'accept': 'application/json'
+  }, token);
+
+  return await fetch(`${URL}${uri}?${urlSearchParams.toString()}`, {
+    method: 'GET',
+    headers: headers
+  })
+  .then(response => {
+    return response.json();
+  })
+}
+
+export async function requestPost(uri = '', data = {}, token) {
+  const headers = await makeHeaders({
+    'content-type': 'application/json',
+    'accept': 'application/json'
+  }, token);
+  return await fetch(`${URL}${uri}`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    return response.json();
+  })
+}
+
+async function makeHeaders(headers, token) {
+  if (token) {
+    headers['authorization'] = `bearer ${token}`;
+  }
+  return headers;
+}
