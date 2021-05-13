@@ -2,7 +2,10 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.exception.AuthException;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -41,10 +44,9 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.ok(MemberResponse.of(member));
     }
 
     // TODO: 구현 하기
@@ -57,5 +59,10 @@ public class MemberController {
     @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<String> handle(AuthException e){
+        return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
     }
 }
