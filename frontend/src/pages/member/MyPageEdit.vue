@@ -111,15 +111,26 @@ export default {
           "age": age,
           "email": email
         }
+        const accessToken = localStorage.getItem("token");
         const option = {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer " + accessToken
           },
           body: JSON.stringify(updateRequest)
         };
-        await fetch(`http://localhost:8080/members/${this.member.id}`, option)
+        await fetch(`http://localhost:8080/members/me`, option)
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
+
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
+        });
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
         await this.$router.replace("/mypage");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);

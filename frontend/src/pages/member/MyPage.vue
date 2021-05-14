@@ -64,10 +64,13 @@ export default {
         return;
       }
       try {
-        await fetch(`http://localhost:8080/members/${this.member.id}`, {
-          method: 'DELETE'
+        const accessToken = localStorage.getItem("token");
+        await fetch(`http://localhost:8080/members/me`, {
+          method: 'DELETE',
+          "Authorization": "Bearer " + accessToken
         })
         this.setMember(null);
+        localStorage.setItem("token", "");
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
