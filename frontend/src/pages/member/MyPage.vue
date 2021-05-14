@@ -68,7 +68,7 @@ export default {
         await fetch(`http://localhost:8080/members/me`, {
           method: "DELETE",
           headers: {
-            "Authorization": `Bearer ${this.accessToken}`,
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
           },
         });
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);

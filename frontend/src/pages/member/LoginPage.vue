@@ -88,13 +88,13 @@ export default {
         });
 
         const body = await data.json();
-        this.setAccessToken(body.accessToken);
+        localStorage.setItem("token", body.accessToken);
 
         // TODO member 데이터를 불러와 주세요.
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${this.accessToken}`
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
           }
         });
         this.setMember(member);

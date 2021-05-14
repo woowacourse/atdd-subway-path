@@ -108,11 +108,12 @@ export default {
 
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
+        console.log(localStorage.getItem("token"));
         await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": `Bearer ${this.accessToken}`,
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             email, age, password}
