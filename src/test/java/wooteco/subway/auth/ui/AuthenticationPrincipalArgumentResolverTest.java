@@ -56,7 +56,7 @@ class AuthenticationPrincipalArgumentResolverTest {
                 .thenReturn(invalidPatternToken);
 
         Mockito.when(mockAuthService.findMemberByToken(Mockito.anyString()))
-                .thenReturn(Optional.of(mockMember));
+                .thenReturn(mockMember);
 
         expectExceptionWithResolveRequest();
     }

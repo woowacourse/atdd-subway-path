@@ -24,14 +24,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
-        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
-        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
@@ -56,11 +53,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse tokenResponse = new TokenResponse("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXNzd29yZCIsImlhdCI6MTYyMDk3MDI1NywiZXhwIjoxNjIwOTczODU3fQ.Cn5jkqZjj4r55Apd2gnYdkwfYHUj8rrU62rRYcC2O6Q");
+        TokenResponse tokenResponse = new TokenResponse("token");
 
         RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("토큰 자체가 존재하지 않는 경우")
+    @Test
+    void myInfoWithoutBearerAuth() {
+        RestAssured
+                .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()

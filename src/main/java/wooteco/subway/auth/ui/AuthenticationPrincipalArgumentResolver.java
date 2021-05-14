@@ -27,7 +27,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         final String token = AuthorizationExtractor.extract(httpServletRequest);
-
-        return authService.findMemberByToken(token).orElseThrow(IllegalArgumentException::new);
+        return authService.findMemberByToken(token);
     }
 }
