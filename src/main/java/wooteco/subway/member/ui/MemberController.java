@@ -61,9 +61,11 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request);
+        MemberResponse memberResponse = authService.findMemberByToken(token);
+        memberService.deleteMember(memberResponse.getId());
         return ResponseEntity.noContent().build();
     }
 }
