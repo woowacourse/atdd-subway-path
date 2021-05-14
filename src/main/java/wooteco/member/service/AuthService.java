@@ -36,7 +36,8 @@ public class AuthService {
     public Member findMemberByToken(String token) {
         try {
             String payload = jwtTokenProvider.getPayload(token);
-            return memberDao.findById(Long.valueOf(payload));
+            return memberDao.findById(Long.valueOf(payload))
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, "이메일 또는 비밀번호가 틀렸습니다."));
         } catch (JwtException | IllegalArgumentException e) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE);
         }

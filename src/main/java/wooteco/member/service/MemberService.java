@@ -1,6 +1,8 @@
 package wooteco.member.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import wooteco.exception.HttpException;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.member.dao.MemberDao;
@@ -20,7 +22,8 @@ public class MemberService {
     }
 
     public MemberResponseDto findMember(Long id) {
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findById(id)
+            .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, "해당 id의 사용자가 존재하지 않습니다."));
         return MemberResponseDto.of(member);
     }
 
