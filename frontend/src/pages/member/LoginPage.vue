@@ -86,12 +86,13 @@ export default {
             return response.json();
           }
         });
+        localStorage.setItem(this.member.email, JSON.stringify(token));
 
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token.accessToken
+            'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem(this.member.email)).accessToken
           }
         });
         this.setMember(await member.json());
