@@ -64,9 +64,10 @@ export default {
         return;
       }
       try {
-        await fetch("http://localhost:8080/members/" + this.member.id, {
+        await fetch("http://localhost:8080/members/me", {
           method: "DELETE",
           headers: {
+            'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem(this.member.email)).accessToken,
             'Content-Type': 'application/json'
           }
         }).then(response => {

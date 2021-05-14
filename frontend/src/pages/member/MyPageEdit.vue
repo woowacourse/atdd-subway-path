@@ -106,9 +106,10 @@ export default {
     },
     async onEditMember() {
       try {
-        await fetch("http://localhost:8080/members/" + this.member.id, {
+        await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {
+            'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem(this.member.email)).accessToken,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(this.editingMember)

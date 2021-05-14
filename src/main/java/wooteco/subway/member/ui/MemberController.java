@@ -31,7 +31,7 @@ public class MemberController {
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/{id}")
@@ -46,17 +46,18 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
         MemberResponse memberResponse = authService.findMemberByToken(token);
-        return ResponseEntity.ok().body(memberResponse);
+        return ResponseEntity.ok(memberResponse);
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(HttpServletRequest request, @RequestBody MemberRequest param) {
+        String token = AuthorizationExtractor.extract(request);
+        MemberResponse memberResponse = authService.findMemberByToken(token);
+        memberService.updateMember(memberResponse.getId(), param);
         return ResponseEntity.ok().build();
     }
 
