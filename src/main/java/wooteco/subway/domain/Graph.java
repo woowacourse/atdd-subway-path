@@ -1,18 +1,17 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 public class Graph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final List<Section> allSections;
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
     private final Station sourceStation;
     private final Station targetStation;
 
@@ -20,7 +19,7 @@ public class Graph {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.allSections = allSections;
         initGraph();
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
