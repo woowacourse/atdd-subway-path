@@ -106,13 +106,12 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch(`/api/stations/${stationId}`, {
-        //   method: "DELETE",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   }
-        // });
+        await fetch(`/api/stations/${stationId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
         const idx = this.stations.findIndex(
           (station) => station.id === stationId
         );
