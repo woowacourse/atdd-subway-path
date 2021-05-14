@@ -7,7 +7,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.dto.LoginMember;
 import wooteco.subway.infrastructure.AuthorizationExtractor;
-import wooteco.subway.infrastructure.JwtTokenProvider;
 import wooteco.subway.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;

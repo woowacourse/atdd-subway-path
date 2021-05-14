@@ -1,10 +1,8 @@
 package wooteco.subway.infrastructure;
 
 import io.jsonwebtoken.*;
-import jdk.internal.net.http.common.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.dto.LoginMember;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,11 +31,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public LoginMember getPayload(String token) {
-        Claims payload = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        return new LoginMember(payload.get("id", Long.class),
-                payload.get("email", String.class),
-                payload.get("age", Integer.class));
+    public Claims getPayload(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
     public boolean validateToken(String token) {
