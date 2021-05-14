@@ -1,4 +1,4 @@
-package wooteco.subway.controller;
+package wooteco.subway.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +43,6 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // todo AuthenticationPrincipal 어노테이션을 통해 LoginMember을 받아 그대로 리턴하기
-    // 프론트엔드가 LoginMember를 리턴받아 상단의 메소드를 다시 요청하도록 되어있다고 한다. by 제리
     // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {

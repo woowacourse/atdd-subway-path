@@ -7,6 +7,8 @@ import wooteco.subway.dao.MemberDao;
 import wooteco.subway.domain.Member;
 import wooteco.subway.dto.MemberRequest;
 import wooteco.subway.dto.MemberResponse;
+import wooteco.subway.exception.auth.AuthException;
+import wooteco.subway.exception.auth.AuthExceptionStatus;
 
 @Service
 public class MemberService {
@@ -40,11 +42,11 @@ public class MemberService {
 
     public MemberResponse logIn(String email, String password) {
         Member member = memberDao.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("이메일을 잘못 입력하셨습니다."));
+                .orElseThrow(() -> new AuthException(AuthExceptionStatus.INVALID_ACCESS));
         String encodedPassword = member.getPassword();
         if (PASSWORD_ENCODER.matches(password, encodedPassword)) {
             return MemberResponse.of(member);
         }
-        throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+        throw new AuthException(AuthExceptionStatus.INVALID_ACCESS);
     }
 }
