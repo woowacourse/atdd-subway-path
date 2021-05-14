@@ -38,14 +38,6 @@ public class MemberDao {
         return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
     }
 
-    public Optional<Member> findByEmailAndPassword(String email, String password) {
-        String query = "select * from MEMBER where email = ? and password = ?";
-        Member result = DataAccessUtils.singleResult(
-            jdbcTemplate.query(query, rowMapper, email, password)
-        );
-        return Optional.ofNullable(result);
-    }
-
     public Optional<Member> findByEmail(String email) {
         String query = "select * from MEMBER where email = ?";
         Member result = DataAccessUtils.singleResult(

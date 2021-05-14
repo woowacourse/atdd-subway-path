@@ -23,14 +23,14 @@ public class AuthService {
     }
 
     public SignInResponseDto createToken(SignInRequestDto signInRequestDto) {
-        Member member = getUserInfo(signInRequestDto.getEmail(), signInRequestDto.getPassword());
+        Member member = getUserInfo(signInRequestDto.getEmail());
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new SignInResponseDto(accessToken);
     }
 
-    private Member getUserInfo(String principal, String credentials) {
-        return memberDao.findByEmailAndPassword(principal, credentials)
-            .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀렸습니다."));
+    private Member getUserInfo(String email) {
+        return memberDao.findByEmail(email)
+            .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다."));
     }
 
     public Member findMemberByToken(String token) {

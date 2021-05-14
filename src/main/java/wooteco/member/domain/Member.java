@@ -1,5 +1,8 @@
 package wooteco.member.domain;
 
+import org.springframework.http.HttpStatus;
+import wooteco.exception.HttpException;
+
 public class Member {
     private final Long id;
     private final String email;
@@ -31,5 +34,11 @@ public class Member {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void validatePassword(String passwordToCheck) {
+        if (!password.equals(passwordToCheck)) {
+            throw new HttpException(HttpStatus.UNAUTHORIZED, "로그인 정보가 올바르지 않습니다.");
+        }
     }
 }
