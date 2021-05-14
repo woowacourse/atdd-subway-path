@@ -6,8 +6,6 @@ import wooteco.subway.domain.Member;
 import wooteco.subway.dto.MemberRequest;
 import wooteco.subway.dto.MemberResponse;
 
-import java.util.Optional;
-
 @Service
 public class MemberService {
     private MemberDao memberDao;

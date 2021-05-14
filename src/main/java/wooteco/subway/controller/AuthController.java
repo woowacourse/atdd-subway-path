@@ -15,7 +15,7 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    
+
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         String accessToken = authService.issueToken(tokenRequest.getEmail(), tokenRequest.getPassword());
