@@ -2,9 +2,9 @@ package wooteco.member.service;
 
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wooteco.exception.HttpException;
-import wooteco.member.controller.config.MyPasswordEncoder;
 import wooteco.member.controller.dto.request.SignInRequestDto;
 import wooteco.member.controller.dto.response.SignInResponseDto;
 import wooteco.member.dao.MemberDao;
@@ -17,9 +17,9 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
-    private final MyPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, MyPasswordEncoder passwordEncoder) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, PasswordEncoder passwordEncoder) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
         this.passwordEncoder = passwordEncoder;
