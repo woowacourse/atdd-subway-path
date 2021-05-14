@@ -87,6 +87,9 @@ export default {
           if(response.status == 401){
             alert("로그인 문제 발생 / 아이디와 비밀번호를 다시 확인해주세요.");
           }
+          if(response.ok){
+            alert("로그인 성공");
+          }
           return response.json();
         }).then((data) =>{
               localStorage.setItem("token", JSON.stringify(data));

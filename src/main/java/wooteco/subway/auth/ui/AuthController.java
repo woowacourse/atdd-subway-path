@@ -21,9 +21,8 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody final TokenRequest tokenRequest) {
-        final Optional<String> optionalToken = authService.createToken(tokenRequest);
+        final String token= authService.createToken(tokenRequest);
 
-        return optionalToken.map(token -> ResponseEntity.ok(new TokenResponse(token)))
-                .orElseGet(ResponseEntity.status(HttpStatus.UNAUTHORIZED)::build);
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
