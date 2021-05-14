@@ -24,9 +24,10 @@ public class PathService {
         List<Line> allLines = lineDao.findAll();
         Station sourceStation = stationDao.findById(sourceStationId);
         Station targetStation = stationDao.findById(targetStationId);
-        Path path = new Path(allLines, sourceStation, targetStation);
-        List<Station> shortestPath = path.findShortestPath();
+        Path path = new Path(allLines);
+        List<Station> shortestPath = path.findShortestPath(sourceStation, targetStation);
         List<StationResponseDto> shortestPathResponseDto = StationResponseDto.listOf(shortestPath);
-        return new PathResponseDto(shortestPathResponseDto, path.findTotalDistance());
+        int totalDistance = path.findTotalDistance(sourceStation, targetStation);
+        return new PathResponseDto(shortestPathResponseDto, totalDistance);
     }
 }

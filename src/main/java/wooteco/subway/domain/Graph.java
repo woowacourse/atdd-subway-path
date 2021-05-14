@@ -9,19 +9,15 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Graph {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final List<Section> allSections;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
-    private final Station sourceStation;
-    private final Station targetStation;
 
-    public Graph(List<Section> allSections, Station sourceStation, Station targetStation) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public Graph(List<Section> allSections) {
         this.allSections = allSections;
-        initGraph();
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
+        initGraph();
     }
 
     private void initGraph() {
@@ -51,11 +47,11 @@ public class Graph {
         }
     }
 
-    public List<Station> getShortestPath() {
+    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
         return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
     }
 
-    public int getTotalDistance() {
+    public int getTotalDistance(Station sourceStation, Station targetStation) {
         return (int) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
     }
 }
