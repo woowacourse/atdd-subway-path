@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;

@@ -1,4 +1,4 @@
-package wooteco.auth.domain;
+package wooteco.auth.web;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
