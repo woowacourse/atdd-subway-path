@@ -1,11 +1,13 @@
 package wooteco.subway.member.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.auth.application.AuthenticationException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
@@ -50,5 +52,14 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Member findByEmailAndPassword(String email, String password) {
+        try {
+            String sql = "select * from MEMBER where email=? AND password=?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AuthenticationException();
+        }
     }
 }
