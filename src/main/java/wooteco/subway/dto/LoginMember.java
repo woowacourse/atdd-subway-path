@@ -3,12 +3,10 @@ package wooteco.subway.dto;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(Long id, String email) {
         this.id = id;
         this.email = email;
-        this.age = age;
     }
 
     public Long getId() {
@@ -17,9 +15,5 @@ public class LoginMember {
 
     public String getEmail() {
         return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 }

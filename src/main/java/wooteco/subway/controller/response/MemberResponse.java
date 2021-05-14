@@ -1,7 +1,6 @@
 package wooteco.subway.controller.response;
 
 import wooteco.subway.domain.Member;
-import wooteco.subway.dto.LoginMember;
 
 public class MemberResponse {
     private Long id;
@@ -19,10 +18,6 @@ public class MemberResponse {
 
     public static MemberResponse of(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
-    }
-
-    public static MemberResponse from(LoginMember loginMember) {
-        return new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
     }
 
     public Long getId() {
