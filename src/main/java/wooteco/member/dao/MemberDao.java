@@ -52,14 +52,6 @@ public class MemberDao {
         return Optional.ofNullable(member);
     }
 
-    public Optional<Member> findByEmailAndPassword(String email, String password) {
-        String sql = "select * from MEMBER where email = :email and password = :password";
-        MapSqlParameterSource params = new MapSqlParameterSource("email", email)
-            .addValue("password", password);
-        Member member = DataAccessUtils.singleResult(namedParameterJdbcTemplate.query(sql, params, rowMapper));
-        return Optional.ofNullable(member);
-    }
-
     public void update(Member member) {
         String sql = "update MEMBER set email = :email, password = :password, age = :age where id = :id";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(member);
