@@ -1,6 +1,5 @@
 package wooteco.subway.member.dto;
 
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 public class MemberResponse {
