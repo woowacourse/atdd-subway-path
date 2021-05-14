@@ -82,6 +82,11 @@ export default {
         }
 
         const response  = await fetch("/api/login/token", options)
+
+        if (!response.ok) {
+          throw new Error(`${response.error()}`)
+        }
+
         let token = await response.json().accessToken
 
         this.setAccessToken(token)

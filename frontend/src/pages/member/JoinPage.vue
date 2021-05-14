@@ -113,7 +113,7 @@ export default {
             "/api/members",
             options
         )
-        console.log(response)
+
         if (!response.ok) {
           throw new Error(`${response.error()}`)
         }
