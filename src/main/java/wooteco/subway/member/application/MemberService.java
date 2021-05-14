@@ -17,6 +17,12 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        Optional<Member> optionalMember = memberDao.findByEmail(request.getEmail());
+
+        if(optionalMember.isPresent()){
+            throw new IllegalArgumentException("이미 존재하는 Email 입니다.");
+        }
+
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }

@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     }
 
     public String getPayload(final String token) {
-        if(isValidToken(token)){
+        if (isValidToken(token)) {
             return Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)

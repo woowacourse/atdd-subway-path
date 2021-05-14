@@ -38,6 +38,7 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
 
+    // TODO :: JdbcSQLIntegrityConstraintViolationException ??
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -63,8 +64,16 @@ public class MemberDao {
         }
     }
 
+    public Optional<Member> findByEmail(final String email) {
+        try{
+            String sql = "select * from MEMBER where email = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        }catch (EmptyResultDataAccessException exception){
+            return Optional.empty();
+        }
+    }
+
     public Optional<Member> findByPassword(String password) {
-        System.out.println("memberDao");
         try{
             String sql = "select * from MEMBER where password = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, password));
