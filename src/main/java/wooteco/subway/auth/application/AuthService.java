@@ -6,6 +6,8 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.JwtNotAuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
@@ -19,16 +21,17 @@ public class AuthService {
     }
 
     public TokenResponse login(final TokenRequest request) {
-        memberService.validateMember(request);
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        Member member = memberService.findMemberByEmail(request);
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getEmail());
         return new TokenResponse(token);
     }
 
-    public MemberResponse findByToken(String token) {
+    public LoginMember findByToken(String token) {
         if(!jwtTokenProvider.validateToken(token)) {
             throw new JwtNotAuthorizationException();
         }
-        String email = jwtTokenProvider.getPayload(token);
-        return memberService.findMemberByEmail(email);
+        String id = jwtTokenProvider.getId(token);
+        String email = jwtTokenProvider.getEmail(token);
+        return new LoginMember(id, email);
     }
 }

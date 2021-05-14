@@ -45,11 +45,12 @@ public class MemberService {
         memberDao.deleteById(id);
     }
 
-    public void validateMember(TokenRequest request) {
+    public Member findMemberByEmail(TokenRequest request) {
         Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(JwtLoginEmailException::new);
         if(!member.samePassword(request.getPassword())) {
             throw new JwtLoginPasswordException();
         }
+        return member;
     }
 
     private Member findByEmail(String email) {
