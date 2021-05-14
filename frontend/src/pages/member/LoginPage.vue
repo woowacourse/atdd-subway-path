@@ -75,23 +75,26 @@ export default {
       try {
         await this.$router.replace(`/`);
 
-        let token = await fetch("http://localhost:8080/login/token", {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(this.member)
-        }).then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-        });
+        if (typeof getCookie("myCookie") !== "undefined") {
+          let tokenResponse = await fetch("http://localhost:8080/login/token", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.member)
+          }).then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+          });
+          setCookie("myCookie", tokenResponse.accessToken, 1);
+        }
 
         const member = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token.accessToken
+            'Authorization': 'Bearer ' + getCookie("myCookie")
           }
         });
         this.setMember(await member.json());
@@ -114,4 +117,28 @@ export default {
     };
   },
 };
+
+function setCookie(cookie_name, value, days) {
+  var exdate = new Date();
+  exdate.setDate(exdate.getDate() + days);
+  var cookie_value = escape(value) + ((days == null) ? '' : '; expires=' + exdate.toUTCString());
+  document.cookie = cookie_name + '=' + cookie_value;
+}
+
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 </script>
+
+
