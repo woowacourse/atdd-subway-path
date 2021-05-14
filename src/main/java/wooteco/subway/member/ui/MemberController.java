@@ -72,19 +72,4 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(InvalidMemberException.class)
-    private ResponseEntity<Void> handlerInvalidMemberException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    @ExceptionHandler(Exception.class)
-    private ResponseEntity<Void> handleException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    private ResponseEntity<Void> handleInvalidTokenException(Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
 }
