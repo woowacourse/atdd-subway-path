@@ -1,13 +1,11 @@
 package wooteco.subway.auth.ui;
 
-import jdk.internal.vm.compiler.collections.EconomicMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import sun.tools.jstat.Token;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.LoginRequest;
 import wooteco.subway.auth.dto.LoginResponse;

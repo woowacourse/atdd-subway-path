@@ -6,11 +6,18 @@
     - [x] jwt 토큰 발급
     - [x] 이메일, 비밀번호가 틀린 경우 인증 X
 - [x] 유효한 로그인인 경우 LoginMember 만들어서 응답하기성
-- [ ] 프론트엔드 API 완성
-
+- [x] 프론트엔드 API 완성
+  - [x] 로그인 기능
+  - [x] 회원가입 기능
+  
 ## 2단계 - 회원 관리 기능
 ### 기능 구현 목록
 - [x] 토큰을 통한 인증
   - [x] AuthenticationPrincipalArgumentResolver 사용
   - [ ] API 완성
+    - [ ] 삭제
+    - [ ] 수정
 - [ ] 프론트엔드 API 완성
+  - [ ] mypage 기능
+    - [ ] 삭제
+    - [ ] 수정
