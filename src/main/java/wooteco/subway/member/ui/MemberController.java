@@ -1,5 +1,6 @@
 package wooteco.subway.member.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -9,6 +10,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 public class MemberController {
@@ -26,8 +28,10 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+        Optional<Member> optionalMember = memberService.findMember(id);
+
+        return optionalMember.map((member) -> ResponseEntity.ok().body(MemberResponse.of(member)))
+                .orElseGet(()-> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping("/members/{id}")

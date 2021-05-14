@@ -56,7 +56,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse tokenResponse = new TokenResponse("accesstoken");
+        TokenResponse tokenResponse = new TokenResponse("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXNzd29yZCIsImlhdCI6MTYyMDk3MDI1NywiZXhwIjoxNjIwOTczODU3fQ.Cn5jkqZjj4r55Apd2gnYdkwfYHUj8rrU62rRYcC2O6Q");
 
         RestAssured
                 .given().log().all()
@@ -81,26 +81,26 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/login/token")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/members/me")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }

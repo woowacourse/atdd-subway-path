@@ -6,6 +6,8 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -19,9 +21,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
-        return MemberResponse.of(member);
+    public Optional<Member> findMember(Long id) {
+        return memberDao.findById(id);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

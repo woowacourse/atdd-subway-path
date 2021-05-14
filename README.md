@@ -1,3 +1,19 @@
+# 지하철 노선도 미션
+스프링 과정 실습을 위한 지하철 노선도 애플리케이션
+
+# 나의 미션 TODO
+
+1. 인증 토큰 제대로 사용했는지 확인
+    - 헤더에 넣는 방식이 올바른지
+    - 토큰 key 선택
+    - Interceptor 사용?
+    
+2. 테스트 코드
+    
+3. 코드 리팩토링
+
+## 🚀 Getting Started
+
 <p align="center">
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
@@ -11,13 +27,6 @@
 </p>
 
 <br>
-
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
-## 🚀 Getting Started
 
 ### Install
 #### npm 설치

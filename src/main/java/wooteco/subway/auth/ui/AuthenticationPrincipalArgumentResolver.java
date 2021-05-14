@@ -7,23 +7,30 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
+    public AuthenticationPrincipalArgumentResolver(final AuthService authService) {
         this.authService = authService;
     }
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String authorization = webRequest.getHeader("authorization");
-        String token = authorization.split(" ")[1];
-        return authService.findMemberByToken(token);
+    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        try{
+            final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
+            final String token = AuthorizationExtractor.extract(httpServletRequest);
+            return authService.findMemberByToken(token).orElseThrow(IllegalArgumentException::new);
+        } catch(RuntimeException e) {
+            throw new IllegalArgumentException("잘못된 토큰 값입니다.");
+        }
     }
 }

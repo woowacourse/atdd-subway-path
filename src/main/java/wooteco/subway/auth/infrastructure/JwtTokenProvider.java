@@ -18,8 +18,6 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        System.out.println(payload);
-        System.out.println(secretKey);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -28,14 +26,20 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getPayload(final String token) {
+        if(isValidToken(token)){
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        }
+        throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
     }
 
-    public boolean validateToken(String token) {
+    public boolean isValidToken(final String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
