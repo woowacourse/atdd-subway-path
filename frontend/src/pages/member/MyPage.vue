@@ -72,7 +72,7 @@ export default {
           },
         };
         await fetch("http://localhost:8080/members/me", memberOption)
-        this.setMember(null);
+        this.$store.commit(SET_MEMBER, null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
