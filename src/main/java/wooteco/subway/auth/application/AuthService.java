@@ -6,6 +6,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,19 +21,23 @@ public class AuthService {
     }
 
     public String createToken(final TokenRequest tokenRequest) {
-        if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            return jwtTokenProvider.createToken(tokenRequest.getPassword());
-        }
-        throw new AuthorizedException("유효하지 않은 회원입니다.");
+        return createToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
-    private boolean checkValidLogin(final String email, final String password) {
-        return memberDao.isExist(email, password);
+    public String createToken(final String email, final String password){
+        final Member member = memberDao.findByEmailAndPassword(email, password);
+        return createTokenWithMemberId(member);
+    }
+
+    private String createTokenWithMemberId(final Member member){
+        final String payload = String.valueOf(member.getId());
+        return jwtTokenProvider.createToken(payload);
     }
 
     public Member findMemberByToken(final String token) {
         final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByPassword(payload)
-                .orElseThrow(()-> new AuthorizedException("존재하지 않는 회원입니다."));
+        final Long memberId = Long.parseLong(payload);
+
+        return memberDao.findById(memberId);
     }
 }
