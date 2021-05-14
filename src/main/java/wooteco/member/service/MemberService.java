@@ -1,7 +1,7 @@
 package wooteco.member.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import wooteco.member.controller.config.MyPasswordEncoder;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.member.dao.MemberDao;
@@ -10,9 +10,9 @@ import wooteco.member.domain.Member;
 @Service
 public class MemberService {
     private final MemberDao memberDao;
-    private final PasswordEncoder passwordEncoder;
+    private final MyPasswordEncoder passwordEncoder;
 
-    public MemberService(MemberDao memberDao, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberDao memberDao, MyPasswordEncoder passwordEncoder) {
         this.memberDao = memberDao;
         this.passwordEncoder = passwordEncoder;
     }

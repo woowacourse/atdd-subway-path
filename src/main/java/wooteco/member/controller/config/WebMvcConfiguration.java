@@ -9,8 +9,6 @@ import wooteco.member.service.AuthService;
 
 import java.util.List;
 
-//
-
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthService authService;

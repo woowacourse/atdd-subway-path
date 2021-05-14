@@ -12,9 +12,4 @@ public class SubwayApplication {
     public static void main(String[] args) {
         SpringApplication.run(SubwayApplication.class, args);
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
