@@ -73,7 +73,9 @@ export default {
           }
         });
 
+        localStorage.setItem("token", "");
         this.setMember(null);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
