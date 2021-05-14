@@ -1,4 +1,4 @@
-package wooteco.subway.config;
+package wooteco.subway.controller;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

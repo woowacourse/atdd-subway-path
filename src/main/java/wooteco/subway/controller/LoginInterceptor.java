@@ -1,4 +1,4 @@
-package wooteco.subway.config;
+package wooteco.subway.controller;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.infrastructure.AuthorizationExtractor;

@@ -1,4 +1,4 @@
-package wooteco.subway.config;
+package wooteco.subway.controller;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
