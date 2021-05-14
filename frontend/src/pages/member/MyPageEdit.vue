@@ -107,11 +107,11 @@ export default {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
-        const response = await fetch(`http://localhost:8080/members/me`, {
+        const response = await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `bearer ${localStorage.getItem("token")}`
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
           },
           body: JSON.stringify({
             email: email,
@@ -122,8 +122,8 @@ export default {
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
-        const updatedMember = await response.json();
-        this.setMember(updatedMember);
+        const member = await response.json();
+        this.setMember(member);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
