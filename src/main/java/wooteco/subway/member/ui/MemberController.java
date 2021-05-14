@@ -51,9 +51,8 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-        @RequestBody MemberRequest param) {
+                                                   @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-
         return ResponseEntity.ok().build();
     }
 

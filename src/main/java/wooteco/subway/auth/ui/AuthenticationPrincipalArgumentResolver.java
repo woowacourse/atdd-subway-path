@@ -1,27 +1,24 @@
 package wooteco.subway.auth.ui;
 
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
+import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.domain.LoginMember;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
@@ -31,15 +28,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extract(
-            Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
+                Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
 
-        if (jwtTokenProvider.validateToken(token)) {
-            String id = jwtTokenProvider.getPayload(token);
-            return new LoginMember(Long.parseLong(id));
-        }
-
-        throw new AuthorizationException();
+        return new LoginMember(authService.LoginMemberId(token));
     }
 }
