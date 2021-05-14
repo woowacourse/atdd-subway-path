@@ -30,8 +30,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         // 유효한 로그인인 경우 LoginMember 만들어서 응답하기
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = AuthorizationExtractor.extract(request);
-        Member member = authService.findMemberByToken(token);
+        Member member = authService.findMemberByToken(AuthorizationExtractor.extract(request));
         return new LoginMember(member.getId(), member.getEmail());
     }
 }
