@@ -12,8 +12,8 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    private JwtTokenProvider jwtTokenProvider;
-    private MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
