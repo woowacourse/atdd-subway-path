@@ -40,6 +40,7 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
     }
