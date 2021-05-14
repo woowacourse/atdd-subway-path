@@ -70,13 +70,19 @@ export default {
             'Authorization': 'Bearer' + this.accessToken,
           },
         };
-        await fetch("http://localhost:8080/members/me", memberDeleteOption)
-        this.setMember(null);
+        const response = await fetch("http://localhost:8080/members/me", memberDeleteOption)
+        if(!response.ok) {
+          const error = await response.json();
+          const errorMessage = error.errorMessage
+          this.showSnackbar(errorMessage);
+          return;
+        }
 
+        this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.FAIL);
+        this.showSnackbar(e.message);
         throw new Error(e);
       }
     },

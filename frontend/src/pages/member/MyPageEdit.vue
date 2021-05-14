@@ -119,9 +119,15 @@ export default {
           },
           body: JSON.stringify(editMemberData)
         };
-        await fetch("http://localhost:8080/members/me", editMemberOption);
-        this.setMember(editMemberData);
+        const response = await fetch("http://localhost:8080/members/me", editMemberOption);
+        if(!response.ok) {
+          const error = await response.json();
+          const errorMessage = error.errorMessage
+          this.showSnackbar(errorMessage);
+          return;
+        }
 
+        this.setMember(editMemberData);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {

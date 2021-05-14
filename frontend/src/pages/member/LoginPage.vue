@@ -87,6 +87,13 @@ export default {
         };
 
         const response = await fetch("http://localhost:8080/login/token", option);
+        if(!response.ok) {
+          const error = await response.json();
+          const errorMessage = error.errorMessage
+          this.showSnackbar(errorMessage);
+          return;
+        }
+
         const responseJson = await response.json();
         const accessToken = responseJson.accessToken;
         this.setAccessToken(accessToken);
@@ -98,6 +105,13 @@ export default {
           },
         };
         const memberResponse = await fetch("http://localhost:8080/members/me", memberOption);
+        if(!memberResponse.ok) {
+          const error = await memberResponse.json();
+          const errorMessage = error.errorMessage;
+          this.showSnackbar(errorMessage);
+          return;
+        }
+
         const member = await memberResponse.json();
         this.setMember(member);
 
