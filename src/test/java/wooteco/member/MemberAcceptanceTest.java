@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
-import wooteco.member.controller.dto.response.TokenResponseDto;
+import wooteco.member.controller.dto.response.SignInResponseDto;
 import wooteco.subway.AcceptanceTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -29,7 +29,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
-        TokenResponseDto 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        SignInResponseDto 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
@@ -53,10 +53,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponseDto tokenResponseDto) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(SignInResponseDto signInResponseDto) {
         return RestAssured
             .given().log().all()
-            .auth().oauth2(tokenResponseDto.getAccessToken())
+            .auth().oauth2(signInResponseDto.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/members/me")
             .then().log().all()
@@ -64,12 +64,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponseDto tokenResponseDto, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(SignInResponseDto signInResponseDto, String email, String password, Integer age) {
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, password, age);
 
         return RestAssured
             .given().log().all()
-            .auth().oauth2(tokenResponseDto.getAccessToken())
+            .auth().oauth2(signInResponseDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequestDto)
             .when().put("/api/members/me")
@@ -77,10 +77,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponseDto tokenResponseDto) {
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(SignInResponseDto signInResponseDto) {
         return RestAssured
             .given().log().all()
-            .auth().oauth2(tokenResponseDto.getAccessToken())
+            .auth().oauth2(signInResponseDto.getAccessToken())
             .when().delete("/api/members/me")
             .then().log().all()
             .extract();

@@ -4,8 +4,8 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import wooteco.exception.HttpException;
-import wooteco.member.controller.dto.request.TokenRequestDto;
-import wooteco.member.controller.dto.response.TokenResponseDto;
+import wooteco.member.controller.dto.request.SignInRequestDto;
+import wooteco.member.controller.dto.response.SignInResponseDto;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
 import wooteco.member.infrastructure.JwtTokenProvider;
@@ -22,10 +22,10 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponseDto createToken(TokenRequestDto tokenRequestDto) {
-        Member member = getUserInfo(tokenRequestDto.getEmail(), tokenRequestDto.getPassword());
+    public SignInResponseDto createToken(SignInRequestDto signInRequestDto) {
+        Member member = getUserInfo(signInRequestDto.getEmail(), signInRequestDto.getPassword());
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-        return new TokenResponseDto(accessToken);
+        return new SignInResponseDto(accessToken);
     }
 
     private Member getUserInfo(String principal, String credentials) {

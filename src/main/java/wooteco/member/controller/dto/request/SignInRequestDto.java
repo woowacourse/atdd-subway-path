@@ -2,16 +2,16 @@ package wooteco.member.controller.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class TokenRequestDto {
+public class SignInRequestDto {
     @NotBlank
     private String email;
     @NotBlank
     private String password;
 
-    public TokenRequestDto() {
+    public SignInRequestDto() {
     }
 
-    public TokenRequestDto(String email, String password) {
+    public SignInRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
     }
