@@ -6,17 +6,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.member.service.AuthService;
 
 
-public class LonginInterceptor implements HandlerInterceptor {
+public class SignInInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
-    public LonginInterceptor(AuthService authService) {
+    public SignInInterceptor(AuthService authService) {
         this.authService = authService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = request.getHeader("Authorization");
         authService.validateToken(accessToken);
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 }
