@@ -2,7 +2,6 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.application.AuthorizationException;
-import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -50,6 +49,7 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
+
     public void deleteMember(String email) {
         memberDao.deleteByEmail(email);
     }
