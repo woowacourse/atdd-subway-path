@@ -48,7 +48,7 @@ export default {
   name: "MyPage",
   components: { ConfirmDialog },
   computed: {
-    ...mapGetters(["member"]),
+    ...mapGetters(["member", "accessToken"]),
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
@@ -67,11 +67,11 @@ export default {
         const memberDeleteOption = {
           method: 'DELETE',
           headers: {
-            'Authorization': 'Bearer' + this.$store.state.auth.accessToken,
+            'Authorization': 'Bearer' + this.accessToken,
           },
         };
         await fetch("http://localhost:8080/members/me", memberDeleteOption)
-        this.$store.commit(SET_MEMBER, null);
+        this.setMember(null);
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");

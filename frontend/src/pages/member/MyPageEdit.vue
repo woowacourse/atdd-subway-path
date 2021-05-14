@@ -115,12 +115,12 @@ export default {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer' + this.$store.state.auth.accessToken,
+            'Authorization': 'Bearer' + this.accessToken,
           },
           body: JSON.stringify(editMemberData)
         };
         await fetch("http://localhost:8080/members/me", editMemberOption);
-        this.$store.commit(SET_MEMBER, editMemberData);
+        this.setMember(editMemberData);
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");

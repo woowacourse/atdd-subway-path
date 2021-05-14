@@ -64,7 +64,7 @@ export default {
     ...mapGetters(["accessToken"]),
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
+    ...mapMutations([SHOW_SNACKBAR, SET_MEMBER, SET_ACCESS_TOKEN]),
     isValid() {
       return this.$refs.loginForm.validate();
     },
@@ -87,19 +87,19 @@ export default {
         };
 
         const response = await fetch("http://localhost:8080/login/token", option);
-        let resJson = await response.json();
-        const accessToken = resJson.accessToken;
-        this.$store.commit(SET_ACCESS_TOKEN, accessToken);
+        const responseJson = await response.json();
+        const accessToken = responseJson.accessToken;
+        this.setAccessToken(accessToken);
 
         const memberOption = {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer' + accessToken,
+            'Authorization': 'Bearer' + this.accessToken,
           },
         };
         const memberResponse = await fetch("http://localhost:8080/members/me", memberOption);
         const member = await memberResponse.json();
-        this.$store.commit(SET_MEMBER, member);
+        this.setMember(member);
 
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
