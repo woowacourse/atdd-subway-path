@@ -20,8 +20,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException());
+        Member member = memberDao.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
         return MemberResponse.of(member);
     }
 
