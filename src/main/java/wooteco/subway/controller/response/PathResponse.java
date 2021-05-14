@@ -1,4 +1,4 @@
-package wooteco.subway.dto;
+package wooteco.subway.controller.response;
 
 import java.util.List;
 

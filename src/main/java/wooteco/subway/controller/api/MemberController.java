@@ -3,9 +3,9 @@ package wooteco.subway.controller.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.config.auth.AuthenticationPrincipal;
+import wooteco.subway.controller.request.MemberRequest;
+import wooteco.subway.controller.response.MemberResponse;
 import wooteco.subway.dto.LoginMember;
-import wooteco.subway.dto.MemberRequest;
-import wooteco.subway.dto.MemberResponse;
 import wooteco.subway.service.MemberService;
 
 import java.net.URI;

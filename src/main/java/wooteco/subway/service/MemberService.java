@@ -3,10 +3,10 @@ package wooteco.subway.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import wooteco.subway.controller.request.MemberRequest;
+import wooteco.subway.controller.response.MemberResponse;
 import wooteco.subway.dao.MemberDao;
 import wooteco.subway.domain.Member;
-import wooteco.subway.dto.MemberRequest;
-import wooteco.subway.dto.MemberResponse;
 import wooteco.subway.exception.auth.AuthException;
 import wooteco.subway.exception.auth.AuthExceptionStatus;
 
@@ -14,7 +14,7 @@ import wooteco.subway.exception.auth.AuthExceptionStatus;
 public class MemberService {
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;

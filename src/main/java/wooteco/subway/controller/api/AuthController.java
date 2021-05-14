@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.TokenRequest;
-import wooteco.subway.dto.TokenResponse;
+import wooteco.subway.controller.request.TokenRequest;
+import wooteco.subway.controller.response.TokenResponse;
 import wooteco.subway.service.AuthService;
 
 @RestController

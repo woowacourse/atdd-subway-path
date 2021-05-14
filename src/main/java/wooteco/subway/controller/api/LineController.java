@@ -2,9 +2,9 @@ package wooteco.subway.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.controller.request.LineRequest;
+import wooteco.subway.controller.request.SectionRequest;
+import wooteco.subway.controller.response.LineResponse;
 import wooteco.subway.service.LineService;
 
 import java.net.URI;

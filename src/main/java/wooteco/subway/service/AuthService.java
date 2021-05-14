@@ -3,8 +3,8 @@ package wooteco.subway.service;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 import wooteco.subway.config.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.controller.response.MemberResponse;
 import wooteco.subway.dto.LoginMember;
-import wooteco.subway.dto.MemberResponse;
 
 @Service
 public class AuthService {
