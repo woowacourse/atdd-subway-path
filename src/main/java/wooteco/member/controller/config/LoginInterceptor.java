@@ -7,10 +7,10 @@ import wooteco.member.infrastructure.AuthorizationExtractor;
 import wooteco.member.service.AuthService;
 
 
-public class LonginInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
-    public LonginInterceptor(AuthService authService) {
+    public LoginInterceptor(AuthService authService) {
         this.authService = authService;
     }
 
