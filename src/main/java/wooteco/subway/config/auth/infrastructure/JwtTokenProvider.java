@@ -17,11 +17,10 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(Long id, String email, Integer age) {
+    public String createToken(Long id, String email) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("id", id);
         payload.put("email", email);
-        payload.put("age", age);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         return Jwts.builder()
