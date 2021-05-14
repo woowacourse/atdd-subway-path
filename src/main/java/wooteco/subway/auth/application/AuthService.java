@@ -19,11 +19,11 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public Optional<String> createToken(final TokenRequest tokenRequest) {
+    public String createToken(final TokenRequest tokenRequest) {
         if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            return Optional.of(jwtTokenProvider.createToken(tokenRequest.getPassword()));
+            return jwtTokenProvider.createToken(tokenRequest.getPassword());
         }
-        return Optional.empty();
+        throw new AuthorizedException("유효하지 않은 회원입니다.");
     }
 
     private boolean checkValidLogin(final String email, final String password) {
