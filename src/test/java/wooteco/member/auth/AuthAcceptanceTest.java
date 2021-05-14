@@ -47,7 +47,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().post("/api/login/token")
+            .when().post("/api/sign-in")
             .then().log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -84,7 +84,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             body(params).
             when().
-            post("/api/login/token").
+            post("/api/sign-in").
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).
