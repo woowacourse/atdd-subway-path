@@ -1,6 +1,7 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -18,6 +19,7 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = findMemberByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
         String token = jwtTokenProvider.createToken(member.getId().toString());
@@ -29,6 +31,7 @@ public class AuthService {
                 .orElseThrow(() -> new InvalidMemberException(email));
     }
 
+    @Transactional
     public Member findMemberByToken(String token) {
         String id = getPayload(token);
         return memberDao.findById(Long.valueOf(id));
