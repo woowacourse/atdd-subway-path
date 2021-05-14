@@ -49,6 +49,23 @@ npm run serve
 
 <br>
 
+## 🛠 기능 요구사항
+- [x] 로그인 기능 구현하기
+    - [x] 프론트엔드 API 호출 기능 구현
+    - [x] 토큰 발급 API 구현하기
+    ```json
+    POST /login/token HTTP/1.1
+    content-type: application/json; charset=UTF-8
+    accept: application/json
+    {
+        "password": "password",
+        "email": "email@email.com"
+    }
+    ```
+- [x] 멤버 관련 기능 구현
+- [x] 역, 노선, 구간 프론트엔드 API 호출 기능 구현
+<br>
 ## 📝 License
 
 This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+

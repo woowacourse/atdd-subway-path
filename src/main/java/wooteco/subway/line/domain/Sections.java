@@ -9,17 +9,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
-    private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
+    private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {
@@ -39,14 +40,16 @@ public class Sections {
 
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
-        if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
+        if (!stations.contains(section.getUpStation()) && !stations
+                .contains(section.getDownStation())) {
             throw new RuntimeException();
         }
     }
 
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
-        List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
+        List<Station> stationsOfNewSection = Arrays
+                .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
             throw new RuntimeException();
         }
@@ -70,7 +73,8 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
+                existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
@@ -78,7 +82,8 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
+                existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
