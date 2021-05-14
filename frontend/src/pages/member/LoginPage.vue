@@ -54,7 +54,7 @@
 
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
@@ -73,7 +73,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const jsonData = {
           email: this.member.email,
           password: this.member.password
@@ -87,7 +86,21 @@ export default {
           body: JSON.stringify(jsonData)
         };
 
-        await fetch("http://localhost:8080/login/token", option);
+        const response = await fetch("http://localhost:8080/login/token", option);
+        let resJson = await response.json();
+        const accessToken = resJson.accessToken;
+        this.$store.commit(SET_ACCESS_TOKEN, accessToken);
+
+        const memberOption = {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + accessToken,
+          },
+        };
+        const memberResponse = await fetch("http://localhost:8080/members/me", memberOption);
+        const member = await memberResponse.json();
+        this.$store.commit(SET_MEMBER, member);
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
