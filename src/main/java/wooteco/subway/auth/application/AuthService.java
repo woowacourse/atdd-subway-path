@@ -30,8 +30,9 @@ public class AuthService {
         return memberDao.isExist(email, password);
     }
 
-    public Optional<Member> findMemberByToken(String token) {
+    public Member findMemberByToken(final String token) {
         final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByPassword(payload);
+        return memberDao.findByPassword(payload)
+                .orElseThrow(()-> new AuthorizedException("존재하지 않는 회원입니다."));
     }
 }
