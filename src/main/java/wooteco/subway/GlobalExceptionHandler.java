@@ -10,6 +10,7 @@ import wooteco.subway.auth.exception.AuthException;
 public class GlobalExceptionHandler {
     @ExceptionHandler({AuthException.class})
     public ResponseEntity<ErrorResponse> authException(RuntimeException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new ErrorResponse(exception.getMessage()));
     }
 }

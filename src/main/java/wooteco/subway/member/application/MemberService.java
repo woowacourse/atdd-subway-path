@@ -1,5 +1,6 @@
 package wooteco.subway.member.application;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.exception.JwtLoginEmailException;
@@ -8,8 +9,6 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -38,7 +37,8 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {
@@ -46,14 +46,16 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(TokenRequest request) {
-        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(JwtLoginEmailException::new);
-        if(!member.samePassword(request.getPassword())) {
+        Member member = memberDao.findByEmail(request.getEmail())
+            .orElseThrow(JwtLoginEmailException::new);
+        if (!member.samePassword(request.getPassword())) {
             throw new JwtLoginPasswordException();
         }
         return member;
     }
 
     private Member findByEmail(String email) {
-        return memberDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 이메일임!"));
+        return memberDao.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("없는 이메일임!"));
     }
 }

@@ -6,10 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
-
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemberServiceTest {
 

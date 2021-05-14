@@ -1,6 +1,9 @@
 package wooteco.subway.member.dao;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -8,11 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import wooteco.subway.member.domain.Member;
-
-import javax.sql.DataSource;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)

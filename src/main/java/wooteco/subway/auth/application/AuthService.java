@@ -8,7 +8,6 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -22,12 +21,13 @@ public class AuthService {
 
     public TokenResponse login(final TokenRequest request) {
         Member member = memberService.findMemberByEmail(request);
-        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getEmail());
+        String token = jwtTokenProvider
+            .createToken(String.valueOf(member.getId()), member.getEmail());
         return new TokenResponse(token);
     }
 
     public LoginMember findByToken(String token) {
-        if(!jwtTokenProvider.validateToken(token)) {
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new JwtNotAuthorizationException();
         }
         String id = jwtTokenProvider.getId(token);
