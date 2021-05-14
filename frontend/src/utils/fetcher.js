@@ -76,7 +76,7 @@ export async function requestPut(uri = '', data = {}, token) {
 
 async function makeHeaders(headers, token) {
   if (token) {
-    headers['authorization'] = `bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`;
   }
   return headers;
 }
