@@ -2,6 +2,7 @@ package wooteco.member.service;
 
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wooteco.exception.HttpException;
 import wooteco.member.controller.dto.request.SignInRequestDto;
@@ -16,21 +17,26 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, PasswordEncoder passwordEncoder) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public SignInResponseDto createToken(SignInRequestDto signInRequestDto) {
         Member member = getUserInfo(signInRequestDto.getEmail());
+        if (passwordEncoder.matches(member.getPassword(), signInRequestDto.getPassword())) {
+            throw new HttpException(HttpStatus.UNAUTHORIZED, "로그인 정보가 올바르지 않습니다.");
+        }
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new SignInResponseDto(accessToken);
     }
 
     private Member getUserInfo(String email) {
         return memberDao.findByEmail(email)
-            .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다."));
+                .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다."));
     }
 
     public Member findMemberByToken(String token) {

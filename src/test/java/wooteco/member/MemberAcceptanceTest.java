@@ -1,8 +1,5 @@
 package wooteco.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.member.auth.AuthAcceptanceTest.로그인되어_있음;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -14,6 +11,9 @@ import wooteco.member.controller.dto.request.MemberRequestDto;
 import wooteco.member.controller.dto.response.MemberResponseDto;
 import wooteco.member.controller.dto.response.SignInResponseDto;
 import wooteco.subway.AcceptanceTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.member.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -45,45 +45,45 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, password, age);
 
         return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(memberRequestDto)
-            .when().post("/api/members")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequestDto)
+                .when().post("/api/members")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(SignInResponseDto signInResponseDto) {
         return RestAssured
-            .given().log().all()
-            .auth().oauth2(signInResponseDto.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/api/members/me")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
+                .given().log().all()
+                .auth().oauth2(signInResponseDto.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(SignInResponseDto signInResponseDto, String email, String password, Integer age) {
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, password, age);
 
         return RestAssured
-            .given().log().all()
-            .auth().oauth2(signInResponseDto.getAccessToken())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(memberRequestDto)
-            .when().put("/api/members/me")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .auth().oauth2(signInResponseDto.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequestDto)
+                .when().put("/api/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_삭제_요청(SignInResponseDto signInResponseDto) {
         return RestAssured
-            .given().log().all()
-            .auth().oauth2(signInResponseDto.getAccessToken())
-            .when().delete("/api/members/me")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .auth().oauth2(signInResponseDto.getAccessToken())
+                .when().delete("/api/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {

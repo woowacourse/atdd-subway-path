@@ -1,8 +1,9 @@
 package wooteco.subway.controller.dto.response;
 
+import wooteco.subway.domain.Station;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.domain.Station;
 
 public class StationResponseDto {
     private Long id;
@@ -22,8 +23,8 @@ public class StationResponseDto {
 
     public static List<StationResponseDto> listOf(List<Station> stations) {
         return stations.stream()
-            .map(StationResponseDto::of)
-            .collect(Collectors.toList());
+                .map(StationResponseDto::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

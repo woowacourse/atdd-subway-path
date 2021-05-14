@@ -1,6 +1,5 @@
 package wooteco.member.controller.config;
 
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -9,6 +8,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.member.domain.AuthenticationPrincipal;
 import wooteco.member.infrastructure.AuthorizationExtractor;
 import wooteco.member.service.AuthService;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;

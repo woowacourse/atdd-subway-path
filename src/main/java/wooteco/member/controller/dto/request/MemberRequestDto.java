@@ -2,7 +2,6 @@ package wooteco.member.controller.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import wooteco.member.domain.Member;
 
 public class MemberRequestDto {
     @NotBlank
@@ -31,9 +30,5 @@ public class MemberRequestDto {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
     }
 }

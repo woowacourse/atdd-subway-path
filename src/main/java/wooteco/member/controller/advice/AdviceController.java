@@ -12,7 +12,7 @@ public class AdviceController {
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<ErrorMessage> handleException(HttpException e) {
         return ResponseEntity
-            .status(e.getHttpStatus())
-            .body(e.getErrorMessage());
+                .status(e.getHttpStatus())
+                .body(e.getErrorMessage());
     }
 }

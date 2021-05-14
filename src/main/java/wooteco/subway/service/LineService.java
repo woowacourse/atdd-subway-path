@@ -1,7 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.controller.dto.request.LineRequestDto;
 import wooteco.subway.controller.dto.request.SectionRequestDto;
@@ -11,6 +9,9 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -43,8 +44,8 @@ public class LineService {
     public List<LineResponseDto> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(line -> LineResponseDto.of(line))
-            .collect(Collectors.toList());
+                .map(line -> LineResponseDto.of(line))
+                .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
