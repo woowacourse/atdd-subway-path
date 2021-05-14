@@ -1,12 +1,14 @@
 package wooteco.subway.service;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
+import wooteco.subway.config.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.dto.LoginMember;
 import wooteco.subway.dto.MemberResponse;
-import wooteco.subway.infrastructure.JwtTokenProvider;
 
 @Service
 public class AuthService {
+
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -20,8 +22,12 @@ public class AuthService {
         return jwtTokenProvider.createToken(memberResponse.getId(), memberResponse.getEmail(), memberResponse.getAge());
     }
 
-    public LoginMember parseLoginMember(String token) {
-        return jwtTokenProvider.getPayload(token);
+    public LoginMember parseToken(String token) {
+        Claims payloads = jwtTokenProvider.getPayloads(token);
+        Long id = payloads.get("id", Long.class);
+        String email = payloads.get("email", String.class);
+        Integer age = payloads.get("age", Integer.class);
+        return new LoginMember(id, email, age);
     }
 
     public void validate(String token) {
