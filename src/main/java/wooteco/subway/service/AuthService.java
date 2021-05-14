@@ -24,8 +24,7 @@ public class AuthService {
     public LoginMember parseLoginMember(String token) {
         Claims claims = jwtTokenProvider.getPayload(token);
         return new LoginMember(claims.get("id", Long.class),
-                claims.get("email", String.class),
-                claims.get("age", Integer.class));
+                claims.get("email", String.class));
     }
 
     public void validate(String token) {
