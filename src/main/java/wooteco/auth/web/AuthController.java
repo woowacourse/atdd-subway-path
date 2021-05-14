@@ -1,5 +1,6 @@
 package wooteco.auth.web;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity login(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid TokenRequest tokenRequest) {
         Token token = authService.login(tokenRequest.getEmail(), tokenRequest.getPassword());
         return ResponseEntity.ok(new TokenResponse(token));
     }

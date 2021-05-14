@@ -1,10 +1,16 @@
 package wooteco.auth.web.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import wooteco.auth.domain.Member;
 
 public class MemberRequest {
+    @Email
     private String email;
+    @NotEmpty
     private String password;
+    @Positive
     private Integer age;
 
     public MemberRequest() {
