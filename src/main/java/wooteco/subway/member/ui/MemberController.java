@@ -2,7 +2,6 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.domain.LoginMember;
 import wooteco.subway.member.application.MemberService;
@@ -13,12 +12,10 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
-    private final AuthService authService;
+    private final MemberService memberService;
 
-    public MemberController(MemberService memberService, final AuthService authService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authService = authService;
     }
 
     @PostMapping("/members")
@@ -31,18 +28,6 @@ public class MemberController {
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
-    }
-
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/members/me")

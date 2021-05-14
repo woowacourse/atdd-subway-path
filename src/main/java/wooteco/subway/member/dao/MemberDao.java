@@ -12,17 +12,15 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
-
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
                     rs.getLong("id"),
                     rs.getString("email"),
                     rs.getString("password"),
                     rs.getInt("age")
             );
-
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -57,7 +55,7 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(query, rowMapper, payload);
     }
 
-    public boolean isExistMemberByEmailAndPassword(final String email, final String password) {
+    public boolean isExistMember(final String email, final String password) {
         String query = "SELECT EXISTS(SELECT * FROM member WHERE email = ? AND password = ?)";
         return jdbcTemplate.queryForObject(query, Boolean.class, email, password);
     }
