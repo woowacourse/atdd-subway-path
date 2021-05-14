@@ -43,11 +43,6 @@ public class MemberDao {
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from MEMBER where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -69,5 +64,11 @@ public class MemberDao {
                         rs.getString("password"),
                         rs.getInt("age")
                 ), email);
+    }
+
+    public void deleteByEmail(String email) {
+        String sql = "DELETE FROM MEMBER WHERE email = ?";
+        int update = jdbcTemplate.update(sql, email);
+        System.out.println(update + "@@@@@@@@@");
     }
 }

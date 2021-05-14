@@ -14,9 +14,9 @@
 ### 기능 구현 목록
 - [x] 토큰을 통한 인증
   - [x] AuthenticationPrincipalArgumentResolver 사용
-  - [ ] API 완성
-    - [ ] 삭제
-    - [ ] 수정
+  - [x] API 완성
+    - [x] 삭제
+    - [x] 수정
 - [ ] 프론트엔드 API 완성
   - [ ] mypage 기능
     - [ ] 삭제

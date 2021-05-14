@@ -12,9 +12,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.InvalidMemberException;
 import wooteco.subway.member.exception.InvalidTokenException;
-import wooteco.subway.member.infrastructure.AuthorizationExtractor;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -37,18 +35,6 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         String email = loginMember.getEmail();
@@ -59,15 +45,19 @@ public class MemberController {
         );
     }
 
-    // TODO: 구현 하기
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+                                                             @RequestBody MemberRequest memberRequest) {
+        String email = loginMember.getEmail();
+        memberService.updateMember(
+                email, memberRequest.toMember()
+        );
         return ResponseEntity.ok().build();
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getEmail());
         return ResponseEntity.noContent().build();
     }
 
