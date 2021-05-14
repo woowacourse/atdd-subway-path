@@ -6,6 +6,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -17,20 +19,19 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public String createToken(final TokenRequest tokenRequest) {
+    public Optional<String> createToken(final TokenRequest tokenRequest) {
         if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            return jwtTokenProvider.createToken(tokenRequest.getPassword());
+            return Optional.of(jwtTokenProvider.createToken(tokenRequest.getPassword()));
         }
-        throw new IllegalArgumentException("적절하지 않은 사용자입력");
+        return Optional.empty();
     }
 
     private boolean checkValidLogin(final String email, final String password) {
         return memberDao.isExist(email, password);
     }
 
-    public Member findMemberByToken(String token) {
+    public Optional<Member> findMemberByToken(String token) {
         final String payload = jwtTokenProvider.getPayload(token);
         return memberDao.findByPassword(payload);
     }
-
 }

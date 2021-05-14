@@ -3,7 +3,6 @@ package wooteco.subway.auth.infrastructure;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.auth.application.AuthorizedException;
 
 import java.util.Date;
 
@@ -19,8 +18,6 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        System.out.println(payload);
-        System.out.println(secretKey);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -30,27 +27,22 @@ public class JwtTokenProvider {
     }
 
     public String getPayload(final String token) {
-        validateToken(token);
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        if(isValidToken(token)){
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        }
+        throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
     }
 
-    public void validateToken(final String token) {
+    public boolean isValidToken(final String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            validateExpiration(claims);
+            return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthorizedException("유효하지 않은 토큰입니다.");
-        }
-    }
-
-    private void validateExpiration(Jws<Claims> claims) {
-        final Date expiration = claims.getBody().getExpiration();
-        if (expiration.before(new Date())) {
-            throw new AuthorizedException("기간이 만료된 토큰입니다.");
+            return false;
         }
     }
 }

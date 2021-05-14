@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
@@ -52,13 +54,22 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Member> findById(Long id) {
+        try{
+            String sql = "select * from MEMBER where id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        }catch (EmptyResultDataAccessException exception){
+            return Optional.empty();
+        }
     }
 
-    public Member findByPassword(String password) {
-        String sql = "select * from MEMBER where password = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, password);
+    public Optional<Member> findByPassword(String password) {
+        System.out.println("memberDao");
+        try{
+            String sql = "select * from MEMBER where password = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, password));
+        }catch (EmptyResultDataAccessException exception){
+            return Optional.empty();
+        }
     }
 }
