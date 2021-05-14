@@ -90,6 +90,7 @@ export default {
         let resJson = await response.json();
         const accessToken = resJson.accessToken;
         this.$store.commit(SET_ACCESS_TOKEN, accessToken);
+        this.$store.state.accessToken = accessToken;
 
         const memberOption = {
           method: 'GET',

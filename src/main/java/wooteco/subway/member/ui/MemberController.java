@@ -55,6 +55,7 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<TokenResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest request ) {
+        System.out.println("loginMember = " + loginMember);
         memberService.updateMember(loginMember.getId(), request);
         return ResponseEntity.ok().build();
     }
