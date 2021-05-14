@@ -138,6 +138,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
 
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

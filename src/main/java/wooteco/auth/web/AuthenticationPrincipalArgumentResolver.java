@@ -8,14 +8,16 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.infrastructure.AuthorizationExtractor;
+import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.AuthService;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
-        this.authService = authService;
+    public AuthenticationPrincipalArgumentResolver(
+        JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -29,6 +31,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String accessToken = AuthorizationExtractor
             .extract((HttpServletRequest) webRequest.getNativeRequest());
-        return authService.findMemberWithToken(accessToken);
+        return Long.valueOf(jwtTokenProvider.getPayload(accessToken));
     }
 }

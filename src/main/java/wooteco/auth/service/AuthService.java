@@ -6,9 +6,7 @@ import wooteco.auth.domain.Member;
 import wooteco.auth.domain.Token;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.exception.badRequest.PasswordIncorrectException;
-import wooteco.exception.unauthorized.InvalidTokenException;
 import wooteco.exception.unauthorized.LoginFailException;
-import wooteco.exception.unauthorized.MemberInTokenNotExistingException;
 
 @Service
 public class AuthService {
@@ -27,13 +25,5 @@ public class AuthService {
             throw new PasswordIncorrectException();
         }
         return new Token(jwtTokenProvider.createToken(member.getId().toString()));
-    }
-
-    public Member findMemberWithToken(String accessToken) {
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new InvalidTokenException();
-        }
-        Long id = Long.valueOf(jwtTokenProvider.getPayload(accessToken));
-        return memberDao.findById(id).orElseThrow(MemberInTokenNotExistingException::new);
     }
 }

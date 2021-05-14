@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.domain.Member;
+import wooteco.auth.service.AuthService;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
@@ -20,7 +21,7 @@ import wooteco.auth.web.dto.MemberResponse;
 @RequestMapping("/api")
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -52,21 +53,22 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(MemberResponse.of(member));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Long memberId) {
+        MemberResponse memberResponse = memberService.findMember(memberId);
+        return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Member member,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Long memberId,
         @RequestBody MemberRequest memberRequest) {
-        memberService.updateMember(member.getId(), memberRequest);
+        memberService.updateMember(memberId, memberRequest);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
-        @AuthenticationPrincipal Member member) {
-        memberService.deleteMember(member.getId());
+        @AuthenticationPrincipal Long memberId) {
+        memberService.deleteMember(memberId);
         return ResponseEntity.noContent().build();
     }
 }
