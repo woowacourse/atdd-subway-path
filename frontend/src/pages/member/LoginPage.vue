@@ -74,7 +74,7 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const token = await fetch("http://localhost:8080/login/token", {
+        const token = await fetch("/login/token", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -88,20 +88,9 @@ export default {
               return data.accessToken;
             });
 
-        let setCookie = function (name, value, exp) {
-          let date = new Date();
-          date.setTime(date.getTime() + exp * 60 * 60 * 1000);
-          document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-        };
-
         setCookie("JWT", token, 1);
 
-        let getCookie = function (name) {
-          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-          return value ? value[2] : null;
-        };
-
-        const member = await fetch("http://localhost:8080/members/me", {
+        const member = await fetch("/members/me", {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + getCookie("JWT")
@@ -114,7 +103,6 @@ export default {
                 age: data.age
               }
             });
-
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
@@ -135,4 +123,17 @@ export default {
     };
   },
 };
+let setCookie = function (name, value, exp) {
+  let date = new Date();
+  date.setTime(date.getTime() + exp * 60 * 60 * 1000);
+  document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+
+};
+
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+
+};
+
 </script>

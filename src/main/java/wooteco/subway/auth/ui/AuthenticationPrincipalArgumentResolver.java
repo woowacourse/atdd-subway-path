@@ -14,7 +14,8 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.auth.domain.LoginMember;
+import wooteco.subway.exception.InvalidTokenException;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -40,6 +41,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             return new LoginMember(Long.parseLong(id));
         }
 
-        throw new AuthorizationException();
+        throw new InvalidTokenException();
     }
 }

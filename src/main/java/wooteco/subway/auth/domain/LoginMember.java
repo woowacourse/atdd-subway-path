@@ -1,4 +1,4 @@
-package wooteco.subway.member.domain;
+package wooteco.subway.auth.domain;
 
 public class LoginMember {
     private final Long id;
