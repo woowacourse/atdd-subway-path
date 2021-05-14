@@ -30,4 +30,5 @@ public class AuthService {
             throw new InvalidTokenException();
         }
     }
+
 }

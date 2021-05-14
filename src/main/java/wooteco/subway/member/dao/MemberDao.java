@@ -68,7 +68,6 @@ public class MemberDao {
 
     public void deleteByEmail(String email) {
         String sql = "DELETE FROM MEMBER WHERE email = ?";
-        int update = jdbcTemplate.update(sql, email);
-        System.out.println(update + "@@@@@@@@@");
+        jdbcTemplate.update(sql, email);
     }
 }

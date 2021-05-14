@@ -26,12 +26,14 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
+
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
+
         return ResponseEntity.ok().body(member);
     }
 
@@ -52,18 +54,21 @@ public class MemberController {
         memberService.updateMember(
                 email, memberRequest.toMember()
         );
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getEmail());
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/members/authentication")
     public ResponseEntity<Void> memberAuthenticate(@RequestBody TokenRequest tokenRequest) {
         memberService.authenticate(tokenRequest);
+
         return ResponseEntity.ok().build();
     }
 
