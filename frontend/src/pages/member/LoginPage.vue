@@ -89,8 +89,6 @@ export default {
           throw new Error(`${tokenResponse.status}`);
         }
         let token = await tokenResponse.json();
-
-        console.log(token.accessToken);
         localStorage.setItem("token", token.accessToken);
 
         // member 데이터를 불러와 주세요.
