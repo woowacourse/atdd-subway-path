@@ -30,3 +30,6 @@
 
 ### 백엔드
 - [ ] 경로조회 기능 구현
+    - [ ] 모든 Line을 가져오기
+    - [ ] 각 Line의 getStations를 통해 vertex 등록
+    - [ ] 각 Line의 getSections를 통해 edge 등록
