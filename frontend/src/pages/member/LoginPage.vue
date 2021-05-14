@@ -73,7 +73,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const { email, password } = this.member;
 
         const bodyValue = {
@@ -93,9 +92,21 @@ export default {
           throw new Error(`${response.status}`);
         }
 
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const tokenPromise = await response.json();
+        const accessToken = tokenPromise.accessToken;
+
+        this.setAccessToken(accessToken);
+
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
+        });
+
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
