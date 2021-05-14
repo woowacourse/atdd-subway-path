@@ -1,5 +1,6 @@
 package wooteco.subway.member.dto;
 
+import java.beans.ConstructorProperties;
 import wooteco.subway.member.domain.Member;
 
 public class MemberResponse {
@@ -7,6 +8,7 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
+    @ConstructorProperties({"id", "email", "age"})
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
