@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import wooteco.subway.member.domain.Member;
@@ -57,6 +58,14 @@ class MemberDaoTest {
 
     @Test
     void deleteById() {
+        //given
+
+        //when
+        memberDao.deleteById(originMember.getId());
+
+        //then
+        assertThatThrownBy(() -> memberDao.findById(originMember.getId()))
+            .isInstanceOf(EmptyResultDataAccessException.class);
     }
 
     @Test
