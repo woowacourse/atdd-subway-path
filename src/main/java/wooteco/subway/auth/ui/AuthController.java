@@ -25,6 +25,6 @@ public class AuthController {
         final Optional<String> optionalToken = authService.createToken(tokenRequest);
 
         return optionalToken.map(token -> ResponseEntity.ok(new TokenResponse(token)))
-                .orElseGet(ResponseEntity.status(HttpStatus.UNAUTHORIZED.value())::build);
+                .orElseGet(ResponseEntity.status(HttpStatus.UNAUTHORIZED)::build);
     }
 }

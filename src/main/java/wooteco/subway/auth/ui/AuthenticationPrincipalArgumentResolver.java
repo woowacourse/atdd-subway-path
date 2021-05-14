@@ -25,12 +25,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        try{
-            final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-            final String token = AuthorizationExtractor.extract(httpServletRequest);
-            return authService.findMemberByToken(token).orElseThrow(IllegalArgumentException::new);
-        } catch(RuntimeException e) {
-            throw new IllegalArgumentException("잘못된 토큰 값입니다.");
-        }
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
+        final String token = AuthorizationExtractor.extract(httpServletRequest);
+
+        return authService.findMemberByToken(token).orElseThrow(IllegalArgumentException::new);
     }
 }
