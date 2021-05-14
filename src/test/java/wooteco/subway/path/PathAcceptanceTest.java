@@ -62,8 +62,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
-     * | 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* | |
+     * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {

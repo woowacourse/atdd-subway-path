@@ -9,7 +9,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.infrastructure.AuthorizationExtractor;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.auth.service.AuthService;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
