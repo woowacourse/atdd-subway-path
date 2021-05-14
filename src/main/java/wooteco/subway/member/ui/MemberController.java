@@ -28,10 +28,9 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        Optional<Member> optionalMember = memberService.findMember(id);
+        Member member = memberService.findMember(id);
 
-        return optionalMember.map((member) -> ResponseEntity.ok().body(MemberResponse.of(member)))
-                .orElseGet(()-> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/{id}")

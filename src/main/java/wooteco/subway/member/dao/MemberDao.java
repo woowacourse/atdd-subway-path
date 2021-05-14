@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -38,7 +39,11 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
 
-    // TODO :: JdbcSQLIntegrityConstraintViolationException ??
+    public boolean isExistEmail(final String email) {
+        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
+
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -55,30 +60,21 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Member> findById(Long id) {
+    public Member findById(Long id) {
         try{
             String sql = "select * from MEMBER where id = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
         }catch (EmptyResultDataAccessException exception){
-            return Optional.empty();
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }
 
-    public Optional<Member> findByEmail(final String email) {
-        try{
-            String sql = "select * from MEMBER where email = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
-        }catch (EmptyResultDataAccessException exception){
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Member> findByPassword(String password) {
-        try{
-            String sql = "select * from MEMBER where password = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, password));
-        }catch (EmptyResultDataAccessException exception){
-            return Optional.empty();
+    public Member findByEmailAndPassword(final String email, final String password) {
+        try {
+            String sql = "select * from MEMBER where email = ? AND password = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }
 }

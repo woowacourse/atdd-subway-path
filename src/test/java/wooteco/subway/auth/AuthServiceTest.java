@@ -11,6 +11,7 @@ import wooteco.subway.auth.application.AuthorizedException;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,19 +21,17 @@ public class AuthServiceTest {
     @Autowired
     private AuthService authService;
 
-    @MockBean
-    private MemberDao mockMemberDao;
+    @Autowired
+    private MemberDao memberDao;
 
     private final String testEmail = "test";
     private final String testPassword = "test";
 
-    @DisplayName("db에 존재하는 사용자로 token을 생성할 경우 예외를 발생한다.")
+    @DisplayName("db에 존재하는 사용자로 token을 생성할 경우 정상 생성된다.")
     @Test
     public void checkIsExisting(){
         final TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
-
-        Mockito.when(mockMemberDao.isExist(testEmail, testPassword))
-                .thenReturn(true);
+        memberDao.insert(new Member(null, testEmail, testPassword, 1));
 
         authService.createToken(tokenRequest);
     }

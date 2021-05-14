@@ -17,22 +17,26 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Optional<Member> optionalMember = memberDao.findByEmail(request.getEmail());
-
-        if(optionalMember.isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 Email 입니다.");
-        }
+        validateEmail(request.getEmail());
 
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public Optional<Member> findMember(Long id) {
+    public Member findMember(Long id) {
         return memberDao.findById(id);
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public void updateMember(Long id, MemberRequest request) {
+        validateEmail(request.getEmail());
+
+        memberDao.update(new Member(id, request.getEmail(), request.getPassword(), request.getAge()));
+    }
+
+    private void validateEmail(final String email){
+        if(memberDao.isExistEmail(email)){
+            throw new IllegalArgumentException("이미 존재하는 Email 입니다.");
+        }
     }
 
     public void deleteMember(Long id) {
