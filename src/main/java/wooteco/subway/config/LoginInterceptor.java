@@ -17,8 +17,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = AuthorizationExtractor.extract(request);
-        System.out.println("kimun log");
-        System.out.println(token);
         authService.validate(token);
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
