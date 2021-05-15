@@ -23,10 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<Void> login(@RequestBody TokenRequest tokenRequest, HttpServletResponse res) {
+    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
-        ResponseCookie cookie = authService.createCookie(tokenResponse.getAccessToken());
-        res.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(tokenResponse);
     }
 }

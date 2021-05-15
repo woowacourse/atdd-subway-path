@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -29,40 +30,40 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
+                .when().post("/api/members")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get("/api/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String tokenResponse, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().put("/members/me")
+                .when().put("/api/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(String tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse)
-                .when().delete("/members/me")
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/api/members/me")
                 .then().log().all()
                 .extract();
     }
@@ -78,7 +79,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, String tokenResponse) {
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         MemberResponse memberResponse = 내_회원_정보_조회_요청(tokenResponse).as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(NEW_EMAIL);
@@ -86,13 +87,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response, String tokenResponse) {
+    public static void 회원_삭제됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         ExtractableResponse<Response> memberResponse = RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get("/api/members/me")
                 .then().log().all()
                 .extract();
         assertThat(memberResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -104,7 +105,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
-        String 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
