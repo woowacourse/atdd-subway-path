@@ -1,4 +1,5 @@
 export {getFetch, postFetch, deleteFetch, putFetch}
+
 function getFetch(url) {
     return fetch(`${url}`).then(data => {
         if (data.status === 400) {

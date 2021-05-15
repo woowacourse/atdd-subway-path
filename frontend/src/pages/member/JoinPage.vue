@@ -96,7 +96,7 @@ export default {
       }
       try {
         const {email, age, password} = this.member;
-        const joinForm = {email : email, age: age, password: password}
+        const joinForm = {email: email, age: age, password: password}
         await postFetch("/api/members", joinForm)
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/api/login`);

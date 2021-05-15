@@ -8,7 +8,7 @@
 import {mapMutations} from "vuex";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
-import {getFetch, deleteFetch} from "@/utils/fetch";
+import {deleteFetch, getFetch} from "@/utils/fetch";
 
 export default {
   name: "LineDeleteButton",
