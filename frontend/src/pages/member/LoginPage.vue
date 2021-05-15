@@ -79,6 +79,7 @@ export default {
           headers: {
             'Content-Type': 'application/json'
           },
+          credentials: 'include',
           body: JSON.stringify({
             'email': email,
             'password': password,
@@ -87,7 +88,6 @@ export default {
         .then(
             response => response.json()
         )
-        document.cookie = `accessToken=${data.accessToken}`
 
         const member = await fetch("http://localhost:8080/members/me", {
           method: "get",
