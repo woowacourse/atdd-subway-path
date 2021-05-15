@@ -10,7 +10,7 @@ import wooteco.subway.auth.application.AuthorizedException;
 public class AuthControllerAdvice {
 
     @ExceptionHandler(AuthorizedException.class)
-    public ResponseEntity<Void> handleInvalidAuthorized(Exception e){
+    public ResponseEntity<Void> handleInvalidAuthorized(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

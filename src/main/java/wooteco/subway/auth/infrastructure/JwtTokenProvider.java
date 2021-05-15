@@ -46,9 +46,9 @@ public class JwtTokenProvider {
         }
     }
 
-    private void validateExpiration(Jws<Claims> claims){
+    private void validateExpiration(Jws<Claims> claims) {
         boolean isExpired = claims.getBody().getExpiration().before(new Date());
-        if(isExpired){
+        if (isExpired) {
             throw new AuthorizedException("기간이 만료된 토큰입니다.");
         }
     }

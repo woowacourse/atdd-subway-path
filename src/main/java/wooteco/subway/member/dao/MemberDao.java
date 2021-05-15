@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -61,10 +60,10 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        try{
+        try {
             String sql = "select * from MEMBER where id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        }catch (EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }

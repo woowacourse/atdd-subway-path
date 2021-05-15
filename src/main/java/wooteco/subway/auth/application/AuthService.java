@@ -23,9 +23,9 @@ public class AuthService {
         return createToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
-    public String createToken(final String email, final String password){
-        final Member member =  memberDao.findByEmailAndPassword(email, password)
-                .orElseThrow(()-> new AuthorizedException("존재하지 않는 유저입니다."));
+    public String createToken(final String email, final String password) {
+        final Member member = memberDao.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new AuthorizedException("존재하지 않는 유저입니다."));
 
         final String payload = String.valueOf(member.getEmail());
         return jwtTokenProvider.createToken(payload);
@@ -35,6 +35,6 @@ public class AuthService {
         final String email = jwtTokenProvider.getPayload(token);
 
         return memberDao.findByEmail(email)
-                .orElseThrow(()-> new AuthorizedException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new AuthorizedException("존재하지 않는 유저입니다."));
     }
 }
