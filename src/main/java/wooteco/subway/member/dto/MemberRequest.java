@@ -31,4 +31,8 @@ public class MemberRequest {
     public Member toMember() {
         return new Member(email, password, age);
     }
+
+    public Member toMember(final Long id) {
+        return new Member(id, email, password, age);
+    }
 }
