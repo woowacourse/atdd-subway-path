@@ -54,8 +54,6 @@ public class Member {
     }
 
     public boolean isValidMember(Member requestMember) {
-        final boolean isEmailEqual = email.equals(requestMember.email);
-        final boolean isPasswordEqual = password.equals(requestMember.password);
-        return !(isEmailEqual && isPasswordEqual);
+        return email.equals(requestMember.email) && password.equals(requestMember.password);
     }
 }
