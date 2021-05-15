@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.application.AuthorizedException;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -12,6 +13,7 @@ import wooteco.subway.member.domain.Member;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Transactional
 @SpringBootTest
 public class AuthServiceTest {
 
