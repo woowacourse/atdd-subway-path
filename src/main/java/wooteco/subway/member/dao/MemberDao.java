@@ -60,12 +60,13 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByEmailAndPassword(String email, String password) {
-        try {
-            String sql = "select * from MEMBER where email=? AND password=?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
-        } catch (EmptyResultDataAccessException e) {
-            throw new AuthenticationException();
-        }
+    public boolean existsByEmailAndPassword(String email, String password) {
+        String sql = "select exists (select * from MEMBER where email=? AND password=?)";
+        return jdbcTemplate.queryForObject(sql, boolean.class, email, password);
+    }
+
+    public Member findByEmail(String email) {
+        String sql = "select * from MEMBER where email=?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }

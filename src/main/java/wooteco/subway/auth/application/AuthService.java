@@ -25,19 +25,26 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    private Member findMemberByEmailAndPassword(String email, String password) {
-        return memberDao.findByEmailAndPassword(email, password);
+    private void validateToExistsByEmailAndPassword(String email, String password) {
+        if (!memberDao.existsByEmailAndPassword(email, password)) {
+            throw new AuthenticationException("존재하지 않는 이메일 또는 패스워드 입니다.");
+        }
     }
 
-    public LoginMember findLoginMemberByToken(String token) {
-        validateToken(token);
-        Long payload = Long.parseLong(jwtTokenProvider.getPayload(token));
-        return new LoginMember(payload);
+    private Member findMemberByEmailAndPassword(String email, String password) {
+        validateToExistsByEmailAndPassword(email, password);
+        return memberDao.findByEmail(email);
     }
 
     private void validateToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
+    }
+
+    public LoginMember findLoginMemberByToken(String token) {
+        validateToken(token);
+        Long payload = Long.parseLong(jwtTokenProvider.getPayload(token));
+        return new LoginMember(payload);
     }
 }
