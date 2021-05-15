@@ -21,10 +21,10 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmail(tokenRequest.getEmail())
-                .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
+                .orElseThrow(() -> new AuthorizationException("사용자를 찾을 수 없습니다."));
 
         if (!member.isEqualToPassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException("비밀번호가 틀렸습니다!");
+            throw new AuthorizationException("사용자를 찾을 수 없습니다.");
         }
 
         return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
@@ -33,7 +33,7 @@ public class AuthService {
     public Member findMemberByToken(String accessToken) {
         String email = jwtTokenProvider.getPayload(accessToken);
         return memberDao.findByEmail(email)
-                .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
+                .orElseThrow(() -> new AuthorizationException("사용자를 찾을 수 없습니다."));
     }
 
     public void validateToken(String accessToken) {
