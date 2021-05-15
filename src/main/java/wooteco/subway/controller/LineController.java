@@ -19,18 +19,18 @@ import wooteco.subway.controller.dto.request.SectionRequestDto;
 import wooteco.subway.controller.dto.response.LineResponseDto;
 import wooteco.subway.service.LineService;
 
+@RequestMapping("/api/lines")
 @RestController
-@RequestMapping("/lines")
 public class LineController {
 
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequestDto lineRequestDto) {
+    public ResponseEntity<LineResponseDto> createLine(@RequestBody LineRequestDto lineRequestDto) {
         LineResponseDto line = lineService.saveLine(lineRequestDto);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -46,31 +46,31 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequestDto lineRequestDto) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequestDto lineRequestDto) {
         lineService.updateLine(id, lineRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequestDto sectionRequestDto) {
+    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody SectionRequestDto sectionRequestDto) {
         lineService.addLineStation(lineId, sectionRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
+    public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
 }

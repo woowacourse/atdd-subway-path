@@ -18,7 +18,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LonginInterceptor(authService))
+        registry.addInterceptor(new LoginInterceptor(authService))
             .addPathPatterns("/api/members/me");
     }
 

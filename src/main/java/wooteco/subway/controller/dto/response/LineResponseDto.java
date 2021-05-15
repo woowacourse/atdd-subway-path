@@ -10,6 +10,9 @@ public class LineResponseDto {
     private String color;
     private List<StationResponseDto> stations;
 
+    public LineResponseDto() {
+    }
+
     public LineResponseDto(Long id, String name, String color, List<StationResponseDto> stations) {
         this.id = id;
         this.name = name;
