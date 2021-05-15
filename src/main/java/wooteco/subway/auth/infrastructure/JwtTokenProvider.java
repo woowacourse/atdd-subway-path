@@ -33,15 +33,12 @@ public class JwtTokenProvider {
                    .compact();
     }
 
-    public LoginMember getLoginMember(String token) {
-        final String subject = Jwts.parser()
-                                   .setSigningKey(secretKey)
-                                   .parseClaimsJws(token)
-                                   .getBody()
-                                   .getSubject();
 
-        final Long id = Long.valueOf(subject);
-        return new LoginMember(id);
+    public Claims getPayload(String token) {
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody();
     }
 
     public boolean validateToken(String token) {

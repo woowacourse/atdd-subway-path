@@ -1,5 +1,6 @@
 package wooteco.subway.auth.ui;
 
+import io.jsonwebtoken.Jwts;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.AuthorizationException;
+import wooteco.subway.member.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
@@ -36,6 +38,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthorizationException("유효하지 않은 토큰입니다");
         }
 
-        return jwtTokenProvider.getLoginMember(accessToken);
+        return getLoginMember(accessToken);
+    }
+
+
+    public LoginMember getLoginMember(String token) {
+        final String subject = jwtTokenProvider.getPayload(token).getSubject();
+
+        final Long id = Long.valueOf(subject);
+        return new LoginMember(id);
     }
 }
