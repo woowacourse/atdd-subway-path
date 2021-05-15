@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
@@ -50,5 +50,15 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Member findByEmailAndPassword(String email, String password) {
+        String sql = "select * from MEMBER where email = ? and password = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
+    }
+
+    public Member findByEmail(String email) {
+        String sql = "select * from MEMBER where email = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }

@@ -75,10 +75,10 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
 
@@ -114,11 +114,31 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        await fetch(`/api/lines/${this.line.id}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify({
+            name: this.lineEditForm.name,
+            color: this.lineEditForm.color,
+            upStationId: null,
+            downStationId: null,
+            distance: null,
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+        })
+        const lines = await fetch("api/lines")
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`${response.status}`);
+              }
+              return response.json();
+            })
+        this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {

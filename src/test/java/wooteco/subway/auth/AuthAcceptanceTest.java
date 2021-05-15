@@ -21,6 +21,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    @Test
+    void name() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
@@ -48,7 +54,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/token")
+                .when().post("/api/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -62,7 +68,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get("/api/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -85,7 +91,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
-                post("/login/token").
+                post("/api/login/token").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -97,7 +103,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/members/me").
+                get("/api/members/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
