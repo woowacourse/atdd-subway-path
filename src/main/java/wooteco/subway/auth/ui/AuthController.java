@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 public class AuthController {
     // TODO: 로그인(토큰 발급) 요청 처리하기
     private final AuthService authService;
