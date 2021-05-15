@@ -13,10 +13,6 @@ public class LoginMember {
         this.id = id;
     }
 
-    public static LoginMember from(MemberResponse memberResponse) {
-        return new LoginMember(memberResponse.getId());
-    }
-
     public Long getId() {
         return id;
     }
