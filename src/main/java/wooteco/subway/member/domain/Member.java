@@ -21,6 +21,11 @@ public class Member {
         this.age = age;
     }
 
+    public Member(String email, String password) {
+        this.email= email;
+        this.password = password;
+    }
+
     public Member(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
@@ -31,6 +36,7 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+
     }
 
     public Long getId() {
@@ -49,9 +55,9 @@ public class Member {
         return age;
     }
 
-    public void authorize(TokenRequest tokenRequest) {
-        final boolean isEmailEqual = this.email.equals(tokenRequest.getEmail());
-        final boolean isPasswordEqual = this.password.equals(tokenRequest.getPassword());
+    public void authorize(Member requestMember) {
+        final boolean isEmailEqual = email.equals(requestMember.email);
+        final boolean isPasswordEqual = password.equals(requestMember.password);
         if (!(isEmailEqual && isPasswordEqual)) {
             throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
         }

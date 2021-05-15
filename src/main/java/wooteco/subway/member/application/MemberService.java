@@ -25,18 +25,16 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member findMember(String email) {
+        return memberDao.findByEmail(email)
+            .orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
+    }
+
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
-    }
-
-    public MemberResponse authorize(final TokenRequest tokenRequest) {
-        final String email = tokenRequest.getEmail();
-        final Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));;
-        member.authorize(tokenRequest);
-        return MemberResponse.of(member);
     }
 }
