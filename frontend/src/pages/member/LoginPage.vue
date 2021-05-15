@@ -57,6 +57,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
+import {requestGet, requestPost} from "@/utils/fetcher";
 
 export default {
   name: "LoginPage",
@@ -73,12 +74,18 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const { email, password } = this.member;
+        const tokenResponse = await requestPost('/login/token', {
+          email: email,
+          password: password
+        })
+        const token = tokenResponse["accessToken"];
+        window.localStorage.setItem('token', token);
+        const memberResponse = await requestGet('/members/me', {}, token);
+        this.setMember({
+          email: memberResponse['email'],
+          age: memberResponse['age']
+        });
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {

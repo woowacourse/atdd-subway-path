@@ -8,6 +8,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -16,12 +17,12 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

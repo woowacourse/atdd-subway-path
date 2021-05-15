@@ -1,6 +1,7 @@
 package wooteco.subway.member.domain;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
@@ -26,6 +27,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {
