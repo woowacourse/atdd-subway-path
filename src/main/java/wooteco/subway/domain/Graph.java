@@ -20,7 +20,7 @@ public class Graph {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.allSections = allSections;
         initGraph();
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
