@@ -43,6 +43,7 @@ public class AuthController {
 
     private void setAccessTokenToCookie(HttpServletResponse response, String accessToken) {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(THIRTY_MINUTE);
         response.addCookie(accessTokenCookie);
     }
