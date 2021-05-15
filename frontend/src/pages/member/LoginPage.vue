@@ -75,9 +75,10 @@ export default {
       try {
         // TODO login API를 작성해주세요.
         const { email, password } = this.member;
-        const data = await fetch("http://localhost:8080/login/token", {
+        const data = await fetch("/api/login/token", {
           method: 'POST',
           body: JSON.stringify({ email, password }),
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json'
           }
@@ -85,11 +86,14 @@ export default {
           return res.json();
         });
 
+        console.log(data.accessToken)
+
         this.setAccessToken(data.accessToken)
 
         // TODO member 데이터를 불러와 주세요.
-        const member = await fetch("http://localhost:8080/members/me", {
+        const member = await fetch("/api/members/me", {
           method: 'GET',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
             'Authorization' : "Bearer " + this.accessToken

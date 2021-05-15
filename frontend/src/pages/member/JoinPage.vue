@@ -96,7 +96,7 @@ export default {
       try {
         // TODO member를 생성하는 API를 추가해주세요.
         const { email, age, password } = this.member;
-        await fetch("http://localhost:8080/members", {
+        await fetch("/api/members", {
           method: 'POST',
           body: JSON.stringify({ email, age, password }),
           headers: {

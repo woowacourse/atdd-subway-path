@@ -65,7 +65,7 @@ export default {
       }
       try {
         // TODO 유저를 삭제하는 API를 추가해주세요
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("/api/members/me", {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

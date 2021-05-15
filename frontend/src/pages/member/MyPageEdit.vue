@@ -107,7 +107,7 @@ export default {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("/api/members/me", {
           method: 'PUT',
           body: JSON.stringify({email, age, password}),
           headers: {
