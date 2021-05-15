@@ -104,7 +104,6 @@ export default {
         const member = await response.json();
         this.setMember(member);
         localStorage.setItem("token", data.accessToken);
-        console.log(localStorage.getItem("token"));
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
