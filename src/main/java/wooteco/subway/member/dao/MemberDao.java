@@ -60,12 +60,12 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         try {
             String sql = "select * from MEMBER where id = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            throw new MemberException("존재하지 않는 유저입니다.");
+            return Optional.empty();
         }
     }
 
