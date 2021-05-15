@@ -24,7 +24,8 @@ public class MemberService {
     }
 
     public Member findMember(Long id) {
-        return memberDao.findById(id);
+        return memberDao.findById(id)
+                .orElseThrow(()-> new MemberException("존재하지 않는 유저 id입니다."));
     }
 
     public void updateMember(Long id, MemberRequest request) {
