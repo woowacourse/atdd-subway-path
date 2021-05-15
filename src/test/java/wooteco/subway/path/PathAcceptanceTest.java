@@ -9,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.web.dto.LineResponse;
+import wooteco.subway.web.dto.PathResponse;
+import wooteco.subway.web.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
     }

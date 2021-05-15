@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.station.dto.StationRequest;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.web.dto.StationRequest;
+import wooteco.subway.web.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+    private static final String STATIONS_BASE_URL = "/api/stations";
+
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
@@ -84,7 +86,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
+                .when().post(STATIONS_BASE_URL)
                 .then().log().all()
                 .extract();
     }
@@ -92,7 +94,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
-                .when().get("/stations")
+                .when().get(STATIONS_BASE_URL)
                 .then().log().all()
                 .extract();
     }
@@ -100,7 +102,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
+                .when().delete(STATIONS_BASE_URL + "/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }

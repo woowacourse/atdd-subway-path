@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.web.dto.LineRequest;
+import wooteco.subway.web.dto.LineResponse;
+import wooteco.subway.web.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +22,13 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+    private static final String LINES_BASE_URL = "/api/lines";
+
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+
 
     @BeforeEach
     public void setUp() {
@@ -130,7 +133,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
+                .when().post(LINES_BASE_URL + "")
                 .then().log().all().
                         extract();
     }
@@ -139,7 +142,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
+                .when().get(LINES_BASE_URL + "")
                 .then().log().all()
                 .extract();
     }
@@ -148,7 +151,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
+                .when().get(LINES_BASE_URL + "/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -159,7 +162,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
+                .when().put(LINES_BASE_URL + "/" + response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -167,7 +170,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/" + lineResponse.getId())
+                .when().delete(LINES_BASE_URL + "/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }
