@@ -42,20 +42,17 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
         return ResponseEntity.ok(new MemberResponse(member));
     }
 
-    // TODO: 구현 하기
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMin(
             @AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
         return ResponseEntity.ok(memberService.updateMember(member.getId(), memberRequest));
     }
 
-    // TODO: 구현 하기
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
         memberService.deleteMember(member.getId());
