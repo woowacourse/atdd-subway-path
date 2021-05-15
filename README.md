@@ -55,4 +55,4 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 
 
 ## 📌 기능 요구사항
-- [ ] 최단 경로를 조회하는 API를 구현한다.
+- [x] 최단 경로를 조회하는 API를 구현한다.
