@@ -28,7 +28,6 @@ public class MemberController {
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         Member member = memberService.findMember(id);
-
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 

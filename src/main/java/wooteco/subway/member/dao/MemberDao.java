@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.member.application.MemberException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
@@ -18,25 +17,11 @@ public class MemberDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
-
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("member")
                 .usingGeneratedKeyColumns("id");
-    }
-
-    public boolean isExist(final String email, final String password) {
-        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
 
     public boolean isExistEmail(final String email) {
@@ -86,4 +71,12 @@ public class MemberDao {
             return Optional.empty();
         }
     }
+
+    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+            new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getInt("age")
+            );
 }

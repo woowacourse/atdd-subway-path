@@ -2,14 +2,11 @@ package wooteco.subway.auth;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.application.AuthorizedException;
 import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
@@ -29,7 +26,7 @@ public class AuthServiceTest {
 
     @DisplayName("db에 존재하는 사용자로 token을 생성할 경우 정상 생성된다.")
     @Test
-    public void checkIsExisting(){
+    public void checkIsExisting() {
         final TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
         memberDao.insert(new Member(null, testEmail, testPassword, 1));
 
@@ -38,10 +35,10 @@ public class AuthServiceTest {
 
     @DisplayName("db에 존재하지 않는 사용자로 token을 생성할 경우 예외를 발생한다.")
     @Test
-    public void checkIsExistingWhenDataNotExisting(){
+    public void checkIsExistingWhenDataNotExisting() {
         final TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
 
-        assertThatThrownBy(()->{
+        assertThatThrownBy(() -> {
             authService.createToken(tokenRequest);
         }).isInstanceOf(AuthorizedException.class);
     }
