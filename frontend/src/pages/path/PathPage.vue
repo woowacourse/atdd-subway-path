@@ -163,9 +163,13 @@ export default {
     async onSearchResult() {
       try {
         // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        this.pathResult = await fetch("/paths", {
-
-        }, {})
+        this.pathResult = await fetch("/paths?source=" + this.source + "&target=" + this.target)
+        .then(res => {
+          return {
+            stations: res.stations,
+            distance: res.distance
+          }
+        })
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
