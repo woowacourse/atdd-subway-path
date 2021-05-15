@@ -157,7 +157,7 @@ export default {
         const response = await fetch("http://localhost:8080/lines", {
           method:"POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body : JSON.stringify({
             name : this.lineForm.name,
@@ -166,7 +166,7 @@ export default {
             downStationId: this.lineForm.downStationId,
             distance: this.lineForm.distance
           })
-        })
+        });
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }

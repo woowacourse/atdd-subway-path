@@ -117,27 +117,26 @@ export default {
       try {
         console.log(this.line._id)
         // TODO Line을 수정하는 API를 추가해주세요.
-        await fetch("http://localhost:8080/lines/" + lineId, {
+        const response1 = await fetch(`http://localhost:8080/lines/${lineId}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body : JSON.stringify({
             name : this.lineEditForm.name,
-            color : this.lineEditForm.color,
+            color : this.lineEditForm.color
           })
-        }).then(response => {
-          if (!response.ok) {
-            throw new Error(`${response.status}`);
-          }
-        })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        const response = await fetch("http://localhost:8080/lines")
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        });
+        if (!response1.ok) {
+          throw new Error(`${response1.status}`);
         }
-        const lines = await response.json()
-        this.setLines([...lines])
+        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
+        const response2 = await fetch("http://localhost:8080/lines");
+        if (!response2.ok) {
+          throw new Error(`${response2.status}`);
+        }
+        const lines = await response2.json();
+        this.setLines([...lines]);
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {
