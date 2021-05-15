@@ -1,11 +1,9 @@
 package wooteco.subway.member.domain;
 
-import org.apache.tomcat.websocket.AuthenticationException;
-
-import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.application.AuthorizationException;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
@@ -22,7 +20,7 @@ public class Member {
     }
 
     public Member(String email, String password) {
-        this.email= email;
+        this.email = email;
         this.password = password;
     }
 
