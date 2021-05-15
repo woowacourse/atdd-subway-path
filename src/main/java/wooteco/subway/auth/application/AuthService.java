@@ -24,11 +24,10 @@ public class AuthService {
     }
 
     public String createToken(final String email, final String password) {
-        final Member member = memberDao.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new AuthorizedException("존재하지 않는 유저입니다."));
-
-        final String payload = String.valueOf(member.getEmail());
-        return jwtTokenProvider.createToken(payload);
+        if (memberDao.isExist(email, password)) {
+            return jwtTokenProvider.createToken(email);
+        }
+        throw new AuthorizedException("존재하지 않는 유저입니다.");
     }
 
     public Member findMemberByToken(final String token) {
