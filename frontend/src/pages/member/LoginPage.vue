@@ -65,20 +65,16 @@ export default {
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER, SET_ACCESS_TOKEN]),
-    isValid() {
-      return this.$refs.loginForm.validate();
-    },
     async onLogin() {
       if (!this.isValid()) {
         return;
       }
       try {
         // TODO login API를 작성해주세요.
-        const { email, password } = this.member;
+        const {email, password} = this.member;
         const data = await fetch("/api/login/token", {
           method: 'POST',
-          body: JSON.stringify({ email, password }),
-          credentials: 'include',
+          body: JSON.stringify({email, password}),
           headers: {
             'Content-Type': 'application/json'
           }
@@ -86,17 +82,19 @@ export default {
           return res.json();
         });
 
-        console.log(data.accessToken)
+        if (data.message) {
+          throw new Error(data.message);
+        }
 
-        this.setAccessToken(data.accessToken)
+        localStorage.setItem("token", data.accessToken);
+        this.setAccessToken(data.accessToken);
 
         // TODO member 데이터를 불러와 주세요.
         const member = await fetch("/api/members/me", {
           method: 'GET',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization' : "Bearer " + this.accessToken
+            'Authorization': "Bearer " + this.accessToken
           }
         }).then(res => {
           return res.json();
@@ -109,6 +107,9 @@ export default {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
         throw new Error(e);
       }
+    },
+    isValid() {
+      return this.$refs.loginForm.validate();
     },
   },
   data() {

@@ -9,6 +9,9 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 @RequestMapping("/api")
 public class AuthController {
@@ -22,7 +25,6 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
-        System.out.println("@@@@@@@  " + tokenResponse.getAccessToken());
         return ResponseEntity.ok().body(tokenResponse);
     }
 }
