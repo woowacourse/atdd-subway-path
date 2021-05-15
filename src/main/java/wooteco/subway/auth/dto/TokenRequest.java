@@ -1,6 +1,9 @@
 package wooteco.subway.auth.dto;
 
+import wooteco.subway.member.domain.Member;
+
 public class TokenRequest {
+
     private String email;
     private String password;
 
@@ -18,5 +21,9 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public Member toEntity() {
+        return new Member(email, password);
     }
 }
