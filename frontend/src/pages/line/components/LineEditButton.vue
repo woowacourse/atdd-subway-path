@@ -81,6 +81,7 @@ import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
+import {getRequest, putRequest} from "../../../utils/request";
 
 export default {
   name: "LineEditButton",
@@ -114,11 +115,13 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        await putRequest(`lines/${this.line.id}`, {
+          name: this.lineEditForm['name'],
+          color: this.lineEditForm['color'],
+          distance: this.lineEditForm['distance']
+        })
+        const lines = await getRequest("lines")
+        this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {

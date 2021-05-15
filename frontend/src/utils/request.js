@@ -42,7 +42,7 @@ async function postRequest(url = '', body = {}) {
 }
 
 async function putRequest(url = '', body = {}) {
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
+    return await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'put',
         headers: {
             'Content-Type': 'application/json'
@@ -50,16 +50,11 @@ async function putRequest(url = '', body = {}) {
         credentials: 'include',
         body: JSON.stringify(body)
     })
-        .then(response =>
-            response.json()
-        );
-
-    return orThrow(result)
 }
 
 
 async function deleteRequest(url = '', body = {}) {
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
+    return await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'delete',
         headers: {
             'Content-Type': 'application/json'
@@ -67,9 +62,4 @@ async function deleteRequest(url = '', body = {}) {
         credentials: 'include',
         body: JSON.stringify(body)
     })
-        .then(response =>
-            response.json()
-        );
-
-    return orThrow(result)
 }

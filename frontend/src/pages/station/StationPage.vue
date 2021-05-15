@@ -9,23 +9,24 @@
           <v-form ref="stationForm" v-model="valid" @submit.prevent>
             <div class="d-flex">
               <v-text-field
-                color="grey darken-1"
-                class="mr-4"
-                @keydown.enter="onCreateStation"
-                label="지하철 역 이름을 입력해주세요."
-                v-model="stationName"
-                prepend-inner-icon="mdi-subway"
-                dense
-                outlined
-                :rules="rules.stationName"
-                autofocus
+                  color="grey darken-1"
+                  class="mr-4"
+                  @keydown.enter="onCreateStation"
+                  label="지하철 역 이름을 입력해주세요."
+                  v-model="stationName"
+                  prepend-inner-icon="mdi-subway"
+                  dense
+                  outlined
+                  :rules="rules.stationName"
+                  autofocus
               ></v-text-field>
               <v-btn
-                :disabled="!valid"
-                color="amber"
-                @click.prevent="onCreateStation"
-                depressed
-                >추가</v-btn
+                  :disabled="!valid"
+                  color="amber"
+                  @click.prevent="onCreateStation"
+                  depressed
+              >추가
+              </v-btn
               >
             </div>
           </v-form>
@@ -55,9 +56,10 @@
 
 <script>
 import validator from "../../utils/validator";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {deleteRequest, getRequest, postRequest} from "../../utils/request";
 
 export default {
   name: "StationPage",
@@ -65,12 +67,7 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("http://localhost:8080/stations");
-    if (!response.ok) {
-      throw new Error(`${response.status}`);
-    }
-    const stations = await response.json();
+    const stations = await getRequest("stations");
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
@@ -83,20 +80,7 @@ export default {
         return;
       }
       try {
-        // TODO 역을 추가하는 API Sample
-        const response = await fetch("http://localhost:8080/stations", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.stationName,
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
-        }
-        const newStation = await response.json();
+        const newStation = await postRequest("stations", {name:this.stationName});
 
         this.setStations([...this.stations, newStation]);
         this.initStationForm();
@@ -112,10 +96,9 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch("http://localhost:8080/stations/{id}");
+        await deleteRequest(`stations/${stationId}`);
         const idx = this.stations.findIndex(
-          (station) => station.id === stationId
+            (station) => station.id === stationId
         );
         this.stations.splice(idx, 1);
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
@@ -127,7 +110,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       valid: false,
       stationName: "",
     };
