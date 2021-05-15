@@ -5,25 +5,25 @@ import wooteco.subway.domain.Station;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StationResponseDto {
+public class StationResponse {
     private Long id;
     private String name;
 
-    public static StationResponseDto of(Station station) {
-        return new StationResponseDto(station.getId(), station.getName());
+    public static StationResponse of(Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
-    public StationResponseDto() {
+    public StationResponse() {
     }
 
-    public StationResponseDto(Long id, String name) {
+    public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static List<StationResponseDto> listOf(List<Station> stations) {
+    public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                .map(StationResponseDto::of)
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 

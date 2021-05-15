@@ -2,8 +2,8 @@ package wooteco.member.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import wooteco.member.controller.dto.request.MemberRequestDto;
-import wooteco.member.controller.dto.response.MemberResponseDto;
+import wooteco.member.controller.dto.request.MemberRequest;
+import wooteco.member.controller.dto.response.MemberResponse;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
 
@@ -17,21 +17,21 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public MemberResponseDto createMember(MemberRequestDto memberRequestDto) {
-        String encryptedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
-        Member memberToInsert = new Member(memberRequestDto.getEmail(), encryptedPassword, memberRequestDto.getAge());
+    public MemberResponse createMember(MemberRequest memberRequest) {
+        String encryptedPassword = passwordEncoder.encode(memberRequest.getPassword());
+        Member memberToInsert = new Member(memberRequest.getEmail(), encryptedPassword, memberRequest.getAge());
         Member member = memberDao.insert(memberToInsert);
-        return MemberResponseDto.of(member);
+        return MemberResponse.of(member);
     }
 
-    public MemberResponseDto findMember(Long id) {
+    public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
-        return MemberResponseDto.of(member);
+        return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequestDto memberRequestDto) {
-        String encryptedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
-        memberDao.update(new Member(id, memberRequestDto.getEmail(), encryptedPassword, memberRequestDto.getAge()));
+    public void updateMember(Long id, MemberRequest memberRequest) {
+        String encryptedPassword = passwordEncoder.encode(memberRequest.getPassword());
+        memberDao.update(new Member(id, memberRequest.getEmail(), encryptedPassword, memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {

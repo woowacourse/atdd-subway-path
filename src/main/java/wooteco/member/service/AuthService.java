@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wooteco.exception.HttpException;
-import wooteco.member.controller.dto.request.SignInRequestDto;
-import wooteco.member.controller.dto.response.SignInResponseDto;
+import wooteco.member.controller.dto.request.SignInRequest;
+import wooteco.member.controller.dto.response.SignInResponse;
 import wooteco.member.dao.MemberDao;
 import wooteco.member.domain.Member;
 import wooteco.member.infrastructure.JwtTokenProvider;
@@ -25,13 +25,13 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public SignInResponseDto createToken(SignInRequestDto signInRequestDto) {
-        Member member = getUserInfo(signInRequestDto.getEmail());
-        if (passwordEncoder.matches(member.getPassword(), signInRequestDto.getPassword())) {
+    public SignInResponse createToken(SignInRequest signInRequest) {
+        Member member = getUserInfo(signInRequest.getEmail());
+        if (passwordEncoder.matches(member.getPassword(), signInRequest.getPassword())) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, "로그인 정보가 올바르지 않습니다.");
         }
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-        return new SignInResponseDto(accessToken);
+        return new SignInResponse(accessToken);
     }
 
     private Member getUserInfo(String email) {

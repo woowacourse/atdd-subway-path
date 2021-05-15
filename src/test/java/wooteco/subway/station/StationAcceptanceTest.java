@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.controller.dto.request.StationRequestDto;
-import wooteco.subway.controller.dto.response.StationResponseDto;
+import wooteco.subway.controller.dto.request.StationRequest;
+import wooteco.subway.controller.dto.response.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,40 +49,40 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        StationResponseDto stationResponseDto1 = 지하철역_등록되어_있음(강남역);
-        StationResponseDto stationResponseDto2 = 지하철역_등록되어_있음(역삼역);
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
 
         // when
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
 
         // then
         지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponseDto1, stationResponseDto2));
+        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
         // given
-        StationResponseDto stationResponseDto = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponseDto);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
 
         // then
         지하철역_삭제됨(response);
     }
 
-    public static StationResponseDto 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponseDto.class);
+    public static StationResponse 지하철역_등록되어_있음(String name) {
+        return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequestDto stationRequestDto = new StationRequestDto(name);
+        StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
                 .given().log().all()
-                .body(stationRequestDto)
+                .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/stations")
                 .then().log().all()
@@ -97,10 +97,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponseDto stationResponseDto) {
+    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/api/stations/" + stationResponseDto.getId())
+                .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }
@@ -122,13 +122,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponseDto> createdStationResponseDtos) {
-        List<Long> expectedLineIds = createdStationResponseDtos.stream()
-                .map(StationResponseDto::getId)
+    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdStationResponses) {
+        List<Long> expectedLineIds = createdStationResponses.stream()
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponseDto.class).stream()
-                .map(StationResponseDto::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

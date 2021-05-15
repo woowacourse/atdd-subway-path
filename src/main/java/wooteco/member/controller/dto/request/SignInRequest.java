@@ -1,23 +1,19 @@
 package wooteco.member.controller.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-public class MemberRequestDto {
+public class SignInRequest {
     @NotBlank
     private String email;
     @NotBlank
     private String password;
-    @NotNull
-    private Integer age;
 
-    public MemberRequestDto() {
+    public SignInRequest() {
     }
 
-    public MemberRequestDto(String email, String password, Integer age) {
+    public SignInRequest(String email, String password) {
         this.email = email;
         this.password = password;
-        this.age = age;
     }
 
     public String getEmail() {
@@ -26,9 +22,5 @@ public class MemberRequestDto {
 
     public String getPassword() {
         return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 }

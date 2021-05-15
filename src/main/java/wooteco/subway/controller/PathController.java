@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.controller.dto.response.PathResponseDto;
+import wooteco.subway.controller.dto.response.PathResponse;
 import wooteco.subway.service.PathService;
 
 @RequestMapping("/api")
@@ -18,10 +18,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponseDto> findPath(@RequestParam(name = "source") Long sourceStationId,
-                                                    @RequestParam(name = "target") Long targetStationId) {
+    public ResponseEntity<PathResponse> findPath(@RequestParam(name = "source") Long sourceStationId,
+                                                 @RequestParam(name = "target") Long targetStationId) {
 
-        PathResponseDto pathResponseDto = pathService.findPath(sourceStationId, targetStationId);
-        return ResponseEntity.ok(pathResponseDto);
+        PathResponse pathResponse = pathService.findPath(sourceStationId, targetStationId);
+        return ResponseEntity.ok(pathResponse);
     }
 }

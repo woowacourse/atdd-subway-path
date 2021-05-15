@@ -2,13 +2,13 @@ package wooteco.subway.controller.dto.request;
 
 import wooteco.subway.domain.Station;
 
-public class StationRequestDto {
+public class StationRequest {
     private String name;
 
-    public StationRequestDto() {
+    public StationRequest() {
     }
 
-    public StationRequestDto(String name) {
+    public StationRequest(String name) {
         this.name = name;
     }
 
