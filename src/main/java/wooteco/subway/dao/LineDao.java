@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.exception.notFound.EmptyResultException;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.LineAndSection;
 import wooteco.subway.domain.Section;
@@ -94,8 +95,9 @@ public class LineDao {
     }
 
     private Line mapLine(List<Map<String, Object>> result) {
-        if (result.size() == 0) {
-            throw new RuntimeException();
+        if (result.isEmpty()) {
+
+            throw new EmptyResultException();
         }
 
         List<Section> sections = extractSections(result);
@@ -108,8 +110,8 @@ public class LineDao {
     }
 
     private Line mapLineFromLineAndSection(List<LineAndSection> result) {
-        if (result.size() == 0) {
-            throw new RuntimeException();
+        if (result.isEmpty()) {
+            throw new EmptyResultException();
         }
 
         List<Section> sections = extractSectionsFromLineAndSection(result);
