@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.MemberRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +20,12 @@ import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
+    private static final String OTHER_EMAIL = "other@email.com";
+
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer Auth 로그인 성공")
     @Test
     void myInfoWithBearerAuth() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
@@ -31,25 +35,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 :: 회원 정보 불일치")
     @Test
     void myInfoWithBadBearerAuth() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "OTHER");
-        params.put("password", PASSWORD);
+        TokenRequest request = new TokenRequest(OTHER_EMAIL, PASSWORD);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(request)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("Bearer Auth 로그인 실패 :: 유효하지 않은 토큰 형태")
     @Test
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("token");
@@ -63,7 +65,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("토큰 자체가 존재하지 않는 경우")
+    @DisplayName("Bearer Auth 로그인 실패 :: 토큰 자체가 존재하지 않음")
     @Test
     void myInfoWithoutBearerAuth() {
         RestAssured
@@ -84,13 +86,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
+        TokenRequest request = new TokenRequest(email, password);
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(request)
                 .when()
                 .post("/login/token")
                 .then()
