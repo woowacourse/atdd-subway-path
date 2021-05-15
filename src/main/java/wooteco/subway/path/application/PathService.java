@@ -16,6 +16,7 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -38,10 +39,14 @@ public class PathService {
     private GraphPath graphPath(Long sourceId, Long targetId) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = graphFromLines();
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(
+        GraphPath graphPath = dijkstraShortestPath.getPath(
                 stationDao.findById(sourceId),
                 stationDao.findById(targetId)
         );
+        if (Objects.isNull(graphPath)) {
+            throw new IllegalArgumentException("최단 경로가 존재하지 않습니다.");
+        }
+        return graphPath;
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> graphFromLines() {
