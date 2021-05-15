@@ -1,6 +1,5 @@
 package wooteco.subway.member.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -10,7 +9,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
-import java.util.Optional;
+
 
 @RestController
 public class MemberController {

@@ -69,12 +69,21 @@ public class MemberDao {
         }
     }
 
-    public Member findByEmailAndPassword(final String email, final String password) {
+    public Optional<Member> findByEmail(final String email) {
+        try {
+            String sql = "select * from MEMBER where email = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Member> findByEmailAndPassword(final String email, final String password) {
         try {
             String sql = "select * from MEMBER where email = ? AND password = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email, password));
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+            return Optional.empty();
         }
     }
 }
