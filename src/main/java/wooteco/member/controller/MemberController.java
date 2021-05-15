@@ -6,7 +6,6 @@ import wooteco.member.controller.dto.request.ApprovedMemberRequest;
 import wooteco.member.controller.dto.request.MemberRequest;
 import wooteco.member.controller.dto.response.MemberResponse;
 import wooteco.member.domain.AuthenticationPrincipal;
-import wooteco.member.domain.Member;
 import wooteco.member.service.MemberService;
 
 import java.net.URI;

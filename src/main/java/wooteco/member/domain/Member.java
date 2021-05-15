@@ -13,7 +13,7 @@ public class Member {
         this.age = age;
     }
 
-    public static Member of(String email, String password, Integer age){
+    public static Member of(String email, String password, Integer age) {
         return new Member(null, email, password, age);
     }
 

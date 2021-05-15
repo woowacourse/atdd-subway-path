@@ -1,7 +1,5 @@
 package wooteco.member.controller.dto.request;
 
-import wooteco.member.domain.Member;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 

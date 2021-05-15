@@ -6,7 +6,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.member.controller.dto.request.ApprovedMemberRequest;
-import wooteco.member.controller.dto.request.MemberRequest;
 import wooteco.member.domain.AuthenticationPrincipal;
 import wooteco.member.infrastructure.AuthorizationExtractor;
 import wooteco.member.service.AuthService;

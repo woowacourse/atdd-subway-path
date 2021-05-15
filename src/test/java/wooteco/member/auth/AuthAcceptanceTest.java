@@ -50,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .body(params)
                 .when().post("/api/sign-in")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
