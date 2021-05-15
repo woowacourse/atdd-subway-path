@@ -1,15 +1,12 @@
 package wooteco.subway.auth.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.AuthorizationException;
 
 @RestController
 public class AuthController {
@@ -25,8 +22,4 @@ public class AuthController {
         return ResponseEntity.ok(tokenResponse);
     }
 
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<String> error(AuthorizationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-    }
 }
