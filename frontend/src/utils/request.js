@@ -1,6 +1,7 @@
 export {getRequest, postRequest, putRequest, deleteRequest};
 
 const LOCAL_HOST = 'http://localhost:8080'
+const BEARER = 'Bearer'
 
 const orThrow = (result) => {
     if (result.error) {
@@ -10,27 +11,37 @@ const orThrow = (result) => {
     return result;
 }
 
-async function getRequest(url = '') {
+async function getRequest(url = '', needToken = false) {
+    const headers = {'Content-Type': 'application/json'};
+    if (needToken) {
+        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
+    }
     let result = await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'get',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headers,
         credentials: 'include'
     })
         .then(response =>
-            response.json()
-        );
+            response.text()
+        ).then(text => {
+                if (text) {
+                    return JSON.parse(text)
+                } else
+                    return {};
+            }
+        )
 
     return orThrow(result)
 }
 
-async function postRequest(url = '', body = {}) {
+async function postRequest(url = '', body = {}, needToken = false) {
+    const headers = {'Content-Type': 'application/json'};
+    if (needToken) {
+        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
+    }
     let result = await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headers,
         credentials: 'include',
         body: JSON.stringify(body)
     })
@@ -47,25 +58,51 @@ async function postRequest(url = '', body = {}) {
     return orThrow(result)
 }
 
-async function putRequest(url = '', body = {}) {
-    return await fetch(`${LOCAL_HOST}/${url}`, {
+async function putRequest(url = '', body = {}, needToken = false) {
+    const headers = {'Content-Type': 'application/json'};
+    if (needToken) {
+        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
+    }
+    let result = await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'put',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headers,
         credentials: 'include',
         body: JSON.stringify(body)
     })
+        .then(response =>
+            response.text()
+        ).then(text => {
+                if (text) {
+                    return JSON.parse(text)
+                } else
+                    return {};
+            }
+        )
+
+    return orThrow(result)
 }
 
 
-async function deleteRequest(url = '', body = {}) {
-    return await fetch(`${LOCAL_HOST}/${url}`, {
+async function deleteRequest(url = '', body = {}, needToken = false) {
+    const headers = {'Content-Type': 'application/json'};
+    if (needToken) {
+        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
+    }
+    let result = await fetch(`${LOCAL_HOST}/${url}`, {
         method: 'delete',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headers,
         credentials: 'include',
         body: JSON.stringify(body)
     })
+        .then(response =>
+            response.text()
+        ).then(text => {
+                if (text) {
+                    return JSON.parse(text)
+                } else
+                    return {};
+            }
+        )
+
+    return orThrow(result)
 }

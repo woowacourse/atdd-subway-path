@@ -76,14 +76,15 @@ export default {
       try {
         const {email, password} = this.member;
 
-        await postRequest('login/token', {
+        const token = await postRequest('login/token', {
           email,
           password,
         });
 
-        const request = await getRequest('members/me');
+        localStorage.setItem('accessToken', token.accessToken);
 
-        const member = request;
+        const member = await getRequest('members/me', true);
+
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
