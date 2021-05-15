@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,24 +20,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Bearer Auth 성공")
+    @DisplayName("쿠키 Auth 인증 성공")
     @Test
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        Map<String, String> cookies = 로그인_토큰_발급(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(cookies);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("쿠키 Auth 인증 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        Map<String, String> cookies = 회원_등록되어_있음(EMAIL, PASSWORD, AGE).cookies();
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL + "OTHER");
@@ -47,20 +46,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .cookies(cookies)
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("쿠키 Auth 인증 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse tokenResponse = new TokenResponse("accesstoken");
-
         RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
@@ -71,9 +68,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 회원_생성을_요청(email, password, age);
     }
 
-    public static TokenResponse 로그인되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
+    public static Map<String,String> 로그인_토큰_발급(String email, String password) {
+        return 로그인_요청(email, password).cookies();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -92,10 +88,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(Map<String, String> cookies) {
         return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
+                cookies(cookies).
                 when().
                 get("/members/me").
                 then().

@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인_요청;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인_토큰_발급;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -29,15 +31,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
-        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        Map<String, String> cookies = 로그인_토큰_발급(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(cookies);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(cookies,EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
 
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(cookies);
         회원_삭제됨(deleteResponse);
     }
 
@@ -53,10 +55,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(Map<String, String> cookies) {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+                .cookies(cookies)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
@@ -64,12 +66,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(Map<String, String> cookies, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+                .cookies(cookies)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put("/members/me")
@@ -77,10 +79,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(Map<String, String> cookies) {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+                .cookies(cookies)
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
