@@ -43,6 +43,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {deleteRequest} from "../../utils/request";
 
 export default {
   name: "MyPage",
@@ -64,19 +65,8 @@ export default {
         return;
       }
 
-      const accessToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('accessToken'))
-      .split('=')[1];
-
       try {
-        await fetch("http://localhost:8080/members/me", {
-          method: "delete",
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${accessToken}`
-          }
-        })
+        deleteRequest('members/me')
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");

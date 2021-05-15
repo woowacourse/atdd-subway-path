@@ -83,6 +83,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {putRequest} from "../../utils/request";
 
 export default {
   name: "MypageEdit",
@@ -105,24 +106,8 @@ export default {
     },
     async onEditMember() {
       try {
-        const accessToken = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('accessToken'))
-        .split('=')[1];
-
         const {email, age, password} = this.editingMember;
-        await fetch("http://localhost:8080/members/me", {
-          method: "put",
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
-          })
-        })
+        putRequest('members/me', {email, age, password}, true)
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");

@@ -57,6 +57,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {getRequest, postRequest} from "../../utils/request";
 
 export default {
   name: "LoginPage",
@@ -74,31 +75,13 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const data = await fetch("http://localhost:8080/login/token", {
-          method: "post",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            'email': email,
-            'password': password,
-          })
-        })
-        .then(
-            response => response.json()
-        )
 
-        const member = await fetch("http://localhost:8080/members/me", {
-          method: "get",
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${data.accessToken}`
-          }
-        })
-        .then(
-            response => response.json()
-        )
+        await postRequest('login/token', {
+          email,
+          password,
+        });
+
+        const member = await getRequest('members/me', true)
 
         this.setMember(member);
         await this.$router.replace(`/`);
