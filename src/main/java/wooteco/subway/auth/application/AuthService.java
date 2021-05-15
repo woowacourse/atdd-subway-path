@@ -10,8 +10,8 @@ import wooteco.subway.auth.infrastructure.MemberAuthentication;
 @Service
 public class AuthService {
 
-    private JwtTokenProvider jwtTokenProvider;
-    private MemberAuthentication memberAuthentication;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberAuthentication memberAuthentication;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, MemberAuthentication memberAuthentication) {
         this.jwtTokenProvider = jwtTokenProvider;

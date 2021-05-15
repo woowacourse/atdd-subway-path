@@ -1,30 +1,27 @@
 package wooteco.subway.member.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.AuthenticationPrincipal;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.InvalidMemberException;
-import wooteco.subway.member.exception.InvalidTokenException;
+import wooteco.subway.member.dto.TokenRequest;
 
 import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
 
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();

@@ -38,4 +38,5 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.AuthenticationPrincipal;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.exception.InvalidTokenException;
@@ -45,12 +44,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String token = AuthorizationExtractor.extract(nativeRequest);
         validateToken(token);
 
-        String email = getPayload(token);
+        String email = getEmailFromPayload(token);
 
         return new LoginMember(email);
     }
 
-    private String getPayload(String token) {
+    private String getEmailFromPayload(String token) {
         String[] chunks = token.split(DELIMITER);
         String payload = new String(Base64.getDecoder().decode(chunks[1]));
 
@@ -65,4 +64,5 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new InvalidTokenException();
         }
     }
+
 }
