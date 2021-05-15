@@ -154,7 +154,7 @@ export default {
       }
       try {
         // TODO 노선을 추가하는 API를 추가해주세요. (v)
-        const response = await fetch("http://localhost:8080/lines", {
+        const response = await fetch("lines", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

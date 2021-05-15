@@ -22,10 +22,10 @@ export default {
     async onDeleteLine(lineId) {
       try {
         // TODO Line을 삭제하는 API를 추가해주세요. (v)
-        await fetch("http://localhost:8080/lines/" + lineId, {method: "DELETE"});
+        await fetch("lines/" + lineId, {method: "DELETE"});
 
         // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요. (v)
-        const lineResponse = await fetch("http://localhost:8080/lines");
+        const lineResponse = await fetch("lines");
         if (!lineResponse.ok) {
           throw new Error(`${lineResponse.status}`);
         }

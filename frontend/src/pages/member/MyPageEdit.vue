@@ -109,7 +109,7 @@ export default {
         const { email, age, password } = this.editingMember;
 
         const token = `bearer ${localStorage.getItem("token")}`;
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("members/me", {
           method: "PUT",
           headers: {
             "Content-Type" : "application/json",
@@ -122,7 +122,7 @@ export default {
           }),
         });
 
-        const response  = await fetch("http://localhost:8080/members/me", {
+        const response  = await fetch("members/me", {
               headers: {
                 "Authorization": token
               }

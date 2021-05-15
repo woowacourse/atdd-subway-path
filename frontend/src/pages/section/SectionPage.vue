@@ -87,7 +87,7 @@ export default {
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요. (v)
-    const response = await fetch("http://localhost:8080/stations");
+    const response = await fetch("stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -95,7 +95,7 @@ export default {
     this.setStations([...stations])
 
     // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요. (v)
-    const lineResponse = await fetch("http://localhost:8080/lines");
+    const lineResponse = await fetch("lines");
     if (!lineResponse.ok) {
       throw new Error(`${lineResponse.status}`);
     }
@@ -134,7 +134,7 @@ export default {
     async onChangeLine() {
       try {
         // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요. (x)
-        const response = await fetch("http://localhost:8080/lines/" + this.activeLineId);
+        const response = await fetch("lines/" + this.activeLineId);
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }

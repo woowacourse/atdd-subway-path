@@ -115,7 +115,7 @@ export default {
     async onEditLine(lineId) {
       try {
         // TODO Line을 수정하는 API를 추가해주세요. (v)
-        await fetch("http://localhost:8080/lines/" + lineId, {
+        await fetch("lines/" + lineId, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export default {
         });
 
         // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요. (v)
-        const lineResponse = await fetch("http://localhost:8080/lines");
+        const lineResponse = await fetch("lines");
         if (!lineResponse.ok) {
           throw new Error(`${lineResponse.status}`);
         }

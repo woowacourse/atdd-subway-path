@@ -66,7 +66,7 @@ export default {
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요. (v)
-    const response = await fetch("http://localhost:8080/stations");
+    const response = await fetch("stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -84,7 +84,7 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample (v)
-        const response = await fetch("http://localhost:8080/stations", {
+        const response = await fetch("stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export default {
     async onDeleteStation(stationId) {
       try {
         // TODO 역을 삭제하는 API를 추가해주세요. (v)
-        await fetch("http://localhost:8080/stations/" + stationId, {
+        await fetch("stations/" + stationId, {
           method: "DELETE"
         });
         const idx = this.stations.findIndex(
