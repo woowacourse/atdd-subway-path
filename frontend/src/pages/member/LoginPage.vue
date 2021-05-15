@@ -76,18 +76,20 @@ export default {
       try {
         const {email, password} = this.member;
 
-        await postRequest('login/token', {
+        postRequest('login/token', {
           email,
           password,
         });
 
-        const member = await getRequest('members/me', true)
+        const request = getRequest('members/me', true);
 
+        const member = request;
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
+
         throw new Error(e);
       }
     },

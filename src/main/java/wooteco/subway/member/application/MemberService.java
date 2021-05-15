@@ -5,6 +5,7 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicateEmailException;
 
 @Service
 public class MemberService {
@@ -17,8 +18,12 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        Member member = request.toMember();
+        if (isExist(member.getEmail())) {
+            throw new DuplicateEmailException(String.format("해당 이메일은 이미 등록되어있습니다. 등록된 이메일 : %s", member.getEmail()));
+        }
+        Member memberWithId = memberDao.insert(member);
+        return MemberResponse.of(memberWithId);
     }
 
     public MemberResponse findMember(Long id) {
