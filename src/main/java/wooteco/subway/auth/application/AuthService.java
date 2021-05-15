@@ -36,7 +36,7 @@ public class AuthService {
 
     private void validateToken(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("토큰이 유효하지 않습니다.");
         }
     }
 }

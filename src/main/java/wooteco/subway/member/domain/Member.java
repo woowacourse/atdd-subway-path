@@ -32,7 +32,7 @@ public class Member {
 
     public void validatePassword(String password) {
         if (!this.password.equals(password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("비밀번호가 잘못되었습니다.");
         }
     }
 
