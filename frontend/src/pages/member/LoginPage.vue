@@ -91,7 +91,7 @@ export default {
         // TODO member 데이터를 불러와 주세요. (v)
         const response  = await fetch("http://localhost:8080/members/me", {
           headers: {
-            "Authorization": "Bearer " + token["accessToken"]
+            "Authorization": "Bearer " + localStorage.getItem("token")
           }
         }
         );

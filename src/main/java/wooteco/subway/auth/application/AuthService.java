@@ -5,6 +5,7 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
@@ -35,5 +36,9 @@ public class AuthService {
             throw new AuthorizationException();
         }
         return jwtTokenProvider.getPayload(token);
+    }
+
+    public Member findMemberByEmail(String emailByToken) {
+        return memberDao.findByEmail(emailByToken);
     }
 }
