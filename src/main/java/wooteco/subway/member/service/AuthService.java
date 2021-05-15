@@ -1,12 +1,12 @@
-package wooteco.subway.auth.application;
+package wooteco.subway.member.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.AuthorizationException;
-import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.controller.request.TokenRequest;
+import wooteco.subway.member.controller.response.TokenResponse;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.exception.AuthorizationException;
+import wooteco.subway.member.infra.JwtTokenProvider;
 
 @Service
 public class AuthService {

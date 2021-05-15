@@ -1,4 +1,4 @@
-package wooteco.subway.auth.dto;
+package wooteco.subway.member.controller.request;
 
 public class TokenRequest {
     private String email;

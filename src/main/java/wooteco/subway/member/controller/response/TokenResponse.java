@@ -1,4 +1,4 @@
-package wooteco.subway.auth.dto;
+package wooteco.subway.member.controller.response;
 
 public class TokenResponse {
     private String accessToken;

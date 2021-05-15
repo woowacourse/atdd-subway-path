@@ -1,8 +1,8 @@
-package wooteco.subway.auth.config;
+package wooteco.subway.member.method;
 
 import org.springframework.web.servlet.HandlerInterceptor;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.member.infra.AuthorizationExtractor;
+import wooteco.subway.member.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

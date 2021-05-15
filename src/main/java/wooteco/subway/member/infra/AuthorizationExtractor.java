@@ -1,4 +1,4 @@
-package wooteco.subway.auth.infrastructure;
+package wooteco.subway.member.infra;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

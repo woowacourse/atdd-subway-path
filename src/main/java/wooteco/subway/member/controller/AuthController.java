@@ -1,12 +1,12 @@
-package wooteco.subway.auth.ui;
+package wooteco.subway.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.controller.request.TokenRequest;
+import wooteco.subway.member.controller.response.TokenResponse;
+import wooteco.subway.member.service.AuthService;
 
 @RestController
 public class AuthController {
