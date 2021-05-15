@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.member.exception.MemberNotFoundException;
+
 public class Member {
     private Long id;
     private String email;
@@ -44,7 +46,9 @@ public class Member {
         return age;
     }
 
-    public boolean isEqualToPassword(String password) {
-        return this.password.equals(password);
+    public void validatePassword(String passwordToValidate) {
+        if (!password.equals(passwordToValidate)) {
+            throw new MemberNotFoundException();
+        }
     }
 }
