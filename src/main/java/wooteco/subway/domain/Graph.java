@@ -11,18 +11,14 @@ import java.util.Set;
 
 public class Graph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
     private final List<Section> allSections;
-    private final DijkstraShortestPath dijkstraShortestPath;
-    private final Station sourceStation;
-    private final Station targetStation;
 
-    public Graph(List<Section> allSections, Station sourceStation, Station targetStation) {
+    public Graph(List<Section> allSections) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.allSections = allSections;
         initGraph();
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
     }
 
     private void initGraph() {
@@ -52,11 +48,11 @@ public class Graph {
         }
     }
 
-    public List<Station> getShortestPath() {
+    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
         return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
     }
 
-    public int getTotalDistance() {
+    public int getTotalDistance(Station sourceStation, Station targetStation) {
         return (int) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
     }
 }
