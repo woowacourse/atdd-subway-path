@@ -1,13 +1,12 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.application.AuthorizationException;
 
 public class Member {
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final Integer age;
 
     public Member(String email, String password) {
         this(null, email, password, null);

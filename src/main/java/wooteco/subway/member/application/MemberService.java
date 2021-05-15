@@ -24,9 +24,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(String email) {
-        final Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
-        return MemberResponse.of(member);
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

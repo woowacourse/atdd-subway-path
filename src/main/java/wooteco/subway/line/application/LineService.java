@@ -45,8 +45,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+                           .map(line -> LineResponse.of(line))
+                           .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {

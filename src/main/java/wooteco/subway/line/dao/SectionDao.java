@@ -41,15 +41,16 @@ public class SectionDao {
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("line_id", line.getId());
-                    params.put("up_station_id", section.getUpStation().getId());
-                    params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
-                    return params;
-                })
-                .collect(Collectors.toList());
+                                                        .map(section -> {
+                                                            Map<String, Object> params = new HashMap<>();
+                                                            params.put("line_id", line.getId());
+                                                            params.put("up_station_id", section.getUpStation().getId());
+                                                            params.put("down_station_id", section.getDownStation()
+                                                                                                 .getId());
+                                                            params.put("distance", section.getDistance());
+                                                            return params;
+                                                        })
+                                                        .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

@@ -1,13 +1,11 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
@@ -21,15 +19,14 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        final MemberResponse memberResponse = memberService.findMemberByEmail(tokenRequest.getEmail());
-        authorize(memberResponse, tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(memberResponse.getId());
+        final Member member = memberService.findMemberByEmail(tokenRequest.getEmail());
+        authorize(member, tokenRequest);
+        String accessToken = jwtTokenProvider.createToken(member.getId());
         return new TokenResponse(accessToken);
     }
 
-    public void authorize(final MemberResponse memberResponse, final TokenRequest tokenRequest) {
-        final Member savedMember = memberResponse.toEntity();
+    public void authorize(final Member member, final TokenRequest tokenRequest) {
         final Member requestMember = tokenRequest.toEntity();
-        savedMember.authorize(requestMember);
+        member.authorize(requestMember);
     }
 }

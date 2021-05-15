@@ -30,8 +30,8 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                       .map(StationResponse::of)
+                       .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
