@@ -49,6 +49,12 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
+    public boolean existsById(Long id) {
+        String sql = "select exists (select * from member where id = ?)";
+
+        return jdbcTemplate.queryForObject(sql, boolean.class, id);
+    }
+
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
