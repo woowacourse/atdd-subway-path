@@ -76,12 +76,12 @@ export default {
       try {
         const {email, password} = this.member;
 
-        postRequest('login/token', {
+        await postRequest('login/token', {
           email,
           password,
         });
 
-        const request = getRequest('members/me', true);
+        const request = await getRequest('members/me');
 
         const member = request;
         this.setMember(member);

@@ -35,8 +35,14 @@ async function postRequest(url = '', body = {}) {
         body: JSON.stringify(body)
     })
         .then(response =>
-            response.json()
-        );
+            response.text()
+        ).then(text => {
+                if (text) {
+                    return JSON.parse(text)
+                } else
+                    return {};
+            }
+        )
 
     return orThrow(result)
 }
