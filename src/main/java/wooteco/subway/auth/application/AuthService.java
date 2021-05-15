@@ -36,19 +36,19 @@ public class AuthService {
         }
     }
 
-    public MemberResponse findMemberByToken(String token) {
+    public Member findMemberByToken(String token) {
         if (jwtTokenProvider.validateToken(token)) {
-            String payload = jwtTokenProvider.getPayload(token);
-            return findMember(payload);
+            String email = jwtTokenProvider.getPayload(token);
+            return findMember(email);
         }
         throw new InvalidTokenException();
     }
 
-    public MemberResponse findMember(String principal) {
+    public Member findMember(String principal) {
         Optional<Member> foundMember = memberDao.findByEmail(principal);
 
         if (foundMember.isPresent()) {
-            return MemberResponse.of(foundMember.get());
+            return foundMember.get();
         }
         throw new AuthorizationException();
     }
