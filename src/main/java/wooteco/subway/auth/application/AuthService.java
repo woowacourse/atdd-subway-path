@@ -10,6 +10,7 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,13 +29,9 @@ public class AuthService {
     }
 
     private void validateLogin(TokenRequest tokenRequest) {
-        Optional<Member> foundMember = memberDao.findByEmail(tokenRequest.getEmail());
+        Member member = memberDao.findByEmail(tokenRequest.getEmail()).orElseThrow(AuthorizationException::new);
 
-        if (!foundMember.isPresent()) {
-            throw new AuthorizationException();
-        }
-
-        if (foundMember.get().isNotSamePassword(tokenRequest.getPassword())) {
+        if (member.isNotSamePassword(tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
     }
