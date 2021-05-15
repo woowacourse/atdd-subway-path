@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginMemberId;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -43,20 +43,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMemberId loginMemberId) {
+        MemberResponse memberResponse = memberService.findMember(loginMemberId.getId());
         return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMemberId loginMemberId, @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(loginMemberId.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMemberId loginMemberId) {
+        memberService.deleteMember(loginMemberId.getId());
         return ResponseEntity.noContent().build();
     }
 }

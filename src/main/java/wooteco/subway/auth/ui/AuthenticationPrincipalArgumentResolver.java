@@ -8,7 +8,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginMemberId;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +28,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String accessToken = AuthorizationExtractor.extract((HttpServletRequest) webRequest.getNativeRequest());
         String id = authService.getPayload(accessToken);
-        return new LoginMember(id);
+        return new LoginMemberId(id);
     }
 }
