@@ -1,7 +1,5 @@
 package wooteco.subway.domain;
 
-import wooteco.subway.controller.dto.response.StationResponseDto;
-
 import java.util.ArrayList;
 import java.util.List;
 

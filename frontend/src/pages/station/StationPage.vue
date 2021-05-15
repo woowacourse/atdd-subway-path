@@ -9,23 +9,24 @@
           <v-form ref="stationForm" v-model="valid" @submit.prevent>
             <div class="d-flex">
               <v-text-field
-                color="grey darken-1"
-                class="mr-4"
-                @keydown.enter="onCreateStation"
-                label="지하철 역 이름을 입력해주세요."
-                v-model="stationName"
-                prepend-inner-icon="mdi-subway"
-                dense
-                outlined
-                :rules="rules.stationName"
-                autofocus
+                  color="grey darken-1"
+                  class="mr-4"
+                  @keydown.enter="onCreateStation"
+                  label="지하철 역 이름을 입력해주세요."
+                  v-model="stationName"
+                  prepend-inner-icon="mdi-subway"
+                  dense
+                  outlined
+                  :rules="rules.stationName"
+                  autofocus
               ></v-text-field>
               <v-btn
-                :disabled="!valid"
-                color="amber"
-                @click.prevent="onCreateStation"
-                depressed
-                >추가</v-btn
+                  :disabled="!valid"
+                  color="amber"
+                  @click.prevent="onCreateStation"
+                  depressed
+              >추가
+              </v-btn
               >
             </div>
           </v-form>
@@ -55,9 +56,9 @@
 
 <script>
 import validator from "../../utils/validator";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "StationPage",
@@ -115,7 +116,7 @@ export default {
         // TODO 역을 삭제하는 API를 추가해주세요.
         // await fetch("http://localhost:8080/stations/{id}");
         const idx = this.stations.findIndex(
-          (station) => station.id === stationId
+            (station) => station.id === stationId
         );
         this.stations.splice(idx, 1);
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
@@ -127,7 +128,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       valid: false,
       stationName: "",
     };
