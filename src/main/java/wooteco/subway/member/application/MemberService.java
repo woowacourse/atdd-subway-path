@@ -18,13 +18,14 @@ public class MemberService {
 
     public MemberResponse createMember(final MemberRequest request) {
         validateEmail(request.getEmail());
-
         final Member member = memberDao.insert(request.toMember());
+
         return MemberResponse.of(member);
     }
 
     public void updateMember(final Long id, final MemberRequest request) {
         validateEmail(request.getEmail());
+
         memberDao.update(request.toMember(id));
     }
 
@@ -40,6 +41,6 @@ public class MemberService {
 
     public Member findMember(final Long id) {
         return memberDao.findById(id)
-                .orElseThrow(() -> new MemberException("존재하지 않는 유저 id입니다."));
+                .orElseThrow(() -> new MemberException("존재하지 않는 유저 id 입니다."));
     }
 }
