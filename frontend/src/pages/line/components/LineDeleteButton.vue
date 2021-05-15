@@ -8,6 +8,7 @@
 import {mapMutations} from "vuex";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
+import {getFetch, deleteFetch} from "@/utils/fetch";
 
 export default {
   name: "LineDeleteButton",
@@ -21,18 +22,8 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        await fetch("http://localhost:8080/lines/" + this.line.id, {
-          method: "DELETE"
-        }).then(response => {
-          if (!response.ok) {
-            throw new Error(`${response.status}`);
-          }
-        })
-        const response = await fetch("http://localhost:8080/lines")
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
-        }
-        const lines = await response.json()
+        await deleteFetch("/api/lines/");
+        const lines = await getFetch("/api/lines")
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {

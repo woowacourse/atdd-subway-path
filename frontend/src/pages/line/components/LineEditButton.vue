@@ -82,6 +82,7 @@ import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
+import {putFetch} from "@/utils/fetch";
 
 export default {
   name: "LineEditButton",
@@ -115,25 +116,11 @@ export default {
     },
     async onEditLine(lineId) {
       try {
-        await fetch("http://localhost:8080/lines/" + lineId, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.lineEditForm.name,
-            color: this.lineEditForm.color,
-          })
-        }).then(response => {
-          if (!response.ok) {
-            throw new Error(`${response.status}`);
-          }
-        })
-        const response = await fetch("http://localhost:8080/lines")
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        const lineEditFormBody = {
+          name: this.lineEditForm.name,
+          color: this.lineEditForm.color,
         }
-        const lines = await response.json()
+        const lines = await putFetch("/api/lines" + lineId, lineEditFormBody)
         this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);

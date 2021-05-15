@@ -28,7 +28,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
-                .orElseThrow(() -> new AuthorizationException("[ERROR] 로그인 실패입니다."));
+                .orElseThrow(() -> new AuthorizationException("로그인 실패입니다."));
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
@@ -40,6 +40,6 @@ public class AuthService {
 
     private Member findMember(String payload) {
         return memberDao.findById(Long.valueOf(payload)).orElseThrow(() ->
-                new AuthorizationException("[ERROR] 존재하지 않는 회원입니다."));
+                new AuthorizationException("존재하지 않는 회원입니다."));
     }
 }

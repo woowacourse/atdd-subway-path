@@ -74,15 +74,15 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const response1 = await fetch("http://localhost:8080/login/token", {
+        const response1 = await fetch("api/login/token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: 'include',
           body: JSON.stringify({
-            email: email,
-            password: password
+            email,
+            password
           })
         })
         if (!response1.ok) {
@@ -90,7 +90,7 @@ export default {
         }
         // console.log(data.accessToken)
         // TODO member 데이터를 불러와 주세요.
-        const response2 = await fetch("http://localhost:8080/members/me", {
+        const response2 = await fetch("api/members/me", {
           headers: {
             "Content-Type": "application/json",
             // "Authorization": `bearer ${localStorage.getItem("token")}`

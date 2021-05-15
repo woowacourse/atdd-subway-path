@@ -107,16 +107,16 @@ export default {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
-        const response = await fetch(`http://localhost:8080/members/me`, {
+        const response = await fetch(`/api/members/me`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `bearer ${this.$cookies.get("token")}`
           },
           body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
+            email,
+            age,
+            password
           })
         })
         if (!response.ok) {
@@ -125,7 +125,7 @@ export default {
         const updatedMember = await response.json();
         this.setMember(updatedMember);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
-        await this.$router.replace("/mypage");
+        await this.$router.replace("/api/mypage");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);
         throw new Error(e);

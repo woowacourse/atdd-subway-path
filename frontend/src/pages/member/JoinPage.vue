@@ -81,6 +81,7 @@ import {mapMutations} from "vuex";
 import {SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {postFetch} from "@/utils/fetch";
 
 export default {
   name: "JoinPage",
@@ -95,19 +96,10 @@ export default {
       }
       try {
         const {email, age, password} = this.member;
-        await fetch("/join", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
-          }),
-        })
+        const joinForm = {email : email, age: age, password: password}
+        await postFetch("/api/members", joinForm)
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
-        await this.$router.replace(`/login`);
+        await this.$router.replace(`/api/login`);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
       }

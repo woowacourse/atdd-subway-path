@@ -126,6 +126,7 @@ import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import shortid from "shortid";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
+import {postFetch} from "@/utils/fetch";
 
 export default {
   name: "LineCreateButton",
@@ -155,23 +156,14 @@ export default {
         return;
       }
       try {
-        const response = await fetch("http://localhost:8080/lines", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.lineForm.name,
-            color: this.lineForm.color,
-            upStationId: this.lineForm.upStationId,
-            downStationId: this.lineForm.downStationId,
-            distance: this.lineForm.distance
-          })
-        })
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        const lineFormBody = {
+          name: this.lineForm.name,
+          color: this.lineForm.color,
+          upStationId: this.lineForm.upStationId,
+          downStationId: this.lineForm.downStationId,
+          distance: this.lineForm.distance
         }
-        const newLine = await response.json();
+        const newLine = await postFetch("/api/lines", lineFormBody)
         this.setLines([...this.lines, {...newLine}]);
         // setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
         this.initLineForm();

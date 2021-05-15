@@ -43,6 +43,7 @@ import {SET_LINES, SET_STATIONS} from "../../store/shared/mutationTypes";
 import {mapGetters, mapMutations} from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
+import {getFetch} from "@/utils/fetch";
 
 export default {
   name: "LinePage",
@@ -51,17 +52,10 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    const response1 = await fetch("http://localhost:8080/stations")
-    if (!response1.ok) {
-      throw new Error(`${response1.status}`);
-    }
-    const stations = await response1.json()
+    const stations = await getFetch("/api/stations")
     this.setStations([...stations])
-    const response2 = await fetch("http://localhost:8080/lines")
-    if (!response2.ok) {
-      throw new Error(`${response2.status}`);
-    }
-    const lines = await response2.json()
+
+    const lines = await getFetch("/api/lines")
     this.setLines([...lines])
   },
   methods: {
