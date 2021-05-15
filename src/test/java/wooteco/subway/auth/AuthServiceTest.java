@@ -28,6 +28,7 @@ public class AuthServiceTest {
     @Test
     public void checkIsExisting() {
         final TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+
         memberDao.insert(new Member(null, testEmail, testPassword, 1));
 
         authService.createToken(tokenRequest);
@@ -38,8 +39,7 @@ public class AuthServiceTest {
     public void checkIsExistingWhenDataNotExisting() {
         final TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
 
-        assertThatThrownBy(() -> {
-            authService.createToken(tokenRequest);
-        }).isInstanceOf(AuthorizedException.class);
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
+                .isInstanceOf(AuthorizedException.class);
     }
 }
