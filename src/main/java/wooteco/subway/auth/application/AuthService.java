@@ -18,6 +18,15 @@ public class AuthService {
         this.memberService = memberService;
     }
 
+    public String createAccessToken(String email) {
+        if (!memberService.isExist(email)) {
+            throw new UnauthorizedException(
+                    String.format("해당 이메일로 가입한 유저가 없습니다. 이메일 : %s", email));
+        }
+        MemberResponse memberByEmail = memberService.findMemberByEmail(email);
+        return tokenProvider.createToken(String.valueOf(memberByEmail.getId()));
+    }
+
     public Member getMember(String accessToken) {
         if (!tokenProvider.validateToken(accessToken)) {
             throw new UnauthorizedException("유효하지 않은 토큰입니다.");
