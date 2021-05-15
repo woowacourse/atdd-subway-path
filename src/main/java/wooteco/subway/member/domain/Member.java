@@ -53,11 +53,9 @@ public class Member {
         return age;
     }
 
-    public void authorize(Member requestMember) {
+    public boolean isValidMember(Member requestMember) {
         final boolean isEmailEqual = email.equals(requestMember.email);
         final boolean isPasswordEqual = password.equals(requestMember.password);
-        if (!(isEmailEqual && isPasswordEqual)) {
-            throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
-        }
+        return !(isEmailEqual && isPasswordEqual);
     }
 }

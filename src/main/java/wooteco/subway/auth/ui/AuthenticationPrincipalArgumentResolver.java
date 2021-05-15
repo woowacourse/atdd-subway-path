@@ -39,7 +39,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return getLoginMember(accessToken);
     }
 
-
     public LoginMember getLoginMember(String token) {
         final String subject = jwtTokenProvider.getPayload(token).getSubject();
 

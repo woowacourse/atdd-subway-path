@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.application.AuthorizationException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
 
@@ -19,14 +20,17 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        final Member member = memberService.findMember(tokenRequest.getEmail());
+        final Member member = memberService.findMember(tokenRequest.getEmail())
+            .orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
         authorize(member, tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(member.getId());
+        final String accessToken = jwtTokenProvider.createToken(member.getId());
         return new TokenResponse(accessToken);
     }
 
     public void authorize(Member member, TokenRequest tokenRequest) {
         final Member requestMember = tokenRequest.toEntity();
-        member.authorize(requestMember);
+        if (!member.isValidMember(requestMember)) {
+            throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
+        }
     }
 }
