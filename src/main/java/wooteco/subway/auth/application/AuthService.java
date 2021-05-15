@@ -23,9 +23,14 @@ public class AuthService {
         return createToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
-    public String createToken(final String email, final String password) {
+    private String createToken(final String email, final String password) {
+        valiateUser(email, password);
+        return jwtTokenProvider.createToken(email);
+    }
+
+    private void valiateUser(final String email, final String password){
         if (memberDao.isExist(email, password)) {
-            return jwtTokenProvider.createToken(email);
+            return;
         }
         throw new AuthorizedException("존재하지 않는 유저입니다.");
     }
