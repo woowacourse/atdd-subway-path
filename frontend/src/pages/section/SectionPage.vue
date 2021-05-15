@@ -87,11 +87,19 @@ export default {
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
+    const response1 = await fetch("http://localhost:8080/stations");
+    if (!response1.ok){
+      throw new Error(`${response1.status}`);
+    }
+    const stations = await response1.json();
+    this.setStations([...stations]);
     // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    const response2 = await fetch("http://localhost:8080/lines");
+    if (!response2.ok){
+      throw new Error(`${response2.status}`);
+    }
+    const lines = await response2.json();
+    this.setLines([...lines]);
     this.initLinesView();
   },
   computed: {
@@ -125,7 +133,11 @@ export default {
     async onChangeLine() {
       try {
         // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        const response = await fetch(`http://localhost:8080/lines/${this.activeLineId}`);
+        if (!response.ok){
+          throw new Error(`${response.status}`);
+        }
+        this.activeLine = await response.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
