@@ -23,6 +23,7 @@ public class Member {
     }
 
     public Member(String email, String password, Integer age) {
+        this.id = 0L;
         this.email = email;
         this.password = password;
         this.age = age;

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exceptions.SubWayException;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -29,6 +30,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
+        ExtractableResponse<Response> createResponse2 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        중복된_이메일은_생성_수정_불가(createResponse2);
+
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
@@ -36,6 +40,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
+
+        회원_생성을_요청(NEW_EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> updateResponse2 = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        중복된_이메일은_생성_수정_불가(updateResponse2);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
@@ -51,6 +59,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().post("/members")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 중복된_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(SubWayException.DUPLICATE_EMAIL_EXCEPTION.status());
+        assertThat(response.body().asString()).isEqualTo(SubWayException.DUPLICATE_EMAIL_EXCEPTION.message());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {

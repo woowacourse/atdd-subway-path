@@ -4,6 +4,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.exception.UserLoginFailException;
+import wooteco.subway.exceptions.SubWayCustomException;
+import wooteco.subway.exceptions.SubWayException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -18,8 +20,16 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        Member member = request.toMember();
+        memberValidate(member);
+        Member newMember = memberDao.insert(request.toMember());
+        return MemberResponse.of(newMember);
+    }
+
+    private void memberValidate(Member member) {
+        if (memberDao.existByEmail(member)) {
+            throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public MemberResponse findMember(Long id) {
@@ -32,7 +42,9 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberValidate(member);
+        memberDao.update(member);
     }
 
     public void deleteMember(Long id) {

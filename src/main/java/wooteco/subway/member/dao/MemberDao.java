@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -63,5 +64,12 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public boolean existByEmail(Member member) {
+        String sql = "select exists (select * from MEMBER where email = ? and id <> ?)";
+
+        Boolean isExistEmail = jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail(), member.getId());
+        return Objects.requireNonNull(isExistEmail);
     }
 }
