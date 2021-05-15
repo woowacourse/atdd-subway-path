@@ -106,7 +106,7 @@ export default {
     async onEditMember() {
       try {
         const {email, age, password} = this.editingMember;
-        const member = await fetch("http://localhost:8080/members/me", {
+        const editedMember = await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -123,9 +123,9 @@ export default {
           }
           return response.json();
         });
-        this.setMember(member);
+        this.setMember(editedMember);
 
-        const response = await fetch("http://localhost:8080/login/token", {
+        const tokenResponse = await fetch("http://localhost:8080/login/token", {
           method: "POST",
           headers: {
             "Content-Type": " application/json",
@@ -141,7 +141,7 @@ export default {
           return response.json();
         });
 
-        localStorage.setItem("token", response.accessToken);
+        localStorage.setItem("token", tokenResponse.accessToken);
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");

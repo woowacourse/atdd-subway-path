@@ -74,7 +74,7 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const response = await fetch("http://localhost:8080/login/token", {
+        const tokenResponse = await fetch("http://localhost:8080/login/token", {
           method: "POST",
           headers: {
             "Content-Type": " application/json",
@@ -90,8 +90,8 @@ export default {
           return response.json();
         });
 
-        localStorage.setItem("token", response.accessToken);
-        const member = await fetch("http://localhost:8080/members/me", {
+        localStorage.setItem("token", tokenResponse.accessToken);
+        const findingMember = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {
             "Content-Type": " application/json",
@@ -100,7 +100,7 @@ export default {
         }).then(data => {
           return data.json();
         });
-        this.setMember(member);
+        this.setMember(findingMember);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
