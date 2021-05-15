@@ -24,6 +24,11 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public boolean isExist(final String email, final String password) {
+        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+    }
+
     public boolean isExistEmail(final String email) {
         final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, email);
@@ -58,15 +63,6 @@ public class MemberDao {
         try {
             String sql = "select * from MEMBER where email = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Member> findByEmailAndPassword(final String email, final String password) {
-        try {
-            String sql = "select * from MEMBER where email = ? AND password = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email, password));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

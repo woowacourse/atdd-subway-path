@@ -12,26 +12,20 @@ import wooteco.subway.member.dto.MemberResponse;
 public class MemberService {
     private MemberDao memberDao;
 
-    public MemberService(MemberDao memberDao) {
+    public MemberService(final MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberResponse createMember(final MemberRequest request) {
         validateEmail(request.getEmail());
 
-        Member member = memberDao.insert(request.toMember());
+        final Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public Member findMember(Long id) {
-        return memberDao.findById(id)
-                .orElseThrow(() -> new MemberException("존재하지 않는 유저 id입니다."));
-    }
-
-    public void updateMember(Long id, MemberRequest request) {
+    public void updateMember(final Long id, final MemberRequest request) {
         validateEmail(request.getEmail());
-
-        memberDao.update(new Member(id, request.getEmail(), request.getPassword(), request.getAge()));
+        memberDao.update(request.toMember(id));
     }
 
     private void validateEmail(final String email) {
@@ -40,7 +34,12 @@ public class MemberService {
         }
     }
 
-    public void deleteMember(Long id) {
+    public void deleteMember(final Long id) {
         memberDao.deleteById(id);
+    }
+
+    public Member findMember(final Long id) {
+        return memberDao.findById(id)
+                .orElseThrow(() -> new MemberException("존재하지 않는 유저 id입니다."));
     }
 }

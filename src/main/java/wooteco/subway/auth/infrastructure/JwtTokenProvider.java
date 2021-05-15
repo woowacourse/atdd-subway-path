@@ -29,7 +29,6 @@ public class JwtTokenProvider {
 
     public String getPayload(final String token) {
         validateToken(token);
-
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
@@ -47,8 +46,8 @@ public class JwtTokenProvider {
     }
 
     private void validateExpiration(Jws<Claims> claims) {
-        boolean isExpired = claims.getBody().getExpiration().before(new Date());
-        if (isExpired) {
+        final Date expiration = claims.getBody().getExpiration();
+        if (expiration.before(new Date())) {
             throw new AuthorizedException("기간이 만료된 토큰입니다.");
         }
     }
