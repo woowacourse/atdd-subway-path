@@ -106,7 +106,7 @@ export default {
     async onEditMember() {
       try {
         const {email, age, password} = this.editingMember;
-        await fetch("/members/me", {
+        await fetch("http://localhost:8080/members/me", {
           method: 'PUT',
           headers: {
             "Authorization": "Bearer " + getCookie("JWT"),

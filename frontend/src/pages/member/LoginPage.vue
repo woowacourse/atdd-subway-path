@@ -74,7 +74,7 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const token = await fetch("/login/token", {
+        const token = await fetch("http://localhost:8080/login/token", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ export default {
 
         setCookie("JWT", token, 1);
 
-        const member = await fetch("/members/me", {
+        const member = await fetch("http://localhost:8080/members/me", {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + getCookie("JWT")

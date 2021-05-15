@@ -64,7 +64,7 @@ export default {
         return;
       }
       try {
-        await fetch("/members/me", {
+        await fetch("http://localhost:8080/members/me", {
           method: 'DELETE',
           headers: {
             "Authorization": "Bearer " + getCookie("JWT")
