@@ -23,9 +23,31 @@
 
 <script>
 import { NAV_ITEMS } from "../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_MEMBER} from "@/store/shared/mutationTypes";
 
 export default {
   name: "MainPage",
+  async created() {
+    const accessToken = localStorage.getItem("token");
+
+    if (accessToken !== null) {
+      const member = await fetch("http://localhost:8080/members/me", {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + accessToken
+        }
+      });
+      if (member.ok) {
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
+      }
+    }
+
+  },
+  methods: {
+    ...mapMutations([SET_MEMBER]),
+  },
   data() {
     return {
       navItems: [...NAV_ITEMS],

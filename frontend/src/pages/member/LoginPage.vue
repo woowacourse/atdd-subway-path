@@ -9,36 +9,36 @@
           <v-card-text class="px-4 pt-4 pb-0">
             <div class="d-flex">
               <v-text-field
-                color="grey darken-1"
-                label="이메일을 입력해주세요."
-                v-model="member.email"
-                prepend-inner-icon="mdi-email"
-                dense
-                outlined
-                :rules="rules.member.email"
+                  color="grey darken-1"
+                  label="이메일을 입력해주세요."
+                  v-model="member.email"
+                  prepend-inner-icon="mdi-email"
+                  dense
+                  outlined
+                  :rules="rules.member.email"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
               <v-text-field
-                color="grey darken-1"
-                label="비밀번호를 입력해주세요."
-                v-model="member.password"
-                prepend-inner-icon="mdi-lock"
-                dense
-                outlined
-                type="password"
-                :rules="rules.member.password"
+                  color="grey darken-1"
+                  label="비밀번호를 입력해주세요."
+                  v-model="member.password"
+                  prepend-inner-icon="mdi-lock"
+                  dense
+                  outlined
+                  type="password"
+                  :rules="rules.member.password"
               ></v-text-field>
             </div>
           </v-card-text>
           <v-card-actions class="px-4 pb-4">
             <v-spacer></v-spacer>
             <v-btn
-              @click.prevent="onLogin"
-              :disabled="!valid"
-              color="amber"
-              class="w-100"
-              depressed
+                @click.prevent="onLogin"
+                :disabled="!valid"
+                color="amber"
+                class="w-100"
+                depressed
             >
               로그인
             </v-btn>
@@ -53,9 +53,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -73,12 +73,39 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const {email, password} = this.member;
+
+        const bodyValue = {
+          email: email,
+          password: password
+        }
+
+        const response = await fetch("http://localhost:8080/login/token", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyValue)
+        })
+
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
+        const tokenPromise = await response.json();
+        const accessToken = tokenPromise.accessToken;
+        localStorage.setItem("token", accessToken);
+
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
+        });
+
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
@@ -90,7 +117,7 @@ export default {
   data() {
     return {
       valid: false,
-      rules: { ...validator },
+      rules: {...validator},
       member: {
         email: "",
         password: "",

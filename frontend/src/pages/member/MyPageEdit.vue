@@ -16,6 +16,7 @@
                 dense
                 outlined
                 :rules="rules.member.email"
+                :disabled="true"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
@@ -105,9 +106,41 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const { email, age, password } = this.editingMember;
+
+        const bodyValue = {
+          email: email,
+          password: password,
+          age: age
+        }
+
+        console.log(bodyValue);
+
+        const accessToken = localStorage.getItem("token");
+
+        const response = await fetch("http://localhost:8080/members/me", {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyValue)
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
+        });
+
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
