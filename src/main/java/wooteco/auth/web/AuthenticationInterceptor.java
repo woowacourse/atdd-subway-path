@@ -2,7 +2,6 @@ package wooteco.auth.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.auth.infrastructure.AuthorizationExtractor;
 import wooteco.auth.infrastructure.JwtTokenProvider;
