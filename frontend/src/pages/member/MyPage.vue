@@ -64,13 +64,19 @@ export default {
         return;
       }
       try {
-        const accessToken = localStorage.getItem("token");
+        const COOKIE = name => document.cookie
+            .split("; ")
+            .find(row => row.startsWith(name))
+            .split("=")[1];
+
+        const accessToken = COOKIE("accessToken");
         await fetch(`http://localhost:8080/members/me`, {
           method: 'DELETE',
           "Authorization": "Bearer " + accessToken
         })
+
+        document.cookie = "accessToken=; max-age=-1"
         this.setMember(null);
-        localStorage.setItem("token", "");
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {

@@ -29,7 +29,12 @@ import {SET_MEMBER} from "@/store/shared/mutationTypes";
 export default {
   name: "MainPage",
   async created() {
-    const accessToken = localStorage.getItem("token");
+    const COOKIE = name => document.cookie
+        .split("; ")
+        .find(row => row.startsWith(name))
+        .split("=")[1];
+
+    const accessToken = COOKIE("accessToken");
     if (accessToken) {
       const member = await fetch("http://localhost:8080/members/me", {
         method: 'GET',

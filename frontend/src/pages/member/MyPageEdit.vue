@@ -111,7 +111,13 @@ export default {
           "age": age,
           "email": email
         }
-        const accessToken = localStorage.getItem("token");
+
+        const COOKIE = name => document.cookie
+            .split("; ")
+            .find(row => row.startsWith(name))
+            .split("=")[1];
+
+        const accessToken = COOKIE("accessToken");
         const option = {
           method: 'PUT',
           headers: {

@@ -24,7 +24,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_ACCESS_TOKEN, SET_MEMBER]),
     logout() {
       try {
-        localStorage.setItem("token", "");
+        document.cookie = "accessToken=; max-age=-1"
         this.setAccessToken(null);
         this.setMember(null);
         this.$router.replace("/");
