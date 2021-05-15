@@ -1,7 +1,8 @@
 package wooteco.subway.member.dto;
 
-import java.beans.ConstructorProperties;
 import wooteco.subway.member.domain.Member;
+
+import java.beans.ConstructorProperties;
 
 public class MemberResponse {
     private Long id;

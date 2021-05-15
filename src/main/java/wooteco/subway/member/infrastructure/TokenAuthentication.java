@@ -1,34 +1,48 @@
 package wooteco.subway.member.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 
 public class TokenAuthentication {
+    private static final String AUTHENTICATION_URL = "http://localhost:8080/auth/token";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final HttpURLConnection httpURLConnection;
+    private final HttpClient httpClient;
 
-    public TokenAuthentication(HttpURLConnection httpURLConnection) {
-        this.httpURLConnection = httpURLConnection;
+    public TokenAuthentication(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     public boolean validate(String token) {
         try {
-            sendTokenRequestToAuthServer(new TokenRequest(token), httpURLConnection);
+            int statusCode = sendTokenRequestToAuthServer(new TokenRequest(token));
 
-            return httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
+            return statusCode == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void sendTokenRequestToAuthServer(TokenRequest tokenRequest, HttpURLConnection urlConnection) throws IOException {
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
-        outputStreamWriter.write(OBJECT_MAPPER.writeValueAsString(tokenRequest));
-        outputStreamWriter.flush();
+    private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) throws IOException {
+        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
+
+        httpPost.setEntity(
+                new StringEntity(
+                        OBJECT_MAPPER.writeValueAsString(tokenRequest),
+                        ContentType.APPLICATION_JSON
+                )
+        );
+
+        HttpResponse execute = httpClient.execute(httpPost);
+
+        return execute.getStatusLine().getStatusCode();
     }
 
     private static class TokenRequest {

@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.exception.InvalidMemberException;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -58,4 +59,5 @@ public class MemberService {
     public Member findByEmail(String email) {
         return memberDao.findByEmail(email);
     }
+
 }
