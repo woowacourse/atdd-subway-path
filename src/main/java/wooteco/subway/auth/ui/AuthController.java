@@ -9,8 +9,6 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
-import java.util.Optional;
-
 @RestController
 public class AuthController {
     private final AuthService authService;
