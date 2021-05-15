@@ -7,8 +7,6 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import java.util.Optional;
-
 @Transactional
 @Service
 public class MemberService {
@@ -35,8 +33,8 @@ public class MemberService {
         memberDao.update(new Member(id, request.getEmail(), request.getPassword(), request.getAge()));
     }
 
-    private void validateEmail(final String email){
-        if(memberDao.isExistEmail(email)){
+    private void validateEmail(final String email) {
+        if (memberDao.isExistEmail(email)) {
             throw new IllegalArgumentException("이미 존재하는 Email 입니다.");
         }
     }

@@ -1,6 +1,5 @@
 package wooteco.subway.auth.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ public class AuthController {
     // XXX :: Member를 Controller에서 확인하고, email만 넘겨서 token을 생성하는 것과 지금
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody final TokenRequest tokenRequest) {
-        final String token= authService.createToken(tokenRequest);
+        final String token = authService.createToken(tokenRequest);
 
         return ResponseEntity.ok(new TokenResponse(token));
     }
