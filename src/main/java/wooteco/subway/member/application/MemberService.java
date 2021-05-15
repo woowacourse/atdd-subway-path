@@ -35,7 +35,7 @@ public class MemberService {
 
     private void validateEmail(final String email) {
         if (memberDao.isExistEmail(email)) {
-            throw new IllegalArgumentException("이미 존재하는 Email 입니다.");
+            throw new MemberException("이미 존재하는 Email 입니다.");
         }
     }
 

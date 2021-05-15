@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.member.application.MemberException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
@@ -64,7 +65,7 @@ public class MemberDao {
             String sql = "select * from MEMBER where id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+            throw new MemberException("존재하지 않는 유저입니다.");
         }
     }
 
