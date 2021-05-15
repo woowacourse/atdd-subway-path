@@ -10,7 +10,6 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {

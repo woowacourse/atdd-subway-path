@@ -14,7 +14,6 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인_요청;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인_토큰_발급;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
