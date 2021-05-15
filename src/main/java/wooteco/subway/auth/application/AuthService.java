@@ -1,21 +1,31 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.auth.infrastructure.CookieProvider;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
+import javax.servlet.http.Cookie;
+
 @Service
 public class AuthService {
+    private final CookieProvider cookieProvider;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthService(CookieProvider cookieProvider, JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+        this.cookieProvider = cookieProvider;
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+    }
+
+    public ResponseCookie createCookie(String token) {
+        return cookieProvider.createCookie(token);
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {

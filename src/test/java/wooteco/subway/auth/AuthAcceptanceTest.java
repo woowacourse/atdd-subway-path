@@ -17,6 +17,7 @@ import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+    private static final String COOKIE_KEY = "token";
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
@@ -26,10 +27,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        String token = 로그인되어_있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(token);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -71,9 +72,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 회원_생성을_요청(email, password, age);
     }
 
-    public static TokenResponse 로그인되어_있음(String email, String password) {
+    public static String 로그인되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
+        return response.cookie(COOKIE_KEY);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -92,9 +93,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String token) {
         return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
+                auth().oauth2(token).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
                 get("/members/me").
