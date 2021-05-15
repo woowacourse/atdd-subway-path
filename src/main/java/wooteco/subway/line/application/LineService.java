@@ -70,6 +70,14 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public void deleteStationInEveryLine(Long id) {
+        final List<Long> lineIds = lineDao.findLinesContainStationById(id);
+
+        for (final Long lineId : lineIds) {
+            removeLineStation(lineId, id);
+        }
+    }
+
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());

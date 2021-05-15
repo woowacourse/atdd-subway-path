@@ -1,12 +1,15 @@
 package wooteco.subway.line.dao;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -19,6 +22,13 @@ public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
+
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
+        new Line(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+        );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -55,6 +65,24 @@ public class LineDao {
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
+    }
+
+    public List<Long> findLinesContainStationById(Long id) {
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+            "S.id as section_id, S.distance as section_distance, " +
+            "UST.id as up_station_id, UST.name as up_station_name, " +
+            "DST.id as down_station_id, DST.name as down_station_name " +
+            "from LINE L \n" +
+            "left outer join SECTION S on L.id = S.line_id " +
+            "left outer join STATION UST on S.up_station_id = UST.id " +
+            "left outer join STATION DST on S.down_station_id = DST.id " +
+            "WHERE UST.id = ? or DST.id = ?";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id, id);
+        return result.stream()
+            .map(info -> info.get("LINE_ID"))
+            .map(obj -> Long.valueOf(String.valueOf(obj)))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findAll() {
