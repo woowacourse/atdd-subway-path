@@ -10,8 +10,6 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
-import javax.servlet.http.Cookie;
-
 @Service
 public class AuthService {
     private final CookieProvider cookieProvider;

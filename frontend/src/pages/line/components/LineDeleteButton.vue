@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="onDeleteLine" icon>
+  <v-btn icon @click="onDeleteLine">
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>
@@ -21,14 +21,13 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        // TODO Line을 삭제하는 API를 추가해주세요.
         await fetch("http://localhost:8080/lines/" + this.line.id, {
           method: "DELETE"
         }).then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);
-          }})
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
+          }
+        })
         const response = await fetch("http://localhost:8080/lines")
         if (!response.ok) {
           throw new Error(`${response.status}`);
