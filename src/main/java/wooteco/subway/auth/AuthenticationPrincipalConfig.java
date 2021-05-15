@@ -4,9 +4,11 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import wooteco.subway.auth.ui.LoginInterceptor;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
@@ -22,8 +24,21 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor())
+            .addPathPatterns("/**")
+            .excludePathPatterns("/members")
+            .excludePathPatterns("/login/token");
+    }
+
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+    }
+
+    @Bean
+    public LoginInterceptor loginInterceptor() {
+        return new LoginInterceptor(jwtTokenProvider);
     }
 }
