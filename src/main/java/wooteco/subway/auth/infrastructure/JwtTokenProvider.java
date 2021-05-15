@@ -10,7 +10,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import wooteco.subway.member.domain.LoginMember;
 
 @Component
 public class JwtTokenProvider {
@@ -33,15 +32,8 @@ public class JwtTokenProvider {
                    .compact();
     }
 
-    public LoginMember getLoginMember(String token) {
-        final String subject = Jwts.parser()
-                                   .setSigningKey(secretKey)
-                                   .parseClaimsJws(token)
-                                   .getBody()
-                                   .getSubject();
-
-        final Long id = Long.valueOf(subject);
-        return new LoginMember(id);
+    public String getPayload(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
