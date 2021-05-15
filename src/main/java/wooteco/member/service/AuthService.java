@@ -2,9 +2,12 @@ package wooteco.member.service;
 
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wooteco.exception.HttpException;
+import wooteco.member.controller.dto.request.ApprovedMemberRequest;
+import wooteco.member.controller.dto.request.MemberRequest;
 import wooteco.member.controller.dto.request.SignInRequest;
 import wooteco.member.controller.dto.response.SignInResponse;
 import wooteco.member.dao.MemberDao;
@@ -19,10 +22,10 @@ public class AuthService {
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, PasswordEncoder passwordEncoder) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public SignInResponse createToken(SignInRequest signInRequest) {
@@ -39,10 +42,11 @@ public class AuthService {
                 .orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다."));
     }
 
-    public Member findMemberByToken(String token) {
+    public ApprovedMemberRequest findMemberByToken(String token) {
         try {
             String payload = jwtTokenProvider.getPayload(token);
-            return memberDao.findById(Long.valueOf(payload));
+            Member member = memberDao.findById(Long.valueOf(payload));
+            return ApprovedMemberRequest.from(member);
         } catch (JwtException | IllegalArgumentException e) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, INVALID_TOKEN_ERROR_MESSAGE);
         }

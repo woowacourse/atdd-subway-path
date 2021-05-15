@@ -1,5 +1,6 @@
 package wooteco.member.controller.dto.response;
 
+import wooteco.member.controller.dto.request.ApprovedMemberRequest;
 import wooteco.member.domain.Member;
 
 public class MemberResponse {
@@ -7,22 +8,21 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
+    private MemberResponse() {
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
+    private MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public MemberResponse(Member member) {
-        id = member.getId();
-        email = member.getEmail();
-        age = member.getAge();
+    public static MemberResponse from(ApprovedMemberRequest approvedMemberRequest) {
+        return new MemberResponse(approvedMemberRequest.getId(), approvedMemberRequest.getEmail(),
+                approvedMemberRequest.getAge());
     }
 
-    public static MemberResponse of(Member member) {
+    public static MemberResponse from(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 

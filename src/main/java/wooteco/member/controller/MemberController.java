@@ -2,6 +2,7 @@ package wooteco.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.member.controller.dto.request.ApprovedMemberRequest;
 import wooteco.member.controller.dto.request.MemberRequest;
 import wooteco.member.controller.dto.response.MemberResponse;
 import wooteco.member.domain.AuthenticationPrincipal;
@@ -44,19 +45,20 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(new MemberResponse(member));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal ApprovedMemberRequest approvedMemberRequest) {
+        return ResponseEntity.ok(MemberResponse.from(approvedMemberRequest));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
-        memberService.updateMember(member.getId(), memberRequest);
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal ApprovedMemberRequest approvedMemberRequest,
+                                                   @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(approvedMemberRequest.getId(), memberRequest);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
-        memberService.deleteMember(member.getId());
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal ApprovedMemberRequest approvedMemberRequest) {
+        memberService.deleteMember(approvedMemberRequest.getId());
         return ResponseEntity.noContent().build();
     }
 }

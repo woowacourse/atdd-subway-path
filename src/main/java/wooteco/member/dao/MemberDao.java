@@ -18,7 +18,7 @@ public class MemberDao {
     private SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
+            Member.of(
                     rs.getLong("id"),
                     rs.getString("email"),
                     rs.getString("password"),
@@ -36,7 +36,7 @@ public class MemberDao {
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        return Member.of(id, member.getEmail(), member.getPassword(), member.getAge());
     }
 
     public Optional<Member> findByEmail(String email) {

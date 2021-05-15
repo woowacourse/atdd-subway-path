@@ -5,7 +5,9 @@ import wooteco.member.domain.Member;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class MemberRequest {
+public class ApprovedMemberRequest {
+    @NotNull
+    private Long id;
     @NotBlank
     private String email;
     @NotBlank
@@ -13,17 +15,23 @@ public class MemberRequest {
     @NotNull
     private Integer age;
 
-    public MemberRequest() {
+    public ApprovedMemberRequest() {
+
     }
 
-    private MemberRequest(String email, String password, Integer age) {
+    public ApprovedMemberRequest(Long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
     }
 
-    public static MemberRequest of(String email, String password, Integer age) {
-        return new MemberRequest(email, password, age);
+    public static ApprovedMemberRequest from(Member member) {
+        return new ApprovedMemberRequest(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {

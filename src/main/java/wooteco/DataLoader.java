@@ -45,7 +45,7 @@ public class DataLoader implements CommandLineRunner {
         이호선.addSection(new Section(역삼역, 잠실역, 10));
         sectionDao.insertSections(이호선);
 
-        Member member = new Member("email@email.com", "password", 10);
+        Member member = Member.of("email@email.com", "password", 10);
         memberDao.insert(member);
     }
 }

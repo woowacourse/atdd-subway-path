@@ -6,15 +6,19 @@ public class Member {
     private final String password;
     private final Integer age;
 
-    public Member(Long id, String email, String password, Integer age) {
+    private Member(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
     }
 
-    public Member(String email, String password, Integer age) {
-        this(null, email, password, age);
+    public static Member of(String email, String password, Integer age){
+        return new Member(null, email, password, age);
+    }
+
+    public static Member of(Long id, String email, String password, Integer age) {
+        return new Member(id, email, password, age);
     }
 
     public Long getId() {
