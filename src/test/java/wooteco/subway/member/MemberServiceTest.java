@@ -1,27 +1,23 @@
-package wooteco.subway.auth.application;
+package wooteco.subway.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
+class MemberServiceTest {
 
     @Mock
     JwtTokenProvider jwtTokenProvider;
@@ -29,7 +25,7 @@ class AuthServiceTest {
     MemberDao memberDao;
 
     @InjectMocks
-    AuthService authService;
+    MemberService memberService;
 
 
     @Test
@@ -42,7 +38,7 @@ class AuthServiceTest {
         when(jwtTokenProvider.createToken(any())).thenReturn(password);
 
         //when
-        TokenResponse tokenResponse = authService.createToken(tokenRequest);
+        TokenResponse tokenResponse = memberService.createToken(tokenRequest);
 
         //then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(password);
