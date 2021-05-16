@@ -29,7 +29,12 @@ export default {
           }
         });
 
-        const response = await fetch("/api/lines");
+        const response = await fetch("/api/lines", {
+          method: 'GET',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
+        });
         const lines = await response.json();
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
