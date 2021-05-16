@@ -22,7 +22,7 @@ public class DataLoader implements CommandLineRunner {
     private final MemberDao memberDao;
 
     public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
-        MemberDao memberDao) {
+                      MemberDao memberDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;

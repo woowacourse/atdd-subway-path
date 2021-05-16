@@ -1,6 +1,5 @@
 package wooteco.subway.member.dao;
 
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,6 +8,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
+import javax.sql.DataSource;
+
 @Repository
 public class MemberDao {
 
@@ -16,19 +17,19 @@ public class MemberDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private final RowMapper<Member> rowMapper = (rs, rowNum) ->
-        new Member(
-            rs.getLong("id"),
-            rs.getString("email"),
-            rs.getString("password"),
-            rs.getInt("age")
-        );
+            new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getInt("age")
+            );
 
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("member")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("member")
+                .usingGeneratedKeyColumns("id");
     }
 
     public Member insert(Member member) {
@@ -40,7 +41,7 @@ public class MemberDao {
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
         jdbcTemplate.update(sql,
-            member.getEmail(), member.getPassword(), member.getAge(), member.getId());
+                member.getEmail(), member.getPassword(), member.getAge(), member.getId());
     }
 
     public void deleteById(Long id) {
