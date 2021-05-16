@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
@@ -90,5 +91,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+    }
+
+    @DisplayName("존재하지 않는 id의 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWithInvalidId() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(10L, 2L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).isEqualTo("존재하지 않는 역 id입니다.");
     }
 }

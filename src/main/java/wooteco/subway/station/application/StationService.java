@@ -11,7 +11,7 @@ import wooteco.subway.station.dto.StationResponse;
 @Service
 public class StationService {
 
-    private StationDao stationDao;
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
@@ -23,7 +23,14 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
+        validateToExistId(id);
         return stationDao.findById(id);
+    }
+
+    private void validateToExistId(Long id) {
+        if (!stationDao.existsById(id)) {
+            throw new StationNotFoundException();
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {
