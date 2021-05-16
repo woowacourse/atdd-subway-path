@@ -2,6 +2,7 @@ package wooteco.subway.path.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -65,7 +66,16 @@ public class PathFinder {
             subwayGraph);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source,
             target);
+        validatePath(shortestPath);
 
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private void validatePath(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        try {
+            Objects.requireNonNull(shortestPath);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("경로가 존재하지 않습니다.", e);
+        }
     }
 }
