@@ -24,8 +24,8 @@ public class AuthService {
 
         validatePassword(password, member.getPassword());
 
-        String jws = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-        return new TokenResponse(jws);
+        String jwt = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        return new TokenResponse(jwt);
     }
 
     private void validatePassword(String password, String savedPassword) {
