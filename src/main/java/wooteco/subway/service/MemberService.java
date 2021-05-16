@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.MemberDao;
 import wooteco.subway.domain.Member;
 import wooteco.subway.dto.MemberRequest;
@@ -18,6 +19,7 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         String email = request.getEmail();
         String password = passwordEncoder.encode(request.getPassword());
@@ -31,10 +33,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), passwordEncoder.encode(memberRequest.getPassword()), memberRequest.getAge()));
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
