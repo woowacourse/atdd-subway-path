@@ -87,7 +87,7 @@ import validator from "../../utils/validator";
 export default {
   name: "MypageEdit",
   computed: {
-    ...mapGetters(["member"]),
+    ...mapGetters(["member", "accessToken"]),
   },
   created() {
     const { email, age } = this.member;
@@ -105,9 +105,29 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const editMemberData = {
+          email: this.editingMember.email,
+          password: this.editingMember.password,
+          age: this.editingMember.age
+        };
+
+        const editMemberOption = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer' + this.accessToken,
+          },
+          body: JSON.stringify(editMemberData)
+        };
+        const response = await fetch("http://localhost:8080/members/me", editMemberOption);
+        if(!response.ok) {
+          const error = await response.json();
+          const errorMessage = error.errorMessage
+          this.showSnackbar(errorMessage);
+          return;
+        }
+
+        this.setMember(editMemberData);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
