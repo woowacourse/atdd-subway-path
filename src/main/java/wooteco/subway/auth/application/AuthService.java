@@ -7,8 +7,6 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
-import java.util.Optional;
-
 @Service
 public class AuthService {
 
@@ -26,14 +24,12 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public long  getIdWhenValidLogin(TokenRequest tokenRequest) {
-        final Optional<Member> member = memberDao.findByEmail(tokenRequest.getEmail());
-        if (!member.isPresent() ||
-                !member.get().haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
-        }
-
-        return member.get().getId();
+    public long getIdWhenValidLogin(TokenRequest tokenRequest) {
+        return memberDao.findByEmail(tokenRequest.getEmail())
+                .filter(member ->
+                        member.haveSameInfo(tokenRequest.getEmail(), tokenRequest.getPassword()))
+                .map(Member::getId)
+                .orElseThrow(AuthorizationException::new);
     }
 
     public Member findMemberByToken(String token) {
