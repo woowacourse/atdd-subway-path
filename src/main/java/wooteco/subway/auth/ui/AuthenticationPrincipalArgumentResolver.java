@@ -1,5 +1,6 @@
 package wooteco.subway.auth.ui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -26,11 +27,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     // parameter에 @AuthenticationPrincipal이 붙어있는 경우 동작
     @Override
-    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                       NativeWebRequest webRequest, WebDataBinderFactory binderFactory)
+            throws JsonProcessingException {
         // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = AuthorizationExtractor.extract(request);
-        String emailByToken = authService.findEmailByToken(token);
-        return new LoginMember(emailByToken);
+
+        return authService.findLoginMember(token);
     }
 }
