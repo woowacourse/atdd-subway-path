@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.auth.IllegalTokenException;
 import wooteco.subway.exception.auth.LoginFailEmailException;
 import wooteco.subway.exception.auth.LoginWrongPasswordException;
+import wooteco.subway.exception.member.NotRegisteredMemberException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
@@ -38,5 +40,16 @@ public class AuthService {
 
     public String getPayLoad(String tokenName) {
         return tokenProvider.getPayload(tokenName);
+    }
+
+    public Long findMemberIdByEmail(String email) {
+        Member member =  memberDao.findByEmail(email).orElseThrow(NotRegisteredMemberException::new);
+        return member.getId();
+    }
+
+    public void checkAvailableToken(String token) {
+        if (!tokenProvider.validateToken(token)) {
+            throw new IllegalTokenException();
+        }
     }
 }
