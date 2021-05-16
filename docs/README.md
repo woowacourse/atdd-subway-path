@@ -49,7 +49,7 @@
 # Refactoring TODO
 
 - [X] 실패하는 테스트 비활성화 (step2 구현 사항)
-- [ ] dao.ixExistMember 메소드를 토큰정보에 담긴 회원정보를 통해 로그인이 성공하는지를 확인하는 메소드명으로 수정
+- [x] dao.ixExistMember 메소드를 토큰정보에 담긴 회원정보를 통해 로그인이 성공하는지를 확인하는 메소드명으로 수정
 - [ ] payload에 대한 정책이 dao까지 끌고 가지 않도록 수정
   - [ ] memberResponse안에 담기는 정보들이 제대로된 Member인지를 구별하여 dao는 payload에 대한 정보를 모르도록 수정
 - [ ] LoginMember가 들고있는 불필요한 필드값 제거

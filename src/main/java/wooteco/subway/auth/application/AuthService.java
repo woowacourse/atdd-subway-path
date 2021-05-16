@@ -26,7 +26,7 @@ public class AuthService {
     }
 
     private boolean checkInvalidLogin(final String email, final String password) {
-        return !memberDao.isExistMember(email, password);
+        return !memberDao.isValidLogin(email, password);
     }
 
     public MemberResponse findMemberByToken(final String token) {
