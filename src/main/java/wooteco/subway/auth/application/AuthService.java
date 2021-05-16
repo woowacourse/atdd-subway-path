@@ -22,7 +22,8 @@ public class AuthService {
         if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException("등록되지 않은 사용자입니다.");
         }
-        return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
+        Long id = memberDao.findIdByEmail(tokenRequest.getEmail());
+        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(id)));
     }
 
     private boolean checkInvalidLogin(final String email, final String password) {
@@ -31,7 +32,7 @@ public class AuthService {
 
     public MemberResponse findMemberByToken(final String token) {
         String payload = jwtTokenProvider.getPayload(token);
-        Member member = memberDao.findMemberByEmail(payload);
+        Member member = memberDao.findById(Long.valueOf(payload));
         return MemberResponse.of(member);
     }
 

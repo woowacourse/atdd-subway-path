@@ -52,3 +52,4 @@
 - [x] dao.ixExistMember 메소드를 토큰정보에 담긴 회원정보를 통해 로그인이 성공하는지를 확인하는 메소드명으로 수정
 - [x] payload에 대한 정책이 dao까지 끌고 가지 않도록 수정
 - [x] LoginMember가 들고있는 불필요한 필드값 제거
+- [x] payload에 id를 담아 member에 대한 검증을 email이 아닌 id로 수행하도록 수정
