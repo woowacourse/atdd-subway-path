@@ -29,9 +29,16 @@ public class AuthService {
         return memberDao.isExist(email, password);
     }
 
-    public Member findMemberByToken(String token) {
-        final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByEmail(payload);
+    public boolean isValidToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
+
+    public String findEmail(String token) {
+        return jwtTokenProvider.getPayload(token);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email);
     }
 
 }

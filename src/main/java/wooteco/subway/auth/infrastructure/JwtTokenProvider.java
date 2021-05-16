@@ -8,7 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.exception.NotValidToken;
 
 @Component
 public class JwtTokenProvider {
@@ -34,11 +33,7 @@ public class JwtTokenProvider {
     }
 
     public String getPayload(String token) {
-        if (validateToken(token)) {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject();
-        }
-        throw new NotValidToken();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
