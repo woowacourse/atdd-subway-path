@@ -132,9 +132,9 @@ export default {
           },
           body: JSON.stringify(updateLineRequest)
         }
-        await fetch(`/lines/${this.line.id}`, option);
+        await fetch(`/api/lines/${this.line.id}`, option);
 
-        const response = await fetch("/lines");
+        const response = await fetch("/api/lines");
         const lines = await response.json();
         this.setLines([...lines])
         this.closeDialog();

@@ -17,7 +17,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping(value = "/paths")
+    @GetMapping(value = "/api/paths")
     public ResponseEntity<PathResponse> viewRoute(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.shortenPath(source, target));
     }

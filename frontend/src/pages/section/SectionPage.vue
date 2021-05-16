@@ -87,7 +87,7 @@ export default {
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
     const accessToken = localStorage.getItem("token");
-    let response = await fetch("/stations", {
+    let response = await fetch("/api/stations", {
       method: 'GET',
       headers: {
         "Authorization": "Bearer " + accessToken
@@ -96,7 +96,7 @@ export default {
     const stations = await response.json();
     this.setStations([...stations])
 
-    response = await fetch("/lines", {
+    response = await fetch("/api/lines", {
       method: 'GET',
       headers: {
         "Authorization": "Bearer " + accessToken
@@ -137,7 +137,7 @@ export default {
     async onChangeLine() {
       try {
         const accessToken = localStorage.getItem("token");
-        const response = await fetch(`/lines/${this.activeLineId}`, {
+        const response = await fetch(`/api/lines/${this.activeLineId}`, {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken

@@ -121,10 +121,10 @@ export default {
           },
           body: JSON.stringify(updateRequest)
         };
-        await fetch(`/members/me`, option)
+        await fetch(`/api/members/me`, option)
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
 
-        const member = await fetch("/members/me", {
+        const member = await fetch("/api/members/me", {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + accessToken

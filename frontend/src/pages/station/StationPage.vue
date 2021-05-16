@@ -66,7 +66,7 @@ export default {
   },
   async created() {
     const accessToken = localStorage.getItem("token");
-    const response = await fetch("/stations", {
+    const response = await fetch("/api/stations", {
       method: 'GET',
       headers: {
         "Authorization": "Bearer " + accessToken
@@ -89,8 +89,8 @@ export default {
       }
       try {
         const accessToken = localStorage.getItem("token");
-        const response = await fetch("/stations", {
-          method: "POST",
+        const response = await fetch("/api/stations", {
+          method: 'POST',
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + accessToken
@@ -119,9 +119,11 @@ export default {
     async onDeleteStation(stationId) {
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`/stations/${stationId}`, {
+        await fetch(`/api/stations/${stationId}`, {
           method: 'DELETE',
-          'Authorization': 'Bearer ' + accessToken
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
         });
         const idx = this.stations.findIndex(
           (station) => station.id === stationId

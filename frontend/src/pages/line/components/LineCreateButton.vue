@@ -173,7 +173,7 @@ export default {
           },
           body: JSON.stringify(createLineRequest)
         }
-        const newLine = await fetch("/lines", option)
+        const newLine = await fetch("/api/lines", option)
         this.setLines([...this.lines, { ...newLine }]);
         this.initLineForm();
         this.closeDialog();

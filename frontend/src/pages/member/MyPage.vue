@@ -65,7 +65,7 @@ export default {
       }
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`/members/me`, {
+        await fetch(`/api/members/me`, {
           method: 'DELETE',
           headers: {
             "Authorization": "Bearer " + accessToken

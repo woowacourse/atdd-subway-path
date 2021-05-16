@@ -108,7 +108,7 @@ export default {
           },
           body: JSON.stringify(joinRequest)
         }
-        await fetch("/members", option)
+        await fetch("/api/members", option)
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {

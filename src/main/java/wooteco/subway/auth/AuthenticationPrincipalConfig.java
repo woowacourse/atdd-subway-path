@@ -28,8 +28,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor())
             .addPathPatterns("/**")
-            .excludePathPatterns("/members")
-            .excludePathPatterns("/login/token");
+            .excludePathPatterns("/api/members")
+            .excludePathPatterns("/api/login/token");
     }
 
     @Bean

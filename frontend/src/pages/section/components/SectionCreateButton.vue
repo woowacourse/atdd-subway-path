@@ -110,7 +110,7 @@ export default {
     async initLineStationsView() {
       const accessToken = localStorage.getItem("token");
       try {
-        const response = await fetch(`/lines/${this.sectionForm.lineId}`, {
+        const response = await fetch(`/api/lines/${this.sectionForm.lineId}`, {
           'method': 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken
@@ -179,9 +179,9 @@ export default {
           },
           body: JSON.stringify(addSectionRequest)
         }
-        await fetch(`/lines/${this.sectionForm.lineId}/sections`, option);
+        await fetch(`/api/lines/${this.sectionForm.lineId}/sections`, option);
 
-        const response = await fetch("/lines", {
+        const response = await fetch("/api/lines", {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken

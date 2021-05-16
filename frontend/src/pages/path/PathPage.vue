@@ -160,7 +160,7 @@ export default {
     async onSearchResult() {
       try {
         const accessToken = localStorage.getItem("token");
-        const response = await fetch(`/paths?source=${this.path.source}&target=${this.path.target}`, {
+        const response = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`, {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken
@@ -175,7 +175,7 @@ export default {
     async initAllStationsView() {
       try {
         const accessToken = localStorage.getItem("token");
-        let response = await fetch("/stations", {
+        let response = await fetch("/api/stations", {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken

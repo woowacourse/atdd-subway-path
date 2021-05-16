@@ -22,14 +22,14 @@ export default {
     async onDeleteLine() {
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`/lines/${this.line.id}`, {
+        await fetch(`/api/lines/${this.line.id}`, {
           method: 'DELETE',
           headers: {
             "Authorization": "Bearer " + accessToken
           }
         });
 
-        const response = await fetch("/lines");
+        const response = await fetch("/api/lines");
         const lines = await response.json();
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);

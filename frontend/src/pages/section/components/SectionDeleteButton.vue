@@ -26,14 +26,14 @@ export default {
     async onDeleteLine() {
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
+        await fetch(`/api/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
           method: 'DELETE',
           headers: {
             "Authorization": "Bearer " + accessToken
           }
         })
 
-        const response = await fetch(`/lines/${this.lineId}`, {
+        const response = await fetch(`/api/lines/${this.lineId}`, {
           method: 'GET',
           headers: {
             "Authorization": "Bearer " + accessToken

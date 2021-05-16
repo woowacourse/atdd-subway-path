@@ -87,7 +87,7 @@ export default {
           body: JSON.stringify(loginRequest)
         };
 
-        let response = await fetch("/login/token", option);
+        let response = await fetch("/api/login/token", option);
         if (!response.ok) {
           this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
           return;
@@ -100,7 +100,7 @@ export default {
             "Authorization": "Bearer " + data.accessToken
           }
         }
-        response = await fetch("/members/me", option)
+        response = await fetch("/api/members/me", option)
         const member = await response.json();
         this.setMember(member);
         localStorage.setItem("token", data.accessToken);

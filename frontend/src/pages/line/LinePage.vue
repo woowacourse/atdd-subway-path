@@ -52,7 +52,7 @@ export default {
   },
   async created() {
     const accessToken = localStorage.getItem("token");
-    let response = await fetch("/stations", {
+    let response = await fetch("/api/stations", {
       method: 'GET',
       headers: {
         "Authorization": "Bearer " + accessToken
@@ -61,7 +61,7 @@ export default {
     const stations = await response.json();
     this.setStations([...stations])
 
-    response = await fetch("/lines", {
+    response = await fetch("/api/lines", {
       method: 'GET',
       headers: {
         "Authorization": "Bearer " + accessToken
