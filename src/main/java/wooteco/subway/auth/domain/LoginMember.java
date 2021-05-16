@@ -4,28 +4,16 @@ import wooteco.subway.member.dto.MemberResponse;
 
 public class LoginMember {
     private Long id;
-    private String email;
-    private Integer age;
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(Long id) {
         this.id = id;
-        this.email = email;
-        this.age = age;
     }
 
     public LoginMember(final MemberResponse memberResponse) {
-        this(memberResponse.getId(), memberResponse.getEmail(), memberResponse.getAge());
+        this(memberResponse.getId());
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 }
