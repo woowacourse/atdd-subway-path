@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "LineDeleteButton",
@@ -21,7 +21,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        // TODO Line을 삭제하는 API를 추가해주세요.
+        // [기능 추가] Line을 삭제하는 API를 추가해주세요.
         // await fetch("/api/lines/{id}")
         await fetch("http://localhost:8080/lines/" + this.line.id, {
           method: "DELETE",
@@ -30,7 +30,7 @@ export default {
             // "Authorization": "Bearer " + token
           },
         })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
+        // [기능 추가] 전체 Line 데이터를 불러오는 API를 추가해주세요.
         const linesResponse = await fetch("http://localhost:8080/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])

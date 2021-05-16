@@ -76,20 +76,16 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import dialog from "../../../mixins/dialog";
 import Dialog from "../../../components/dialogs/Dialog";
-import {
-  SET_LINE,
-  SET_LINES,
-  SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
 export default {
   name: "SectionCreateButton",
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["lines", "stations"]),
@@ -109,7 +105,7 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
+        // [기능 추가] 선택된 노선의 데이터를 불러와주세요.
         // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
         const lineResponse = await fetch("http://localhost:8080//lines/" + this.sectionForm.lineId)
         this.selectedLine = await lineResponse.json();
@@ -158,7 +154,7 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
+        // [기능 추가] 구간을 추가하는 API를 작성해주세요.
         // await fetch("/api/section", {
         //   lineId: this.selectedLine.id,
         //   section: this.sectionForm,
@@ -172,7 +168,7 @@ export default {
           body: JSON.stringify(this.sectionForm)
         })
 
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
+        // [기능 추가] 전체 line을 불러오는 API를 작성해주세요.
         const linesResponse = await fetch("http://localhost:8080/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])

@@ -72,26 +72,22 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import {
-  SET_LINES,
-  SET_STATIONS,
-  SHOW_SNACKBAR,
-} from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_LINES, SET_STATIONS, SHOW_SNACKBAR,} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 
 export default {
   name: "SectionPage",
-  components: { SectionDeleteButton, SectionCreateButton },
+  components: {SectionDeleteButton, SectionCreateButton},
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
+    // [기능 추가] 초기 역 데이터를 불러오는 API를 추가해주세요.
     const stationsResponse = await fetch("http://localhost:8080/stations");
     const stations = await stationsResponse.json();
     this.setStations([...stations]);
     1
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
+    // [기능 추가] 초기 노선 데이터를 불러오는 API를 추가해주세요.
     const linesResponse = await fetch("http://localhost:8080//lines")
     const lines = await linesResponse.json();
     this.setLines([...lines])
@@ -127,7 +123,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
+        // [기능 추가] 선택한 노선 데이터를 불러오는 API를 추가해주세요.
         // this.activeLine
         const lineResponse = await fetch("http://localhost:8080/lines/" + this.activeLineId);
         this.activeLine = await lineResponse.json()

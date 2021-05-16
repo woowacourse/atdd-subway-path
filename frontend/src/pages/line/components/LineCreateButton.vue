@@ -118,11 +118,11 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import shortid from "shortid";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 
 export default {
@@ -153,8 +153,7 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-
+        // [기능 추가] 노선을 추가하는 API를 추가해주세요.
         const newLineResponse = await fetch("http://localhost:8080/lines", {
           method: "POST",
           headers: {

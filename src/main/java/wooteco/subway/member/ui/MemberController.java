@@ -48,14 +48,14 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 구현 하기
+    // [기능 추가]: 내 페이지 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
         @AuthenticationPrincipal MemberResponse memberResponse) {
         return ResponseEntity.ok(memberResponse);
     }
 
-    // TODO: 구현 하기
+    // [기능 추가]: 내 페이지 수정 구현 하기
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(
         @AuthenticationPrincipal MemberResponse memberResponse,
@@ -64,7 +64,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO: 구현 하기
+    // [기능 추가]: 내 페이지 삭제 구현 하기
     @DeleteMapping("/members/me")
     public ResponseEntity<Void> deleteMemberOfMine(
         @AuthenticationPrincipal MemberResponse memberResponse) {

@@ -79,9 +79,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -90,7 +90,7 @@ export default {
     ...mapGetters(["member"]),
   },
   created() {
-    const { email, age } = this.member;
+    const {email, age} = this.member;
     this.editingMember = {
       email,
       age,
@@ -105,7 +105,7 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
+        // [기능 추가] member 정보를 update하는 API를 추가해주세요
         // const { email, age, password } = this.editingMember;
         // await fetch("/api/users/{this.member.id}", { email, age, password })
         const token = localStorage.getItem("token");
