@@ -1,7 +1,5 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.dto.MemberResponse;
-
 public class LoginMember {
 
     private Long id;

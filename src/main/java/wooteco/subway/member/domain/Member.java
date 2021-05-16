@@ -1,7 +1,5 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.application.AuthorizationException;
-
 public class Member {
 
     private Long id;

@@ -10,7 +10,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.application.AuthorizationException;
 import wooteco.subway.member.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
