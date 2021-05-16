@@ -17,6 +17,7 @@ import wooteco.subway.path.domain.PathFinder;
 import wooteco.subway.station.domain.Station;
 
 public class PathFinderTest {
+
     private PathFinder pathFinder;
     private List<Station> stations;
     private List<Line> lines;
