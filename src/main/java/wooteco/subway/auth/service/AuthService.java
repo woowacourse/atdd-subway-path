@@ -2,12 +2,14 @@ package wooteco.subway.auth.service;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.service.MemberService;
 
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final MemberService memberService;
