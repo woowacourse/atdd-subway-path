@@ -49,4 +49,3 @@ public class DataLoader implements CommandLineRunner {
         memberDao.insert(member);
     }
 }
-

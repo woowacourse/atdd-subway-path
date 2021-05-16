@@ -3,6 +3,7 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.NotExistMember;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
@@ -19,9 +20,9 @@ public class AuthService {
 
     public String createToken(final TokenRequest tokenRequest) {
         if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            return jwtTokenProvider.createToken(tokenRequest.getPassword());
+            return jwtTokenProvider.createToken(tokenRequest.getEmail());
         }
-        throw new IllegalArgumentException("적절하지 않은 사용자입력");
+        throw new NotExistMember();
     }
 
     private boolean checkValidLogin(final String email, final String password) {
@@ -30,7 +31,7 @@ public class AuthService {
 
     public Member findMemberByToken(String token) {
         final String payload = jwtTokenProvider.getPayload(token);
-        return memberDao.findByPassword(payload);
+        return memberDao.findByEmail(payload);
     }
 
 }
