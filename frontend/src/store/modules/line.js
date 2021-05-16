@@ -1,4 +1,4 @@
-import { SET_LINE, SET_LINES } from "../shared/mutationTypes";
+import {SET_LINE, SET_LINES} from "../shared/mutationTypes";
 
 const state = {
   line: {},

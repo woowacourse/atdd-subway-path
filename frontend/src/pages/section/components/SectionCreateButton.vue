@@ -76,15 +76,11 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import dialog from "../../../mixins/dialog";
 import Dialog from "../../../components/dialogs/Dialog";
-import {
-  SET_LINE,
-  SET_LINES,
-  SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
 export default {
