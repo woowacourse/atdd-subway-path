@@ -1,5 +1,6 @@
 package wooteco.subway.controller;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.infrastructure.AuthorizationExtractor;
 import wooteco.subway.service.AuthService;
@@ -16,7 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getMethod().equals("OPTIONS")) {
+        if (request.getMethod().equals(HttpMethod.OPTIONS.toString())) {
             return true;
         }
         String token = AuthorizationExtractor.extract(request);

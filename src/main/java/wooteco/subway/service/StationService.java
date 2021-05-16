@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
@@ -17,6 +18,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
@@ -34,6 +36,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }

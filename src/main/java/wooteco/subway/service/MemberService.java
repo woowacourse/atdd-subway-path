@@ -2,10 +2,12 @@ package wooteco.subway.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.MemberDao;
 import wooteco.subway.domain.Member;
 import wooteco.subway.dto.MemberRequest;
 import wooteco.subway.dto.MemberResponse;
+import wooteco.subway.exception.AuthenticationException;
 
 @Service
 public class MemberService {
@@ -17,6 +19,7 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         String email = request.getEmail();
         String password = passwordEncoder.encode(request.getPassword());
@@ -30,19 +33,21 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(id, memberRequest.getEmail(), passwordEncoder.encode(memberRequest.getPassword()), memberRequest.getAge()));
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
 
     public MemberResponse logIn(String email, String password) {
-        Member member = memberDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("이메일을 잘못 입력하셨습니다."));
+        Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthenticationException("이메일을 잘못 입력하셨습니다."));
         if (passwordEncoder.matches(password, member.getPassword())) {
             return MemberResponse.of(member);
         }
-        throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+        throw new AuthenticationException("비밀번호가 맞지 않습니다.");
     }
 }
