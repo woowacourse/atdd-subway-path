@@ -34,10 +34,6 @@ class MemberDaoTest {
     }
 
     @Test
-    void insert() {
-    }
-
-    @Test
     void update() {
         //given
         String newEmail = "newTest@test.com";
@@ -64,13 +60,5 @@ class MemberDaoTest {
         //then
         assertThatThrownBy(() -> memberDao.findById(originMember.getId()))
             .isInstanceOf(EmptyResultDataAccessException.class);
-    }
-
-    @Test
-    void findById() {
-    }
-
-    @Test
-    void findByEmail() {
     }
 }
