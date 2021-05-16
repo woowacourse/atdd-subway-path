@@ -81,9 +81,9 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "../../utils/constants";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {fetchJsonWithHeaderAndBody} from "../../utils/fetchJson";
+import {fetchJsonWithHeaderAndBody, tokenHeaderIfExist} from "../../utils/fetchJson";
 
 export default {
   name: "MypageEdit",
@@ -106,8 +106,7 @@ export default {
     },
     async onEditMember() {
       try {
-        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
-        const response = await fetchJsonWithHeaderAndBody("/api/members/me", FETCH_METHODS.PUT, header, this.editingMember)
+        const response = await fetchJsonWithHeaderAndBody("/api/members/me", FETCH_METHODS.PUT, tokenHeaderIfExist(), this.editingMember)
         if(!response.ok) {
           throw new Error(`${response.status}`);
         }

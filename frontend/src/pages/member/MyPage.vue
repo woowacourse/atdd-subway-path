@@ -43,7 +43,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "../../utils/constants";
-import {fetchJsonWithHeader} from "../../utils/fetchJson";
+import {fetchJsonWithHeader, tokenHeaderIfExist} from "../../utils/fetchJson";
 
 export default {
   name: "MyPage",
@@ -65,8 +65,7 @@ export default {
         return;
       }
       try {
-        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
-        const response = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.DELETE, header);
+        const response = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.DELETE, tokenHeaderIfExist());
         if(!response.ok) {
           throw new Error(`${response.status}`);
         }

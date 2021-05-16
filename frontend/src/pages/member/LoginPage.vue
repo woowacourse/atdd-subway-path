@@ -57,7 +57,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES, LOCAL_STORAGE_KEYS, FETCH_METHODS} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {fetchJsonWithBody} from "../../utils/fetchJson";
+import {fetchJsonWithBody, tokenHeaderIfExist} from "../../utils/fetchJson";
 import {fetchJsonWithHeader} from "../../utils/fetchJson";
 
 export default {
@@ -83,8 +83,7 @@ export default {
         const result = await loginResponse.json();
         localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH, result.accessToken);
 
-        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
-        const myPageResponse = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.GET, header);
+        const myPageResponse = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.GET, tokenHeaderIfExist());
 
         if (!myPageResponse.ok) {
           throw new Error(`${myPageResponse.status}`);
