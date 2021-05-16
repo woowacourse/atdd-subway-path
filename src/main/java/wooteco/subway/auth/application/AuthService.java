@@ -1,12 +1,11 @@
 package wooteco.subway.auth.application;
 
-import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.auth.InvalidMemberException;
-import wooteco.subway.exception.auth.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -31,16 +30,16 @@ public class AuthService {
                 .orElseThrow(() -> new InvalidMemberException(tokenRequest.getEmail()));
     }
 
+    @Transactional
     public LoginMember findMemberByToken(String token) {
-        try {
-            String payload = jwtTokenProvider.getPayload(token);
-            return new LoginMember(memberDao.findById(Long.valueOf(payload)));
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidTokenException();
-        }
+        String payload = jwtTokenProvider.getPayload(token);
+        return new LoginMember(memberDao.findById(Long.valueOf(payload)));
     }
 
-    public void validateToken(String token) {
-        jwtTokenProvider.validateToken(token);
+    public boolean validateToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            return true;
+        }
+        return false;
     }
 }
