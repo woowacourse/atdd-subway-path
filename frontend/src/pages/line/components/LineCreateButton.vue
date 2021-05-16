@@ -1,12 +1,12 @@
 <template>
-  <Dialog :width="500" :close="close">
+  <Dialog :close="close" :width="500">
     <template slot="trigger">
       <v-btn
-        @click="initAllStationsView"
-        class="mx-2 line-create-button"
-        fab
-        color="amber"
-        depressed
+          class="mx-2 line-create-button"
+          color="amber"
+          depressed
+          fab
+          @click="initAllStationsView"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -17,67 +17,68 @@
     <template slot="text">
       <v-form ref="lineForm" v-model="valid" @submit.prevent>
         <v-text-field
-          v-model="lineForm.name"
-          :rules="rules.line.name"
-          color="grey darken-1"
-          label="노선 이름"
-          placeholder="노선 이름"
-          outlined
+            v-model="lineForm.name"
+            :rules="rules.line.name"
+            color="grey darken-1"
+            label="노선 이름"
+            outlined
+            placeholder="노선 이름"
         ></v-text-field>
         <div class="d-flex">
           <v-select
-            v-model="lineForm.upStationId"
-            class="pr-4"
-            :items="allStationsView"
-            label="상행 종점"
-            width="400"
-            color="grey darken-1"
-            item-color="amber darken-3"
-            outlined
-            dense
+              v-model="lineForm.upStationId"
+              :items="allStationsView"
+              class="pr-4"
+              color="grey darken-1"
+              dense
+              item-color="amber darken-3"
+              label="상행 종점"
+              outlined
+              width="400"
           ></v-select>
           <v-icon class="relative arrow-left-right-icon"
-            >mdi-arrow-left-right-bold</v-icon
+          >mdi-arrow-left-right-bold
+          </v-icon
           >
           <v-select
-            v-model="lineForm.downStationId"
-            class="pl-4"
-            :items="allStationsView"
-            label="하행 종점"
-            width="400"
-            color="grey darken-1"
-            item-color="amber darken-3"
-            outlined
-            dense
+              v-model="lineForm.downStationId"
+              :items="allStationsView"
+              class="pl-4"
+              color="grey darken-1"
+              dense
+              item-color="amber darken-3"
+              label="하행 종점"
+              outlined
+              width="400"
           ></v-select>
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="lineForm.distance"
-            color="grey darken-1"
-            label="거리"
-            placeholder="거리"
-            type="number"
-            outlined
+              v-model="lineForm.distance"
+              color="grey darken-1"
+              label="거리"
+              outlined
+              placeholder="거리"
+              type="number"
           ></v-text-field>
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="lineForm.extraFare"
-            color="grey darken-1"
-            label="추가 요금"
-            placeholder="(선택) 추가 요금"
-            outlined
+              v-model="lineForm.extraFare"
+              color="grey darken-1"
+              label="추가 요금"
+              outlined
+              placeholder="(선택) 추가 요금"
           ></v-text-field>
         </div>
         <div>
           <v-text-field
-            v-model="lineForm.color"
-            :rules="rules.line.color"
-            :value="lineForm.color"
-            label="노선 색상"
-            filled
-            disabled
+              v-model="lineForm.color"
+              :rules="rules.line.color"
+              :value="lineForm.color"
+              disabled
+              filled
+              label="노선 색상"
           ></v-text-field>
           <p>
             노선의 색상을 아래 팔레트에서 선택해주세요.
@@ -86,17 +87,17 @@
             <div>
               <template v-for="(option, index) in lineColors">
                 <v-btn
-                  :key="option._id"
-                  small
-                  class="color-button ma-1"
-                  depressed
-                  min-width="30"
-                  :color="option.color"
-                  @click="setLineColor(option.color)"
+                    :key="option._id"
+                    :color="option.color"
+                    class="color-button ma-1"
+                    depressed
+                    min-width="30"
+                    small
+                    @click="setLineColor(option.color)"
                 ></v-btn>
                 <br
-                  v-if="index === 8 || index % 9 === 8"
-                  :key="`${option._id}-${index}`"
+                    v-if="index === 8 || index % 9 === 8"
+                    :key="`${option._id}-${index}`"
                 />
               </template>
             </div>
@@ -106,11 +107,12 @@
     </template>
     <template slot="action">
       <v-btn
-        :disabled="!valid"
-        @click.prevent="onCreateLine"
-        color="amber"
-        depressed
-        >확인</v-btn
+          :disabled="!valid"
+          color="amber"
+          depressed
+          @click.prevent="onCreateLine"
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
@@ -118,16 +120,17 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import shortid from "shortid";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
+import {postFetch} from "@/utils/fetch";
 
 export default {
   name: "LineCreateButton",
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["stations", "lines"]),
@@ -153,9 +156,16 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        // const newLine = await fetch("/api/lines")
-        // this.setLines([...this.lines, { ...newLine }]); setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
+        const lineFormBody = {
+          name: this.lineForm.name,
+          color: this.lineForm.color,
+          upStationId: this.lineForm.upStationId,
+          downStationId: this.lineForm.downStationId,
+          distance: this.lineForm.distance
+        }
+        const newLine = await postFetch("/api/lines", lineFormBody)
+        this.setLines([...this.lines, {...newLine}]);
+        // setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
         this.initLineForm();
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);
@@ -193,7 +203,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       lineForm: {
         name: "",
         color: "",
