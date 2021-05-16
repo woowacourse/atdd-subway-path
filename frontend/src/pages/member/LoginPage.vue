@@ -74,14 +74,14 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const token_response = await fetch("http://localhost:8080/login/token", {
+        const token_response = await fetch("http://localhost:8080/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            email: email,
-            password: password
+            email,
+            password
           }),
         });
         if (!token_response.ok) {
