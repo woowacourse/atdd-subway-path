@@ -1,8 +1,11 @@
 package wooteco.subway.auth.dto;
 
-public class TokenRequest {
+import javax.validation.constraints.NotBlank;
 
+public class TokenRequest {
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
 
     public TokenRequest() {

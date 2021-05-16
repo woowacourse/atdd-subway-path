@@ -9,6 +9,8 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
+import javax.validation.Valid;
+
 @Service
 public class AuthService {
 
@@ -20,8 +22,8 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+    public TokenResponse createToken(@Valid TokenRequest tokenRequest) {
+        if (!checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
 
@@ -29,12 +31,12 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public boolean checkInvalidLogin(String email, String password) {
+    private boolean checkValidLogin(String email, String password) {
         if (memberDao.existByEmail(email)) {
             Member member = memberDao.findByEmail(email);
-            return member.incorrectPassword(password);
+            return member.correctPassword(password);
         }
-        return true;
+        return false;
     }
 
     public LoginMember findMemberByToken(String token) {
