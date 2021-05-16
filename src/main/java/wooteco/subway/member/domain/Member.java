@@ -28,6 +28,13 @@ public class Member {
         this.age = age;
     }
 
+    public boolean isSamePassword(String password) {
+        if (this.password.equals(password)) {
+            return true;
+        }
+        return false;
+    }
+
     public Long getId() {
         return id;
     }

@@ -30,7 +30,7 @@ public class AuthService {
         String email = tokenRequest.getEmail();
         String password = tokenRequest.getPassword();
         Member member = memberDao.findByEmail(email).orElseThrow(LoginFailEmailException::new);
-        if (!member.getPassword().equals(password)) {
+        if (!member.isSamePassword(password)) {
             throw new LoginWrongPasswordException();
         }
     }
