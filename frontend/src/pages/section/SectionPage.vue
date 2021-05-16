@@ -86,7 +86,6 @@ export default {
     const stationsResponse = await fetch("http://localhost:8080/stations");
     const stations = await stationsResponse.json();
     this.setStations([...stations]);
-    1
     // [기능 추가] 초기 노선 데이터를 불러오는 API를 추가해주세요.
     const linesResponse = await fetch("http://localhost:8080//lines")
     const lines = await linesResponse.json();
