@@ -39,7 +39,6 @@ class AuthServiceTest {
         String email = "abc";
         String password = "password";
         TokenRequest tokenRequest = new TokenRequest(email, password);
-        when(memberDao.findByEmail(any())).thenReturn(Optional.of(new Member(email, password, 27)));
         when(jwtTokenProvider.createToken(any())).thenReturn(password);
 
         //when
