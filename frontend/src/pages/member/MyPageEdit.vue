@@ -113,9 +113,9 @@ export default {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
           },
           body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
+            email,
+            age,
+            password
           })
         })
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);

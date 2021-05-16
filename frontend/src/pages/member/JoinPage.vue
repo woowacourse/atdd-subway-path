@@ -101,9 +101,9 @@ export default {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
+            email,
+            age,
+            password
           })
         });
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

@@ -80,8 +80,8 @@ export default {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            'email': email,
-            'password': password
+            email,
+            password
           })
         }).then(response => response.json());
         localStorage.setItem("Authorization", data.accessToken);
