@@ -1,6 +1,5 @@
 package wooteco.subway.auth.application;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
@@ -26,12 +25,8 @@ public class AuthService {
         String email = tokenRequest.getEmail();
         String password = tokenRequest.getPassword();
 
-        String userPassword;
-        try {
-            userPassword = memberDao.getUserPassword(email);
-        } catch (EmptyResultDataAccessException e) {
-            throw new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR);
-        }
+        String userPassword = memberDao.getUserPassword(email)
+                                       .orElseThrow(() -> new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR));
 
         if (password.equals(userPassword)) {
             return new TokenResponse(jwtTokenProvider.createToken(email));
@@ -49,10 +44,7 @@ public class AuthService {
     }
 
     private Member findMemberByEmail(String email) {
-        try {
-            return memberDao.findByEmail(email);
-        } catch (EmptyResultDataAccessException e) {
-            throw new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR);
-        }
+        return memberDao.findByEmail(email)
+                        .orElseThrow(() -> new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR));
     }
 }
