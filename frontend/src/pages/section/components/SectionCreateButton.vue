@@ -109,8 +109,12 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        const selected_line_response =  await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
+        if (!selected_line_response.ok) {
+          throw new Error(`${selected_line_response.status}`);
+        }
+        this.activeLine = await selected_line_response.json();
+
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -155,14 +159,31 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        const addSectionRequest = {
+          "upStationId": this.sectionForm.upStationId,
+          "downStationId": this.sectionForm.downStationId,
+          "distance": this.sectionForm.distance
+        }
+        const add_section_response = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}/sections`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(addSectionRequest)
+        });
+        if (!add_section_response.ok) {
+          throw new Error(`${add_section_response.status}`);
+        }
+
+        const lines_response = await fetch("http://localhost:8080/lines");
+
+        if (!lines_response.ok) {
+          throw new Error(`${lines_response.status}`);
+        }
+
+        const lines = await lines_response.json();
+
+        this.setLines(lines)
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();

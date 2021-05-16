@@ -9,36 +9,36 @@
           <v-card-text class="px-4 pt-4 pb-0">
             <div class="d-flex">
               <v-text-field
-                color="grey darken-1"
-                label="이메일을 입력해주세요."
-                v-model="member.email"
-                prepend-inner-icon="mdi-email"
-                dense
-                outlined
-                :rules="rules.member.email"
+                  color="grey darken-1"
+                  label="이메일을 입력해주세요."
+                  v-model="member.email"
+                  prepend-inner-icon="mdi-email"
+                  dense
+                  outlined
+                  :rules="rules.member.email"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
               <v-text-field
-                color="grey darken-1"
-                label="비밀번호를 입력해주세요."
-                v-model="member.password"
-                prepend-inner-icon="mdi-lock"
-                dense
-                outlined
-                type="password"
-                :rules="rules.member.password"
+                  color="grey darken-1"
+                  label="비밀번호를 입력해주세요."
+                  v-model="member.password"
+                  prepend-inner-icon="mdi-lock"
+                  dense
+                  outlined
+                  type="password"
+                  :rules="rules.member.password"
               ></v-text-field>
             </div>
           </v-card-text>
           <v-card-actions class="px-4 pb-4">
             <v-spacer></v-spacer>
             <v-btn
-              @click.prevent="onLogin"
-              :disabled="!valid"
-              color="amber"
-              class="w-100"
-              depressed
+                @click.prevent="onLogin"
+                :disabled="!valid"
+                color="amber"
+                class="w-100"
+                depressed
             >
               로그인
             </v-btn>
@@ -53,9 +53,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -73,12 +73,39 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const {email, password} = this.member;
+        const token_response = await fetch("http://localhost:8080/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          }),
+        });
+        if (!token_response.ok) {
+          throw new Error(`${token_response.status}`);
+        }
+
+        const token = await token_response.json();
+        localStorage.setItem("token", token.accessToken);
+
+        const member_response = await fetch("http://localhost:8080/members/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "authorization": "Bearer " + token.accessToken
+          },
+        });
+
+        if (!member_response.ok) {
+          throw new Error(`${member_response.status}`);
+        }
+
+        const member = await member_response.json();
+        this.setMember(member);
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
@@ -90,7 +117,7 @@ export default {
   data() {
     return {
       valid: false,
-      rules: { ...validator },
+      rules: {...validator},
       member: {
         email: "",
         password: "",
