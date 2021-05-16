@@ -29,7 +29,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String token = AuthorizationExtractor.extract(
             Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         String email = memberService.getPayLoad(token);
-        MemberResponse memberResponse = memberService.findMemberByEmail(email);
-        return memberResponse;
+        return memberService.findMemberByEmail(email);
     }
 }
