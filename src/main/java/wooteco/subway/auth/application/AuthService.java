@@ -1,6 +1,7 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -19,19 +20,20 @@ public class AuthService {
     }
 
     public TokenResponse createToken(final TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+        if (!checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException("등록되지 않은 사용자입니다.");
         }
         return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
     }
 
-    private boolean checkInvalidLogin(final String email, final String password) {
-        return !memberDao.isExistMemberByEmailAndPassword(email, password);
+    private boolean checkValidLogin(final String email, final String password) {
+        return memberDao.checkValidMember(email, password);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMemberByToken(final String token) {
-        String payload = jwtTokenProvider.getPayload(token);
-        Member member = memberDao.findByPayload(payload);
+        String email = jwtTokenProvider.getEmail(token);
+        Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
     }
 
