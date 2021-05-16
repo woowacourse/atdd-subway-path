@@ -31,7 +31,7 @@ public class AuthService {
 
     public MemberResponse findMemberByToken(final String token) {
         String payload = jwtTokenProvider.getPayload(token);
-        Member member = memberDao.findByPayload(payload);
+        Member member = memberDao.findMemberByEmail(payload);
         return MemberResponse.of(member);
     }
 
