@@ -1,5 +1,7 @@
 package wooteco.subway.auth.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class UserLoginFailException extends RuntimeException {
 
     private static final int STATUS_CODE = HttpStatus.UNAUTHORIZED.value();
