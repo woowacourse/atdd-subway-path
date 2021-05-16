@@ -22,6 +22,7 @@ public class PathFinder {
     }
 
     public Path shortestPath(Station source, Station target) {
+        validateStations(source, target);
         WeightedMultigraph<Station, DefaultWeightedEdge> subwayGraph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
 
@@ -29,6 +30,12 @@ public class PathFinder {
         initializeEdges(subwayGraph);
 
         return shortestPathWithGraph(source, target, subwayGraph);
+    }
+
+    private void validateStations(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발점과 도착점이 같을 수 없습니다.");
+        }
     }
 
     private void initializeVertices(Graph<Station, DefaultWeightedEdge> subwayGraph) {

@@ -9,7 +9,7 @@ import wooteco.subway.station.application.StationNotFoundException;
 @ControllerAdvice(annotations = RestController.class)
 public class AdviceException {
 
-    @ExceptionHandler({StationNotFoundException.class})
+    @ExceptionHandler({StationNotFoundException.class, IllegalArgumentException.class})
     public ResponseEntity<String> handle(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

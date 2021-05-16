@@ -103,4 +103,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.asString()).isEqualTo("존재하지 않는 역 id입니다.");
     }
+
+    @DisplayName("중복되는 id의 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWithDuplicatedIds() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 2L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).isEqualTo("출발점과 도착점이 같을 수 없습니다.");
+    }
 }
