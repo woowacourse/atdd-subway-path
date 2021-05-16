@@ -36,4 +36,8 @@ public class MemberService {
     public Member findMember(LoginMember loginMember) {
         return memberDao.findByEmail(loginMember.getEmail());
     }
+
+    public boolean checkInvalidLogin(String principal, String credentials) {
+        return !memberDao.isExistMember(principal, credentials);
+    }
 }

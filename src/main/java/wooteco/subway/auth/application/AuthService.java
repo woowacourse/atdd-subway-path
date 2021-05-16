@@ -4,21 +4,22 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dao.MemberDao;
 
 @Service
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberService memberService;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberService = memberService;
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+        if (memberService.checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
 
@@ -26,9 +27,7 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public boolean checkInvalidLogin(String principal, String credentials) {
-        return !memberDao.isExistMember(principal, credentials);
-    }
+
 
     public String findEmailByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
