@@ -29,13 +29,6 @@ public class AuthService {
     }
 
     public String getPayload(String accessToken) {
-        validateToken(accessToken);
         return jwtTokenProvider.getPayload(accessToken);
-    }
-
-    private void validateToken(String accessToken) {
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다!");
-        }
     }
 }
