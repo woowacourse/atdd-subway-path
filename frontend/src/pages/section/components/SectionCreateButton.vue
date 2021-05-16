@@ -173,9 +173,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            headers: {
-              "Authorization": "Bearer " + accessToken
-            }
+            "Authorization": "Bearer " + accessToken
           },
           body: JSON.stringify(addSectionRequest)
         }
