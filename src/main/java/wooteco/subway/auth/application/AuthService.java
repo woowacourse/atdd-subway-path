@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.application.AuthorizationException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
 
@@ -28,5 +29,15 @@ public class AuthService {
     public void authorize(final Member member, final TokenRequest tokenRequest) {
         final Member requestMember = tokenRequest.toEntity();
         member.authorize(requestMember);
+    }
+
+    public void validateToken(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new AuthorizationException("유효하지 않은 토큰입니다");
+        }
+    }
+
+    public String getPayload(String accessToken) {
+        return jwtTokenProvider.getPayload(accessToken);
     }
 }
