@@ -79,8 +79,9 @@
 <script>
 import { mapMutations } from "vuex";
 import { SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import { SNACKBAR_MESSAGES, FETCH_METHODS } from "../../utils/constants";
 import validator from "../../utils/validator";
+import {fetchJsonWithBody} from "../../utils/fetchJson";
 
 export default {
   name: "JoinPage",
@@ -94,18 +95,10 @@ export default {
         return;
       }
       try {
-        const { email, age, password } = this.member;
-        await fetch("http://localhost:8080/members", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            age,
-            password
-          })
-        });
+        const response = await fetchJsonWithBody('/api/members', FETCH_METHODS.POST, this.member);
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {

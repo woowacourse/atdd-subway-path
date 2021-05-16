@@ -42,7 +42,8 @@
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "../../utils/constants";
+import {fetchJsonWithHeader} from "../../utils/fetchJson";
 
 export default {
   name: "MyPage",
@@ -64,14 +65,13 @@ export default {
         return;
       }
       try {
-        await fetch("http://localhost:8080/members/me", {
-          method: "delete",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
-          }
-        })
-        localStorage.removeItem("Authorization");
+        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
+        const response = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.DELETE, header);
+        if(!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTH);
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");

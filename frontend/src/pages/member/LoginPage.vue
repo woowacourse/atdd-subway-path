@@ -55,8 +55,10 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {SNACKBAR_MESSAGES, LOCAL_STORAGE_KEYS, FETCH_METHODS} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {fetchJsonWithBody} from "../../utils/fetchJson";
+import {fetchJsonWithHeader} from "../../utils/fetchJson";
 
 export default {
   name: "LoginPage",
@@ -73,26 +75,23 @@ export default {
         return;
       }
       try {
-        const { email, password } = this.member;
-        const data = await fetch("http://localhost:8080/login", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }).then(response => response.json());
-        localStorage.setItem("Authorization", data.accessToken);
+        const loginResponse = await fetchJsonWithBody("/api/login", FETCH_METHODS.POST, this.member);
+        if (!loginResponse.ok) {
+          throw new Error(`${loginResponse.status}`);
+        }
 
-        const member = await fetch("http://localhost:8080/members/me", {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
-          }
-        }).then(response => response.json());
+        const result = await loginResponse.json();
+        localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH, result.accessToken);
+
+        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
+        const myPageResponse = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.GET, header);
+
+        if (!myPageResponse.ok) {
+          throw new Error(`${myPageResponse.status}`);
+        }
+
+        const member = await myPageResponse.json();
+
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);

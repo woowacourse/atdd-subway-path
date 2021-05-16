@@ -81,8 +81,9 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {fetchJsonWithHeaderAndBody} from "../../utils/fetchJson";
 
 export default {
   name: "MypageEdit",
@@ -105,19 +106,11 @@ export default {
     },
     async onEditMember() {
       try {
-        const { email, age, password } = this.editingMember;
-        await fetch("http://localhost:8080/members/me", {
-          method: "put",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
-          },
-          body: JSON.stringify({
-            email,
-            age,
-            password
-          })
-        })
+        const header = {'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)}`}
+        const response = await fetchJsonWithHeaderAndBody("/api/members/me", FETCH_METHODS.PUT, header, this.editingMember)
+        if(!response.ok) {
+          throw new Error(`${response.status}`);
+        }
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {
