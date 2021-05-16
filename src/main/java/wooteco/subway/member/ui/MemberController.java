@@ -11,6 +11,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api")
 public class MemberController {
     private MemberService memberService;
 
