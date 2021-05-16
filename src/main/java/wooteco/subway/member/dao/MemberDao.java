@@ -52,13 +52,13 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByEmailAndPassword(String email, String password) {
-        String sql = "select * from MEMBER where email = ? and password = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
-    }
-
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public String getUserPassword(String email) {
+        String sql = "select password from MEMBER where email = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, email);
     }
 }

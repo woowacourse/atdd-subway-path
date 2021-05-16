@@ -25,16 +25,18 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         String email = tokenRequest.getEmail();
         String password = tokenRequest.getPassword();
-        findByEmailAndPassword(email, password);
-        return new TokenResponse(jwtTokenProvider.createToken(email));
-    }
 
-    private Member findByEmailAndPassword(String email, String password) {
+        String userPassword;
         try {
-            return memberDao.findByEmailAndPassword(email, password);
+            userPassword = memberDao.getUserPassword(email);
         } catch (EmptyResultDataAccessException e) {
-            throw new AuthException(AuthError.LOGIN_ERROR);
+            throw new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR);
         }
+
+        if (password.equals(userPassword)) {
+            return new TokenResponse(jwtTokenProvider.createToken(email));
+        }
+        throw new AuthException(AuthError.LOGIN_ERROR);
     }
 
     public Member findMemberByToken(String token) {
