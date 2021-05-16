@@ -34,10 +34,14 @@ public class MemberService {
     }
 
     public void updateMember(long id, MemberRequest memberRequest) {
-        Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
-        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
-            memberRequest.getAge());
-        memberDao.update(newMember);
+        try {
+            Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
+            Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                    memberRequest.getAge());
+            memberDao.update(newMember);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateEmailException();
+        }
     }
 
     public void deleteMember(Long id) {

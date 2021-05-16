@@ -39,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             body(params).
             when().
-            post("/login/token").
+            post("/login").
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).
