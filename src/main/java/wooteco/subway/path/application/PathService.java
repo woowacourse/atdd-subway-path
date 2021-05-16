@@ -2,11 +2,12 @@ package wooteco.subway.path.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
-
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.dto.PathResponse;
@@ -37,11 +38,11 @@ public class PathService {
     }
 
     private List<StationResponse> makeShortestPath(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath,
-        Station source, Station target) {
+                                                   Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList()
-            .stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
+                                   .stream()
+                                   .map(StationResponse::of)
+                                   .collect(Collectors.toList());
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> drawGraph() {

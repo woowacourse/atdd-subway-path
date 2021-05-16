@@ -2,18 +2,19 @@ package wooteco.subway.line.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
 @Repository
@@ -30,11 +31,11 @@ public class SectionDao {
                 final long downStationId = rs.getLong("down_station_id");
                 final int distance = rs.getInt("distance");
                 final Station upStation =
-                    stations.stream().filter(station -> station.getId().equals(upStationId))
-                        .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
+                        stations.stream().filter(station -> station.getId().equals(upStationId))
+                                .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
                 final Station downStation =
-                    stations.stream().filter(station -> station.getId().equals(downStationId))
-                        .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
+                        stations.stream().filter(station -> station.getId().equals(downStationId))
+                                .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
                 return new Section(id, upStation, downStation, distance);
             }
         };
