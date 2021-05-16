@@ -7,7 +7,7 @@ import wooteco.subway.station.domain.Station;
 public class Path {
 
     private final List<Station> stations;
-    private int distance;
+    private final int distance;
 
     public Path(List<Station> stations, int distance) {
         this.stations = new ArrayList<>(stations);
