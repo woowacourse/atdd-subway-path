@@ -34,6 +34,10 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    public List<Station> findStations() {
+        return stationDao.findAll();
+    }
+
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }

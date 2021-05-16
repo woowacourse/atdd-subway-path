@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -63,8 +62,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
-     * | 남부터미널역  --- *3호선* ---   양재
+     * |교대역    --- *2호선* ---   강남역 | | *3호선*                   *신분당선* | | 남부터미널역  --- *3호선* ---
+     * 양재
      */
     @BeforeEach
     public void setUp() {
@@ -84,7 +83,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
-    @Disabled
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
