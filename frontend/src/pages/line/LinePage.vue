@@ -39,20 +39,20 @@
 
 <script>
 import LineCreateButton from "./components/LineCreateButton";
-import { SET_LINES, SET_STATIONS } from "../../store/shared/mutationTypes";
-import { mapGetters, mapMutations } from "vuex";
+import {SET_LINES, SET_STATIONS} from "../../store/shared/mutationTypes";
+import {mapGetters, mapMutations} from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
 
 export default {
   name: "LinePage",
-  components: { LineDeleteButton, LineEditButton, LineCreateButton },
+  components: {LineDeleteButton, LineEditButton, LineCreateButton},
   computed: {
     ...mapGetters(["lines"]),
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const stationsResponse = await fetch("http://localhost:8080/stations");
+    const stationsResponse = await fetch("http://localhost:8080/stations")
     const stations = await stationsResponse.json();
     this.setStations([...stations]);
     // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
