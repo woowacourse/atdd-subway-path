@@ -80,19 +80,25 @@ export default {
           password: password
         })
         const token = tokenResponse["accessToken"];
-        window.localStorage.setItem('token', token);
-        const memberResponse = await requestGet('/members/me', {}, token);
-        this.setMember({
-          email: memberResponse['email'],
-          age: memberResponse['age']
-        });
-        await this.$router.replace(`/`);
+        window.localStorage.setItem('accessToken', token);
+
+        await this.getMemberMe(token);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
         throw new Error(e);
       }
     },
+
+    async getMemberMe(token) {
+      const memberResponse = await requestGet('/members/me', {}, token);
+      this.setMember({
+        email: memberResponse['email'],
+        age: memberResponse['age']
+      });
+      await this.$router.replace(`/`);
+
+    }
   },
   data() {
     return {
