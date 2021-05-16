@@ -6,38 +6,33 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class AuthService {
 
-    private final MemberDao memberDao;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
-        this.memberDao = memberDao;
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+        this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Member member = memberDao.findByEmail(tokenRequest.getEmail())
-                .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
-
-        if (!member.isEqualToPassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException("비밀번호가 틀렸습니다!");
-        }
-
-        return new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getEmail()));
+        memberService.validateMemberAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
+        String token = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        return new TokenResponse(token);
     }
 
     public LoginMember findLoginMemberByToken(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
+
         String email = jwtTokenProvider.getPayload(accessToken);
-        Member member = memberDao.findByEmail(email)
-                .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
-        return new LoginMember(member);
+        MemberResponse member = memberService.findByEmail(email);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

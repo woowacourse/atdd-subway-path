@@ -1,7 +1,5 @@
 package wooteco.subway.auth.dto;
 
-import wooteco.subway.member.domain.Member;
-
 public class LoginMember {
 
     private Long id;
@@ -9,10 +7,6 @@ public class LoginMember {
     private Integer age;
 
     public LoginMember() {
-    }
-
-    public LoginMember(Member member) {
-        this(member.getId(), member.getEmail(), member.getAge());
     }
 
     public LoginMember(Long id, String email, Integer age) {
