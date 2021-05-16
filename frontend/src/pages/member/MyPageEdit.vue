@@ -115,9 +115,9 @@ export default {
             "authorization": "Bearer " + access_token
           },
           body: JSON.stringify({
-            email: email,
-            age: age,
-            password: password
+            email,
+            age,
+            password
           }),
         });
         if (!member_edit_response.ok) {

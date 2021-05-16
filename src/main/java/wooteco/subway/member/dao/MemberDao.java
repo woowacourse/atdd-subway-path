@@ -52,12 +52,12 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByPayload(final String payload) {
+    public Member findByEmail(final String email) {
         String query = "SELECT * FROM member where email = ?";
-        return jdbcTemplate.queryForObject(query, rowMapper, payload);
+        return jdbcTemplate.queryForObject(query, rowMapper, email);
     }
 
-    public boolean isExistMemberByEmailAndPassword(final String email, final String password) {
+    public boolean checkValidLogin(final String email, final String password) {
         String query = "SELECT EXISTS(SELECT * FROM member WHERE email = ? AND password = ?)";
         return jdbcTemplate.queryForObject(query, Boolean.class, email, password);
     }
