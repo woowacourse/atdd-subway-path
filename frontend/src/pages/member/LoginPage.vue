@@ -74,7 +74,7 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        const token = await fetch(`api/login/token`,
+        const token = await fetch(`api/login`,
             {
               method: "POST",
               headers: {
