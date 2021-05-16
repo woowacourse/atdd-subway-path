@@ -1,28 +1,27 @@
 package wooteco.subway.member.domain;
 
-public class Member {
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+import wooteco.subway.member.application.AuthorizationException;
 
-    public Member() {
+public class Member {
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final Integer age;
+
+    public Member(String email, String password) {
+        this(null, email, password, null);
+    }
+
+    public Member(Long id, String email, Integer age) {
+        this(id, email, null, age);
+    }
+
+    public Member(String email, String password, Integer age) {
+        this(null, email, password, age);
     }
 
     public Member(Long id, String email, String password, Integer age) {
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
-
-    public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
-    }
-
-    public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -42,5 +41,13 @@ public class Member {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void authorize(final Member requestMember) {
+        final boolean isEmailEqual = this.email.equals(requestMember.email);
+        final boolean isPasswordEqual = this.password.equals(requestMember.password);
+        if (!(isEmailEqual && isPasswordEqual)) {
+            throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
+        }
     }
 }

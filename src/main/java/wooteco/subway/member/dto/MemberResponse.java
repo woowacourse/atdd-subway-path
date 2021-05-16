@@ -7,8 +7,7 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
-    }
+    public MemberResponse() {}
 
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
@@ -30,5 +29,9 @@ public class MemberResponse {
 
     public Integer getAge() {
         return age;
+    }
+
+    public Member toEntity() {
+        return new Member(id, email, age);
     }
 }

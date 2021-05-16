@@ -73,17 +73,50 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
-        await this.$router.replace(`/`);
+        const { email, password } = this.member;
+        const loginRequest = {
+          "password": password,
+          "email": email
+        };
+
+        let option = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          'credentials': 'include',
+          body: JSON.stringify(loginRequest)
+        };
+
+        let response = await fetch("http://localhost:8080/login/token", option);
+        if (!response.ok) {
+          this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
+          return;
+        }
+
+        const COOKIE = name => document.cookie
+            .split("; ")
+            .find(row => row.startsWith(name))
+            .split("=")[1];
+
+        const accessToken = COOKIE("accessToken");
+
+        option = {
+          method: 'GET',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
+        }
+
+        response = await fetch("http://localhost:8080/members/me", option);
+        const member = await response.json();
+        this.setMember(member);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
         throw new Error(e);
+      } finally {
+        await this.$router.replace(`/`);
       }
     },
   },

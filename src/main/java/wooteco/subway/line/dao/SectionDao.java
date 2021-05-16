@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,7 +25,7 @@ public class SectionDao {
     }
 
     public Section insert(Line line, Section section) {
-        Map<String, Object> params = new HashMap();
+        final Map<String, Object> params = new HashMap<>();
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());
@@ -35,21 +35,22 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        jdbcTemplate.update("delete from SECTION s where s.line_id = ?", lineId);
     }
 
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("line_id", line.getId());
-                    params.put("up_station_id", section.getUpStation().getId());
-                    params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
-                    return params;
-                })
-                .collect(Collectors.toList());
+                                                        .map(section -> {
+                                                            Map<String, Object> params = new HashMap<>();
+                                                            params.put("line_id", line.getId());
+                                                            params.put("up_station_id", section.getUpStation().getId());
+                                                            params.put("down_station_id", section.getDownStation()
+                                                                                                 .getId());
+                                                            params.put("distance", section.getDistance());
+                                                            return params;
+                                                        })
+                                                        .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

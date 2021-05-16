@@ -13,7 +13,6 @@ repositories {
 }
 
 dependencies {
-
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
@@ -30,10 +29,12 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 	// jgrapht
-    implementation 'org.jgrapht:jgrapht-core:1.0.1'
+	implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'org.glassfish.jaxb:jaxb-runtime'
 }
 
 test {

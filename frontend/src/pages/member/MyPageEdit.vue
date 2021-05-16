@@ -105,10 +105,38 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const { email, age, password } = this.editingMember;
+        const updateRequest = {
+          "password": password,
+          "age": age,
+          "email": email
+        }
+
+        const COOKIE = name => document.cookie
+            .split("; ")
+            .find(row => row.startsWith(name))
+            .split("=")[1];
+
+        const accessToken = COOKIE("accessToken");
+        const option = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer " + accessToken
+          },
+          body: JSON.stringify(updateRequest)
+        };
+        await fetch(`http://localhost:8080/members/me`, option)
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
+
+        const member = await fetch("http://localhost:8080/members/me", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + accessToken
+          }
+        });
+        const memberInfo = await member.json();
+        this.setMember(memberInfo);
         await this.$router.replace("/mypage");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);

@@ -8,7 +8,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -22,6 +22,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
         return MemberResponse.of(member);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
