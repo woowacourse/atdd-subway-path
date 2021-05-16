@@ -1,11 +1,11 @@
 package wooteco.subway.line.domain;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -139,5 +139,36 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public List<Station> shortestPathOfStations(Station source, Station target) {
+        return pathGraph().getPath(source, target).getVertexList();
+    }
+
+    public int shortestDistance(Station source, Station target) {
+
+        return (int) pathGraph().getPath(source, target).getWeight();
+    }
+
+    private DijkstraShortestPath pathGraph() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        for (Station station : allStations()) {
+            graph.addVertex(station);
+        }
+        for (Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        }
+
+        return new DijkstraShortestPath(graph);
+    }
+
+    private List<Station> allStations() {
+        Set<Station> uniqueStations = new HashSet<>();
+        for (Section section : sections) {
+            uniqueStations.add(section.getUpStation());
+            uniqueStations.add(section.getDownStation());
+        }
+        return new ArrayList<>(uniqueStations);
     }
 }
