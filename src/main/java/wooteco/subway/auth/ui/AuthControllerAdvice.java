@@ -12,6 +12,6 @@ public class AuthControllerAdvice {
     @ExceptionHandler(LoginFailException.class)
     public ResponseEntity<String> notFoundEmailException(LoginFailException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(e.getMessage());
+                .body(e.getMessage());
     }
 }

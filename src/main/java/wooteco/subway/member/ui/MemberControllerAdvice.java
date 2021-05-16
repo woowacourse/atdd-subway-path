@@ -11,14 +11,14 @@ import wooteco.subway.exception.member.NotRegisteredMemberException;
 public class MemberControllerAdvice {
 
     @ExceptionHandler(NotRegisteredMemberException.class)
-    public ResponseEntity<String>notRegisterMemberException(NotRegisteredMemberException e) {
+    public ResponseEntity<String> notRegisterMemberException(NotRegisteredMemberException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(e.getMessage());
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<String> malformedJwtException(MalformedJwtException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(e.getMessage());
+                .body(e.getMessage());
     }
 }

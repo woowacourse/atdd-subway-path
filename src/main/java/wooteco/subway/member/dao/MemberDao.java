@@ -1,6 +1,5 @@
 package wooteco.subway.member.dao;
 
-import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
@@ -51,12 +51,12 @@ public class MemberDao {
     public Optional<Member> findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.query(sql, rowMapper, id).stream()
-            .findAny();
+                .findAny();
     }
 
     public Optional<Member> findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.query(sql, rowMapper, email).stream()
-            .findAny();
+                .findAny();
     }
 }

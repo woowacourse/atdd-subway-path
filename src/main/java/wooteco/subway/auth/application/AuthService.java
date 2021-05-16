@@ -22,10 +22,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         String email = tokenRequest.getEmail();
-        System.out.println(email);
-        System.out.println("###########");
         String accessToken = tokenProvider.createToken(email);
-        System.out.println("#### hihi ");
         checkAvailableLogin(tokenRequest);
         return new TokenResponse(accessToken);
     }
@@ -33,7 +30,6 @@ public class AuthService {
     private void checkAvailableLogin(TokenRequest tokenRequest) {
         String email = tokenRequest.getEmail();
         String password = tokenRequest.getPassword();
-        System.out.println(password);
         Member member = memberDao.findByEmail(email).orElseThrow(LoginFailEmailException::new);
         if (!member.getPassword().equals(password)) {
             throw new LoginWrongPasswordException();
