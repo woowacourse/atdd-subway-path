@@ -15,7 +15,7 @@ import wooteco.subway.station.domain.Station;
 public class PathFinder {
 
     private final List<Line> lines;
-    private List<Station> stations;
+    private final List<Station> stations;
 
     public PathFinder(List<Station> stations, List<Line> lines) {
         this.stations = new ArrayList<>(stations);
