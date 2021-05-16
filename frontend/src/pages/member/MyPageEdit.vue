@@ -82,6 +82,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {put} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
@@ -107,14 +108,7 @@ export default {
       try {
         // TODO member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
-        await fetch("/api/members/me", {
-          method: 'PUT',
-          body: JSON.stringify({email, age, password}),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.accessToken
-          }
-        });
+        await put("/api/members/me", {email, age, password});
 
         this.setMember({email, age, password});
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);

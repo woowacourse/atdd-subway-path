@@ -80,6 +80,7 @@
 import { mapMutations } from "vuex";
 import { SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {post} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
@@ -96,13 +97,8 @@ export default {
       try {
         // TODO member를 생성하는 API를 추가해주세요.
         const { email, age, password } = this.member;
-        await fetch("/api/members", {
-          method: 'POST',
-          body: JSON.stringify({ email, age, password }),
-          headers: {
-            'Content-Type' : 'application/json'
-          }
-      });
+        await post("/api/members", {email, age, password});
+
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {
