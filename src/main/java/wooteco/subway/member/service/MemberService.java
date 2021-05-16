@@ -1,10 +1,11 @@
-package wooteco.subway.member.application;
+package wooteco.subway.member.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
 public class MemberService {
@@ -21,6 +22,12 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id);
+        return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        final Member member = memberDao.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
     }
 
