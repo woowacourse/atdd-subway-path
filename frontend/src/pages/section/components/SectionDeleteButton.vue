@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="onDeleteLine" icon>
+  <v-btn @click="onDeleteLine(lineId)" icon>
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>
@@ -23,16 +23,19 @@ export default {
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
-    async onDeleteLine() {
+    async onDeleteLine(lineId) {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        // await fetch("/api/section/{id}", {
-        // lineId: this.lineId,
-        // stationId: this.stationId,
-        // })
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        // const line = await fetch("/api/line/{lineId}")
-        // this.setLine({ ...line })
+        // TODO 해당 구간을 삭제하는 api를 작성해주세요. (v)
+        await fetch("lines/" + lineId + "/sections?stationId=" + this.stationId, {
+          method : "DELETE"
+        })
+        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요. (v)
+        const response = await fetch("lines/" + lineId);
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+        this.line = await response.json();
+        this.setLine({...this.line})
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
