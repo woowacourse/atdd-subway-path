@@ -2,6 +2,7 @@ package wooteco.subway.path.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.Path;
@@ -23,6 +24,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse shortestPath(Long sourceId, Long targetId) {
         PathFinder pathFinder = pathFinder();
         Station source = stationService.findStationById(sourceId);

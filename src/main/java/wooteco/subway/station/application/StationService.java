@@ -3,12 +3,14 @@ package wooteco.subway.station.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @Service
+@Transactional
 public class StationService {
 
     private final StationDao stationDao;
@@ -22,6 +24,7 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         validateToExistId(id);
         return stationDao.findById(id);
@@ -33,6 +36,7 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
@@ -41,6 +45,7 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Station> findStations() {
         return stationDao.findAll();
     }
