@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.controller.request.StationRequest;
-import wooteco.subway.controller.response.StationResponse;
+import wooteco.subway.station.dto.StationRequest;
+import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;

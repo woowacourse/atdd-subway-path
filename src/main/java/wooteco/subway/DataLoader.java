@@ -3,14 +3,14 @@ package wooteco.subway;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.dao.MemberDao;
-import wooteco.subway.domain.Member;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
+import wooteco.subway.section.dao.SectionDao;
+import wooteco.subway.section.domain.Section;
+import wooteco.subway.station.dao.StationDao;
+import wooteco.subway.station.domain.Station;
 
 @Component
 @Profile("!test")
