@@ -83,6 +83,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import validator from "../../utils/validator";
+import jsonFetch from "../../utils/fetch";
 
 export default {
   name: "MypageEdit",
@@ -105,9 +106,11 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const headers = {
+          "Authorization": "Bearer " + this.accessToken
+        }
+        await jsonFetch(`/api/members/${this.member.id}`, "PUT", this.editingMember, headers);
+        this.setMember(this.editingMember);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");
       } catch (e) {

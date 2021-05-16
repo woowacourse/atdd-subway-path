@@ -3,24 +3,26 @@ package wooteco.subway;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.station.dao.StationDao;
-import wooteco.subway.station.domain.Station;
+import wooteco.auth.dao.MemberDao;
+import wooteco.auth.domain.Member;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 
 @Component
 @Profile("!test")
 public class DataLoader implements CommandLineRunner {
+
     private StationDao stationDao;
     private LineDao lineDao;
     private SectionDao sectionDao;
     private MemberDao memberDao;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
+    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
+        MemberDao memberDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
