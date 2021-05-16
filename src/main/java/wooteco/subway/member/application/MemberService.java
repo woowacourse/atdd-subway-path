@@ -34,5 +34,4 @@ public class MemberService {
         memberDao.deleteById(id);
     }
 
-
 }
