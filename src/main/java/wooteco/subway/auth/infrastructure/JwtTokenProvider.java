@@ -3,8 +3,8 @@ package wooteco.subway.auth.infrastructure;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.auth.exception.AuthException;
-import wooteco.subway.auth.exception.AuthExceptionStatus;
+import wooteco.subway.exception.AuthException;
+import wooteco.subway.exception.AuthExceptionStatus;
 
 import java.util.Date;
 import java.util.HashMap;

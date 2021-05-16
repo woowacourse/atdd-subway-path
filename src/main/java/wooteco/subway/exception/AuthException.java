@@ -1,4 +1,4 @@
-package wooteco.subway.auth.exception;
+package wooteco.subway.exception;
 
 public class AuthException extends RuntimeException {
 
