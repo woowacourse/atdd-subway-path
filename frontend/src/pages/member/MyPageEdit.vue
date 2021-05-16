@@ -106,7 +106,6 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
         const {email, age, password} = this.editingMember;
         await put("/api/members/me", {email, age, password});
 

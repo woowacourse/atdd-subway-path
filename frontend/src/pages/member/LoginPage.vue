@@ -71,7 +71,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const {email, password} = this.member;
         const data = await post("/api/login/token", {email, password})
             .then(res => {
@@ -85,7 +84,6 @@ export default {
         localStorage.setItem("token", data.accessToken);
         this.setAccessToken(data.accessToken);
 
-        // TODO member 데이터를 불러와 주세요.
         const member = await get("/api/members/me", {'Authorization': "Bearer " + this.accessToken})
             .then(res => {
               return res.json();

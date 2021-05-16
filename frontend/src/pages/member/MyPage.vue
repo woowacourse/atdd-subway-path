@@ -65,7 +65,6 @@ export default {
         return;
       }
       try {
-        // TODO 유저를 삭제하는 API를 추가해주세요
         await remove("/api/members/me")
 
         this.setMember(null);
