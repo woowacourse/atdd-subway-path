@@ -31,7 +31,7 @@ export default {
   async created() {
     const accessToken = localStorage.getItem("token");
     if (accessToken) {
-      const member = await fetch("http://localhost:8080/members/me", {
+      const member = await fetch("/members/me", {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + accessToken

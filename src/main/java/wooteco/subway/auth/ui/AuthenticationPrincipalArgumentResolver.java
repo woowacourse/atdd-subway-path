@@ -32,9 +32,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         final String accessToken =
             AuthorizationExtractor.extract(Objects.requireNonNull(
                 webRequest.getNativeRequest(HttpServletRequest.class)));
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다");
-        }
 
         return getLoginMember(accessToken);
     }

@@ -108,8 +108,14 @@ export default {
       });
     },
     async initLineStationsView() {
+      const accessToken = localStorage.getItem("token");
       try {
-        const response = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
+        const response = await fetch(`/lines/${this.sectionForm.lineId}`, {
+          'method': 'GET',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
+        });
         this.activeLine = await response.json();
 
         if (this.selectedLine.stations?.length < 1) {
@@ -162,16 +168,25 @@ export default {
           "distance": this.sectionForm.distance
         };
 
+        const accessToken = localStorage.getItem("token");
         const option = {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            headers: {
+              "Authorization": "Bearer " + accessToken
+            }
           },
           body: JSON.stringify(addSectionRequest)
         }
-        await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}/sections`, option);
+        await fetch(`/lines/${this.sectionForm.lineId}/sections`, option);
 
-        const response = await fetch("http://localhost:8080/lines");
+        const response = await fetch("/lines", {
+          method: 'GET',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
+        });
         const lines = await response.json();
         this.setLines([...lines])
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);

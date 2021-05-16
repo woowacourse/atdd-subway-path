@@ -65,7 +65,13 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    const response = await fetch("http://localhost:8080/stations");
+    const accessToken = localStorage.getItem("token");
+    const response = await fetch("/stations", {
+      method: 'GET',
+      headers: {
+        "Authorization": "Bearer " + accessToken
+      }
+    });
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -82,10 +88,12 @@ export default {
         return;
       }
       try {
-        const response = await fetch("http://localhost:8080/stations", {
+        const accessToken = localStorage.getItem("token");
+        const response = await fetch("/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + accessToken
           },
           body: JSON.stringify({
             name: this.stationName,
@@ -110,8 +118,10 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        await fetch(`http://localhost:8080/stations/${stationId}`, {
-          method: 'DELETE'
+        const accessToken = localStorage.getItem("token");
+        await fetch(`/stations/${stationId}`, {
+          method: 'DELETE',
+          'Authorization': 'Bearer ' + accessToken
         });
         const idx = this.stations.findIndex(
           (station) => station.id === stationId

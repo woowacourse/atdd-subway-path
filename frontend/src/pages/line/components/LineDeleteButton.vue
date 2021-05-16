@@ -21,11 +21,15 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        await fetch(`http://localhost:8080/lines/${this.line.id}`, {
-          method: 'DELETE'
+        const accessToken = localStorage.getItem("token");
+        await fetch(`/lines/${this.line.id}`, {
+          method: 'DELETE',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
         });
 
-        const response = await fetch("http://localhost:8080/lines");
+        const response = await fetch("/lines");
         const lines = await response.json();
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
