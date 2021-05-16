@@ -21,7 +21,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmail(tokenRequest.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다!"));
 
         member.validatePassword(tokenRequest.getPassword());
 
@@ -36,7 +36,7 @@ public class AuthService {
 
     private void validateToken(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 토큰입니다!");
         }
     }
 }
