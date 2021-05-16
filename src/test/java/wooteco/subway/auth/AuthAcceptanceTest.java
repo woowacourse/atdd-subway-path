@@ -13,6 +13,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -56,6 +57,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    @DisplayName("입력값 잘못된 형식으로 인한 바인딩 에러")
+    @Test
+    void bindingException() {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", "afafpa");
+        params.put("password", "");
+
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(containsString("이메일 형식이 맞지 않습니다."), containsString("비밀번호를 입력해주세요."));
     }
 
     @DisplayName("Bearer Auth")

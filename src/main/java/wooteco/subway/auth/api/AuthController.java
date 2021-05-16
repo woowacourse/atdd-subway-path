@@ -8,6 +8,8 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.service.AuthService;
 
+import javax.validation.Valid;
+
 @RestController
 public class AuthController {
 
@@ -18,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest tokenRequest) {
         String accessToken = authService.issueToken(tokenRequest.getEmail(), tokenRequest.getPassword());
         TokenResponse tokenResponse = new TokenResponse(accessToken);
         return ResponseEntity.ok(tokenResponse);
