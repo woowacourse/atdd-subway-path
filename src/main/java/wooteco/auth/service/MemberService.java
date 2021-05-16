@@ -22,7 +22,8 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
+        Member member = memberDao.findById(id)
+            .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
     }
 
