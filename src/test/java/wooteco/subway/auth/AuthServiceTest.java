@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dao.MemberDao;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
