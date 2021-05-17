@@ -7,6 +7,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.exception.auth.InvalidTokenException;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -23,7 +27,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     // parameter에 @AuthenticationPrincipal이 붙어있는 경우 동작
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
-        return null;
+        String token = AuthorizationExtractor.extract((HttpServletRequest) webRequest.getNativeRequest());
+        if (!authService.validateToken(token)) {
+            throw new InvalidTokenException();
+        }
+        return authService.findMemberByToken(token);
     }
 }
