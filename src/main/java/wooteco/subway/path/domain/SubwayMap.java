@@ -28,14 +28,12 @@ public class SubwayMap {
         sections.forEach(section -> {
             int distance = section.getDistance();
             subwayMap.setEdgeWeight(connectSection(section), distance);
-            System.out.println("성공");
         });
     }
 
     private DefaultWeightedEdge connectSection(Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
-        System.out.println(upStation.getName() + downStation.getName());
         return subwayMap.addEdge(upStation, downStation);
     }
 
@@ -45,5 +43,9 @@ public class SubwayMap {
 
     public double getShortestPath(Station source, Station target) {
         return map.getPathWeight(source, target);
+    }
+
+    public List<Station> getStationsOnPath(Station source, Station target) {
+        return map.getPath(source, target).getVertexList();
     }
 }

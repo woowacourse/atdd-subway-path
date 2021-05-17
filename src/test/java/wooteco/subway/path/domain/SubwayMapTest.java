@@ -6,6 +6,8 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SubwayMapTest {
@@ -42,5 +44,10 @@ class SubwayMapTest {
     @Test
     void testGetShortestPath() {
         assertThat(subwayMap.getShortestPath(교대역, 양재역)).isEqualTo(5);
+    }
+
+    @Test
+    void testGetStationsOnPath() {
+        assertThat(subwayMap.getStationsOnPath(교대역, 양재역)).isEqualTo(Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 }
