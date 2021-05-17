@@ -1,13 +1,13 @@
 <template>
-  <v-btn @click="onDeleteLine(line.id)" icon>
+  <v-btn icon @click="onDeleteLine(line.id)">
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "LineDeleteButton",
@@ -21,7 +21,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine(lineId) {
       try {
-        const response = await fetch(`/api/lines/${lineId}`,{
+        const response = await fetch(`/api/lines/${lineId}`, {
           method: "DELETE",
           headers: {"Content-Type": "application/json"}
         })

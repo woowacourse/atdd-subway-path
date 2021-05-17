@@ -29,7 +29,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
         List<SectionTable> sectionTables = sectionDao.findAll();
         List<Section> sections = new ArrayList<>();
-        for (SectionTable sectionTable: sectionTables){
+        for (SectionTable sectionTable : sectionTables) {
             Station upStation = stationService.findStationById(sectionTable.getUpStationId());
             Station downStation = stationService.findStationById(sectionTable.getDownStationId());
             sections.add(new Section(sectionTable.getId(), upStation, downStation, sectionTable.getDistance()));

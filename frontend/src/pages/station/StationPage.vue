@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="d-flex flex-column justify-center mt-12">
     <div class="d-flex justify-center relative">
-      <v-card width="500" max-width="600" max-height="200" class="card-border">
+      <v-card class="card-border" max-height="200" max-width="600" width="500">
         <v-card-title class="font-weight-bold justify-center">
           지하철 역 관리
         </v-card-title>
@@ -9,22 +9,22 @@
           <v-form ref="stationForm" v-model="valid" @submit.prevent>
             <div class="d-flex">
               <v-text-field
-                  color="grey darken-1"
-                  class="mr-4"
-                  @keydown.enter="onCreateStation"
-                  label="지하철 역 이름을 입력해주세요."
                   v-model="stationName"
-                  prepend-inner-icon="mdi-subway"
-                  dense
-                  outlined
                   :rules="rules.stationName"
                   autofocus
+                  class="mr-4"
+                  color="grey darken-1"
+                  dense
+                  label="지하철 역 이름을 입력해주세요."
+                  outlined
+                  prepend-inner-icon="mdi-subway"
+                  @keydown.enter="onCreateStation"
               ></v-text-field>
               <v-btn
                   :disabled="!valid"
                   color="amber"
-                  @click.prevent="onCreateStation"
                   depressed
+                  @click.prevent="onCreateStation"
               >추가
               </v-btn
               >
@@ -34,7 +34,7 @@
       </v-card>
     </div>
     <div class="d-flex justify-center relative mt-4">
-      <v-card width="500" height="500px" class="overflow-y-auto pl-3">
+      <v-card class="overflow-y-auto pl-3" height="500px" width="500">
         <v-list>
           <template v-for="station in stations">
             <v-list-item :key="station.id">
@@ -42,7 +42,7 @@
                 <v-list-item-title v-text="station.name"></v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
-                <v-btn @click="onDeleteStation(station.id)" icon>
+                <v-btn icon @click="onDeleteStation(station.id)">
                   <v-icon color="grey lighten-1">mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>

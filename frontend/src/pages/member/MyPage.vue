@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="d-flex flex-column justify-center mt-12">
     <div class="d-flex justify-center relative">
-      <v-card v-if="member" width="400" class="card-border px-3 pt-3 pb-5">
+      <v-card v-if="member" class="card-border px-3 pt-3 pb-5" width="400">
         <v-card-title class="font-weight-bold justify-center">
           나의 정보
         </v-card-title>
@@ -25,28 +25,28 @@
         </v-card-text>
         <v-card-actions class="px-4 pb-4">
           <v-spacer></v-spacer>
-          <v-btn @click="onDeleteAccount" text>
+          <v-btn text @click="onDeleteAccount">
             탈퇴
           </v-btn>
-          <v-btn to="/mypage/edit" color="amber" depressed>
+          <v-btn color="amber" depressed to="/mypage/edit">
             수정
           </v-btn>
         </v-card-actions>
       </v-card>
     </div>
-    <ConfirmDialog ref="confirm" />
+    <ConfirmDialog ref="confirm"/>
   </v-sheet>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 
 export default {
   name: "MyPage",
-  components: { ConfirmDialog },
+  components: {ConfirmDialog},
   computed: {
     ...mapGetters(["member"]),
   },
@@ -54,18 +54,18 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
     async onDeleteAccount() {
       const confirm = await this.$refs.confirm.open(
-        "회원 탈퇴",
-        `정말로 탈퇴 하시겠습니까? 탈퇴 후에는 복구할 수 없습니다.`,
-        {
-          color: "red lighten-1",
-        }
+          "회원 탈퇴",
+          `정말로 탈퇴 하시겠습니까? 탈퇴 후에는 복구할 수 없습니다.`,
+          {
+            color: "red lighten-1",
+          }
       );
       if (!confirm) {
         return;
       }
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`/api/members/me`,{
+        await fetch(`/api/members/me`, {
           method: "DELETE",
           headers: new Headers({
             'Authorization': 'Bearer ' + accessToken,

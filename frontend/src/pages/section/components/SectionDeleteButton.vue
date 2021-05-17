@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="onDeleteLine" icon>
+  <v-btn icon @click="onDeleteLine">
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>

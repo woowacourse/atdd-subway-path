@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="d-flex flex-column justify-center mt-12">
     <div class="d-flex justify-center relative">
-      <v-card width="500" max-width="600" max-height="600" class="card-border">
+      <v-card class="card-border" max-height="600" max-width="600" width="500">
         <v-card-title class="font-weight-bold justify-center relative">
           구간 관리
         </v-card-title>
@@ -12,13 +12,13 @@
             <v-select
                 v-model="activeLineId"
                 :items="lineNamesViews"
-                @change="onChangeLine"
-                label="노선 선택"
-                width="400"
                 color="grey darken-1"
-                item-color="amber darken-3"
-                outlined
                 dense
+                item-color="amber darken-3"
+                label="노선 선택"
+                outlined
+                width="400"
+                @change="onChangeLine"
             ></v-select>
           </div>
           <v-divider/>
@@ -31,7 +31,7 @@
                 <v-toolbar-title>{{ activeLine.name }}</v-toolbar-title>
               </v-toolbar>
               <v-card-text class="overflow-y-auto py-0">
-                <v-list dense class="max-height-300px">
+                <v-list class="max-height-300px" dense>
                   <template
                       v-if="activeLine.stations && activeLine.stations.length > 0"
                   >

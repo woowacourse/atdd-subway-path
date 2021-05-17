@@ -1,7 +1,7 @@
 <template>
-  <Dialog :width="500" :close="close">
+  <Dialog :close="close" :width="500">
     <template slot="trigger">
-      <v-btn @click="initEditingLine" icon>
+      <v-btn icon @click="initEditingLine">
         <v-icon color="grey lighten-1">mdi-pencil</v-icon>
       </v-btn>
     </template>
@@ -15,16 +15,16 @@
             :rules="rules.line.name"
             color="grey darken-1"
             label="노선 이름"
-            placeholder="노선 이름"
             outlined
+            placeholder="노선 이름"
         ></v-text-field>
         <div class="d-flex">
           <v-text-field
               v-model="lineEditForm.extraFare"
               color="grey darken-1"
               label="추가 요금"
-              placeholder="(선택) 추가 요금"
               outlined
+              placeholder="(선택) 추가 요금"
           ></v-text-field>
         </div>
         <div>
@@ -32,9 +32,9 @@
               v-model="lineEditForm.color"
               :rules="rules.line.color"
               :value="lineEditForm.color"
-              label="노선 색상"
-              filled
               disabled
+              filled
+              label="노선 색상"
           ></v-text-field>
           <p>
             노선의 색상을 아래 팔레트에서 선택해주세요.
@@ -44,11 +44,11 @@
               <template v-for="(option, index) in lineColors">
                 <v-btn
                     :key="option._id"
-                    small
+                    :color="option.color"
                     class="color-button ma-1"
                     depressed
                     min-width="30"
-                    :color="option.color"
+                    small
                     @click="setLineColor(option.color)"
                 ></v-btn>
                 <br
@@ -64,9 +64,9 @@
     <template slot="action">
       <v-btn
           :disabled="!valid"
-          @click.prevent="onEditLine"
           color="amber"
           depressed
+          @click.prevent="onEditLine"
       >확인
       </v-btn
       >

@@ -2,11 +2,11 @@
   <Dialog :close="close">
     <template slot="trigger">
       <v-btn
-          @click="initLineView"
           class="mx-2 section-create-button"
-          fab
           color="amber"
           depressed
+          fab
+          @click="initLineView"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -19,36 +19,36 @@
         <v-select
             v-model="sectionForm.lineId"
             :items="lineNameViews"
-            @change="onChangeLine"
-            label="노선 선택"
-            width="400"
-            item-color="amber darken-3"
             color="grey darken-1"
-            outlined
             dense
+            item-color="amber darken-3"
+            label="노선 선택"
+            outlined
+            width="400"
+            @change="onChangeLine"
         ></v-select>
         <div class="d-flex">
           <v-select
               v-model="sectionForm.upStationId"
-              class="pr-5"
               :items="allStationsView"
-              label="상행역"
-              width="400"
+              class="pr-5"
               color="grey darken-1"
-              item-color="amber darken-3"
-              outlined
               dense
+              item-color="amber darken-3"
+              label="상행역"
+              outlined
+              width="400"
           ></v-select>
           <v-select
               v-model="sectionForm.downStationId"
-              class="pl-5"
               :items="allStationsView"
-              label="하행역"
-              width="400"
+              class="pl-5"
               color="grey darken-1"
-              item-color="amber darken-3"
-              outlined
               dense
+              item-color="amber darken-3"
+              label="하행역"
+              outlined
+              width="400"
           ></v-select>
         </div>
         <div class="d-flex">
@@ -57,8 +57,8 @@
               :rules="rules.section.distance"
               color="grey darken-1"
               label="거리"
-              placeholder="거리"
               outlined
+              placeholder="거리"
           ></v-text-field>
         </div>
       </v-form>
@@ -66,9 +66,9 @@
     <template slot="action">
       <v-btn
           :disabled="!valid"
-          @click.prevent="onCreateSection"
           color="amber"
           depressed
+          @click.prevent="onCreateSection"
       >확인
       </v-btn
       >
