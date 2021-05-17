@@ -28,6 +28,13 @@ public class Member {
         this.age = age;
     }
 
+    public void validatePassword(String password) {
+        if (this.password.equals(password)) {
+            return;
+        }
+        throw new IllegalArgumentException("로그인 실패");
+    }
+
     public Long getId() {
         return id;
     }

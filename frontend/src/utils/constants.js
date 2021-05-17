@@ -1,5 +1,20 @@
 import shortid from "shortid";
 
+export const LOCAL_STORAGE_KEYS = {
+  AUTH: "Authorization"
+};
+
+export const FETCH_METHODS = {
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  DELETE: "DELETE"
+};
+
+export const CONTENT_TYPE = {
+  APP_JSON: "application/json"
+}
+
 export const NAV_ITEMS = [
   {
     _id: shortid.generate(),

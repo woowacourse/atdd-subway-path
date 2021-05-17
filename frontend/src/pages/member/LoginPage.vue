@@ -55,8 +55,10 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {SNACKBAR_MESSAGES, LOCAL_STORAGE_KEYS, FETCH_METHODS} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {fetchJsonWithBody, tokenHeaderIfExist} from "../../utils/fetchJson";
+import {fetchJsonWithHeader} from "../../utils/fetchJson";
 
 export default {
   name: "LoginPage",
@@ -73,12 +75,23 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
-        // const { email, password } = this.member;
-        // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
-        // const member = wait fetch("/members/me")
-        // this.setMember(member);
+        const loginResponse = await fetchJsonWithBody("/api/login", FETCH_METHODS.POST, this.member);
+        if (!loginResponse.ok) {
+          throw new Error(`${loginResponse.status}`);
+        }
+
+        const result = await loginResponse.json();
+        localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH, result.accessToken);
+
+        const myPageResponse = await fetchJsonWithHeader("/api/members/me", FETCH_METHODS.GET, tokenHeaderIfExist());
+
+        if (!myPageResponse.ok) {
+          throw new Error(`${myPageResponse.status}`);
+        }
+
+        const member = await myPageResponse.json();
+
+        this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {

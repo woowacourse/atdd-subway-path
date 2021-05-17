@@ -34,6 +34,7 @@ dependencies {
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
 }
 
 test {
