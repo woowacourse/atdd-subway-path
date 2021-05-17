@@ -137,7 +137,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
+                .when().post("/api/lines")
                 .then().log().all().
                         extract();
     }
@@ -147,7 +147,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
+                .when().get("/api/lines")
                 .then().log().all()
                 .extract();
     }
@@ -157,7 +157,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
+                .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -169,7 +169,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
+                .when().put("/api/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -178,7 +178,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/lines/" + lineResponse.getId())
+                .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }

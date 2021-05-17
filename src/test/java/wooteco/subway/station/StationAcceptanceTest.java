@@ -98,7 +98,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
+                .when().post("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -106,7 +106,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all().auth().oauth2(tokenResponse.getAccessToken())
-                .when().get("/stations")
+                .when().get("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -115,7 +115,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/stations/" + stationResponse.getId())
+                .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }

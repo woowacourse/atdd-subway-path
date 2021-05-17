@@ -3,16 +3,12 @@ package wooteco.subway.member.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -25,7 +21,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -37,7 +33,7 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<Void> updateMember(@PathVariable Long id, @Valid @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -55,7 +51,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest request ) {
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody MemberRequest request) {
         System.out.println("loginMember = " + loginMember);
         memberService.updateMember(loginMember.getId(), request);
         return ResponseEntity.ok().build();
