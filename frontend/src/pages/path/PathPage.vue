@@ -159,8 +159,11 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        const path_response = await fetch(`http://localhost:8080/paths?source=${this.path.source}&target=${this.path.target}`)
+        if (!path_response.ok) {
+          throw new Error(`${path_response.status}`);
+        }
+        this.pathResult = await path_response.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -170,7 +173,7 @@ export default {
       try {
         const stations_response = await fetch("http://localhost:8080/stations")
         if (!stations_response.ok) {
-          throw new Error(`${stations_response.status}`)
+          throw new Error(`${stations_response.status}`);
         }
         const stations = await stations_response.json();
         this.setStations(stations)
