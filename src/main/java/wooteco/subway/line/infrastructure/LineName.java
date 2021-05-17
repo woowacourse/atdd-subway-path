@@ -1,4 +1,4 @@
-package wooteco.subway.station.infrastructure;
+package wooteco.subway.line.infrastructure;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,12 +10,12 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = StationNameValidator.class)
+@Constraint(validatedBy = LineNameValidator.class)
 @Target(FIELD)
 @Retention(RUNTIME)
-public @interface StationName {
+public @interface LineName {
 
-    String message() default "Station Name is not allow ";
+    String message() default "LineName Name is not allow ";
 
     Class<?>[] groups() default {};
 
