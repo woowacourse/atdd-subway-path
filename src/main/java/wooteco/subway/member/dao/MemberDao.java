@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import wooteco.subway.exception.NoRowHasBeenModifiedException;
 import wooteco.subway.member.domain.Member;
 
 @Repository
@@ -60,12 +61,18 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql,
-            new Object[] {member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        int updateRowNum = jdbcTemplate.update(sql,
+                new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        if (updateRowNum <= 0) {
+            throw new NoRowHasBeenModifiedException("수정된 행이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
-        jdbcTemplate.update(sql, id);
+        int deleteRowNum = jdbcTemplate.update(sql, id);
+        if (deleteRowNum <= 0) {
+            throw new NoRowHasBeenModifiedException("삭제된 행이 존재하지 않습니다.");
+        }
     }
 }

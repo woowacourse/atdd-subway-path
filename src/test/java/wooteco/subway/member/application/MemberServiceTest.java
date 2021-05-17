@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.MemberNotFoundException;
+import wooteco.subway.exception.NoRowHasBeenModifiedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -29,11 +30,11 @@ class MemberServiceTest {
     private static final int AGE = 12;
     private final Member 저장된_회원 = new Member(1L, EMAIL, PASSWORD, AGE);
 
-    @InjectMocks
-    private MemberService memberService;
-
     @Mock
     private MemberDao memberDao = mock(MemberDao.class);
+
+    @InjectMocks
+    private MemberService memberService;
 
     @DisplayName("정상적인 회원 등록 요청한다.")
     @Test
@@ -144,8 +145,7 @@ class MemberServiceTest {
     @Test
     void deleteMember() {
         //given
-        given(memberDao.findById(1L))
-                .willReturn(Optional.ofNullable(저장된_회원));
+        doNothing().when(memberDao).deleteById(1L);
 
         //when
         memberService.deleteMember(1L);
@@ -158,8 +158,7 @@ class MemberServiceTest {
     @Test
     void deleteNotExistMember() {
         //given
-        given(memberDao.findById(1L))
-                .willReturn(Optional.empty());
+        doThrow(NoRowHasBeenModifiedException.class).when(memberDao).deleteById(1L);
 
         //when then
         assertThatThrownBy(() -> {

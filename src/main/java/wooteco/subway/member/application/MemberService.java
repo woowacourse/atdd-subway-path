@@ -1,11 +1,10 @@
 package wooteco.subway.member.application;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.MemberNotFoundException;
+import wooteco.subway.exception.NoRowHasBeenModifiedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -41,15 +40,16 @@ public class MemberService {
             memberDao.update(newMember);
         } catch (DuplicateKeyException e) {
             throw new DuplicateEmailException();
+        } catch (NoRowHasBeenModifiedException e) {
+            throw new MemberNotFoundException(e.getCause());
         }
     }
 
     public void deleteMember(Long id) {
         try {
-            memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
             memberDao.deleteById(id);
-        } catch (DataAccessException e) {
-            throw new MemberNotFoundException();
+        } catch (NoRowHasBeenModifiedException e) {
+            throw new MemberNotFoundException(e.getCause());
         }
     }
 }

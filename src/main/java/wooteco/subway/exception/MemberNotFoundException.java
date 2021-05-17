@@ -6,4 +6,8 @@ public class MemberNotFoundException extends RuntimeException {
     public MemberNotFoundException() {
         super(MESSAGE);
     }
+
+    public MemberNotFoundException(Throwable cause) {
+        super(MESSAGE, cause);
+    }
 }
