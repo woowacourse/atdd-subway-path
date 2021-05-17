@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathServiceDto;
+import wooteco.subway.path.exceptions.NotReachableException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
@@ -60,20 +61,28 @@ public class PathService {
 
     private PathResponse translateResponse(DijkstraShortestPath dijkstraShortestPath,
         Station sourceStation, Station targetStation) {
-        List<Station> shortestPath
-            = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
-
-        List<StationResponse> stationResponses = shortestPath.stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+        List<StationResponse> stationResponses = stationConnection(dijkstraShortestPath,
+            sourceStation, targetStation);
         Double weight = dijkstraShortestPath.getPathWeight(sourceStation, targetStation);
-
         return new PathResponse(stationResponses, weight);
     }
 
     private void checkSameStation(PathServiceDto pathServiceDto) {
         if (pathServiceDto.getSourceStationId() == pathServiceDto.getTargetStationId()) {
             throw new SameStationException(pathServiceDto.getSourceStationId());
+        }
+    }
+
+    private List<StationResponse> stationConnection(DijkstraShortestPath dijkstraShortestPath,
+        Station sourceStation, Station targetStation) {
+        try {
+            List<Station> shortestPath
+                = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
+            return shortestPath.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new NotReachableException(sourceStation.getId(), targetStation.getId());
         }
     }
 }
