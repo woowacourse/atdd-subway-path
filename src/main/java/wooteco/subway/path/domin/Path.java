@@ -16,4 +16,8 @@ public class Path {
     public List<Station> getStations() {
         return this.stations;
     }
+
+    public int getDistance() {
+        return distance;
+    }
 }
