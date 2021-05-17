@@ -21,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity<TokenResponse> getTokenResponseByUserInfo(@RequestBody @Valid TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> getTokenResponseByUserInfo(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
     }
