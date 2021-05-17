@@ -26,18 +26,16 @@ public class PathRepositoryImpl implements PathRepository {
     public Path generateShortestDistancePath(final Station start, final Station destination) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = buildAllPath();
 
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+                = new DijkstraShortestPath<>(graph);
 
-        GraphPath shortestPath = dijkstraShortestPath.getPath(start, destination);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(start, destination);
 
-        double distance = shortestPath.getWeight();
-
-        return new Path(shortestPath.getVertexList(), (int) distance);
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> buildAllPath() {
-        WeightedMultigraph graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         List<Line> lines = lineDao.findAll();
         lines.forEach(line -> {
@@ -54,7 +52,8 @@ public class PathRepositoryImpl implements PathRepository {
 
     private void registerEdgeDistanceWeight(Sections sections, WeightedMultigraph graph) {
         sections.getSections().forEach(section -> {
-            graph.addEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+                    section.getDistance());
         });
     }
 
