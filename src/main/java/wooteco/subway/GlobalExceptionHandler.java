@@ -2,6 +2,7 @@ package wooteco.subway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthException.class})
     public ResponseEntity<String> authException(RuntimeException exception) {
+        logger.info(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<String> databaseException(RuntimeException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
     }
