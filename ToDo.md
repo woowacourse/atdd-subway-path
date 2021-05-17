@@ -12,3 +12,9 @@
 - [x] Line 정보 관련 프런트 엔드 구현
 - [x] Section 정보 관련 프런트 엔드 구현 
 
+### 경로 관련 구현하기
+- [x] Controller 구현 및 매핑
+- [ ] Path 찾는 Service 구현
+- [ ] Service와 Controller 영역
+- [ ] 프런트 엔드 데이터 수신 구현
+
