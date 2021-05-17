@@ -5,7 +5,7 @@ import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 import wooteco.auth.domain.Token;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.exception.badRequest.PasswordIncorrectException;
+import wooteco.exception.badrequest.PasswordIncorrectException;
 import wooteco.exception.unauthorized.LoginFailException;
 import wooteco.exception.unauthorized.MemberAlreadyDeletedException;
 

@@ -1,4 +1,4 @@
-package wooteco.exception.notFound;
+package wooteco.exception.notfound;
 
 public class MemberNotFoundException extends NotFoundException {
 

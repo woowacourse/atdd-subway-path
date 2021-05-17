@@ -1,4 +1,4 @@
-package wooteco.exception.badRequest;
+package wooteco.exception.badrequest;
 
 public class BadRequestException extends RuntimeException {
 
