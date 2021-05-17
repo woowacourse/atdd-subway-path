@@ -22,12 +22,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findById(Long id) {
         Member member = memberDao.findById(id);
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(String email) {
+    public MemberResponse findByEmail(String email) {
         final Optional<Member> member = memberDao.findByEmail(email);
         if (!member.isPresent()) {
             throw new AuthorizationException();
@@ -35,22 +35,22 @@ public class MemberService {
         return MemberResponse.of(member.get());
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
+    public void updateById(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void updateMember(String email, MemberRequest memberRequest) {
+    public void updateByEmail(String email, MemberRequest memberRequest) {
         if (!memberRequest.getEmail().equals(email)) {
             throw new IllegalArgumentException("Email은 수정할 수 없습니다.");
         }
         memberDao.update(memberRequest.toMember());
     }
 
-    public void deleteMember(Long id) {
+    public void deleteById(Long id) {
         memberDao.deleteById(id);
     }
 
-    public void deleteMember(String email) {
+    public void deleteByEmail(String email) {
         memberDao.deleteByEmail(email);
     }
 }

@@ -26,40 +26,40 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberService.findById(id);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/{id}")
     public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
+        memberService.updateById(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+        memberService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         final String email = loginMember.getEmail();
-        final MemberResponse memberResponse = memberService.findMember(email);
+        final MemberResponse memberResponse = memberService.findByEmail(email);
         return ResponseEntity.ok().body(memberResponse);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         final String email = loginMember.getEmail();
-        memberService.updateMember(email, param);
+        memberService.updateByEmail(email, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         final String email = loginMember.getEmail();
-        memberService.deleteMember(email);
+        memberService.deleteByEmail(email);
         return ResponseEntity.noContent().build();
     }
 }
