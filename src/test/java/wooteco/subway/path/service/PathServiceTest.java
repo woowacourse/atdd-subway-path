@@ -1,5 +1,6 @@
 package wooteco.subway.path.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,10 @@ public class PathServiceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private LineResponse 신분당선;
+    private LineResponse 이호선;
+    private LineResponse 삼호선;
+
     @Autowired
     private StationService stationService;
 
@@ -50,11 +55,23 @@ public class PathServiceTest {
         교대역 = stationService.saveStation(new StationRequest("교대역"));
         남부터미널역 = stationService.saveStation(new StationRequest("남부터미널역"));
 
-        lineService.saveLine(new LineRequest("신분당선", "bg-red-400", 강남역.getId(), 양재역.getId(), 10));
+        신분당선 = lineService.saveLine(new LineRequest("신분당선", "bg-red-400", 강남역.getId(), 양재역.getId(), 10));
 
-        lineService.saveLine(new LineRequest("이호선", "bg-red-400", 교대역.getId(), 강남역.getId(), 10));
+        이호선 = lineService.saveLine(new LineRequest("이호선", "bg-red-400", 교대역.getId(), 강남역.getId(), 10));
 
-        LineResponse lineResponse = lineService.saveLine(new LineRequest("삼호선", "bg-red-400", 교대역.getId(), 양재역.getId(), 10));
-        lineService.addLineStation(lineResponse.getId(), new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3));
+        삼호선 = lineService.saveLine(new LineRequest("삼호선", "bg-red-400", 교대역.getId(), 양재역.getId(), 10));
+        lineService.addLineStation(삼호선.getId(), new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3));
+    }
+
+    @AfterEach
+    public void tearDown() {
+        lineService.deleteLineById(신분당선.getId());
+        lineService.deleteLineById(이호선.getId());
+        lineService.deleteLineById(삼호선.getId());
+
+        stationService.deleteStationById(강남역.getId());
+        stationService.deleteStationById(양재역.getId());
+        stationService.deleteStationById(교대역.getId());
+        stationService.deleteStationById(남부터미널역.getId());
     }
 }

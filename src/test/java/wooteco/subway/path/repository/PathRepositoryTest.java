@@ -1,5 +1,6 @@
 package wooteco.subway.path.repository;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,10 @@ public class PathRepositoryTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+
+    private Line 이호선;
+    private Line 삼호선;
+    private Line 신분당선;
 
     @Autowired
     private StationDao stationDao;
@@ -54,19 +59,36 @@ public class PathRepositoryTest {
         교대역 = stationDao.insert(new Station("교대역"));
         남부터미널역 = stationDao.insert(new Station("남부터미널역"));
 
-        Line line = lineDao.insert(new Line("신분당선", "bg-red-600"));
+        신분당선 = lineDao.insert(new Line("신분당선", "bg-red-600"));
         Section section = new Section(강남역, 양재역, 10);
-        sectionDao.insert(line, section);
+        sectionDao.insert(신분당선, section);
 
-        line = lineDao.insert(new Line("이호선", "bg-red-600"));
+        이호선 = lineDao.insert(new Line("이호선", "bg-red-600"));
         section = new Section(교대역, 강남역, 10);
-        sectionDao.insert(line, section);
+        sectionDao.insert(이호선, section);
 
-        line = lineDao.insert(new Line("삼호선", "bg-red-600"));
+        삼호선 = lineDao.insert(new Line("삼호선", "bg-red-600"));
         section = new Section(남부터미널역, 양재역, 7);
-        sectionDao.insert(line, section);
+        sectionDao.insert(삼호선, section);
 
         section = new Section(교대역, 남부터미널역, 3);
-        sectionDao.insert(line, section);
+        sectionDao.insert(삼호선, section);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        lineDao.deleteById(신분당선.getId());
+        sectionDao.deleteByLineId(신분당선.getId());
+
+        lineDao.deleteById(이호선.getId());
+        sectionDao.deleteByLineId(이호선.getId());
+
+        lineDao.deleteById(삼호선.getId());
+        sectionDao.deleteByLineId(삼호선.getId());
+
+        stationDao.deleteById(강남역.getId());
+        stationDao.deleteById(양재역.getId());
+        stationDao.deleteById(교대역.getId());
+        stationDao.deleteById(남부터미널역.getId());
     }
 }
