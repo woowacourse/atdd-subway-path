@@ -135,8 +135,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
+    @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
@@ -145,8 +145,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(lineRequest1);
@@ -158,8 +158,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
+    @DisplayName("지하철 노선 목록을 조회한다.")
     void getLines() {
         // given
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
@@ -173,8 +173,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
     @Test
+    @DisplayName("지하철 노선을 조회한다.")
     void getLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
@@ -186,8 +186,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, lineResponse);
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
     @Test
+    @DisplayName("지하철 노선을 수정한다.")
     void updateLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
@@ -199,8 +199,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
     @Test
+    @DisplayName("지하철 노선을 제거한다.")
     void deleteLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);

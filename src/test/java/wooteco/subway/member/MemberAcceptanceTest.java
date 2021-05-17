@@ -89,8 +89,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("회원 정보를 관리한다.")
     @Test
+    @DisplayName("회원 정보를 관리한다.")
     void manageMember() {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);

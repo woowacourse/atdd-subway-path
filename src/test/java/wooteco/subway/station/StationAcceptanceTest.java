@@ -83,8 +83,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    @DisplayName("지하철역을 생성한다.")
     @Test
+    @DisplayName("지하철역을 생성한다.")
     void createStation() {
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
@@ -93,8 +93,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     void createStationWithDuplicateName() {
         //given
         지하철역_등록되어_있음(강남역);
@@ -106,8 +106,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_실패됨(response);
     }
 
-    @DisplayName("지하철역을 조회한다.")
     @Test
+    @DisplayName("지하철역을 조회한다.")
     void getStations() {
         // given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
@@ -121,8 +121,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
-    @DisplayName("지하철역을 제거한다.")
     @Test
+    @DisplayName("지하철역을 제거한다.")
     void deleteStation() {
         // given
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역);

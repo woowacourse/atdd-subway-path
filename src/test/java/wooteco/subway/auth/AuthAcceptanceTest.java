@@ -59,8 +59,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             extract();
     }
 
-    @DisplayName("Bearer Auth")
     @Test
+    @DisplayName("Bearer Auth")
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
@@ -73,8 +73,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
     @Test
+    @DisplayName("Bearer Auth 로그인 실패")
     void myInfoWithBadBearerAuth() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
@@ -91,8 +91,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
 

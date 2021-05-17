@@ -100,8 +100,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
     }
 
-    @DisplayName("지하철 구간을 등록한다.")
     @Test
+    @DisplayName("지하철 구간을 등록한다.")
     void addLineSection() {
         // when
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 3);
@@ -110,8 +110,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
+    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     void addLineSection2() {
         // when
         지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
@@ -121,8 +121,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
     @Test
+    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
     void addLineSectionWithSameStation() {
         // when
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3);
@@ -131,8 +131,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
     @Test
+    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
     void addLineSectionWithNoStation() {
         // when
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3);
@@ -141,8 +141,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
+    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     void removeLineSection1() {
         // given
         지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
@@ -155,8 +155,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     @Test
+    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     void removeLineSection2() {
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
