@@ -16,7 +16,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String accessToken = AuthorizationExtractor.extract(request);
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new AuthorizationException("잘못된 토큰입니다.");
