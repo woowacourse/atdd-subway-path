@@ -1,37 +1,50 @@
 package wooteco.subway.line.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
 
-    public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    private static final String SECTION_TABLE = "SECTION";
+    private static final String ID = "id";
+    private static final String LINE_ID = "line_id";
+    private static final String UP_STATION_ID = "up_station_id";
+    private static final String DOWN_STATION_ID = "down_station_id";
+    private static final String DISTANCE = "distance";
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+
+    public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SECTION")
-                .usingGeneratedKeyColumns("id");
+
+        DataSource dataSource = Objects.requireNonNull(jdbcTemplate.getDataSource());
+        this.insertAction = new SimpleJdbcInsert(dataSource)
+                .withTableName(SECTION_TABLE)
+                .usingGeneratedKeyColumns(ID);
     }
 
     public Section insert(Line line, Section section) {
-        Map<String, Object> params = new HashMap();
-        params.put("line_id", line.getId());
-        params.put("up_station_id", section.getUpStation().getId());
-        params.put("down_station_id", section.getDownStation().getId());
-        params.put("distance", section.getDistance());
-        Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+        Map<String, Object> params = new HashMap<>();
+        params.put(LINE_ID, line.getId());
+        params.put(UP_STATION_ID, section.getUpStation().getId());
+        params.put(DOWN_STATION_ID, section.getDownStation().getId());
+        params.put(DISTANCE, section.getDistance());
+
+        Long sectionId = insertAction.executeAndReturnKey(params).longValue();
+
+        return new Section(sectionId, section.getUpStation(), section.getDownStation(),
+                section.getDistance());
     }
 
     public void deleteByLineId(Long lineId) {
@@ -41,16 +54,15 @@ public class SectionDao {
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("line_id", line.getId());
-                    params.put("up_station_id", section.getUpStation().getId());
-                    params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
-                    return params;
-                })
+                .map(section ->
+                        new HashMap<String, Object>() {{
+                            put(LINE_ID, line.getId());
+                            put(UP_STATION_ID, section.getUpStation().getId());
+                            put(DOWN_STATION_ID, section.getDownStation().getId());
+                            put(DISTANCE, section.getDistance());
+                        }})
                 .collect(Collectors.toList());
 
-        simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+        insertAction.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
 }

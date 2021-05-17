@@ -2,59 +2,54 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.dto.MemberRequest;
+import wooteco.subway.member.dto.MemberCreateRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.MemberUpdateRequest;
 
 import java.net.URI;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
-    private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    private final MemberService memberService;
+    private final AuthService authService;
+
+    public MemberController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
+        this.authService = authService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+    @PostMapping
+    public ResponseEntity<Void> createMember(@RequestBody MemberCreateRequest request) {
+        memberService.createMember(request);
+        return ResponseEntity.created(URI.create("/members/me")).build();
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+            @AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = MemberResponse.of(loginMember);
+        return ResponseEntity.ok(member);
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+            @AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberUpdateRequest request) {
+        // todo 이메일,나이 수정: JWT확인, 비번확인 -> 수정
+        authService.checkPassword(loginMember.toMember(), request.getPassword());
+        memberService.updateMember(loginMember.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // TODO: 구현 하기
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
-    }
-
-    // TODO: 구현 하기
-    @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
-    }
-
-    // TODO: 구현 하기
-    @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    @DeleteMapping("/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(
+            @AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

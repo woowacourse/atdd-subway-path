@@ -1,5 +1,8 @@
 package wooteco.subway.station.dao;
 
+import java.util.List;
+import java.util.Objects;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,26 +11,28 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.List;
-
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private static final String STATION_TABLE = "STATION";
+    private static final String ID = "id";
+
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (rs, rowNum) ->
             new Station(
-                    rs.getLong("id"),
+                    rs.getLong(ID),
                     rs.getString("name")
             );
 
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+
+        DataSource dataSource = Objects.requireNonNull(jdbcTemplate.getDataSource());
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .withTableName(STATION_TABLE)
+                .usingGeneratedKeyColumns(ID);
     }
 
     public Station insert(Station station) {
@@ -38,7 +43,7 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
     public void deleteById(Long id) {
@@ -48,6 +53,6 @@ public class StationDao {
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
     }
 }
