@@ -24,7 +24,7 @@ public class PathService {
 
     public PathResponse findPath(Long source, Long target) {
         List<Station> stations = stationDao.findAll();
-        List<Section> sections = sectionDao.findAllByStationIds(source, target);
+        List<Section> sections = sectionDao.findAll();
         Path path = new Path(stations, sections);
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);

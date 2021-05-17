@@ -71,13 +71,12 @@ public class SectionDao {
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
 
-    public List<Section> findAllByStationIds(Long source, Long target) {
+    public List<Section> findAll() {
         String query = "SELECT S.id AS id, UST.id AS up_station_id, UST.name AS up_station_name, \n" +
                 "DST.id AS down_station_id, DST.name AS down_station_name, \n" +
                 "S.distance AS distance FROM SECTION S\n" +
                 "LEFT JOIN STATION UST ON S.up_station_id = UST.id\n" +
-                "LEFT JOIN STATION DST ON S.down_station_id = DST.id\n" +
-                "WHERE UST.id = ? OR DST.id = ? OR UST.id = ? OR DST.id = ?";
-        return jdbcTemplate.query(query, sectionMapper, source, source, target, target);
+                "LEFT JOIN STATION DST ON S.down_station_id = DST.id";
+        return jdbcTemplate.query(query, sectionMapper);
     }
 }
