@@ -19,8 +19,8 @@ public class PathController {
 
     // TODO: 경로조회 기능 구현하기
     @GetMapping()
-    public ResponseEntity<PathResponse> searchPath(@RequestParam("source") Long source, @RequestParam("target") Long target){
-        PathResponse pathResponse = pathService.searchPath(source, target);
+    public ResponseEntity<PathResponse> searchPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId){
+        PathResponse pathResponse = pathService.searchPath(sourceId, targetId);
         return ResponseEntity.ok().body(pathResponse);
     }
 
