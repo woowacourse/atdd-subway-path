@@ -32,10 +32,9 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Member insert(Member member) {
+    public Long insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public void update(Member member) {

@@ -15,9 +15,8 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+    public Long createMember(MemberRequest request) {
+        return memberDao.insert(request.toMember());
     }
 
     public MemberResponse findMember(Long id) {
