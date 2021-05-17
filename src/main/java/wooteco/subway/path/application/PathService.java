@@ -2,6 +2,7 @@ package wooteco.subway.path.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -32,7 +33,7 @@ public class PathService {
         validateEachStationIsExist(stationMap, sourceStationId, targetStationId);
         List<PathSection> sections = lineService.findAllSections();
 
-        GraphPath<Long, DefaultWeightedEdge> path = calculatePath(sourceStationId, targetStationId, stationMap, sections);
+        GraphPath<Long, DefaultWeightedEdge> path = calculateShortestPath(sourceStationId, targetStationId, stationMap, sections);
 
         return createPathResponse(stationMap, path);
     }
@@ -43,7 +44,7 @@ public class PathService {
         }
     }
 
-    private GraphPath<Long, DefaultWeightedEdge> calculatePath(Long sourceStationId, Long targetStationId, Map<Long, Station> stationMap, List<PathSection> sections) {
+    private GraphPath<Long, DefaultWeightedEdge> calculateShortestPath(Long sourceStationId, Long targetStationId, Map<Long, Station> stationMap, List<PathSection> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         stationMap.keySet().forEach(stationGraph::addVertex);
@@ -57,6 +58,7 @@ public class PathService {
 
     private PathResponse createPathResponse(Map<Long, Station> stationMap,
         GraphPath<Long, DefaultWeightedEdge> path) {
+        validatePathIsExist(path);
         List<StationResponse> stationResponses = path.getVertexList()
             .stream()
             .map(stationMap::get)
@@ -65,5 +67,11 @@ public class PathService {
         int totalDistance = (int) path.getWeight();
 
         return new PathResponse(stationResponses, totalDistance);
+    }
+
+    private void validatePathIsExist(GraphPath<Long, DefaultWeightedEdge> path) {
+        if(Objects.isNull(path)) {
+            throw new PathException("두 역 사이에 존재하는 경로가 없습니다.");
+        }
     }
 }
