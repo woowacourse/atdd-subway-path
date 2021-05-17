@@ -17,12 +17,11 @@ import wooteco.subway.member.dto.MemberResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
-    public static final int NEW_AGE = 30;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
+    private static final String NEW_PASSWORD = "new_password";
+    private static final int NEW_AGE = 30;
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
