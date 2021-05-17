@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.exception.AuthException;
+import wooteco.subway.member.exception.MemberException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> databaseException(RuntimeException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<String> badRequest(RuntimeException exception) {
+        logger.error(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

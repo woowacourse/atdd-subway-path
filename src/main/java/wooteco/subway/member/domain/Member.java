@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.member.exception.NotSamePasswordException;
+
 public class Member {
     private Long id;
     private String email;
@@ -42,5 +44,11 @@ public class Member {
 
     public boolean samePassword(String password) {
         return this.password.equals(password);
+    }
+
+    public void validatePassword(String password) {
+        if (!samePassword(password)) {
+            throw new NotSamePasswordException();
+        }
     }
 }

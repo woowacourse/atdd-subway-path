@@ -29,12 +29,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(String email) {
-        Optional<Member> member = memberDao.findByEmail(email);
-        if (member.isPresent()) {
-            return MemberResponse.of(member.get());
-        }
-        throw new JwtLoginEmailException();
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email).orElseThrow(JwtLoginEmailException::new);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
@@ -43,17 +39,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
-    }
-
-    public Member findMemberByEmail(TokenRequest request) {
-        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(JwtLoginEmailException::new);
-        if(!member.samePassword(request.getPassword())) {
-            throw new JwtLoginPasswordException();
-        }
-        return member;
-    }
-
-    private Member findByEmail(String email) {
-        return memberDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 이메일임!"));
     }
 }

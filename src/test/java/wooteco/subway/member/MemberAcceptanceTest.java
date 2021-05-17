@@ -14,6 +14,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
@@ -49,6 +52,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void wrongEmailException(String email) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
         회원_생성않됨(createResponse);
+    }
+
+    @DisplayName("유효하지 않은 비밀번호로 로그인 요청시 예외가 발생한다.")
+    @Test
+    void wrongPasswordException() {
+        String basPassword = "123123";
+
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, basPassword);
+
+        회원_로그인_않됨(loginResponse);
+    }
+
+    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return RestAssured.given().log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(params).
+                when().
+                post("/api/login/token").
+                then().
+                log().all().
+                extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -117,5 +146,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 회원_로그인_않됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo((HttpStatus.BAD_REQUEST.value()));
     }
 }

@@ -20,7 +20,8 @@ public class AuthService {
     }
 
     public TokenResponse login(final TokenRequest request) {
-        Member member = memberService.findMemberByEmail(request);
+        Member member = memberService.findMemberByEmail(request.getEmail());
+        member.validatePassword(request.getPassword());
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getEmail());
         return new TokenResponse(token);
     }
