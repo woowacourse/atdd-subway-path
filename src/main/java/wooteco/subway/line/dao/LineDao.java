@@ -1,5 +1,12 @@
 package wooteco.subway.line.dao;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -8,30 +15,41 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    private static final String LINE_TABLE = "LINE";
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String COLOR = "color";
+
+    private static final String SECTION_ID = "SECTION_ID";
+    private static final String LINE_ID = "line_id";
+    private static final String LINE_NAME = "LINE_NAME";
+    private static final String LINE_COLOR = "LINE_COLOR";
+    private static final String UP_STATION_ID = "UP_STATION_ID";
+    private static final String UP_STATION_NAME = "UP_STATION_Name";
+    private static final String DOWN_STATION_ID = "DOWN_STATION_ID";
+    private static final String DOWN_STATION_Name = "DOWN_STATION_Name";
+    private static final String SECTION_DISTANCE = "SECTION_DISTANCE";
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+
+        DataSource dataSource = Objects.requireNonNull(jdbcTemplate.getDataSource());
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+                .withTableName(LINE_TABLE)
+                .usingGeneratedKeyColumns(ID);
     }
 
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put(ID, line.getId());
+        params.put(NAME, line.getName());
+        params.put(COLOR, line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor());
@@ -48,13 +66,14 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        Object[] params = {newLine.getName(), newLine.getColor(), newLine.getId()};
+        jdbcTemplate.update(sql, params);
     }
 
     public List<Line> findAll() {
@@ -68,9 +87,10 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
+        Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
+                .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
+        return resultByLine.values().stream()
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 
@@ -82,26 +102,34 @@ public class LineDao {
         List<Section> sections = extractSections(result);
 
         return new Line(
-                (Long) result.get(0).get("LINE_ID"),
-                (String) result.get(0).get("LINE_NAME"),
-                (String) result.get(0).get("LINE_COLOR"),
+                (Long) result.get(0).get(LINE_ID),
+                (String) result.get(0).get(LINE_NAME),
+                (String) result.get(0).get(LINE_COLOR),
                 new Sections(sections));
     }
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
-        if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+        if (result.isEmpty() || result.get(0).get(SECTION_ID) == null) {
+            return Collections.emptyList();
         }
         return result.stream()
-                .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
+                .collect(Collectors.groupingBy(it -> it.get(SECTION_ID)))
                 .entrySet()
                 .stream()
-                .map(it ->
-                        new Section(
-                                (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+                .map(listEntry -> {
+                    Map<String, Object> map = listEntry.getValue().get(0);
+
+                    Long id = (Long) listEntry.getKey();
+                    Station upStation = new Station(
+                            (Long) map.get(UP_STATION_ID),
+                            (String) map.get(UP_STATION_NAME));
+                    Station downStation = new Station(
+                            (Long) map.get(DOWN_STATION_ID),
+                            (String) map.get(DOWN_STATION_Name));
+                    int distance = (int) map.get(SECTION_DISTANCE);
+
+                    return new Section(id, upStation, downStation, distance);
+                })
                 .collect(Collectors.toList());
     }
 
