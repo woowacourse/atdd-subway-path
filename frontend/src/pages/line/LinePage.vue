@@ -43,6 +43,7 @@ import { SET_LINES, SET_STATIONS } from "../../store/shared/mutationTypes";
 import { mapGetters, mapMutations } from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
+import {requestGet} from "@/utils/fetcher";
 
 export default {
   name: "LinePage",
@@ -51,12 +52,10 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines")
-    // this.setLines([...lines])
+    const stations = await requestGet("/stations")
+    this.setStations([...stations])
+    const lines = await requestGet('/lines');
+    this.setLines([...lines])
   },
   methods: {
     ...mapMutations([SET_LINES, SET_STATIONS]),
