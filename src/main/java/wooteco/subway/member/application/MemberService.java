@@ -5,6 +5,8 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberError;
+import wooteco.subway.member.exception.MemberException;
 
 @Service
 public class MemberService {
@@ -20,7 +22,8 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findById(id)
+                                 .orElseThrow(() -> new MemberException(MemberError.NO_MEMBER_EXIST_BY_ID));
         return MemberResponse.of(member);
     }
 

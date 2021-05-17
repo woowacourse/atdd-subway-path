@@ -1,4 +1,4 @@
-import { HIDE_SNACKBAR, SHOW_SNACKBAR } from "../shared/mutationTypes";
+import {HIDE_SNACKBAR, SHOW_SNACKBAR} from "../shared/mutationTypes";
 
 const state = {
   isShow: false,
