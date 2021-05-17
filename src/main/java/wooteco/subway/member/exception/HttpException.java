@@ -1,6 +1,7 @@
 package wooteco.subway.member.exception;
 
 import org.springframework.http.HttpStatus;
+import wooteco.subway.member.exception.message.ErrorMessage;
 
 public class HttpException extends RuntimeException {
     private final HttpStatus httpStatus;

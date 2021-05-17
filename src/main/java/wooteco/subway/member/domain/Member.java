@@ -1,6 +1,7 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.exception.MemberNotFoundException;
+import wooteco.subway.member.exception.message.AuthErrorMessage;
+import wooteco.subway.member.exception.AuthException;
 
 public class Member {
     private Long id;
@@ -48,7 +49,7 @@ public class Member {
 
     public void validatePassword(String passwordToValidate) {
         if (!password.equals(passwordToValidate)) {
-            throw new MemberNotFoundException();
+            throw new AuthException(AuthErrorMessage.LOGIN_ERROR);
         }
     }
 }

@@ -5,7 +5,8 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.MemberNotFoundException;
+import wooteco.subway.member.exception.NotFoundException;
+import wooteco.subway.member.exception.message.NotFoundErrorMessage;
 
 @Service
 public class MemberService {
@@ -27,7 +28,7 @@ public class MemberService {
 
     public MemberResponse findMemberByEmail(String email) {
         final Member member = memberDao.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(NotFoundErrorMessage.MEMBER_NOT_FOUND));
         return MemberResponse.of(member);
     }
 

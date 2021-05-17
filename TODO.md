@@ -1,2 +1,0 @@
-- [ ] RestController ("/api") 붙이기
-- [ ] Response 없는 경우 Void로 변경하기
