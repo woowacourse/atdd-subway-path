@@ -83,7 +83,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {putRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "MypageEdit",
@@ -107,7 +107,7 @@ export default {
     async onEditMember() {
       try {
         const {email, age, password} = this.editingMember;
-        putRequest('members/me', {email, age, password}, true)
+        apiRequest('put','members/me', {email, age, password}, true)
 
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
         await this.$router.replace("/mypage");

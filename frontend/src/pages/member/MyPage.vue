@@ -43,7 +43,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import {deleteRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "MyPage",
@@ -66,7 +66,7 @@ export default {
       }
 
       try {
-        deleteRequest('members/me')
+        apiRequest('delete', 'members/me')
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");

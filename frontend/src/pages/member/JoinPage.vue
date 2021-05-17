@@ -81,7 +81,7 @@ import {mapMutations} from "vuex";
 import {SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {postRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "JoinPage",
@@ -96,7 +96,7 @@ export default {
       }
       try {
         const {email, age, password} = this.member;
-        postRequest('members', {email, age, password})
+        apiRequest('post','members', {email, age, password})
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {

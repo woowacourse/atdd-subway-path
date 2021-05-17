@@ -86,7 +86,7 @@ import {
 } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
 import validator from "../../../utils/validator";
-import {getRequest, postRequest} from "../../../utils/request";
+import {apiRequest} from "../../../utils/request";
 
 export default {
   name: "SectionCreateButton",
@@ -110,7 +110,7 @@ export default {
     },
     async initLineStationsView() {
       try {
-        this.selectedLine = await getRequest(`lines/${this.sectionForm.lineId}`)
+        this.selectedLine = await apiRequest('get',`lines/${this.sectionForm.lineId}`)
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -155,12 +155,12 @@ export default {
         return;
       }
       try {
-        await postRequest(`/lines/${this.selectedLine.id}/sections`, {
+        await apiRequest('post',`/lines/${this.selectedLine.id}/sections`, {
           upStationId: this.sectionForm.upStationId,
           downStationId: this.sectionForm.downStationId,
           distance: this.sectionForm.distance
         });
-        const lines = await getRequest("lines");
+        const lines = await apiRequest('get',"lines");
         this.setLines(lines)
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);

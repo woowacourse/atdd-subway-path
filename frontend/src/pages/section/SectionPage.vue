@@ -81,15 +81,15 @@ import {
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
-import {getRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    const stations = await getRequest("stations")
+    const stations = await apiRequest('get',"stations")
     this.setStations([...stations])
-    const lines = await getRequest("lines");
+    const lines = await apiRequest('get',"lines");
     this.setLines([...lines]);
     this.initLinesView();
   },
@@ -123,7 +123,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        this.activeLine = await getRequest(`/lines/${this.activeLineId}`);
+        this.activeLine = await apiRequest('get',`/lines/${this.activeLineId}`);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

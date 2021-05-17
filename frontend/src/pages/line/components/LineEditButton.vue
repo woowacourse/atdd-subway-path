@@ -81,7 +81,7 @@ import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
-import {getRequest, putRequest} from "../../../utils/request";
+import {apiRequest} from "../../../utils/request";
 
 export default {
   name: "LineEditButton",
@@ -115,12 +115,12 @@ export default {
     },
     async onEditLine() {
       try {
-        await putRequest(`lines/${this.line.id}`, {
+        await apiRequest('put',`lines/${this.line.id}`, {
           name: this.lineEditForm['name'],
           color: this.lineEditForm['color'],
           distance: this.lineEditForm['distance']
         })
-        const lines = await getRequest("lines")
+        const lines = await apiRequest('get',"lines")
         this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);

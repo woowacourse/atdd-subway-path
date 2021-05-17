@@ -8,7 +8,7 @@
 import {mapMutations} from "vuex";
 import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
-import {deleteRequest, getRequest} from "../../../utils/request";
+import {apiRequest} from "../../../utils/request";
 
 export default {
   name: "SectionDeleteButton",
@@ -26,8 +26,8 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        await deleteRequest(`lines/${this.lineId}/sections?stationId=${this.stationId}`);
-        const line = await getRequest(`lines/${this.lineId}`)
+        await apiRequest('delete',`lines/${this.lineId}/sections?stationId=${this.stationId}`);
+        const line = await apiRequest('get',`lines/${this.lineId}`)
         this.setLine({ ...line })
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {

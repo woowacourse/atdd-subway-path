@@ -124,7 +124,7 @@ import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
 import shortid from "shortid";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
-import {postRequest} from "../../../utils/request";
+import {apiRequest} from "../../../utils/request";
 
 export default {
   name: "LineCreateButton",
@@ -154,7 +154,7 @@ export default {
         return;
       }
       try {
-        const newLine = await postRequest("lines", {
+        const newLine = await apiRequest('post',"lines", {
           name:this.lineForm.name,
           color:this.lineForm.color,
           upStationId:this.lineForm.upStationId,

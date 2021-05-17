@@ -43,7 +43,7 @@ import { SET_LINES, SET_STATIONS } from "../../store/shared/mutationTypes";
 import { mapGetters, mapMutations } from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
-import {getRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "LinePage",
@@ -52,9 +52,9 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    const stations = await getRequest("stations")
+    const stations = await apiRequest('get', "stations")
     this.setStations([...stations])
-    const lines = await getRequest("lines")
+    const lines = await apiRequest('get',"lines")
     this.setLines([...lines])
   },
   methods: {

@@ -57,7 +57,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {getRequest, postRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "LoginPage",
@@ -76,14 +76,14 @@ export default {
       try {
         const {email, password} = this.member;
 
-        const token = await postRequest('login/token', {
+        const token = await apiRequest('post','login/token', {
           email,
           password,
         });
 
         localStorage.setItem('accessToken', token.accessToken);
 
-        const member = await getRequest('members/me', true);
+        const member = await apiRequest('get','members/me', true);
 
         this.setMember(member);
         await this.$router.replace(`/`);

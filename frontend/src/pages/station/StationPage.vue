@@ -59,7 +59,7 @@ import validator from "../../utils/validator";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import {mapGetters, mapMutations} from "vuex";
 import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import {deleteRequest, getRequest, postRequest} from "../../utils/request";
+import {apiRequest} from "../../utils/request";
 
 export default {
   name: "StationPage",
@@ -67,7 +67,7 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    const stations = await getRequest("stations");
+    const stations = await apiRequest('get',"stations");
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
@@ -80,7 +80,7 @@ export default {
         return;
       }
       try {
-        const newStation = await postRequest("stations", {name:this.stationName});
+        const newStation = await apiRequest('post',"stations", {name:this.stationName});
 
         this.setStations([...this.stations, newStation]);
         this.initStationForm();
@@ -96,7 +96,7 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        await deleteRequest(`stations/${stationId}`);
+        await apiRequest('delete',`stations/${stationId}`);
         const idx = this.stations.findIndex(
             (station) => station.id === stationId
         );
