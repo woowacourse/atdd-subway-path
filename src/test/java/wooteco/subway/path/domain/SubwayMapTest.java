@@ -7,6 +7,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +39,9 @@ class SubwayMapTest {
         삼호선.addSection(교대에서양재);
         삼호선.addSection(교대에서남부터미널);
 
-        subwayMap = new SubwayMap(삼호선.getSections());
+        List<Line> 지하철노선 = Arrays.asList(신분당선, 이호선, 삼호선);
+
+        subwayMap = new SubwayMap(지하철노선);
     }
 
     @Test
