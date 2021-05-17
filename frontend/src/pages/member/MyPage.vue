@@ -65,14 +65,14 @@ export default {
       }
       try {
         // TODO 유저를 삭제하는 API를 추가해주세요
-        const response = await fetch("http://localhost:8080/members/me", {
+        const deleteResponse = await fetch("http://localhost:8080/members/me", {
           method:"DELETE",
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`
           }
         });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        if (!deleteResponse.ok) {
+          throw new Error(`${deleteResponse.status}`);
         }
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
