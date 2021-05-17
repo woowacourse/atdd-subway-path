@@ -21,11 +21,17 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        // TODO Line을 삭제하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}")
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const lineId = this.line.id;
+        await fetch("http://localhost:8080/lines/" + lineId, {
+          method: "DELETE"
+        });
+
+        const lineResponse = await fetch("http://localhost:8080/lines");
+        if (!lineResponse.ok) {
+          throw new Error(`${lineResponse.status}`);
+        }
+        const lines = await lineResponse.json();
+        this.setLines([...lines]);
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.FAIL);
