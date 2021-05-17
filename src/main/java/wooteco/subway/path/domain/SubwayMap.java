@@ -19,11 +19,8 @@ public class SubwayMap {
     public void addSection(Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
-        boolean isUpStationSaved = subwayMap.addVertex(upStation);
-        boolean isDownStationSaved = subwayMap.addVertex(downStation);
-        if (!isUpStationSaved && !isDownStationSaved) {
-            return;
-        }
+        subwayMap.addVertex(upStation);
+        subwayMap.addVertex(downStation);
         DefaultWeightedEdge defaultWeightedEdge = subwayMap.addEdge(upStation, downStation);
         subwayMap.setEdgeWeight(defaultWeightedEdge, section.getDistance());
     }
