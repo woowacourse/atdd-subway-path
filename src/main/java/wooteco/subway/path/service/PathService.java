@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.controller.domain.ShortestPath;
-import wooteco.subway.path.controller.domain.WeightedGraph;
+import wooteco.subway.path.domain.DijkstraPath;
+import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.WeightedGraph;
 import wooteco.subway.path.controller.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -28,9 +29,8 @@ public class PathService {
         final Station source = stationDao.findById(sourceId);
         final Station target = stationDao.findById(targetId);
 
-        final WeightedGraph weightedGraph = WeightedGraph.of(lines);
-        final ShortestPath shortestPath = new ShortestPath(weightedGraph);
-        return PathResponse.of(shortestPath.getShortestPath(source, target),
-                shortestPath.getShortestDistance(source, target));
+        final DijkstraPath dijkstraPath = new DijkstraPath(WeightedGraph.of(lines));
+        final Path shortestPath = dijkstraPath.findShortestPath(source, target);
+        return PathResponse.of(shortestPath);
     }
 }

@@ -1,22 +1,27 @@
-package wooteco.subway.path.controller.domain;
+package wooteco.subway.path.domain;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class ShortestPath {
+public class DijkstraPath {
     private final DijkstraShortestPath dijkstraShortestPath;
 
-    public ShortestPath(WeightedGraph graph) {
+    public DijkstraPath(WeightedGraph graph) {
         this.dijkstraShortestPath = new DijkstraShortestPath(graph.getGraph());
     }
 
-    public List<Station> getShortestPath(Station source, Station target) {
+    public Path findShortestPath(Station source, Station target) {
+        return new Path(getShortestPath(source, target),
+                getShortestDistance(source, target));
+    }
+
+    private List<Station> getShortestPath(Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public int getShortestDistance(Station source, Station target) {
+    private int getShortestDistance(Station source, Station target) {
         return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 }
