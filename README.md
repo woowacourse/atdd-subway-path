@@ -23,5 +23,5 @@
 
 - [x] 경로와 거리를 저장하는 Path 도메인 생성
 - [ ] DijkstraGraph로 변환하는 클래스 생성
-- [ ] 최단 거리를 계산해서 돌려주는 클래스 생성
-- [ ] PathResponse 내부에서 Station을 StationResponse로 변환하는 메서드 생성
+- [x] 최단 거리를 계산해서 돌려주는 클래스 생성
+- [x] PathResponse 내부에서 Station을 StationResponse로 변환하는 메서드 생성
