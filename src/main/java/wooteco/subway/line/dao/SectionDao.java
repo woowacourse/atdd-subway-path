@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.exception.NotFoundStationException;
 
 @Repository
 public class SectionDao {
@@ -33,11 +34,11 @@ public class SectionDao {
             final long downStationId = rs.getLong("down_station_id");
             final int distance = rs.getInt("distance");
             final Station upStation =
-                stations.stream().filter(station -> station.getId().equals(upStationId))
-                    .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
+                stations.stream().filter(station -> station.isSameId(upStationId))
+                    .findAny().orElseThrow(() -> new NotFoundStationException("해당하는 Id의 지하철역이 없습니다."));
             final Station downStation =
-                stations.stream().filter(station -> station.getId().equals(downStationId))
-                    .findAny().orElseThrow(() -> new IllegalArgumentException("없음"));
+                stations.stream().filter(station -> station.isSameId(downStationId))
+                    .findAny().orElseThrow(() -> new NotFoundStationException("해당하는 Id의 지하철역이 없습니다."));
             return new Section(id, upStation, downStation, distance);
         };
     }
