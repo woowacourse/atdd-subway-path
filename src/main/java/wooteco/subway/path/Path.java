@@ -12,9 +12,9 @@ import wooteco.subway.station.domain.Station;
 
 public class Path {
 
-    private Station sourceStation;
-    private Station targetStation;
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> pathMap;
+    private final Station sourceStation;
+    private final Station targetStation;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> pathMap;
 
     public Path(Station sourceStation, Station targetStation,
         Sections sections) {

@@ -68,7 +68,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .when()
-            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(),
+                station.getId())
             .then().log().all()
             .extract();
     }

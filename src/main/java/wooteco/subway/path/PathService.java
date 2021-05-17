@@ -36,7 +36,8 @@ public class PathService {
             .map(response -> {
                 Station upStation = stationService.findStationById(response.getUpStationId());
                 Station downStation = stationService.findStationById(response.getDownStationId());
-                return new Section(response.getId(), upStation, downStation, response.getDistance());
+                return new Section(response.getId(), upStation, downStation,
+                    response.getDistance());
             })
             .collect(Collectors.toList());
     }

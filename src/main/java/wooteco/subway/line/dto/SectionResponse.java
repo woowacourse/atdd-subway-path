@@ -1,6 +1,7 @@
 package wooteco.subway.line.dto;
 
 public class SectionResponse {
+
     private Long id;
     private Long upStationId;
     private Long downStationId;

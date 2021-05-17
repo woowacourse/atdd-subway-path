@@ -11,14 +11,16 @@ import wooteco.subway.path.dto.PathResponse;
 @RequestMapping("/api/paths")
 @RestController
 public class PathController {
-      private final PathService service;
+
+    private final PathService service;
 
     public PathController(PathService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> showPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
+    public ResponseEntity<PathResponse> showPath(@RequestParam("source") Long sourceId,
+        @RequestParam("target") Long targetId) {
         return ResponseEntity.ok(service.findPath(sourceId, targetId));
     }
 }
