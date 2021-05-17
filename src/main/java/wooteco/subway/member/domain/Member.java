@@ -51,7 +51,7 @@ public class Member {
         return age;
     }
 
-    public boolean isValidMember(Member requestMember) {
-        return email.equals(requestMember.email) && password.equals(requestMember.password);
+    public boolean hasSameMemberInfo(Member member) {
+        return password.equals(member.password);
     }
 }

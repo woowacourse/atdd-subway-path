@@ -29,7 +29,7 @@ public class AuthService {
 
     public void authorize(Member member, TokenRequest tokenRequest) {
         final Member requestMember = tokenRequest.toEntity();
-        if (!member.isValidMember(requestMember)) {
+        if (!member.hasSameMemberInfo(requestMember)) {
             throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
         }
     }
