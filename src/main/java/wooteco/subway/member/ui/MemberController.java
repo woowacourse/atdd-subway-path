@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.auth.dto.LoginMember;
-import wooteco.subway.member.dto.MemberRequest;
+import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.dto.MemberCreateRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.MemberUpdateRequest;
 
 @RestController
 @RequestMapping("/members")
@@ -26,7 +27,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberCreateRequest request) {
         memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/me")).build();
     }
@@ -40,7 +41,9 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-            @AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+            @AuthenticationPrincipal LoginMember loginMember,
+            @RequestBody MemberUpdateRequest param) {
+        // todo 이메일,나이 수정: JWT확인, 비번확인 -> 수정
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }

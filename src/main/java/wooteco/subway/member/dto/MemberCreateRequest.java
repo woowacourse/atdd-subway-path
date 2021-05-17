@@ -2,15 +2,15 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
-public class MemberRequest {
+public class MemberCreateRequest {
     private String email;
     private String password;
     private Integer age;
 
-    public MemberRequest() {
+    public MemberCreateRequest() {
     }
 
-    public MemberRequest(String email, String password, Integer age) {
+    public MemberCreateRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;

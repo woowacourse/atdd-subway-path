@@ -46,10 +46,8 @@ public class MemberDao {
     }
 
     public void update(Member member) {
-        String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        Object[] params = {
-                member.getEmail(), member.getPassword(), member.getAge(), member.getId()
-        };
+        String sql = "update MEMBER set email = ?, age = ? where id = ?";
+        Object[] params = {member.getEmail(), member.getAge(), member.getId()};
         jdbcTemplate.update(sql, params);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.member.dto.MemberRequest;
+import wooteco.subway.member.dto.MemberCreateRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -45,12 +45,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password,
             Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
+                .body(memberCreateRequest)
                 .when().post("/members")
                 .then().log().all()
                 .extract();
@@ -69,13 +69,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse,
             String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
+                .body(memberCreateRequest)
                 .when().put("/members/me")
                 .then().log().all()
                 .extract();
