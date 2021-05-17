@@ -20,10 +20,8 @@ public class AuthService {
 
     public Token login(String email, String password) {
         Member member = memberDao.findByEmail(email)
+            .filter(foundMember -> !foundMember.invalidPassword(password))
             .orElseThrow(LoginFailException::new);
-        if (member.invalidPassword(password)) {
-            throw new LoginFailException();
-        }
         return new Token(jwtTokenProvider.createToken(member.getId().toString()));
     }
 }
