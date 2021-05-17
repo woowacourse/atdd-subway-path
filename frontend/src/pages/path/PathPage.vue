@@ -159,7 +159,6 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
         const getPathsResponse = await fetch(`http://localhost:8080/paths?source=${this.path.source}&target=${this.path.target}`);
         if (!getPathsResponse.ok){
           throw new Error(`${getPathsResponse.status}`);
@@ -172,7 +171,6 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
         const getStationsResponse = await fetch("http://localhost:8080/stations");
         if (!getStationsResponse.ok){
           throw new Error(`${getStationsResponse.status}`);
@@ -195,7 +193,6 @@ export default {
     },
     async onSearchMinimumDurationType() {
       try {
-        // TODO 최소 시간을 검색하는 API를 추가해주세요.
         const getPathsResponse = await fetch(`http://localhost:8080/paths?source=${this.path.source}&target=${this.path.target}`);
         if (!getPathsResponse.ok){
           throw new Error(`${getPathsResponse.status}`);

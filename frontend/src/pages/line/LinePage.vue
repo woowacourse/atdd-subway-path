@@ -51,14 +51,13 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
     const getStationsResponse = await fetch("http://localhost:8080/stations");
     if(!getStationsResponse.ok){
       throw new Error(`${getStationsResponse.status}`);
     }
     const stations = await getStationsResponse.json();
     this.setStations([...stations]);
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요...
+
     const getLinesResponse = await fetch("http://localhost:8080/lines");
     if (!getLinesResponse.ok) {
       throw new Error(`${getLinesResponse.status}`);
