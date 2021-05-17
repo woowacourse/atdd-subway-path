@@ -46,6 +46,7 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         try {
+            memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
             memberDao.deleteById(id);
         } catch (DataAccessException e) {
             throw new MemberNotFoundException();
