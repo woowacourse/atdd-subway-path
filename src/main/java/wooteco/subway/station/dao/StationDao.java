@@ -1,6 +1,9 @@
 package wooteco.subway.station.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,6 +41,13 @@ public class StationDao {
     public List<Station> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Map<Long, Station> findAllInMap() {
+        String sql = "select * from STATION";
+        return jdbcTemplate.query(sql, rowMapper)
+            .stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     public void deleteById(Long id) {
