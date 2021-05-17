@@ -1,4 +1,4 @@
-package wooteco.subway.path;
+package wooteco.subway.path.learningtest;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
