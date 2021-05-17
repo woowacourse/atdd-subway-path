@@ -65,8 +65,8 @@ class MemberServiceTest {
         MemberResponse memberResponse = memberService.findMember(createdMember.getId());
 
         //then
-        assertEquals(memberResponse.getEmail(), EMAIL);
-        assertEquals(memberResponse.getAge(), AGE);
+        assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(AGE);
     }
 
     @Test
@@ -80,7 +80,7 @@ class MemberServiceTest {
         memberService.updateMember(createdMember.getId(), newMember);
 
         //then
-        assertEquals(AGE+1, memberService.findMember(createdMember.getId()).getAge());
+        assertThat(memberService.findMember(createdMember.getId()).getAge()).isEqualTo(AGE+1);
     }
 
     @Test
@@ -95,6 +95,5 @@ class MemberServiceTest {
         //then
         assertThatThrownBy(() -> memberService.findMember(memberResponse.getId()))
             .isInstanceOf(MemberNotFoundException.class);
-
     }
 }
