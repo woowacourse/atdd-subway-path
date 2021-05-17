@@ -41,8 +41,8 @@ public class SubwayMap {
         stations.forEach(subwayMap::addVertex);
     }
 
-    public double getShortestPath(Station source, Station target) {
-        return map.getPathWeight(source, target);
+    public int getShortestPath(Station source, Station target) {
+        return (int) map.getPathWeight(source, target);
     }
 
     public List<Station> getStationsOnPath(Station source, Station target) {
