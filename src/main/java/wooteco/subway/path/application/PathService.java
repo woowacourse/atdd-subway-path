@@ -30,10 +30,8 @@ public class PathService {
         Station sourceStation = stationDao.findById(sourceId);
         Station targetStation = stationDao.findById(targetId);
 
-        List<StationResponse> stationResponses = path.findPath(sourceStation, targetStation)
-                .stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stationResponses = StationResponse.listOf(path.findPath(sourceStation, targetStation));
+
         int distance = path.findDistance(sourceStation, targetStation);
 
         return new PathResponse(stationResponses, distance);
