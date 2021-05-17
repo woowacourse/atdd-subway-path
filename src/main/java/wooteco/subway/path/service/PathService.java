@@ -62,7 +62,7 @@ public class PathService {
         Station sourceStation, Station targetStation) {
         List<Station> shortestPath
             = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
-        
+
         List<StationResponse> stationResponses = shortestPath.stream()
             .map(station -> new StationResponse(station.getId(), station.getName()))
             .collect(Collectors.toList());

@@ -15,6 +15,6 @@
 ### 경로 관련 구현하기
 - [x] Controller 구현 및 매핑
 - [x] Path 찾는 Service 구현
-- [ ] Service와 Controller 영역
+- [x] Service와 Controller 영역
 - [ ] 프런트 엔드 데이터 수신 구현
 
