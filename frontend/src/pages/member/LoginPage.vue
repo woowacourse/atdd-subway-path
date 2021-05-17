@@ -73,7 +73,6 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const {email, password} = this.member;
         const postResponse = await fetch("http://localhost:8080/login/token", {
           method: "POST",
@@ -91,7 +90,7 @@ export default {
         const data = await postResponse.json();
         this.setAccessToken(data.accessToken);
         localStorage.setItem("token", data.accessToken);
-        // TODO member 데이터를 불러와 주세요.
+
         const getResponse = await fetch("http://localhost:8080/members/me", {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`
