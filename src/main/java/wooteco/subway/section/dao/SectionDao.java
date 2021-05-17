@@ -60,14 +60,18 @@ public class SectionDao {
         String query = "select SE.id, SE.up_station_id, SE.down_station_id, SE.distance, ST1.name as up_station_name, ST2.name as down_station_name " +
                 "from SECTION as SE left join STATION as ST1 on SE.up_station_id = ST1.id " +
                 "left join STATION as ST2 on SE.down_station_id = ST2.id";
-        RowMapper<Section> sectionRowMapper = (resultSet, rowNumber) -> {
+        RowMapper<Section> sectionRowMapper = getSectionRowMapper();
+        return jdbcTemplate.query(query, sectionRowMapper);
+    }
+
+    private RowMapper<Section> getSectionRowMapper() {
+        return (resultSet, rowNumber) -> {
             long id = resultSet.getLong("id");
             Station upStation = generateStation(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name"));
             Station downStation = generateStation(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name"));
             int distance = resultSet.getInt("distance");
             return new Section(id, upStation, downStation, distance);
         };
-        return jdbcTemplate.query(query, sectionRowMapper);
     }
 
     private Station generateStation(long id, String name) {
