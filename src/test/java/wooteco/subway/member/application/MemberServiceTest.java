@@ -11,6 +11,7 @@ import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.exception.NoRowHasBeenModifiedException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -29,6 +30,8 @@ class MemberServiceTest {
     private static final String PASSWORD = "test";
     private static final int AGE = 12;
     private final Member 저장된_회원 = new Member(1L, EMAIL, PASSWORD, AGE);
+    private final LoginMember 로그인된_회원 = new LoginMember(1L, "update@email.com", 10);
+    private final MemberRequest 요청한_회원 = new MemberRequest("updated@email.com", "updated", 20);
 
     @Mock
     private MemberDao memberDao = mock(MemberDao.class);
@@ -101,13 +104,10 @@ class MemberServiceTest {
     @Test
     void updateMember() {
         //given
-        given(memberDao.findById(any(Long.class)))
-                .willReturn(Optional.ofNullable(저장된_회원));
-        long id = 1L;
-        MemberRequest memberRequest = new MemberRequest("updated@email.com", "updated", 20);
+        doNothing().when(memberDao).update(any(Member.class));
 
         //when
-        memberService.updateMember(id, memberRequest);
+        memberService.updateMember(로그인된_회원, 요청한_회원);
 
         //then
         verify(memberDao).update(any(Member.class));
@@ -117,13 +117,11 @@ class MemberServiceTest {
     @Test
     void notExistMemberUpdate() {
         //given
-        given(memberDao.findById(any(Long.class)))
-                .willReturn(Optional.empty());
-        long id = 1L;
-        MemberRequest memberRequest = new MemberRequest("me@email.com", "updated", 20);
+        doThrow(NoRowHasBeenModifiedException.class)
+                .when(memberDao).update(any(Member.class));
 
         //when then
-        assertThatThrownBy(() -> memberService.updateMember(id, memberRequest))
+        assertThatThrownBy(() -> memberService.updateMember(로그인된_회원, 요청한_회원))
                 .isInstanceOf(MemberNotFoundException.class).hasMessage("회원이 존재하지 않습니다.");
     }
 
@@ -131,13 +129,11 @@ class MemberServiceTest {
     @Test
     void duplicateEmailUpdate() {
         //given
-        given(memberDao.findById(1L))
-                .willReturn(Optional.of(저장된_회원));
         doThrow(DuplicateKeyException.class).when(memberDao).update(any(Member.class));
 
         //when
         assertThatThrownBy(() -> {
-            memberService.updateMember(1L, new MemberRequest("me@email.com", "updated", 20));
+            memberService.updateMember(로그인된_회원, 요청한_회원);
         }).isInstanceOf(DuplicateEmailException.class);
     }
 

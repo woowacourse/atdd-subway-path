@@ -6,6 +6,7 @@ import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.exception.NoRowHasBeenModifiedException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -32,10 +33,9 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(long id, MemberRequest memberRequest) {
+    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         try {
-            Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
-            Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+            Member newMember = new Member(loginMember.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
                     memberRequest.getAge());
             memberDao.update(newMember);
         } catch (DuplicateKeyException e) {

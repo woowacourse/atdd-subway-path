@@ -10,10 +10,10 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api")
 public class MemberController {
     private final MemberService memberService;
 
@@ -30,22 +30,9 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@NotNull @PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
-    }
-
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteMember(@NotNull @PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
-        return ResponseEntity.ok(memberResponse);
+    public ResponseEntity<LoginMember> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(loginMember);
     }
 
     @PutMapping("/members/me")
@@ -55,7 +42,7 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult);
         }
-        memberService.updateMember(loginMember.getId(), param);
+        memberService.updateMember(loginMember, param);
         return ResponseEntity.noContent().build();
     }
 

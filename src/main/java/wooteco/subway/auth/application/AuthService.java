@@ -6,10 +6,10 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.EmailNotFoundException;
+import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -22,17 +22,10 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    private void validateToken(String token) {
-        if (jwtTokenProvider.validateToken(token)) {
-            return;
-        }
-        throw new AuthorizationException();
-    }
-
-    public Long LoginMemberId(String token) {
-        validateToken(token);
+    public LoginMember findByToken(String token) {
         String id = jwtTokenProvider.getPayload(token);
-        return Long.parseLong(id);
+        Member member = memberDao.findById(Long.parseLong(id)).orElseThrow(MemberNotFoundException::new);
+        return new LoginMember(member);
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
@@ -41,5 +34,12 @@ public class AuthService {
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
+    }
+
+    public void validateToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            return;
+        }
+        throw new AuthorizationException();
     }
 }
