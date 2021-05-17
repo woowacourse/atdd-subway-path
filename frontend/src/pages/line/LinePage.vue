@@ -51,14 +51,14 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    const stationsResponse = await fetch("http://localhost:8080/stations");
+    const stationsResponse = await fetch("/api/stations");
     if (!stationsResponse.ok) {
       throw new Error(`${stationsResponse.status}`);
     }
     const stations = await stationsResponse.json()
     this.setStations([...stations])
 
-    const linesResponse = await fetch("http://localhost:8080/lines");
+    const linesResponse = await fetch("/api/lines");
     const lines = await linesResponse.json();
     this.setLines([...lines])
   },

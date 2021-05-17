@@ -25,11 +25,11 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        await fetch(`http://localhost:8080/lines/${this.lineId}/sections/?stationId=${this.stationId}`
+        await fetch(`/api/lines/${this.lineId}/sections/?stationId=${this.stationId}`
             , {
           method: "DELETE",
         })
-        const lineResponse = await fetch(`http://localhost:8080/lines/${this.lineId}`);
+        const lineResponse = await fetch(`/api/lines/${this.lineId}`);
         const line = await lineResponse.json();
         this.setLine({...line})
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

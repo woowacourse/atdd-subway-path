@@ -22,10 +22,10 @@ export default {
     async onDeleteLine() {
       try {
         const lineId = this.line.id;
-        await fetch(`http://localhost:8080//lines/${lineId}`, {
+        await fetch(`/api/lines/${lineId}`, {
           method: "DELETE"
         })
-        const linesResponse = await fetch("http://localhost:8080/lines");
+        const linesResponse = await fetch("/api/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);

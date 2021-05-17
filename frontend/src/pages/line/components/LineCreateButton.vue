@@ -155,7 +155,7 @@ export default {
         return;
       }
       try {
-        const newLineResponse = await fetch("http://localhost:8080/lines", {
+        const newLineResponse = await fetch("/api/lines", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

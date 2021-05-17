@@ -68,7 +68,7 @@ export default {
         if (loadToken === null) {
           alert("저장되어 있지않습니다.");
         }
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("/api/members/me", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
