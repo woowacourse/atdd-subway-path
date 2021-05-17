@@ -23,10 +23,13 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Optional<Member> optionalMember = memberDao.findByEmail(tokenRequest.getEmail());
-        Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
-        member.checkValidPassword(tokenRequest.getPassword());
+        return memberDao.findByEmail(tokenRequest.getEmail())
+            .map(member -> create(tokenRequest, member))
+            .orElseThrow(EmailNotFoundException::new);
+    }
 
+    private TokenResponse create(TokenRequest tokenRequest, Member member) {
+        member.checkValidPassword(tokenRequest.getPassword());
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
