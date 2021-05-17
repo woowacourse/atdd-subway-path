@@ -31,7 +31,7 @@ public class AuthService {
                 .orElseThrow(() -> new InvalidMemberException(email));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Member findMemberByToken(String token) {
         String id = getPayload(token);
         return memberDao.findById(Long.valueOf(id));
