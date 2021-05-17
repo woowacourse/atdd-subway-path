@@ -187,7 +187,7 @@ export default {
     },
     async onSearchMinimumDurationType() {
       try {
-        // TODO 최소 시간을 검색하는 API를 추가해주세요.
+        // 최소 시간을 검색하는 API를 추가해주세요.
         // this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

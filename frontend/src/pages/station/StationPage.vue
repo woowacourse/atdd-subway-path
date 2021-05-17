@@ -84,7 +84,7 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample
-        const response = await fetch("http://localhost:8080/stations", {
+        const response = await fetch("http://localhost:8080/api/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
