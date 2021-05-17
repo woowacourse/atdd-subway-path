@@ -13,7 +13,7 @@ public class Path {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public Path(List<Station> stations, List<Section> sections) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initializeGraph(stations, sections);
     }
 
