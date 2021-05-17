@@ -114,7 +114,6 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
         const lineId = this.line.id;
         await fetch("http://localhost:8080/lines/" + lineId, {
           method: "PUT",
@@ -126,7 +125,6 @@ export default {
             color: this.lineEditForm.color
           }),
         });
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
         const lineResponse = await fetch("http://localhost:8080/lines");
         if (!lineResponse.ok) {
           throw new Error(`${lineResponse.status}`);
