@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -86,6 +88,21 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("유효하지 않은 이름으로 지하철 역 저장 요청시 예외가 발생한다..")
+    @ParameterizedTest
+    @ValueSource(strings = {"강남", "2호", "역호"})
+    void invalidStationNameException(String name) {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
+
+        // then
+        역_생성_오류(response);
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
     }
@@ -147,5 +164,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    private void 역_생성_오류(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -42,11 +44,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("유효하지 않은 이름으로 가입 요청 시 예외가 발생한다..")
-    @Test
-    void wrongEmailException() {
-        String badEmail = "email.com";
-
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(badEmail, PASSWORD, AGE);
+    @ParameterizedTest
+    @ValueSource(strings = {"email.com", "@email"})
+    void wrongEmailException(String email) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
         회원_생성않됨(createResponse);
     }
 
