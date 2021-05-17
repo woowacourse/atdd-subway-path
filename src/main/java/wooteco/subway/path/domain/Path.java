@@ -4,6 +4,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.NotExistingPathException;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
@@ -29,7 +30,11 @@ public class Path {
     }
 
     public List<Station> shortestPath(Station source, Station target) {
-        return shortestGraph(source, target).getVertexList();
+        try {
+            return shortestGraph(source, target).getVertexList();
+        } catch (NullPointerException exception) {
+            throw new NotExistingPathException();
+        }
     }
 
     public int shortestDistance(Station source, Station target) {
