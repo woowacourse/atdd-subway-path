@@ -7,6 +7,7 @@ import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.LoginMember;
 
 @Service
 public class AuthService {
@@ -25,13 +26,14 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public Member findMemberByToken(String token) {
-        String payload = jwtTokenProvider.getPayload(token);
-        return findMember(payload);
+    public LoginMember findLoginMemberByToken(String token) {
+        Long id = Long.valueOf(jwtTokenProvider.getPayload(token));
+        validate(id);
+        return new LoginMember(id);
     }
 
-    private Member findMember(String payload) {
-        return memberDao.findById(Long.valueOf(payload)).orElseThrow(() ->
-                new AuthorizationException("[ERROR] 존재하지 않는 회원입니다."));
+    private void validate(Long id) {
+        memberDao.findById(id)
+                .orElseThrow(() -> new AuthorizationException("[ERROR] 존재하지 않는 회원입니다."));
     }
 }
