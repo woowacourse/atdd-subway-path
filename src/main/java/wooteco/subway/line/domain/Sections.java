@@ -87,6 +87,8 @@ public class Sections {
     }
 
     public List<Station> getStations() {
+        sections.forEach(section -> {
+        });
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
