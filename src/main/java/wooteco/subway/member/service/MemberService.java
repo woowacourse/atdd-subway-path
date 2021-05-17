@@ -37,7 +37,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        String encodedPassword = PASSWORD_ENCODER.encode(memberRequest.getPassword());
+        memberDao.update(new Member(id, memberRequest.getEmail(), encodedPassword, memberRequest.getAge()));
     }
 
     @Transactional
