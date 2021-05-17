@@ -70,7 +70,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void deleteStationInEveryLine(Long id) {
+    public void deleteSectionHasStationInEveryLine(Long id) {
         final List<Long> lineIds = lineDao.findLinesContainStationById(id);
 
         for (final Long lineId : lineIds) {

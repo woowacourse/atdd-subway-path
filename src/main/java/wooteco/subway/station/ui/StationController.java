@@ -43,7 +43,7 @@ public class StationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        lineService.deleteStationInEveryLine(id);
+        lineService.deleteSectionHasStationInEveryLine(id);
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

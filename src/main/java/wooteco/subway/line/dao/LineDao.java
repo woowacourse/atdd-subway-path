@@ -58,7 +58,7 @@ public class LineDao {
         jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
-    public List<Long> findLinesContainStationById(Long id) {
+    public List<Long> findLinesContainStationById(Long stationId) {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
             "S.id as section_id, S.distance as section_distance, " +
             "UST.id as up_station_id, UST.name as up_station_name, " +
@@ -69,7 +69,7 @@ public class LineDao {
             "left outer join STATION DST on S.down_station_id = DST.id " +
             "WHERE UST.id = ? or DST.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id, id);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, stationId, stationId);
         return result.stream()
             .map(info -> info.get("LINE_ID"))
             .map(obj -> Long.valueOf(String.valueOf(obj)))
