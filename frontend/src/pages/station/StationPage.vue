@@ -62,11 +62,18 @@ import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
 export default {
   name: "StationPage",
   computed: {
-    ...mapGetters(["stations"]),
+    ...mapGetters(["stations", "accessToken"]),
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("/api/stations");
+    const response = await fetch("http://localhost:8080/stations", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + localStorage.getItem("token")
+      }
+    }
+    );
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -84,7 +91,7 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample
-        const response = await fetch("/api/stations", {
+        const response = await fetch("http://localhost:8080/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -113,7 +120,7 @@ export default {
     async onDeleteStation(stationId) {
       try {
         // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch("/api/stations/{id}");
+        await fetch("/http://localhost:8080/stations/{id}");
         const idx = this.stations.findIndex(
           (station) => station.id === stationId
         );

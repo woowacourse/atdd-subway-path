@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -30,5 +31,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email).orElseThrow(InvalidEmailException::new);
     }
 }
