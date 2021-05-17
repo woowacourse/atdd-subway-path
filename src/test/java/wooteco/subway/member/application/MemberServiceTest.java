@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ class MemberServiceTest {
 
     private final MemberService memberService;
 
+    @Autowired
     public MemberServiceTest(MemberService memberService) {
         this.memberService = memberService;
     }
