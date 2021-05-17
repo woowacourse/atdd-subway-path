@@ -44,10 +44,10 @@ public class MemberService {
     }
 
     public MemberResponse logIn(String email, String password) {
-        Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthenticationException("이메일을 잘못 입력하셨습니다."));
+        Member member = memberDao.findByEmail(email).orElseThrow(() -> new AuthenticationException("로그인 정보가 맞지 않습니다."));
         if (passwordEncoder.matches(password, member.getPassword())) {
             return MemberResponse.of(member);
         }
-        throw new AuthenticationException("비밀번호가 맞지 않습니다.");
+        throw new AuthenticationException("로그인 정보가 맞지 않습니다.");
     }
 }
