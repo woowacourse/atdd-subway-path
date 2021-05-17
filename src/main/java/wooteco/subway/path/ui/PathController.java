@@ -23,12 +23,9 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(
         @RequestParam(name = "source") @Valid @NotNull Long sourceStationId,
         @RequestParam("target") @Valid @NotNull Long targetStationId) {
-        // pathService의 경로 찾기 기능 실행
-        // pathService findStationsInPath를 반환
-        // 해당역이 존재하지 않는 경우 - BadRequest
-        // 경로가 존재하지 않는 경우 - BadRequest
+        PathResponse pathResponse = pathService.findStationInPath(sourceStationId, targetStationId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(pathResponse);
     }
 
 }
