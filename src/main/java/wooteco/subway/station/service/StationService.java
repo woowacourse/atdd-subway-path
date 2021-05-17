@@ -1,10 +1,10 @@
-package wooteco.subway.station.application;
+package wooteco.subway.station.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationRequest;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.controller.dto.StationRequest;
+import wooteco.subway.station.controller.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
