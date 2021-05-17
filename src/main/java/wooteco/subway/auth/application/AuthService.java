@@ -30,10 +30,8 @@ public class AuthService {
         final String email = tokenRequest.getEmail();
         final String password = tokenRequest.getPassword();
         final Optional<Member> member = memberDao.findByEmail(email);
-        if (!(member.isPresent() && member.get().getPassword().equals(password))) {
+        if (!(member.isPresent() && member.get().isSamePassword(password))) {
             throw new AuthorizationException();
         }
     }
-
-
 }
