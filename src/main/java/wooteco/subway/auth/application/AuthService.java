@@ -36,8 +36,7 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Optional<Member> optionalMember = memberDao.findByEmail(tokenRequest.getEmail());
-        Member member = optionalMember.orElseThrow(EmailNotFoundException::new);
+        Member member = memberDao.findByEmail(tokenRequest.getEmail()).orElseThrow(EmailNotFoundException::new);
         member.checkValidPassword(tokenRequest.getPassword());
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
