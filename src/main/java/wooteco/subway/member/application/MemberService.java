@@ -1,6 +1,9 @@
 package wooteco.subway.member.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.exception.UserLoginFailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -8,7 +11,8 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -24,11 +28,26 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMemberByPayLoad(String payLoad) {
+        return MemberResponse.of(memberDao.findByEmail(payLoad));
+    }
+
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
+    }
+
+    public MemberResponse findMemberByTokenRequest(TokenRequest tokenRequest) {
+        try {
+            Member member = memberDao.findByTokenRequest(tokenRequest);
+            return MemberResponse.of(member);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new UserLoginFailException();
+        }
+
     }
 }
