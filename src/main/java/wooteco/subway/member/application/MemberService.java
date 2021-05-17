@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.infrastructure.Sha256Hasher;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -9,6 +10,8 @@ import wooteco.subway.member.dto.MemberResponse;
 @Service
 public class MemberService {
 
+    private static final Sha256Hasher HASHER = new Sha256Hasher();
+
     private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -16,12 +19,12 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        Member member = request.toMember().newInstanceWithHashPassword(HASHER::hashing);
+        Member savedMember = memberDao.insert(member);
+        return MemberResponse.of(savedMember);
     }
-
-    public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
     }
 
@@ -37,14 +40,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
-    }
-
-    public MemberResponse findMemberByEmail(String email) {
-        Member member = memberDao.findByEmail(email);
-        return MemberResponse.of(member);
-    }
-
-    public boolean isExist(String email) {
-        return memberDao.existsByEmail(email);
     }
 }

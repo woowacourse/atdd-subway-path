@@ -1,29 +1,60 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.common.exception.UnauthorizedException;
+import wooteco.subway.auth.infrastructure.Sha256Hasher;
+import wooteco.subway.auth.dto.LoginMember;
+import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.common.exception.UnauthorizedException;
+import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Member;
 
 @Service
 public class AuthService {
 
-    private final JwtTokenProvider tokenProvider;
-    private final MemberService memberService;
+    private static final Sha256Hasher HASHER = new Sha256Hasher();
 
-    public AuthService(JwtTokenProvider tokenProvider, MemberService memberService) {
+    private final MemberDao memberDao;
+    private final JwtTokenProvider tokenProvider;
+
+    public AuthService(MemberDao memberDao, JwtTokenProvider tokenProvider) {
+        this.memberDao = memberDao;
         this.tokenProvider = tokenProvider;
-        this.memberService = memberService;
     }
 
     public LoginMember getLoginMember(String accessToken) {
         if (!tokenProvider.validateToken(accessToken)) {
-            throw new UnauthorizedException("유효하지 않은 토큰이얌");
+            throw new UnauthorizedException("토큰 유효기간 지남");
         }
         String email = tokenProvider.getPayload(accessToken);
-        MemberResponse member = memberService.findMemberByEmail(email);
-        return member.toLoginMember();
+
+        Member member = memberDao.findByEmail(email);
+        return new LoginMember(member);
+    }
+
+    public TokenResponse login(TokenRequest tokenRequest) {
+        Member member = getMember(tokenRequest);
+        checkPassword(member, tokenRequest);
+
+        String accessToken = tokenProvider.createToken(tokenRequest.getEmail());
+        return new TokenResponse(accessToken);
+    }
+
+    private Member getMember(TokenRequest tokenRequest) {
+        try {
+            return memberDao.findByEmail(tokenRequest.getEmail());
+        } catch (/*todo 예외처리*/Exception e) {
+            throw new UnauthorizedException(
+                    String.format("해당 이메일로 된 유저가 없습니다. 이메일 : %s", tokenRequest.getEmail()));
+        }
+    }
+
+    private void checkPassword(Member member, TokenRequest tokenRequest) {
+        String hashedRequestPassword = HASHER.hashing(tokenRequest.getPassword());
+
+        if (!member.getPassword().equals(hashedRequestPassword)) {
+            throw new UnauthorizedException();
+        }
     }
 }
