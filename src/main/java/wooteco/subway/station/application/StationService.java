@@ -26,7 +26,8 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        return stationDao.findById(id)
+                .orElseThrow(StationNonexistenceException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
