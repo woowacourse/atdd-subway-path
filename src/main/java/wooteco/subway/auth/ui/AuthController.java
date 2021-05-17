@@ -9,8 +9,6 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/login")
 public class AuthController {
