@@ -18,11 +18,14 @@ public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private PathService pathService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao,
+        StationService stationService, PathService pathService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.pathService = pathService;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -36,7 +39,9 @@ public class LineService {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
+            Section insertedSection = sectionDao.insert(line, section);
+            pathService.syncPath();
+            return insertedSection;
         }
         return null;
     }
@@ -67,6 +72,7 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        pathService.syncPath();
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -77,6 +83,7 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        pathService.syncPath();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -86,6 +93,7 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        pathService.syncPath();
     }
 
 }
