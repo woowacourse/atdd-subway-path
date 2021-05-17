@@ -62,7 +62,6 @@ export default {
       }
       return response.json();
     }).then((data) => {
-      console.log(data);
       this.setStations([...data]);
     })
 
@@ -77,7 +76,6 @@ export default {
       }
       return response.json();
     }).then((data) => {
-      console.log(data);
       this.setLines([...data]);
     })
   },
