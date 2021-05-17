@@ -16,6 +16,10 @@ public class PathResponse {
         this.distance = distance;
     }
 
+    public PathResponse(List<StationResponse> stations, double distance) {
+        this(stations, (int) distance);
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
