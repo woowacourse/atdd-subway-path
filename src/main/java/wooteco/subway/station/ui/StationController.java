@@ -11,6 +11,7 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 public class StationController {
     private StationService stationService;

@@ -159,7 +159,13 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        this.pathResult = await fetch("http://localhost:8080/paths?source=${this.path.source}&target={this.path.target}");
+        let pathResponse = await fetch(`http://localhost:8080/paths?source=${this.path.source}&target=${this.path.target}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        this.pathResult = await pathResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -167,7 +173,13 @@ export default {
     },
     async initAllStationsView() {
       try {
-        this.setStations(await fetch("http://localhost:8080/stations"));
+        let stationsResponse = await fetch("http://localhost:8080/stations", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        this.setStations(await stationsResponse.json());
         if (this.stations.length < 1) {
           return;
         }
