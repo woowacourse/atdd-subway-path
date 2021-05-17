@@ -44,7 +44,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line.getId())
+            .when().post("/api/lines/{lineId}/sections", line.getId())
             .then().log().all()
             .extract();
     }
@@ -68,7 +68,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .when()
-            .delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
             .then().log().all()
             .extract();
     }

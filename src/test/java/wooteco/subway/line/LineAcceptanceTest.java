@@ -43,7 +43,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().post("/lines")
+            .when().post("/api/lines")
             .then().log().all().
                 extract();
     }
@@ -52,7 +52,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/lines")
+            .when().get("/api/lines")
             .then().log().all()
             .extract();
     }
@@ -61,7 +61,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/lines/{lineId}", response.getId())
+            .when().get("/api/lines/{lineId}", response.getId())
             .then().log().all()
             .extract();
     }
@@ -73,7 +73,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().put("/lines/" + response.getId())
+            .when().put("/api/lines/" + response.getId())
             .then().log().all()
             .extract();
     }
@@ -81,7 +81,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
             .given().log().all()
-            .when().delete("/lines/" + lineResponse.getId())
+            .when().delete("/api/lines/" + lineResponse.getId())
             .then().log().all()
             .extract();
     }
