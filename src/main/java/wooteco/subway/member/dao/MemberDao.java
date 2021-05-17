@@ -51,4 +51,14 @@ public class MemberDao {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    public Member findByEmail(final String email) {
+        String query = "SELECT * FROM member where email = ?";
+        return jdbcTemplate.queryForObject(query, rowMapper, email);
+    }
+
+    public boolean checkValidMember(final String email, final String password) {
+        String query = "SELECT EXISTS(SELECT * FROM member WHERE email = ? AND password = ?)";
+        return jdbcTemplate.queryForObject(query, Boolean.class, email, password);
+    }
 }
