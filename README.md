@@ -70,11 +70,11 @@ npm run serve
         - [x] GET: /members/me 구현하기
         - [x] PUT: /members/me 구현하기
         - [x] DELETE: /members/me 구현하기
-    - [ ] 출발역과 도착역 사이의 최단 경로 구하는 API 구현하기
-        - [ ] jgrapht 라이브러리 활용하기
-        - [ ] PathAcceptanceTest 통과하도록 구현하기
-        - [ ] 경로와 함께 총 거리를 출력하기
-            - [ ] 환승도 고려하기
+    - [x] 출발역과 도착역 사이의 최단 경로 구하는 API 구현하기
+        - [x] jgrapht 라이브러리 활용하기
+        - [x] PathAcceptanceTest 통과하도록 구현하기
+        - [x] 경로와 함께 총 거리를 출력하기
+            - [x] 환승도 고려하기
         
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
