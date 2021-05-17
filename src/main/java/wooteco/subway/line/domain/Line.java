@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.section.domain.Section;
+import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;

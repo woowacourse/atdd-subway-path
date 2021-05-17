@@ -1,20 +1,22 @@
-package wooteco.subway.line.application;
+package wooteco.subway.line.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.application.StationService;
+import wooteco.subway.section.dao.SectionDao;
+import wooteco.subway.section.domain.Section;
+import wooteco.subway.section.dto.SectionRequest;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.service.StationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
@@ -26,6 +28,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
@@ -62,14 +65,17 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -80,6 +86,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

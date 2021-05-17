@@ -1,10 +1,10 @@
-package wooteco.subway.line.dao;
+package wooteco.subway.section.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.section.domain.Section;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

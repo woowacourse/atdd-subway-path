@@ -1,11 +1,11 @@
-package wooteco.subway.station.ui;
+package wooteco.subway.station.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.service.StationService;
 
 import java.net.URI;
 import java.sql.SQLException;
