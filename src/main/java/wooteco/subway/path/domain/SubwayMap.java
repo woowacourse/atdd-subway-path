@@ -28,9 +28,15 @@ public class SubwayMap {
         subwayMap.setEdgeWeight(defaultWeightedEdge, section.getDistance());
     }
 
-    public List<Station> findShortestPath(Station startStation, Station endStation) {
+    public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayMap);
-        return dijkstraShortestPath.getPath(startStation, endStation)
+        return dijkstraShortestPath.getPath(sourceStation, targetStation)
                 .getVertexList();
+    }
+
+    public int findShortestDistance(Station sourceStation, Station targetStation) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayMap);
+        return (int) dijkstraShortestPath.getPath(sourceStation, targetStation)
+                .getWeight();
     }
 }
