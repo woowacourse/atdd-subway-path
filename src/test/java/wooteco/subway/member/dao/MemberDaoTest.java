@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 class MemberDaoTest {
-    private static final String EMAIL = "email@email.com";
+    private static final String EMAIL = "test@email.com";
     private static final String PASSWORD = "password";
 
     private JdbcTemplate jdbcTemplate;
