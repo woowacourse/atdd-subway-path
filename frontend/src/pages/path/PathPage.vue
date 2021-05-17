@@ -168,9 +168,12 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const stations_response = await fetch("http://localhost:8080/stations")
+        if (!stations_response.ok) {
+          throw new Error(`${stations_response.status}`)
+        }
+        const stations = await stations_response.json();
+        this.setStations(stations)
         if (this.stations.length < 1) {
           return;
         }
