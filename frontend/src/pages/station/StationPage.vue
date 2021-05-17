@@ -113,9 +113,7 @@ export default {
       try {
         const response = await fetch(`http://localhost:8080/api/stations/${stationId}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          }
+          headers: {"Content-Type": "application/json"}
         });
         if (!response.ok) {
           throw new Error(`${response.status}`);
