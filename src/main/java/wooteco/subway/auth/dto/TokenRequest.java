@@ -1,22 +1,18 @@
 package wooteco.subway.auth.dto;
 
+import java.beans.ConstructorProperties;
+
 public class TokenRequest {
-    private String email;
-    private String password;
 
-    public TokenRequest() {
+    private final String token;
+
+    @ConstructorProperties({"token"})
+    public TokenRequest(String token) {
+        this.token = token;
     }
 
-    public TokenRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public String getToken() {
+        return token;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

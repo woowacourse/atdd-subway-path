@@ -2,18 +2,22 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
+import java.beans.ConstructorProperties;
+
 public class MemberResponse {
     private Long id;
     private String email;
     private Integer age;
 
-    public MemberResponse() {
-    }
-
+    @ConstructorProperties({"id", "email", "age"})
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public MemberResponse(Member member) {
+        this(member.getId(), member.getEmail(), member.getAge());
     }
 
     public static MemberResponse of(Member member) {
