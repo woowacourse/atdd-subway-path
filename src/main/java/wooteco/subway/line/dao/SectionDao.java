@@ -1,12 +1,19 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,4 +62,22 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public List<SectionTable> findAll(){
+        String findAllSql = "SELECT * FROM section";
+        List<SectionTable> sectionTables = jdbcTemplate.query(findAllSql, sectionRowMapper());
+        return sectionTables;
+    }
+
+    private RowMapper<SectionTable> sectionRowMapper() {
+       return (rs, rowNum) -> {
+           Long id = rs.getLong("id");
+           Long lineId = rs.getLong("line_id");
+           Long upStationId = rs.getLong("up_station_id");
+           Long downStationId = rs.getLong("down_station_id");
+           int distance = rs.getInt("distance");
+           return new SectionTable(id, lineId, upStationId, downStationId, distance);
+       };
+    }
+
 }
