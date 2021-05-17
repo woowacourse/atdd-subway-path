@@ -16,5 +16,5 @@
 - [x] Controller 구현 및 매핑
 - [x] Path 찾는 Service 구현
 - [x] Service와 Controller 영역
-- [ ] 프런트 엔드 데이터 수신 구현
+- [x] 프런트 엔드 데이터 수신 구현
 
