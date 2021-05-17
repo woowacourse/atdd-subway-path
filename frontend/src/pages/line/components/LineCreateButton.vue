@@ -153,12 +153,34 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        // const newLine = await fetch("/api/lines")
-        // this.setLines([...this.lines, { ...newLine }]); setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
+        const response = await fetch("http://localhost:8080/lines", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.lineForm.name,
+            color: this.lineForm.color,
+            upStationId: this.lineForm.upStationId,
+            downStationId: this.lineForm.downStationId,
+            distance: this.lineForm.distance
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
         this.initLineForm();
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);
+
+        const lineResponse = await fetch("http://localhost:8080/lines");
+        if (!lineResponse.ok) {
+          throw new Error(`${lineResponse.status}`);
+        }
+        const lines = await lineResponse.json();
+        this.setLines([...lines]);
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.FAIL);
         throw new Error(e);
