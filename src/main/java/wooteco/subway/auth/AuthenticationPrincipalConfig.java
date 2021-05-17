@@ -34,14 +34,14 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
-                //.exposedHeaders(HttpHeaders.LOCATION);
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .exposedHeaders(HttpHeaders.LOCATION);
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor(authService))
-                .addPathPatterns("/**")
-                .excludePathPatterns("/login/token", "/members");
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/login/token", "/api/members");
     }
 }

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 public class LineController {
 
     private LineService lineService;

@@ -86,7 +86,7 @@ export default {
           body: JSON.stringify(jsonData)
         };
 
-        const response = await fetch("http://localhost:8080/login/token", option);
+        const response = await fetch("/api/login/token", option);
         let resJson = await response.json();
         const accessToken = resJson.accessToken;
         this.$store.commit(SET_ACCESS_TOKEN, accessToken);
@@ -98,7 +98,7 @@ export default {
             'Authorization': 'Bearer' + accessToken,
           },
         };
-        const memberResponse = await fetch("http://localhost:8080/members/me", memberOption);
+        const memberResponse = await fetch("/api/members/me", memberOption);
         const member = await memberResponse.json();
         this.$store.commit(SET_MEMBER, member);
 

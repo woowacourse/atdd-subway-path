@@ -120,7 +120,7 @@ export default {
           },
           body: JSON.stringify(jsonData)
         };
-        await fetch("http://localhost:8080/members/me", memberOption);
+        await fetch("/api/members/me", memberOption);
         this.$store.commit(SET_MEMBER, jsonData);
 
 

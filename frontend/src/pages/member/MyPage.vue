@@ -71,7 +71,7 @@ export default {
             'Authorization': 'Bearer' + this.$store.state.accessToken
           },
         };
-        await fetch("http://localhost:8080/members/me", memberOption)
+        await fetch("/api/members/me", memberOption)
         this.$store.commit(SET_MEMBER, null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");

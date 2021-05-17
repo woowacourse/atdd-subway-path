@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -23,37 +24,37 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse memberResponse = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest request ) {
         System.out.println("loginMember = " + loginMember);
         memberService.updateMember(loginMember.getId(), request);
@@ -61,7 +62,7 @@ public class MemberController {
     }
 
     // TODO: 구현 하기
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();

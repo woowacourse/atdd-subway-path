@@ -108,7 +108,7 @@ export default {
           },
           body: JSON.stringify(jsonData)
         };
-        await fetch("http://localhost:8080/members", option);
+        await fetch("/api/members", option);
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {
