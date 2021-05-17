@@ -4,12 +4,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.path.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
 @RequestMapping("/api/paths")
+@RestController
 public class PathController {
-    // TODO: 경로조회 기능 구현하기
       private final PathService service;
 
     public PathController(PathService service) {
