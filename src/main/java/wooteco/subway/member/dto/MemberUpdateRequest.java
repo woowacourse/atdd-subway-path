@@ -4,18 +4,24 @@ import wooteco.subway.member.domain.Member;
 
 public class MemberUpdateRequest {
     private String email;
+    private String password;
     private Integer age;
 
     public MemberUpdateRequest() {
     }
 
-    public MemberUpdateRequest(String email, Integer age) {
+    public MemberUpdateRequest(String email, String password, Integer age) {
         this.email = email;
+        this.password = password;
         this.age = age;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public Integer getAge() {

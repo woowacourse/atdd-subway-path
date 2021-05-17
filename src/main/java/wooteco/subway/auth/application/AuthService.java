@@ -36,7 +36,7 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest tokenRequest) {
         Member member = getMember(tokenRequest);
-        checkPassword(member, tokenRequest);
+        checkPassword(member, tokenRequest.getPassword());
 
         String accessToken = tokenProvider.createToken(tokenRequest.getEmail());
         return new TokenResponse(accessToken);
@@ -51,10 +51,10 @@ public class AuthService {
         }
     }
 
-    private void checkPassword(Member member, TokenRequest tokenRequest) {
-        String hashedRequestPassword = HASHER.hashing(tokenRequest.getPassword());
+    public void checkPassword(Member member, String password) {
+        String hashedPassword = HASHER.hashing(password);
 
-        if (!member.getPassword().equals(hashedRequestPassword)) {
+        if (!member.getPassword().equals(hashedPassword)) {
             throw new UnauthorizedException();
         }
     }
