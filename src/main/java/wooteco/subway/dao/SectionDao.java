@@ -56,7 +56,7 @@ public class SectionDao {
     }
 
     public void insertSections(Line line) {
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = line.getSections().toList();
         List<Map<String, Object>> batchValues = sections.stream()
             .map(section -> {
                 Map<String, Object> params = new HashMap<>();
