@@ -34,11 +34,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        회원_정보_수정됨(updateResponse, 사용자);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
-        회원_삭제됨(deleteResponse);
+        회원_삭제됨(deleteResponse, 사용자);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -97,11 +97,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
+        MemberResponse memberResponse = 내_회원_정보_조회_요청(tokenResponse).as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(NEW_AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+    public static void 회원_삭제됨(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> memberResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        assertThat(memberResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

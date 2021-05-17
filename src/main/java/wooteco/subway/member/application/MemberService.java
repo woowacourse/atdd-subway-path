@@ -8,7 +8,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -20,12 +20,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
+    public MemberResponse updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        return new MemberResponse(id, memberRequest.getEmail(), memberRequest.getAge());
     }
 
     public void deleteMember(Long id) {
