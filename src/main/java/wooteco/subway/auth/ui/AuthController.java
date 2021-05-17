@@ -12,7 +12,7 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
 @RestController
-public class AuthController {
+public class  AuthController {
     private final AuthService authService;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 

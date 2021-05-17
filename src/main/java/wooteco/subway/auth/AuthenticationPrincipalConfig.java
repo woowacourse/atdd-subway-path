@@ -1,5 +1,6 @@
 package wooteco.subway.auth;
 
+import com.google.common.net.HttpHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -32,5 +33,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
         .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
+                //.exposedHeaders(HttpHeaders.LOCATION);
     }
 }
