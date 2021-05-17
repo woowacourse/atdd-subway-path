@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity authorizationExceptionHandle(AuthorizationException exception) {
+    public ResponseEntity<Void> authorizationExceptionHandle(AuthorizationException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

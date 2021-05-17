@@ -6,6 +6,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
@@ -21,7 +22,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         if (checkInvalidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("잘못된 이메일 혹은 비밀번호입니다.");
         }
 
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
@@ -36,11 +37,12 @@ public class AuthService {
         return true;
     }
 
-    public Member findMemberByToken(String token) {
+    public LoginMember findMemberByToken(String token) {
         String payload = jwtTokenProvider.getPayload(token);
         if (!memberDao.existByEmail(payload)) {
             throw new AuthorizationException();
         }
-        return memberDao.findByEmail(payload);
+        Member member = memberDao.findByEmail(payload);
+        return new LoginMember(member);
     }
 }

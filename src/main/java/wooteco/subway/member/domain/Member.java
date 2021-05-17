@@ -46,6 +46,6 @@ public class Member {
     }
 
     public boolean incorrectPassword(String password) {
-        return !password.equals(password);
+        return !this.password.equals(password);
     }
 }

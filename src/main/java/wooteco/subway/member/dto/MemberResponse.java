@@ -1,5 +1,6 @@
 package wooteco.subway.member.dto;
 
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 public class MemberResponse {
@@ -17,6 +18,10 @@ public class MemberResponse {
         this.age = age;
     }
 
+
+    public static MemberResponse of(LoginMember member) {
+        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    }
 
     public static MemberResponse of(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
