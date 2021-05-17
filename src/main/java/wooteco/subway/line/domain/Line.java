@@ -4,6 +4,7 @@ import wooteco.subway.section.domain.Section;
 import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Line {
@@ -71,6 +72,6 @@ public class Line {
     }
 
     public List<Station> getStations() {
-        return sections.getStations();
+        return Collections.unmodifiableList(sections.getStations());
     }
 }
