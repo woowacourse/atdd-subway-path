@@ -11,13 +11,13 @@ import java.util.List;
 public class WeightedGraph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public static WeightedGraph of (List<Line> lines) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeWeightedGraph(lines);
-        return new WeightedGraph(graph);
-    }
-
     private WeightedGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.graph = graph;
+    }
+
+    public static WeightedGraph of(List<Line> lines) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeWeightedGraph(lines);
+        return new WeightedGraph(graph);
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> makeWeightedGraph(List<Line> lines) {

@@ -12,7 +12,6 @@ import wooteco.subway.path.service.PathService;
 @RestController
 @RequestMapping("paths")
 public class PathController {
-    // TODO: 경로조회 기능 구현하기
     private final PathService pathService;
 
     public PathController(PathService pathService) {

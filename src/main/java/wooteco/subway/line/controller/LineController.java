@@ -2,10 +2,10 @@ package wooteco.subway.line.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.line.service.LineService;
 import wooteco.subway.line.controller.dto.LineRequest;
 import wooteco.subway.line.controller.dto.LineResponse;
 import wooteco.subway.line.controller.dto.SectionRequest;
+import wooteco.subway.line.service.LineService;
 
 import java.net.URI;
 import java.sql.SQLException;

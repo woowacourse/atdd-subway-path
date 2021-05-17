@@ -5,9 +5,9 @@ import wooteco.subway.member.controller.request.TokenRequest;
 import wooteco.subway.member.controller.response.TokenResponse;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.exception.message.AuthErrorMessage;
 import wooteco.subway.member.exception.AuthException;
 import wooteco.subway.member.exception.NotFoundException;
+import wooteco.subway.member.exception.message.AuthErrorMessage;
 import wooteco.subway.member.exception.message.NotFoundErrorMessage;
 import wooteco.subway.member.infra.JwtTokenProvider;
 

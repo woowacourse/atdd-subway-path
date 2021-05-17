@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.exception.message.AuthErrorMessage;
 import wooteco.subway.member.exception.AuthException;
+import wooteco.subway.member.exception.message.AuthErrorMessage;
 
 public class Member {
     private Long id;
