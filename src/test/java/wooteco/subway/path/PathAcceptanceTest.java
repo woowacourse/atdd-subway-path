@@ -1,6 +1,11 @@
 package wooteco.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.AGE;
+import static wooteco.subway.auth.AuthAcceptanceTest.EMAIL;
+import static wooteco.subway.auth.AuthAcceptanceTest.PASSWORD;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -17,7 +22,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -33,10 +40,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+            .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
             .then().log().all()
             .extract();
     }

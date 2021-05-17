@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 import io.restassured.RestAssured;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.AuthAcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -38,48 +41,62 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().post("/lines")
+            .when().post("/api/lines")
             .then().log().all().
                 extract();
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/lines")
+            .when().get("/api/lines")
             .then().log().all()
             .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/lines/{lineId}", response.getId())
+            .when().get("/api/lines/{lineId}", response.getId())
             .then().log().all()
             .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
-
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().put("/lines/" + response.getId())
+            .when().put("/api/lines/" + response.getId())
             .then().log().all()
             .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
-            .when().delete("/lines/" + lineResponse.getId())
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/api/lines/" + lineResponse.getId())
             .then().log().all()
             .extract();
     }

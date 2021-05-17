@@ -1,6 +1,11 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.AGE;
+import static wooteco.subway.auth.AuthAcceptanceTest.EMAIL;
+import static wooteco.subway.auth.AuthAcceptanceTest.PASSWORD;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -17,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -38,12 +44,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation,
         StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line.getId())
+            .when().post("/api/lines/{lineId}/sections", line.getId())
             .then().log().all()
             .extract();
     }
@@ -62,9 +70,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return RestAssured
             .given().log().all()
-            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
             .then().log().all()
             .extract();
     }
