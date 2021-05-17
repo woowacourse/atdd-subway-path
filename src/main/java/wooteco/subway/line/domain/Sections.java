@@ -1,11 +1,12 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.station.domain.Station;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import wooteco.subway.station.domain.Station;
 
 public class Sections {
 
