@@ -120,7 +120,7 @@ export default {
           name: this.lineEditForm.name,
           color: this.lineEditForm.color,
         }
-        const lines = await putFetch("/api/lines" + lineId, lineEditFormBody)
+        const lines = await putFetch("/api/lines/" + lineId, lineEditFormBody)
         this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);

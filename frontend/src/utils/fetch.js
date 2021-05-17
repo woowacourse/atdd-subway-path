@@ -1,14 +1,15 @@
 export {getFetch, postFetch, deleteFetch, putFetch}
 
 function getFetch(url) {
-    return fetch(`${url}`).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
-            throw new Error(data.status);
-        }
-        return data.json()
-    });
+    return fetch(`${url}`)
+        .then(data => {
+            if (!data.ok) {
+                throw new Error(data.status);
+            }
+            return data.json()
+        }).catch((error) => {
+            console.log(error)
+        });
 }
 
 function postFetch(url, body = {}) {
@@ -19,13 +20,13 @@ function postFetch(url, body = {}) {
             'Content-Type': 'application/json'
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
         return data.json()
-    })
+    }).catch((error) => {
+        console.log(error)
+    });
 }
 
 function putFetch(url, body = {}) {
@@ -36,13 +37,13 @@ function putFetch(url, body = {}) {
             'Content-Type': 'application/json'
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
         return data.json()
-    })
+    }).catch((error) => {
+        console.log(error)
+    });
 }
 
 function deleteFetch(url) {
@@ -52,17 +53,10 @@ function deleteFetch(url) {
             'Content-Type': 'application/json'
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
-        return data
-    })
-}
-
-function exceptionHandling(errorPromise) {
-    errorPromise.then(data => {
-        alert(data.errorMsg);
-    })
+    }).catch((error) => {
+        console.log(error)
+    });
 }
