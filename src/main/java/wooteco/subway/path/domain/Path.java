@@ -3,6 +3,7 @@ package wooteco.subway.path.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.PathNotLinkedException;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
@@ -35,7 +36,14 @@ public class Path {
     }
 
     public List<Station> getShortestStations() {
-        List<Station> stations = dijkstraShortestPath.getPath(source, target).getVertexList();
+        List<Station> stations;
+        try {
+            stations = dijkstraShortestPath.getPath(source, target).getVertexList();
+
+        } catch (IllegalArgumentException e) {
+            throw new PathNotLinkedException();
+        }
+
         return stations;
     }
 

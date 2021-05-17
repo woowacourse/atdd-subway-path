@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(PathNotLinkedException.class)
+    public ResponseEntity<String> handlePathNotLinkedException(PathNotLinkedException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }
