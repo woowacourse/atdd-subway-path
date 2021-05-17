@@ -32,9 +32,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login/token")
-            .excludePathPatterns("/api/members");
+            .addPathPatterns("/api/members");
 
     }
 
