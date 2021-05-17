@@ -1,6 +1,5 @@
 package wooteco.subway.member.application;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
@@ -42,13 +41,15 @@ public class MemberService {
         memberDao.deleteById(id);
     }
 
-    public void validateMemberAndPassword(String email, String password) {
+    public MemberResponse findMemberByEmailAndPassword(String email, String password) {
         Member member = memberDao.findByEmail(email)
             .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
 
         if (!member.isEqualToPassword(password)) {
             throw new AuthorizationException("비밀번호가 틀렸습니다!");
         }
+
+        return MemberResponse.of(member);
     }
 
     public MemberResponse findByEmail(String email) {

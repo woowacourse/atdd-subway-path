@@ -1,7 +1,8 @@
 package wooteco.subway.auth.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthorizationException;
@@ -14,25 +15,31 @@ public class AuthService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider,
+        ObjectMapper objectMapper) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        memberService.validateMemberAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
-        String token = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        MemberResponse memberResponse = memberService
+            .findMemberByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
+        String token = jwtTokenProvider.createToken(memberResponse);
         return new TokenResponse(token);
     }
 
-    public LoginMember findLoginMemberByToken(String accessToken) {
+    public MemberResponse findLoginMemberByToken(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
 
-        String email = jwtTokenProvider.getPayload(accessToken);
-        MemberResponse member = memberService.findByEmail(email);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        try {
+            return objectMapper.readValue(jwtTokenProvider.getPayload(accessToken), MemberResponse.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 }
