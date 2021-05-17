@@ -2,6 +2,7 @@ package wooteco.subway;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.MemberDao;
@@ -13,18 +14,20 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @Component
-@Profile("!test")
+@Profile("dev")
 public class DataLoader implements CommandLineRunner {
     private StationDao stationDao;
     private LineDao lineDao;
     private SectionDao sectionDao;
     private MemberDao memberDao;
+    private PasswordEncoder passwordEncoder;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
+    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao, PasswordEncoder passwordEncoder) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.memberDao = memberDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -45,8 +48,11 @@ public class DataLoader implements CommandLineRunner {
         이호선.addSection(new Section(역삼역, 잠실역, 10));
         sectionDao.insertSections(이호선);
 
-        Member member = new Member("email@email.com", "password", 10);
+        Member member = new Member("email@email.com", passwordEncoder.encode("password"), 10);
+        Member memberA = new Member("a@a.a", passwordEncoder.encode("1"), 20);
+
         memberDao.insert(member);
+        memberDao.insert(memberA);
     }
 }
 
