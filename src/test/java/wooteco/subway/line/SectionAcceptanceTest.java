@@ -3,6 +3,7 @@ package wooteco.subway.line;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.TokenResponse;
+import wooteco.subway.util.AccountUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +37,28 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        signUp();
+
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         정자역 = 지하철역_등록되어_있음("정자역");
         광교역 = 지하철역_등록되어_있음("광교역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+    }
+
+    void signUp() {
+        AccountUtil.requestSignUp("user@email.com", "password", 18);
+        AccountUtil.requestLogIn("user@email.com", "password").as(TokenResponse.class);
+    }
+
+    @AfterEach
+    void deleteAccount() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
+                .when().delete("/members/me");
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -117,6 +136,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .body(sectionRequest)
                 .when().post("/lines/{lineId}/sections", line.getId())
                 .then().log().all()
@@ -139,6 +159,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
