@@ -1,28 +1,7 @@
 package wooteco.subway.path;
 
-import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.line.LineAcceptanceTest.*;
-import static wooteco.subway.line.SectionAcceptanceTest.*;
-import static wooteco.subway.station.StationAcceptanceTest.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-
-import com.google.common.collect.Lists;
-
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
