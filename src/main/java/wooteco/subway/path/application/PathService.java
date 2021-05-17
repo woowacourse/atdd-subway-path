@@ -19,11 +19,10 @@ import wooteco.subway.station.dto.StationResponse;
 @Service
 public class PathService {
 
-    private StationService stationService;
-    private LineService lineService;
+    private final StationService stationService;
+    private final LineService lineService;
 
-    public PathService(StationService stationService,
-        LineService lineService) {
+    public PathService(StationService stationService, LineService lineService) {
         this.stationService = stationService;
         this.lineService = lineService;
     }
@@ -33,17 +32,31 @@ public class PathService {
         validateEachStationIsExist(stationMap, sourceStationId, targetStationId);
         List<PathSection> sections = lineService.findAllSections();
 
-        WeightedMultigraph<Long, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(
-            DefaultWeightedEdge.class);
+        GraphPath<Long, DefaultWeightedEdge> path = calculatePath(sourceStationId, targetStationId, stationMap, sections);
+
+        return createPathResponse(stationMap, path);
+    }
+
+    private void validateEachStationIsExist(Map<Long, Station> stationMap, Long sourceStationId, Long targetStationId) {
+        if (!stationMap.containsKey(sourceStationId) || !stationMap.containsKey(targetStationId)) {
+            throw new PathException("경로에 입력한 역이 존재하지 않습니다.");
+        }
+    }
+
+    private GraphPath<Long, DefaultWeightedEdge> calculatePath(Long sourceStationId, Long targetStationId, Map<Long, Station> stationMap, List<PathSection> sections) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
         stationMap.keySet().forEach(stationGraph::addVertex);
         sections.forEach(section -> stationGraph.setEdgeWeight(
             stationGraph.addEdge(section.getUpStationId(), section.getDownStationId()),
             section.getDistance()));
 
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
-        GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath
-            .getPath(sourceStationId, targetStationId);
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(stationGraph);
+        return dijkstraShortestPath.getPath(sourceStationId, targetStationId);
+    }
 
+    private PathResponse createPathResponse(Map<Long, Station> stationMap,
+        GraphPath<Long, DefaultWeightedEdge> path) {
         List<StationResponse> stationResponses = path.getVertexList()
             .stream()
             .map(stationMap::get)
@@ -53,13 +66,4 @@ public class PathService {
 
         return new PathResponse(stationResponses, totalDistance);
     }
-
-    private void validateEachStationIsExist(Map<Long, Station> stationMap, Long sourceStationId,
-        Long targetStationId) {
-        if (!stationMap.containsKey(sourceStationId) || !stationMap.containsKey(targetStationId)) {
-            throw new PathException("경로에 입력한 역이 존재하지 않습니다.");
-        }
-    }
-
-
 }
