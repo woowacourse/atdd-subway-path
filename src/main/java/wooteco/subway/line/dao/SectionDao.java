@@ -6,15 +6,26 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.PathSection;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.domain.Station;
 
 @Repository
 public class SectionDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
+
+    private final RowMapper<PathSection> rowMapper = (rs, rowNum) ->
+        new PathSection(
+            rs.getLong("id"),
+            rs.getLong("up_station_id"),
+            rs.getLong("down_station_id"),
+            rs.getInt("distance")
+        );
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -52,5 +63,10 @@ public class SectionDao {
             .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public List<PathSection> findAll() {
+        String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }

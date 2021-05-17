@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.PathSection;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -88,4 +89,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<PathSection> findAllSections() {
+        return sectionDao.findAll();
+    }
 }
