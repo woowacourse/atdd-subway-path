@@ -2,6 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.auth.application.NoSuchMemberException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -28,11 +29,9 @@ public class MemberService {
     }
 
     public MemberResponse findByEmail(String email) {
-        final Optional<Member> member = memberDao.findByEmail(email);
-        if (!member.isPresent()) {
-            throw new AuthorizationException();
-        }
-        return MemberResponse.of(member.get());
+        final Member member = memberDao.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+        return MemberResponse.of(member);
     }
 
     public void updateById(Long id, MemberRequest memberRequest) {
