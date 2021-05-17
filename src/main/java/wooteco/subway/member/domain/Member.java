@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.auth.application.exception.AuthorizationException;
+
 public class Member {
     private Long id;
     private String email;
@@ -26,6 +28,12 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public void validatePassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new AuthorizationException("이메일이나 비밀번호가 유효하지 않습니다!");
+        }
     }
 
     public Long getId() {
