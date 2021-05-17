@@ -37,7 +37,8 @@
             dense
           ></v-select>
           <v-icon class="relative arrow-left-right-icon"
-            >mdi-arrow-left-right-bold</v-icon
+          >mdi-arrow-left-right-bold
+          </v-icon
           >
           <v-select
             v-model="lineForm.downStationId"
@@ -110,7 +111,8 @@
         @click.prevent="onCreateLine"
         color="amber"
         depressed
-        >확인</v-btn
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
@@ -118,16 +120,16 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import shortid from "shortid";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 
 export default {
   name: "LineCreateButton",
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["stations", "lines"]),
@@ -152,10 +154,23 @@ export default {
       if (!this.isValid()) {
         return;
       }
+
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        // const newLine = await fetch("/api/lines")
-        // this.setLines([...this.lines, { ...newLine }]); setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
+        const response = await fetch('/api/lines',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.lineForm)
+          }
+        )
+        if (!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+        const newLine = await response.json()
+        this.setLines([...this.lines, {...newLine}]);
+
         this.initLineForm();
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);
@@ -193,7 +208,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       lineForm: {
         name: "",
         color: "",

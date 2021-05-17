@@ -67,7 +67,8 @@
         @click.prevent="onEditLine"
         color="amber"
         depressed
-        >확인</v-btn
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
@@ -75,10 +76,10 @@
 
 <script>
 import dialog from "../../../mixins/dialog";
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
+import {LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
+import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
 
@@ -90,13 +91,13 @@ export default {
       required: true,
     },
   },
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["lines"]),
   },
   created() {
-    this.lineEditForm = { ...this.line };
+    this.lineEditForm = {...this.line};
     this.lineColors = LINE_COLORS.map((color) => {
       return {
         _id: shortid.generate(),
@@ -110,15 +111,30 @@ export default {
       this.lineEditForm.color = color;
     },
     initEditingLine() {
-      this.lineEditForm = { ...this.line };
+      this.lineEditForm = {...this.line};
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const response = await fetch(`/api/lines/${this.line.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.lineEditForm)
+          }
+        )
+        if (!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+
+        const lines_response = await fetch("/api/lines")
+        if (!lines_response.ok) {
+          throw new Error(`${lines_response.status}`)
+        }
+        const lines = await lines_response.json()
+        this.setLines([...lines])
+
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {
@@ -129,7 +145,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       lineEditForm: {
         name: "",
         color: "",
