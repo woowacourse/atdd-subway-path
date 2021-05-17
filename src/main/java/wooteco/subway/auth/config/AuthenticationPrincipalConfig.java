@@ -11,11 +11,9 @@ import java.util.List;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
-    private final MemberService memberService;
 
-    public AuthenticationPrincipalConfig(AuthService authService, MemberService memberService) {
+    public AuthenticationPrincipalConfig(AuthService authService) {
         this.authService = authService;
-        this.memberService = memberService;
     }
 
     @Override
