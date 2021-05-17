@@ -21,6 +21,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    @DisplayName("로그인 성공")
+    @Test
+    void loginSuccess() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        로그인_요청(EMAIL, PASSWORD);
+    }
+
     @DisplayName("Bearer Auth 성공")
     @Test
     void myInfoWithBearerAuth() {
