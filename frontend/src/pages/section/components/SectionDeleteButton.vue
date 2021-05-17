@@ -26,17 +26,17 @@ export default {
     async onDeleteLine() {
       try {
         // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        const response1 = await fetch(`http://localhost:8080/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
+        const deleteSectionsResponse = await fetch(`http://localhost:8080/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
           method: "DELETE"
         });
-        if (!response1.ok){
-          throw new Error(`${response1.status}`);
+        if (!deleteSectionsResponse.ok){
+          throw new Error(`${deleteSectionsResponse.status}`);
         }
         // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        const response2 = await fetch(`http://localhost:8080/lines/${this.lineId}`);
-        const line = await response2.json();
-        if (!response2.ok){
-          throw new Error(`${response2.status}`);
+        const getLinesResponse = await fetch(`http://localhost:8080/lines/${this.lineId}`);
+        const line = await getLinesResponse.json();
+        if (!getLinesResponse.ok){
+          throw new Error(`${getLinesResponse.status}`);
         }
         this.setLine({ ...line });
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

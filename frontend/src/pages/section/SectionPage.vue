@@ -87,18 +87,18 @@ export default {
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response1 = await fetch("http://localhost:8080/stations");
-    if (!response1.ok){
-      throw new Error(`${response1.status}`);
+    const getStationsResponse = await fetch("http://localhost:8080/stations");
+    if (!getStationsResponse.ok){
+      throw new Error(`${getStationsResponse.status}`);
     }
-    const stations = await response1.json();
+    const stations = await getStationsResponse.json();
     this.setStations([...stations]);
     // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    const response2 = await fetch("http://localhost:8080/lines");
-    if (!response2.ok){
-      throw new Error(`${response2.status}`);
+    const getLinesResponse = await fetch("http://localhost:8080/lines");
+    if (!getLinesResponse.ok){
+      throw new Error(`${getLinesResponse.status}`);
     }
-    const lines = await response2.json();
+    const lines = await getLinesResponse.json();
     this.setLines([...lines]);
     this.initLinesView();
   },
@@ -133,11 +133,11 @@ export default {
     async onChangeLine() {
       try {
         // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        const response = await fetch(`http://localhost:8080/lines/${this.activeLineId}`);
-        if (!response.ok){
-          throw new Error(`${response.status}`);
+        const getLinesResponse = await fetch(`http://localhost:8080/lines/${this.activeLineId}`);
+        if (!getLinesResponse.ok){
+          throw new Error(`${getLinesResponse.status}`);
         }
-        this.activeLine = await response.json();
+        this.activeLine = await getLinesResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

@@ -66,11 +66,11 @@ export default {
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("http://localhost:8080/stations");
-    if (!response.ok) {
-      throw new Error(`${response.status}`);
+    const getResponse = await fetch("http://localhost:8080/stations");
+    if (!getResponse.ok) {
+      throw new Error(`${getResponse.status}`);
     }
-    const stations = await response.json();
+    const stations = await getResponse.json();
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
@@ -84,7 +84,7 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample
-        const response = await fetch("http://localhost:8080/stations", {
+        const postResponse = await fetch("http://localhost:8080/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -93,10 +93,10 @@ export default {
             name: this.stationName,
           }),
         });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        if (!postResponse.ok) {
+          throw new Error(`${postResponse.status}`);
         }
-        const newStation = await response.json();
+        const newStation = await postResponse.json();
 
         this.setStations([...this.stations, newStation]);
         this.initStationForm();
@@ -113,11 +113,11 @@ export default {
     async onDeleteStation(stationId) {
       try {
         // TODO 역을 삭제하는 API를 추가해주세요.
-        const response = await fetch(`http://localhost:8080/stations/${stationId}`, {
+        const deleteResponse = await fetch(`http://localhost:8080/stations/${stationId}`, {
           method: "DELETE"
         });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+        if (!deleteResponse.ok) {
+          throw new Error(`${deleteResponse.status}`);
         }
         const idx = this.stations.findIndex(
           (station) => station.id === stationId

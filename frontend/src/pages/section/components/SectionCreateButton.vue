@@ -110,11 +110,11 @@ export default {
     async initLineStationsView() {
       try {
         // TODO 선택된 노선의 데이터를 불러와주세요.
-        const response = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
-        if (!response.ok){
-          throw new Error(`${response.status}`);
+        const getLinesResponse = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
+        if (!getLinesResponse.ok){
+          throw new Error(`${getLinesResponse.status}`);
         }
-        this.selectedLine = await response.json();
+        this.selectedLine = await getLinesResponse.json();
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -160,7 +160,7 @@ export default {
       }
       try {
         // TODO 구간을 추가하는 API를 작성해주세요.
-        const response1 = await fetch(`http://localhost:8080/lines/${this.selectedLine.id}/sections`, {
+        const postSectionsResponse = await fetch(`http://localhost:8080/lines/${this.selectedLine.id}/sections`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -171,15 +171,15 @@ export default {
             distance: this.sectionForm.distance
           })
         });
-        if (!response1.ok){
-          throw new Error(`${response1.status}`);
+        if (!postSectionsResponse.ok){
+          throw new Error(`${postSectionsResponse.status}`);
         }
         // TODO 전체 line을 불러오는 API를 작성해주세요.
-        const response2 = await fetch("http://localhost:8080/lines");
-        if (!response2.ok){
-          throw new Error(`${response2.status}`);
+        const getLinesResponse = await fetch("http://localhost:8080/lines");
+        if (!getLinesResponse.ok){
+          throw new Error(`${getLinesResponse.status}`);
         }
-        const lines = await response2.json();
+        const lines = await getLinesResponse.json();
         this.setLines(lines);
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
