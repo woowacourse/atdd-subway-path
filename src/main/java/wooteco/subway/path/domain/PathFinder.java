@@ -62,20 +62,19 @@ public class PathFinder {
 
     private Path shortestPathWithGraph(Station source, Station target,
         WeightedMultigraph<Station, DefaultWeightedEdge> subwayGraph) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-            subwayGraph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source,
-            target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
+            new DijkstraShortestPath<>(subwayGraph);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath =
+            dijkstraShortestPath.getPath(source, target);
+
         validatePath(shortestPath);
 
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
     private void validatePath(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
-        try {
-            Objects.requireNonNull(shortestPath);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("경로가 존재하지 않습니다.", e);
+        if (shortestPath == null) {
+            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
     }
 }
