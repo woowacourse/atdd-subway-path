@@ -1,11 +1,11 @@
 package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.auth.dto.TokenResponse;
-import wooteco.exception.UnauthorizedException;
-import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
+import wooteco.auth.dto.TokenResponse;
+import wooteco.auth.infrastructure.JwtTokenProvider;
+import wooteco.exception.UnauthorizedException;
 
 @Service
 public class AuthService {

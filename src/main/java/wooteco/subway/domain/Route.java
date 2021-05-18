@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Route {
+
     private final WeightedMultigraph<Station, DefaultWeightedEdge> route;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 

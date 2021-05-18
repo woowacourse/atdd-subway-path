@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.exception.InvalidDistanceException;
+import wooteco.exception.NotFoundException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -18,19 +20,17 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.exception.InvalidDistanceException;
-import wooteco.exception.NotFoundException;
 import wooteco.subway.service.dto.SectionServiceDto;
 
 @Sql("classpath:initializeTable.sql")
 @SpringBootTest
 public class SectionServiceTest {
 
-    private Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
-    private Station 신설역 = new Station(1L, "신설역");
-    private Station 동묘역 = new Station(2L, "동묘역");
-    private Station 동대문역 = new Station(3L, "동대문역");
-    private Distance 거리 = new Distance(10);
+    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
+    private final Station 신설역 = new Station(1L, "신설역");
+    private final Station 동묘역 = new Station(2L, "동묘역");
+    private final Station 동대문역 = new Station(3L, "동대문역");
+    private final Distance 거리 = new Distance(10);
 
     @Autowired
     private SectionDao sectionDao;

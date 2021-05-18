@@ -20,8 +20,8 @@ public class PathResponse {
     public static PathResponse of(List<Station> stations, int distance) {
         return new PathResponse(
             stations.stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList()),
+                .map(StationResponse::from)
+                .collect(Collectors.toList()),
             distance
         );
     }

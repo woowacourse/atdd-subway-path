@@ -21,11 +21,11 @@ import wooteco.subway.domain.Station;
 @Sql("classpath:initializeTable.sql")
 public class SectionDaoTest {
 
-    private Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
-    private Station 신설역 = new Station(1L, "신설역");
-    private Station 동묘역 = new Station(2L, "동묘역");
-    private Station 동대문역 = new Station(3L, "동대문역");
-    private Distance 거리 = new Distance(10);
+    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
+    private final Station 신설역 = new Station(1L, "신설역");
+    private final Station 동묘역 = new Station(2L, "동묘역");
+    private final Station 동대문역 = new Station(3L, "동대문역");
+    private final Distance 거리 = new Distance(10);
 
     @Autowired
     private SectionDao sectionDao;

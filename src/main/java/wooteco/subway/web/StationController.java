@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.web.dto.request.StationRequest;
-import wooteco.subway.web.dto.response.StationResponse;
 import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationServiceDto;
+import wooteco.subway.web.dto.request.StationRequest;
+import wooteco.subway.web.dto.response.StationResponse;
 
 @RestController
 @RequestMapping(value = "/api/stations")

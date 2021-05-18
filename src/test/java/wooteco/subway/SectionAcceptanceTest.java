@@ -103,7 +103,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .when()
-            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(),
+                station.getId())
             .then().log().all()
             .extract();
     }
@@ -213,7 +214,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse,
+        List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);

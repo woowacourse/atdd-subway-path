@@ -76,8 +76,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+        StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(),
+            downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
