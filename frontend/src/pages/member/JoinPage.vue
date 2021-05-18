@@ -105,6 +105,10 @@ export default {
             password: password,
             age: age
           })
+        }).then(function (response) {
+          if (!response.ok) {
+            throw new Error;
+          }
         })
 
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

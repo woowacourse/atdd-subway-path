@@ -6,6 +6,7 @@ import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,11 @@ import wooteco.subway.member.dto.MemberResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
+    public static final String EMAIL = "bbwwpark@paran.com";
+    public static final String PASSWORD = "1q2w3e4r5e!";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
+    public static final String NEW_EMAIL = "bbwwpark2@naver.com";
+    public static final String NEW_PASSWORD = "1q2w3e4r5e~";
     public static final int NEW_AGE = 30;
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password,
@@ -101,11 +102,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD,
-            NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
     }
+
+    @DisplayName("잘못된 이메일 형식이라면 회원 생성을 실패한다.")
+    @Test
+    void invalidEmail() {
+        // then
+        ExtractableResponse<Response> response = 회원_생성을_요청("bbwwpark@naver..com", "1q2w3e4r5e!", 22);
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 비밀번호 형식이라면 회원 생성을 실패한다.")
+    @Test
+    void invalidPassword() {
+        // then
+        ExtractableResponse<Response> response = 회원_생성을_요청("bbwwpark@naver.com", "123456789", 22);
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
 }

@@ -17,8 +17,8 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
+    private static final String EMAIL = "bbwwpark@naver.com";
+    private static final String PASSWORD = "1q2w3e4r5e!";
     private static final Integer AGE = 20;
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password,
