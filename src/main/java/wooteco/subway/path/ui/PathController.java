@@ -20,7 +20,7 @@ public class PathController {
     // 경로조회 기능 구현하기
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPaths(@RequestParam("source") Long sourceStationId,
-                                                  @RequestParam("target") Long targetStationId) {
+                                                          @RequestParam("target") Long targetStationId) {
         return ResponseEntity.ok(pathService.findShortestPaths(sourceStationId, targetStationId));
     }
 }
