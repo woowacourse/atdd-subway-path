@@ -1,7 +1,5 @@
 package wooteco.subway.member.ui.dto;
 
-import wooteco.subway.member.domain.Member;
-
 import java.beans.ConstructorProperties;
 
 public class MemberRequest {

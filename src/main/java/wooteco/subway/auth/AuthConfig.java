@@ -1,9 +1,6 @@
 package wooteco.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +11,7 @@ public class AuthConfig {
 
     private final RestTemplate restTemplate;
 
-    public AuthConfig(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AuthConfig(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

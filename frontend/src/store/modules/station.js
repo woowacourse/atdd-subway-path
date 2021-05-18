@@ -1,4 +1,4 @@
-import { SET_STATIONS } from "../shared/mutationTypes";
+import {SET_STATIONS} from "../shared/mutationTypes";
 
 const state = {
   stations: [],

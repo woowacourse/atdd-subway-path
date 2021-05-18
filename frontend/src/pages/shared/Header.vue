@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import { NAV_ITEMS } from "../../utils/constants";
-import { mapGetters } from "vuex";
+import {NAV_ITEMS} from "../../utils/constants";
+import {mapGetters} from "vuex";
 import LogoutButton from "./components/LogoutButton";
 import MyPageButton from "./components/MyPageButton";
 

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { NAV_ITEMS } from "../../utils/constants";
+import {NAV_ITEMS} from "../../utils/constants";
 
 export default {
   name: "MainPage",

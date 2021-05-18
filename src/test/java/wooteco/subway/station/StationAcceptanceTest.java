@@ -9,13 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.path.ui.dto.StationResponse;
-import wooteco.subway.station.ui.dto.StationRequest;;
+import wooteco.subway.station.ui.dto.StationRequest;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

@@ -1,7 +1,5 @@
 package wooteco.subway.member.application.dto;
 
-import java.beans.ConstructorProperties;
-
 public class TokenRequestDto {
 
     private final String email;

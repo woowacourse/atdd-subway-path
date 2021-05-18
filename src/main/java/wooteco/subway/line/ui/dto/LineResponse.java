@@ -1,7 +1,6 @@
 package wooteco.subway.line.ui.dto;
 
 import wooteco.subway.line.application.dto.LineResponseDto;
-import wooteco.subway.line.application.dto.StationResponseDto;
 
 import java.beans.ConstructorProperties;
 import java.util.List;

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.application.dto.MemberRequestDto;
 import wooteco.subway.member.application.dto.MemberResponseDto;
-import wooteco.subway.member.ui.dto.MemberResponse;
 import wooteco.subway.member.application.dto.TokenRequestDto;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.exception.InvalidMemberException;

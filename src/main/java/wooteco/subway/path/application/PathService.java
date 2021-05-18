@@ -2,7 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.section.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.path.application.dto.PathResponseDto;
 import wooteco.subway.path.application.dto.StationResponseDto;
