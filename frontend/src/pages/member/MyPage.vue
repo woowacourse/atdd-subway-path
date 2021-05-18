@@ -71,6 +71,7 @@ export default {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        localStorage.setItem("token", null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
