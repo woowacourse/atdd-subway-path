@@ -40,6 +40,6 @@ public class Station {
     }
 
     public boolean isSameId(Long id) {
-        return this.id == id;
+        return this.id.equals(id);
     }
 }
