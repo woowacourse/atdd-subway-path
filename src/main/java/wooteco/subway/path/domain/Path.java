@@ -4,7 +4,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -12,18 +11,17 @@ import java.util.List;
 public class Path {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public static Path of (Sections sections) {
+    public static Path of(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        List<Station> stations = sections.getStations();
         for (Station station : stations) {
             graph.addVertex(station);
         }
 
-        List<Section> sectionList = sections.getSections();
-        for (Section section : sectionList) {
+        for (Section section : sections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()), section.getDistance());
         }
 
         return new Path(new DijkstraShortestPath<>(graph));
@@ -34,10 +32,11 @@ public class Path {
     }
 
     public List<Station> shortestPath(Station from, Station to) {
-        return dijkstraShortestPath.getPath(from, to).getVertexList();
+        return dijkstraShortestPath.getPath(from, to)
+                                   .getVertexList();
     }
 
-    public double shortestPathLength(Station from, Station to) {
-        return dijkstraShortestPath.getPathWeight(from, to);
+    public int shortestPathLength(Station from, Station to) {
+        return (int) dijkstraShortestPath.getPathWeight(from, to);
     }
 }

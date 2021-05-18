@@ -1,12 +1,8 @@
 package wooteco.subway.path.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import java.util.Arrays;
@@ -26,7 +22,7 @@ class PathTest {
         Section section2 = new Section(잠실역, 구의역, 2);
         Section section3 = new Section(강남역, 구의역, 100);
 
-        Path path = Path.of(new Sections(Arrays.asList(section1, section2, section3)));
+        Path path = Path.of(Arrays.asList(강남역, 잠실역, 구의역), Arrays.asList(section1, section2, section3));
 
         List<Station> shortestPath = path.shortestPath(강남역, 구의역);
         assertThat(shortestPath).containsExactly(강남역, 잠실역, 구의역);
