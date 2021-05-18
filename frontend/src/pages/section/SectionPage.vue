@@ -78,20 +78,27 @@ import {
   SET_STATIONS,
   SHOW_SNACKBAR,
 } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
+import {fetchJson} from "@/utils/fetchJson";
 
 export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    const stationsResponse = await fetchJson("/api/stations", FETCH_METHODS.GET)
+    if (!stationsResponse.ok) {
+      throw new Error(`${stationsResponse.status}`);
+    }
+    this.setStations([...await stationsResponse.json()])
+
+    const linesResponse = await fetchJson("/api/lines", FETCH_METHODS.GET);
+    if (!linesResponse.ok) {
+      throw new Error(`${linesResponse.status}`);
+    }
+    this.setLines([...await linesResponse.json()])
+
     this.initLinesView();
   },
   computed: {
@@ -124,8 +131,12 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        const response = await fetchJson(`/api/lines/${this.activeLineId}`, FETCH_METHODS.GET);
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+        this.activeLine = await response.json();
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

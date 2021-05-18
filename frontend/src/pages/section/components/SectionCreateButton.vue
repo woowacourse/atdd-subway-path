@@ -84,8 +84,9 @@ import {
   SET_LINES,
   SHOW_SNACKBAR,
 } from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
+import {fetchJson, fetchJsonWithBody} from "@/utils/fetchJson";
 
 export default {
   name: "SectionCreateButton",
@@ -109,8 +110,13 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        const response = await fetchJson(`/api/lines/${this.sectionForm.lineId}`, FETCH_METHODS.GET)
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
+        this.selectedLine = await response.json();
+
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -155,14 +161,19 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+
+        const createResponse = await fetchJsonWithBody(`/api/lines/${this.selectedLine.id}/sections`, FETCH_METHODS.POST, this.sectionForm);
+        if (!createResponse.ok) {
+          throw new Error(`${createResponse.status}`);
+        }
+
+        const linesResponse = await fetchJson('/api/lines', FETCH_METHODS.GET);
+        if (!linesResponse.ok) {
+          throw new Error(`${linesResponse.status}`);
+        }
+        this.setLines(await linesResponse.json());
+
+
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();
