@@ -31,11 +31,11 @@ export default {
           throw new Error(`${response.status}`);
         }
 
-        const linesResponse = await fetchJson('/api/lines', FETCH_METHODS.GET);
+        const linesResponse = await fetchJson(`/api/lines/${this.lineId}`, FETCH_METHODS.GET);
         if (!linesResponse.ok) {
           throw new Error(`${linesResponse.status}`);
         }
-        this.setLines({...await linesResponse.json()});
+        this.setLine({...await linesResponse.json()});
 
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
