@@ -80,18 +80,31 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SHOW_SNACKBAR, SET_MEMBER} from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {put} from "../../utils/request";
+import {keepLogin, put} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
   name: "MypageEdit",
   computed: {
-    ...mapGetters(["member", "accessToken"]),
+    ...mapGetters(["member"]),
   },
-  created() {
-    const { email, age } = this.member;
+  async created() {
+    if (this.member) {
+      let {email, age} = this.member;
+      this.editingMember = {
+        email,
+        age,
+        password: "",
+        confirmPassword: "",
+      };
+      return;
+    }
+    const response = keepLogin().then(res => res.json());
+    const memberInfo = await response;
+
+    let {email, age} = memberInfo;
     this.editingMember = {
       email,
       age,
@@ -116,14 +129,14 @@ export default {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);
         throw new Error(e);
       }
-    },
+    }
   },
   data() {
     return {
       editingMember: {},
       valid: false,
-      rules: { ...validator },
+      rules: {...validator},
     };
-  },
-};
+  }
+}
 </script>

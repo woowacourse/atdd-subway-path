@@ -8,6 +8,7 @@
 import { mapMutations } from "vuex";
 import { SET_LINE, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {remove, get} from "@/utils/request";
 
 export default {
   name: "SectionDeleteButton",
@@ -26,11 +27,17 @@ export default {
     async onDeleteLine() {
       try {
         // TODO 해당 구간을 삭제하는 api를 작성해주세요.
+        await remove(`/api/lines/${this.lineId}/sections?stationId=${this.stationId}`,
+            {'Authorization': "Bearer " + localStorage.getItem("token")})
         // await fetch("/api/section/{id}", {
         // lineId: this.lineId,
         // stationId: this.stationId,
         // })
         // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
+        const line = await get(`/api/lines/${this.lineId}`,
+            {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
+        this.setLine({ ...line })
+
         // const line = await fetch("/api/line/{lineId}")
         // this.setLine({ ...line })
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

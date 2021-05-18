@@ -49,3 +49,10 @@ export function remove(url, additionalHeaders) {
         headers
     });
 }
+
+export async function keepLogin() {
+    const accessToken = localStorage.getItem("token");
+    if (accessToken !== null) {
+        return await get("/api/members/me", {'Authorization': 'Bearer ' + accessToken})
+    }
+}

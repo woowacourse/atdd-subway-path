@@ -121,6 +121,7 @@ import dialog from "../../../mixins/dialog";
 import { mapGetters, mapMutations } from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
 import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import { post } from "../../../utils/request";
 import shortid from "shortid";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
@@ -153,9 +154,13 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        // const newLine = await fetch("/api/lines")
-        // this.setLines([...this.lines, { ...newLine }]); setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
+        const { name, color, upStationId, downStationId, distance } = this.lineForm;
+        const newLine = await post("/api/lines",
+            {name, color, upStationId, downStationId, distance},
+            {'Authorization': "Bearer " + localStorage.getItem("token")})
+            .then(res => res.json());
+
+        this.setLines([...this.lines, { ...newLine }]);
         this.initLineForm();
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);

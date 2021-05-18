@@ -82,9 +82,8 @@ export default {
         }
 
         localStorage.setItem("token", data.accessToken);
-        this.setAccessToken(data.accessToken);
 
-        const member = await get("/api/members/me", {'Authorization': "Bearer " + this.accessToken})
+        const member = await get("/api/members/me", {'Authorization': "Bearer " + localStorage.getItem("token")})
             .then(res => {
               return res.json();
             });
