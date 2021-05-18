@@ -8,6 +8,7 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -43,19 +44,24 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(new MemberResponse(member));
+    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+        System.out.println("++++"+request.getAttribute("id"));
+        Long id = (Long) request.getAttribute("id");
+        System.out.println("++++fff" +id);
+        return ResponseEntity.ok(memberService.findMember(id));
     }
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMin(
-            @AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
-        return ResponseEntity.ok(memberService.updateMember(member.getId(), memberRequest));
+            HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
+        Long id = (Long) request.getAttribute("id");
+        return ResponseEntity.ok(memberService.updateMember(id, memberRequest));
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
-        memberService.deleteMember(member.getId());
+    public ResponseEntity<Void> deleteMemberOfMine(HttpServletRequest request) {
+        Long id = (Long) request.getAttribute("id");
+        memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 }
