@@ -1,7 +1,9 @@
 package wooteco.subway.auth;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
@@ -23,7 +25,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = AuthorizationExtractor.extract(request);
         if (StringUtils.isEmpty(token)) {
-            return true;
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
         }
         Member memberByToken = authService.findMemberByToken(token);
         request.setAttribute("id", memberByToken.getId());
