@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Path {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public Path(Sections sections) {
         this.graph = createGraph(sections);
@@ -33,11 +33,11 @@ public class Path {
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        for(Station station : sections.getAllStations()) {
+        for (Station station : sections.getAllStations()) {
             graph.addVertex(station);
         }
 
-        for(Section section : sections.getSections()) {
+        for (Section section : sections.getSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
 

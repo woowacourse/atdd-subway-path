@@ -145,7 +145,7 @@ public class Sections {
 
         Set<Station> stations = new HashSet<>();
 
-        for(Section section : sections) {
+        for (Section section : sections) {
             stations.add(section.getUpStation());
             stations.add(section.getDownStation());
         }

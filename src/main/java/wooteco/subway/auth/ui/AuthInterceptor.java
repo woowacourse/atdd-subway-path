@@ -6,10 +6,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static wooteco.subway.auth.infrastructure.AuthorizationExtractor.BEARER_TYPE;
-
 public class AuthInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthInterceptor(final JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
