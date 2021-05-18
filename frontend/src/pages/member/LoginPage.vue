@@ -101,7 +101,6 @@ export default {
           }
           return response.json();
         }).then((data) => {
-          console.log("회원 맞음");
           this.setMember(data);
         })
 
