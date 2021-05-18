@@ -18,6 +18,10 @@ public class Station {
         this.name = name;
     }
 
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
+    }
+
     public Long getId() {
         return id;
     }
@@ -37,9 +41,5 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    public boolean isSameId(Long id) {
-        return this.id.equals(id);
     }
 }
