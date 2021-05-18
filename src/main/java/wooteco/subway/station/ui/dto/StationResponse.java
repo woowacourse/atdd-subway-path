@@ -2,16 +2,23 @@ package wooteco.subway.station.ui.dto;
 
 import wooteco.subway.station.application.dto.StationResponseDto;
 
+import java.beans.ConstructorProperties;
+
 public class StationResponse {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public StationResponse() {
-    }
-
+    @ConstructorProperties({"id", "name"})
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static StationResponse of(StationResponseDto stationResponseDto) {
+        return new StationResponse(
+                stationResponseDto.getId(),
+                stationResponseDto.getName()
+        );
     }
 
     public Long getId() {
@@ -20,13 +27,6 @@ public class StationResponse {
 
     public String getName() {
         return name;
-    }
-
-    public static StationResponse of(StationResponseDto stationResponseDto) {
-        return new StationResponse(
-                stationResponseDto.getId(),
-                stationResponseDto.getName()
-        );
     }
 
 }

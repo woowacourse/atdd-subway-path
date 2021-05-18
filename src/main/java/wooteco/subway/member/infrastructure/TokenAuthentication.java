@@ -30,7 +30,7 @@ public class TokenAuthentication {
         }
     }
 
-    private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) throws IOException {
+    private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) {
         HttpEntity<TokenRequest> request = new HttpEntity<>(tokenRequest);
 
         ResponseEntity<TokenRequest> response = restTemplate.postForEntity(AUTHENTICATION_URL, request, TokenRequest.class);

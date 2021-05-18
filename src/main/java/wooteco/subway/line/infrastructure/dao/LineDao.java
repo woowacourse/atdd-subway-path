@@ -15,10 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -48,7 +52,8 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
+
         return mapLine(result);
     }
 
@@ -68,10 +73,13 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
-                .collect(Collectors.toList());
+        Map<Long, List<Map<String, Object>>> resultByLine =
+                result.stream().
+                        collect(groupingBy(it -> (Long) it.get("line_id")));
+
+        return resultByLine.values().stream()
+                .map(this::mapLine)
+                .collect(toList());
     }
 
     private Line mapLine(List<Map<String, Object>> result) {
@@ -93,19 +101,30 @@ public class LineDao {
             return Collections.EMPTY_LIST;
         }
         return result.stream()
-                .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
+                .collect(groupingBy(it -> it.get("SECTION_ID")))
                 .entrySet()
                 .stream()
-                .map(it ->
-                        new Section(
-                                (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
-                .collect(Collectors.toList());
+                .map(this::createSection)
+                .collect(toList());
+    }
+
+    private Section createSection(Map.Entry<Object, List<Map<String, Object>>> it) {
+        return new Section(
+                (Long) it.getKey(),
+                new Station(
+                        (Long) it.getValue().get(0).get("UP_STATION_ID"),
+                        (String) it.getValue().get(0).get("UP_STATION_Name")
+                ),
+                new Station(
+                        (Long) it.getValue().get(0).get("DOWN_STATION_ID"),
+                        (String) it.getValue().get(0).get("DOWN_STATION_Name")
+                ),
+                (int) it.getValue().get(0).get("SECTION_DISTANCE")
+        );
     }
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
 }

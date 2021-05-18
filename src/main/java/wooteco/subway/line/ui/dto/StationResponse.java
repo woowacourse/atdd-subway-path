@@ -2,13 +2,14 @@ package wooteco.subway.line.ui.dto;
 
 import wooteco.subway.line.application.dto.StationResponseDto;
 
+import java.beans.ConstructorProperties;
+
 public class StationResponse {
-    private Long id;
-    private String name;
 
-    public StationResponse() {
-    }
+    private final Long id;
+    private final String name;
 
+    @ConstructorProperties({"id", "name"})
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;

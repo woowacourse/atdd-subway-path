@@ -32,7 +32,6 @@ public class PathController {
                 .map(StationResponse::of)
                 .collect(toList());
 
-
         return ResponseEntity.ok().body(new PathResponse(
                 stationsResponses,
                 pathResponseDto.getDistance()

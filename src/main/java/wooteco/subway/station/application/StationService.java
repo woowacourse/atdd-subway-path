@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class StationService {
 
-    private StationDao stationDao;
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;

@@ -2,12 +2,12 @@ package wooteco.subway.station.ui.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import java.beans.ConstructorProperties;
+
 public class StationRequest {
-    private String name;
+    private final String name;
 
-    public StationRequest() {
-    }
-
+    @ConstructorProperties("name")
     public StationRequest(String name) {
         this.name = name;
     }

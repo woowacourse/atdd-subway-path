@@ -1,14 +1,13 @@
 package wooteco.subway.path.ui.dto;
 
+import java.beans.ConstructorProperties;
 import java.util.List;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private int distance;
+    private final List<StationResponse> stations;
+    private final int distance;
 
-    public PathResponse() {
-    }
-
+    @ConstructorProperties({"stations", "distance"})
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;

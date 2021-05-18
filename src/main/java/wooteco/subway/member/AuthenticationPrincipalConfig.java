@@ -16,7 +16,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     private final RestTemplate restTemplate;
 
-    public AuthenticationPrincipalConfig(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AuthenticationPrincipalConfig(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
