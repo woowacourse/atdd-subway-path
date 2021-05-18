@@ -21,7 +21,6 @@ public class PathService {
         this.stationService = stationService;
     }
 
-
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(sourceStationId);

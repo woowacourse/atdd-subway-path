@@ -15,16 +15,14 @@ import java.util.Set;
 
 public class Path {
     private final List<Section> sections = new ArrayList<>();
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
     public Path(List<Line> lines) {
         for (Line line : lines) {
             Sections sections = line.getSections();
             this.sections.addAll(sections.getSections());
         }
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         initGraph();
     }
 
