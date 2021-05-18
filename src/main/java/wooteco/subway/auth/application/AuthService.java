@@ -33,7 +33,9 @@ public class AuthService {
     }
 
     private void validate(Long id) {
-        memberDao.findById(id)
-                .orElseThrow(() -> new AuthorizationException("[ERROR] 존재하지 않는 회원입니다."));
+        if (memberDao.existById(id)) {
+            return;
+        }
+        throw new AuthorizationException("[ERROR] 존재하지 않는 회원입니다.");
     }
 }
