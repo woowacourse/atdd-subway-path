@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
+
     private StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -37,4 +38,5 @@ public class StationService {
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
+
 }

@@ -1,13 +1,17 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.TokenRequest;
+import wooteco.subway.member.exception.InvalidMemberException;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -24,11 +28,36 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    @Transactional
+    public void updateMember(String email, Member member) {
+        Member originMember = memberDao.findByEmail(email);
+        memberDao.update(
+                new Member(
+                        originMember.getId(),
+                        member.getEmail(),
+                        member.getPassword(),
+                        member.getAge()
+                )
+        );
     }
 
-    public void deleteMember(Long id) {
-        memberDao.deleteById(id);
+    public void deleteMember(String email) {
+        memberDao.deleteByEmail(email);
     }
+
+    public void authenticate(TokenRequest tokenRequest) {
+        boolean isValid = memberDao.checkFrom(
+                tokenRequest.getEmail(),
+                tokenRequest.getPassword()
+        );
+
+        if (!isValid) {
+            throw new InvalidMemberException();
+        }
+    }
+
+    public Member findByEmail(String email) {
+        return memberDao.findByEmail(email);
+    }
+
 }

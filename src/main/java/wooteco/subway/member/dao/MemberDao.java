@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -42,13 +43,31 @@ public class MemberDao {
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from MEMBER where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+
+    public boolean checkFrom(String email, String password) {
+        String sql = "select count(*) from MEMBER where email = ? AND password = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email, password) > 0;
+    }
+
+    public Member findByEmail(String email) {
+        String sql = "SELECT * FROM MEMBER WHERE email = ?";
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("age")
+                ), email);
+    }
+
+    public void deleteByEmail(String email) {
+        String sql = "DELETE FROM MEMBER WHERE email = ?";
+        jdbcTemplate.update(sql, email);
     }
 }
