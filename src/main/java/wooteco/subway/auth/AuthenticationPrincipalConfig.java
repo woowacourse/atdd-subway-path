@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.ui.AuthInterceptor;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 
@@ -14,9 +15,11 @@ import java.util.List;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
+    public AuthenticationPrincipalConfig(final AuthService authService, final JwtTokenProvider jwtTokenProvider) {
         this.authService = authService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor())
+        registry.addInterceptor(new AuthInterceptor(jwtTokenProvider))
                 .addPathPatterns("/**")
                 .excludePathPatterns(Arrays.asList("/api/login/**", "/api/members/**"));
     }

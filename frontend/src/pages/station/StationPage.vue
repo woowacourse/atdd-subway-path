@@ -56,9 +56,9 @@
 <script>
 import validator from "../../utils/validator";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {get, post, remove} from "../../utils/request";
+import {get, keepLogin, post, remove} from "../../utils/request";
 import { mapGetters, mapMutations } from "vuex";
-import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "StationPage",
@@ -66,6 +66,12 @@ export default {
     ...mapGetters(["stations", "accessToken"]),
   },
   async created() {
+    const member = await keepLogin();
+    if (member.ok) {
+      const memberInfo = await member.json();
+      this.setMember(memberInfo);
+    }
+
     const response = await get("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")});
     if (!response.ok) {
       throw new Error(`${response.status}`);
@@ -74,7 +80,7 @@ export default {
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
-    ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),
+    ...mapMutations([SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR]),
     isValid() {
       return this.$refs.stationForm.validate();
     },

@@ -51,15 +51,15 @@ export default {
   computed: {
     ...mapGetters(["member", "accessToken"]),
   },
+  async created() {
+    const response = await keepLogin();
+    if (response.ok) {
+      const memberInfo = await response.json();
+      this.setMember(memberInfo);
+    }
+  },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER, SET_ACCESS_TOKEN]),
-    async created() {
-      const response = await keepLogin();
-      if (response.ok) {
-        const memberInfo = await response.json();
-        this.setMember(memberInfo);
-      }
-    },
     async onDeleteAccount() {
       const confirm = await this.$refs.confirm.open(
         "회원 탈퇴",

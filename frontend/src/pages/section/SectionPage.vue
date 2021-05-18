@@ -74,19 +74,25 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import {
-  SET_LINES,
+  SET_LINES, SET_MEMBER,
   SET_STATIONS,
   SHOW_SNACKBAR,
 } from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
-import {get} from "@/utils/request";
+import {get, keepLogin} from "@/utils/request";
 
 export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
+    const member = await keepLogin();
+    if (member.ok) {
+      const memberInfo = await member.json();
+      this.setMember(memberInfo);
+    }
+
     const stations = await get("/api/stations",
         {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json())
     this.setStations([...stations])
@@ -107,7 +113,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR, SET_STATIONS, SET_LINES]),
+    ...mapMutations([SET_MEMBER, SHOW_SNACKBAR, SET_STATIONS, SET_LINES]),
     initLinesView() {
       try {
         if (this.lines.length < 1) {

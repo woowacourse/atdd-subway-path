@@ -104,6 +104,7 @@ export default {
     const response = keepLogin().then(res => res.json());
     const memberInfo = await response;
 
+    this.setMember(memberInfo);
     let {email, age} = memberInfo;
     this.editingMember = {
       email,

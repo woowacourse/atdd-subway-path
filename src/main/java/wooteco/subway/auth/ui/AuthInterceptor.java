@@ -1,6 +1,7 @@
 package wooteco.subway.auth.ui;
 
 import org.springframework.web.servlet.HandlerInterceptor;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,12 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 import static wooteco.subway.auth.infrastructure.AuthorizationExtractor.BEARER_TYPE;
 
 public class AuthInterceptor implements HandlerInterceptor {
+    private JwtTokenProvider jwtTokenProvider;
+
+    public AuthInterceptor(final JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
         String accessToken = request.getHeader("Authorization");
 
-        if ((accessToken == null || accessToken.length() == BEARER_TYPE.length()) && !request.getMethod().equals("OPTIONS")) {
+        if (!request.getMethod().equals("OPTIONS") && jwtTokenProvider.validateToken(accessToken)) {
             response.setStatus(401);
             return false;
         }
