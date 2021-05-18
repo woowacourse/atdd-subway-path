@@ -12,7 +12,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,11 +28,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-    }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
@@ -103,6 +97,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
     }
 
     @Test

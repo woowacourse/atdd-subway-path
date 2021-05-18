@@ -24,7 +24,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -89,9 +88,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
-
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
+    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);

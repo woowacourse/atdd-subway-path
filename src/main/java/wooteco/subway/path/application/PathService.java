@@ -61,7 +61,7 @@ public class PathService {
     private void setEdgeWeights(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
         final List<Long> stationIds = stations.stream()
             .map(Station::getId)
-            .collect(Collectors.toList());;
+            .collect(Collectors.toList());
         final List<Section> sections = sectionDao.findAll(stationIds);
         for (final Section section : sections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());

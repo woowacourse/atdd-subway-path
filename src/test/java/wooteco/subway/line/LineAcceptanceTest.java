@@ -1,7 +1,11 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.AGE;
+import static wooteco.subway.auth.AuthAcceptanceTest.EMAIL;
+import static wooteco.subway.auth.AuthAcceptanceTest.PASSWORD;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 import io.restassured.RestAssured;
@@ -16,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
