@@ -8,9 +8,9 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class StationMap {
-    private final searchPathAlgorithm<Station> searchPathAlgorithm;
+    private final SearchPathAlgorithm<Station> searchPathAlgorithm;
 
-    public StationMap(searchPathAlgorithm<Station> searchPathAlgorithm, List<Line> lines) {
+    public StationMap(SearchPathAlgorithm<Station> searchPathAlgorithm, List<Line> lines) {
         this.searchPathAlgorithm = searchPathAlgorithm;
         add(lines);
     }
