@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.member.application.MemberService;
 
 import java.util.List;
 

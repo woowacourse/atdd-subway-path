@@ -43,7 +43,7 @@ public class AuthService {
     }
 
     public Long findMemberIdByEmail(String email) {
-        Member member =  memberDao.findByEmail(email).orElseThrow(NotRegisteredMemberException::new);
+        Member member = memberDao.findByEmail(email).orElseThrow(NotRegisteredMemberException::new);
         return member.getId();
     }
 
