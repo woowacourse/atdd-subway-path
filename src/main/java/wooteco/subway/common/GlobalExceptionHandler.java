@@ -1,8 +1,10 @@
 package wooteco.subway.common;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @ExceptionHandler({SQLException.class, DuplicateKeyException.class})
+    @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException(SQLException exception) {
+        logger.info(exception.getMessage());
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<Void> handleDataAccessException(DataAccessException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity.badRequest().build();
     }
