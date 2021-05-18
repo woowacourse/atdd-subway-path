@@ -114,7 +114,6 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
         await fetch(`http://localhost:8080/lines/${this.line.id}`, {
           method: "PUT",
           headers: {
@@ -129,7 +128,6 @@ export default {
             extraFare: this.lineEditForm.extraFare,
           })
         });
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
         const lines = await fetch("http://localhost:8080/lines")
         .then(data => {
           if (!data.ok) {
