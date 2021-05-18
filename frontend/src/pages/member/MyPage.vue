@@ -64,7 +64,6 @@ export default {
         return;
       }
       try {
-        // TODO 유저를 삭제하는 API를 추가해주세요
         await fetch(`/api/members/me`, {
           headers: {
             "Authorization": `bearer ${this.$cookies.get("token")}`
