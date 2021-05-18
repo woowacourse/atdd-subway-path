@@ -40,7 +40,7 @@ public class PathService {
             Station downStation = section.getDownStation();
             graph.addVertex(upStation);
             graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation,downStation), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
