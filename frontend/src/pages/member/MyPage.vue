@@ -72,7 +72,7 @@ export default {
         return;
       }
       try {
-        await remove("/api/members/me")
+        await remove("/api/members/me");
 
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);

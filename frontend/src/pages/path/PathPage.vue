@@ -168,7 +168,7 @@ export default {
       try {
         this.pathResult = await get(`/api/paths?source=${this.path.source}&target=${this.path.target}`,
             {'Authorization': "Bearer " + localStorage.getItem("token")})
-            .then(res => res.json())
+            .then(res => res.json());
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -177,8 +177,8 @@ export default {
     async initAllStationsView() {
       try {
         const stations = await get("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")})
-            .then(res => res.json())
-        this.setStations(stations)
+            .then(res => res.json());
+        this.setStations(stations);
         if (this.stations.length < 1) {
           return;
         }

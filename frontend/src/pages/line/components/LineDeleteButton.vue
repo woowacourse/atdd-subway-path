@@ -26,7 +26,7 @@ export default {
 
         const lines = await get("/api/lines",
             {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
-        this.setLines([...lines])
+        this.setLines([...lines]);
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.FAIL);
