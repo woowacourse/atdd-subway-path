@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
-import wooteco.subway.dto.TokenResponse;
+import wooteco.auth.dto.TokenResponse;
 import wooteco.subway.util.AccountUtil;
 
 import java.util.Arrays;

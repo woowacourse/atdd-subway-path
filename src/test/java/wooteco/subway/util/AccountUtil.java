@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import wooteco.subway.dto.MemberRequest;
-import wooteco.subway.dto.TokenResponse;
+import wooteco.auth.dto.MemberRequest;
+import wooteco.auth.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
