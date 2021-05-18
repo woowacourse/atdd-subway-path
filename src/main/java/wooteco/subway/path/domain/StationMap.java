@@ -8,10 +8,10 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class StationMap {
-    private final DijkstraGraph<Station> dijkstraGraph;
+    private final searchPathAlgorithm<Station> searchPathAlgorithm;
 
-    public StationMap(DijkstraGraph<Station> dijkstraGraph, List<Line> lines) {
-        this.dijkstraGraph = dijkstraGraph;
+    public StationMap(searchPathAlgorithm<Station> searchPathAlgorithm, List<Line> lines) {
+        this.searchPathAlgorithm = searchPathAlgorithm;
         add(lines);
     }
 
@@ -26,11 +26,11 @@ public class StationMap {
     }
 
     private void add(Section section) {
-        dijkstraGraph.add(section.getUpStation(), section.getDownStation(), section.getDistance());
+        searchPathAlgorithm.add(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     public ShortestPath findShortedPath(Station from, Station to) {
-        return new ShortestPath(dijkstraGraph.getShortestPath(from, to),
-                dijkstraGraph.getShortedDistance(from, to));
+        return new ShortestPath(searchPathAlgorithm.getShortestPath(from, to),
+                searchPathAlgorithm.getShortedDistance(from, to));
     }
 }

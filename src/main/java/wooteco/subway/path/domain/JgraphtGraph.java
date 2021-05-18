@@ -7,7 +7,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class JgraphtGraph<T> implements DijkstraGraph<T> {
+public class JgraphtGraph<T> implements searchPathAlgorithm<T> {
     private final WeightedMultigraph<T, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
