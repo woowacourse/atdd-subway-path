@@ -1,13 +1,14 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.station.dao.StationDao;
+import wooteco.subway.station.application.dto.StationResponseDto;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationRequest;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.infrastructure.dao.StationDao;
+import wooteco.subway.station.ui.dto.StationRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class StationService {
@@ -18,21 +19,22 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationResponseDto saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+
+        return StationResponseDto.of(station);
     }
 
     public Station findStationById(Long id) {
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponseDto> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                .map(StationResponseDto::of)
+                .collect(toList());
     }
 
     public void deleteStationById(Long id) {

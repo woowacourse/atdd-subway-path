@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.dto.LoginRequest;
-import wooteco.subway.auth.dto.LoginResponse;
-import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.auth.application.dto.LoginRequestDto;
+import wooteco.subway.auth.ui.dto.LoginRequest;
+import wooteco.subway.auth.ui.dto.LoginResponse;
+import wooteco.subway.auth.ui.dto.TokenRequest;
 
 @RestController
 public class AuthController {
@@ -20,9 +21,11 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok().body(
-                new LoginResponse(authService.createToken(loginRequest))
+        String token = authService.createToken(
+                new LoginRequestDto(loginRequest.getEmail(), loginRequest.getPassword())
         );
+
+        return ResponseEntity.ok().body(new LoginResponse(token));
     }
 
     @PostMapping("/auth/token")
