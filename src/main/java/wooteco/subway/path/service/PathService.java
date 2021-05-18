@@ -1,6 +1,7 @@
 package wooteco.subway.path.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.ShortestPath;
@@ -22,6 +23,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         ShortestPath shortestPath = new ShortestPath(lines);
