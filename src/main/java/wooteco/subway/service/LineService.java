@@ -43,10 +43,10 @@ public class LineService {
         return LineServiceDto.from(saveLine);
     }
 
-    public List<LineServiceDto> findAll() {
+    public List<ReadLineDto> findAll() {
         return lineDao.showAll()
             .stream()
-            .map(LineServiceDto::from)
+            .map(line -> ReadLineDto.of(line, sectionService.findAllByLind(line)))
             .collect(Collectors.toList());
     }
 

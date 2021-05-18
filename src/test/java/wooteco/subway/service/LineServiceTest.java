@@ -69,7 +69,7 @@ public class LineServiceTest {
         when(mockLineDao.showAll()).thenReturn(lines);
 
         // when
-        List<LineServiceDto> requestedDtos = lineService.findAll();
+        List<ReadLineDto> requestedDtos = lineService.findAll();
 
         // then
         assertThat(requestedDtos.get(0).getId()).isEqualTo(lines.get(0).getId());
