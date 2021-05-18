@@ -1,23 +1,23 @@
 package wooteco.subway.member.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
+import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
 public class TokenAuthentication {
     private static final String AUTHENTICATION_URL = "http://localhost:8080/auth/token";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final HttpClient httpClient;
+    private final RestTemplate restTemplate;
 
-    public TokenAuthentication(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    public TokenAuthentication(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public boolean validate(String token) {
@@ -25,30 +25,26 @@ public class TokenAuthentication {
             int statusCode = sendTokenRequestToAuthServer(new TokenRequest(token));
 
             return statusCode == HttpURLConnection.HTTP_OK;
+        } catch (HttpClientErrorException e) {
+            return false;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) throws IOException {
-        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
+        HttpEntity<TokenRequest> request = new HttpEntity<>(tokenRequest);
 
-        httpPost.setEntity(
-                new StringEntity(
-                        OBJECT_MAPPER.writeValueAsString(tokenRequest),
-                        ContentType.APPLICATION_JSON
-                )
-        );
+        ResponseEntity<TokenRequest> response = restTemplate.postForEntity(AUTHENTICATION_URL, request, TokenRequest.class);
 
-        HttpResponse execute = httpClient.execute(httpPost);
-
-        return execute.getStatusLine().getStatusCode();
+        return response.getStatusCode().value();
     }
 
     private static class TokenRequest {
 
         private final String token;
 
+        @ConstructorProperties({"token"})
         public TokenRequest(String token) {
             this.token = token;
         }
