@@ -1,9 +1,9 @@
 <template>
   <v-dialog
-    v-model="show"
-    :max-width="options.width"
-    :style="{ zIndex: options.zIndex }"
-    @keydown.esc="cancel"
+      v-model="show"
+      :max-width="options.width"
+      :style="{ zIndex: options.zIndex }"
+      @keydown.esc="cancel"
   >
     <v-card>
       <v-toolbar :color="options.color" dark dense flat>

@@ -10,13 +10,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import {
-  SET_ACCESS_TOKEN,
-  SET_MEMBER,
-  SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "LogoutButton",

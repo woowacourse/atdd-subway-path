@@ -6,24 +6,24 @@
           구간 관리
         </v-card-title>
         <v-card-text
-          class="relative px-0 line-list-container d-flex flex-column"
+            class="relative px-0 line-list-container d-flex flex-column"
         >
           <div class="relative px-5 pb-5">
             <v-select
-              v-model="activeLineId"
-              :items="lineNamesViews"
-              @change="onChangeLine"
-              label="노선 선택"
-              width="400"
-              color="grey darken-1"
-              item-color="amber darken-3"
-              outlined
-              dense
+                v-model="activeLineId"
+                :items="lineNamesViews"
+                @change="onChangeLine"
+                label="노선 선택"
+                width="400"
+                color="grey darken-1"
+                item-color="amber darken-3"
+                outlined
+                dense
             ></v-select>
           </div>
-          <v-divider />
+          <v-divider/>
           <div class="d-flex justify-end mr-4 section-create-button-container">
-            <SectionCreateButton />
+            <SectionCreateButton/>
           </div>
           <div class="mt-10 overflow-y-auto">
             <v-card v-if="activeLine.id" class="mx-5" outlined>
@@ -33,21 +33,21 @@
               <v-card-text class="overflow-y-auto py-0">
                 <v-list dense class="max-height-300px">
                   <template
-                    v-if="activeLine.stations && activeLine.stations.length > 0"
+                      v-if="activeLine.stations && activeLine.stations.length > 0"
                   >
                     <v-list-item
-                      v-for="(station, index) in activeLine.stations"
-                      :key="index"
+                        v-for="(station, index) in activeLine.stations"
+                        :key="index"
                     >
                       <v-list-item-content>
                         <v-list-item-title
-                          v-text="station.name"
+                            v-text="station.name"
                         ></v-list-item-title>
                       </v-list-item-content>
                       <v-list-item-action class="flex-row">
                         <SectionDeleteButton
-                          :line-id="activeLine.id"
-                          :station-id="station.id"
+                            :line-id="activeLine.id"
+                            :station-id="station.id"
                         />
                       </v-list-item-action>
                     </v-list-item>
@@ -56,7 +56,8 @@
                     <v-list-item>
                       <v-list-item-content>
                         <v-list-item-title
-                          >아직 추가된 역이 없습니다.</v-list-item-title
+                        >아직 추가된 역이 없습니다.
+                        </v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -72,19 +73,15 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import {
-  SET_LINES,
-  SET_STATIONS,
-  SHOW_SNACKBAR,
-} from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_LINES, SET_STATIONS, SHOW_SNACKBAR,} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 
 export default {
   name: "SectionPage",
-  components: { SectionDeleteButton, SectionCreateButton },
+  components: {SectionDeleteButton, SectionCreateButton},
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
     // const stations = await fetch("/api/stations")
@@ -100,7 +97,7 @@ export default {
   watch: {
     line() {
       if (this.activeLine.id === this.line.id) {
-        this.activeLine = { ...this.line };
+        this.activeLine = {...this.line};
       }
     },
   },
@@ -111,7 +108,7 @@ export default {
         if (this.lines.length < 1) {
           return;
         }
-        this.lineNamesViews = this.lines.map(({ name, id }) => {
+        this.lineNamesViews = this.lines.map(({name, id}) => {
           return {
             text: name,
             value: id,

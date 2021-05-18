@@ -1,12 +1,12 @@
 package wooteco.member.controller.dto.response;
 
-public class SignInResponseDto {
+public class SignInResponse {
     private String accessToken;
 
-    public SignInResponseDto() {
+    public SignInResponse() {
     }
 
-    public SignInResponseDto(String accessToken) {
+    public SignInResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 
