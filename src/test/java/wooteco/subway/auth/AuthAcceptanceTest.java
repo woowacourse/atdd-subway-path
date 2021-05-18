@@ -104,4 +104,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @Test
+    void x() {
+        TokenResponse tokenResponse = new TokenResponse("accesstoken");
+
+        RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().options("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

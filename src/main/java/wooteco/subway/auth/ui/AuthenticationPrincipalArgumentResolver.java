@@ -28,7 +28,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public LoginMemberId resolveArgument(MethodParameter parameter,
         ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String token = AuthorizationExtractor.extract((HttpServletRequest) webRequest.getNativeRequest());
+        String token = AuthorizationExtractor
+            .extract((HttpServletRequest) webRequest.getNativeRequest());
         return authService.findLoginMemberId(token);
     }
 

@@ -73,9 +73,8 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
         const {email, password} = this.member;
-        await fetch("http://localhost:8080/login/token", {
+        await fetch("http://localhost:8080/api/login/token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -89,7 +88,7 @@ export default {
               localStorage.setItem("token", JSON.stringify(data));
             });
 
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("http://localhost:8080/api/members/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -102,6 +101,7 @@ export default {
           }
           return response.json();
         }).then((data) => {
+          console.log("회원 맞음");
           this.setMember(data);
         })
 
