@@ -2,7 +2,10 @@ package wooteco.subway.station.dao;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.sql.DataSource;
+
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -51,8 +54,14 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
+        try {
+            Station station = jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
+            return Optional.ofNullable(station);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return Optional.empty();
+        }
+
     }
 }
