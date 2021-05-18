@@ -6,22 +6,21 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
 public class ShortestPath {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
     public ShortestPath(List<Line> lines) {
         this.dijkstraShortestPath = new DijkstraShortestPath<>(initSubwayMap(lines));
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initSubwayMap(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap
+    private WeightedMultigraph<Long, DefaultWeightedEdge> initSubwayMap(List<Line> lines) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> subwayMap
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            List<Station> stations = line.getStations();
+            List<Long> stations = line.getStationIds();
             stations.forEach(subwayMap::addVertex);
             Sections sections = line.getSections();
             connectStation(subwayMap, sections);
@@ -29,18 +28,18 @@ public class ShortestPath {
         return subwayMap;
     }
 
-    private void connectStation(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap, Sections sections) {
+    private void connectStation(WeightedMultigraph<Long, DefaultWeightedEdge> subwayMap, Sections sections) {
         for (Section section : sections.getSections()) {
-            subwayMap.setEdgeWeight(subwayMap.addEdge(section.getUpStation(), section.getDownStation()),
+            subwayMap.setEdgeWeight(subwayMap.addEdge(section.upStationId(), section.downStationId()),
                     section.getDistance());
         }
     }
 
-    public List<Station> getPath(Station sourceStation, Station targetStation) {
-        return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
+    public List<Long> getPath(Long sourceId, Long targetId) {
+        return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
     }
 
-    public int distance(Station sourceStation, Station targetStation) {
-        return (int) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+    public int distance(Long sourceId, Long targetId) {
+        return (int) dijkstraShortestPath.getPath(sourceId, targetId).getWeight();
     }
 }

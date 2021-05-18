@@ -10,6 +10,7 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -22,13 +23,13 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
-        Station sourceStation = stationService.findStationById(source);
-        Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findLines();
-
         ShortestPath shortestPath = new ShortestPath(lines);
-        List<Station> path = shortestPath.getPath(sourceStation, targetStation);
-        int distance = shortestPath.distance(sourceStation, targetStation);
+        List<Long> stationIds = shortestPath.getPath(source, target);
+        List<Station> path = stationIds.stream()
+                .map(stationService::findStationById)
+                .collect(Collectors.toList());
+        int distance = shortestPath.distance(source, target);
 
         return new PathResponse(StationResponse.listOf(path), distance);
     }

@@ -48,10 +48,13 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(lines);
 
         // when
-        List<Station> stations = path.getPath(왕십리역, 잠실역);
+        List<Long> stations = path.getPath(왕십리역.getId(), 잠실역.getId());
 
         // then
-        assertThat(stations).containsAll(Arrays.asList(왕십리역, 천호역, 잠실역));
+        assertThat(stations)
+                .hasSize(3)
+                .hasSameElementsAs(Arrays.asList(왕십리역.getId(), 천호역.getId(), 잠실역.getId()));
+
     }
 
     @Test
@@ -62,7 +65,7 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(lines);
 
         // when
-        int distance = path.distance(왕십리역, 잠실역);
+        int distance = path.distance(왕십리역.getId(), 잠실역.getId());
 
         // then
         assertThat(distance).isEqualTo(13);
