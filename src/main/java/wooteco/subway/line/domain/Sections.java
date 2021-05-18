@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -143,5 +145,12 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public void registerSectionWeights(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        getSections().forEach(section -> {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStationId().toString(),
+                section.getDownStationId().toString()), section.getDistance());
+        });
     }
 }
