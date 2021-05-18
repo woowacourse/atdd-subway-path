@@ -21,7 +21,9 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateLogin(tokenRequest);
-        final String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        final Member member = memberDao.findByEmail(tokenRequest.getEmail()).get();
+        final String memberId = String.valueOf(member.getId());
+        final String accessToken = jwtTokenProvider.createToken(memberId);
         return new TokenResponse(accessToken);
     }
 

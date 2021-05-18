@@ -29,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         final String token = AuthorizationExtractor.extract(request);
-        final String email = jwtTokenProvider.getPayload(token);
-        return new LoginMember(email);
+        final String memberId = jwtTokenProvider.getPayload(token);
+        return new LoginMember(Long.valueOf(memberId));
     }
 }

@@ -1,13 +1,13 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
-    private final String email;
+    private final Long id;
 
-    public LoginMember(String email) {
-        this.email = email;
+    public LoginMember(Long id) {
+        this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public Long getId() {
+        return id;
     }
 }
