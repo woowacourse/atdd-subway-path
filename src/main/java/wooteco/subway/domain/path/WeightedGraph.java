@@ -32,17 +32,17 @@ public class WeightedGraph {
         return graph;
     }
 
+    private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+        final List<Station> stations = line.getStations();
+        stations.forEach(graph::addVertex);
+    }
+
     private static void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
         final List<Section> sections = line.getSections().getSections();
         sections.forEach(section -> graph.setEdgeWeight(
                 graph.addEdge(section.getUpStation(), section.getDownStation()),
                 section.getDistance()
         ));
-    }
-
-    private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        final List<Station> stations = line.getStations();
-        stations.forEach(graph::addVertex);
     }
 
     public WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
