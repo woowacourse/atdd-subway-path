@@ -1,10 +1,10 @@
 <template>
   <v-app v-cloak>
-    <Header />
+    <Header/>
     <v-main>
-      <router-view />
+      <router-view/>
     </v-main>
-    <Snackbar />
+    <Snackbar/>
   </v-app>
 </template>
 
@@ -14,7 +14,7 @@ import Snackbar from "./components/snackbar/Snackbar";
 
 export default {
   name: "App",
-  components: { Snackbar, Header },
+  components: {Snackbar, Header},
 };
 </script>
 <style lang="scss">
