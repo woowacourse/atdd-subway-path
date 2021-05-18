@@ -10,6 +10,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 public class AuthController {
@@ -23,16 +24,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid TokenRequest tokenRequest) {
         TokenResponse accessToken = authService.login(tokenRequest);
-
         return ResponseEntity.ok(accessToken);
-    }
-
-    // todo 쿠키 삭제..?
-    private void setAccessTokenToCookie(HttpServletResponse response, String accessToken) {
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setMaxAge(THIRTY_MINUTE);
-        response.addCookie(accessTokenCookie);
     }
 }

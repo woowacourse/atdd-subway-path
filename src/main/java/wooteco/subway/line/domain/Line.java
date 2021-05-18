@@ -52,7 +52,7 @@ public class Line {
         this.color = line.getColor();
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, Integer distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
     }

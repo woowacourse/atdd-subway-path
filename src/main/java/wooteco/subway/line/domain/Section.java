@@ -6,19 +6,19 @@ public class Section {
     private Long id;
     private Station upStation;
     private Station downStation;
-    private int distance;
+    private Integer distance;
 
     public Section() {
     }
 
-    public Section(Long id, Station upStation, Station downStation, int distance) {
+    public Section(Long id, Station upStation, Station downStation, Integer distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
+    public Section(Station upStation, Station downStation, Integer distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -36,7 +36,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }
