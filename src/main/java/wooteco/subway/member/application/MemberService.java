@@ -2,6 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -42,5 +43,11 @@ public class MemberService {
     public Member findMember(final Long id) {
         return memberDao.findById(id)
                 .orElseThrow(() -> new MemberException("존재하지 않는 유저 id 입니다."));
+    }
+
+    public Member findMemberByPayLoad(final AuthorizationPayLoad payLoad) {
+        final String email = payLoad.value();
+        return memberDao.findByEmail(email)
+                .orElseThrow(()-> new MemberException("올바르지 않은 사용자 토큰입니다."));
     }
 }

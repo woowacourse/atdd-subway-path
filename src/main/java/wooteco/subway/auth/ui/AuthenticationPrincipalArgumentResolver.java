@@ -8,12 +8,14 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(final AuthService authService) {
@@ -26,11 +28,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
-                                  final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+    public AuthorizationPayLoad resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
+                                                final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         final String token = AuthorizationExtractor.extract(httpServletRequest);
-
-        return authService.findMemberByToken(token);
+        return authService.getPayLoad(token);
     }
 }
