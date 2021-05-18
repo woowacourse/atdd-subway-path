@@ -1,6 +1,6 @@
 package wooteco.subway.member.exception;
 
-public class NotFoundException extends RuntimeException{
+public class NotFoundException extends RuntimeException {
 
     private ErrorMessage errorMessage;
 

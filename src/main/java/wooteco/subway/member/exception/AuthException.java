@@ -1,6 +1,6 @@
 package wooteco.subway.member.exception;
 
-public class AuthException extends RuntimeException{
+public class AuthException extends RuntimeException {
     private ErrorMessage errorMessage;
 
     public AuthException() {

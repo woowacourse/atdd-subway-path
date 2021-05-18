@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.controller.dto.PathResponse;
-import wooteco.subway.path.domain.DijkstraPath;
+import wooteco.subway.path.domain.BaseShortestPathAlgorithm;
+import wooteco.subway.path.domain.DijkstraShortestPathAlgorithm;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.WeightedGraph;
 import wooteco.subway.station.dao.StationDao;
@@ -29,8 +30,8 @@ public class PathService {
         final Station source = stationDao.findById(sourceId);
         final Station target = stationDao.findById(targetId);
 
-        final DijkstraPath dijkstraPath = new DijkstraPath(WeightedGraph.of(lines));
-        final Path shortestPath = dijkstraPath.findShortestPath(source, target);
+        final BaseShortestPathAlgorithm shortestPathAlgorithm = new DijkstraShortestPathAlgorithm(WeightedGraph.of(lines));
+        final Path shortestPath = shortestPathAlgorithm.findShortestPath(source, target);
         return PathResponse.of(shortestPath);
     }
 }

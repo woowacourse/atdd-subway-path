@@ -1,6 +1,6 @@
 package wooteco.subway.member.exception;
 
-public class MemberNotFoundException extends AuthException{
+public class MemberNotFoundException extends AuthException {
     public MemberNotFoundException() {
     }
 
