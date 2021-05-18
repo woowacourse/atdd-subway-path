@@ -5,7 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.dto.PathResponse;
@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public class PathService {
     private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final LineService lineService;
 
-    public PathService(StationDao stationDao, LineDao lineDao) {
+    public PathService(StationDao stationDao, LineService lineService) {
         this.stationDao = stationDao;
-        this.lineDao = lineDao;
+        this.lineService = lineService;
     }
 
     public PathResponse getDijkstraShortestPath(long sourceId, long targetId) {
@@ -59,7 +59,7 @@ public class PathService {
     }
 
     private void initializeSections(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Line> lines = lineDao.findAll();
+        List<Line> lines = lineService.findLines();
         lines.forEach(line -> addSectionsByLine(graph, line));
     }
 
