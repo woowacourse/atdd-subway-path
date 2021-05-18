@@ -36,16 +36,16 @@ public class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        lineDao.create(일호선);
-        stationDao.save(신설역);
-        stationDao.save(동묘역);
-        stationDao.save(동대문역);
+        lineDao.insert(일호선);
+        stationDao.insert(신설역);
+        stationDao.insert(동묘역);
+        stationDao.insert(동대문역);
 
         Section 신설역_동묘역 = new Section(일호선, 신설역, 동묘역, 거리);
         Section 동묘역_동대문역 = new Section(일호선, 동묘역, 동대문역, 거리);
 
-        sectionDao.save(신설역_동묘역);
-        sectionDao.save(동묘역_동대문역);
+        sectionDao.insert(신설역_동묘역);
+        sectionDao.insert(동묘역_동대문역);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class SectionDaoTest {
         Section targetSection = new Section(일호선, 신설역, 동대문역, 거리);
 
         // when
-        Section savedSection = sectionDao.save(targetSection);
+        Section savedSection = sectionDao.insert(targetSection);
 
         // then
         assertThat(savedSection.getLine()).isEqualTo(일호선);

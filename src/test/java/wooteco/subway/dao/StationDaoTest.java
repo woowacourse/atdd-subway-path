@@ -23,12 +23,12 @@ class StationDaoTest {
     public void checkAllStation() {
         // given
         Station station1 = new Station("상봉역");
-        stationDao.save(station1);
+        stationDao.insert(station1);
         Station station2 = new Station("구로디지털단지역");
-        stationDao.save(station2);
+        stationDao.insert(station2);
 
         // when
-        List<Station> stations = stationDao.showAll();
+        List<Station> stations = stationDao.findAll();
 
         // then
         assertThat(stations.get(0).getName()).isEqualTo(station1.getName());
@@ -42,10 +42,10 @@ class StationDaoTest {
         Station station1 = new Station("상봉역");
 
         // when
-        stationDao.save(station1);
+        stationDao.insert(station1);
 
         // then
-        List<Station> stations = stationDao.showAll();
+        List<Station> stations = stationDao.findAll();
         Station responseStation = stations.get(0);
         assertThat(responseStation.getName()).isEqualTo("상봉역");
     }
@@ -55,7 +55,7 @@ class StationDaoTest {
     public void delete() {
         // given
         Station station1 = new Station("상봉역");
-        stationDao.save(station1);
+        stationDao.insert(station1);
 
         // when
         int deleteCount = stationDao.delete(1L);

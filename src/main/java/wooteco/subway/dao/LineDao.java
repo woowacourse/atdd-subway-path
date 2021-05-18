@@ -15,22 +15,23 @@ public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final RowMapper<Line> rowMapper;
+
+    private final RowMapper<Line> rowMapper = (rs, rowNum) -> {
+        Long foundId = rs.getLong("id");
+        String name = rs.getString("name");
+        String color = rs.getString("color");
+
+        return new Line(foundId, name, color);
+    };
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("LINE")
             .usingGeneratedKeyColumns("id");
-        this.rowMapper = (rs, rowNum) -> {
-            Long foundId = rs.getLong("id");
-            String name = rs.getString("name");
-            String color = rs.getString("color");
-            return new Line(foundId, name, color);
-        };
     }
 
-    public Line create(Line line) {
+    public Line insert(Line line) {
         Map<String, String> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
@@ -40,12 +41,12 @@ public class LineDao {
         return new Line(key, line.getName(), line.getColor());
     }
 
-    public Line show(Long id) {
+    public Line find(Long id) {
         String sql = "SELECT * FROM LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public List<Line> showAll() {
+    public List<Line> findAll() {
         String sql = "SELECT * FROM LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }

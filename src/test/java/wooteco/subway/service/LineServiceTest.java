@@ -43,7 +43,7 @@ public class LineServiceTest {
         String name = "1호선";
         String color = "파란색";
 
-        when(mockLineDao.create(any(Line.class))).thenReturn(new Line(id, name, color));
+        when(mockLineDao.insert(any(Line.class))).thenReturn(new Line(id, name, color));
         when(mockSectionService.saveByLineCreate(any(Line.class), any())).thenReturn(null);
 
         // when
@@ -66,7 +66,7 @@ public class LineServiceTest {
             new Line((long) 3, "3호선", "주황색")
         );
 
-        when(mockLineDao.showAll()).thenReturn(lines);
+        when(mockLineDao.findAll()).thenReturn(lines);
 
         // when
         List<ReadLineDto> requestedDtos = lineService.findAll();
@@ -91,7 +91,7 @@ public class LineServiceTest {
         String name = "1호선";
         String color = "파란색";
 
-        when(mockLineDao.show(id)).thenReturn(new Line(id, name, color));
+        when(mockLineDao.find(id)).thenReturn(new Line(id, name, color));
 
         // when
         ReadLineDto readLineDto = lineService.findOne(new LineServiceDto((id)));
@@ -111,7 +111,7 @@ public class LineServiceTest {
         String updateColor = "녹담색";
 
         when(mockLineDao.update(eq(id), any(Line.class))).thenReturn(1);
-        when(mockLineDao.show(id)).thenReturn(new Line(id, updateName, updateColor));
+        when(mockLineDao.find(id)).thenReturn(new Line(id, updateName, updateColor));
 
         // when
         lineService.update(new LineServiceDto(id, updateName, updateColor));
@@ -132,7 +132,7 @@ public class LineServiceTest {
         String color = "파란색";
 
         when(mockLineDao.delete(id)).thenReturn(1);
-        when(mockLineDao.show(id)).thenThrow(NotFoundException.class);
+        when(mockLineDao.find(id)).thenThrow(NotFoundException.class);
 
         //when
         lineService.delete(new LineServiceDto(id));

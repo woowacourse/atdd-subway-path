@@ -17,21 +17,22 @@ public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final RowMapper<Station> rowMapper;
+
+    private final RowMapper<Station> rowMapper = (rs, rowNum) -> {
+        Long foundId = rs.getLong("id");
+        String name = rs.getString("name");
+
+        return new Station(foundId, name);
+    };
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("STATION")
             .usingGeneratedKeyColumns("id");
-        this.rowMapper = (rs, rowNum) -> {
-            Long foundId = rs.getLong("id");
-            String name = rs.getString("name");
-            return new Station(foundId, name);
-        };
     }
 
-    public Station save(Station station) {
+    public Station insert(Station station) {
         Map<String, String> params = new HashMap<>();
         params.put("name", station.getName());
 
@@ -40,12 +41,12 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
-    public List<Station> showAll() {
+    public List<Station> findAll() {
         String sql = "SELECT * FROM STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station showById(Long id) {
+    public Station findById(Long id) {
         try {
             String sql = "SELECT * FROM station WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);

@@ -43,22 +43,22 @@ public class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineDao.create(일호선);
-        stationDao.save(신설역);
-        stationDao.save(동묘역);
-        stationDao.save(동대문역);
+        lineDao.insert(일호선);
+        stationDao.insert(신설역);
+        stationDao.insert(동묘역);
+        stationDao.insert(동대문역);
 
         Section 신설역_동묘역_구간 = new Section(일호선, 신설역, 동묘역, 거리);
         Section 동묘역_동대문역_구간 = new Section(일호선, 동묘역, 동대문역, 거리);
-        sectionDao.save(신설역_동묘역_구간);
-        sectionDao.save(동묘역_동대문역_구간);
+        sectionDao.insert(신설역_동묘역_구간);
+        sectionDao.insert(동묘역_동대문역_구간);
     }
 
     @Test
     @DisplayName("노선의 끝 쪽에 구간 추가")
     void createSectionWithLineAndStations() {
         // given
-        Station 회기역 = stationDao.save(new Station("회기역"));
+        Station 회기역 = stationDao.insert(new Station("회기역"));
 
         SectionServiceDto 동대문_회기_구간_DTO =
             new SectionServiceDto(일호선.getId(), 동대문역.getId(), 회기역.getId(), 거리.getValue());
@@ -77,7 +77,7 @@ public class SectionServiceTest {
     @DisplayName("신설-동묘-동대문 사이에 추가 신설-동묘-회기-동대문")
     void createSectionBetweenSections() {
         // given
-        Station 회기역 = stationDao.save(new Station("회기역"));
+        Station 회기역 = stationDao.insert(new Station("회기역"));
         int 목표거리 = 3;
 
         SectionServiceDto 동묘_회기_구간_DTO =
@@ -107,7 +107,7 @@ public class SectionServiceTest {
     @DisplayName("역 사이에 먼 거리 추가")
     void createSectionBetweenSectionsWithExcessDistance() {
         // given
-        Station 회기역 = stationDao.save(new Station("회기역"));
+        Station 회기역 = stationDao.insert(new Station("회기역"));
 
         // when
         SectionServiceDto 역_사이_거리가_기존_구간보다_먼_구간 =

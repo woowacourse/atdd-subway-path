@@ -32,7 +32,7 @@ class StationServiceTest {
         long id = 1;
         String name = "스타벅스 선정릉역";
 
-        when(mockStationDao.save(any(Station.class))).thenReturn(new Station(id, name));
+        when(mockStationDao.insert(any(Station.class))).thenReturn(new Station(id, name));
 
         // when
         StationServiceDto stationServiceDto = stationService.save(new StationServiceDto(name));
@@ -52,7 +52,7 @@ class StationServiceTest {
             new Station(3L, "용산역")
         );
 
-        when(mockStationDao.showAll()).thenReturn(stations);
+        when(mockStationDao.findAll()).thenReturn(stations);
 
         // when
         List<StationServiceDto> requestedDtos = stationService.showStations();

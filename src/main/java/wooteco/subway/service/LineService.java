@@ -33,10 +33,10 @@ public class LineService {
     @Transactional
     public LineServiceDto createLine(@Valid CreateLineDto createLineDto) {
         Line line = createLineDto.toLineEntity();
-        Lines lines = new Lines(lineDao.showAll());
+        Lines lines = new Lines(lineDao.findAll());
         lines.validateDuplicate(line);
 
-        Line saveLine = lineDao.create(line);
+        Line saveLine = lineDao.insert(line);
 
         SectionServiceDto sectionServiceDto = SectionServiceDto.of(saveLine, createLineDto);
         sectionService.saveByLineCreate(saveLine, sectionServiceDto);
@@ -44,14 +44,14 @@ public class LineService {
     }
 
     public List<ReadLineDto> findAll() {
-        return lineDao.showAll()
+        return lineDao.findAll()
             .stream()
             .map(line -> ReadLineDto.of(line, sectionService.findAllByLind(line)))
             .collect(Collectors.toList());
     }
 
     public ReadLineDto findOne(@Valid LineServiceDto lineServiceDto) {
-        Line line = lineDao.show(lineServiceDto.getId());
+        Line line = lineDao.find(lineServiceDto.getId());
         List<StationResponse> stationResponses = sectionService.findAllByLind(line);
         return ReadLineDto.of(line, stationResponses);
     }
@@ -59,7 +59,7 @@ public class LineService {
     @Transactional
     public void update(@Valid LineServiceDto lineServiceDto) {
         Line line = lineServiceDto.toEntity();
-        Lines lines = new Lines(lineDao.showAll());
+        Lines lines = new Lines(lineDao.findAll());
         lines.validateDuplicate(line);
 
         if (lineDao.update(lineServiceDto.getId(), line) == NOT_FOUND) {
@@ -76,14 +76,14 @@ public class LineService {
 
     @Transactional
     public void createSection(@Valid CreateSectionDto createSectionDto) {
-        Line line = lineDao.show(createSectionDto.getLineId());
+        Line line = lineDao.find(createSectionDto.getLineId());
         SectionServiceDto sectionServiceDto = SectionServiceDto.from(createSectionDto);
         sectionService.save(line, sectionServiceDto);
     }
 
     @Transactional
     public void deleteStation(@NotNull Long lineId, @NotNull Long stationId) {
-        Line line = lineDao.show(lineId);
+        Line line = lineDao.find(lineId);
         sectionService.delete(line, stationId);
     }
 }

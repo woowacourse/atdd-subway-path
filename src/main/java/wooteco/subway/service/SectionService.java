@@ -55,14 +55,14 @@ public class SectionService {
     }
 
     private SectionServiceDto saveSectionAtEnd(Section section) {
-        return SectionServiceDto.from(sectionDao.save(section));
+        return SectionServiceDto.from(sectionDao.insert(section));
     }
 
     private SectionServiceDto saveSectionAtMiddle(Section section, Sections sections) {
         Section legacySection = sections.findByMatchStation(section);
         sectionDao.delete(legacySection);
-        sectionDao.save(legacySection.updateForSave(section));
-        return SectionServiceDto.from(sectionDao.save(section));
+        sectionDao.insert(legacySection.updateForSave(section));
+        return SectionServiceDto.from(sectionDao.insert(section));
     }
 
     public void delete(Line line, @NotNull Long stationId) {
@@ -94,7 +94,7 @@ public class SectionService {
         Section updatedSection = upSection.updateForDelete(downSection);
         sectionDao.delete(upSection);
         sectionDao.delete(downSection);
-        sectionDao.save(updatedSection);
+        sectionDao.insert(updatedSection);
     }
 
     public List<StationResponse> findAllByLind(Line line) {

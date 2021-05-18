@@ -27,7 +27,7 @@ class LineDaoTest {
         Line line = new Line("10호선", "붉은색");
 
         // when
-        Line requestedLine = lineDao.create(line);
+        Line requestedLine = lineDao.insert(line);
 
         // then
         assertThat(requestedLine.getName()).isEqualTo(line.getName());
@@ -42,10 +42,10 @@ class LineDaoTest {
         Line line2 = new Line("1호선", "파란색");
 
         // when
-        lineDao.create(line1);
+        lineDao.insert(line1);
 
         // then
-        assertThatThrownBy(() -> lineDao.create(line2)).isInstanceOf(DuplicateKeyException.class);
+        assertThatThrownBy(() -> lineDao.insert(line2)).isInstanceOf(DuplicateKeyException.class);
     }
 
     @DisplayName("id값에 맞는 노선 반환")
@@ -53,11 +53,11 @@ class LineDaoTest {
     public void findLine() {
         // given
         Line line1 = new Line("12호선", "분홍색");
-        Line saveLine = lineDao.create(line1);
+        Line saveLine = lineDao.insert(line1);
         long id = saveLine.getId();
 
         // when
-        Line requestedLine = lineDao.show(id);
+        Line requestedLine = lineDao.find(id);
 
         // then
         assertThat(requestedLine.getId()).isEqualTo(id);
@@ -74,7 +74,7 @@ class LineDaoTest {
         long id = -1;
 
         // then
-        assertThatThrownBy(() -> lineDao.show(id))
+        assertThatThrownBy(() -> lineDao.find(id))
             .isInstanceOf(EmptyResultDataAccessException.class);
     }
 
@@ -83,12 +83,12 @@ class LineDaoTest {
     void findAll() {
         // given
         Line line1 = new Line("10호선", "붉은색");
-        lineDao.create(line1);
+        lineDao.insert(line1);
         Line line2 = new Line("11호선", "노란색");
-        lineDao.create(line2);
+        lineDao.insert(line2);
 
         // when
-        List<Line> lines = lineDao.showAll();
+        List<Line> lines = lineDao.findAll();
 
         // then
         assertThat(lines.get(0).getName()).isEqualTo(line1.getName());
@@ -102,7 +102,7 @@ class LineDaoTest {
     void update() {
         // given
         Line line1 = new Line("11호선", "보라색");
-        Line saveLine = lineDao.create(line1);
+        Line saveLine = lineDao.insert(line1);
         long id = saveLine.getId();
         String requestName = "분당선";
         String requestColor = "노란색";
@@ -110,7 +110,7 @@ class LineDaoTest {
 
         // when
         lineDao.update((int) id, requestLine);
-        Line responseLine = lineDao.show(id);
+        Line responseLine = lineDao.find(id);
 
         // then
         assertThat(responseLine.getName()).isEqualTo(requestName);
@@ -122,7 +122,7 @@ class LineDaoTest {
     void remove() {
         // given
         Line line1 = new Line("12호선", "분홍색");
-        Line saveLine = lineDao.create(line1);
+        Line saveLine = lineDao.insert(line1);
         long id = saveLine.getId();
 
         // when

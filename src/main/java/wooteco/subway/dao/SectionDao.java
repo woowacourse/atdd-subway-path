@@ -21,35 +21,35 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final RowMapper<Section> rowMapper;
+
+    private static final RowMapper<Section> rowMapper = (rs, rowNum) -> {
+        Long sectionId = rs.getLong("section_id");
+        Long lineId = rs.getLong("line_id");
+        String lineName = rs.getString("line_name");
+        String lineColor = rs.getString("line_color");
+        Long upStationId = rs.getLong("up_id");
+        String upStationName = rs.getString("up_name");
+        Long downStationId = rs.getLong("down_id");
+        String downStationName = rs.getString("down_name");
+        int distance = rs.getInt("distance");
+
+        return new Section(
+            new Id(sectionId),
+            new Line(lineId, lineName, lineColor),
+            new Station(upStationId, upStationName),
+            new Station(downStationId, downStationName),
+            new Distance(distance)
+        );
+    };
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("SECTION")
             .usingGeneratedKeyColumns("id");
-        this.rowMapper = (rs, rowNum) -> {
-            Long sectionId = rs.getLong("section_id");
-            Long lineId = rs.getLong("line_id");
-            String lineName = rs.getString("line_name");
-            String lineColor = rs.getString("line_color");
-            Long upStationId = rs.getLong("up_id");
-            String upStationName = rs.getString("up_name");
-            Long downStationId = rs.getLong("down_id");
-            String downStationName = rs.getString("down_name");
-            int distance = rs.getInt("distance");
-
-            return new Section(
-                new Id(sectionId),
-                new Line(lineId, lineName, lineColor),
-                new Station(upStationId, upStationName),
-                new Station(downStationId, downStationName),
-                new Distance(distance)
-            );
-        };
     }
 
-    public Section save(Section section) {
+    public Section insert(Section section) {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", section.getLineId());
         params.put("up_station_id", section.getUpStationId());
@@ -62,21 +62,8 @@ public class SectionDao {
     }
 
     public List<Section> findAllByLine(Line line) {
-        String sql = "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
-            + "up_station.id AS up_id, up_station.name AS up_name, "
-            + "down_station.id AS down_id, down_station.name AS down_name, "
-            + "distance "
-            + "FROM section AS s "
-            + "LEFT JOIN line ON s.line_id = line.id "
-            + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-            + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
-            + "WHERE s.line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, line.getId());
-    }
-
-    public Optional<Section> findByLineAndUpStation(Line line, Station upStation) {
-        try {
-            String sql = "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+        String sql =
+            "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
                 + "up_station.id AS up_id, up_station.name AS up_name, "
                 + "down_station.id AS down_id, down_station.name AS down_name, "
                 + "distance "
@@ -84,9 +71,25 @@ public class SectionDao {
                 + "LEFT JOIN line ON s.line_id = line.id "
                 + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
                 + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
-                + "WHERE s.line_id = ? AND s.up_station_id = ?";
+                + "WHERE s.line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, line.getId());
+    }
+
+    public Optional<Section> findByLineAndUpStation(Line line, Station upStation) {
+        try {
+            String sql =
+                "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+                    + "up_station.id AS up_id, up_station.name AS up_name, "
+                    + "down_station.id AS down_id, down_station.name AS down_name, "
+                    + "distance "
+                    + "FROM section AS s "
+                    + "LEFT JOIN line ON s.line_id = line.id "
+                    + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
+                    + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
+                    + "WHERE s.line_id = ? AND s.up_station_id = ?";
             return Optional
-                .ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), upStation.getId()));
+                .ofNullable(
+                    jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), upStation.getId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -94,17 +97,19 @@ public class SectionDao {
 
     public Optional<Section> findByLineAndDownStation(Line line, Station downStation) {
         try {
-            String sql = "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
-                + "up_station.id AS up_id, up_station.name AS up_name, "
-                + "down_station.id AS down_id, down_station.name AS down_name, "
-                + "distance "
-                + "FROM section AS s "
-                + "LEFT JOIN line ON s.line_id = line.id "
-                + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-                + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
-                + "WHERE s.line_id = ? AND s.down_station_id = ?";
+            String sql =
+                "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+                    + "up_station.id AS up_id, up_station.name AS up_name, "
+                    + "down_station.id AS down_id, down_station.name AS down_name, "
+                    + "distance "
+                    + "FROM section AS s "
+                    + "LEFT JOIN line ON s.line_id = line.id "
+                    + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
+                    + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
+                    + "WHERE s.line_id = ? AND s.down_station_id = ?";
             return Optional
-                .ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), downStation.getId()));
+                .ofNullable(
+                    jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), downStation.getId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

@@ -21,7 +21,7 @@ public class StationService {
     }
 
     public List<StationServiceDto> showStations() {
-        List<Station> stations = stationDao.showAll();
+        List<Station> stations = stationDao.findAll();
 
         return stations.stream()
             .map(StationServiceDto::from)
@@ -29,13 +29,13 @@ public class StationService {
     }
 
     public Station findById(Long stationId) {
-        return stationDao.showById(stationId);
+        return stationDao.findById(stationId);
     }
 
     @Transactional
     public StationServiceDto save(@Valid StationServiceDto stationServiceDto) {
         Station station = stationServiceDto.toEntity();
-        Station saveStation = stationDao.save(station);
+        Station saveStation = stationDao.insert(station);
 
         return StationServiceDto.from(saveStation);
     }

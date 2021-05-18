@@ -20,8 +20,8 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        Station sourceStation = stationDao.showById(sourceId);
-        Station targetStation = stationDao.showById(targetId);
+        Station sourceStation = stationDao.findById(sourceId);
+        Station targetStation = stationDao.findById(targetId);
 
         Route route = new Route(sectionDao.findAll());
         List<Station> shortestStations = route.findShortestStation(sourceStation, targetStation);
