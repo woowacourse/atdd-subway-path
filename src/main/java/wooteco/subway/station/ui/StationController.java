@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/stations")
 @RestController
 public class StationController {
+
     private StationService stationService;
 
     public StationController(StationService stationService) {

@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 
 public class PathResponse {
+
     private final List<StationResponse> stations;
     private final int distance;
 
@@ -20,4 +21,5 @@ public class PathResponse {
     public int getDistance() {
         return distance;
     }
+
 }

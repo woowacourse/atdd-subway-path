@@ -5,6 +5,7 @@ import wooteco.subway.station.application.dto.StationResponseDto;
 import java.beans.ConstructorProperties;
 
 public class StationResponse {
+
     private final Long id;
     private final String name;
 

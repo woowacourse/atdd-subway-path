@@ -5,6 +5,7 @@ import wooteco.subway.station.domain.Station;
 import java.beans.ConstructorProperties;
 
 public class StationRequest {
+
     private final String name;
 
     @ConstructorProperties("name")
@@ -19,4 +20,5 @@ public class StationRequest {
     public Station toStation() {
         return new Station(name);
     }
+
 }
