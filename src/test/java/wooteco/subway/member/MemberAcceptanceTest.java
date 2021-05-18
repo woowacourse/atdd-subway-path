@@ -21,7 +21,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final String INVALID_PASSWORD = "invalid password";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
     public static final int NEW_AGE = 30;
 
     @DisplayName("회원 정보를 관리한다.")
@@ -40,6 +39,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("회원 생성 실패: 중복된 이메일")
+    @Test
+    void createMemberFail_duplicatedEmail() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse1);
+
+        // when
+        ExtractableResponse<Response> createResponse2 = 회원_생성을_요청(EMAIL, PASSWORD + "1", AGE + 1);
+
+        // then
+        회원_생성되지_않음(createResponse2);
     }
 
     @DisplayName("회원 정보 수정 실패: 틀린 비밀번호")
@@ -101,6 +114,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 회원_생성되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
