@@ -51,7 +51,6 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
     const stations = await fetch(
         "http://localhost:8080/stations"
     ).then(data => {
@@ -61,7 +60,6 @@ export default {
       return data.json();
     })
     this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
     const lines = await fetch("http://localhost:8080/lines")
         .then(data => {
           if (!data.ok) {
