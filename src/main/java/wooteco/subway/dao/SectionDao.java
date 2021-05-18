@@ -124,4 +124,19 @@ public class SectionDao {
         String sql = "DELETE FROM section WHERE id = ?";
         return jdbcTemplate.update(sql, section.getId());
     }
+
+    public List<Section> findAll() {
+        String sql = "SELECT s.id AS section_id, "
+            + "line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+            + "up_station.id AS up_id, "
+            + "up_station.name AS up_name, "
+            + "down_station.id AS down_id, "
+            + "down_station.name AS down_name, "
+            + "distance "
+            + "FROM section AS s "
+            + "LEFT JOIN line ON s.line_id = line.id "
+            + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
+            + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 }

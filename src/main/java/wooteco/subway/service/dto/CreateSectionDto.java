@@ -2,6 +2,7 @@ package wooteco.subway.service.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
 
 public class CreateSectionDto {
@@ -23,6 +24,11 @@ public class CreateSectionDto {
     }
 
     public static CreateSectionDto of(Long lineId, SectionRequest dto) {
+        return new CreateSectionDto(lineId, dto.getUpStationId(), dto.getDownStationId(),
+            dto.getDistance());
+    }
+
+    public static CreateSectionDto of(Long lineId, LineRequest dto) {
         return new CreateSectionDto(lineId, dto.getUpStationId(), dto.getDownStationId(),
             dto.getDistance());
     }

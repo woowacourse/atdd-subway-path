@@ -1,11 +1,14 @@
 package wooteco.subway.service.dto;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import wooteco.subway.domain.Line;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.request.UpdateLineRequest;
+import wooteco.subway.web.dto.response.StationResponse;
 
 public class LineServiceDto {
 
@@ -14,6 +17,8 @@ public class LineServiceDto {
     private final String name;
     @NotBlank
     private final String color;
+    @NotNull
+    private List<StationResponse> stations;
 
     public LineServiceDto(Long id) {
         this(id, null, null);
