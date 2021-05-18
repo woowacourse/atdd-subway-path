@@ -142,9 +142,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -159,7 +159,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
+        // [기능 추가] 최단 거리를 검색하는 API를 추가해주세요.
         // this.pathResult = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -168,7 +168,7 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
+        // [기능 추가] 모든 역을 불러오는 API를 추가해주세요.
         // const stations = await fetch("/stations")
         // this.setStations(stations)
         if (this.stations.length < 1) {
@@ -187,7 +187,7 @@ export default {
     },
     async onSearchMinimumDurationType() {
       try {
-        // TODO 최소 시간을 검색하는 API를 추가해주세요.
+        // [기능 추가] 최소 시간을 검색하는 API를 추가해주세요.
         // this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

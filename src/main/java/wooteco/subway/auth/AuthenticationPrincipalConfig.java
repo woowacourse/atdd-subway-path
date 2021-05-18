@@ -7,13 +7,17 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
+import wooteco.subway.member.application.MemberService;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
+    private final MemberService memberService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
+    public AuthenticationPrincipalConfig(AuthService authService,
+        MemberService memberService) {
         this.authService = authService;
+        this.memberService = memberService;
     }
 
     @Override
@@ -23,6 +27,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
+        return new AuthenticationPrincipalArgumentResolver(authService, memberService);
     }
 }

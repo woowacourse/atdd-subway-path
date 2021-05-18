@@ -77,9 +77,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapMutations} from "vuex";
+import {SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -94,16 +94,22 @@ export default {
         return;
       }
       try {
-        // TODO member를 생성하는 API를 추가해주세요.
+        // [기능 추가] member를 생성하는 API를 추가해주세요.
         // const { email, age, password } = this.member;
-        // await fetch("/join", { email, age, password })
+        await fetch("http://localhost:8080/members", { 
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.member) 
+          })
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
       }
     },
-  },
+  }, 
   data() {
     return {
       valid: false,

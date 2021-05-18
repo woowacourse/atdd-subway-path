@@ -53,9 +53,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -64,7 +64,7 @@ export default {
     ...mapGetters(["accessToken"]),
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
+    ...mapMutations([SET_ACCESS_TOKEN, SHOW_SNACKBAR, SET_MEMBER]),
     isValid() {
       return this.$refs.loginForm.validate();
     },
@@ -73,12 +73,36 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
+        // [기능 추가] login API를 작성해주세요.
         // const { email, password } = this.member;
         // const data = await fetch("/login")
-        // TODO member 데이터를 불러와 주세요.
+        // [기능 추가] member 데이터를 불러와 주세요.
         // const member = wait fetch("/members/me")
         // this.setMember(member);
+        const response = await fetch("http://localhost:8080/login/token", { 
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+            },
+          body: JSON.stringify(this.member) 
+          })
+
+        const body = await response.json();
+        const token = body.accessToken;
+        this.setAccessToken(token);
+        localStorage.setItem("token", token);
+
+        const memberResponse = await fetch("http://localhost:8080/members/me", { 
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+          },
+        })
+
+        const member = await memberResponse.json();
+        this.setMember(member);
+
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
