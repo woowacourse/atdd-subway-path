@@ -26,13 +26,4 @@ class SectionDaoTest {
         this.jdbcTemplate = jdbcTemplate;
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }
-
-    @DisplayName("주어진 역들 중 하나라도 가지고 있는 구간들을 찾는다.")
-    @Test
-    void findByStationIds() {
-        List<Long> stationIds = Arrays.asList(1L, 2L);
-        List<Section> sections = sectionDao.findByStationIds(stationIds);
-
-        assertThat(sections).hasSize(3);
-    }
 }
