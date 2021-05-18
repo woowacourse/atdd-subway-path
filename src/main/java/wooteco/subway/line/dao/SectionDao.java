@@ -57,24 +57,21 @@ public class SectionDao {
     }
 
     public Sections findAll() {
-        String sql = "SELECT id, (SELECT * FROM station WHERE station.id = section.up_station_id) AS upStation, " +
-                "(SELECT * FROM station WHERE station.id = section.down_station_id) AS downStation, " +
-                "distance FROM section;";
+        String sql = "SELECT SECTION.id AS id, " +
+                "SECTION.distance AS distance, " +
+                "UST.id AS up_station_id, UST.name AS up_station_name, " +
+                "DST.id AS down_station_id, DST.name AS down_station_name " +
+                "FROM SECTION " +
+                "LEFT OUTER JOIN STATION UST ON SECTION.up_station_id = UST.id " +
+                "LEFT OUTER JOIN STATION DST ON SECTION.down_station_id = DST.id";
         List<Section> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Long id = rs.getLong("id");
-            Station upStation = convertRowToStation(rs.getString("upStation"));
-            Station downStation = convertRowToStation(rs.getString("downStation"));
+            Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("up_station_name"));
+            Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("down_station_name"));
             int distance = rs.getInt("distance");
 
             return new Section(id, upStation, downStation, distance);
         });
         return new Sections(result);
-    }
-
-    private Station convertRowToStation(String row) {
-        String substring = row.substring(5, row.length() - 1).trim();
-        String[] split = substring.split(", ");
-        long id = Long.parseLong(String.valueOf(split[0]));
-        return new Station(id, split[1]);
     }
 }
