@@ -34,6 +34,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(token);
+        System.out.println(email);
         return memberService.findMemberByEmail(email);
     }
 }

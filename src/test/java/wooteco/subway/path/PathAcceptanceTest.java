@@ -69,6 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()

@@ -128,6 +128,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/api/lines")
@@ -138,6 +139,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/lines")
                 .then().log().all()
@@ -147,6 +149,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
@@ -157,6 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/api/lines/" + response.getId())
@@ -167,6 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
