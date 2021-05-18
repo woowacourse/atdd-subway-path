@@ -36,10 +36,9 @@ public class AuthService {
 
     public Member findMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthException(AuthError.TOKEN_EXPIRED);
+            throw new AuthException(AuthError.INVALID_TOKEN);
         }
         String email = jwtTokenProvider.getPayload(token);
-
         return findMemberByEmail(email);
     }
 
