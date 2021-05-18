@@ -1,8 +1,8 @@
 package wooteco.subway.web.path.dto;
 
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.web.station.dto.StationResponse;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.web.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -3,9 +3,9 @@ package wooteco.subway.service.member;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.member.MemberDao;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.web.member.dto.MemberRequest;
 import wooteco.subway.web.member.dto.MemberResponse;
-import wooteco.subway.exception.MemberNotFoundException;
 
 @Service
 public class MemberService {
