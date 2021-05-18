@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.member.exception.EmailNotFoundException;
+import wooteco.member.exception.*;
 
 import java.io.InvalidClassException;
 
@@ -23,6 +23,6 @@ public class MemberControllerAdvice {
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<String> handleException(EmailNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }
