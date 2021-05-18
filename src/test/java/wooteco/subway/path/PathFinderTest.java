@@ -59,7 +59,7 @@ public class PathFinderTest {
         assertThat(path.getStations()).isEqualTo(expected);
     }
 
-    @DisplayName("출발역과 도착역이 같음녀 예외 처리한다.")
+    @DisplayName("출발역과 도착역이 같으면 예외 처리한다.")
     @Test
     void shortestPathWithDuplicatedStations() {
         assertThatIllegalArgumentException()
