@@ -37,6 +37,17 @@ export async function fetchJsonWithBody(url, method, body) {
     });
 }
 
+export async function fetchJson(url, method) {
+    let headers = {
+        "Content-Type": "application/json"
+    }
+
+    return await fetch(url, {
+        method,
+        headers
+    });
+}
+
 export function tokenHeaderIfExist() {
     if (localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH)) {
         return {
