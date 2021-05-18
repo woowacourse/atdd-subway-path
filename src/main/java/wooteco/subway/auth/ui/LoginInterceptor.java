@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.exception.NotEmptyTokenException;
-import wooteco.subway.exception.NotValidToken;
+import wooteco.subway.exception.EmptyTokenException;
+import wooteco.subway.exception.InvalidTokenException;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
@@ -18,18 +18,18 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+        Object handler) {
         String token = AuthorizationExtractor.extract(request);
 
         if (token == null) {
-            throw new NotEmptyTokenException();
+            throw new EmptyTokenException();
         }
 
         if (!authService.isValidToken(token)) {
-            throw new NotValidToken();
+            throw new InvalidTokenException();
         }
 
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
 }

@@ -1,5 +1,8 @@
 package wooteco.subway.member.dao;
 
+import java.util.List;
+import java.util.Optional;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,32 +11,25 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
-import javax.sql.DataSource;
-
 @Repository
 public class MemberDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
-
+        new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getInt("age")
+        );
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
-                .usingGeneratedKeyColumns("id");
-    }
-
-    public boolean isExist(final String email, final String password) {
-        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+            .withTableName("member")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Member insert(Member member) {
@@ -44,7 +40,8 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate.update(sql,
+            new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
     public void deleteById(Long id) {
@@ -52,13 +49,20 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        List<Member> result = jdbcTemplate.query(sql, rowMapper, id);
+        return result.stream().findAny();
     }
 
-    public Member findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    public Long findIdByEmail(String email) {
+        String sql = "select id from MEMBER where email = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email);
     }
+
+    public Boolean containsMemberByEmailAndPassword(String email, String password) {
+        String sql = "select exists(select * from MEMBER where email = ? and password = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+    }
+
 }

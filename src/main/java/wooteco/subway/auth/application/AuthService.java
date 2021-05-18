@@ -3,42 +3,39 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.NotExistMember;
-import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.exception.InvalidMemberInformationException;
+import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.LoginMemberId;
 
 @Service
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberService memberService;
 
-    public AuthService(final JwtTokenProvider jwtTokenProvider, final MemberDao memberDao) {
+    public AuthService(final JwtTokenProvider jwtTokenProvider, final MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberService = memberService;
     }
 
     public String createToken(final TokenRequest tokenRequest) {
-        if (checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+        if (memberService.containsMemberByEmailAndPassword(tokenRequest.getEmail(),
+            tokenRequest.getPassword())) {
             return jwtTokenProvider.createToken(tokenRequest.getEmail());
         }
-        throw new NotExistMember();
-    }
-
-    private boolean checkValidLogin(final String email, final String password) {
-        return memberDao.isExist(email, password);
+        throw new InvalidMemberInformationException();
     }
 
     public boolean isValidToken(String token) {
         return jwtTokenProvider.validateToken(token);
     }
 
-    public String findEmail(String token) {
-        return jwtTokenProvider.getPayload(token);
-    }
-
-    public Member findMemberByEmail(String email) {
-        return memberDao.findByEmail(email);
+    public LoginMemberId findLoginMemberId(String token) {
+        if (!isValidToken(token)) {
+            throw new InvalidMemberInformationException();
+        }
+        String payLoad = jwtTokenProvider.getPayload(token);
+        return new LoginMemberId(memberService.findMemberIdByEmail(payLoad));
     }
 
 }

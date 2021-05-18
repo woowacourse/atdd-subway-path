@@ -9,6 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.member.domain.LoginMemberId;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -24,9 +25,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public LoginMemberId resolveArgument(MethodParameter parameter,
+        ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extract((HttpServletRequest) webRequest.getNativeRequest());
-        return authService.findMemberByEmail(authService.findEmail(token));
+        return authService.findLoginMemberId(token);
     }
+
 }
