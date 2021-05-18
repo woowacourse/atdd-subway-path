@@ -27,11 +27,11 @@ export default {
     async onDeleteLine() {
       try {
         await deleteFetch(`/api/section/${this.stationId}`, {
-        lineId: this.lineId,
-        stationId: this.stationId,
+          lineId: this.lineId,
+          stationId: this.stationId,
         })
         const line = await getFetch(`/api/line/${this.lineId}`)
-        this.setLine({ ...line })
+        this.setLine({...line})
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
