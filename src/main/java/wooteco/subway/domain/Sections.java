@@ -22,7 +22,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public List<Section> getSections() {
+    public List<Section> toList() {
         return sections;
     }
 

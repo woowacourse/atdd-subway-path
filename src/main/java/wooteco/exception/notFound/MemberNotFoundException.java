@@ -7,6 +7,4 @@ public class MemberNotFoundException extends NotFoundException {
     public MemberNotFoundException() {
         super(MESSAGE);
     }
-
-
 }

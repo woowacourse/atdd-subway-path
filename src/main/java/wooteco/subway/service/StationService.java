@@ -12,9 +12,11 @@ import wooteco.subway.web.dto.StationResponse;
 public class StationService {
 
     private StationDao stationDao;
+    private PathService pathService;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, PathService pathService) {
         this.stationDao = stationDao;
+        this.pathService = pathService;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -36,5 +38,6 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+        pathService.syncPath();
     }
 }

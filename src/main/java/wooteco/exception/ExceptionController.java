@@ -13,7 +13,7 @@ public class ExceptionController {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity notFoundException(NotFoundException e) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)

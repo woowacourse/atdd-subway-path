@@ -5,7 +5,7 @@ import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 import wooteco.auth.domain.Token;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.exception.badRequest.LoginFailException;
+import wooteco.exception.unauthorized.LoginFailException;
 
 @Service
 public class AuthService {
@@ -19,11 +19,9 @@ public class AuthService {
     }
 
     public Token login(String email, String password) {
-        Member member = memberDao.findByEmail(email).orElseThrow(
-            wooteco.exception.unauthorized.LoginFailException::new);
-        if (member.invalidPassword(password)) {
-            throw new LoginFailException();
-        }
+        Member member = memberDao.findByEmail(email)
+            .filter(foundMember -> !foundMember.invalidPassword(password))
+            .orElseThrow(LoginFailException::new);
         return new Token(jwtTokenProvider.createToken(member.getId().toString()));
     }
 }
