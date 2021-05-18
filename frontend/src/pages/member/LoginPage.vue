@@ -73,7 +73,7 @@ export default {
         return;
       }
       try {
-        // TODO login API를 작성해주세요.
+        // login API를 작성해주세요.
         const { email, password } = this.member;
 
         const data = await fetch("http://localhost:8080/login/token", {
@@ -90,7 +90,7 @@ export default {
         const body = await data.json();
         localStorage.setItem("token", body.accessToken);
 
-        // TODO member 데이터를 불러와 주세요.
+        // member 데이터를 불러와 주세요.
         const response = await fetch("http://localhost:8080/members/me", {
           method: "GET",
           headers: {

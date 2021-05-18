@@ -107,7 +107,7 @@ export default {
       const { email, age, password } = this.editingMember;
 
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
+        // member 정보를 update하는 API를 추가해주세요
         console.log(localStorage.getItem("token"));
         await fetch("http://localhost:8080/members/me", {
           method: "PUT",
