@@ -15,8 +15,6 @@ import javax.validation.Valid;
 @RestController
 public class AuthController {
 
-    private static final int THIRTY_MINUTE = 60 * 30;
-
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
