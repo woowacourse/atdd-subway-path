@@ -8,4 +8,5 @@ public class NotExistMemberException extends RuntimeException {
         super(MESSAGE);
     }
 
+
 }

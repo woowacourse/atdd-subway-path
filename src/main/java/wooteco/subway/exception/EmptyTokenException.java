@@ -1,6 +1,6 @@
 package wooteco.subway.exception;
 
-public class EmptyTokenException extends RuntimeException {
+public class EmptyTokenException extends UnauthorizedException {
 
     private static final String MESSAGE = "토큰이 존재하지 않습니다.";
 

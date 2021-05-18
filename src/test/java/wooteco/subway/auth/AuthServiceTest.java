@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.exception.InvalidMemberInformationException;
+import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMemberId;
 import wooteco.subway.member.domain.Member;
@@ -106,7 +107,7 @@ public class AuthServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             authService.findLoginMemberId(token + "invalid");
-        }).isInstanceOf(InvalidMemberInformationException.class);
+        }).isInstanceOf(InvalidTokenException.class);
     }
 
 }

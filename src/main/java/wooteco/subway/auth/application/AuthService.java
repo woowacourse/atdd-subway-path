@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.InvalidMemberInformationException;
+import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMemberId;
 
@@ -32,7 +33,7 @@ public class AuthService {
 
     public LoginMemberId findLoginMemberId(String token) {
         if (!isValidToken(token)) {
-            throw new InvalidMemberInformationException();
+            throw new InvalidTokenException();
         }
         String payLoad = jwtTokenProvider.getPayload(token);
         return new LoginMemberId(memberService.findMemberIdByEmail(payLoad));
