@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;

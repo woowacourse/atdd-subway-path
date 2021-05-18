@@ -3,6 +3,9 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -33,7 +36,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
+                .when().post("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -41,7 +44,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
-                .when().get("/stations")
+                .when().get("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -49,7 +52,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
+                .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }
@@ -133,4 +136,25 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_삭제됨(response);
     }
+
+    @DisplayName("jgrapht 확인")
+    @Test
+    public void getDijkstraShortestPath() {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph
+                = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
+        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+
+        DijkstraShortestPath dijkstraShortestPath
+                = new DijkstraShortestPath(graph);
+        List<String> shortestPath
+                = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
+
+        assertThat(shortestPath.size()).isEqualTo(3);
+    }
+
 }
