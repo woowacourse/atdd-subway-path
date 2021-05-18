@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
@@ -32,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 잠실역;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
@@ -63,8 +64,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
-     * | 남부터미널역  --- *3호선* ---   양재
+     * |교대역    --- *2호선* ---   강남역 |
+     * | *3호선*                   *신분당선* |
+     * | 남부터미널역  --- *3호선* --- 양재역 |
      */
     @BeforeEach
     public void setUp() {
@@ -74,6 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        잠실역 = 지하철역_등록되어_있음("잠실역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -84,7 +87,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
-    @Disabled
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
@@ -92,5 +94,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+    }
+
+    @DisplayName("존재하지 않는 id의 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWithInvalidId() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(10L, 2L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).isEqualTo("존재하지 않는 역 id입니다.");
+    }
+
+    @DisplayName("중복되는 id의 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWithDuplicatedIds() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 2L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).isEqualTo("출발점과 도착점이 같을 수 없습니다.");
+    }
+
+    @DisplayName("도착할 수 없는 역의 경로를 조회한다.")
+    @Test
+    void findPathWithUnreachableStation() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 5L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).isEqualTo("경로가 존재하지 않습니다.");
     }
 }

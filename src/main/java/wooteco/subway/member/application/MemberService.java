@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.domain.LoginMember;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -8,6 +9,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@Transactional
 public class MemberService {
 
     private final MemberDao memberDao;
@@ -27,6 +29,7 @@ public class MemberService {
         }
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         validateToExistsId(id);
         Member member = memberDao.findById(id);
@@ -45,6 +48,7 @@ public class MemberService {
         memberDao.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMemberOfMine(LoginMember loginMember) {
         return findMember(loginMember.getId());
     }

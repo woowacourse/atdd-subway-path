@@ -3,6 +3,7 @@ package wooteco.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -14,6 +15,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 @Service
+@Transactional
 public class LineService {
 
     private LineDao lineDao;
@@ -42,6 +44,7 @@ public class LineService {
         return null;
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
@@ -49,15 +52,18 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }
