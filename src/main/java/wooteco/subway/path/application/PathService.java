@@ -3,6 +3,7 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.domain.SectionGraph;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
@@ -28,13 +29,13 @@ public class PathService {
         Station departureStation = findStationById(allStations, source);
         Station arrivalStation = findStationById(allStations, target);
 
-        List<Station> shortestStations = sections.shortestPathOfStations(departureStation, arrivalStation);
+        SectionGraph sectionGraph = sections.sectionGraph(allStations, departureStation, arrivalStation);
+        List<Station> shortestStations = sectionGraph.shortestPathOfStations();
         List<StationResponse> stationResponses = shortestStations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        int distance = sections.shortestDistance(departureStation, arrivalStation);
 
-        return new PathResponse(stationResponses, distance);
+        return new PathResponse(stationResponses, sectionGraph.shortestDistance());
     }
 
     private Station findStationById(List<Station> stations, Long id) {

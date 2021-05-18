@@ -141,34 +141,7 @@ public class Sections {
         downSection.ifPresent(it -> sections.remove(it));
     }
 
-    public List<Station> shortestPathOfStations(Station source, Station target) {
-        return pathGraph().getPath(source, target).getVertexList();
-    }
-
-    public int shortestDistance(Station source, Station target) {
-
-        return (int) pathGraph().getPath(source, target).getWeight();
-    }
-
-    private DijkstraShortestPath pathGraph() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        for (Station station : allStations()) {
-            graph.addVertex(station);
-        }
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-        }
-
-        return new DijkstraShortestPath(graph);
-    }
-
-    private List<Station> allStations() {
-        Set<Station> uniqueStations = new HashSet<>();
-        for (Section section : sections) {
-            uniqueStations.add(section.getUpStation());
-            uniqueStations.add(section.getDownStation());
-        }
-        return new ArrayList<>(uniqueStations);
+    public SectionGraph sectionGraph(List<Station> stations, Station source, Station target) {
+        return new SectionGraph(sections, stations, source, target);
     }
 }
