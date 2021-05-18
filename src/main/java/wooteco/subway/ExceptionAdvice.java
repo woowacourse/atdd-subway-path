@@ -20,7 +20,7 @@ public class ExceptionAdvice {
             message.append(fieldError.getDefaultMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(message.toString());
     }
 }
