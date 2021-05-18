@@ -7,8 +7,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public MemberResponse findMemberByToken(String token) {
+    public LoginMember findMemberByToken(String token) {
         if (jwtTokenProvider.validateToken(token)) {
             String payload = jwtTokenProvider.getPayload(token);
             return findMember(payload);
@@ -36,11 +36,11 @@ public class AuthService {
         throw new InvalidTokenException();
     }
 
-    public MemberResponse findMember(String principal) {
+    public LoginMember findMember(String principal) {
         Optional<Member> foundMember = memberDao.findByEmail(principal);
 
         if (foundMember.isPresent()) {
-            return MemberResponse.of(foundMember.get());
+            return LoginMember.of(foundMember.get());
         }
         throw new AuthorizationException();
     }
