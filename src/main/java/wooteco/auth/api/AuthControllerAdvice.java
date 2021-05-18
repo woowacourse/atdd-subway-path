@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.auth.exception.AuthenticationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = {AuthControllerAdvice.class})
+@RestControllerAdvice(assignableTypes = {AuthController.class, MemberController.class})
 public class AuthControllerAdvice {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handleIllegalArgumentException(AuthenticationException e) {
