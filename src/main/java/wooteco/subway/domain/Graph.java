@@ -22,21 +22,21 @@ public class Graph {
     }
 
     private void initGraph() {
-        List<Station> uniqueStations = getUniqueStations();
+        Set<Station> uniqueStations = getUniqueStations();
         initVertices(uniqueStations);
         initEdges();
     }
 
-    private List<Station> getUniqueStations() {
+    private Set<Station> getUniqueStations() {
         Set<Station> uniqueStations = new HashSet<>();
         for (Section section : allSections) {
             uniqueStations.add(section.getUpStation());
             uniqueStations.add(section.getDownStation());
         }
-        return new ArrayList<>(uniqueStations);
+        return uniqueStations;
     }
 
-    private void initVertices(List<Station> uniqueStations) {
+    private void initVertices(Set<Station> uniqueStations) {
         for (Station uniqueStation : uniqueStations) {
             graph.addVertex(uniqueStation);
         }
