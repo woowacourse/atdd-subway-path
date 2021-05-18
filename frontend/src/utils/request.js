@@ -1,4 +1,4 @@
-export {apiRequest};
+export {getRequest, postRequest, deleteRequest, putRequest};
 
 const LOCAL_HOST = 'http://localhost:8080'
 const BEARER = 'Bearer'
@@ -12,9 +12,25 @@ const orThrow = (result) => {
     return result;
 }
 
-async function apiRequest(method, url = '', body = {}, needToken = false) {
-    const isCanMethod = CAN_METHOD_LIST.findIndex(canMethod => canMethod === method.toUpperCase()) !== -1
-    if(!method || !isCanMethod) {
+function getRequest(url, needToken = false) {
+    return apiRequest('GET', url, needToken);
+}
+
+function postRequest(url, body = {}, needToken = false) {
+    return apiRequest('POST', url, needToken, body);
+}
+
+function deleteRequest(url, needToken = false) {
+    return apiRequest('DELETE', url, needToken)
+}
+
+function putRequest(url, body = {}, needToken = false) {
+    return apiRequest('PUT', url, needToken, body)
+}
+
+async function apiRequest(method, url = '', needToken = false, body = {}) {
+    const isMethod = CAN_METHOD_LIST.findIndex(canMethod => canMethod === method.toUpperCase()) !== -1
+    if (!method || !isMethod) {
         throw new Error(`not valid method : ${method} / can method : get, post, delete, put`);
     }
 
@@ -29,7 +45,7 @@ async function apiRequest(method, url = '', body = {}, needToken = false) {
         credentials: 'include',
     }
 
-    if(body && method.toUpperCase() !== 'GET'){
+    if (body && method.toUpperCase() !== 'GET') {
         configure.body = JSON.stringify(body)
     }
 

@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="d-flex flex-column justify-center mt-12">
     <div class="d-flex justify-center relative">
-      <v-card v-if="member" width="400" class="card-border px-3 pt-3 pb-5">
+      <v-card v-if="member" class="card-border px-3 pt-3 pb-5" width="400">
         <v-card-title class="font-weight-bold justify-center">
           나의 정보
         </v-card-title>
@@ -25,10 +25,10 @@
         </v-card-text>
         <v-card-actions class="px-4 pb-4">
           <v-spacer></v-spacer>
-          <v-btn @click="onDeleteAccount" text>
+          <v-btn text @click="onDeleteAccount">
             탈퇴
           </v-btn>
-          <v-btn to="/mypage/edit" color="amber" depressed>
+          <v-btn color="amber" depressed to="/mypage/edit">
             수정
           </v-btn>
         </v-card-actions>
@@ -43,7 +43,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import {apiRequest} from "../../utils/request";
+import {deleteRequest} from "../../utils/request";
 
 export default {
   name: "MyPage",
@@ -66,7 +66,7 @@ export default {
       }
 
       try {
-        apiRequest('delete', 'members/me')
+        await deleteRequest('members/me')
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
