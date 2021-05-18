@@ -114,11 +114,28 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        // Line을 수정하는 API를 추가해주세요.
+        await fetch(`http://localhost:8080/lines/${this.line.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
+          body: JSON.stringify({
+            name: this.lineEditForm.name,
+            color: this.lineEditForm.color
+          })
+        });
+        // 전체 Line 데이터를 불러오는 API를 추가해주세요.
+        const lineResponse = await fetch("http://localhost:8080/lines", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
+        });
+        const lines = lineResponse.json();
+        this.setLines([...lines]);
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {

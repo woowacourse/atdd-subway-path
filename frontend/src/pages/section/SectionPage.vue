@@ -86,12 +86,26 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    // 초기 역 데이터를 불러오는 API를 추가해주세요.
+    const stationsResponse = await fetch("http://localhost:8080/stations", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+    const stations = await stationsResponse.json();
+    this.setStations([...stations])
+    // 초기 노선 데이터를 불러오는 API를 추가해주세요.
+    const linesResponse = await fetch(`http://localhost:8080/lines`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+    const lines = await linesResponse.json();
+    this.setLines([...lines])
     this.initLinesView();
   },
   computed: {
@@ -124,8 +138,15 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        // 선택한 노선 데이터를 불러오는 API를 추가해주세요.
+        const lineResponse = await fetch(`http://localhost:8080/lines/${this.activeLineId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        this.activeLine = await lineResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
