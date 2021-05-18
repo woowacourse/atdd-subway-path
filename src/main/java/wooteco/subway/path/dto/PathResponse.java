@@ -18,17 +18,17 @@ public class PathResponse {
         this.distance = distance;
     }
 
+    public static PathResponse of(List<Station> stations, double distance) {
+        List<StationResponse> stationResponses = stations.stream()
+                .map(StationResponse::of).collect(Collectors.toList());
+        return new PathResponse(stationResponses, (int) distance);
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
 
     public int getDistance() {
         return distance;
-    }
-
-    public static PathResponse of(List<Station> stations, double distance) {
-        List<StationResponse> stationResponses = stations.stream()
-                .map(StationResponse::of).collect(Collectors.toList());
-        return new PathResponse(stationResponses, (int) distance);
     }
 }

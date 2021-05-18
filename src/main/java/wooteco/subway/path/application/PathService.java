@@ -53,7 +53,7 @@ public class PathService {
 
     private void initializeStations(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Station> stations = stationDao.findAll();
-        for (Station station: stations) {
+        for (Station station : stations) {
             graph.addVertex(station);
         }
     }
@@ -65,7 +65,7 @@ public class PathService {
 
     private void addSectionsByLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
         List<Section> sections = line.getSections().getSections();
-        for (Section section: sections) {
+        for (Section section : sections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
     }
