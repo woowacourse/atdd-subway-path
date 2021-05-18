@@ -45,9 +45,7 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        System.out.println("++++"+request.getAttribute("id"));
         Long id = (Long) request.getAttribute("id");
-        System.out.println("++++fff" +id);
         return ResponseEntity.ok(memberService.findMember(id));
     }
 
