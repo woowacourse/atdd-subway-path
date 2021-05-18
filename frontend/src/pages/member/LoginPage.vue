@@ -74,8 +74,9 @@ export default {
       }
       try {
         await this.$router.replace(`/`);
+        console.log("쿠키:", getCookie());
 
-        if (typeof getCookie("myCookie") !== "undefined") {
+        if (typeof getCookie("myCookie") === "undefined") {
           let tokenResponse = await fetch("http://localhost:8080/login/token", {
             method: "POST",
             headers: {
