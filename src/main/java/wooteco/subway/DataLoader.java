@@ -28,22 +28,39 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        Station 봉쳔역 = stationDao.insert(new Station("봉천역"));
+        Station 사당역 = stationDao.insert(new Station("사당역"));
+        Station 교대역 = stationDao.insert(new Station("교대역"));
         Station 강남역 = stationDao.insert(new Station("강남역"));
-        Station 판교역 = stationDao.insert(new Station("판교역"));
-        Station 정자역 = stationDao.insert(new Station("정자역"));
         Station 역삼역 = stationDao.insert(new Station("역삼역"));
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
 
+        Station 양재역 = stationDao.insert(new Station("양재역"));
+        Station 판교역 = stationDao.insert(new Station("판교역"));
+        Station 정자역 = stationDao.insert(new Station("정자역"));
+
+        Station 고속터미널역 = stationDao.insert(new Station("고속터미널역"));
+        Station 신사역 = stationDao.insert(new Station("신사역"));
+
         Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1"));
-        신분당선.addSection(new Section(강남역, 판교역, 10));
-        신분당선.addSection(new Section(판교역, 정자역, 10));
+        신분당선.addSection(new Section(강남역, 양재역, 5));
+        신분당선.addSection(new Section(양재역, 판교역, 5));
+        신분당선.addSection(new Section(판교역, 정자역, 5));
         sectionDao.insertSections(신분당선);
 
         Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1"));
+        이호선.addSection(new Section(봉쳔역, 사당역, 10));
+        이호선.addSection(new Section(사당역, 교대역, 10));
+        이호선.addSection(new Section(교대역, 강남역, 10));
         이호선.addSection(new Section(강남역, 역삼역, 10));
         이호선.addSection(new Section(역삼역, 잠실역, 10));
         sectionDao.insertSections(이호선);
+
+        Line 삼호선 = lineDao.insert(new Line("3호선", "orange lighten-1"));
+        삼호선.addSection(new Section(교대역, 고속터미널역, 20));
+        삼호선.addSection(new Section(고속터미널역, 신사역, 20));
+        sectionDao.insertSections(삼호선);
 
         Member member = new Member("email@email.com", "password", 10);
         memberDao.insert(member);

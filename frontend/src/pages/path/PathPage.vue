@@ -159,7 +159,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
+        // 최단 거리를 검색하는 API를 추가해주세요.
         this.pathResult = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`, {
           method: "GET",
           headers: {
@@ -176,7 +176,7 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
+        // 모든 역을 불러오는 API를 추가해주세요.
         const stations = await fetch("/api/stations", {
           method: "GET",
           headers: {
