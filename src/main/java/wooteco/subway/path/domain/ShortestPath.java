@@ -11,10 +11,10 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class ShortestPath {
-    private DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public ShortestPath(List<Line> lines) {
-        this.dijkstraShortestPath = new DijkstraShortestPath(initSubwayMap(lines));
+        this.dijkstraShortestPath = new DijkstraShortestPath<>(initSubwayMap(lines));
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> initSubwayMap(List<Line> lines) {

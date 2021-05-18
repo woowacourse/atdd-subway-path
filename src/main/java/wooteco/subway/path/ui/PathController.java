@@ -10,7 +10,7 @@ import wooteco.subway.path.service.PathService;
 @RestController
 public class PathController {
 
-    private PathService pathService;
+    private final PathService pathService;
 
     public PathController(PathService pathService) {
         this.pathService = pathService;

@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -48,13 +48,14 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql,
+                newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public List<Line> findAll() {
@@ -69,8 +70,8 @@ public class LineDao {
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 
@@ -90,7 +91,7 @@ public class LineDao {
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return result.stream()
                 .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
