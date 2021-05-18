@@ -43,6 +43,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    // XXX :: 포장의 의미가 있을까?
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad) {
         final Member loginMember = memberService.findMemberByPayLoad(payLoad);
