@@ -1,4 +1,4 @@
-package wooteco.auth.controller;
+package wooteco.auth.web;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;

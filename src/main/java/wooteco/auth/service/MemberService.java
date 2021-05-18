@@ -1,10 +1,10 @@
-package wooteco.subway.member.application;
+package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.auth.dao.MemberDao;
+import wooteco.auth.domain.Member;
+import wooteco.auth.dto.MemberRequest;
+import wooteco.auth.dto.MemberResponse;
 
 @Service
 public class MemberService {

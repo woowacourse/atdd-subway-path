@@ -1,4 +1,4 @@
-package wooteco.subway.member.dto;
+package wooteco.auth.dto;
 
 import wooteco.auth.domain.Member;
 

@@ -1,4 +1,4 @@
-package wooteco.auth.controller;
+package wooteco.auth.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

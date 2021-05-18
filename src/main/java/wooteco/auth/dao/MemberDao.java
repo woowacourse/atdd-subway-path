@@ -1,4 +1,4 @@
-package wooteco.subway.member.dao;
+package wooteco.auth.dao;
 
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.member.domain.Member;
+import wooteco.auth.domain.Member;
 
 import javax.sql.DataSource;
 

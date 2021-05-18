@@ -1,12 +1,12 @@
-package wooteco.subway.member.ui;
+package wooteco.auth.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.auth.domain.AuthenticationPrincipal;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.service.MemberService;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.auth.dto.MemberRequest;
+import wooteco.auth.dto.MemberResponse;
 
 import java.net.URI;
 
