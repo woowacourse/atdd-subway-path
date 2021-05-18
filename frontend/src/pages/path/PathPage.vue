@@ -160,7 +160,17 @@ export default {
     async onSearchResult() {
       try {
         // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        const source = this.path.source;
+        const target = this.path.target;
+        console.log(source);
+        console.log(target);
+        const response = await fetch("http://localhost:8080/paths?source=" +
+            source +"&"+"target=" + target);
+        if(!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+        this.pathResult = await response.json();
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -169,8 +179,12 @@ export default {
     async initAllStationsView() {
       try {
         // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const response = await fetch("http://localhost:8080/stations");
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+        const stations = await response.json();
+        this.setStations([...stations]);
         if (this.stations.length < 1) {
           return;
         }
@@ -188,7 +202,7 @@ export default {
     async onSearchMinimumDurationType() {
       try {
         // TODO 최소 시간을 검색하는 API를 추가해주세요.
-        // this.pathResultByMinimumDuration = await fetch("/paths", {})
+        //this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
