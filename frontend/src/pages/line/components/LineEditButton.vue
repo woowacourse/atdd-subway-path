@@ -77,10 +77,11 @@
 import dialog from "../../../mixins/dialog";
 import { mapGetters, mapMutations } from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
-import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {FETCH_METHODS, LINE_COLORS, SNACKBAR_MESSAGES} from "../../../utils/constants";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
+import {fetchJson, fetchJsonWithBody} from "@/utils/fetchJson";
 
 export default {
   name: "LineEditButton",
@@ -114,11 +115,18 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const editResponse = await fetchJsonWithBody(`/api/lines/${this.line.id}`, FETCH_METHODS.PUT, this.lineEditForm);
+        if (!editResponse.ok) {
+          throw new Error(`${editResponse.status}`);
+        }
+
+        const linesResponse = await fetchJson('/api/lines', FETCH_METHODS.GET);
+        if (!linesResponse.ok) {
+          throw new Error(`${linesResponse.status}`);
+        }
+
+        this.setLines([...await linesResponse.json()])
+
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {
