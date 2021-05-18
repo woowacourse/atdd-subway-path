@@ -1,11 +1,16 @@
 package wooteco.subway.member.exception;
 
-import wooteco.subway.member.exception.message.AuthErrorMessage;
-import wooteco.subway.member.exception.message.ErrorMessage;
+public class AuthException extends RuntimeException{
+    private ErrorMessage errorMessage;
 
-public class AuthException extends HttpException {
+    public AuthException() {
+    }
 
-    public AuthException(AuthErrorMessage errorInfo) {
-        super(errorInfo.getHttpStatus(), new ErrorMessage(errorInfo.getMessage()));
+    public AuthException(String message) {
+        this.errorMessage = new ErrorMessage(message);
+    }
+
+    public ErrorMessage getErrorMessage() {
+        return errorMessage;
     }
 }

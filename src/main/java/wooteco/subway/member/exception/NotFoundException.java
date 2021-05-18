@@ -1,11 +1,17 @@
 package wooteco.subway.member.exception;
 
-import wooteco.subway.member.exception.message.ErrorMessage;
-import wooteco.subway.member.exception.message.NotFoundErrorMessage;
+public class NotFoundException extends RuntimeException{
 
-public class NotFoundException extends HttpException {
+    private ErrorMessage errorMessage;
 
-    public NotFoundException(NotFoundErrorMessage errorInfo) {
-        super(errorInfo.getHttpStatus(), new ErrorMessage(errorInfo.getMessage()));
+    public NotFoundException() {
+    }
+
+    public NotFoundException(String message) {
+        this.errorMessage = new ErrorMessage(message);
+    }
+
+    public ErrorMessage getErrorMessage() {
+        return errorMessage;
     }
 }

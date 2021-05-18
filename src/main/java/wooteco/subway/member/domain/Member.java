@@ -1,7 +1,6 @@
 package wooteco.subway.member.domain;
 
 import wooteco.subway.member.exception.AuthException;
-import wooteco.subway.member.exception.message.AuthErrorMessage;
 
 public class Member {
     private Long id;
@@ -49,7 +48,7 @@ public class Member {
 
     public void validatePassword(String passwordToValidate) {
         if (!password.equals(passwordToValidate)) {
-            throw new AuthException(AuthErrorMessage.LOGIN_ERROR);
+            throw new AuthException("로그인에 실패하였습니다.");
         }
     }
 }
