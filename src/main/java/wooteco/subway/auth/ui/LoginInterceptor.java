@@ -3,13 +3,13 @@ package wooteco.subway.auth.ui;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.exception.EmptyTokenException;
 import wooteco.subway.exception.InvalidTokenException;
 
-public class LoginInterceptor extends HandlerInterceptorAdapter {
+public class LoginInterceptor implements HandlerInterceptor {
 
     private final AuthService authService;
 
