@@ -14,7 +14,7 @@ public class Sections {
     }
 
     public static Sections empty() {
-        return new Sections(Collections.emptyList());
+        return new Sections(new ArrayList<>());
     }
 
     public void addSection(Section section) {
