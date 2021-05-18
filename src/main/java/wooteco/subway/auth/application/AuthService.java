@@ -54,7 +54,7 @@ public class AuthService {
     public void checkPassword(Member member, String password) {
         String hashedPassword = HASHER.hashing(password);
 
-        if (!member.getPassword().equals(hashedPassword)) {
+        if (!member.samePassword(hashedPassword)) {
             throw new UnauthorizedException();
         }
     }

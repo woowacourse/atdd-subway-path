@@ -6,7 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class MemberCreateRequest {
+public class MemberRequest {
 
     @NotEmpty
     private String email;
@@ -18,10 +18,10 @@ public class MemberCreateRequest {
     @Min(1)
     private Integer age;
 
-    public MemberCreateRequest() {
+    public MemberRequest() {
     }
 
-    public MemberCreateRequest(String email, String password, Integer age) {
+    public MemberRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;

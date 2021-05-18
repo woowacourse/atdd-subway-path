@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.infrastructure.Sha256Hasher;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberCreateRequest;
+import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.MemberUpdateRequest;
 
 @Service
 public class MemberService {
@@ -19,7 +18,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse createMember(MemberCreateRequest request) {
+    public MemberResponse createMember(MemberRequest request) {
         Member memberForCreate = request.toMember().newInstanceWithHashPassword(HASHER::hashing);
         Member savedMember = memberDao.insert(memberForCreate);
         return MemberResponse.of(savedMember);
@@ -30,11 +29,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberUpdateRequest memberCreateRequest) {
+    public void updateMember(Long id, MemberRequest memberRequest) {
         Member memberForUpdate = new Member(
                 id,
-                memberCreateRequest.getEmail(),
-                memberCreateRequest.getAge());
+                memberRequest.getEmail(),
+                memberRequest.getAge());
 
         memberDao.update(memberForUpdate);
     }

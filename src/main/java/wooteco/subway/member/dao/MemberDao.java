@@ -43,7 +43,7 @@ public class MemberDao {
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        return new Member(id, member);
     }
 
     public void update(Member member) {

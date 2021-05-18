@@ -11,6 +11,10 @@ public class Member {
     public Member() {
     }
 
+    public Member(Long id, Member member) {
+        this(id, member.email, member.password, member.age);
+    }
+
     public Member(Long id, String email, Integer age) {
         this(id, email, null, age);
     }
