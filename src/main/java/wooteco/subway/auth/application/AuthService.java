@@ -1,13 +1,11 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
-@Transactional
 @Service
 public class AuthService {
 
@@ -24,15 +22,14 @@ public class AuthService {
     }
 
     private String createToken(final String email, final String password) {
-        valiateUser(email, password);
+        validateUser(email, password);
         return jwtTokenProvider.createToken(email);
     }
 
-    private void valiateUser(final String email, final String password){
-        if (memberDao.isExist(email, password)) {
-            return;
+    private void validateUser(final String email, final String password){
+        if (memberDao.isNotExistUser(email, password)) {
+            throw new AuthorizedException("존재하지 않는 유저입니다.");
         }
-        throw new AuthorizedException("존재하지 않는 유저입니다.");
     }
 
     public Member findMemberByToken(final String token) {

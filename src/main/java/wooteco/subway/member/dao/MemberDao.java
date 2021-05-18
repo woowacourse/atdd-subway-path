@@ -24,9 +24,9 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public boolean isExist(final String email, final String password) {
+    public boolean isNotExistUser(final String email, final String password) {
         final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
 
     public boolean isExistEmail(final String email) {
