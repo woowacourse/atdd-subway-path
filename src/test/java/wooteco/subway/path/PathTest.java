@@ -13,7 +13,12 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -27,9 +32,12 @@ public class PathTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    @Autowired
+    private LineService lineService;
+
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
-     * | 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* | |
+     * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -86,5 +94,36 @@ public class PathTest extends AcceptanceTest {
 
         assertThat(shortestPath.size()).isEqualTo(3);
         assertThat(shortestPath).isEqualTo(Arrays.asList("v3", "v2", "v1"));
+    }
+
+    @DisplayName("최단경로 탐색")
+    @Test
+    public void findShortestDistance() {
+
+        List<Line> lines = lineService.findLines();
+
+        Sections sections = new Sections();
+        for (Line line : lines) {
+            sections.addSections(line.getSections());
+        }
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph
+            = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        for (Section section : sections.getSections()) {
+            String upStationName = section.getUpStation().getName();
+            String downStationName = section.getDownStation().getName();
+            graph.addVertex(upStationName);
+            graph.addVertex(downStationName);
+            graph.setEdgeWeight(graph.addEdge(upStationName, downStationName),
+                section.getDistance());
+        }
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<String> shortestPath = dijkstraShortestPath.getPath("강남역", "양재역").getVertexList();
+
+        assertThat(shortestPath.size()).isEqualTo(2);
+        assertThat(shortestPath).isEqualTo(Arrays.asList("강남역", "양재역"));
+        assertThat(dijkstraShortestPath.getPathWeight("강남역", "양재역")).isEqualTo(10);
     }
 }
