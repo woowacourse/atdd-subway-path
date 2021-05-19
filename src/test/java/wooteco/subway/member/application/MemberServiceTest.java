@@ -90,7 +90,7 @@ class MemberServiceTest {
     void findByEmail() {
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
-        Member memberByEmail = memberService.findByEmail(EMAIL);
+        MemberResponse memberByEmail = memberService.findByEmail(EMAIL);
 
         assertThat(memberByEmail)
                 .usingRecursiveComparison()

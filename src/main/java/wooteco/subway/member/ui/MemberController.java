@@ -38,11 +38,9 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         String email = loginMember.getEmail();
-        Member member = memberService.findByEmail(email);
+        MemberResponse member = memberService.findByEmail(email);
 
-        return ResponseEntity.ok().body(
-                new MemberResponse(member)
-        );
+        return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/me")
