@@ -25,7 +25,7 @@ public class PathService {
     }
 
     public PathResponse getDijkstraShortestPath(long sourceId, long targetId) {
-        GraphPath shortestPath = findShortestPath(sourceId, targetId);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = findShortestPath(sourceId, targetId);
 
         List<Station> stationList = shortestPath.getVertexList();
         double distance = shortestPath.getWeight();
@@ -33,10 +33,10 @@ public class PathService {
         return PathResponse.of(stationList, distance);
     }
 
-    private GraphPath findShortestPath(long sourceId, long targetId) {
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(long sourceId, long targetId) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = initializeGraph();
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
         Station sourceStation = stationDao.findById(sourceId);
         Station targetStation = stationDao.findById(targetId);
 
