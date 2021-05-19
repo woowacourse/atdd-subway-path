@@ -21,6 +21,7 @@ export default {
     logout() {
       try {
         localStorage.setItem("token", "");
+        document.cookie = "JWT" + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
         this.setAccessToken(null);
         this.setMember(null);
         this.$router.replace("/");
