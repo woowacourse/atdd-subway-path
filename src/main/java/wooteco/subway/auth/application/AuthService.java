@@ -22,16 +22,10 @@ public class AuthService {
         Member member = memberDao.findByEmail(email)
             .orElseThrow(UnauthorizedException::new);
 
-        validatePassword(password, member.getPassword());
+        member.validatePassword(password);
 
         String jws = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(jws);
-    }
-
-    private void validatePassword(String password, String savedPassword) {
-        if (!password.equals(savedPassword)) {
-            throw new IllegalArgumentException("로그인 실패");
-        }
     }
 
     public boolean validateToken(String token) {
