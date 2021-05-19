@@ -7,54 +7,47 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SubwayMap {
-    private final WeightedGraph<Station, DefaultWeightedEdge> subwayMap
+    private final WeightedGraph<Long, DefaultWeightedEdge> subwayMap
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private final DijkstraShortestPath map = new DijkstraShortestPath(subwayMap);
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> map
+            = new DijkstraShortestPath<>(subwayMap);
 
     public SubwayMap(List<Line> lines) {
-        List<Sections> allSections = lines.stream()
-                .map(Line::getSections)
-                .collect(Collectors.toList());
-        initSubwayMap(allSections);
+        initSubwayMap(lines);
     }
 
-    private void initSubwayMap(List<Sections> allSections) {
-        addAllStations(allSections);
-        addAllSectionInfo(allSections);
-    }
-
-    private void addAllStations(List<Sections> allSections) {
-        for (Sections sections : allSections) {
-            sections.getStations().forEach(subwayMap::addVertex);
+    private void initSubwayMap(List<Line> lines) {
+        for (Line line : lines) {
+            addAllStationIds(line);
+            Sections sections = line.getSections();
+            addAllSectionInfo(sections);
         }
     }
 
-    private void addAllSectionInfo(List<Sections> allSections) {
-        for (Sections sections : allSections) {
-            sections.getSections().forEach(section -> {
-                int distance = section.getDistance();
-                subwayMap.setEdgeWeight(connectSection(section), distance);
-            });
-        }
+    private void addAllStationIds(Line line) {
+        line.getAllStationIds().forEach(subwayMap::addVertex);
     }
 
-    private DefaultWeightedEdge connectSection(Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        return subwayMap.addEdge(upStation, downStation);
+    private void addAllSectionInfo(Sections sections) {
+        sections.getSections()
+                .forEach(section -> subwayMap.setEdgeWeight(connectStation(section), section.getDistance()));
     }
 
-    public int getShortestPath(Station source, Station target) {
+    private DefaultWeightedEdge connectStation(Section section) {
+        Long upStationId = section.upStationId();
+        Long downStationId = section.downStationId();
+        return subwayMap.addEdge(upStationId, downStationId);
+    }
+
+    public int getShortestDistance(Long source, Long target) {
         return (int) map.getPathWeight(source, target);
     }
 
-    public List<Station> getStationsOnPath(Station source, Station target) {
+    public List<Long> getShortestPathIds(Long source, Long target) {
         return map.getPath(source, target).getVertexList();
     }
 }

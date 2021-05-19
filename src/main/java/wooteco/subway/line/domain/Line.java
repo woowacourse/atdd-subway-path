@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Line {
     private Long id;
@@ -47,11 +48,6 @@ public class Line {
         return sections;
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
@@ -62,6 +58,12 @@ public class Line {
             return;
         }
         sections.addSection(section);
+    }
+
+    public List<Long> getAllStationIds() {
+        return getStations().stream()
+                .map(Station::getId)
+                .collect(Collectors.toList());
     }
 
     public void removeSection(Station station) {

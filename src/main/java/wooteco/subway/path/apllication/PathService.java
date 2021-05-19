@@ -6,17 +6,22 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
+import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private LineService lineService;
+    private final LineService lineService;
+    private final StationService stationService;
 
-    public PathService(LineService lineService) {
+
+    public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     @Transactional(readOnly = true)
@@ -24,14 +29,15 @@ public class PathService {
         List<Line> lines = lineService.findLines();
         SubwayMap subwayMap = new SubwayMap(lines);
 
-        Station sourceStation = lineService.findStationById(source);
-        Station targetStation = lineService.findStationById(target);
-        return createPathResponse(subwayMap, sourceStation, targetStation);
+        return createPathResponse(subwayMap, source, target);
     }
 
-    private PathResponse createPathResponse(SubwayMap subwayMap, Station sourceStation, Station targetStation) {
-        int shortestPath = subwayMap.getShortestPath(sourceStation, targetStation);
-        List<Station> stationsOnPath = subwayMap.getStationsOnPath(sourceStation, targetStation);
+    private PathResponse createPathResponse(SubwayMap subwayMap, Long source, Long target) {
+        int shortestPath = subwayMap.getShortestDistance(source, target);
+        List<Long> stationIdsOnPath = subwayMap.getShortestPathIds(source, target);
+        List<Station> stationsOnPath = stationIdsOnPath.stream()
+                .map(stationService::findStationById)
+                .collect(Collectors.toList());
 
         return new PathResponse(StationResponse.listOf(stationsOnPath), shortestPath);
     }

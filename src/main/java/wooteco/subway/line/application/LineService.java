@@ -62,10 +62,6 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationService.findStationById(id);
-    }
-
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
