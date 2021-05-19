@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.client.RestTemplate;
+import wooteco.subway.auth.exception.InvalidMemberException;
+import wooteco.subway.auth.exception.InvalidTokenException;
 
 @Component
 public class MemberAuthentication {
@@ -21,7 +24,10 @@ public class MemberAuthentication {
 
     public boolean authenticate(String email, String password) {
         HttpStatus status = sendLoginInformationToMemberServer(email, password);
-        return status == HttpStatus.OK;
+        if (status != HttpStatus.OK) {
+            throw new InvalidTokenException();
+        }
+        return true;
     }
 
     private HttpStatus sendLoginInformationToMemberServer(String email, String password) {
@@ -31,13 +37,17 @@ public class MemberAuthentication {
         HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(email, password), headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-            AUTHENTICATION_URL,
-            HttpMethod.POST,
-            httpEntity,
-            Void.class
-        );
-        return response.getStatusCode();
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                AUTHENTICATION_URL,
+                HttpMethod.POST,
+                httpEntity,
+                Void.class
+            );
+            return response.getStatusCode();
+        } catch (Unauthorized e) {
+            throw new InvalidMemberException();
+        }
     }
 
     private static class TokenRequest {

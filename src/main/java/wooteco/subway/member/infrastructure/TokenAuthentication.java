@@ -7,7 +7,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.client.RestTemplate;
+import wooteco.subway.member.exception.InvalidTokenException;
 
 public class TokenAuthentication {
 
@@ -19,7 +21,10 @@ public class TokenAuthentication {
 
     public boolean validate(String token) {
         HttpStatus status = sendTokenRequestToAuthServer(token);
-        return status == HttpStatus.OK;
+        if (status != HttpStatus.OK) {
+            throw new InvalidTokenException();
+        }
+        return true;
     }
 
     private HttpStatus sendTokenRequestToAuthServer(String token) {
@@ -29,13 +34,17 @@ public class TokenAuthentication {
         HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(token), headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-            AUTHENTICATION_URL,
-            HttpMethod.POST,
-            httpEntity,
-            Void.class
-        );
-        return response.getStatusCode();
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                AUTHENTICATION_URL,
+                HttpMethod.POST,
+                httpEntity,
+                Void.class
+            );
+            return response.getStatusCode();
+        } catch (Unauthorized e) {
+            throw new InvalidTokenException();
+        }
 
     }
 
