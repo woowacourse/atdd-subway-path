@@ -28,11 +28,14 @@ public class AuthService {
         return new TokenResponse(jws);
     }
 
-    public boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
+    public Long getPayload(String token) {
+        if (!validateToken(token)) {
+            throw new UnauthorizedException();
+        }
+        return Long.parseLong(jwtTokenProvider.getPayload(token));
     }
 
-    public Long getPayload(String token) {
-        return Long.parseLong(jwtTokenProvider.getPayload(token));
+    private boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
     }
 }
