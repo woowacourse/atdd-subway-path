@@ -21,12 +21,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @Test
-    void name() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
-    }
-
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
