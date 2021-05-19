@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
@@ -32,8 +31,6 @@ public class PathTest extends AcceptanceTest {
     private StationResponse shortestStation4;
     private StationResponse destinationStation1;
 
-    @Autowired
-    private LineService lineService;
     @Autowired
     private PathService pathService;
 
