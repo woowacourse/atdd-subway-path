@@ -1,11 +1,13 @@
 package wooteco.subway.path.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.path.PathService;
+import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.dto.PathResponse;
 
 @RequestMapping("/api/paths")
@@ -19,8 +21,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> showPath(@RequestParam("source") Long sourceId,
-        @RequestParam("target") Long targetId) {
-        return ResponseEntity.ok(service.findPath(sourceId, targetId));
+    public ResponseEntity<PathResponse> showPath(@ModelAttribute @Valid PathRequest request) {
+        return ResponseEntity.ok(service.findPath(request.getSource(), request.getTarget()));
     }
 }

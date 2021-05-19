@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,9 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public List<Station> findStationsByIds(List<Long> stationIds) {
+        return new LinkedList<>(stationDao.findByIds(stationIds));
     }
 }
