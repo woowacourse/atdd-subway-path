@@ -7,18 +7,18 @@ import java.util.List;
 public class Path {
 
     private final List<Station> pathStations;
-    private final int weight;
+    private final Integer distance;
 
-    public Path(List<Station> pathStations, int weight) {
+    public Path(List<Station> pathStations, Integer distance) {
         this.pathStations = pathStations;
-        this.weight = weight;
+        this.distance = distance;
     }
 
     public List<Station> getPathStations() {
         return pathStations;
     }
 
-    public int getWeight() {
-        return weight;
+    public Integer getDistance() {
+        return distance;
     }
 }

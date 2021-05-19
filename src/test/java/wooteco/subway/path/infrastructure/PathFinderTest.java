@@ -51,6 +51,6 @@ class PathFinderTest {
 
         // then
         assertThat(path.getPathStations()).containsExactly(stationA, stationB, stationC);
-        assertThat(path.getWeight()).isEqualTo(4);
+        assertThat(path.getDistance()).isEqualTo(4);
     }
 }
