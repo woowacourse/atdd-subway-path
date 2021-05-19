@@ -30,7 +30,7 @@ public class MemberService {
             Member member = memberDao.insert(newMember);
             return MemberResponse.of(member);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateEmailException();
+            throw new DuplicateEmailException(request.getEmail());
         }
     }
 
