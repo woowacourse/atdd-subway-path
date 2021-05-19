@@ -43,9 +43,9 @@ public class Member {
         return age;
     }
 
-    public void authorize(final Member requestMember) {
-        final boolean isEmailEqual = this.email.equals(requestMember.email);
-        final boolean isPasswordEqual = this.password.equals(requestMember.password);
+    public void authorize(String email, String password) {
+        final boolean isEmailEqual = this.email.equals(email);
+        final boolean isPasswordEqual = this.password.equals(password);
         if (!(isEmailEqual && isPasswordEqual)) {
             throw new AuthorizationException("이메일 또는 비밀번호가 틀립니다.");
         }

@@ -36,4 +36,9 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberDao.deleteById(id);
     }
+
+    public void authorize(String email, String password) {
+        final Member member = findMemberByEmail(email);
+        member.authorize(email, password);
+    }
 }

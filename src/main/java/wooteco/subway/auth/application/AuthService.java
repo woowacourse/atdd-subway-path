@@ -21,15 +21,10 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
+        memberService.authorize(tokenRequest.getEmail(), tokenRequest.getPassword());
         final Member member = memberService.findMemberByEmail(tokenRequest.getEmail());
-        authorize(member, tokenRequest);
         String accessToken = jwtTokenProvider.createToken(member.getId());
         return new TokenResponse(accessToken);
-    }
-
-    public void authorize(final Member member, final TokenRequest tokenRequest) {
-        final Member requestMember = tokenRequest.toEntity();
-        member.authorize(requestMember);
     }
 
     public void validateToken(String accessToken) {
