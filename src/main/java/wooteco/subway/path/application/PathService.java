@@ -35,8 +35,8 @@ public class PathService {
         final Station source = stationDao.findById(sourceId);
         final Station target = stationDao.findById(targetId);
         final List<StationResponse> shortestPath = makeShortestPath(dijkstraShortestPath, source, target);
-        int distance = (int) dijkstraShortestPath.getPathWeight(source, target);
-        return new PathResponse(shortestPath, distance);
+        int shortestDistance = (int) dijkstraShortestPath.getPathWeight(source, target);
+        return new PathResponse(shortestPath, shortestDistance);
     }
 
     private List<StationResponse> makeShortestPath(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath,
@@ -47,10 +47,16 @@ public class PathService {
                                    .collect(Collectors.toList());
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> drawGraph() {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> drawGraphForDijkstra(List<Station> stations, List<Section> sections) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        final List<Station> stations = addVertices(graph);
-        setEdgeWeights(graph, stations);
+        for (final Station station : stations) {
+            graph.addVertex(station);
+        }
+
+        for (final Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        }
+
         return graph;
     }
 }
