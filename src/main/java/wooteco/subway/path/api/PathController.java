@@ -2,7 +2,6 @@ package wooteco.subway.path.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.dto.PathResponse;
@@ -18,7 +17,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findShortestPath(@ModelAttribute PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findShortestPath(PathRequest pathRequest) {
         long sourceStationId = pathRequest.getSource();
         long targetStationId = pathRequest.getTarget();
         PathResponse pathResponse = pathService.findShortestPath(sourceStationId, targetStationId);
