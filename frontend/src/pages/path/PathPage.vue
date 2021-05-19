@@ -177,10 +177,16 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // [TODO] 모든 역을 불러오는 API를 추가해주세요.
+        // [기능 추가] 모든 역을 불러오는 API를 추가해주세요.
         // const stations = await fetch("/stations")
         // this.setStations(stations)
-        console.log(this.stations)
+        const response = await fetch("http://localhost:8080/stations");
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+        const stations = await response.json();
+        this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+
         if (this.stations.length < 1) {
           return;
         }
