@@ -30,7 +30,7 @@ public class AuthService {
         final Member member = memberDao.findByEmail(email)
                 .orElseThrow(NoSuchMemberException::new);
         if (member.isWrongPassword(password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("비밀번호를 잘못 입력하셨습니다.");
         }
     }
 }

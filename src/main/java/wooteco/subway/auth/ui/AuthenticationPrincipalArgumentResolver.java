@@ -34,7 +34,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             final String email = jwtTokenProvider.getPayload(token);
             return new LoginMember(email);
         } catch (JwtException e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
     }
 }
