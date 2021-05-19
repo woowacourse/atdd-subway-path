@@ -5,6 +5,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.path.domain.PathGraph;
+import wooteco.subway.path.domain.ShortestPathStrategy;
 import wooteco.subway.path.domain.StationPathFinder;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
@@ -24,14 +25,17 @@ public class PathFindService {
     }
 
     public PathResponse findShortestPath(final Long source, final Long target) {
-        StationPathFinder pathfinder = new StationPathFinder(new PathGraph(lineDao.findAll(), new WeightedMultigraph<>(DefaultWeightedEdge.class)));
+        StationPathFinder pathfinder = new StationPathFinder(
+                new PathGraph(lineDao.findAll(), new WeightedMultigraph<>(DefaultWeightedEdge.class)),
+                ShortestPathStrategy.DIJKSTRA
+        );
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);
 
         return new PathResponse(
                 pathfinder.getShortestPath(sourceStation, targetStation).stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList()),
+                        .map(StationResponse::of)
+                        .collect(Collectors.toList()),
                 pathfinder.getShortestDistance(sourceStation, targetStation));
     }
 }

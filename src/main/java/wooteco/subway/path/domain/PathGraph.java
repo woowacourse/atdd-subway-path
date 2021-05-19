@@ -19,7 +19,6 @@ public class PathGraph {
         this.graph = graph;
         setGraph();
     }
-
     private void setGraph() {
         for (Line line : lines) {
             setVertex(line.getStations());
