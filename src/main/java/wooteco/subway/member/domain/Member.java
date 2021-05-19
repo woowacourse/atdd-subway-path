@@ -50,4 +50,8 @@ public class Member {
         String hashedPassword = hashFunction.apply(password);
         return new Member(id, email, hashedPassword, age);
     }
+
+    public boolean samePassword(String hashedPassword) {
+        return this.password.equals(hashedPassword);
+    }
 }
