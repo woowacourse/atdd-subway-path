@@ -1,15 +1,12 @@
 package wooteco.subway.member;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.member.infrastructure.TokenAuthentication;
 import wooteco.subway.member.ui.AuthenticationPrincipalArgumentResolver;
-
-import java.io.IOException;
-import java.util.List;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
@@ -24,18 +21,14 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() throws IOException {
+    public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver()
+        throws IOException {
         return new AuthenticationPrincipalArgumentResolver(tokenAuthentication());
     }
 
     @Bean
     public TokenAuthentication tokenAuthentication() {
-        CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(100)
-                .setMaxConnPerRoute(50)
-                .build();
-
-        return new TokenAuthentication(httpClient);
+        return new TokenAuthentication();
     }
 
 }

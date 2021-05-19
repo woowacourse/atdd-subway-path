@@ -1,52 +1,42 @@
 package wooteco.subway.member.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 public class TokenAuthentication {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     @Value("${property.url.auth-token}")
-    private String AUTHENTICATION_URL;
+    private java.lang.String AUTHENTICATION_URL;
 
-    private final HttpClient httpClient;
-
-    public TokenAuthentication(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    public TokenAuthentication() {
     }
 
     public boolean validate(String token) {
-        try {
-            int statusCode = sendTokenRequestToAuthServer(new TokenRequest(token));
-
-            return statusCode == HttpURLConnection.HTTP_OK;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        HttpStatus status = sendTokenRequestToAuthServer(token);
+        return status == HttpStatus.OK;
     }
 
-    private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) throws IOException {
-        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
+    private HttpStatus sendTokenRequestToAuthServer(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        httpPost.setEntity(
-                new StringEntity(
-                        OBJECT_MAPPER.writeValueAsString(tokenRequest),
-                        ContentType.APPLICATION_JSON
-                )
+        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(token), headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+            AUTHENTICATION_URL,
+            HttpMethod.POST,
+            httpEntity,
+            Void.class
         );
+        return response.getStatusCode();
 
-        HttpResponse execute = httpClient.execute(httpPost);
-
-        return execute.getStatusLine().getStatusCode();
     }
 
     private static class TokenRequest {

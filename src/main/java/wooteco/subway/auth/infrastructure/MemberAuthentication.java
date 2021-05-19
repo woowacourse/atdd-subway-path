@@ -1,54 +1,43 @@
 package wooteco.subway.auth.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+@Component
 public class MemberAuthentication {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Value("${property.url.member-authenticate}")
     private String AUTHENTICATION_URL;
 
-    private final HttpClient httpClient;
-
-    public MemberAuthentication(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    public MemberAuthentication() {
     }
 
     public boolean authenticate(String email, String password) {
-        try {
-            int statusCode = sendLoginInformationToMemberServer(email, password);
-
-
-            return statusCode == HttpURLConnection.HTTP_OK;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        HttpStatus status = sendLoginInformationToMemberServer(email, password);
+        return status == HttpStatus.OK;
     }
 
-    private int sendLoginInformationToMemberServer(String email, String password) throws IOException {
-        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
+    private HttpStatus sendLoginInformationToMemberServer(String email, String password) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        httpPost.setEntity(
-                new StringEntity(
-                        OBJECT_MAPPER.writeValueAsString(
-                                new TokenRequest(email, password)
-                        ), ContentType.APPLICATION_JSON
-                )
+        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(email, password), headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+            AUTHENTICATION_URL,
+            HttpMethod.POST,
+            httpEntity,
+            Void.class
         );
-
-        HttpResponse execute = httpClient.execute(httpPost);
-
-        return execute.getStatusLine().getStatusCode();
+        return response.getStatusCode();
     }
 
     private static class TokenRequest {
