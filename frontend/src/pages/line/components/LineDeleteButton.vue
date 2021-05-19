@@ -21,13 +21,20 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        // console.log(this.line);
-        await fetch(`http://localhost:8080/lines/${this.line.id}`, {
-          method: 'DELETE'
+        const accessToken = localStorage.getItem("token");
+        await fetch(`/api/lines/${this.line.id}`, {
+          method: 'DELETE',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
         });
 
-        // console.log(response);
-        const response = await fetch("http://localhost:8080/lines");
+        const response = await fetch("/api/lines", {
+          method: 'GET',
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
+        });
         const lines = await response.json();
         this.setLines([...lines])
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);

@@ -82,12 +82,12 @@ export default {
         let option = {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(loginRequest)
         };
 
-        let response = await fetch("http://localhost:8080/login/token", option);
+        let response = await fetch("/api/login/token", option);
         if (!response.ok) {
           this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
           return;
@@ -100,11 +100,10 @@ export default {
             "Authorization": "Bearer " + data.accessToken
           }
         }
-        response = await fetch("http://localhost:8080/members/me", option)
+        response = await fetch("/api/members/me", option)
         const member = await response.json();
         this.setMember(member);
         localStorage.setItem("token", data.accessToken);
-        console.log(localStorage.getItem("token"));
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);

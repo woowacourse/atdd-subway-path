@@ -1,5 +1,6 @@
 package wooteco.subway.member.application;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -25,9 +26,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public Member findMember(String email) {
-        return memberDao.findByEmail(email)
-            .orElseThrow(() -> new AuthorizationException("이메일 또는 비밀번호가 틀립니다."));
+    public Optional<Member> findMember(String email) {
+        return memberDao.findByEmail(email);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

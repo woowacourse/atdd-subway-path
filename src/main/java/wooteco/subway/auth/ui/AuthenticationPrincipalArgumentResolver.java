@@ -10,7 +10,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.application.AuthorizationException;
 import wooteco.subway.member.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
@@ -32,13 +31,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         final String accessToken =
             AuthorizationExtractor.extract(Objects.requireNonNull(
                 webRequest.getNativeRequest(HttpServletRequest.class)));
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다");
-        }
 
         return getLoginMember(accessToken);
     }
-
 
     public LoginMember getLoginMember(String token) {
         final String subject = jwtTokenProvider.getPayload(token).getSubject();

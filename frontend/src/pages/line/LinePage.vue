@@ -51,11 +51,22 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    let response = await fetch("http://localhost:8080/stations");
+    const accessToken = localStorage.getItem("token");
+    let response = await fetch("/api/stations", {
+      method: 'GET',
+      headers: {
+        "Authorization": "Bearer " + accessToken
+      }
+    });
     const stations = await response.json();
     this.setStations([...stations])
 
-    response = await fetch("http://localhost:8080/lines");
+    response = await fetch("/api/lines", {
+      method: 'GET',
+      headers: {
+        "Authorization": "Bearer " + accessToken
+      }
+    });
     const lines = await response.json();
     this.setLines([...lines])
   },

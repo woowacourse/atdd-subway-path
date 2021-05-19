@@ -121,16 +121,20 @@ export default {
           "extraFare": this.lineEditForm.extraFare
         };
 
+        const accessToken = localStorage.getItem("token");
         const option = {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            headers: {
+              "Authorization": "Bearer " + accessToken
+            }
           },
           body: JSON.stringify(updateLineRequest)
         }
-        await fetch(`http://localhost:8080/lines/${this.line.id}`, option);
+        await fetch(`/api/lines/${this.line.id}`, option);
 
-        const response = await fetch("http://localhost:8080/lines");
+        const response = await fetch("/api/lines");
         const lines = await response.json();
         this.setLines([...lines])
         this.closeDialog();

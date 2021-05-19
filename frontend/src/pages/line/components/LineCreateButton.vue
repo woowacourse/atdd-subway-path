@@ -162,14 +162,16 @@ export default {
           "extraFare": this.lineForm.extraFare
         };
 
+        const accessToken = localStorage.getItem("token");
         const option = {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer " + accessToken
           },
           body: JSON.stringify(createLineRequest)
         }
-        const newLine = await fetch("http://localhost:8080/lines", option)
+        const newLine = await fetch("/api/lines", option)
         this.setLines([...this.lines, { ...newLine }]);
         this.initLineForm();
         this.closeDialog();

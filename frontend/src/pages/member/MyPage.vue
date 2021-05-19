@@ -65,9 +65,11 @@ export default {
       }
       try {
         const accessToken = localStorage.getItem("token");
-        await fetch(`http://localhost:8080/members/me`, {
+        await fetch(`/api/members/me`, {
           method: 'DELETE',
-          "Authorization": "Bearer " + accessToken
+          headers: {
+            "Authorization": "Bearer " + accessToken
+          }
         })
         this.setMember(null);
         localStorage.setItem("token", "");

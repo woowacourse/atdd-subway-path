@@ -112,6 +112,7 @@ export default {
           "email": email
         }
         const accessToken = localStorage.getItem("token");
+
         const option = {
           method: 'PUT',
           headers: {
@@ -120,10 +121,10 @@ export default {
           },
           body: JSON.stringify(updateRequest)
         };
-        await fetch(`http://localhost:8080/members/me`, option)
+        await fetch(`/api/members/me`, option)
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
 
-        const member = await fetch("http://localhost:8080/members/me", {
+        const member = await fetch("/api/members/me", {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + accessToken

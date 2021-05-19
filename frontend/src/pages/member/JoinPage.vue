@@ -104,11 +104,11 @@ export default {
         const option = {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(joinRequest)
         }
-        await fetch("http://localhost:8080/members", option)
+        await fetch("/api/members", option)
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
         await this.$router.replace(`/login`);
       } catch (e) {
