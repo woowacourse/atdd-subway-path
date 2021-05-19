@@ -3,6 +3,7 @@ package wooteco.subway.auth.infrastructure;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import wooteco.subway.auth.application.AuthorizedException;
 
 import java.util.Date;
 
@@ -26,17 +27,28 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getPayload(final String token) {
+        validateToken(token);
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(final String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
+            validateExpiration(claims);
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthorizedException("유효하지 않은 토큰입니다.");
+        }
+    }
+
+    private void validateExpiration(Jws<Claims> claims) {
+        final Date expiration = claims.getBody().getExpiration();
+        if (expiration.before(new Date())) {
+            throw new AuthorizedException("기간이 만료된 토큰입니다.");
         }
     }
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,26 +10,28 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
-
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("member")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean isNotExistUser(final String email, final String password) {
+        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+    }
+
+    public boolean isExistEmail(final String email) {
+        final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 
     public Member insert(Member member) {
@@ -47,8 +50,29 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Member> findById(Long id) {
+        try {
+            String sql = "select * from MEMBER where id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
+
+    public Optional<Member> findByEmail(final String email) {
+        try {
+            String sql = "select * from MEMBER where email = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+            new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getInt("age")
+            );
 }

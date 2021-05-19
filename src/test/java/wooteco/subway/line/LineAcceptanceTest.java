@@ -154,7 +154,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
-
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

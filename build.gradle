@@ -14,6 +14,8 @@ repositories {
 
 dependencies {
 
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
