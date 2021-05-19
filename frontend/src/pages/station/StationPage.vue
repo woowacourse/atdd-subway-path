@@ -66,7 +66,8 @@ export default {
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("/api/stations");
+    const response = await fetch("http://localhost:8080/stations");
+    console.log("리스폰스:",response);
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -84,7 +85,7 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample
-        const response = await fetch("/api/stations", {
+        const response = await fetch("http://localhost:8080/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
