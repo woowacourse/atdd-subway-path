@@ -4,23 +4,31 @@ import javax.validation.constraints.NotNull;
 
 public class PathRequest {
     @NotNull
-    private Long sourceId;
+    private Long source;
     @NotNull
-    private Long targetId;
+    private Long target;
 
     public PathRequest() {
     }
 
-    public PathRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public PathRequest(Long source, Long target) {
+        this.source = source;
+        this.target = target;
     }
 
     public Long getSourceId() {
-        return sourceId;
+        return source;
     }
 
     public Long getTargetId() {
-        return targetId;
+        return target;
+    }
+
+    public void setSource(Long source) {
+        this.source = source;
+    }
+
+    public void setTarget(Long target) {
+        this.target = target;
     }
 }
