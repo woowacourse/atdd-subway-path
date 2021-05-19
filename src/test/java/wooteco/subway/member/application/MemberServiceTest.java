@@ -1,22 +1,23 @@
 package wooteco.subway.member.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.MemberNotFoundException;
-import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+@ActiveProfiles("test")
+@Sql("classpath:/test-schema.sql")
 @SpringBootTest
 @Transactional
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class MemberServiceTest {
     private static final String EMAIL = "test@test.com";
     private static final String PASSWORD = "test";
@@ -24,6 +25,7 @@ class MemberServiceTest {
 
     private final MemberService memberService;
 
+    @Autowired
     public MemberServiceTest(MemberService memberService) {
         this.memberService = memberService;
     }
@@ -63,8 +65,8 @@ class MemberServiceTest {
         MemberResponse memberResponse = memberService.findMember(createdMember.getId());
 
         //then
-        assertEquals(memberResponse.getEmail(), EMAIL);
-        assertEquals(memberResponse.getAge(), AGE);
+        assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(AGE);
     }
 
     @Test
@@ -72,13 +74,13 @@ class MemberServiceTest {
         //given
         MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         MemberResponse createdMember = memberService.createMember(memberRequest);
-        MemberRequest newMember = new MemberRequest(EMAIL, PASSWORD, AGE+1);
+        MemberRequest newMember = new MemberRequest(EMAIL, PASSWORD, AGE + 1);
 
         //when
         memberService.updateMember(createdMember.getId(), newMember);
 
         //then
-        assertEquals(AGE+1, memberService.findMember(createdMember.getId()).getAge());
+        assertThat(memberService.findMember(createdMember.getId()).getAge()).isEqualTo(AGE + 1);
     }
 
     @Test
@@ -93,6 +95,5 @@ class MemberServiceTest {
         //then
         assertThatThrownBy(() -> memberService.findMember(memberResponse.getId()))
             .isInstanceOf(MemberNotFoundException.class);
-
     }
 }
