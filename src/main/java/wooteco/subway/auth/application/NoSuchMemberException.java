@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class NoSuchMemberException extends EmptyResultDataAccessException {
-    private static String msg = "해당하는 email의 회원이 없습니다.";
-    private static int expectedSize = 1;
+    private static final String message = "해당하는 email의 회원이 없습니다.";
+    private static final int EXPECTED_SIZE = 1;
 
     public NoSuchMemberException() {
-        super(msg, expectedSize);
+        super(message, EXPECTED_SIZE);
     }
 }
