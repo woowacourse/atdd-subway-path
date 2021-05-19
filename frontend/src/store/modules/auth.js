@@ -1,4 +1,4 @@
-import { SET_ACCESS_TOKEN } from "../shared/mutationTypes";
+import {SET_ACCESS_TOKEN} from "../shared/mutationTypes";
 
 const state = {
   accessToken: null,
