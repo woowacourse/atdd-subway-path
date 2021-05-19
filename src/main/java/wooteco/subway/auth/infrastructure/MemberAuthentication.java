@@ -9,10 +9,14 @@ import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import org.springframework.beans.factory.annotation.Value;
 
 public class MemberAuthentication {
-    private static final String AUTHENTICATION_URL = "http://localhost:8080/members/authentication";
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @Value("${property.url.member-authenticate}")
+    private String AUTHENTICATION_URL;
 
     private final HttpClient httpClient;
 
