@@ -90,6 +90,10 @@ export default {
       return this.$refs.joinForm.validate();
     },
     async onCreateMember() {
+      let getCookie = function (name) {
+        let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value ? value[2] : null;
+      };
       if (!this.isValid()) {
         return;
       }
@@ -98,7 +102,8 @@ export default {
         await fetch("/members", {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer " + getCookie("JWT")
           },
           body: JSON.stringify({
             email: email,

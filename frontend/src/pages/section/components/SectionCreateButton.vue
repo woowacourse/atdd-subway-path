@@ -84,6 +84,11 @@ import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutatio
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 export default {
   name: "SectionCreateButton",
   components: {Dialog},
@@ -106,7 +111,11 @@ export default {
     },
     async initLineStationsView() {
       try {
-        this.selectedLine = await fetch('http://localhost:8080/lines/' + this.sectionForm.lineId)
+        this.selectedLine = await fetch('http://localhost:8080/lines/' + this.sectionForm.lineId, {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
             .then(res => res.json())
             .then(data => {
               return data;
@@ -159,6 +168,7 @@ export default {
         const res = await fetch("http://localhost:8080/lines/" + this.selectedLine.id + "/sections", {
           method: 'POST',
           headers: {
+            "Authorization": "Bearer " + getCookie("JWT"),
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -171,7 +181,11 @@ export default {
            throw new Error();
         }
 
-        const lines = await fetch("http://localhost:8080/lines")
+        const lines = await fetch("http://localhost:8080/lines", {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
             .then(res => res.json())
             .then(data => {
               return data;

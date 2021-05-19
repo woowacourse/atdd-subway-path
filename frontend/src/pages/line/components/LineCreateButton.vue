@@ -155,10 +155,15 @@ export default {
         return;
       }
       try {
+        let getCookie = function (name) {
+          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+          return value ? value[2] : null;
+        };
         const newLine = await fetch("http://localhost:8080/lines", {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("JWT")
           },
           body: JSON.stringify({
             name: this.lineForm.name,

@@ -26,6 +26,7 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
+        System.out.println("@#$@#$@#$@#$"+tokenRequest.getEmail());
         return memberDao.findByEmail(tokenRequest.getEmail())
             .map(member -> create(tokenRequest, member))
             .orElseThrow(EmailNotFoundException::new);

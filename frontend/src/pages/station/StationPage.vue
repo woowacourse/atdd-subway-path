@@ -60,13 +60,22 @@ import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import {mapGetters, mapMutations} from "vuex";
 import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 export default {
   name: "StationPage",
   computed: {
     ...mapGetters(["stations"]),
   },
   async created() {
-    const response = await fetch("http://localhost:8080/stations");
+    const response = await fetch("http://localhost:8080/stations", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    });
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -87,6 +96,7 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("JWT")
           },
           body: JSON.stringify({
             name: this.stationName,
@@ -112,7 +122,10 @@ export default {
     async onDeleteStation(stationId) {
       try {
         await fetch("http://localhost:8080/stations/" + stationId, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
         });
         const idx = this.stations.findIndex(
             (station) => station.id === stationId

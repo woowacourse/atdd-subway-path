@@ -79,18 +79,31 @@ import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 export default {
   name: "SectionPage",
   components: {SectionDeleteButton, SectionCreateButton},
   async created() {
-    const response = await fetch("http://localhost:8080/stations");
+    const response = await fetch("http://localhost:8080/stations", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    });
+
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
     const stations = await response.json();
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
-    const lines = await fetch("http://localhost:8080/lines")
-        .then(res => res.json())
+    const lines = await fetch("http://localhost:8080/lines", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    }).then(res => res.json())
         .then(data => {
           return data;
         });
@@ -127,7 +140,11 @@ export default {
     },
     async onChangeLine() {
       try {
-        this.activeLine = await fetch('http://localhost:8080/lines/' + this.activeLineId)
+        this.activeLine = await fetch('http://localhost:8080/lines/' + this.activeLineId, {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
             .then(res => res.json())
             .then(data => {
               return data;

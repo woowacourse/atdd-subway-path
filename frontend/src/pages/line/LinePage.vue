@@ -51,14 +51,26 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    const stations = await fetch("http://localhost:8080/stations")
+    let getCookie = function (name) {
+      let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+      return value ? value[2] : null;
+    };
+    const stations = await fetch("http://localhost:8080/stations", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    })
         .then(res => res.json())
         .then(data => {
           return data;
         });
     this.setStations([...stations])
 
-    const lines = await fetch("http://localhost:8080/lines")
+    const lines = await fetch("http://localhost:8080/lines", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    })
         .then(res => res.json())
         .then(data => {
           return data;

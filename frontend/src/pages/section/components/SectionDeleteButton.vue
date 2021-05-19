@@ -25,8 +25,15 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
+        let getCookie = function (name) {
+          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+          return value ? value[2] : null;
+        };
         await fetch("http://localhost:8080/lines/" + this.lineId + "/sections?stationId=" + this.stationId, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
         });
 
         const line = await fetch('http://localhost:8080/lines/' + this.lineId)

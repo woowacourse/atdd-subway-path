@@ -150,6 +150,11 @@ import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 export default {
   name: "PathPage",
   computed: {
@@ -165,7 +170,8 @@ export default {
         this.pathResult = await fetch("http://localhost:8080/paths?source=" + this.path.source + "&target=" + this.path.target,{
           method: 'GET',
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("JWT")
           }
         })
         .then(res => res.json())
@@ -179,7 +185,11 @@ export default {
     },
     async initAllStationsView() {
       try {
-        const stations = await fetch("http://localhost:8080/stations")
+        const stations = await fetch("http://localhost:8080/stations", {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+      })
         .then(res => res.json())
             .then(data => {
               return data;

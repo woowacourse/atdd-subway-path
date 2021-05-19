@@ -115,18 +115,26 @@ export default {
     },
     async onEditLine() {
       try {
-
+        let getCookie = function (name) {
+          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+          return value ? value[2] : null;
+        };
         await fetch("http://localhost:8080/lines/" + this.line.id,{
           method: 'PUT',
           headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("JWT")
           },
           body: JSON.stringify({
             name: this.lineEditForm.name,
             color: this.lineEditForm.color
           })
         });
-        const lines = await fetch("http://localhost:8080/lines")
+        const lines = await fetch("http://localhost:8080/lines", {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
             .then(res => res.json())
             .then(data => {
               return data;

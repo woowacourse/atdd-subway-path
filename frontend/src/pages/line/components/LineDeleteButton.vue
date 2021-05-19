@@ -21,10 +21,18 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
+        let getCookie = function (name) {
+          let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+          return value ? value[2] : null;
+        };
         await fetch("http://localhost:8080/lines/" + this.line.id, {
           method: 'DELETE'
         })
-        const lines = await fetch("http://localhost:8080/lines")
+        const lines = await fetch("http://localhost:8080/lines", {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
             .then(res => res.json())
             .then(data => {
               return data;
