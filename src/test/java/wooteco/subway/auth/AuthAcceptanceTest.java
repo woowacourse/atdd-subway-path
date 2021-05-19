@@ -35,22 +35,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 - ID 다름")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuthIfWrongId() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "OTHER");
-        params.put("password", PASSWORD);
+        로그인_요청_실패(EMAIL + "OTHER", PASSWORD);
+    }
 
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    @DisplayName("Bearer Auth 로그인 실패 - password 다름")
+    @Test
+    void myInfoWithBadBearerAuthIfPasswordWrong() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        로그인_요청_실패(EMAIL, PASSWORD + "OTHER");
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -90,6 +88,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    private void 로그인_요청_실패(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {

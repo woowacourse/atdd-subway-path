@@ -1,16 +1,16 @@
 <template>
   <div class="d-flex justify-center align-center app-container">
     <div class="text-center">
-      <img src="../../assets/main_logo.png" class="main-logo mx-auto" />
+      <img class="main-logo mx-auto" src="../../assets/main_logo.png"/>
       <p class="mt-2 text-gray-700">
-        RunningMap Service 페이지입니다. <br />
+        RunningMap Service 페이지입니다. <br/>
         제공되는 템플릿을 활용해 프로젝트를 완성해 보세요!
       </p>
       <ul class="text-blue-700">
         <li
-          v-for="navItem in navItems"
-          :key="navItem._id"
-          class="d-inline-block p-1"
+            v-for="navItem in navItems"
+            :key="navItem._id"
+            class="d-inline-block p-1"
         >
           <router-link :to="navItem.link">
             <v-btn text>{{ navItem.text }}</v-btn>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { NAV_ITEMS } from "../../utils/constants";
+import {NAV_ITEMS} from "../../utils/constants";
 
 export default {
   name: "MainPage",

@@ -1,7 +1,8 @@
-export {getRequest, postRequest, putRequest, deleteRequest};
+export {getRequest, postRequest, deleteRequest, putRequest};
 
 const LOCAL_HOST = 'http://localhost:8080'
 const BEARER = 'Bearer'
+const CAN_METHOD_LIST = ['GET', 'POST', 'PUT', 'DELETE']
 
 const orThrow = (result) => {
     if (result.error) {
@@ -11,89 +12,44 @@ const orThrow = (result) => {
     return result;
 }
 
-async function getRequest(url = '', needToken = false) {
-    const headers = {'Content-Type': 'application/json'};
-    if (needToken) {
-        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
-    }
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
-        method: 'get',
-        headers: headers,
-        credentials: 'include'
-    })
-        .then(response =>
-            response.text()
-        ).then(text => {
-                if (text) {
-                    return JSON.parse(text)
-                } else
-                    return {};
-            }
-        )
-
-    return orThrow(result)
+function getRequest(url, needToken = false) {
+    return apiRequest('GET', url, needToken);
 }
 
-async function postRequest(url = '', body = {}, needToken = false) {
-    const headers = {'Content-Type': 'application/json'};
-    if (needToken) {
-        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
-    }
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
-        method: 'post',
-        headers: headers,
-        credentials: 'include',
-        body: JSON.stringify(body)
-    })
-        .then(response =>
-            response.text()
-        ).then(text => {
-                if (text) {
-                    return JSON.parse(text)
-                } else
-                    return {};
-            }
-        )
-
-    return orThrow(result)
+function postRequest(url, body = {}, needToken = false) {
+    return apiRequest('POST', url, needToken, body);
 }
 
-async function putRequest(url = '', body = {}, needToken = false) {
-    const headers = {'Content-Type': 'application/json'};
-    if (needToken) {
-        headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
-    }
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
-        method: 'put',
-        headers: headers,
-        credentials: 'include',
-        body: JSON.stringify(body)
-    })
-        .then(response =>
-            response.text()
-        ).then(text => {
-                if (text) {
-                    return JSON.parse(text)
-                } else
-                    return {};
-            }
-        )
-
-    return orThrow(result)
+function deleteRequest(url, needToken = false) {
+    return apiRequest('DELETE', url, needToken)
 }
 
+function putRequest(url, body = {}, needToken = false) {
+    return apiRequest('PUT', url, needToken, body)
+}
 
-async function deleteRequest(url = '', body = {}, needToken = false) {
+async function apiRequest(method, url = '', needToken = false, body = {}) {
+    const isMethod = CAN_METHOD_LIST.findIndex(canMethod => canMethod === method.toUpperCase()) !== -1
+    if (!method || !isMethod) {
+        throw new Error(`not valid method : ${method} / can method : get, post, delete, put`);
+    }
+
     const headers = {'Content-Type': 'application/json'};
     if (needToken) {
         headers.Authorization = `${BEARER} ${localStorage.getItem('accessToken')}`
     }
-    let result = await fetch(`${LOCAL_HOST}/${url}`, {
-        method: 'delete',
+
+    const configure = {
+        method: method,
         headers: headers,
         credentials: 'include',
-        body: JSON.stringify(body)
-    })
+    }
+
+    if (body && method.toUpperCase() !== 'GET') {
+        configure.body = JSON.stringify(body)
+    }
+
+    let result = await fetch(`${LOCAL_HOST}/${url}`, configure)
         .then(response =>
             response.text()
         ).then(text => {
