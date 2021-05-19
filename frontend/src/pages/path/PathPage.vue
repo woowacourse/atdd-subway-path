@@ -161,6 +161,15 @@ export default {
       try {
         // [기능 추가] 최단 거리를 검색하는 API를 추가해주세요.
         // this.pathResult = await fetch("/paths", {})
+
+        this.pathResult = await fetch(
+            "http://localhost:8080/paths?source=" + this.path.source + "&target="
+            + this.path.target, {
+              method: 'GET',
+              headers: {
+                "Content-Type": "application/json"
+              },
+            }).then(response => response.json())
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +177,10 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // [기능 추가] 모든 역을 불러오는 API를 추가해주세요.
+        // [TODO] 모든 역을 불러오는 API를 추가해주세요.
         // const stations = await fetch("/stations")
         // this.setStations(stations)
+        console.log(this.stations)
         if (this.stations.length < 1) {
           return;
         }
