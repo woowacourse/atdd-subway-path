@@ -1,8 +1,10 @@
 package wooteco.subway.path.dto;
 
+import com.sun.istack.internal.NotNull;
+
 public class PathIdModel {
-    private long source;
-    private long target;
+    @NotNull private long source;
+    @NotNull private long target;
 
     public PathIdModel() {
     }
