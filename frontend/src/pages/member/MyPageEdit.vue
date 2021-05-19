@@ -105,11 +105,53 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        // const { email, age, password } = this.editingMember;
-        // await fetch("/api/users/{this.member.id}", { email, age, password })
+        const { email, age, password } = this.editingMember;
+
+        await fetch("http://localhost:8080/api/members/me", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization":"Bearer "+ JSON.parse(localStorage.getItem("token")).accessToken
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            age: age
+          })
+        })
+
+        await fetch("http://localhost:8080/api/login/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        }).then((response) => response.json())
+        .then((data) =>{
+          localStorage.setItem("token", JSON.stringify(data));
+        });
+
+        await fetch("http://localhost:8080/api/members/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization":"Bearer "+ JSON.parse(localStorage.getItem("token")).accessToken
+          }
+        }).then(function (response) {
+          if (!response.ok) {
+            alert("회원이 아닙니다.");
+            throw new Error("회원이 아닙니다.");
+          }
+          return response.json();
+        }).then((data) => {
+          this.setMember(data);
+        })
+
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
-        await this.$router.replace("/mypage");
+        await this.$router.replace("/");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);
         throw new Error(e);
