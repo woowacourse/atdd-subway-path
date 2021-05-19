@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
 import static wooteco.subway.line.LineAcceptanceTest.*;
 import static wooteco.subway.station.StationAcceptanceTest.*;
 
@@ -18,12 +19,18 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+    private static String accessToken;
+
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -37,10 +44,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation,
         StationResponse downStation, int distance) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
+
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
             .when().post("/lines/{lineId}/sections", line.getId())
@@ -65,6 +77,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
             .then().log().all()
             .extract();
@@ -99,6 +112,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
     }
 
     @DisplayName("지하철 구간을 등록한다.")

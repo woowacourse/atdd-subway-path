@@ -1,6 +1,7 @@
 package wooteco.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
 import static wooteco.subway.line.LineAcceptanceTest.*;
 import static wooteco.subway.line.SectionAcceptanceTest.*;
 import static wooteco.subway.station.StationAcceptanceTest.*;
@@ -20,12 +21,18 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+    private static String accessToken;
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -35,8 +42,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
+
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/paths?source={sourceId}&target={targetId}", source, target)
             .then().log().all()

@@ -1,11 +1,13 @@
 package wooteco.subway.station;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -15,13 +17,28 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+    private static String accessToken;
+
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
+    }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
@@ -30,8 +47,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
+
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/stations")
@@ -42,6 +64,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .when().get("/stations")
             .then().log().all()
             .extract();
@@ -50,6 +73,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .when().delete("/stations/" + stationResponse.getId())
             .then().log().all()
             .extract();
