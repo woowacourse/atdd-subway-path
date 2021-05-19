@@ -4,36 +4,39 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.section.domain.Section;
-import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
 public class SubwayMap {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> subwayMap;
 
-    public SubwayMap(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
-        this.subwayMap = subwayMap;
+    public SubwayMap(List<Section> sections) {
+        this.subwayMap = drawSubwayMap(sections);
     }
 
-    public void addSection(Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        subwayMap.addVertex(upStation);
-        subwayMap.addVertex(downStation);
-        DefaultWeightedEdge defaultWeightedEdge = subwayMap.addEdge(upStation, downStation);
-        subwayMap.setEdgeWeight(defaultWeightedEdge, section.getDistance());
+    private DijkstraShortestPath<Long, DefaultWeightedEdge> drawSubwayMap(List<Section> sections) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> weightedMultiGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        sections.forEach(section -> addSection(weightedMultiGraph, section));
+        return new DijkstraShortestPath<>(weightedMultiGraph);
     }
 
-    public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayMap);
-        return dijkstraShortestPath.getPath(sourceStation, targetStation)
+    private void addSection(WeightedMultigraph<Long, DefaultWeightedEdge> weightedMultiGraph, Section section) {
+        Long upStationId = section.getUpStation().getId();
+        Long downStationId = section.getDownStation().getId();
+        weightedMultiGraph.addVertex(upStationId);
+        weightedMultiGraph.addVertex(downStationId);
+        DefaultWeightedEdge defaultWeightedEdge = weightedMultiGraph.addEdge(upStationId, downStationId);
+        weightedMultiGraph.setEdgeWeight(defaultWeightedEdge, section.getDistance());
+    }
+
+    public List<Long> findShortestPath(long sourceStationId, long targetStationId) {
+        return subwayMap.getPath(sourceStationId, targetStationId)
                 .getVertexList();
     }
 
-    public int findShortestDistance(Station sourceStation, Station targetStation) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayMap);
-        return (int) dijkstraShortestPath.getPath(sourceStation, targetStation)
+    public int findShortestDistance(long sourceStationId, long targetStationId) {
+        return (int) subwayMap.getPath(sourceStationId, targetStationId)
                 .getWeight();
     }
 }

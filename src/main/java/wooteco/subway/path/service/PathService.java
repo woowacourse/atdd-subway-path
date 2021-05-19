@@ -1,7 +1,5 @@
 package wooteco.subway.path.service;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.path.domain.SubwayMap;
@@ -13,6 +11,7 @@ import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.service.StationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,13 +27,15 @@ public class PathService {
 
     public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
         List<Section> sections = sectionDao.findAll();
-        SubwayMap subwayMap = new SubwayMap(new WeightedMultigraph<>(DefaultWeightedEdge.class));
-        sections.forEach(subwayMap::addSection);
-        Station sourceStation = stationService.findStationById(sourceStationId);
-        Station targetStation = stationService.findStationById(targetStationId);
-        List<Station> shortestPath = subwayMap.findShortestPath(sourceStation, targetStation);
-        int shortestDistance = subwayMap.findShortestDistance(sourceStation, targetStation);
-        List<StationResponse> stations = StationResponse.listOf(shortestPath);
-        return new PathResponse(stations, shortestDistance);
+        SubwayMap subwayMap = new SubwayMap(sections);
+
+        List<Station> shortestPath = subwayMap.findShortestPath(sourceStationId, targetStationId)
+                .stream()
+                .map(stationService::findStationById)
+                .collect(Collectors.toList());
+        int shortestDistance = subwayMap.findShortestDistance(sourceStationId, targetStationId);
+
+        List<StationResponse> stationResponse = StationResponse.listOf(shortestPath);
+        return new PathResponse(stationResponse, shortestDistance);
     }
 }
