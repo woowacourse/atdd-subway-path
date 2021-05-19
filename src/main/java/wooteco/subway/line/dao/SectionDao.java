@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -52,5 +53,16 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public List<Section> findAll() {
+        String query = "SELECT * FROM section";
+        return this.jdbcTemplate.query(query, (rs, rowNum) -> {
+            Long id = rs.getLong(1);
+            Long upStationId = rs.getLong(3);
+            Long downStationId = rs.getLong(4);
+            int distance = rs.getInt(5);
+            return new Section(id, new Station(upStationId), new Station(downStationId), distance);
+        });
     }
 }
