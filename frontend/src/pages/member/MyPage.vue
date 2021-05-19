@@ -64,7 +64,7 @@ export default {
         return;
       }
       try {
-        const memberResponse = await fetch("http://localhost:8080/members/me", {
+        const memberResponse = await fetch("/api/members/me", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
