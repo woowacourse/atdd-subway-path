@@ -1,8 +1,10 @@
 package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.infrastructure.StationName;
 
 public class StationRequest {
+    @StationName
     private String name;
 
     public StationRequest() {

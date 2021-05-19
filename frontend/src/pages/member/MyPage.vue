@@ -65,8 +65,14 @@ export default {
       }
       try {
         // TODO 유저를 삭제하는 API를 추가해주세요
-        // await fetch("/api/users/{this.member.id}")
-        this.setMember(null);
+        const memberOption = {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.state.accessToken
+          },
+        };
+        await fetch("/api/members/me", memberOption)
+        this.$store.commit(SET_MEMBER, null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
         await this.$router.replace("/");
       } catch (e) {
