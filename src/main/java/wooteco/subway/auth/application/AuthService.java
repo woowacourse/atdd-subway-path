@@ -1,11 +1,15 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.PasswordHasher;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -18,13 +22,13 @@ public class AuthService {
         this.memberService = memberService;
     }
 
-    public String createAccessToken(String email) {
+    private String createAccessToken(String email) {
         if (!memberService.isExist(email)) {
             throw new UnauthorizedException(
                     String.format("해당 이메일로 가입한 유저가 없습니다. 이메일 : %s", email));
         }
-        MemberResponse memberByEmail = memberService.findMemberByEmail(email);
-        return tokenProvider.createToken(String.valueOf(memberByEmail.getId()));
+        Member member = memberService.findMemberByEmail(email);
+        return tokenProvider.createToken(String.valueOf(member.getId()));
     }
 
     public Member getMember(String accessToken) {
@@ -43,6 +47,23 @@ public class AuthService {
             return Long.parseLong(payload);
         } catch (NumberFormatException e) {
             throw new UnauthorizedException(String.format("토큰의 payload 값이 id가 아닙니다. payload값 : %s", payload));
+        }
+    }
+
+    public String login(String email, String password) {
+        try {
+            Member member = memberService.findMemberByEmail(email);
+            checkPassword(member, password);
+            return createAccessToken(email);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UnauthorizedException("해당 유저가 없습니다.");
+        }
+    }
+
+    private void checkPassword(Member member, String password) {
+        String hashing = PasswordHasher.hashing(password, member.getSalt());
+        if (!Objects.equals(hashing, member.getPassword())) {
+            throw new UnauthorizedException("비밀번호가 같지 않습니다.");
         }
     }
 }

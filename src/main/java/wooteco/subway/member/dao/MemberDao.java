@@ -20,7 +20,8 @@ public class MemberDao {
                     rs.getLong("id"),
                     rs.getString("email"),
                     rs.getString("password"),
-                    rs.getInt("age")
+                    rs.getInt("age"),
+                    rs.getString("salt")
             );
 
 
@@ -34,7 +35,7 @@ public class MemberDao {
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        return new Member(id, member.getEmail(), member.getPassword(), member.getAge(), member.getSalt());
     }
 
     public void update(Member member) {
