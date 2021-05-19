@@ -5,10 +5,10 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class PathFinder {
+public class StationPathFinder {
     private final PathGraph pathGraph;
 
-    public PathFinder(final PathGraph pathGraph) {
+    public StationPathFinder(final PathGraph pathGraph) {
         this.pathGraph = pathGraph;
     }
 

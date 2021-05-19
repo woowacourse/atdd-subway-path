@@ -72,6 +72,6 @@
 
 
 # Refactoring TODO
-- [ ] PathFinder 클래스명 수정
+- [x] PathFinder 클래스명 수정
 - [ ] 그래프 종류 주입받도록 수정
 - [ ] 경로탐색 종류를 주입받도록 수정
