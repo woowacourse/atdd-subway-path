@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
+import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -52,5 +54,24 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public Sections findAll() {
+        String sql = "SELECT SECTION.id AS id, " +
+                "SECTION.distance AS distance, " +
+                "UST.id AS up_station_id, UST.name AS up_station_name, " +
+                "DST.id AS down_station_id, DST.name AS down_station_name " +
+                "FROM SECTION " +
+                "LEFT OUTER JOIN STATION UST ON SECTION.up_station_id = UST.id " +
+                "LEFT OUTER JOIN STATION DST ON SECTION.down_station_id = DST.id";
+        List<Section> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Long id = rs.getLong("id");
+            Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("up_station_name"));
+            Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("down_station_name"));
+            int distance = rs.getInt("distance");
+
+            return new Section(id, upStation, downStation, distance);
+        });
+        return new Sections(result);
     }
 }

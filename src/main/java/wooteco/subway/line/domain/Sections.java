@@ -140,4 +140,8 @@ public class Sections {
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
     }
+
+    public SectionGraph sectionGraph(List<Station> stations, Station source, Station target) {
+        return new SectionGraph(sections, stations, source, target);
+    }
 }

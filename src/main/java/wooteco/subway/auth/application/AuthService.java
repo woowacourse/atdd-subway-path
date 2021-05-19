@@ -8,9 +8,7 @@ import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,6 +20,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
     }
+
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateLogin(tokenRequest);
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());

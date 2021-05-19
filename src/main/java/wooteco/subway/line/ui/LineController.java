@@ -11,6 +11,7 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/lines")
 public class LineController {
