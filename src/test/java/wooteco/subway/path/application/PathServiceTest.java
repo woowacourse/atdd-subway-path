@@ -37,7 +37,7 @@ class PathServiceTest {
         Station station3 = new Station(3L, "등촌");
         Station station4 = new Station(4L, "염창");
 
-        List<Section> sectionList = Arrays.asList(
+        List<Section> sections = Arrays.asList(
                 new Section(1L, station1, station2, 10),
                 new Section(2L, station1, station3, 8),
                 new Section(3L, station2, station3, 6),
@@ -48,7 +48,7 @@ class PathServiceTest {
 
         when(stationDao.findById(3L)).thenReturn(station3);
         when(stationDao.findById(1L)).thenReturn(station1);
-        when(sectionDao.findAll()).thenReturn(sectionList);
+        when(sectionDao.findAll()).thenReturn(sections);
 
         PathResponse pathResponse = pathService.shortestDistancePath(3L, 1L);
 

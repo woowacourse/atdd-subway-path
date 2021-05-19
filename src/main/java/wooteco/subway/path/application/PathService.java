@@ -26,16 +26,16 @@ public class PathService {
     }
 
     public PathResponse shortestDistancePath(Long source, Long target) {
-        List<Section> sectionList = sectionDao.findAll();
+        List<Section> sections = sectionDao.findAll();
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);
 
-        return getPathResponse(sectionList, sourceStation, targetStation);
+        return getPathResponse(sections, sourceStation, targetStation);
     }
 
-    private PathResponse getPathResponse(List<Section> sectionList, Station sourceStation, Station targetStation) {
+    private PathResponse getPathResponse(List<Section> sections, Station sourceStation, Station targetStation) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Section section : sectionList) {
+        for (Section section : sections) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
             graph.addVertex(upStation);
