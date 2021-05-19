@@ -20,7 +20,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse getDijkstraShortestPath(long sourceId, long targetId) {
+    public PathResponse findShortestPath(long sourceId, long targetId) {
         List<Station> stations = stationDao.findAll();
         List<Line> lines = lineService.findLines();
 
