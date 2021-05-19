@@ -82,11 +82,10 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
     const station_response = await fetch("/api/stations")
     const stations = await station_response.json()
     this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
+
     const line_response = await fetch("/api/lines");
     const lines = await line_response.json()
     this.setLines([...lines]);
