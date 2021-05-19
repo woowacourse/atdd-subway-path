@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.UnauthorizedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -42,7 +43,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberDao.findByEmail(email);
+        return memberDao.findByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException(String.format("해당 이메일을 가진 유저가 없습니다. email : %s", email)));
     }
 
     public boolean isExist(String email) {

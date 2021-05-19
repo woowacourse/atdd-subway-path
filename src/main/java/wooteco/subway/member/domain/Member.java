@@ -6,14 +6,11 @@ import wooteco.subway.auth.infrastructure.PasswordHasher;
 import java.util.Objects;
 
 public class Member {
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
-    private String salt;
-
-    public Member() {
-    }
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final Integer age;
+    private final String salt;
 
     public Member(Long id, String email, Integer age) {
         this(id, email, null, age, null);
@@ -44,6 +41,17 @@ public class Member {
         return new Member(this.getId(), this.getEmail(), hashingPassword, this.getAge(), salt);
     }
 
+    public Member insertId(Long id, Member member) {
+        return new Member(id, member.email, member.password, member.age, member.salt);
+    }
+
+    public void checkPassword(String password) {
+        String hashing = PasswordHasher.hashing(password, this.salt);
+        if (!Objects.equals(hashing, this.getPassword())) {
+            throw new UnauthorizedException("비밀번호가 같지 않습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,20 +68,16 @@ public class Member {
         return age;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Member)) return false;
         Member member = (Member) o;
-        return getId().equals(member.getId()) && Objects.equals(getEmail(), member.getEmail()) && Objects.equals(getPassword(), member.getPassword()) && Objects.equals(getAge(), member.getAge());
+        return Objects.equals(getId(), member.getId()) && Objects.equals(getEmail(), member.getEmail()) && Objects.equals(getPassword(), member.getPassword()) && Objects.equals(getAge(), member.getAge()) && Objects.equals(salt, member.salt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getEmail(), getPassword(), getAge());
+        return Objects.hash(getId(), getEmail(), getPassword(), getAge(), salt);
     }
 }
