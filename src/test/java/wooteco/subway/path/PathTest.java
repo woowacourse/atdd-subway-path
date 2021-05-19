@@ -16,42 +16,48 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.path.application.PathService;
+import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 public class PathTest extends AcceptanceTest {
 
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 교대역;
-    private StationResponse 남부터미널역;
+    private LineResponse expectedShortestPath;
+    private LineResponse expectedNoShortestPath;
+    private StationResponse sourceStation1;
+    private StationResponse shortestStation2;
+    private StationResponse noShortestStation1;
+    private StationResponse shortestStation3;
+    private StationResponse shortestStation4;
+    private StationResponse destinationStation1;
 
     @Autowired
     private LineService lineService;
+    @Autowired
+    private PathService pathService;
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* | |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 | | *3호선*                   *신분당선* | | 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        sourceStation1 = 지하철역_등록되어_있음("sourceStation1");
+        destinationStation1 = 지하철역_등록되어_있음("destinationStation1");
+        shortestStation2 = 지하철역_등록되어_있음("shortestStation2");
+        shortestStation3 = 지하철역_등록되어_있음("shortestStation3");
+        shortestStation4 = 지하철역_등록되어_있음("shortestStation4");
+        noShortestStation1 = 지하철역_등록되어_있음("noShortestStation1");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        expectedShortestPath = 지하철_노선_등록되어_있음("expectedShortestPath", "bg-red-600",
+            shortestStation2, shortestStation3, 10);
+        expectedNoShortestPath = 지하철_노선_등록되어_있음("expectedNoShortestPath", "bg-red-600",
+            sourceStation1, destinationStation1, 100);
 
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음(expectedShortestPath, sourceStation1, shortestStation2, 10);
+        지하철_구간_등록되어_있음(expectedShortestPath, shortestStation3, shortestStation4, 10);
+        지하철_구간_등록되어_있음(expectedShortestPath, shortestStation4, destinationStation1, 10);
     }
 
 
@@ -100,30 +106,15 @@ public class PathTest extends AcceptanceTest {
     @Test
     public void findShortestDistance() {
 
-        List<Line> lines = lineService.findLines();
+        PathResponse path = pathService.findPath(1L, 2L);
 
-        Sections sections = new Sections();
-        for (Line line : lines) {
-            sections.addSections(line.getSections());
-        }
-
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        for (Section section : sections.getSections()) {
-            String upStationName = section.getUpStation().getName();
-            String downStationName = section.getDownStation().getName();
-            graph.addVertex(upStationName);
-            graph.addVertex(downStationName);
-            graph.setEdgeWeight(graph.addEdge(upStationName, downStationName),
-                section.getDistance());
-        }
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath("강남역", "양재역").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(2);
-        assertThat(shortestPath).isEqualTo(Arrays.asList("강남역", "양재역"));
-        assertThat(dijkstraShortestPath.getPathWeight("강남역", "양재역")).isEqualTo(10);
+        assertThat(path.getStations()).hasSize(5);
+        assertThat(path.getStations()).isEqualTo(Arrays.asList(
+            sourceStation1,
+            shortestStation2,
+            shortestStation3,
+            shortestStation4,
+            destinationStation1));
+        assertThat(path.getDistance()).isEqualTo(40);
     }
 }
