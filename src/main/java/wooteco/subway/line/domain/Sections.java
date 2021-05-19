@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 public class Sections {
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {
@@ -70,7 +70,8 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
+                existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
@@ -78,7 +79,8 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
+                existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 

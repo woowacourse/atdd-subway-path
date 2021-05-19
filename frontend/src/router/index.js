@@ -10,13 +10,13 @@ import pathRoutes from "./modules/path";
 Vue.use(VueRouter);
 
 export default new VueRouter({
-  mode: "history",
-  routes: [
-    ...stationRoutes,
-    ...lineRoutes,
-    ...mainRoutes,
-    ...sectionRoutes,
-    ...pathRoutes,
-    ...memberRoutes,
-  ],
+    mode: "history",
+    routes: [
+        ...stationRoutes,
+        ...lineRoutes,
+        ...mainRoutes,
+        ...sectionRoutes,
+        ...pathRoutes,
+        ...memberRoutes,
+    ],
 });

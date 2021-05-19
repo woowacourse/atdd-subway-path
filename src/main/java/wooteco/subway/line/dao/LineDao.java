@@ -68,7 +68,8 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
+        Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
+                .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
         return resultByLine.entrySet().stream()
                 .map(it -> mapLine(it.getValue()))
                 .collect(Collectors.toList());
@@ -99,8 +100,10 @@ public class LineDao {
                 .map(it ->
                         new Section(
                                 (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
+                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"),
+                                        (String) it.getValue().get(0).get("UP_STATION_Name")),
+                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"),
+                                        (String) it.getValue().get(0).get("DOWN_STATION_Name")),
                                 (int) it.getValue().get(0).get("SECTION_DISTANCE")))
                 .collect(Collectors.toList());
     }

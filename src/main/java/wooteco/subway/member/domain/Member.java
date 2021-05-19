@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.exception.PasswordMissMatchException;
+
 public class Member {
     private Long id;
     private String email;
@@ -13,12 +15,6 @@ public class Member {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.age = age;
-    }
-
-    public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
         this.age = age;
     }
 
@@ -42,5 +38,12 @@ public class Member {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void checkValidPassword(String password) {
+        if (this.password.equals(password)) {
+            return;
+        }
+        throw new PasswordMissMatchException();
     }
 }
