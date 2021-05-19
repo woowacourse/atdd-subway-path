@@ -45,14 +45,14 @@ public class PathTest {
      * 남부터미널역  --- (2) *3호선* ---   양재
      */
     @Test
-    @DisplayName("최단 경로가 잘 나오는지 확인한다.")
+    @DisplayName("최단 경로를 잘 구하는지 확인한다.")
     void findShortestPath() {
         List<Station> expectedPath = Arrays.asList(교대역, 남부터미널역, 양재역);
         assertThat(path.findShortestPath(교대역, 양재역)).isEqualTo(expectedPath);
     }
 
     @Test
-    @DisplayName("최단 거리가 잘 나오는지 확인한다.")
+    @DisplayName("최단 거리를 잘 구하는지 확인한다.")
     void findShortestDistance() {
         assertThat(path.findShortestDistance(교대역, 양재역)).isEqualTo(5.0);
     }
