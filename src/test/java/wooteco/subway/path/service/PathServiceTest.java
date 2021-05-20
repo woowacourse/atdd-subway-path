@@ -33,11 +33,11 @@ import wooteco.subway.station.dto.StationResponse;
 class PathServiceTest {
 
     @Autowired
-    LineService lineService;
+    private LineService lineService;
     @Autowired
-    StationService stationService;
+    private StationService stationService;
     @Autowired
-    PathService pathService;
+    private PathService pathService;
 
     @Test
     @DisplayName("라이브러리 체크 테스트")
