@@ -1,13 +1,13 @@
 <template>
-  <v-btn @click="onDeleteLine" icon>
+  <v-btn icon @click="onDeleteLine">
     <v-icon color="grey lighten-1">mdi-delete</v-icon>
   </v-btn>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { SET_LINE, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {mapMutations} from "vuex";
+import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
 export default {
   name: "SectionDeleteButton",
@@ -31,17 +31,10 @@ export default {
         // stationId: this.stationId,
         // })
 
-        await fetch("http://localhost:8080/lines/"+this.lineId+"/sections?stationId="+this.stationId, {
+        await fetch("http://localhost:8080/lines/" + this.lineId + "/sections?stationId=" + this.stationId, {
           method: "Delete",
           headers: {
             "Content-Type": "application/json",
-          }
-        }).then(function (response) {
-          if (!response.ok) {
-            alert("실패");
-          }
-          if (response.ok) {
-            alert("성공");
           }
         })
 
@@ -49,21 +42,15 @@ export default {
         // const line = await fetch("/api/line/{lineId}")
         // this.setLine({ ...line })
 
-        await fetch("http://localhost:8080/lines/"+this.lineId, {
+        await fetch("http://localhost:8080/lines/" + this.lineId, {
           method: "Get",
           headers: {
             'Content-Type': 'application/json'
           }
         }).then(function (response) {
-          if(!response.ok){
-            alert("fail");
-          }
-          if(response.ok){
-            alert("success");
-          }
           return response.json();
-        }).then((data) =>{
-          this.setLine({ ...data })
+        }).then((data) => {
+          this.setLine({...data})
         });
 
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);

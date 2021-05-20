@@ -14,7 +14,7 @@ public class Path {
     private final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
     public Path(final List<Line> lines) {
-        for(final Line line : lines){
+        for (final Line line : lines) {
             addSections(line.getSectionsAsList());
         }
     }
@@ -32,7 +32,7 @@ public class Path {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public int distance(final Station source, final Station target){
-        return (int)dijkstraShortestPath.getPathWeight(source, target);
+    public int distance(final Station source, final Station target) {
+        return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 }

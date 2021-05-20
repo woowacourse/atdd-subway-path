@@ -16,6 +16,13 @@ import java.util.Optional;
 public class MemberDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
+    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+            new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getInt("age")
+            );
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -67,12 +74,4 @@ public class MemberDao {
             return Optional.empty();
         }
     }
-
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
 }

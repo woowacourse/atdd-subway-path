@@ -17,14 +17,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 public class AuthServiceTest {
 
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private MemberDao memberDao;
-
     private final String testEmail = "test";
     private final String testPassword = "test";
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private MemberDao memberDao;
 
     @DisplayName("db에 존재하는 사용자로 token을 생성할 경우 정상 생성된다.")
     @Test

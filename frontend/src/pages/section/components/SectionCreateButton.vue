@@ -2,11 +2,11 @@
   <Dialog :close="close">
     <template slot="trigger">
       <v-btn
-        @click="initLineView"
-        class="mx-2 section-create-button"
-        fab
-        color="amber"
-        depressed
+          class="mx-2 section-create-button"
+          color="amber"
+          depressed
+          fab
+          @click="initLineView"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -17,79 +17,76 @@
     <template slot="text">
       <v-form ref="sectionForm" v-model="valid" @submit.prevent>
         <v-select
-          v-model="sectionForm.lineId"
-          :items="lineNameViews"
-          @change="onChangeLine"
-          label="노선 선택"
-          width="400"
-          item-color="amber darken-3"
-          color="grey darken-1"
-          outlined
-          dense
+            v-model="sectionForm.lineId"
+            :items="lineNameViews"
+            color="grey darken-1"
+            dense
+            item-color="amber darken-3"
+            label="노선 선택"
+            outlined
+            width="400"
+            @change="onChangeLine"
         ></v-select>
         <div class="d-flex">
           <v-select
-            v-model="sectionForm.upStationId"
-            class="pr-5"
-            :items="allStationsView"
-            label="상행역"
-            width="400"
-            color="grey darken-1"
-            item-color="amber darken-3"
-            outlined
-            dense
+              v-model="sectionForm.upStationId"
+              :items="allStationsView"
+              class="pr-5"
+              color="grey darken-1"
+              dense
+              item-color="amber darken-3"
+              label="상행역"
+              outlined
+              width="400"
           ></v-select>
           <v-select
-            v-model="sectionForm.downStationId"
-            class="pl-5"
-            :items="allStationsView"
-            label="하행역"
-            width="400"
-            color="grey darken-1"
-            item-color="amber darken-3"
-            outlined
-            dense
+              v-model="sectionForm.downStationId"
+              :items="allStationsView"
+              class="pl-5"
+              color="grey darken-1"
+              dense
+              item-color="amber darken-3"
+              label="하행역"
+              outlined
+              width="400"
           ></v-select>
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="sectionForm.distance"
-            :rules="rules.section.distance"
-            color="grey darken-1"
-            label="거리"
-            placeholder="거리"
-            outlined
+              v-model="sectionForm.distance"
+              :rules="rules.section.distance"
+              color="grey darken-1"
+              label="거리"
+              outlined
+              placeholder="거리"
           ></v-text-field>
         </div>
       </v-form>
     </template>
     <template slot="action">
       <v-btn
-        :disabled="!valid"
-        @click.prevent="onCreateSection"
-        color="amber"
-        depressed
-        >확인</v-btn
+          :disabled="!valid"
+          color="amber"
+          depressed
+          @click.prevent="onCreateSection"
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import dialog from "../../../mixins/dialog";
 import Dialog from "../../../components/dialogs/Dialog";
-import {
-  SET_LINE,
-  SET_LINES,
-  SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../../utils/constants";
+import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
 export default {
   name: "SectionCreateButton",
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
     ...mapGetters(["lines", "stations"]),
@@ -100,7 +97,7 @@ export default {
       if (this.lines.length < 1) {
         return;
       }
-      this.lineNameViews = this.lines.map(({ name, id }) => {
+      this.lineNameViews = this.lines.map(({name, id}) => {
         return {
           text: name,
           value: id,
@@ -112,33 +109,24 @@ export default {
         // TODO 선택된 노선의 데이터를 불러와주세요. [o]
         // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
 
-        await fetch("http://localhost:8080/lines/"+ this.sectionForm.lineId, {
+        const response = await fetch("http://localhost:8080/lines/" + this.sectionForm.lineId, {
           method: "Get",
           headers: {
             'Content-Type': 'application/json'
           }
-        }).then(function (response) {
-          if(response.status == 401){
-            alert("error");
-          }
-          if(response.ok){
-            alert("success");
-          }
-          return response.json();
-        }).then((data) =>{
-          this.selectedLine = data
-        });
+        })
+        this.selectedLine = response.json();
 
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
         this.lineStationsNameViews = this.selectedLine.stations?.map(
-          (station) => {
-            return {
-              text: station.name,
-              value: station.id,
-            };
-          }
+            (station) => {
+              return {
+                text: station.name,
+                value: station.id,
+              };
+            }
         );
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -150,7 +138,7 @@ export default {
         if (this.stations.length < 1) {
           return;
         }
-        this.allStationsView = this.stations.map(({ name, id }) => {
+        this.allStationsView = this.stations.map(({name, id}) => {
           return {
             text: name,
             value: id,
@@ -179,48 +167,34 @@ export default {
         //   section: this.sectionForm,
         // });
 
-        await fetch("http://localhost:8080/lines/"+this.sectionForm.lineId+"/sections", {
+        await fetch("http://localhost:8080/lines/" + this.sectionForm.lineId + "/sections", {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            upStationId : this.sectionForm.upStationId,
-            downStationId : this.sectionForm.downStationId,
+            upStationId: this.sectionForm.upStationId,
+            downStationId: this.sectionForm.downStationId,
             distance: this.sectionForm.distance
           })
-        }).then(function (response) {
-          if(!response.ok){
-            alert("fail");
-          }
-          if(response.ok){
-            alert("success");
-          }
         })
 
-        // TODO 전체 line을 불러오는 API를 작성해주세요. [o]
+        // TODO 전체 line을 불러오는 API를 작성해주세요. -> 해당 라인 업데이트 [o]
         // const lines = await fetch("/api/lines");
         // this.setLines(lines)
 
-        await fetch("http://localhost:8080/lines", {
+        await fetch("http://localhost:8080/lines/" + this.sectionForm.lineId, {
           method: "Get",
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.lineForm)
+          }
         }).then(function (response) {
-          if(response.ok){
-            alert("success");
-          }
-          if(!response.ok){
-            alert("fail");
-          }
           return response.json();
-        }).then((data) =>{
-          this.setLines(data)
+        }).then((data) => {
+          this.setLine({...data})
         });
 
-        const line = this.lines.find(({ id }) => id === this.selectedLine.id);
+        const line = this.lines.find(({id}) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();
         this.initSectionForm();
@@ -242,7 +216,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       sectionForm: {
         lineId: "",
         upStationId: "",
