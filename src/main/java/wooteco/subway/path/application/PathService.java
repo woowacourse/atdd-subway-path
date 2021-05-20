@@ -10,7 +10,6 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
