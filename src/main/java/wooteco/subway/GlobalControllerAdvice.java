@@ -17,13 +17,13 @@ public class GlobalControllerAdvice {
 //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 //    }
 
-    @ExceptionHandler(AuthorizedException.class)
-    public ResponseEntity<Void> handleInvalidAuthorizationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    @ExceptionHandler(MemberException.class)
-    public ResponseEntity<String> handleInvalidMemberException(MemberException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
+//    @ExceptionHandler(AuthorizedException.class)
+//    public ResponseEntity<Void> handleInvalidAuthorizationException() {
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//    }
+//
+//    @ExceptionHandler(MemberException.class)
+//    public ResponseEntity<String> handleInvalidMemberException(MemberException e) {
+//        return ResponseEntity.badRequest().body(e.getMessage());
+//    }
 }
