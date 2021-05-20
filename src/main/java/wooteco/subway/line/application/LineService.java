@@ -8,9 +8,11 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.application.PathService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +22,13 @@ public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private PathService pathService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService, PathService pathService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.pathService = pathService;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -38,6 +42,7 @@ public class LineService {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
+            pathService.addSectionsInfo(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
         return null;
@@ -46,7 +51,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -73,9 +78,11 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        List<Section> outdatedSections = new ArrayList<>(line.getSections().getSections());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
+        pathService.updateSectionsInfo(outdatedSections, line.getSections().getSections());
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);

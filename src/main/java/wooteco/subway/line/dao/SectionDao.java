@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.dao.StationDao;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -17,12 +18,26 @@ public class SectionDao {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
+    private StationDao stationDao;
 
-    public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource, StationDao stationDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SECTION")
                 .usingGeneratedKeyColumns("id");
+        this.stationDao = stationDao;
+    }
+
+    public List<Section> findAll() {
+        String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new Section(
+                    rs.getLong("id"),
+                    stationDao.findById(rs.getLong("up_station_id")),
+                    stationDao.findById(rs.getLong("down_station_id")),
+                    rs.getInt("distance")
+            )
+        );
     }
 
     public Section insert(Line line, Section section) {
