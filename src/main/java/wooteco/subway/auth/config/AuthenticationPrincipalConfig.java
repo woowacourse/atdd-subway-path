@@ -9,6 +9,7 @@ import wooteco.subway.member.application.MemberService;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
+
     private final MemberService memberService;
 
     public AuthenticationPrincipalConfig(MemberService memberService) {

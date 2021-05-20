@@ -13,6 +13,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberResponse;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private MemberService memberService;
 
     public AuthenticationPrincipalArgumentResolver(MemberService memberService) {
@@ -25,7 +26,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extract(
             Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         String email = memberService.getPayLoad(token);
