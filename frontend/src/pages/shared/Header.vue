@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar flat app color="amber" clipped-left :height="65">
+  <v-app-bar :height="65" app clipped-left color="amber" flat>
     <v-toolbar-title class="pl-0 mr-12 align-center relative bottom-2">
-      <v-btn to="/" text>
+      <v-btn text to="/">
         <div class="title">
           <span>RUNNINGMAP</span>
         </div>
@@ -9,20 +9,21 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn
-      v-for="navItem in navItems"
-      :key="navItem._id"
-      :to="navItem.link"
-      text
-      >{{ navItem.text }}</v-btn
+        v-for="navItem in navItems"
+        :key="navItem._id"
+        :to="navItem.link"
+        text
+    >{{ navItem.text }}
+    </v-btn
     >
     <template v-if="member">
-      <v-menu offset-y transition="slide-y-transition" class="z-10" bottom>
+      <v-menu bottom class="z-10" offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
-          <div v-on="on" v-bind="attrs">
+          <div v-bind="attrs" v-on="on">
             <div class="text-normal cursor-pointer mx-2 my-thumbnail-button">
-              <v-avatar dark width="35" height="35">
+              <v-avatar dark height="35" width="35">
                 <img
-                  src="https://avatars3.githubusercontent.com/u/4353846?v&amp;#x3D;4"
+                    src="https://avatars3.githubusercontent.com/u/4353846?v&amp;#x3D;4"
                 />
               </v-avatar>
               <div class="desktop-view d-inline-block">
@@ -34,9 +35,9 @@
         </template>
         <v-list class="py-0">
           <v-list class="py-0">
-            <MyPageButton />
-            <v-divider class="ma-0" />
-            <LogoutButton />
+            <MyPageButton/>
+            <v-divider class="ma-0"/>
+            <LogoutButton/>
           </v-list>
         </v-list>
       </v-menu>
@@ -50,14 +51,14 @@
 </template>
 
 <script>
-import { NAV_ITEMS } from "../../utils/constants";
-import { mapGetters } from "vuex";
+import {NAV_ITEMS} from "../../utils/constants";
+import {mapGetters} from "vuex";
 import LogoutButton from "./components/LogoutButton";
 import MyPageButton from "./components/MyPageButton";
 
 export default {
   name: "Header",
-  components: { MyPageButton, LogoutButton },
+  components: {MyPageButton, LogoutButton},
   computed: {
     ...mapGetters(["member"]),
   },

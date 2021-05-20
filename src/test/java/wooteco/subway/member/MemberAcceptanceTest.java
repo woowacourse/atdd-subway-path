@@ -25,49 +25,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int NEW_AGE = 30;
 
     private static TokenResponse 로그인_유저;
-    
-    @BeforeEach
-    void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-        로그인_유저 = 로그인되어_있음(EMAIL, PASSWORD);
-    }
-
-    @DisplayName("로그인 되어있는 상황에서 정보 조회를 요청한다.")
-    @Test
-    public void search() {
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(로그인_유저);
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
-    }
-
-    @DisplayName("로그인 되어있는 상황에서 정보를 수정한다.")
-    @Test
-    public void update() {
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(로그인_유저, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
-    }
-
-    @DisplayName("로그인 되어있는 상황에서 정보를 삭제한다.")
-    @Test
-    public void delete() {
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(로그인_유저);
-        회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("로그인 되어있지 않은 상황에서 회원 관리 기능 요청시 예외가 발생한다.")
-    @Test
-    public void requestWithoutLogin() {
-        final TokenResponse 로그아웃_유저 = new TokenResponse(EMAIL);
-
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(로그아웃_유저);
-        권한_없음_응답(findResponse);
-
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(로그아웃_유저, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        권한_없음_응답(updateResponse);
-
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(로그아웃_유저);
-        권한_없음_응답(deleteResponse);
-    }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -136,5 +93,48 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 권한_없음_응답(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @BeforeEach
+    void manageMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        로그인_유저 = 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
+    @DisplayName("로그인 되어있는 상황에서 정보 조회를 요청한다.")
+    @Test
+    public void search() {
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(로그인_유저);
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
+
+    @DisplayName("로그인 되어있는 상황에서 정보를 수정한다.")
+    @Test
+    public void update() {
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(로그인_유저, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        회원_정보_수정됨(updateResponse);
+    }
+
+    @DisplayName("로그인 되어있는 상황에서 정보를 삭제한다.")
+    @Test
+    public void delete() {
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(로그인_유저);
+        회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("로그인 되어있지 않은 상황에서 회원 관리 기능 요청시 예외가 발생한다.")
+    @Test
+    public void requestWithoutLogin() {
+        final TokenResponse 로그아웃_유저 = new TokenResponse(EMAIL);
+
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(로그아웃_유저);
+        권한_없음_응답(findResponse);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(로그아웃_유저, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        권한_없음_응답(updateResponse);
+
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(로그아웃_유저);
+        권한_없음_응답(deleteResponse);
     }
 }

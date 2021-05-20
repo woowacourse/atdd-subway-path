@@ -14,17 +14,24 @@ public class Path {
     private final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
     public Path(final List<Line> lines) {
-        for(final Line line : lines){
+        for (final Line line : lines) {
             addSections(line.getSectionsAsList());
         }
     }
 
     private void addSections(final List<Section> sections) {
         for (final Section section : sections) {
-            graph.addVertex(section.getUpStation());
-            graph.addVertex(section.getDownStation());
+            addStation(section.getUpStation());
+            addStation(section.getDownStation());
+
             DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
             graph.setEdgeWeight(edge, section.getDistance());
+        }
+    }
+
+    private void addStation(Station station) {
+        if(graph.containsVertex(station)){
+            graph.addVertex(station);
         }
     }
 
@@ -32,7 +39,7 @@ public class Path {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public int distance(final Station source, final Station target){
-        return (int)dijkstraShortestPath.getPathWeight(source, target);
+    public int distance(final Station source, final Station target) {
+        return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 }
