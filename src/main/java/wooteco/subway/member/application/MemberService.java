@@ -6,6 +6,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.exception.LoginFailEmailException;
 import wooteco.subway.auth.exception.LoginWrongPasswordException;
+import wooteco.subway.member.dto.TranslatedMemberRequest;
 import wooteco.subway.member.exception.NotRegisteredMemberException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -38,9 +39,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmailToken(String token) {
+    public TranslatedMemberRequest findMemberByEmailToken(String token) {
         String email = tokenProvider.getPayload(token);
-        return findMemberByEmail(email);
+        MemberResponse memberResponse = findMemberByEmail(email);
+        return new TranslatedMemberRequest(memberResponse);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

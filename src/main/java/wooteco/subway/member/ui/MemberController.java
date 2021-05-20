@@ -8,6 +8,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
+import wooteco.subway.member.dto.TranslatedMemberRequest;
 
 @RestController
 public class MemberController {
@@ -45,21 +46,24 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse) {
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse,
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest,
         @RequestBody MemberRequest memberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         memberService.updateMember(memberResponse.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse) {
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         memberService.deleteMember(memberResponse.getId());
         return ResponseEntity.noContent().build();
     }
