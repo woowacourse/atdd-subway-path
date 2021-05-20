@@ -1,6 +1,7 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -39,7 +40,7 @@ public class SectionDao {
     }
 
     public void insertSections(Line line) {
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = line.getSections().asList();
         List<Map<String, Object>> batchValues = sections.stream()
                 .map(section -> {
                     Map<String, Object> params = new HashMap<>();
