@@ -2,6 +2,7 @@ package wooteco.subway.station.ui;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.application.dto.StationResponseDto;
@@ -16,11 +17,12 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Validated
 @RequestMapping("/stations")
 @RestController
 public class StationController {
 
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;

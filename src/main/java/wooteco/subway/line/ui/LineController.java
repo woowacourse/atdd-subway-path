@@ -1,6 +1,7 @@
 package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.application.dto.LineRequestDto;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Validated
 @RestController
 @RequestMapping("/lines")
 public class LineController {

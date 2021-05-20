@@ -1,6 +1,7 @@
 package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.application.dto.MemberRequestDto;
@@ -16,6 +17,7 @@ import wooteco.subway.member.ui.dto.valid.NumberValidation;
 import javax.validation.Valid;
 import java.net.URI;
 
+@Validated
 @RequestMapping("/members")
 @RestController
 public class MemberController {
