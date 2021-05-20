@@ -65,7 +65,7 @@ npm run serve
 - [x] 백엔드 작업
     - [x] JWT 라이브러리를 통한 액세스 토큰 발급하기
         - [x] POST: /login/token 구현하기
-    - [ ] Login Interceptor 구현하기
+    - [x] Login Interceptor 구현하기
     - [x] 발급한 토큰을 기반으로 회원 관리 기능 추가하기    
         - [x] GET: /members/me 구현하기
         - [x] PUT: /members/me 구현하기
