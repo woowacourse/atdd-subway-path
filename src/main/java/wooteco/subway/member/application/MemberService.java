@@ -38,6 +38,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMemberByEmailToken(String token) {
+        String email = tokenProvider.getPayload(token);
+        return findMemberByEmail(email);
+    }
+
     public void updateMember(Long id, MemberRequest memberRequest) {
         memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
             memberRequest.getAge()));
@@ -60,9 +65,5 @@ public class MemberService {
         if (!member.isSamePassword(password)) {
             throw new LoginWrongPasswordException();
         }
-    }
-
-    public String getPayLoad(String tokenName) {
-        return tokenProvider.getPayload(tokenName);
     }
 }
