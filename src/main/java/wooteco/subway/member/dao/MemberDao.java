@@ -1,5 +1,9 @@
 package wooteco.subway.member.dao;
 
+import java.util.List;
+import java.util.Optional;
+import javax.sql.DataSource;
+
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,11 +11,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.member.domain.Member;
 
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Optional;
+import wooteco.subway.member.domain.Member;
 
 @Repository
 public class MemberDao {
