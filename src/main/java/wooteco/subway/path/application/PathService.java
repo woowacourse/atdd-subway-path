@@ -35,7 +35,7 @@ public class PathService {
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> loadCurrentSubwayMap() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         loadStationInfo(graph);
         loadLineInfo(graph);
         return graph;
@@ -65,8 +65,8 @@ public class PathService {
 
     private PathResponse calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station source,
                                                Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        final GraphPath shortestGraphPath = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        final GraphPath<Station, DefaultWeightedEdge> shortestGraphPath = dijkstraShortestPath.getPath(source, target);
         final List<Station> shortestPath = shortestGraphPath.getVertexList();
         final int distance = (int) shortestGraphPath.getWeight();
 
