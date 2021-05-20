@@ -24,7 +24,7 @@ import wooteco.subway.station.dao.StationDao;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 @Sql("classpath:initializationForPathTest.sql")
-class PathServiceTest {
+class PathServiceIntegrationTest {
 
     @Autowired
     private LineDao lineDao;
@@ -32,26 +32,6 @@ class PathServiceTest {
     private StationDao stationDao;
     @Autowired
     private PathService pathService;
-
-    @Test
-    @DisplayName("라이브러리 체크 테스트")
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath
-            = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-            = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
-    }
 
     @Test
     @DisplayName("최단거리 반환 테스트")
