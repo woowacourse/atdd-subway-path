@@ -1,48 +1,26 @@
 package wooteco.subway.path.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.exception.NotExistingPathException;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
 public class Path {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final SubwayPathStrategy strategy;
 
     public Path(List<Station> stations, List<Section> sections) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        initializeGraph(stations, sections);
+        this(new DijkstraSubwayPathStrategy(stations, sections));
     }
 
-    private void initializeGraph(List<Station> stations, List<Section> sections) {
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-        for (Section section : sections) {
-            graph.setEdgeWeight(
-                    graph.addEdge(section.getUpStation(), section.getDownStation()),
-                    section.getDistance());
-        }
+    public Path(SubwayPathStrategy strategy) {
+        this.strategy = strategy;
     }
 
     public List<Station> shortestPath(Station source, Station target) {
-        try {
-            return shortestGraph(source, target).getVertexList();
-        } catch (NullPointerException exception) {
-            throw new NotExistingPathException();
-        }
+        return strategy.shortestPath(source, target);
     }
 
     public int shortestDistance(Station source, Station target) {
-        return (int) shortestGraph(source, target).getWeight();
-    }
-
-    private GraphPath shortestGraph(Station source, Station target) {
-        DijkstraShortestPath path = new DijkstraShortestPath(graph);
-        return path.getPath(source, target);
+        return strategy.shortestDistance(source, target);
     }
 }
