@@ -1,12 +1,10 @@
 package wooteco.subway.path.application;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.domain.Graph;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -19,37 +17,38 @@ public class PathService {
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final Graph graph;
 
     public PathService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.graph = new Graph();
+        initializeGraph();
     }
 
     public PathResponse shortestDistancePath(Long source, Long target) {
-        List<Section> sections = sectionDao.findAll();
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);
 
-        return getPathResponse(sections, sourceStation, targetStation);
+        return getPathResponse(sourceStation, targetStation);
     }
 
-    private PathResponse getPathResponse(List<Section> sections, Station sourceStation, Station targetStation) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
-        }
+    private void initializeGraph() {
+        List<Section> sections = sectionDao.findAll();
+        graph.initialize(sections);
+    }
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        List<Station> shortestPath = path.getVertexList();
+    private PathResponse getPathResponse(Station sourceStation, Station targetStation) {
+        List<Station> shortestPath = graph.shortestPath(sourceStation, targetStation);
+        int shortestDistance = graph.shortestDistance(sourceStation, targetStation);
 
         return new PathResponse(
                 StationResponse.listOf(shortestPath),
-                (int) path.getWeight()
+                shortestDistance
         );
+    }
+
+    public void addSectionInfo(Station upStation, Station downStation, int distance) {
+        graph.addSectionInfo(upStation, downStation, distance);
     }
 }
