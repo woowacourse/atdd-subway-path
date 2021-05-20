@@ -9,7 +9,9 @@ import wooteco.subway.line.application.dto.SectionRequestDto;
 import wooteco.subway.line.ui.dto.LineRequest;
 import wooteco.subway.line.ui.dto.LineResponse;
 import wooteco.subway.line.ui.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.valid.NumberValidation;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,7 +29,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponseDto lineResponseDto = lineService.saveLine(new LineRequestDto(
                 lineRequest.getName(),
                 lineRequest.getColor(),
@@ -55,15 +57,15 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineResponse> findLineById(@NumberValidation @PathVariable Long id) {
         LineResponseDto lineResponseDto = lineService.findLineResponseById(id);
 
         return ResponseEntity.ok(LineResponse.of(lineResponseDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id,
-                                           @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> updateLine(@NumberValidation @PathVariable Long id,
+                                           @Valid @RequestBody LineRequest lineRequest) {
         lineService.updateLine(id, new LineRequestDto(
                 lineRequest.getName(),
                 lineRequest.getColor(),
@@ -76,15 +78,15 @@ public class LineController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@NumberValidation @PathVariable Long id) {
         lineService.deleteLineById(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId,
-                                               @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addLineStation(@NumberValidation @PathVariable Long lineId,
+                                               @Valid @RequestBody SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, new SectionRequestDto(
                 sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId(),
@@ -95,8 +97,8 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId,
-                                                  @RequestParam Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@NumberValidation @PathVariable Long lineId,
+                                                  @NumberValidation @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
 
         return ResponseEntity.ok().build();

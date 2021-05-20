@@ -7,7 +7,10 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.application.dto.StationResponseDto;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
+import wooteco.subway.station.ui.dto.valid.NumberValidation;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +28,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
         StationResponseDto stationResponseDto = stationService.saveStation(stationRequest);
 
         return ResponseEntity
@@ -52,7 +55,7 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@NumberValidation @PathVariable Long id) {
         stationService.deleteStationById(id);
 
         return ResponseEntity.noContent().build();

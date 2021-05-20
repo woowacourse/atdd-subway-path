@@ -1,12 +1,16 @@
 package wooteco.subway.station.ui.dto;
 
 import wooteco.subway.station.application.dto.StationResponseDto;
+import wooteco.subway.station.ui.dto.valid.NumberValidation;
+import wooteco.subway.station.ui.dto.valid.StringValidation;
 
 import java.beans.ConstructorProperties;
 
 public class StationResponse {
 
+    @NumberValidation
     private final Long id;
+    @StringValidation
     private final String name;
 
     @ConstructorProperties({"id", "name"})

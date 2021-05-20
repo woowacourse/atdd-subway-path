@@ -32,6 +32,12 @@ public class PathService {
         return new PathResponseDto(stationResponses, statistics.getDistance());
     }
 
+    private List<Section> extractSections(List<Line> lines) {
+        return lines.stream()
+                .flatMap(line -> line.getSections().getSections().stream())
+                .collect(toList());
+    }
+
     private ShortestPath.Statistics getStatistics(Long source, Long target, List<Line> lines, List<Section> sections) {
         ShortestPath shortestPath = new ShortestPath(sections);
 
@@ -41,24 +47,18 @@ public class PathService {
         );
     }
 
-    private List<StationResponseDto> getStationResponses(ShortestPath.Statistics statistics) {
-        return statistics.getShortestPath().stream()
-                .map(station -> new StationResponseDto(station.getId(), station.getName()))
-                .collect(toList());
-    }
-
-    private List<Section> extractSections(List<Line> lines) {
-        return lines.stream()
-                .flatMap(line -> line.getSections().getSections().stream())
-                .collect(toList());
-    }
-
     private Station stationIdToStation(Long id, List<Line> lines) {
         return lines.stream()
                 .flatMap(line -> line.getStations().stream())
                 .filter(station -> station.getId().equals(id))
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
+    }
+
+    private List<StationResponseDto> getStationResponses(ShortestPath.Statistics statistics) {
+        return statistics.getShortestPath().stream()
+                .map(station -> new StationResponseDto(station.getId(), station.getName()))
+                .collect(toList());
     }
 
 }

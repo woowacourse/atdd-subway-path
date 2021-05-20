@@ -1,11 +1,13 @@
 package wooteco.subway.station.ui.dto;
 
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.ui.dto.valid.StringValidation;
 
 import java.beans.ConstructorProperties;
 
 public class StationRequest {
 
+    @StringValidation
     private final String name;
 
     @ConstructorProperties("name")

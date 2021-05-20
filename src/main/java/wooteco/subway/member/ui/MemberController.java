@@ -11,7 +11,9 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.ui.dto.MemberRequest;
 import wooteco.subway.member.ui.dto.MemberResponse;
 import wooteco.subway.member.ui.dto.TokenRequest;
+import wooteco.subway.member.ui.dto.valid.NumberValidation;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RequestMapping("/members")
@@ -24,7 +26,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponseDto memberResponseDto = memberService.createMember(
                 new MemberRequestDto(
                         request.getEmail(),
@@ -39,7 +41,7 @@ public class MemberController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
+    public ResponseEntity<MemberResponse> findMember(@NumberValidation @PathVariable Long id) {
         MemberResponseDto memberResponseDto = memberService.findMember(id);
 
         return ResponseEntity.ok().body(
@@ -67,7 +69,7 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                             @RequestBody MemberRequest memberRequest) {
+                                                             @Valid @RequestBody MemberRequest memberRequest) {
         String email = loginMember.getEmail();
         memberService.updateMember(
                 email, new MemberRequestDto(
@@ -88,7 +90,7 @@ public class MemberController {
     }
 
     @PostMapping("/authentication")
-    public ResponseEntity<Void> memberAuthenticate(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<Void> memberAuthenticate(@Valid @RequestBody TokenRequest tokenRequest) {
         memberService.authenticate(
                 new TokenRequestDto(
                         tokenRequest.getEmail(),

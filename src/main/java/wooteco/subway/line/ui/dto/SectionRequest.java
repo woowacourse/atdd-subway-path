@@ -1,11 +1,16 @@
 package wooteco.subway.line.ui.dto;
 
+import wooteco.subway.line.ui.dto.valid.NumberValidation;
+
 import java.beans.ConstructorProperties;
 
 public class SectionRequest {
 
+    @NumberValidation
     private final Long upStationId;
+    @NumberValidation
     private final Long downStationId;
+    @NumberValidation
     private final int distance;
 
     @ConstructorProperties({"upStationId", "downStationId", "distance"})
