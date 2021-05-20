@@ -21,7 +21,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "bbwwpark@paran.com";
     public static final String PASSWORD = "1q2w3e4r5e!";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "bbwwpark2@naver.com";
     public static final String NEW_PASSWORD = "1q2w3e4r5e~";
     public static final int NEW_AGE = 30;
 
