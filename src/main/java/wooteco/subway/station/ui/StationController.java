@@ -40,7 +40,7 @@ public class StationController {
                 ));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
         List<StationResponseDto> allStationResponses = stationService.findAllStationResponses();
         List<StationResponse> stationResponses = toStationResponses(allStationResponses);
