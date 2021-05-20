@@ -52,7 +52,6 @@ public class StationController {
         return allStationResponses.stream()
                 .map(StationResponse::of)
                 .collect(toList());
-
     }
 
     @DeleteMapping("/{id}")

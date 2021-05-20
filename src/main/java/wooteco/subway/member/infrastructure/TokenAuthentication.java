@@ -1,6 +1,8 @@
 package wooteco.subway.member.infrastructure;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -30,9 +32,12 @@ public class TokenAuthentication {
     }
 
     private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) {
-        HttpEntity<TokenRequest> request = new HttpEntity<>(tokenRequest);
+        RequestEntity<TokenRequest> request = RequestEntity
+                .post(AUTHENTICATION_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tokenRequest);
 
-        ResponseEntity<TokenRequest> response = restTemplate.postForEntity(AUTHENTICATION_URL, request, TokenRequest.class);
+        ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
         return response.getStatusCode().value();
     }
