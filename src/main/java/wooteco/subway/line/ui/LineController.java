@@ -20,7 +20,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 public class LineController {
 
     private final LineService lineService;
@@ -32,7 +32,7 @@ public class LineController {
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        return ResponseEntity.created(URI.create("/" + line.getId())).body(line);
     }
 
     @GetMapping

@@ -10,7 +10,7 @@ import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
 @RestController
-@RequestMapping(value = "/paths", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/paths", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PathController {
 
     private final PathService pathService;

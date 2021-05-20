@@ -36,7 +36,6 @@ public class PathService {
             return StationResponse.of(stationDao.findById(Long.parseLong(it)));
         }).collect(Collectors.toList());
         int distance = (int) subwayDijkstraGraph.getWeight();
-
         return new PathResponse(stationResponses, distance);
     }
 
