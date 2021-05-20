@@ -1,8 +1,8 @@
 package wooteco.subway.path.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.WeightedGraph;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -14,16 +14,19 @@ import java.util.List;
 import java.util.Set;
 
 public class Path {
-    private final List<Section> sections = new ArrayList<>();
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-    public Path(List<Line> lines) {
+    private final List<Section> sections = new ArrayList<>();
+    private final WeightedGraph<Station, DefaultWeightedEdge> graph;
+    private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPath;
+
+    public Path(List<Line> lines, WeightedGraphStrategy weightedGraphStrategy, ShortestPathStrategy shortestPathStrategy) {
         for (Line line : lines) {
             Sections sections = line.getSections();
             this.sections.addAll(sections.getSections());
         }
+        graph = weightedGraphStrategy.match();
         initGraph();
+        shortestPath = shortestPathStrategy.match(graph);
     }
 
     private void initGraph() {
@@ -54,12 +57,12 @@ public class Path {
     }
 
     public List<Station> getShortestPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target)
+        return shortestPath.getPath(source, target)
                 .getVertexList();
     }
 
     public int getTotalDistance(Station source, Station target) {
-        return (int) dijkstraShortestPath.getPath(source, target)
+        return (int) shortestPath.getPath(source, target)
                 .getWeight();
     }
 }
