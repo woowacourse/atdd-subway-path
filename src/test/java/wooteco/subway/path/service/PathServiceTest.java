@@ -14,9 +14,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.dao.StationDao;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -25,9 +27,9 @@ import wooteco.subway.station.application.StationService;
 class PathServiceTest {
 
     @Autowired
-    private LineService lineService;
+    private LineDao lineDao;
     @Autowired
-    private StationService stationService;
+    private StationDao stationDao;
     @Autowired
     private PathService pathService;
 

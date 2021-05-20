@@ -7,10 +7,12 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.exception.NotReachableException;
 import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.exception.SameStationException;
@@ -18,18 +20,18 @@ import wooteco.subway.station.exception.SameStationException;
 @Service
 public class PathService {
 
-    private final LineService lineService;
-    private final StationService stationService;
+    private final LineDao lineDao;
+    private final StationDao stationDao;
 
-    public PathService(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
+    public PathService(LineDao lineDao, StationDao stationDao) {
+        this.lineDao = lineDao;
+        this.stationDao = stationDao;
     }
 
     public PathResponse optimalPath(PathRequest pathRequest) {
         checkSameStation(pathRequest);
-        Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
-        Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
+        Station sourceStation = stationDao.findById(pathRequest.getSourceStationId());
+        Station targetStation = stationDao.findById(pathRequest.getTargetStationId());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -46,15 +48,14 @@ public class PathService {
     }
 
     private void initializeStationsOnGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        stationService.findAllStationResponses()
+        stationDao.findAll()
             .stream()
-            .map(element -> new Station(element.getId(), element.getName()))
             .collect(Collectors.toList())
             .forEach(element -> graph.addVertex(element));
     }
 
     private void initializeSectionsOnGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        lineService.findLines().stream()
+        lineDao.findAll().stream()
             .map(line -> line.getSections())
             .flatMap(sectionsOnLine -> sectionsOnLine.getSections().stream())
             .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
