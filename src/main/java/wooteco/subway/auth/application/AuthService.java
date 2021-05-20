@@ -1,6 +1,7 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.application.exception.AuthorizationException;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
@@ -18,6 +19,7 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmail(tokenRequest.getEmail())
                 .orElseThrow(() -> new AuthorizationException("이메일이나 비밀번호가 유효하지 않습니다!"));

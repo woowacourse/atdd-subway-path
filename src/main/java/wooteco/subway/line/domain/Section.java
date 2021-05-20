@@ -24,6 +24,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public Long upStationId() {
+        return upStation.getId();
+    }
+
+    public Long downStationId() {
+        return downStation.getId();
+    }
+
     public Long getId() {
         return id;
     }
