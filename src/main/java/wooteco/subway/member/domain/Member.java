@@ -30,10 +30,7 @@ public class Member {
     }
 
     public boolean isSamePassword(String password) {
-        if (this.password.equals(password)) {
-            return true;
-        }
-        return false;
+        return this.password.equals(password);
     }
 
     public Long getId() {
