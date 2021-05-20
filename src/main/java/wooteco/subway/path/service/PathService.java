@@ -31,9 +31,10 @@ public class PathService {
         Station targetStation = stationService.findStationById(pathServiceDto.getTargetStationId());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initializeGraph(graph);
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+            = new DijkstraShortestPath(graph);
 
         return translateResponse(dijkstraShortestPath, sourceStation, targetStation);
     }
@@ -59,8 +60,8 @@ public class PathService {
                 section.getDownStation()), section.getDistance()));
     }
 
-    private PathResponse translateResponse(DijkstraShortestPath dijkstraShortestPath,
-        Station sourceStation, Station targetStation) {
+    private PathResponse translateResponse(DijkstraShortestPath<Station, DefaultWeightedEdge>
+        dijkstraShortestPath, Station sourceStation, Station targetStation) {
         List<StationResponse> stationResponses = stationConnection(dijkstraShortestPath,
             sourceStation, targetStation);
         Double weight = dijkstraShortestPath.getPathWeight(sourceStation, targetStation);
@@ -73,8 +74,8 @@ public class PathService {
         }
     }
 
-    private List<StationResponse> stationConnection(DijkstraShortestPath dijkstraShortestPath,
-        Station sourceStation, Station targetStation) {
+    private List<StationResponse> stationConnection(DijkstraShortestPath<Station,
+        DefaultWeightedEdge> dijkstraShortestPath, Station sourceStation, Station targetStation) {
         try {
             List<Station> shortestPath
                 = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
