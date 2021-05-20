@@ -19,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> getShortesPath(@RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> getShortestPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(
                 pathService.shortestDistancePath(source, target)
         );

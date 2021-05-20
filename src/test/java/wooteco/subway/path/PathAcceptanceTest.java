@@ -96,11 +96,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("구간 추가 시 거리 경로에도 반영이 되어야 한다.")
     public void findPathByDistanceWhenSectionAdded() {
-        지하철_구간_생성_요청(신분당선, 강남역, 교대역, 1);
-        지하철_구간_생성_요청(신분당선, 교대역, 양재역, 2);
+        지하철_구간_생성_요청(신분당선, 강남역, 남부터미널역, 6);
 
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 2L);
-        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 교대역, 양재역));
-        총_거리가_응답됨(response, 3);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 4L);
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 남부터미널역));
+        총_거리가_응답됨(response, 6);
     }
 }

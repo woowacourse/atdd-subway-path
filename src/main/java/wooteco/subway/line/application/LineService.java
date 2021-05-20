@@ -12,6 +12,7 @@ import wooteco.subway.path.application.PathService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ public class LineService {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
+            pathService.addSectionsInfo(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
         return null;
@@ -76,10 +78,11 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        List<Section> outdatedSections = new ArrayList<>(line.getSections().getSections());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
-        pathService.addSectionInfo(upStation, downStation, request.getDistance());
+        pathService.updateSectionsInfo(outdatedSections, line.getSections().getSections());
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);

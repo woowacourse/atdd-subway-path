@@ -3,7 +3,6 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.domain.Graph;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
@@ -23,10 +22,10 @@ public class PathService {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
         this.graph = new Graph();
-        initializeGraph();
     }
 
     public PathResponse shortestDistancePath(Long source, Long target) {
+        initializeGraph();
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);
 
@@ -48,7 +47,11 @@ public class PathService {
         );
     }
 
-    public void addSectionInfo(Station upStation, Station downStation, int distance) {
+    public void updateSectionsInfo(List<Section> outdatedSections, List<Section> updatedSections) {
+        graph.updateSectionsInfo(outdatedSections, updatedSections);
+    }
+
+    public void addSectionsInfo(Station upStation, Station downStation, int distance) {
         graph.addSectionInfo(upStation, downStation, distance);
     }
 }
