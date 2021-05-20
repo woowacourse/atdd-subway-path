@@ -1,7 +1,7 @@
 package wooteco.subway.line.ui.dto;
 
-import wooteco.subway.line.ui.dto.valid.NumberValidation;
 import wooteco.subway.line.application.dto.LineResponseDto;
+import wooteco.subway.line.ui.dto.valid.NumberValidation;
 import wooteco.subway.line.ui.dto.valid.StringValidation;
 
 import javax.validation.constraints.NotNull;

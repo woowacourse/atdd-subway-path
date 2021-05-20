@@ -10,7 +10,6 @@ import wooteco.subway.station.ui.dto.StationResponse;
 import wooteco.subway.station.ui.dto.valid.NumberValidation;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
