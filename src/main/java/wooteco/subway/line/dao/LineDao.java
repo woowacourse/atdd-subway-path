@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.exception.LineError;
+import wooteco.subway.line.exception.LineException;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -75,8 +77,8 @@ public class LineDao {
     }
 
     private Line mapLine(List<Map<String, Object>> result) {
-        if (result.size() == 0) {
-            throw new RuntimeException();
+        if (result.isEmpty()) {
+            throw new LineException(LineError.NO_LINE_MATCHED);
         }
 
         List<Section> sections = extractSections(result);

@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.exception.LineError;
+import wooteco.subway.line.exception.LineException;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -78,8 +80,8 @@ public class SectionDao {
     }
 
     private Section mapSection(List<Map<String, Object>> result) {
-        if (result.size() == 0) {
-            throw new RuntimeException();
+        if (result.isEmpty()) {
+            throw new LineException(LineError.NO_SECTION_MATCHED);
         }
 
         Station upStation = new Station((Long)result.get(0).get("up_station_id"), (String) result.get(0).get("up_station_name"));
