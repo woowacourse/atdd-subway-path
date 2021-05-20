@@ -1,18 +1,8 @@
 package wooteco.subway.path.application;
 
-import org.jgrapht.Graph;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -31,27 +21,15 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findPath(final Long sourceId, final Long targetId) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+        final Station source = stationService.findStationById(sourceId);
+        final Station target = stationService.findStationById(targetId);
 
-        List<Line> lines = lineService.findLines();
-        for(Line line : lines){
-            for(Section section : line.getSections().asList()){
-                graph.addVertex(section.getUpStation());
-                graph.addVertex(section.getDownStation());
-                DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-                graph.setEdgeWeight(edge, section.getDistance());
-            }
-        }
+        final Path shortest = new Path(lineService.findLines());
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        final List<Station> route = shortest.route(source, target);
+        final int totalDistance = shortest.distance(source, target);
 
-        Station source = stationService.findStationById(sourceId);
-        Station target = stationService.findStationById(targetId);
-
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-        int totalDistance = (int)dijkstraShortestPath.getPathWeight(source, target);
-
-        return new PathResponse(StationResponse.listOf(shortestPath), totalDistance);
+        return new PathResponse(StationResponse.listOf(route), totalDistance);
     }
 }
