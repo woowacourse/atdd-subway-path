@@ -20,14 +20,13 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateLogin(tokenRequest);
-        final Member member = memberDao.findByEmail(tokenRequest.getEmail()).get();
+        final Member member = validateLogin(tokenRequest);
         final String memberId = String.valueOf(member.getId());
         final String accessToken = jwtTokenProvider.createToken(memberId);
         return new TokenResponse(accessToken);
     }
 
-    private void validateLogin(TokenRequest tokenRequest) {
+    private Member validateLogin(TokenRequest tokenRequest) {
         final String email = tokenRequest.getEmail();
         final String password = tokenRequest.getPassword();
         final Member member = memberDao.findByEmail(email)
@@ -35,5 +34,6 @@ public class AuthService {
         if (!member.isSamePassword(password)) {
             throw new AuthorizationException();
         }
+        return member;
     }
 }
