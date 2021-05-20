@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathServiceDto;
+import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.exception.NotReachableException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -26,10 +26,10 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse optimalPath(PathServiceDto pathServiceDto) {
-        checkSameStation(pathServiceDto);
-        Station sourceStation = stationService.findStationById(pathServiceDto.getSourceStationId());
-        Station targetStation = stationService.findStationById(pathServiceDto.getTargetStationId());
+    public PathResponse optimalPath(PathRequest pathRequest) {
+        checkSameStation(pathRequest);
+        Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
+        Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -69,9 +69,9 @@ public class PathService {
         return new PathResponse(stationResponses, weight);
     }
 
-    private void checkSameStation(PathServiceDto pathServiceDto) {
-        if (pathServiceDto.getSourceStationId() == pathServiceDto.getTargetStationId()) {
-            throw new SameStationException(pathServiceDto.getSourceStationId());
+    private void checkSameStation(PathRequest pathRequest) {
+        if (pathRequest.getSourceStationId() == pathRequest.getTargetStationId()) {
+            throw new SameStationException(pathRequest.getSourceStationId());
         }
     }
 

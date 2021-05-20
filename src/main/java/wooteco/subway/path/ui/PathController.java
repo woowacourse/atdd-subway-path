@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathServiceDto;
+import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.service.PathService;
 
 @RestController
@@ -22,8 +22,8 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@RequestParam("source") long sourceStationId,
         @RequestParam("target") long targetStationId) {
-        PathServiceDto pathServiceDto = new PathServiceDto(sourceStationId, targetStationId);
-        PathResponse pathResponse = pathService.optimalPath(pathServiceDto);
+        PathRequest pathRequest = new PathRequest(sourceStationId, targetStationId);
+        PathResponse pathResponse = pathService.optimalPath(pathRequest);
         return ResponseEntity.ok()
             .body(pathResponse);
     }

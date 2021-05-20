@@ -1,11 +1,11 @@
 package wooteco.subway.path.dto;
 
-public class PathServiceDto {
+public class PathRequest {
 
     private Long sourceStationId;
     private Long targetStationId;
 
-    public PathServiceDto(final Long sourceStationId, final Long targetStationId) {
+    public PathRequest(final Long sourceStationId, final Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
     }

@@ -1,7 +1,6 @@
 package wooteco.subway.path.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,16 +14,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathServiceDto;
+import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.station.application.StationService;
-import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationRequest;
-import wooteco.subway.station.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -67,10 +59,10 @@ class PathServiceTest {
         String sourceStationName = "구로디지털단지역";
         long targetStationId = 5L;
         String targetStationName = "가산디지털단지역";
-        PathServiceDto pathServiceDto = new PathServiceDto(sourceStationId, targetStationId);
+        PathRequest pathRequest = new PathRequest(sourceStationId, targetStationId);
 
         //when
-        PathResponse pathResponse = pathService.optimalPath(pathServiceDto);
+        PathResponse pathResponse = pathService.optimalPath(pathRequest);
 
         //then
         assertThat(pathResponse.getDistance()).isEqualTo(1);
