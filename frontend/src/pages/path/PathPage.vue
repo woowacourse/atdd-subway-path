@@ -159,8 +159,26 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
+        // TODO 최단 거리를 검색하는 API를 추가해주세요. [o]
         // this.pathResult = await fetch("/paths", {})
+
+        await fetch("http://localhost:8080/paths?source="+this.path.source+"&target="+this.path.target, {
+          method: "Get",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        }).then(function (response) {
+          if(response.ok){
+            alert("success");
+          }
+          if(!response.ok){
+            alert("fail");
+          }
+          return response.json();
+        }).then((data) =>{
+          this.pathResult = data
+        });
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +186,27 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
+        // TODO 모든 역을 불러오는 API를 추가해주세요. [o]
         // const stations = await fetch("/stations")
         // this.setStations(stations)
+
+        await fetch("http://localhost:8080/stations/", {
+          method: "Get",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        }).then(function (response) {
+          if(response.ok){
+            alert("success");
+          }
+          if(!response.ok){
+            alert("fail");
+          }
+          return response.json();
+        }).then((data) =>{
+          this.setStations(data)
+        });
+
         if (this.stations.length < 1) {
           return;
         }
@@ -187,8 +223,6 @@ export default {
     },
     async onSearchMinimumDurationType() {
       try {
-        // TODO 최소 시간을 검색하는 API를 추가해주세요.
-        // this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
