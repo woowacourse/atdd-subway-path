@@ -24,6 +24,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 }
