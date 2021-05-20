@@ -50,4 +50,8 @@ public class MemberService {
         return memberDao.findByEmail(email)
                 .orElseThrow(()-> new MemberException("올바르지 않은 사용자 토큰입니다."));
     }
+
+    public boolean isNotExistUser(final String email, final String password) {
+        return memberDao.isNotExistUser(email, password);
+    }
 }
