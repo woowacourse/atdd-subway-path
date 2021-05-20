@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.Payload;
 import wooteco.subway.exception.member.NotRegisteredMemberException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -19,13 +20,22 @@ public class MemberService {
         return memberDao.insert(request.toMember());
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id).orElseThrow(NotRegisteredMemberException::new);
+    public MemberResponse findMemberById(Long id) {
+        Member member = memberDao.findById(id)
+                .orElseThrow(NotRegisteredMemberException::new);
+        return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMemberByPayload(Payload payload) {
+        Member member = memberDao.findByEmail(
+                    payload.getPayload())
+                .orElseThrow(NotRegisteredMemberException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(
+                id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(Long id) {

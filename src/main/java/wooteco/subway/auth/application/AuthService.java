@@ -42,11 +42,6 @@ public class AuthService {
         return tokenProvider.getPayload(tokenName);
     }
 
-    public Long findMemberIdByEmail(String email) {
-        Member member = memberDao.findByEmail(email).orElseThrow(NotRegisteredMemberException::new);
-        return member.getId();
-    }
-
     public void checkAvailableToken(String token) {
         if (!tokenProvider.validateToken(token)) {
             throw new IllegalTokenException();
