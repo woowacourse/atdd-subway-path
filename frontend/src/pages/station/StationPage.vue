@@ -65,7 +65,7 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
+    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요. [o]
     const response = await fetch("http://localhost:8080/stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
@@ -83,7 +83,7 @@ export default {
         return;
       }
       try {
-        // TODO 역을 추가하는 API Sample
+        // TODO 역을 추가하는 API [o]
         const response = await fetch("http://localhost:8080/stations", {
           method: "POST",
           headers: {
@@ -112,8 +112,21 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch("http://localhost:8080/stations/{id}");
+        // TODO 역을 삭제하는 API를 추가해주세요. [o]
+        await fetch("http://localhost:8080/stations/"+ stationId, {
+          method: "Delete",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        }).then(function (response) {
+          if (response.ok) {
+            alert("success");
+          }
+          if (!response.ok) {
+            alert("fail");
+          }
+        });
+
         const idx = this.stations.findIndex(
           (station) => station.id === stationId
         );

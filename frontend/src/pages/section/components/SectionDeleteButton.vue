@@ -25,14 +25,47 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
+        // TODO 해당 구간을 삭제하는 api를 작성해주세요. [o]
         // await fetch("/api/section/{id}", {
         // lineId: this.lineId,
         // stationId: this.stationId,
         // })
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
+
+        await fetch("http://localhost:8080/lines/"+this.lineId+"/sections?stationId="+this.stationId, {
+          method: "Delete",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        }).then(function (response) {
+          if (!response.ok) {
+            alert("실패");
+          }
+          if (response.ok) {
+            alert("성공");
+          }
+        })
+
+        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요. [o]
         // const line = await fetch("/api/line/{lineId}")
         // this.setLine({ ...line })
+
+        await fetch("http://localhost:8080/lines/"+this.lineId, {
+          method: "Get",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          if(!response.ok){
+            alert("fail");
+          }
+          if(response.ok){
+            alert("success");
+          }
+          return response.json();
+        }).then((data) =>{
+          this.setLine({ ...data })
+        });
+
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

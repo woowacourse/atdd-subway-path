@@ -86,12 +86,49 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
+    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요. [o]
     // const stations = await fetch("/api/stations")
     // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
+
+    await fetch("http://localhost:8080/stations", {
+      method: "Get",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then(function (response) {
+      if(!response.ok){
+        alert("실패");
+      }
+      if(response.ok){
+        alert("성공");
+      }
+      return response.json();
+    }).then((data) =>{
+      this.setStations([...data])
+    });
+
+    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요. [o]
     // const lines = await fetch("/api/lines");
     // this.setLines([...lines]);
+
+    await fetch("http://localhost:8080/lines", {
+      method: "Get",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if(!response.ok){
+        alert("실패");
+      }
+      if(response.ok){
+        alert("성공");
+      }
+      return response.json();
+    }).then((data) =>{
+      this.setLines([...data]);
+    });
+
+
     this.initLinesView();
   },
   computed: {
@@ -124,8 +161,26 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
+        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요. [o]
         // this.activeLine = await fetch("/lines/{this.activeLineId}");
+
+        await fetch("http://localhost:8080/lines/"+this.activeLineId, {
+          method: "Get",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          if(!response.ok){
+            alert("실패");
+          }
+          if(response.ok){
+            alert("성공");
+          }
+          return response.json();
+        }).then((data) =>{
+          this.activeLine = data
+        });
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
