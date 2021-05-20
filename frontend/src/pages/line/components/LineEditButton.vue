@@ -125,7 +125,7 @@ export default {
           throw new Error(`${linesResponse.status}`);
         }
 
-        this.setLines([...await linesResponse.json()])
+        this.setLines([...await linesResponse.json()]);
 
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);

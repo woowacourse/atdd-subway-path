@@ -54,11 +54,11 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES, LOCAL_STORAGE_KEYS, FETCH_METHODS} from "../../utils/constants";
+import { SET_MEMBER, SHOW_SNACKBAR } from "@/store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES, LOCAL_STORAGE_KEYS, FETCH_METHODS} from "@/utils/constants";
 import validator from "../../utils/validator";
-import {fetchJsonWithBody, tokenHeaderIfExist} from "../../utils/fetchJson";
-import {fetchJsonWithHeader} from "../../utils/fetchJson";
+import {fetchJsonWithBody, tokenHeaderIfExist} from "@/utils/fetchJson";
+import {fetchJsonWithHeader} from "@/utils/fetchJson";
 
 export default {
   name: "LoginPage",

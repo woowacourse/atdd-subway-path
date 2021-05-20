@@ -83,8 +83,8 @@ import {
   SET_LINE,
   SET_LINES,
   SHOW_SNACKBAR,
-} from "../../../store/shared/mutationTypes";
-import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../../utils/constants";
+} from "@/store/shared/mutationTypes";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "@/utils/constants";
 import validator from "../../../utils/validator";
 import {fetchJson, fetchJsonWithBody} from "@/utils/fetchJson";
 
@@ -167,7 +167,7 @@ export default {
           throw new Error(`${createResponse.status}`);
         }
 
-        const linesResponse = await fetchJson('/api/lines', FETCH_METHODS.GET);
+        const linesResponse = await fetchJson("/api/lines", FETCH_METHODS.GET);
         if (!linesResponse.ok) {
           throw new Error(`${linesResponse.status}`);
         }

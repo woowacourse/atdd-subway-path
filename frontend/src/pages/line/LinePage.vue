@@ -39,7 +39,7 @@
 
 <script>
 import LineCreateButton from "./components/LineCreateButton";
-import { SET_LINES, SET_STATIONS } from "../../store/shared/mutationTypes";
+import { SET_LINES, SET_STATIONS } from "@/store/shared/mutationTypes";
 import { mapGetters, mapMutations } from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
@@ -57,13 +57,13 @@ export default {
     if (!stationsResponse.ok) {
       throw new Error(`${stationsResponse.status}`);
     }
-    this.setStations([...await stationsResponse.json()])
+    this.setStations([...await stationsResponse.json()]);
 
     const linesResponse = await fetchJson("/api/lines", FETCH_METHODS.GET);
     if (!linesResponse.ok) {
       throw new Error(`${linesResponse.status}`);
     }
-    this.setLines([...await linesResponse.json()])
+    this.setLines([...await linesResponse.json()]);
   },
   methods: {
     ...mapMutations([SET_LINES, SET_STATIONS]),

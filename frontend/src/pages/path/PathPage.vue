@@ -143,8 +143,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../utils/constants";
+import { SET_STATIONS, SHOW_SNACKBAR } from "@/store/shared/mutationTypes";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "@/utils/constants";
 import validator from "../../utils/validator";
 import {fetchJson} from "@/utils/fetchJson";
 
@@ -172,13 +172,13 @@ export default {
     },
     async initAllStationsView() {
       try {
-        const response = await fetchJson('/api/stations', FETCH_METHODS.GET);
+        const response = await fetchJson("/api/stations", FETCH_METHODS.GET);
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
 
         const stations = await response.json();
-        this.setStations(stations)
+        this.setStations(stations);
         if (this.stations.length < 1) {
           return;
         }

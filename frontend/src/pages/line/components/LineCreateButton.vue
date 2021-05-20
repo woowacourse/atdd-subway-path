@@ -154,12 +154,12 @@ export default {
         return;
       }
       try {
-        const response = await fetchJsonWithBody('/api/lines', FETCH_METHODS.POST, this.lineForm);
+        const response = await fetchJsonWithBody("/api/lines", FETCH_METHODS.POST, this.lineForm);
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
 
-        this.setLines([...this.lines, { ...await response.json() }]);
+        this.setLines([...this.lines, {...await response.json()}]);
 
         this.initLineForm();
         this.closeDialog();

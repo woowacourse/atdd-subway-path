@@ -6,8 +6,8 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { SET_LINE, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
-import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../../utils/constants";
+import { SET_LINE, SHOW_SNACKBAR } from "@/store/shared/mutationTypes";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "@/utils/constants";
 import {fetchJson} from "@/utils/fetchJson";
 
 export default {

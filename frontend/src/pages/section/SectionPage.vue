@@ -77,8 +77,8 @@ import {
   SET_LINES,
   SET_STATIONS,
   SHOW_SNACKBAR,
-} from "../../store/shared/mutationTypes";
-import {FETCH_METHODS, SNACKBAR_MESSAGES} from "../../utils/constants";
+} from "@/store/shared/mutationTypes";
+import {FETCH_METHODS, SNACKBAR_MESSAGES} from "@/utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 import {fetchJson} from "@/utils/fetchJson";
@@ -91,13 +91,13 @@ export default {
     if (!stationsResponse.ok) {
       throw new Error(`${stationsResponse.status}`);
     }
-    this.setStations([...await stationsResponse.json()])
+    this.setStations([...await stationsResponse.json()]);
 
     const linesResponse = await fetchJson("/api/lines", FETCH_METHODS.GET);
     if (!linesResponse.ok) {
       throw new Error(`${linesResponse.status}`);
     }
-    this.setLines([...await linesResponse.json()])
+    this.setLines([...await linesResponse.json()]);
 
     this.initLinesView();
   },

@@ -27,11 +27,11 @@ export default {
           throw new Error(`${deleteResponse.status}`);
         }
 
-        const linesResponse = await fetchJson(`/api/lines`, FETCH_METHODS.GET);
+        const linesResponse = await fetchJson("/api/lines", FETCH_METHODS.GET);
         if (!linesResponse.ok) {
           throw new Error(`${linesResponse.status}`);
         }
-        this.setLines([...await linesResponse.json()])
+        this.setLines([...await linesResponse.json()]);
 
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {

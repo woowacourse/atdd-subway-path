@@ -95,12 +95,12 @@ export default {
         return;
       }
       try {
-        const response = await fetchJsonWithBody('/api/members', FETCH_METHODS.POST, this.member);
+        const response = await fetchJsonWithBody("/api/members", FETCH_METHODS.POST, this.member);
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
-        await this.$router.replace(`/login`);
+        await this.$router.replace("/login");
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
       }

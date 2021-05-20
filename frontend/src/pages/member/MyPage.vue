@@ -40,10 +40,10 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_MEMBER, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import { SET_MEMBER, SHOW_SNACKBAR } from "@/store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "../../utils/constants";
-import {fetchJsonWithHeader, tokenHeaderIfExist} from "../../utils/fetchJson";
+import {FETCH_METHODS, LOCAL_STORAGE_KEYS, SNACKBAR_MESSAGES} from "@/utils/constants";
+import {fetchJsonWithHeader, tokenHeaderIfExist} from "@/utils/fetchJson";
 
 export default {
   name: "MyPage",
