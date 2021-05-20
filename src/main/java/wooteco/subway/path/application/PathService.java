@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class PathService {
 
-    SectionDao sectionDao;
-    StationDao stationDao;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
     public PathService(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;

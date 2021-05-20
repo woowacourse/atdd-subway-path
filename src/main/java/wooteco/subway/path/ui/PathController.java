@@ -12,7 +12,7 @@ import wooteco.subway.path.dto.PathResponse;
 @RequestMapping("/api")
 public class PathController {
 
-    PathService pathService;
+    private final PathService pathService;
 
     public PathController(PathService pathService) {
         this.pathService = pathService;
