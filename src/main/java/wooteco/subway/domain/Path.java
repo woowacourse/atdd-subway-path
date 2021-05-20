@@ -1,57 +1,42 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
+    private final Lines lines;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath;
 
 
     public Path(Lines lines) {
+        this.lines = lines;
         this.shortestPath = new DijkstraShortestPath<>(multiGraph(lines));
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> multiGraph(Lines lines) {
+    private WeightedMultigraph<Long, DefaultWeightedEdge> multiGraph(Lines lines) {
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        lines.allStations().forEach(graph::addVertex);
+        lines.allStations().stream().map(Station::getId).forEach(graph::addVertex);
         lines.allSections().forEach(section ->
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId()), section.getDistance())
         );
 
         return graph;
     }
 
-    public List<Station> shortestPath(Station sourceStation, Station targetStation) {
-        return shortestPath.getPath(sourceStation, targetStation).getVertexList();
+    public List<Station> shortestPath(Long sourceStationId, Long targetStationId) {
+        final List<Long> stationIds =
+            shortestPath.getPath(sourceStationId, targetStationId).getVertexList();
+        return stationIds.stream().map(lines::stationById).collect(Collectors.toList());
     }
 
-    public int distance(Station sourceStation, Station targetStation) {
-        return (int) shortestPath.getPath(sourceStation, targetStation).getWeight();
+    public int distance(Long sourceStationId, Long targetStationId) {
+        return (int) shortestPath.getPath(sourceStationId, targetStationId).getWeight();
     }
-
-
-
-    /*
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-            = new WeightedMultigraph(DefaultWeightedEdge.class);
-    graph.addVertex("v1");
-    graph.addVertex("v2");
-    graph.addVertex("v3");
-    graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-    graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-    graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-    DijkstraShortestPath dijkstraShortestPath
-            = new DijkstraShortestPath(graph);
-    List<String> shortestPath
-            = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-    assertThat(shortestPath.size()).isEqualTo(3);
-     */
 }
