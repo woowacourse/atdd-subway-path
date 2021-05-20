@@ -11,6 +11,7 @@ import wooteco.exception.NotFoundException;
 public class Sections {
 
     private static final int DELETABLE_COUNT = 2;
+
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
