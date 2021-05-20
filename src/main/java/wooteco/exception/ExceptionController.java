@@ -1,5 +1,7 @@
 package wooteco.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -11,67 +13,86 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionController {
 
+    private static final Logger log = LoggerFactory.getLogger(ExceptionController.class);
+
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<Void> duplicateExceptionResponse(DuplicateKeyException e) {
+    public ResponseEntity<String> duplicateExceptionResponse(DuplicateKeyException e) {
+        String errorMessage = "데이터가 중복됩니다.";
+        log.error(errorMessage);
+
         return ResponseEntity.status(HttpStatus.CONFLICT)
-            .build();
+            .body(errorMessage);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Void> notFoundExceptionResponse(NotFoundException e) {
-        return ResponseEntity.notFound()
-            .build();
+    public ResponseEntity<String> notFoundExceptionResponse(NotFoundException e) {
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<Void> voidLineDeleteExceptionResponse(
-        EmptyResultDataAccessException e) {
-        return ResponseEntity.notFound()
-            .build();
+    public ResponseEntity<String> voidLineDeleteExceptionResponse(EmptyResultDataAccessException e) {
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidDistanceException.class)
-    public ResponseEntity<Void> invalidDistanceExceptionResponse(InvalidDistanceException e) {
+    public ResponseEntity<String> invalidDistanceExceptionResponse(InvalidDistanceException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler({NullIdException.class, NullNameException.class, NullColorException.class})
-    public ResponseEntity<Void> nullExceptionResponse(NullException e) {
+    public ResponseEntity<String> nullExceptionResponse(NullException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<Void> duplicatedStationExceptionResponse(DuplicateException e) {
+    public ResponseEntity<String> duplicatedStationExceptionResponse(DuplicateException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.status(HttpStatus.CONFLICT)
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Void> methodArgumentNotValidExceptionResponse(
-        MethodArgumentNotValidException e) {
+    public ResponseEntity<String> methodArgumentNotValidExceptionResponse(MethodArgumentNotValidException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidSectionOnLineException.class)
-    public ResponseEntity<Void> alreadyExistedStationsOnLineExceptionResponse(
-        InvalidSectionOnLineException e) {
+    public ResponseEntity<String> alreadyExistedStationsOnLineExceptionResponse(InvalidSectionOnLineException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> illegalArgumentExceptionResponse(IllegalArgumentException e) {
-        return ResponseEntity.notFound()
-            .build();
+    public ResponseEntity<String> illegalArgumentExceptionResponse(IllegalArgumentException e) {
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(e.getMessage());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<String> unauthorizedException(
-        UnauthorizedException unauthorizedException) {
+    public ResponseEntity<String> unauthorizedException(UnauthorizedException e) {
+        log.error(e.getMessage());
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(unauthorizedException.getMessage());
+            .body(e.getMessage());
     }
 }
