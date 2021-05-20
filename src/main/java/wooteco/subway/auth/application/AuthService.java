@@ -3,7 +3,6 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.InvalidMemberInformationException;
 import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMemberId;
@@ -20,11 +19,8 @@ public class AuthService {
     }
 
     public String createToken(final TokenRequest tokenRequest) {
-        if (memberService.containsMemberByEmailAndPassword(tokenRequest.getEmail(),
-            tokenRequest.getPassword())) {
-            return jwtTokenProvider.createToken(tokenRequest.getEmail());
-        }
-        throw new InvalidMemberInformationException();
+        Long memberId = memberService.findIdByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
+        return jwtTokenProvider.createToken(String.valueOf(memberId));
     }
 
     public boolean isValidToken(String token) {
@@ -35,8 +31,8 @@ public class AuthService {
         if (!isValidToken(token)) {
             throw new InvalidTokenException();
         }
-        String payLoad = jwtTokenProvider.getPayload(token);
-        return new LoginMemberId(memberService.findMemberIdByEmail(payLoad));
+        String memberId = jwtTokenProvider.getPayload(token);
+        return new LoginMemberId(Long.valueOf(memberId));
     }
 
 }
