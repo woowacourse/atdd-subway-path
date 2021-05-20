@@ -52,7 +52,7 @@ class MemberServiceTest {
 
         //then
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
-            .isInstanceOf(DuplicateEmailException.class).hasMessage("중복된 이메일 입니다.");
+            .isInstanceOf(DuplicateEmailException.class).hasMessage("중복된 이메일 입니다. " + EMAIL);
     }
 
     @Test

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import wooteco.subway.auth.domain.LoginMember;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.EmptyTokenException;
@@ -22,7 +21,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if(isPreflightRequest(request)) {
+        if (isPreflightRequest(request)) {
             return true;
         }
 
@@ -35,18 +34,19 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private boolean isPreflightRequest(HttpServletRequest request) {
-        return isOptions(request) && hasHeaders(request) && hasMethod(request) && hasOrigin(request);
+        return isOptions(request) && hasAccessControlRequestHeaders(request) && hasAccessControlRequestMethod(request)
+            && hasOrigin(request);
     }
 
     private boolean isOptions(HttpServletRequest request) {
         return request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.toString());
     }
 
-    private boolean hasHeaders(HttpServletRequest request) {
+    private boolean hasAccessControlRequestHeaders(HttpServletRequest request) {
         return Objects.nonNull(request.getHeader("Access-Control-Request-Headers"));
     }
 
-    private boolean hasMethod(HttpServletRequest request) {
+    private boolean hasAccessControlRequestMethod(HttpServletRequest request) {
         return Objects.nonNull(request.getHeader("Access-Control-Request-Method"));
     }
 

@@ -26,19 +26,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-    private static String accessToken;
-
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
-        accessToken = tokenResponse.getAccessToken();
-    }
+    private static String accessToken;
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
@@ -106,6 +96,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
     }
 
     @DisplayName("지하철역을 생성한다.")

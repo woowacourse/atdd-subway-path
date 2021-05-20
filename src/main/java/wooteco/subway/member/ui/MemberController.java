@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.auth.domain.LoginMember;
+import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 

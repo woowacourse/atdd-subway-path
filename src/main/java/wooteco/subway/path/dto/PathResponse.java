@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import wooteco.subway.station.dto.StationResponse;
 
-import wooteco.subway.station.dto.StationResponse;
-
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;

@@ -67,8 +67,6 @@ public class SectionDao {
             "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        // Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
-        //     .collect(Collectors.groupingBy(it -> (Long)it.get("line_id")));
         return extractSections(result);
     }
 
@@ -80,14 +78,17 @@ public class SectionDao {
             .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
             .entrySet()
             .stream()
-            .map(it ->
-                new Section(
-                    (Long)it.getKey(),
-                    new Station((Long)it.getValue().get(0).get("UP_STATION_ID"),
-                        (String)it.getValue().get(0).get("UP_STATION_Name")),
-                    new Station((Long)it.getValue().get(0).get("DOWN_STATION_ID"),
-                        (String)it.getValue().get(0).get("DOWN_STATION_Name")),
-                    (int)it.getValue().get(0).get("SECTION_DISTANCE")))
+            .map(sections ->
+            {
+                Map<String, Object> sectionInfo = sections.getValue().get(0);
+                return new Section(
+                    (Long)sections.getKey(),
+                    new Station((Long)sectionInfo.get("UP_STATION_ID"),
+                        (String)sectionInfo.get("UP_STATION_NAME")),
+                    new Station((Long)sectionInfo.get("DOWN_STATION_ID"),
+                        (String)sectionInfo.get("DOWN_STATION_NAME")),
+                    (int)sectionInfo.get("SECTION_DISTANCE"));
+            })
             .collect(Collectors.toList());
     }
 }

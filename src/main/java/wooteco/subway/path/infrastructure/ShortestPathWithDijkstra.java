@@ -1,7 +1,6 @@
 package wooteco.subway.path.infrastructure;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,7 +13,7 @@ import wooteco.subway.path.dto.Path;
 import wooteco.subway.station.domain.Station;
 
 @Component
-public class ShortestPathWithDijkstra implements ShortestPath{
+public class ShortestPathWithDijkstra implements ShortestPath {
 
     @Override
     public Path getPath(Station source, Station target, List<Section> sections) {
