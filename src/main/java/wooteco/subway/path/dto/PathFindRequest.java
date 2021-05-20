@@ -2,6 +2,7 @@ package wooteco.subway.path.dto;
 
 import java.util.Map;
 import javax.validation.constraints.NotNull;
+import wooteco.subway.line.domain.Path;
 import wooteco.subway.station.domain.Station;
 
 public class PathFindRequest {
@@ -33,5 +34,9 @@ public class PathFindRequest {
 
     public boolean isAllStationInMap(Map<Long, Station> stationMap) {
         return stationMap.containsKey(source) && stationMap.containsKey(target);
+    }
+
+    public Path toPath() {
+        return new Path(source, target);
     }
 }
