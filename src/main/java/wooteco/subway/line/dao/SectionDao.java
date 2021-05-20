@@ -56,7 +56,7 @@ public class SectionDao {
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
 
-    public Sections findBySourceOrTarget(Long sourceId, Long targetId) {
+    public Sections findSectionsContainSourceOrTarget(Long sourceId, Long targetId) {
         String query =
                 "SELECT s.id AS section_id, line_id, " +
                         "up_table.id AS up_id, " +

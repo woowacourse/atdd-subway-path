@@ -23,7 +23,7 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        Sections sections = sectionDao.findBySourceOrTarget(sourceId, targetId);
+        Sections sections = sectionDao.findSectionsContainSourceOrTarget(sourceId, targetId);
         Path path = new Path(sections);
 
         Station sourceStation = stationDao.findById(sourceId);
