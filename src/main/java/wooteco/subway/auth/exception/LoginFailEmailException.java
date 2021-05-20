@@ -1,4 +1,4 @@
-package wooteco.subway.exception.auth;
+package wooteco.subway.auth.exception;
 
 public class LoginFailEmailException extends LoginFailException {
 

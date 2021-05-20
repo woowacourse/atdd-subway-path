@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathServiceDto;
-import wooteco.subway.exception.path.NotReachableException;
+import wooteco.subway.path.exception.NotReachableException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;

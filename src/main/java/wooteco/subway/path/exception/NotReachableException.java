@@ -1,4 +1,4 @@
-package wooteco.subway.exception.path;
+package wooteco.subway.path.exception;
 
 public class NotReachableException extends PathException {
 

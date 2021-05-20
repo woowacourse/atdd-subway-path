@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.member.NotRegisteredMemberException;
+import wooteco.subway.member.exception.NotRegisteredMemberException;
 
 @RestControllerAdvice
 public class MemberControllerAdvice {

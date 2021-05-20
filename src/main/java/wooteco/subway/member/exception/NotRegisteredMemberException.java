@@ -1,4 +1,4 @@
-package wooteco.subway.exception.member;
+package wooteco.subway.member.exception;
 
 public class NotRegisteredMemberException extends RuntimeException {
 
