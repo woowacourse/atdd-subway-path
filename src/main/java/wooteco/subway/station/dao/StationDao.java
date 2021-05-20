@@ -43,13 +43,6 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Map<Long, Station> findAllInMap() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper)
-            .stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
-    }
-
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);

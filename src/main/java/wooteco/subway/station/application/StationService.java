@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.station.dao.StationDao;
@@ -31,7 +32,9 @@ public class StationService {
     }
 
     public Map<Long, Station> findAllInMap() {
-        return stationDao.findAllInMap();
+        return stationDao.findAll()
+            .stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     public List<StationResponse> findAllStationResponses() {
