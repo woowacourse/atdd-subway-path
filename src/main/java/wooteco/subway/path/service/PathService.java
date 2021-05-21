@@ -8,7 +8,6 @@ import wooteco.subway.section.dao.SectionDao;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.domain.Stations;
-import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.service.StationService;
 
 import java.util.List;
@@ -37,7 +36,6 @@ public class PathService {
                 .collect(Collectors.toList());
         int shortestDistance = subwayMap.findShortestDistance(sourceStationId, targetStationId);
 
-        List<StationResponse> stationResponse = StationResponse.listOf(shortestPath);
-        return new PathResponse(stationResponse, shortestDistance);
+        return new PathResponse(shortestPath, shortestDistance);
     }
 }
