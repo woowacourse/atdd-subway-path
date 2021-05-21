@@ -2,6 +2,7 @@ package wooteco.subway.path.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.path.domain.ShortestPathStrategy;
 import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.section.dao.SectionDao;
@@ -28,7 +29,7 @@ public class PathService {
     public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
         List<Section> sections = sectionDao.findAll();
         Stations stations = stationService.findAllStations();
-        SubwayMap subwayMap = new SubwayMap(sections);
+        SubwayMap subwayMap = new SubwayMap(ShortestPathStrategy.DIJKSTRA, sections);
 
         List<Station> shortestPath = subwayMap.findShortestPath(sourceStationId, targetStationId)
                 .stream()

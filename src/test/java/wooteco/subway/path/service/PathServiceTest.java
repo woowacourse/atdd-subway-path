@@ -10,6 +10,7 @@ import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.section.dao.SectionDao;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.service.StationService;
 
@@ -40,6 +41,7 @@ class PathServiceTest {
         Station secondStation = new Station(2L, "강남역");
         Station thirdStation = new Station(3L, "역삼역");
         Station fourthStation = new Station(4L, "회기역");
+        Stations stations = new Stations(Arrays.asList(firstStation, secondStation, thirdStation, fourthStation));
 
         Section firstSection = new Section(firstStation, secondStation, 5);
         Section secondSection = new Section(secondStation, fourthStation, 31);
@@ -47,9 +49,7 @@ class PathServiceTest {
         Section fourthSection = new Section(thirdStation, fourthStation, 3);
 
         when(sectionDao.findAll()).thenReturn(Arrays.asList(firstSection, secondSection, thirdSection, fourthSection));
-        when(stationService.findStationById(1L)).thenReturn(firstStation);
-        when(stationService.findStationById(3L)).thenReturn(thirdStation);
-        when(stationService.findStationById(4L)).thenReturn(fourthStation);
+        when(stationService.findAllStations()).thenReturn(stations);
 
         PathResponse shortestPath = pathService.findShortestPath(1L, 4L);
         List<String> names = shortestPath.getStations()
@@ -60,6 +60,6 @@ class PathServiceTest {
         assertThat(shortestPath.getDistance()).isEqualTo(7);
         assertThat(names).containsExactly("잠원역", "역삼역", "회기역");
         verify(sectionDao, times(1)).findAll();
-        verify(stationService, times(3)).findStationById(any());
+        verify(stationService, times(1)).findAllStations();
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.path.SubwayMapException;
+import wooteco.subway.path.domain.ShortestPathStrategy;
 import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.station.domain.Station;
@@ -30,7 +31,7 @@ class SubwayMapTest {
         Section thirdSection = new Section(station1, station3, 4);
         Section fourthSection = new Section(station3, station4, 3);
 
-        subwayMap = new SubwayMap(Arrays.asList(firstSection, secondSection, thirdSection, fourthSection));
+        subwayMap = new SubwayMap(ShortestPathStrategy.DIJKSTRA, Arrays.asList(firstSection, secondSection, thirdSection, fourthSection));
     }
 
     @DisplayName("최단 거리 경로 및 거리를 조회한다.")
