@@ -29,7 +29,7 @@ public class AuthController {
 
     @ExceptionHandler(NoSuchMemberException.class)
     public ResponseEntity<Void> handleNoSuchMemberException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(PasswordInvalidException.class)
