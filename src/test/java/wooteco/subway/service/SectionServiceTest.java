@@ -85,8 +85,8 @@ public class SectionServiceTest {
 
         // when
         SectionServiceDto 동묘_회기_구간 = sectionService.save(일호선, 동묘_회기_구간_DTO);
-        Section 변화된_구간1 = sectionDao.findByLineAndDownStation(일호선, 회기역).get();
-        Section 변화된_구간2 = sectionDao.findByLineAndUpStation(일호선, 회기역).get();
+        Section 변화된_구간1 = sectionDao.findByLineIdAndDownStationId(일호선.getId(), 회기역.getId()).get();
+        Section 변화된_구간2 = sectionDao.findByLineIdAndUpStationId(일호선.getId(), 회기역.getId()).get();
 
         // then
         assertThat(동묘_회기_구간.getLineId()).isEqualTo(일호선.getId());
@@ -125,7 +125,7 @@ public class SectionServiceTest {
 
         // when
         sectionService.delete(일호선, 동묘역.getId());
-        Section section = sectionDao.findByLineAndUpStation(일호선, 신설역)
+        Section section = sectionDao.findByLineIdAndUpStationId(일호선.getId(), 신설역.getId())
             .orElseThrow(NotFoundException::new);
 
         // then
@@ -140,10 +140,10 @@ public class SectionServiceTest {
         // given
 
         // when
-        Sections beforeSections = new Sections(sectionDao.findAllByLine(일호선));
+        Sections beforeSections = new Sections(sectionDao.findAllByLineId(일호선.getId()));
         Deque<Station> 구간삭제_전_정렬된_역들 = beforeSections.sortedStations();
         sectionService.delete(일호선, 동대문역.getId());
-        Sections afterSections = new Sections(sectionDao.findAllByLine(일호선));
+        Sections afterSections = new Sections(sectionDao.findAllByLineId(일호선.getId()));
         Deque<Station> 구간삭제_후_정렬된_역들 = afterSections.sortedStations();
 
         // then

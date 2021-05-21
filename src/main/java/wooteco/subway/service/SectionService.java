@@ -32,8 +32,8 @@ public class SectionService {
     }
 
     public SectionServiceDto save(Line line, @Valid SectionServiceDto dto) {
+        Sections sections = new Sections(sectionDao.findAllByLineId(line.getId()));
         Section section = newSection(line, dto);
-        Sections sections = new Sections(sectionDao.findAllByLine(section.getLine()));
         sections.validateInsertable(section);
 
         if (sections.isBothEndSection(section)) {
@@ -61,7 +61,7 @@ public class SectionService {
     }
 
     public void delete(Line line, @NotNull Long stationId) {
-        Sections sections = new Sections(sectionDao.findAllByLine(line));
+        Sections sections = new Sections(sectionDao.findAllByLineId(line.getId()));
         Station station = stationService.findById(stationId);
         sections.validateDeletableCount();
         sections.validateExistStation(station);
@@ -74,16 +74,16 @@ public class SectionService {
     }
 
     private void deleteStationAtEnd(Line line, Station station) {
-        if (sectionDao.findByLineAndUpStation(line, station).isPresent()) {
-            sectionDao.deleteByLineAndUpStation(line, station);
+        if (sectionDao.findByLineIdAndUpStationId(line.getId(), station.getId()).isPresent()) {
+            sectionDao.deleteByLineIdAndUpStationId(line.getId(), station.getId());
         }
-        sectionDao.deleteByLineAndDownStation(line, station);
+        sectionDao.deleteByLineIdAndDownStationId(line.getId(), station.getId());
     }
 
     private void deleteStationAtMiddle(Line line, Station station) {
-        Section upSection = sectionDao.findByLineAndDownStation(line, station)
+        Section upSection = sectionDao.findByLineIdAndDownStationId(line.getId(), station.getId())
             .orElseThrow(InvalidSectionOnLineException::new);
-        Section downSection = sectionDao.findByLineAndUpStation(line, station)
+        Section downSection = sectionDao.findByLineIdAndUpStationId(line.getId(), station.getId())
             .orElseThrow(InvalidSectionOnLineException::new);
 
         Section updatedSection = upSection.updateForDelete(downSection);
@@ -93,7 +93,7 @@ public class SectionService {
     }
 
     public List<StationResponse> findAllByLind(Line line) {
-        Sections sections = new Sections(sectionDao.findAllByLine(line));
+        Sections sections = new Sections(sectionDao.findAllByLineId(line.getId()));
 
         return sections.sortedStations()
             .stream()

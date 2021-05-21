@@ -70,7 +70,7 @@ public class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findAllByLine(일호선);
+        List<Section> sections = sectionDao.findAllByLineId(일호선.getId());
         Section 저장되어있는_신설_동묘_구간 = sections.get(0);
         Section 저장되어있는_동묘_동대문_구간 = sections.get(1);
 
@@ -91,7 +91,7 @@ public class SectionDaoTest {
         // given
 
         // when
-        Section section = sectionDao.findByLineAndUpStation(일호선, 신설역)
+        Section section = sectionDao.findByLineIdAndUpStationId(일호선.getId(), 신설역.getId())
             .orElseThrow(InvalidSectionOnLineException::new);
 
         // then
@@ -107,7 +107,7 @@ public class SectionDaoTest {
         // given
 
         // when
-        Section section = sectionDao.findByLineAndDownStation(일호선, 동묘역)
+        Section section = sectionDao.findByLineIdAndDownStationId(일호선.getId(), 동묘역.getId())
             .orElseThrow(InvalidSectionOnLineException::new);
 
         // then
@@ -127,10 +127,10 @@ public class SectionDaoTest {
         // when
 
         // then
-        assertThat(sectionDao.findByLineAndUpStation(일호선, 없는역)).isEmpty();
-        assertThat(sectionDao.findByLineAndUpStation(없는노선, 동묘역)).isEmpty();
-        assertThat(sectionDao.findByLineAndDownStation(없는노선, 동묘역)).isEmpty();
-        assertThat(sectionDao.findByLineAndUpStation(일호선, 동대문역)).isEmpty();
+        assertThat(sectionDao.findByLineIdAndUpStationId(일호선.getId(), 없는역.getId())).isEmpty();
+        assertThat(sectionDao.findByLineIdAndUpStationId(없는노선.getId(), 동묘역.getId())).isEmpty();
+        assertThat(sectionDao.findByLineIdAndDownStationId(없는노선.getId(), 동묘역.getId())).isEmpty();
+        assertThat(sectionDao.findByLineIdAndUpStationId(일호선.getId(), 동대문역.getId())).isEmpty();
     }
 
     @Test
@@ -139,9 +139,9 @@ public class SectionDaoTest {
         // given
 
         // when
-        List<Section> 제거전_전체_역 = sectionDao.findAllByLine(일호선);
-        int 제거된_역_개수 = sectionDao.deleteByLineAndUpStation(일호선, 신설역);
-        List<Section> 제거후_전체_역 = sectionDao.findAllByLine(일호선);
+        List<Section> 제거전_전체_역 = sectionDao.findAllByLineId(일호선.getId());
+        int 제거된_역_개수 = sectionDao.deleteByLineIdAndUpStationId(일호선.getId(), 신설역.getId());
+        List<Section> 제거후_전체_역 = sectionDao.findAllByLineId(일호선.getId());
 
         //then
         assertThat(제거된_역_개수).isEqualTo(1);
@@ -155,9 +155,9 @@ public class SectionDaoTest {
         // given
 
         // when
-        List<Section> 제거전_전체_역 = sectionDao.findAllByLine(일호선);
-        int 제거된_역_개수 = sectionDao.deleteByLineAndDownStation(일호선, 동대문역);
-        List<Section> 제거후_전체_역 = sectionDao.findAllByLine(일호선);
+        List<Section> 제거전_전체_역 = sectionDao.findAllByLineId(일호선.getId());
+        int 제거된_역_개수 = sectionDao.deleteByLineIdAndDownStationId(일호선.getId(), 동대문역.getId());
+        List<Section> 제거후_전체_역 = sectionDao.findAllByLineId(일호선.getId());
 
         //then
         assertThat(제거된_역_개수).isEqualTo(1);
@@ -172,9 +172,9 @@ public class SectionDaoTest {
         Section section = new Section(new Id(2L), 일호선, 동묘역, 동대문역, 거리);
 
         // when
-        List<Section> 제거전_전체_역 = sectionDao.findAllByLine(일호선);
+        List<Section> 제거전_전체_역 = sectionDao.findAllByLineId(일호선.getId());
         int 제거된_역_개수 = sectionDao.delete(section);
-        List<Section> 제거후_전체_역 = sectionDao.findAllByLine(일호선);
+        List<Section> 제거후_전체_역 = sectionDao.findAllByLineId(일호선.getId());
 
         // then
         assertThat(제거된_역_개수).isEqualTo(1);

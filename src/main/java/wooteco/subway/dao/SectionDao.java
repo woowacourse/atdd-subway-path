@@ -61,7 +61,7 @@ public class SectionDao {
         return new Section(key, section);
     }
 
-    public List<Section> findAllByLine(Line line) {
+    public List<Section> findAllByLineId(Long lineId) {
         String sql =
             "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
                 + "up_station.id AS up_id, up_station.name AS up_name, "
@@ -72,10 +72,10 @@ public class SectionDao {
                 + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
                 + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
                 + "WHERE s.line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, line.getId());
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public Optional<Section> findByLineAndUpStation(Line line, Station upStation) {
+    public Optional<Section> findByLineIdAndUpStationId(Long lineId, Long upStationId) {
         try {
             String sql =
                 "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
@@ -89,13 +89,13 @@ public class SectionDao {
                     + "WHERE s.line_id = ? AND s.up_station_id = ?";
             return Optional
                 .ofNullable(
-                    jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), upStation.getId()));
+                    jdbcTemplate.queryForObject(sql, rowMapper, lineId, upStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public Optional<Section> findByLineAndDownStation(Line line, Station downStation) {
+    public Optional<Section> findByLineIdAndDownStationId(Long lineId, Long downStationId) {
         try {
             String sql =
                 "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
@@ -109,20 +109,20 @@ public class SectionDao {
                     + "WHERE s.line_id = ? AND s.down_station_id = ?";
             return Optional
                 .ofNullable(
-                    jdbcTemplate.queryForObject(sql, rowMapper, line.getId(), downStation.getId()));
+                    jdbcTemplate.queryForObject(sql, rowMapper, lineId, downStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public int deleteByLineAndUpStation(Line line, Station upStation) {
+    public int deleteByLineIdAndUpStationId(Long lineId, Long upStationId) {
         String sql = "DELETE FROM section WHERE line_id = ? AND up_station_id = ?";
-        return jdbcTemplate.update(sql, line.getId(), upStation.getId());
+        return jdbcTemplate.update(sql, lineId, upStationId);
     }
 
-    public int deleteByLineAndDownStation(Line line, Station downStation) {
+    public int deleteByLineIdAndDownStationId(Long lineId, Long downStationId) {
         String sql = "DELETE FROM section WHERE line_id = ? AND down_station_id = ?";
-        return jdbcTemplate.update(sql, line.getId(), downStation.getId());
+        return jdbcTemplate.update(sql, lineId, downStationId);
     }
 
     public int delete(Section section) {
