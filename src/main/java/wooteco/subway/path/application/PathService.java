@@ -1,7 +1,5 @@
 package wooteco.subway.path.application;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
@@ -9,13 +7,13 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class PathService {
@@ -28,10 +26,16 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = loadCurrentSubwayMap();
+        WeightedMultigraph<Station, DefaultWeightedEdge> currentSubwayMap = loadCurrentSubwayMap();
+        final SubwayMap subwayMap = new SubwayMap(currentSubwayMap);
+
         Station source = stationDao.findById(sourceId);
         Station target = stationDao.findById(targetId);
-        return calculateShortestPath(graph, source, target);
+
+        final Map<List<Station>, Double> shortestPath = subwayMap.calculateShortestPath(source, target);
+        final List<Station> shortestPathStations = shortestPath.keySet().iterator().next();
+        final Double shortestDistance = shortestPath.get(shortestPathStations);
+        return PathResponse.of(shortestPathStations, shortestDistance);
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> loadCurrentSubwayMap() {
@@ -61,14 +65,5 @@ public class PathService {
         for (Section section : sectionsList) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
-    }
-
-    private PathResponse calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station source,
-                                               Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        final GraphPath<Station, DefaultWeightedEdge> shortestGraphPath = dijkstraShortestPath.getPath(source, target);
-        final List<Station> shortestPath = shortestGraphPath.getVertexList();
-        final double distance = shortestGraphPath.getWeight();
-        return PathResponse.of(shortestPath, distance);
     }
 }
