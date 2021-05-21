@@ -8,9 +8,9 @@ import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -33,10 +33,10 @@ public class PathService {
 
     private PathResponse createPathResponse(SubwayMap subwayMap, Long source, Long target) {
         int shortestPath = subwayMap.getShortestDistance(source, target);
-        List<Long> stationIdsOnPath = subwayMap.getShortestPathIds(source, target);
-        List<Station> stationsOnPath = stationIdsOnPath.stream()
-                .map(stationService::findStationById)
-                .collect(Collectors.toList());
+        List<Long> stationIds = subwayMap.getShortestPathIds(source, target);
+
+        Stations stations = stationService.findAllStations();
+        List<Station> stationsOnPath = stations.findStationsOnPath(stationIds);
 
         return PathResponse.from(stationsOnPath, shortestPath);
     }
