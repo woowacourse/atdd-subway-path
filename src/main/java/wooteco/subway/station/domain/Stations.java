@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Stations {
-    private Map<Long, Station> stations;
+    private Map<Long, Station> stations = new HashMap<>();
 
     public Stations(List<Station> stationList) {
         if (stationList.isEmpty()) {
@@ -16,7 +16,6 @@ public class Stations {
     }
 
     private Map<Long, Station> init(List<Station> stationList) {
-        stations = new HashMap<>();
         for (Station station : stationList) {
             stations.put(station.getId(), station);
         }
