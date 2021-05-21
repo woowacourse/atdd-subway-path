@@ -86,14 +86,14 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    const response = await fetch("http://localhost:8080/stations");
+    const response = await fetch("/api/stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
     const stations = await response.json();
     this.setStations([...stations]);
 
-    const linesResponse = await fetch("http://localhost:8080/lines");
+    const linesResponse = await fetch("/api/lines");
     const lines = await linesResponse.json();
     this.setLines([...lines])
     this.initLinesView();
@@ -128,7 +128,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        const lineDetailsResponse = await fetch(`http://localhost:8080/lines/${this.activeLineId}`);
+        const lineDetailsResponse = await fetch(`/api/lines/${this.activeLineId}`);
         this.activeLine = await lineDetailsResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

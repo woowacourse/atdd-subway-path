@@ -110,7 +110,7 @@ export default {
           alert("저장되어 있지않습니다.");
         }
         const {email, age, password} = this.editingMember;
-        await fetch("http://localhost:8080/members/me", {
+        await fetch("/api/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -122,7 +122,7 @@ export default {
             "password": password
           })
         });
-        const data = await fetch("http://localhost:8080/login/token", {
+        const data = await fetch("/api/login/token", {
           method: "POST",
           headers : {
             "Content-Type" : "application/json",
@@ -136,7 +136,7 @@ export default {
         const token_access = token.accessToken
         localStorage.setItem("token", token_access)
 
-        const member = await fetch("http://localhost:8080/members/me", {
+        const member = await fetch("/api/members/me", {
           method : "GET",
           headers : {
             "Content-Type" : "application/json",

@@ -106,7 +106,7 @@ export default {
     },
     async initLineStationsView() {
       try {
-        const lineDetailsResponse = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
+        const lineDetailsResponse = await fetch(`/api/lines/${this.sectionForm.lineId}`);
         this.selectedLine = await lineDetailsResponse.json();
         if (this.selectedLine.stations?.length < 1) {
           return;
@@ -152,7 +152,7 @@ export default {
         return;
       }
       try {
-        await fetch(`http://localhost:8080/lines/${this.selectedLine.id}/sections`, {
+        await fetch(`/api/lines/${this.selectedLine.id}/sections`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -163,7 +163,7 @@ export default {
             "distance": this.sectionForm.distance
           })
         });
-        const linesResponse = await fetch("http://localhost:8080/lines");
+        const linesResponse = await fetch("/api/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])
 

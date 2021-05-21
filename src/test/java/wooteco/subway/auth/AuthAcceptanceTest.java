@@ -39,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
-                post("/login/token").
+                post("/api/login/token").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -51,7 +51,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/members/me").
+                get("/api/members/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -85,7 +85,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/token")
+                .when().post("/api/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -98,7 +98,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get("/api/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }

@@ -97,7 +97,7 @@ export default {
 
         const {email, age, password} = this.member;
         await fetch(
-            "http://localhost:8080/members", {
+            "/api/members", {
               method: "POST",
               headers : {
                 "Content-Type" : "application/json",
