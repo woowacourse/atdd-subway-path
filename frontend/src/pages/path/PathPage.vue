@@ -162,8 +162,13 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        this.pathResult = await fetch("/paths", {
-        }, {})
+        this.pathResult = await fetch("/paths?source=" + this.source + "&target=" + this.target)
+            .then(res => {
+              return {
+                stations: res.stations,
+                distance: res.distance
+              }
+            })
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
