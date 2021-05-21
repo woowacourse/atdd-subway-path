@@ -51,12 +51,18 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines")
-    // this.setLines([...lines])
+    const stations = await fetch("/api/stations")
+        .then(res => res.json())
+        .then(data => {
+          return data;
+        });
+    this.setStations([...stations])
+    const lines = await fetch("/api/lines")
+        .then(res => res.json())
+        .then(data => {
+          return data;
+        });
+    this.setLines([...lines])
   },
   methods: {
     ...mapMutations([SET_LINES, SET_STATIONS]),
