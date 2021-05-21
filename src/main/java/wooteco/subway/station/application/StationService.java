@@ -39,7 +39,10 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
-    public Stations findAllStations() {
-        return new Stations(stationDao.findAll());
+    public Stations findStationsOnPath(List<Long> stationIds) {
+        String ids = stationIds.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+        return new Stations(stationDao.findStationsByIds(ids));
     }
 }
