@@ -8,7 +8,6 @@ import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +38,6 @@ public class PathService {
                 .map(stationService::findStationById)
                 .collect(Collectors.toList());
 
-        return new PathResponse(StationResponse.listOf(stationsOnPath), shortestPath);
+        return PathResponse.from(stationsOnPath, shortestPath);
     }
 }
