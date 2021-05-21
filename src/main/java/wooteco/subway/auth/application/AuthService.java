@@ -32,7 +32,7 @@ public class AuthService {
         final Member member = memberDao.findByEmail(email)
                 .orElseThrow(NoSuchMemberException::new);
         if (!member.hasSamePassword(password)) {
-            throw new AuthorizationException();
+            throw new PasswordInvalidException();
         }
         return member;
     }
