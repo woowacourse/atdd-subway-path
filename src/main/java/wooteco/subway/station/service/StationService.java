@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -27,6 +28,10 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id);
+    }
+
+    public Stations findAllStations() {
+        return new Stations(stationDao.findAll());
     }
 
     public List<StationResponse> findAllStationResponses() {
