@@ -2,10 +2,10 @@ package wooteco.subway.path.infrastructure;
 
 import java.util.List;
 
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.path.dto.Path;
 import wooteco.subway.station.domain.Station;
 
 public interface ShortestPath {
-    Path getPath(Station source, Station target, List<Section> sections);
+    List<Station> getStations(Station source, Station target);
+
+    int getDistance(Station source, Station target);
 }

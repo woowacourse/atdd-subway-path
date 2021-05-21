@@ -9,6 +9,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.dto.Path;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.infrastructure.ShortestPath;
+import wooteco.subway.path.infrastructure.ShortestPathWithDijkstra;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
@@ -16,13 +17,10 @@ import wooteco.subway.station.domain.Station;
 public class PathService {
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final ShortestPath shortestPath;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao,
-        ShortestPath shortestPath) {
+    public PathService(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.shortestPath = shortestPath;
     }
 
     public PathResponse findPaths(long sourceId, long targetId) {
@@ -30,8 +28,8 @@ public class PathService {
 
         Station source = stationDao.findById(sourceId);
         Station target = stationDao.findById(targetId);
-        Path path = shortestPath.getPath(source, target, sections);
 
+        Path path = new Path(new ShortestPathWithDijkstra(sections), source, target);
         return new PathResponse(path);
     }
 }
