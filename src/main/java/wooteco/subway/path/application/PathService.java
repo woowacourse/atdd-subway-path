@@ -68,12 +68,7 @@ public class PathService {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         final GraphPath<Station, DefaultWeightedEdge> shortestGraphPath = dijkstraShortestPath.getPath(source, target);
         final List<Station> shortestPath = shortestGraphPath.getVertexList();
-        final int distance = (int) shortestGraphPath.getWeight();
-
-        List<StationResponse> shortestPathStationResponse = shortestPath.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-
-        return new PathResponse(shortestPathStationResponse, distance);
+        final double distance = shortestGraphPath.getWeight();
+        return PathResponse.of(shortestPath, distance);
     }
 }
