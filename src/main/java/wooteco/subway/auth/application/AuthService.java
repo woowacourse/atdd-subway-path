@@ -7,8 +7,6 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
-import java.util.Optional;
-
 @Service
 public class AuthService {
 
@@ -29,11 +27,10 @@ public class AuthService {
     private void validateLogin(TokenRequest tokenRequest) {
         final String email = tokenRequest.getEmail();
         final String password = tokenRequest.getPassword();
-        final Optional<Member> member = memberDao.findByEmail(email);
-        if (!(member.isPresent() && member.get().getPassword().equals(password))) {
-            throw new AuthorizationException();
+        final Member member = memberDao.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+        if (member.isWrongPassword(password)) {
+            throw new AuthorizationException("비밀번호를 잘못 입력하셨습니다.");
         }
     }
-
-
 }

@@ -114,8 +114,6 @@ export default {
           age: age
         }
 
-        console.log(bodyValue);
-
         const accessToken = localStorage.getItem("token");
 
         const response = await fetch("http://localhost:8080/members/me", {
