@@ -12,7 +12,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 
-import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.member.domain.Member;
 
 @DataJdbcTest
@@ -79,7 +78,7 @@ class MemberDaoTest {
         Member createdMember = memberDao.insert(member);
 
         //then
-        assertDoesNotThrow(()-> memberDao.deleteById(createdMember.getId()));
+        assertDoesNotThrow(() -> memberDao.deleteById(createdMember.getId()));
     }
 
     @Test

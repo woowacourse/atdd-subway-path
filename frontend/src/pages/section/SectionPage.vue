@@ -79,16 +79,35 @@ import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 
+let getCookie = function (name) {
+  let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 export default {
   name: "SectionPage",
   components: {SectionDeleteButton, SectionCreateButton},
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    const response = await fetch("http://localhost:8080/stations", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`${response.status}`);
+    }
+    const stations = await response.json();
+    this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+    const lines = await fetch("http://localhost:8080/lines", {
+      headers: {
+        "Authorization": "Bearer " + getCookie("JWT")
+      }
+    }).then(res => res.json())
+        .then(data => {
+          return data;
+        });
+    this.setLines([...lines])
     this.initLinesView();
   },
   computed: {
@@ -121,8 +140,15 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        this.activeLine = await fetch('http://localhost:8080/lines/' + this.activeLineId, {
+          headers: {
+            "Authorization": "Bearer " + getCookie("JWT")
+          }
+        })
+            .then(res => res.json())
+            .then(data => {
+              return data;
+            });
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

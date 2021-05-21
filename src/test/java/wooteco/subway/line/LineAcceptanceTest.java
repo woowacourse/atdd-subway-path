@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
 import static wooteco.subway.station.StationAcceptanceTest.*;
 
 import java.util.Arrays;
@@ -17,12 +18,19 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+
+    private static String accessToken;
+
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
@@ -39,8 +47,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
+
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/lines")
@@ -51,6 +64,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/lines")
             .then().log().all()
@@ -60,6 +74,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/lines/{lineId}", response.getId())
             .then().log().all()
@@ -67,9 +82,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
-
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().put("/lines/" + response.getId())
@@ -80,6 +95,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .when().delete("/lines/" + lineResponse.getId())
             .then().log().all()
             .extract();
@@ -127,6 +143,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
