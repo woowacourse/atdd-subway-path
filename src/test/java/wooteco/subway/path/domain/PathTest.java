@@ -22,7 +22,7 @@ class PathTest {
         Section section2 = new Section(잠실역, 구의역, 2);
         Section section3 = new Section(강남역, 구의역, 100);
 
-        Path path = Path.of(Arrays.asList(강남역, 잠실역, 구의역), Arrays.asList(section1, section2, section3));
+        Path path = new Path(Arrays.asList(강남역, 잠실역, 구의역), Arrays.asList(section1, section2, section3));
 
         List<Station> shortestPath = path.shortestPath(강남역, 구의역);
         assertThat(shortestPath).containsExactly(강남역, 잠실역, 구의역);

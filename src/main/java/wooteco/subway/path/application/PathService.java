@@ -2,6 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.dto.PathResponse;
@@ -15,24 +16,25 @@ import java.util.List;
 public class PathService {
     private final SectionDao sectionDao;
     private final StationService stationService;
+    private final Path path;
 
     public PathService(SectionDao sectionDao, StationService stationService) {
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.path = new Path(stationService.findAll(), sectionDao.findAll());
     }
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
-        List<Station> stations = stationService.findAll();
-        List<Section> sections = sectionDao.findAll();
-
-        Path path = Path.of(stations, sections);
-
         List<StationResponse> stationResponses = StationResponse.listOf(path.shortestPath(source, target));
         int distance = path.shortestPathLength(source, target);
 
         return new PathResponse(stationResponses, distance);
+    }
+
+    public void refreshPath() {
+        path.refresh(stationService.findAll(), sectionDao.findAll());
     }
 }
