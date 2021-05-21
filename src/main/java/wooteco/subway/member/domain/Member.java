@@ -28,7 +28,7 @@ public class Member {
         this.age = age;
     }
 
-    public boolean isSamePassword(String password) {
+    public boolean hasSamePassword(String password) {
         return this.password.equals(password);
     }
 

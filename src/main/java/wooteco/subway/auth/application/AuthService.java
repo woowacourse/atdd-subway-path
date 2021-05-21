@@ -31,7 +31,7 @@ public class AuthService {
         final String password = tokenRequest.getPassword();
         final Member member = memberDao.findByEmail(email)
                 .orElseThrow(NoSuchMemberException::new);
-        if (!member.isSamePassword(password)) {
+        if (!member.hasSamePassword(password)) {
             throw new AuthorizationException();
         }
         return member;
