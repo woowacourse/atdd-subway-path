@@ -5,7 +5,7 @@ import java.util.List;
 import wooteco.subway.station.domain.Station;
 
 public interface ShortestPath {
-    List<Station> getStations(Station source, Station target);
+    List<Station> getStations();
 
-    int getDistance(Station source, Station target);
+    int getDistance();
 }

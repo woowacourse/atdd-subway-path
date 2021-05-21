@@ -6,23 +6,17 @@ import wooteco.subway.path.infrastructure.ShortestPath;
 import wooteco.subway.station.domain.Station;
 
 public class Path {
-    private final List<Station> stations;
-    private final int distance;
+    private final ShortestPath shortestPath;
 
-    private Path(List<Station> stations, int distance) {
-        this.stations = stations;
-        this.distance = distance;
-    }
-
-    public Path(ShortestPath shortestPath, Station source, Station target) {
-        this(shortestPath.getStations(source, target), shortestPath.getDistance(source, target));
+    public Path(ShortestPath shortestPath) {
+        this.shortestPath = shortestPath;
     }
 
     public List<Station> getStations() {
-        return stations;
+        return shortestPath.getStations();
     }
 
     public int getDistance() {
-        return distance;
+        return shortestPath.getDistance();
     }
 }

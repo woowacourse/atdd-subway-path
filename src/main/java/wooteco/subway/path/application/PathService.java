@@ -29,7 +29,7 @@ public class PathService {
         Station source = stationDao.findById(sourceId);
         Station target = stationDao.findById(targetId);
 
-        Path path = new Path(new ShortestPathWithDijkstra(sections), source, target);
+        Path path = new Path(new ShortestPathWithDijkstra(sections, source, target));
         return new PathResponse(path);
     }
 }

@@ -14,22 +14,20 @@ import wooteco.subway.station.domain.Station;
 
 
 public class ShortestPathWithDijkstra extends ShortestPathGraph {
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final GraphPath dijkstraShortestPath;
 
-    public ShortestPathWithDijkstra(List<Section> sections) {
+    public ShortestPathWithDijkstra(List<Section> sections, Station source, Station target) {
         super(new WeightedMultigraph<>(DefaultWeightedEdge.class), sections);
-        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
+        this.dijkstraShortestPath = new DijkstraShortestPath(graph).getPath(source, target);
     }
 
     @Override
-    public List<Station> getStations(Station source, Station target) {
-        GraphPath path = this.dijkstraShortestPath.getPath(source, target);
-        return Objects.requireNonNull(path.getVertexList());
+    public List<Station> getStations() {
+        return Objects.requireNonNull(dijkstraShortestPath.getVertexList());
     }
 
     @Override
-    public int getDistance(Station source, Station target) {
-        GraphPath path = this.dijkstraShortestPath.getPath(source, target);
-        return (int) path.getWeight();
+    public int getDistance() {
+        return (int) dijkstraShortestPath.getWeight();
     }
 }
