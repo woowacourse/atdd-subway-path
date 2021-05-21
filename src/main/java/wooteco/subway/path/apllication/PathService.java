@@ -35,7 +35,7 @@ public class PathService {
         int shortestPath = subwayMap.getShortestDistance(source, target);
         List<Long> stationIds = subwayMap.getShortestPathIds(source, target);
 
-        Stations stations = stationService.findAllStations();
+        Stations stations = stationService.findStationsOnPath(stationIds);
         List<Station> stationsOnPath = stations.findStationsOnPath(stationIds);
 
         return PathResponse.from(stationsOnPath, shortestPath);

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
@@ -12,13 +12,14 @@ import wooteco.subway.path.apllication.PathService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
 
     @InjectMocks
@@ -56,11 +57,9 @@ public class PathServiceTest {
         삼호선.addSection(교대에서양재);
         삼호선.addSection(교대에서남부터미널);
 
-        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
-        given(stationService.findStationById(양재역_ID)).willReturn(양재역);
-        given(stationService.findStationById(교대역_ID)).willReturn(교대역);
-        given(stationService.findStationById(남부터미널역_ID)).willReturn(남부터미널역);
         given(lineService.findLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+        given(stationService.findStationsOnPath(Arrays.asList(3L, 4L, 2L)))
+                .willReturn(new Stations(Arrays.asList(교대역, 남부터미널역, 양재역)));
 
         // then
         PathResponse pathResponse = pathService.findShortestPath(교대역_ID, 양재역_ID);
