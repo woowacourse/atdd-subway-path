@@ -28,11 +28,6 @@ public class SectionService {
 
     public SectionServiceDto saveByLineCreate(Line line, @Valid SectionServiceDto dto) {
         Section section = newSection(line, dto);
-        Sections sections = new Sections(sectionDao.findAllByLine(section.getLine()));
-
-        if (sections.isNotEmpty()) {
-            throw new InvalidSectionOnLineException();
-        }
         return saveSectionAtEnd(section);
     }
 

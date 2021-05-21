@@ -34,6 +34,22 @@ class SectionsTest {
     }
 
     @Test
+    @DisplayName("구간 생성시 원소 개수에 따른 예외처리")
+    void validateMinimumCount() {
+        // given
+        Section 정상_생성_구간 = new Section(칠호선, 상봉역, 면목역, 거리);
+
+        // when
+
+        // then
+        assertThat(new Sections(Collections.singletonList(정상_생성_구간)))
+            .isInstanceOf(Sections.class);
+        assertThatThrownBy(() -> new Sections(new ArrayList<>()))
+            .isInstanceOf(IllegalStateException.class);
+    }
+
+
+    @Test
     @DisplayName("제공된 구간이 노선의 상/하행 끝 구간으로 등록될 것인지 확인")
     void isBothEndSection() {
         // given
@@ -132,21 +148,6 @@ class SectionsTest {
         // then
         assertThatThrownBy(() -> sections.validateExistStation(새로운역))
             .isInstanceOf(NotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("현재 노선이 비어있는지 확인")
-    void isNotEmpty() {
-        // given
-        Sections emptySections = new Sections(new ArrayList<>());
-
-        // when
-        boolean notEmpty = this.sections.isNotEmpty();
-        boolean empty = emptySections.isNotEmpty();
-
-        // then
-        assertThat(notEmpty).isTrue();
-        assertThat(empty).isFalse();
     }
 
     @Test

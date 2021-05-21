@@ -10,12 +10,19 @@ import wooteco.exception.NotFoundException;
 
 public class Sections {
 
-    private static final int DELETABLE_COUNT = 2;
+    private static final int MINIMUM_COUNT = 1;
 
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+        validateSectionCount(this.sections);
+    }
+
+    private void validateSectionCount(List<Section> sections) {
+        if (sections.isEmpty()) {
+            throw new IllegalStateException("구간의 수가 너무 적습니다.");
+        }
     }
 
     public boolean isBothEndSection(Section section) {
@@ -77,7 +84,7 @@ public class Sections {
     }
 
     public void validateDeletableCount() {
-        if (sections.size() < DELETABLE_COUNT) {
+        if (sections.size() <= MINIMUM_COUNT) {
             throw new IllegalStateException("구간을 제거할 수 없습니다.");
         }
     }
