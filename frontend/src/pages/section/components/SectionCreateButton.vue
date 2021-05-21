@@ -106,7 +106,7 @@ export default {
     },
     async initLineStationsView() {
       try {
-        this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        this.selectedLine = await fetch('/api/lines/' + this.sectionForm.lineId)
             .then(res => res.json())
             .then(data => {
               return data;
@@ -155,11 +155,17 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
+        await fetch("/api/lines/" + this.selectedLine.id + "/sections", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            upStationId: this.sectionForm.upStationId,
+            downStationId: this.sectionForm.downStationId,
+            distance: this.sectionForm.distance
+          })
+        });
         const lines = await fetch("/api/lines")
             .then(res => res.json())
             .then(data => {
