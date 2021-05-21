@@ -43,7 +43,7 @@ import {SET_LINES, SET_MEMBER, SET_STATIONS} from "../../store/shared/mutationTy
 import { mapGetters, mapMutations } from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
-import {get, keepLogin} from "../../utils/request";
+import {getWithToken, keepLogin} from "../../utils/request";
 
 export default {
   name: "LinePage",
@@ -58,12 +58,10 @@ export default {
       this.setMember(memberInfo);
     }
 
-    const stations = await get("/api/stations",
-        {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
+    const stations = await getWithToken("/api/stations").then(res => res.json());
     this.setStations([...stations]);
 
-    const lines = await get("/api/lines",
-        {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
+    const lines = await getWithToken("/api/lines").then(res => res.json());
     this.setLines([...lines]);
   },
   methods: {

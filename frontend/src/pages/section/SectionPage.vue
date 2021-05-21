@@ -81,7 +81,7 @@ import {
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
-import {get, keepLogin} from "@/utils/request";
+import {getWithToken, keepLogin} from "@/utils/request";
 
 export default {
   name: "SectionPage",
@@ -93,12 +93,10 @@ export default {
       this.setMember(memberInfo);
     }
 
-    const stations = await get("/api/stations",
-        {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json())
+    const stations = await getWithToken("/api/stations").then(res => res.json())
     this.setStations([...stations])
 
-    const lines = await get("/api/lines",
-        {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json())
+    const lines = await getWithToken("/api/lines").then(res => res.json())
     this.setLines([...lines]);
     this.initLinesView();
   },
@@ -132,8 +130,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        this.activeLine = await get(`/api/lines/${this.activeLineId}`,
-            {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
+        this.activeLine = await getWithToken(`/api/lines/${this.activeLineId}`).then(res => res.json());
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);

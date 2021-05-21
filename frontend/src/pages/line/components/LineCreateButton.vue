@@ -121,7 +121,7 @@ import dialog from "../../../mixins/dialog";
 import { mapGetters, mapMutations } from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
 import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { post } from "../../../utils/request";
+import { postWithToken } from "../../../utils/request";
 import shortid from "shortid";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
@@ -155,9 +155,8 @@ export default {
       }
       try {
         const { name, color, upStationId, downStationId, distance } = this.lineForm;
-        const newLine = await post("/api/lines",
-            {name, color, upStationId, downStationId, distance},
-            {'Authorization': "Bearer " + localStorage.getItem("token")})
+        const newLine = await postWithToken("/api/lines",
+            {name, color, upStationId, downStationId, distance})
             .then(res => res.json());
 
         this.setLines([...this.lines, { ...newLine }]);

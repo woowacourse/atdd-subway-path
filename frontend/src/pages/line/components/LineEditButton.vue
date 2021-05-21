@@ -78,7 +78,7 @@ import dialog from "../../../mixins/dialog";
 import { mapGetters, mapMutations } from "vuex";
 import Dialog from "../../../components/dialogs/Dialog";
 import { LINE_COLORS, SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { put, get } from "../../../utils/request";
+import { put, getWithToken } from "../../../utils/request";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 import shortid from "shortid";
@@ -117,9 +117,7 @@ export default {
       try {
         await put(`/api/lines/${this.line.id}`, {data: this.lineEditForm});
 
-        const lines = await get("/api/lines",
-            {'Authorization': "Bearer " + localStorage.getItem("token")})
-            .then(res => res.json());
+        const lines = await getWithToken("/api/lines").then(res => res.json());
         this.setLines([...lines]);
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);

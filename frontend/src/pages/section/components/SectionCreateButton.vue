@@ -86,7 +86,7 @@ import {
 } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
 import validator from "../../../utils/validator";
-import {get, post} from "@/utils/request";
+import {getWithToken, postWithToken} from "@/utils/request";
 
 export default {
   name: "SectionCreateButton",
@@ -158,15 +158,12 @@ export default {
       }
       try {
         // TODO 구간을 추가하는 API를 작성해주세요.
-        const { upStationId, downStationId, distance } = this.sectionForm
-        await post(`/api/lines/${this.sectionForm.lineId}/sections`,
-            { upStationId, downStationId, distance },
-            {'Authorization': "Bearer " + localStorage.getItem("token")})
+        const {upStationId, downStationId, distance} = this.sectionForm;
+        await postWithToken(`/api/lines/${this.sectionForm.lineId}/sections`, {upStationId, downStationId, distance});
 
         // TODO 전체 line을 불러오는 API를 작성해주세요.
-        const lines = await get("/api/lines",
-            {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
-        this.setLines(lines)
+        const lines = await getWithToken("/api/lines").then(res => res.json());
+        this.setLines(lines);
 
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);

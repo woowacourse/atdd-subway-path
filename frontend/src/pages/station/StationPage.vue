@@ -56,7 +56,7 @@
 <script>
 import validator from "../../utils/validator";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {get, keepLogin, post, remove} from "../../utils/request";
+import {getWithToken, keepLogin, postWithToken, remove} from "../../utils/request";
 import { mapGetters, mapMutations } from "vuex";
 import {SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
@@ -72,7 +72,7 @@ export default {
       this.setMember(memberInfo);
     }
 
-    const response = await get("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")});
+    const response = await getWithToken("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")});
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -89,9 +89,7 @@ export default {
         return;
       }
       try {
-        const response = await post("/api/stations",
-            {name : this.stationName},
-            { 'Authorization': "Bearer " + localStorage.getItem("token") })
+        const response = await postWithToken("/api/stations", {name : this.stationName})
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
@@ -111,7 +109,6 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
         await remove(`/api/stations/${stationId}`);
         const idx = this.stations.findIndex(
           (station) => station.id === stationId

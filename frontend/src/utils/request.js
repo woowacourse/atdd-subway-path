@@ -10,11 +10,36 @@ export function get(url, additionalHeaders) {
     });
 }
 
+export function getWithToken(url) {
+    let headers = {
+        "Content-Type": "application/json",
+        'Authorization': "Bearer " + localStorage.getItem("token")
+    }
+
+    return fetch(url, {
+        method: 'GET',
+        headers
+    });
+}
+
 export function post(url, body, additionalHeaders) {
     let headers = {
         "Content-Type": "application/json"
     }
     headers = { ...headers, ...additionalHeaders };
+
+    return fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+    });
+}
+
+export function postWithToken(url, body) {
+    let headers = {
+        "Content-Type": "application/json",
+        'Authorization': "Bearer " + localStorage.getItem("token")
+    }
 
     return fetch(url, {
         method: 'POST',

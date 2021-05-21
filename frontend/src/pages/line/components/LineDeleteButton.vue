@@ -8,7 +8,7 @@
 import { mapMutations } from "vuex";
 import { SET_LINES, SHOW_SNACKBAR } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
-import { remove, get } from "../../../utils/request";
+import { remove, getWithToken } from "../../../utils/request";
 
 export default {
   name: "LineDeleteButton",
@@ -24,8 +24,7 @@ export default {
       try {
         await remove(`/api/lines/${this.line.id}`);
 
-        const lines = await get("/api/lines",
-            {'Authorization': "Bearer " + localStorage.getItem("token")}).then(res => res.json());
+        const lines = await getWithToken("/api/lines").then(res => res.json());
         this.setLines([...lines]);
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
       } catch (e) {

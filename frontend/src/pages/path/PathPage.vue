@@ -145,7 +145,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import {SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {get, keepLogin} from "../../utils/request";
+import {getWithToken, keepLogin} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
@@ -166,8 +166,7 @@ export default {
     ...mapMutations([SET_MEMBER, SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        this.pathResult = await get(`/api/paths?source=${this.path.source}&target=${this.path.target}`,
-            {'Authorization': "Bearer " + localStorage.getItem("token")})
+        this.pathResult = await getWithToken(`/api/paths?source=${this.path.source}&target=${this.path.target}`)
             .then(res => res.json());
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -176,8 +175,7 @@ export default {
     },
     async initAllStationsView() {
       try {
-        const stations = await get("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")})
-            .then(res => res.json());
+        const stations = await getWithToken("/api/stations").then(res => res.json());
         this.setStations(stations);
         if (this.stations.length < 1) {
           return;
