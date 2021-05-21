@@ -11,3 +11,17 @@
 - [x] 회원정보 수정 기능 (FE)
 - [x] 회원정보 삭제 기능 (BE)
 - [x] 회원정보 삭제 기능 (FE)
+
+### 3단계
+- [ ] 최단 거리를 검색하는 API (FE)
+- [x] 모든 역을 불러오는 API (FE)
+- [ ] 최소 시간을 검색하는 API (FE)
+- [x] 초기 역 데이터를 불러오는 API (FE)
+- [x] 역을 추가하는 API (FE)
+- [x] 역을 삭제하는 API (FE)
+  
+
+- [x] 경로와 거리를 저장하는 Path 도메인 생성
+- [x] DijkstraGraph로 변환하는 클래스 생성
+- [x] 최단 거리를 계산해서 돌려주는 클래스 생성
+- [x] PathResponse 내부에서 Station을 StationResponse로 변환하는 메서드 생성

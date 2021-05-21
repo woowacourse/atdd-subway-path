@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.web.response.LineResponse;
+import wooteco.subway.web.request.SectionRequest;
+import wooteco.subway.web.response.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
