@@ -1,5 +1,8 @@
 package wooteco.auth.dto;
 
+import lombok.Getter;
+
+@Getter
 public class LoginMember {
     private Long id;
     private String email;
@@ -14,17 +17,5 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 }

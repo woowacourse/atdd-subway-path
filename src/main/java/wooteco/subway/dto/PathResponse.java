@@ -1,7 +1,10 @@
 package wooteco.subway.dto;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
@@ -12,13 +15,5 @@ public class PathResponse {
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
-    }
-
-    public List<StationResponse> getStations() {
-        return stations;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 }
