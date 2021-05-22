@@ -41,7 +41,7 @@ class PathServiceTest {
         Station secondStation = new Station(2L, "강남역");
         Station thirdStation = new Station(3L, "역삼역");
         Station fourthStation = new Station(4L, "회기역");
-        Stations stations = new Stations(Arrays.asList(firstStation, secondStation, thirdStation, fourthStation));
+        Stations stations = new Stations(Arrays.asList(firstStation, thirdStation, fourthStation));
 
         Section firstSection = new Section(firstStation, secondStation, 5);
         Section secondSection = new Section(secondStation, fourthStation, 31);
@@ -49,7 +49,7 @@ class PathServiceTest {
         Section fourthSection = new Section(thirdStation, fourthStation, 3);
 
         when(sectionDao.findAll()).thenReturn(Arrays.asList(firstSection, secondSection, thirdSection, fourthSection));
-        when(stationService.findAllStations()).thenReturn(stations);
+        when(stationService.findStationsByIds(Arrays.asList(1L, 3L, 4L))).thenReturn(stations);
 
         PathResponse shortestPath = pathService.findShortestPath(1L, 4L);
         List<String> names = shortestPath.getStations()
@@ -60,6 +60,6 @@ class PathServiceTest {
         assertThat(shortestPath.getDistance()).isEqualTo(7);
         assertThat(names).containsExactly("잠원역", "역삼역", "회기역");
         verify(sectionDao, times(1)).findAll();
-        verify(stationService, times(1)).findAllStations();
+        verify(stationService, times(1)).findStationsByIds(Arrays.asList(1L, 3L, 4L));
     }
 }

@@ -30,8 +30,8 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-    public Stations findAllStations() {
-        return new Stations(stationDao.findAll());
+    public Stations findStationsByIds(List<Long> ids) {
+        return new Stations(stationDao.findByIds(ids));
     }
 
     public List<StationResponse> findAllStationResponses() {

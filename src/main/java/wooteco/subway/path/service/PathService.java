@@ -28,15 +28,15 @@ public class PathService {
 
     public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
         List<Section> sections = sectionDao.findAll();
-        Stations stations = stationService.findAllStations();
         SubwayMap subwayMap = new SubwayMap(ShortestPathStrategy.DIJKSTRA, sections);
 
-        List<Station> shortestPath = subwayMap.findShortestPath(sourceStationId, targetStationId)
-                .stream()
-                .map(stations::getStationById)
+        List<Long> shortestPathStationIds = subwayMap.findShortestPath(sourceStationId, targetStationId);
+        Stations shortestPathStations = stationService.findStationsByIds(shortestPathStationIds);
+        List<Station> orderedShortestPathStations = shortestPathStationIds.stream()
+                .map(shortestPathStations::getStationById)
                 .collect(Collectors.toList());
         int shortestDistance = subwayMap.findShortestDistance(sourceStationId, targetStationId);
 
-        return new PathResponse(shortestPath, shortestDistance);
+        return new PathResponse(orderedShortestPathStations, shortestDistance);
     }
 }
