@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -88,4 +89,10 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<Section> findAllSections() {
+        return lineDao.findAll()
+            .stream().map(line -> line.getSections().getSections())
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
 }

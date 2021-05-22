@@ -8,11 +8,11 @@ import auth from "./modules/auth";
 import snackbar from "./modules/snackbar";
 
 const modules = {
-  snackbar,
-  station,
-  line,
-  member,
-  auth,
+    snackbar,
+    station,
+    line,
+    member,
+    auth,
 }
 
 const plugins = [
@@ -22,6 +22,6 @@ const plugins = [
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  modules: modules,
-  plugins,
+    modules: modules,
+    plugins,
 });
