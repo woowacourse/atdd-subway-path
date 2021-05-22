@@ -23,7 +23,7 @@ public class PathService {
     private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public PathService(StationDao stationDao, wooteco.subway.line.dao.LineDao lineDao) {
+    public PathService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
     }
@@ -44,7 +44,7 @@ public class PathService {
                 stationDao.findById(targetId)
         );
         if (Objects.isNull(graphPath)) {
-            throw new IllegalArgumentException("최단 경로가 존재하지 않습니다.");
+            throw new NoPathException("최단 경로가 존재하지 않습니다.");
         }
         return graphPath;
     }
