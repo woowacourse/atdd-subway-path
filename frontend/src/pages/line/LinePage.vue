@@ -39,8 +39,8 @@
 
 <script>
 import LineCreateButton from "./components/LineCreateButton";
-import { SET_LINES, SET_STATIONS } from "../../store/shared/mutationTypes";
-import { mapGetters, mapMutations } from "vuex";
+import {SET_LINES, SET_STATIONS} from "../../store/shared/mutationTypes";
+import {mapGetters, mapMutations} from "vuex";
 import LineEditButton from "./components/LineEditButton";
 import LineDeleteButton from "./components/LineDeleteButton";
 

@@ -1,22 +1,22 @@
 package wooteco.subway.auth;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import wooteco.subway.auth.infrastructure.MemberAuthentication;
 
 @Configuration
 public class AuthConfig {
 
+    private final RestTemplate restTemplate;
+
+    public AuthConfig(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     @Bean
     public MemberAuthentication memberAuthentication() {
-        CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(100)
-                .setMaxConnPerRoute(50)
-                .build();
-
-        return new MemberAuthentication(httpClient);
+        return new MemberAuthentication(restTemplate);
     }
 
 }

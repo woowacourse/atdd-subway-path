@@ -6,12 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.application.dto.MemberRequestDto;
+import wooteco.subway.member.application.dto.MemberResponseDto;
+import wooteco.subway.member.application.dto.TokenRequestDto;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.exception.InvalidMemberException;
+import wooteco.subway.member.infrastructure.dao.MemberDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,8 +36,8 @@ class MemberServiceTest {
     void createMember() {
         given(memberDao.insert(any(Member.class))).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
-        MemberResponse member = memberService.createMember(
-                new MemberRequest(
+        MemberResponseDto member = memberService.createMember(
+                new MemberRequestDto(
                         EMAIL,
                         PASSWORD,
                         AGE
@@ -45,7 +45,7 @@ class MemberServiceTest {
 
         assertThat(member).
                 usingRecursiveComparison()
-                .isEqualTo(new MemberResponse(
+                .isEqualTo(new MemberResponseDto(
                         1L,
                         EMAIL,
                         AGE
@@ -62,11 +62,11 @@ class MemberServiceTest {
                 AGE
         ));
 
-        MemberResponse member = memberService.findMember(1L);
+        MemberResponseDto member = memberService.findMember(1L);
 
         assertThat(member)
                 .usingRecursiveComparison()
-                .isEqualTo(new MemberResponse(
+                .isEqualTo(new MemberResponseDto(
                         1L,
                         EMAIL,
                         AGE
@@ -80,7 +80,7 @@ class MemberServiceTest {
 
         assertThatThrownBy(
                 () -> memberService.authenticate(
-                        new TokenRequest(EMAIL, "1")
+                        new TokenRequestDto(EMAIL, "1")
                 )
         ).isInstanceOf(InvalidMemberException.class);
     }
@@ -90,10 +90,10 @@ class MemberServiceTest {
     void findByEmail() {
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
-        Member memberByEmail = memberService.findByEmail(EMAIL);
+        MemberResponseDto memberByEmail = memberService.findByEmail(EMAIL);
 
         assertThat(memberByEmail)
                 .usingRecursiveComparison()
-                .isEqualTo(new Member(1L, EMAIL, PASSWORD, AGE));
+                .isEqualTo(new MemberResponseDto(1L, EMAIL, AGE));
     }
 }

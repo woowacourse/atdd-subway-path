@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.LoginResponse;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.auth.ui.dto.LoginResponse;
+import wooteco.subway.member.ui.dto.MemberRequest;
+import wooteco.subway.member.ui.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;

@@ -2,41 +2,50 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.application.dto.MemberRequestDto;
+import wooteco.subway.member.application.dto.MemberResponseDto;
+import wooteco.subway.member.application.dto.TokenRequestDto;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.TokenRequest;
 import wooteco.subway.member.exception.InvalidMemberException;
+import wooteco.subway.member.infrastructure.dao.MemberDao;
 
 @Service
 public class MemberService {
 
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+    public MemberResponseDto createMember(MemberRequestDto memberRequestDto) {
+        Member member = memberDao.insert(
+                new Member(
+                        memberRequestDto.getEmail(),
+                        memberRequestDto.getPassword(),
+                        memberRequestDto.getAge()
+                )
+        );
+
+        return MemberResponseDto.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponseDto findMember(Long id) {
         Member member = memberDao.findById(id);
-        return MemberResponse.of(member);
+
+        return MemberResponseDto.of(member);
     }
 
     @Transactional
-    public void updateMember(String email, Member member) {
+    public void updateMember(String email, MemberRequestDto memberRequestDto) {
         Member originMember = memberDao.findByEmail(email);
+
         memberDao.update(
                 new Member(
                         originMember.getId(),
-                        member.getEmail(),
-                        member.getPassword(),
-                        member.getAge()
+                        memberRequestDto.getEmail(),
+                        memberRequestDto.getPassword(),
+                        memberRequestDto.getAge()
                 )
         );
     }
@@ -45,10 +54,10 @@ public class MemberService {
         memberDao.deleteByEmail(email);
     }
 
-    public void authenticate(TokenRequest tokenRequest) {
+    public void authenticate(TokenRequestDto tokenRequestDto) {
         boolean isValid = memberDao.checkFrom(
-                tokenRequest.getEmail(),
-                tokenRequest.getPassword()
+                tokenRequestDto.getEmail(),
+                tokenRequestDto.getPassword()
         );
 
         if (!isValid) {
@@ -56,8 +65,10 @@ public class MemberService {
         }
     }
 
-    public Member findByEmail(String email) {
-        return memberDao.findByEmail(email);
+    public MemberResponseDto findByEmail(String email) {
+        Member member = memberDao.findByEmail(email);
+
+        return new MemberResponseDto(member.getId(), member.getEmail(), member.getAge());
     }
 
 }

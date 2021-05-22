@@ -1,17 +1,24 @@
 package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.application.dto.MemberRequestDto;
+import wooteco.subway.member.application.dto.MemberResponseDto;
+import wooteco.subway.member.application.dto.TokenRequestDto;
 import wooteco.subway.member.domain.AuthenticationPrincipal;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.TokenRequest;
+import wooteco.subway.member.ui.dto.MemberRequest;
+import wooteco.subway.member.ui.dto.MemberResponse;
+import wooteco.subway.member.ui.dto.TokenRequest;
+import wooteco.subway.member.ui.dto.valid.NumberValidation;
 
+import javax.validation.Valid;
 import java.net.URI;
 
+@Validated
+@RequestMapping("/members")
 @RestController
 public class MemberController {
     private final MemberService memberService;
@@ -20,51 +27,78 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
+    @PostMapping
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
+        MemberResponseDto memberResponseDto = memberService.createMember(
+                new MemberRequestDto(
+                        request.getEmail(),
+                        request.getPassword(),
+                        request.getAge()
+                )
+        );
 
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity
+                .created(URI.create("/members/" + memberResponseDto.getId()))
+                .build();
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-
-        return ResponseEntity.ok().body(member);
-    }
-
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        String email = loginMember.getEmail();
-        Member member = memberService.findByEmail(email);
+    @GetMapping("{id}")
+    public ResponseEntity<MemberResponse> findMember(@NumberValidation @PathVariable Long id) {
+        MemberResponseDto memberResponseDto = memberService.findMember(id);
 
         return ResponseEntity.ok().body(
-                new MemberResponse(member)
+                new MemberResponse(
+                        memberResponseDto.getId(),
+                        memberResponseDto.getEmail(),
+                        memberResponseDto.getAge()
+                )
         );
     }
 
-    @PutMapping("/members/me")
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        String email = loginMember.getEmail();
+        MemberResponseDto memberResponseDto = memberService.findByEmail(email);
+
+        return ResponseEntity.ok().body(
+                new MemberResponse(
+                        memberResponseDto.getId(),
+                        memberResponseDto.getEmail(),
+                        memberResponseDto.getAge()
+                )
+        );
+    }
+
+    @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                             @RequestBody MemberRequest memberRequest) {
+                                                             @Valid @RequestBody MemberRequest memberRequest) {
         String email = loginMember.getEmail();
         memberService.updateMember(
-                email, memberRequest.toMember()
+                email, new MemberRequestDto(
+                        memberRequest.getEmail(),
+                        memberRequest.getPassword(),
+                        memberRequest.getAge()
+                )
         );
 
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getEmail());
 
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/members/authentication")
-    public ResponseEntity<Void> memberAuthenticate(@RequestBody TokenRequest tokenRequest) {
-        memberService.authenticate(tokenRequest);
+    @PostMapping("/authentication")
+    public ResponseEntity<Void> memberAuthenticate(@Valid @RequestBody TokenRequest tokenRequest) {
+        memberService.authenticate(
+                new TokenRequestDto(
+                        tokenRequest.getEmail(),
+                        tokenRequest.getPassword()
+                )
+        );
 
         return ResponseEntity.ok().build();
     }

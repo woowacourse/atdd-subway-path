@@ -1,68 +1,114 @@
 package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.application.dto.LineRequestDto;
+import wooteco.subway.line.application.dto.LineResponseDto;
+import wooteco.subway.line.application.dto.SectionRequestDto;
+import wooteco.subway.line.ui.dto.LineRequest;
+import wooteco.subway.line.ui.dto.LineResponse;
+import wooteco.subway.line.ui.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.valid.NumberValidation;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
+@Validated
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
+        LineResponseDto lineResponseDto = lineService.saveLine(new LineRequestDto(
+                lineRequest.getName(),
+                lineRequest.getColor(),
+                lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(),
+                lineRequest.getDistance()
+        ));
+
+        return ResponseEntity
+                .created(URI.create("/lines/" + lineResponseDto.getId()))
+                .body(LineResponse.of(lineResponseDto));
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        List<LineResponse> lineResponses = getLineResponses();
+
+        return ResponseEntity.ok(lineResponses);
+    }
+
+    private List<LineResponse> getLineResponses() {
+        return lineService.findLineResponses().stream()
+                .map(LineResponse::of)
+                .collect(toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineResponse> findLineById(@NumberValidation @PathVariable Long id) {
+        LineResponseDto lineResponseDto = lineService.findLineResponseById(id);
+
+        return ResponseEntity.ok(LineResponse.of(lineResponseDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
+    public ResponseEntity<Void> updateLine(@NumberValidation @PathVariable Long id,
+                                           @Valid @RequestBody LineRequest lineRequest) {
+        lineService.updateLine(id, new LineRequestDto(
+                lineRequest.getName(),
+                lineRequest.getColor(),
+                lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(),
+                lineRequest.getDistance()
+        ));
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@NumberValidation @PathVariable Long id) {
         lineService.deleteLineById(id);
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
+    public ResponseEntity<Void> addLineStation(@NumberValidation @PathVariable Long lineId,
+                                               @Valid @RequestBody SectionRequest sectionRequest) {
+        lineService.addLineStation(lineId, new SectionRequestDto(
+                sectionRequest.getUpStationId(),
+                sectionRequest.getDownStationId(),
+                sectionRequest.getDistance())
+        );
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@NumberValidation @PathVariable Long lineId,
+                                                  @NumberValidation @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
+
         return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
+    public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
 }

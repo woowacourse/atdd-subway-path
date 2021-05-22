@@ -1,4 +1,4 @@
-import { SET_MEMBER } from "../shared/mutationTypes";
+import {SET_MEMBER} from "../shared/mutationTypes";
 
 const state = {
   member: null,
