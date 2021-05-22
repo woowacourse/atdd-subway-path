@@ -18,20 +18,20 @@ public class Path {
     }
 
     public List<Station> findPath(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
     public int findDistance(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(Sections sections) {
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Station station : sections.getAllStations()) {
             graph.addVertex(station);
