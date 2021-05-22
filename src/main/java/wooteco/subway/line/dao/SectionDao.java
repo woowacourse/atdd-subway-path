@@ -56,7 +56,7 @@ public class SectionDao {
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
 
-    public Sections findBySourceOrTarget(Long sourceId, Long targetId) {
+    public Sections findAll() {
         String query =
                 "SELECT s.id AS section_id, line_id, " +
                         "up_table.id AS up_id, " +
@@ -65,15 +65,14 @@ public class SectionDao {
                         "down_table.name AS down_name, " +
                         "distance FROM section AS s\n" +
                         "LEFT JOIN station AS up_table ON s.up_station_id = up_table.id\n" +
-                        "LEFT JOIN station AS down_table ON s.down_station_id = down_table.id\n" +
-                        "WHERE up_table.id IN (?,?) OR down_table.id IN (?,?)";
+                        "LEFT JOIN station AS down_table ON s.down_station_id = down_table.id\n";
 
         List<Section> sections = this.jdbcTemplate.query(query, (resultSet, rowNum) -> new Section(
                 resultSet.getLong("section_id"),
                 new Station(resultSet.getLong("up_id"), resultSet.getString("up_name")),
                 new Station(resultSet.getLong("down_id"), resultSet.getString("down_name")),
                 resultSet.getInt("distance")
-        ), sourceId, targetId, sourceId, targetId);
+        ));
 
         return new Sections(sections);
     }
