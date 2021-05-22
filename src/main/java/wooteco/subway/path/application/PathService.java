@@ -29,16 +29,16 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(Long sourceId, Long targetId) {
-        GraphPath graphPath = graphPath(sourceId, targetId);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = graphPath(sourceId, targetId);
         List<Station> shortestPath = graphPath.getVertexList();
         int distance = (int) graphPath.getWeight();
         return new PathResponse(shortestPath, distance);
     }
 
-    private GraphPath graphPath(Long sourceId, Long targetId) {
+    private GraphPath<Station, DefaultWeightedEdge> graphPath(Long sourceId, Long targetId) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = graphFromLines();
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath graphPath = dijkstraShortestPath.getPath(
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(
                 stationDao.findById(sourceId),
                 stationDao.findById(targetId)
         );
