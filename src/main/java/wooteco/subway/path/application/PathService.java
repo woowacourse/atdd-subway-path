@@ -1,9 +1,6 @@
 package wooteco.subway.path.application;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
@@ -11,6 +8,8 @@ import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.infrastructure.ShortestPath;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+
+import java.util.List;
 
 @Service
 public class PathService {

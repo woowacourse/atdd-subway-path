@@ -25,6 +25,6 @@ public class ShortestPathWithDijkstra implements ShortestPath {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
-        return new Path(path.getVertexList(), (int)path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight());
     }
 }
