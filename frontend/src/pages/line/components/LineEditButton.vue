@@ -64,7 +64,7 @@
     <template slot="action">
       <v-btn
         :disabled="!valid"
-        @click.prevent="onEditLine"
+        @click.prevent="onEditLine()"
         color="amber"
         depressed
         >확인</v-btn
@@ -114,11 +114,24 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO Line을 수정하는 API를 추가해주세요.
-        // await fetch("/api/lines/{id}", { data: this.lineEditForm })
-        // TODO 전체 Line 데이터를 불러오는 API를 추가해주세요.
-        // const lines = await fetch("/api/lines")
-        // this.setLines([...lines])
+        const lineId = this.line.id;
+        const {name, color} = this.lineEditForm;
+        const response = await fetch(`/api/lines/${lineId}`, {
+          method: "PUT",
+          body: JSON.stringify({name, color}),
+          headers: {"Content-Type" : "application/json"}
+        });
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
+        const lines = await fetch("/api/lines", {
+          method: "GET",
+          headers: {"Content-Type": "application/json"}
+        }).then(response => response.json());
+
+        await this.setLines([...lines])
+
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
       } catch (e) {

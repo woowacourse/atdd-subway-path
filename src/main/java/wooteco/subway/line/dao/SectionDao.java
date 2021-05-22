@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.SectionDto;
 
 @Repository
 public class SectionDao {
@@ -53,5 +54,16 @@ public class SectionDao {
             .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public List<SectionDto> findAll() {
+        String query = "select * from SECTION";
+        return jdbcTemplate.query(query, (resultSet, rowNum) -> {
+            Long id = resultSet.getLong("id");
+            Long upStationId = resultSet.getLong("up_station_id");
+            Long downStationId = resultSet.getLong("down_station_id");
+            int distance = resultSet.getInt("distance");
+            return new SectionDto(id, upStationId, downStationId, distance);
+        });
     }
 }

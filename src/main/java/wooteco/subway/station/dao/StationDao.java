@@ -1,5 +1,6 @@
 package wooteco.subway.station.dao;
 
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,5 +50,15 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public List<Station> findByIds(List<Long> ids) {
+        String query = String
+            .format("select * from STATION where id in (%s)", stringify(ids.size()));
+        return jdbcTemplate.query(query, rowMapper, ids.toArray());
+    }
+
+    private String stringify(int size) {
+        return String.join(",", Collections.nCopies(size, "?"));
     }
 }
