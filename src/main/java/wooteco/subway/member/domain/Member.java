@@ -44,7 +44,7 @@ public class Member {
         return age;
     }
 
-    public boolean isNotSamePassword(String password) {
+    public boolean hasDifferentPassword(String password) {
         return !this.password.equals(password);
     }
 }

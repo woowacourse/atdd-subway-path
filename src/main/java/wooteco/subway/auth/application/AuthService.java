@@ -52,7 +52,7 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
-        if (foundMember.get().isNotSamePassword(tokenRequest.getPassword())) {
+        if (foundMember.get().hasDifferentPassword(tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
     }
