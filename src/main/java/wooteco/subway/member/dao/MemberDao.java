@@ -65,9 +65,4 @@ public class MemberDao {
             return Optional.empty();
         }
     }
-
-    public boolean existById(Long id) {
-        String sql = "select exists (select * from MEMBER where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
-    }
 }

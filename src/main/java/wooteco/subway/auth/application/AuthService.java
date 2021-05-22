@@ -21,21 +21,13 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
-                .orElseThrow(() -> new AuthorizationException("[ERROR] 로그인 실패입니다."));
+                .orElseThrow(() -> new AuthorizationException("로그인 실패입니다."));
         String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(accessToken);
     }
 
     public LoginMember findLoginMemberByToken(String token) {
         Long id = Long.valueOf(jwtTokenProvider.getPayload(token));
-        validate(id);
         return new LoginMember(id);
-    }
-
-    private void validate(Long id) {
-        if (memberDao.existById(id)) {
-            return;
-        }
-        throw new AuthorizationException("[ERROR] 존재하지 않는 회원입니다.");
     }
 }
