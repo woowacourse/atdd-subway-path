@@ -110,8 +110,7 @@ export default {
     },
     async initLineStationsView() {
       try {
-        this.selectedLine = await get(`/api/lines/${this.sectionForm.lineId}`,
-            {'Authorization': "Bearer " + localStorage.getItem("token")})
+        this.selectedLine = await getWithToken(`/api/lines/${this.sectionForm.lineId}`)
             .then(res => res.json());
         if (this.selectedLine.stations?.length < 1) {
           return;
