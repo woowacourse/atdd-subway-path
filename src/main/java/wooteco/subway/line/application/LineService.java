@@ -6,6 +6,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.application.NewPathService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -18,11 +19,13 @@ public class LineService {
 
     private SectionService sectionService;
     private StationService stationService;
+    private NewPathService pathService;
 
-    public LineService(LineDao lineDao, SectionService sectionService, StationService stationService) {
+    public LineService(LineDao lineDao, SectionService sectionService, StationService stationService, NewPathService pathService) {
         this.lineDao = lineDao;
         this.stationService = stationService;
         this.sectionService = sectionService;
+        this.pathService = pathService;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -32,9 +35,9 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         persistLine.addSection(sectionService.addInitSection(persistLine, upStation, downStation, request.getDistance()));
+        updatePath();
         return LineResponse.of(persistLine);
     }
-
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
@@ -62,13 +65,20 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        updatePath();
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
         sectionService.addLineStation(findLineById(lineId), request);
+        updatePath();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         sectionService.removeLineStation(findLineById(lineId), stationService.findStationById(stationId));
+        updatePath();
+    }
+
+    private void updatePath(){
+        pathService.update();
     }
 }

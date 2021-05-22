@@ -3,15 +3,15 @@ package wooteco.subway.path.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import wooteco.subway.path.application.PathService;
+import wooteco.subway.path.application.NewPathService;
 import wooteco.subway.path.dto.PathResponse;
 
 @Controller
 public class PathController {
 
-    private final PathService pathService;
+    private final NewPathService pathService;
 
-    public PathController(final PathService pathService) {
+    public PathController(final NewPathService pathService) {
         this.pathService = pathService;
     }
 
