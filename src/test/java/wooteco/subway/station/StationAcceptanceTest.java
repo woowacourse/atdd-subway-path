@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
+import static wooteco.subway.member.MemberAcceptanceTest.*;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -79,9 +83,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")
@@ -90,16 +97,24 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/stations")
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete("/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
