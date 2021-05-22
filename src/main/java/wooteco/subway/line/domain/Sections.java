@@ -152,4 +152,8 @@ public class Sections {
 
         return new ArrayList<>(stations);
     }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
 }
