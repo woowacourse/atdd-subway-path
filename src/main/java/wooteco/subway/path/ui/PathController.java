@@ -20,9 +20,4 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(source, target));
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgumentException() {
-        return ResponseEntity.badRequest().build();
-    }
 }
