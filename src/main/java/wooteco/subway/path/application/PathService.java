@@ -13,7 +13,6 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +32,7 @@ public class PathService {
         GraphPath graphPath = graphPath(sourceId, targetId);
         List<Station> shortestPath = graphPath.getVertexList();
         int distance = (int) graphPath.getWeight();
-        return new PathResponse(StationResponse.listOf(shortestPath), distance);
+        return new PathResponse(shortestPath, distance);
     }
 
     private GraphPath graphPath(Long sourceId, Long targetId) {
