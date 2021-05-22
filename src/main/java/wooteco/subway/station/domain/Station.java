@@ -26,6 +26,10 @@ public class Station {
         return name;
     }
 
+    public boolean hasSameId(long value) {
+        return this.id.equals(value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
