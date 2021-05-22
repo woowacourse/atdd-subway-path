@@ -9,6 +9,20 @@ import {mapMutations} from "vuex";
 import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 export default {
   name: "SectionDeleteButton",
   props: {
@@ -25,14 +39,24 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        // await fetch("/api/section/{id}", {
-        // lineId: this.lineId,
-        // stationId: this.stationId,
-        // })
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        // const line = await fetch("/api/line/{lineId}")
-        // this.setLine({ ...line })
+        await fetch("http://localhost:8080/lines/" +this.lineId + "/sections?stationId=" + this.stationId, {
+          method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          }
+        });
+
+        const lineResponse = await fetch("http://localhost:8080/lines/" + this.lineId, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          }
+        });
+        const line = await lineResponse.json()
+        this.setLine({...line})
+
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
