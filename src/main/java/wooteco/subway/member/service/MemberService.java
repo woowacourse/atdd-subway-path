@@ -4,8 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.AuthException;
-import wooteco.subway.exception.AuthExceptionStatus;
+import wooteco.subway.exception.auth.AuthException;
+import wooteco.subway.exception.auth.AuthExceptionStatus;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -37,7 +37,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
-        memberDao.update(new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        String encodedPassword = PASSWORD_ENCODER.encode(memberRequest.getPassword());
+        memberDao.update(new Member(id, memberRequest.getEmail(), encodedPassword, memberRequest.getAge()));
     }
 
     @Transactional

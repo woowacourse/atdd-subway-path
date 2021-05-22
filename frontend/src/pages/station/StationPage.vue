@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="d-flex flex-column justify-center mt-12">
     <div class="d-flex justify-center relative">
-      <v-card width="500" max-width="600" max-height="200" class="card-border">
+      <v-card class="card-border" max-height="200" max-width="600" width="500">
         <v-card-title class="font-weight-bold justify-center">
           지하철 역 관리
         </v-card-title>
@@ -9,23 +9,24 @@
           <v-form ref="stationForm" v-model="valid" @submit.prevent>
             <div class="d-flex">
               <v-text-field
-                color="grey darken-1"
-                class="mr-4"
-                @keydown.enter="onCreateStation"
-                label="지하철 역 이름을 입력해주세요."
-                v-model="stationName"
-                prepend-inner-icon="mdi-subway"
-                dense
-                outlined
-                :rules="rules.stationName"
-                autofocus
+                  v-model="stationName"
+                  :rules="rules.stationName"
+                  autofocus
+                  class="mr-4"
+                  color="grey darken-1"
+                  dense
+                  label="지하철 역 이름을 입력해주세요."
+                  outlined
+                  prepend-inner-icon="mdi-subway"
+                  @keydown.enter="onCreateStation"
               ></v-text-field>
               <v-btn
-                :disabled="!valid"
-                color="amber"
-                @click.prevent="onCreateStation"
-                depressed
-                >추가</v-btn
+                  :disabled="!valid"
+                  color="amber"
+                  depressed
+                  @click.prevent="onCreateStation"
+              >추가
+              </v-btn
               >
             </div>
           </v-form>
@@ -33,7 +34,7 @@
       </v-card>
     </div>
     <div class="d-flex justify-center relative mt-4">
-      <v-card width="500" height="500px" class="overflow-y-auto pl-3">
+      <v-card class="overflow-y-auto pl-3" height="500px" width="500">
         <v-list>
           <template v-for="station in stations">
             <v-list-item :key="station.id">
@@ -41,7 +42,7 @@
                 <v-list-item-title v-text="station.name"></v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
-                <v-btn @click="onDeleteStation(station.id)" icon>
+                <v-btn icon @click="onDeleteStation(station.id)">
                   <v-icon color="grey lighten-1">mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -55,9 +56,9 @@
 
 <script>
 import validator from "../../utils/validator";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "StationPage",
@@ -66,7 +67,12 @@ export default {
   },
   async created() {
     // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("/api/stations");
+    const response = await fetch("http://localhost:8080/stations", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -84,10 +90,11 @@ export default {
       }
       try {
         // TODO 역을 추가하는 API Sample
-        const response = await fetch("/api/stations", {
+        const response = await fetch("http://localhost:8080/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             name: this.stationName,
@@ -113,9 +120,14 @@ export default {
     async onDeleteStation(stationId) {
       try {
         // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch("/api/stations/{id}");
+        await fetch("http://localhost:8080/stations/" + stationId, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const idx = this.stations.findIndex(
-          (station) => station.id === stationId
+            (station) => station.id === stationId
         );
         this.stations.splice(idx, 1);
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
@@ -127,7 +139,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       valid: false,
       stationName: "",
     };
