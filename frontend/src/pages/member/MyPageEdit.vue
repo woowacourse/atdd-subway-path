@@ -105,7 +105,7 @@ export default {
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
+        // TODO member 정보를 update하는 API를 추가해주세요(완료)
         const jsonData = {
           email: this.editingMember.email,
           password: this.editingMember.password,
