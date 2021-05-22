@@ -47,7 +47,7 @@ class PathServiceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("출발역과 도착역 사이의 최단 경로를 찾아오는 테스트")
-    void findPathTest() {
+    void findPath() {
         PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
 
         assertThat(pathResponse.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
@@ -56,14 +56,14 @@ class PathServiceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("출발역과 도착역이 null일 경우 테스트")
-    void parameterNullFindPathTest() {
+    void parameterNullFindPath() {
         assertThatThrownBy(() -> pathService.findPath(null, null))
                 .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 없는 역일 경우")
-    void notExistStationFindPathTest() {
+    void notExistStationFindPath() {
         assertThatThrownBy(() -> pathService.findPath(-1L, 100L))
                 .isInstanceOf(StationNotFoundException.class);
     }
