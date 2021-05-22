@@ -51,7 +51,7 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
+    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.(완료)
     const request = {
       method: 'GET',
       headers: {
@@ -62,10 +62,18 @@ export default {
     const stations = await response.json();
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
 
-
     // const stations = await fetch("/api/stations")
     // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
+    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.(완료)
+    const lineRequest = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer' + this.$store.state.accessToken
+      },
+    };
+    const lineResponse = await fetch("/api/lines", lineRequest);
+    const lines = await lineResponse.json();
+    this.setLines([...lines]); // stations 데이터를 단 한개 존재하는 저장소에 등록
     // const lines = await fetch("/api/lines")
     // this.setLines([...lines])
   },
