@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,9 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/stations")
 public class StationController {
-    private Logger logger = LoggerFactory.getLogger(StationController.class);
+    private final Logger logger = LoggerFactory.getLogger(StationController.class);
 
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;

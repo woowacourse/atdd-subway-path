@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class LoginInterceptor implements HandlerInterceptor {
-    private Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
+    private final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
     private final AuthService authService;
 
     public LoginInterceptor(AuthService authService) {

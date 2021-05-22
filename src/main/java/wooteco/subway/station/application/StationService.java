@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -15,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private Logger logger = LoggerFactory.getLogger(StationService.class);
-    private StationDao stationDao;
+    private final Logger logger = LoggerFactory.getLogger(StationService.class);
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;

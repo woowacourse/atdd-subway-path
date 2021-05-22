@@ -17,7 +17,6 @@ import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +44,7 @@ class PathServiceTest {
 
         흑기역 = new Station(1L, "흑기역");
         백기역 = new Station(2L, "백기역");
-        낙성대역 = new Station(3L,"낙성대역");
+        낙성대역 = new Station(3L, "낙성대역");
         흑기백기구간 = new Section(흑기역, 백기역, 4);
         백기낙성대구간 = new Section(백기역, 낙성대역, 7);
     }

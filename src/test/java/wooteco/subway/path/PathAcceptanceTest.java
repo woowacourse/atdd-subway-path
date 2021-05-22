@@ -37,7 +37,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private TokenResponse tokenResponse;
 
-
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |

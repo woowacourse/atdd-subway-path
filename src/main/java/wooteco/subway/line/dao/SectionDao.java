@@ -8,7 +8,6 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -82,6 +81,6 @@ public class SectionDao {
                 new Station((Long) result.get(0).get("UP_STATION_ID"), (String) result.get(0).get("UP_STATION_NAME")),
                 new Station((Long) result.get(0).get("DOWN_STATION_ID"), (String) result.get(0).get("DOWN_STATION_NAME")),
                 (int) result.get(0).get("SECTION_DISTANCE")
-                );
+        );
     }
 }
