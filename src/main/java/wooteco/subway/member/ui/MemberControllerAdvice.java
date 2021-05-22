@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.member.NotRegisteredMemberException;
+import wooteco.subway.member.exception.NotRegisteredMemberException;
 
 @RestControllerAdvice
 public class MemberControllerAdvice {
 
     @ExceptionHandler(NotRegisteredMemberException.class)
-    public ResponseEntity<String>notRegisterMemberException(NotRegisteredMemberException e) {
+    public ResponseEntity<String> notRegisterMemberException(NotRegisteredMemberException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(e.getMessage());
     }

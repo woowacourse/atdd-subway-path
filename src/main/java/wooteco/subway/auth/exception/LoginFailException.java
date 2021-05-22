@@ -1,6 +1,7 @@
-package wooteco.subway.exception.auth;
+package wooteco.subway.auth.exception;
 
 public class LoginFailException extends RuntimeException {
+
     public LoginFailException(String message) {
         super(message);
     }

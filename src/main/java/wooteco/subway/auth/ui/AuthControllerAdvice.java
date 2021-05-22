@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.auth.LoginFailException;
+import wooteco.subway.auth.exception.LoginFailException;
 
 @RestControllerAdvice
 public class AuthControllerAdvice {
@@ -12,6 +12,6 @@ public class AuthControllerAdvice {
     @ExceptionHandler(LoginFailException.class)
     public ResponseEntity<String> notFoundEmailException(LoginFailException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(e.getMessage());
+            .body(e.getMessage());
     }
 }

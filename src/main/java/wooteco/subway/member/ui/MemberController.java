@@ -8,9 +8,11 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
+import wooteco.subway.member.dto.TranslatedMemberRequest;
 
 @RestController
 public class MemberController {
+
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {
@@ -30,7 +32,8 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+        @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -42,19 +45,25 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest,
         @RequestBody MemberRequest memberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         memberService.updateMember(memberResponse.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal MemberResponse memberResponse) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(
+        @AuthenticationPrincipal TranslatedMemberRequest translatedMemberRequest) {
+        MemberResponse memberResponse = translatedMemberRequest.toResponse();
         memberService.deleteMember(memberResponse.getId());
         return ResponseEntity.noContent().build();
     }
