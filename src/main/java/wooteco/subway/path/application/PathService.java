@@ -1,9 +1,11 @@
 package wooteco.subway.path.application;
 
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.ShortestDistanceStrategy;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -25,12 +27,13 @@ public class PathService {
     public PathResponse findShortestDistancePath(Long sourceId, Long targetId) {
         List<Station> stations = stationDao.findAll();
         List<Section> sections = sectionDao.findAll(stations);
-        Path path = new Path(stations, sections);
+        Path path = new Path(stations, sections, new ShortestDistanceStrategy());
 
-        List<Station> shortestPath = path.calculateShortestPath(sourceId, targetId);
-        int shortestDistance = path.calculateShortestDistance(sourceId, targetId);
+        GraphPath shortestPath = path.calculateShortestPath(sourceId, targetId);
+        List<Station> stationsInPath = shortestPath.getVertexList();
+        int shortestDistance = (int) shortestPath.getWeight();
 
-        List<StationResponse> stationResponses = shortestPath.stream()
+        List<StationResponse> stationResponses = stationsInPath.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 

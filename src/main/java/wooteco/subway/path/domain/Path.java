@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Section;
@@ -12,9 +12,11 @@ import java.util.List;
 public class Path {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     private final List<Station> stations;
+    private final PathStrategy pathStrategy;
 
-    public Path(List<Station> stations, List<Section> sections) {
+    public Path(List<Station> stations, List<Section> sections, PathStrategy pathStrategy) {
         this.stations = new ArrayList<>(stations);
+        this.pathStrategy = pathStrategy;
         for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
@@ -22,26 +24,7 @@ public class Path {
         }
     }
 
-    public List<Station> calculateShortestPath(Long sourceId, Long targetId) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        Station source = getStation(sourceId);
-        Station target = getStation(targetId);
-
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
-    }
-
-    private Station getStation(Long id) {
-        return this.stations.stream()
-                .filter(station -> station.hasSameId(id))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public int calculateShortestDistance(Long sourceId, Long targetId) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        Station source = getStation(sourceId);
-        Station target = getStation(targetId);
-
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+    public GraphPath calculateShortestPath(Long sourceId, Long targetId) {
+        return this.pathStrategy.calculateShortestPath(graph, stations, sourceId, targetId);
     }
 }
