@@ -125,6 +125,20 @@ import shortid from "shortid";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import validator from "../../../utils/validator";
 
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 export default {
   name: "LineCreateButton",
   components: { Dialog },
@@ -153,9 +167,23 @@ export default {
         return;
       }
       try {
-        // TODO 노선을 추가하는 API를 추가해주세요.
-        // const newLine = await fetch("/api/lines")
-        // this.setLines([...this.lines, { ...newLine }]); setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
+        // TODO 노선을 추가하는 API를 추가해주세요. [완료]
+        const linesResponse = await fetch("http://localhost:8080/lines", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          },
+          body: JSON.stringify({
+            name: this.lineForm.name,
+            color: this.lineForm.color,
+            upStationId: this.lineForm.upStationId,
+            downStationId: this.lineForm.downStationId,
+            distance: this.lineForm.distance
+          }),
+        })
+        const lines = await linesResponse.json()
+        this.setLines([...this.lines, {...lines}])
         this.initLineForm();
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);
