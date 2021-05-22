@@ -29,11 +29,8 @@ public class AuthService {
     }
 
     private void validateLogin(TokenRequest tokenRequest) {
-        Optional<Member> foundMember = memberDao.findByEmail(tokenRequest.getEmail());
-
-        if (!foundMember.isPresent()) {
-            throw new AuthorizationException();
-        }
+        Optional<Member> foundMember = Optional.ofNullable(memberDao.findByEmail(tokenRequest.getEmail())
+                .orElseThrow(AuthorizationException::new));
 
         if (foundMember.get().hasDifferentPassword(tokenRequest.getPassword())) {
             throw new AuthorizationException();
@@ -49,11 +46,9 @@ public class AuthService {
     }
 
     public LoginMember findMember(String principal) {
-        Optional<Member> foundMember = memberDao.findByEmail(principal);
+        Optional<Member> foundMember = Optional.ofNullable(memberDao.findByEmail(principal)
+                .orElseThrow(AuthorizationException::new));
 
-        if (foundMember.isPresent()) {
-            return LoginMember.of(foundMember.get());
-        }
-        throw new AuthorizationException();
+        return LoginMember.of(foundMember.get());
     }
 }
