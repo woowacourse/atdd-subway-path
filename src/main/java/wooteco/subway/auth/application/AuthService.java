@@ -20,7 +20,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public String createToken(final TokenRequest tokenRequest) {
-        if (memberService.isNotExistUser(tokenRequest.getEmail(), tokenRequest.getPassword())) {
+        if (!memberService.isExistUser(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizedException("올바른 사용자가 아닙니다.");
         }
         return jwtTokenProvider.createToken(tokenRequest.getEmail());
