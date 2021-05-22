@@ -13,11 +13,11 @@ public class LineRequest {
     private String color;
 
     @NotNull
-    @Min(1)
+    @Min(0)
     private Long upStationId;
 
     @NotNull
-    @Min(1)
+    @Min(0)
     private Long downStationId;
 
     @NotNull

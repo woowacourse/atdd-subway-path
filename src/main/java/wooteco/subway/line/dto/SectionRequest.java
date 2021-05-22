@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 public class SectionRequest {
 
     @NotNull
-    @Min(1)
+    @Min(0)
     private Long upStationId;
 
     @NotNull
-    @Min(1)
+    @Min(0)
     private Long downStationId;
 
     @NotNull

@@ -113,21 +113,23 @@ public class LineDao {
                 .collect(Collectors.groupingBy(it -> it.get(SECTION_ID)))
                 .entrySet()
                 .stream()
-                .map(listEntry -> {
-                    Map<String, Object> map = listEntry.getValue().get(0);
-
-                    Long id = (Long) listEntry.getKey();
-                    Station upStation = new Station(
-                            (Long) map.get(UP_STATION_ID),
-                            (String) map.get(UP_STATION_NAME));
-                    Station downStation = new Station(
-                            (Long) map.get(DOWN_STATION_ID),
-                            (String) map.get(DOWN_STATION_Name));
-                    int distance = (int) map.get(SECTION_DISTANCE);
-
-                    return new Section(id, upStation, downStation, distance);
-                })
+                .map(this::convertListEntryToSection)
                 .collect(Collectors.toList());
+    }
+
+    private Section convertListEntryToSection(Map.Entry<Object, List<Map<String, Object>>> listEntry) {
+        Map<String, Object> map = listEntry.getValue().get(0);
+
+        Long id = (Long) listEntry.getKey();
+        Station upStation = new Station(
+                (Long) map.get(UP_STATION_ID),
+                (String) map.get(UP_STATION_NAME));
+        Station downStation = new Station(
+                (Long) map.get(DOWN_STATION_ID),
+                (String) map.get(DOWN_STATION_Name));
+        int distance = (int) map.get(SECTION_DISTANCE);
+
+        return new Section(id, upStation, downStation, distance);
     }
 
     public void deleteById(Long id) {

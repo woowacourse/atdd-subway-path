@@ -10,7 +10,9 @@ public class PathResponse {
     private final int distance;
 
     public PathResponse(Path path) {
-        this(StationResponse.listOf(path.getPathStations()), path.getDistance());
+        this(
+                StationResponse.listOf(path.getPathStations()),
+                path.getDistance());
     }
 
     public PathResponse(List<StationResponse> stations, int distance) {

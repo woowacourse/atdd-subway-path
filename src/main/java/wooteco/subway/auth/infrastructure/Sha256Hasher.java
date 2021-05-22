@@ -10,13 +10,7 @@ public class Sha256Hasher {
 
     public String hashing(String password) {
         MessageDigest md = getMessageDigest(SHA_256);
-
-        // key-stretching
-        byte[] digest = password.getBytes();
-        for (int i = 0; i < KEY_STRETCHING_COUNT; i++) {
-            md.update(digest);
-            digest = md.digest();
-        }
+        byte[] digest = hashAndKeyStretching(password, md);
 
         return byteToString(digest);
     }
@@ -29,7 +23,15 @@ public class Sha256Hasher {
         }
     }
 
-    // 바이트 값을 16진수로 변경해준다
+    private byte[] hashAndKeyStretching(String password, MessageDigest md) {
+        byte[] digest = password.getBytes();
+        for (int i = 0; i < KEY_STRETCHING_COUNT; i++) {
+            md.update(digest);
+            digest = md.digest();
+        }
+        return digest;
+    }
+
     private String byteToString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes) {
