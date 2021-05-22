@@ -11,12 +11,12 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class SubwayMap {
+public class Subway {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap =
+    WeightedMultigraph<Station, DefaultWeightedEdge> subway =
         new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-    public SubwayMap(List<Line> lines) {
+    public Subway(List<Line> lines) {
         createMap(lines);
     }
 
@@ -32,10 +32,10 @@ public class SubwayMap {
     }
 
     private void insertInMap(Section section) {
-        subwayMap.addVertex(section.getUpStation());
-        subwayMap.addVertex(section.getDownStation());
-        subwayMap.setEdgeWeight(
-            subwayMap.addEdge(section.getUpStation(), section.getDownStation()),
+        subway.addVertex(section.getUpStation());
+        subway.addVertex(section.getDownStation());
+        subway.setEdgeWeight(
+            subway.addEdge(section.getUpStation(), section.getDownStation()),
             section.getDistance()
         );
     }
@@ -51,7 +51,7 @@ public class SubwayMap {
 
     private GraphPath findPath(Station source, Station target) {
         DijkstraShortestPath dijkstraShortestPath =
-            new DijkstraShortestPath(subwayMap);
+            new DijkstraShortestPath(subway);
 
         return dijkstraShortestPath.getPath(source, target);
     }
