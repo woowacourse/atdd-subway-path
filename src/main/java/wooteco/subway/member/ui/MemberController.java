@@ -10,7 +10,6 @@ import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
 
-@CrossOrigin
 @RestController
 public class MemberController {
     private final MemberService memberService;
