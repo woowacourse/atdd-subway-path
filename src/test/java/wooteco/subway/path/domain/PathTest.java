@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PathTest {
 
     private Path path;
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
+    private Station 강남역;
+    private Station 양재역;
+    private Station 교대역;
+    private Station 남부터미널역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -29,15 +29,15 @@ class PathTest {
 
     @BeforeEach
     void setUp() {
-        station1 = new Station("강남역");
-        station2 = new Station("양재역");
-        station3 = new Station("교대역");
-        station4 = new Station("남부터미널역");
+        강남역 = new Station("강남역");
+        양재역 = new Station("양재역");
+        교대역 = new Station("교대역");
+        남부터미널역 = new Station("남부터미널역");
 
-        Section section1 = new Section(station1, station3, 10);
-        Section section2 = new Section(station1, station2, 10);
-        Section section3 = new Section(station2, station4, 2);
-        Section section4 = new Section(station3, station4, 3);
+        Section section1 = new Section(강남역, 교대역, 10);
+        Section section2 = new Section(강남역, 양재역, 10);
+        Section section3 = new Section(양재역, 남부터미널역, 2);
+        Section section4 = new Section(교대역, 남부터미널역, 3);
 
         List<Section> sectionList = new ArrayList<>();
 
@@ -53,14 +53,14 @@ class PathTest {
 
     @Test
     void findPath() {
-        List<Station> findPath = path.findPath(station3, station2);
+        List<Station> findPath = path.findPath(교대역, 양재역);
 
-        assertThat(findPath).containsExactly(station3, station4, station2);
+        assertThat(findPath).containsExactly(교대역, 남부터미널역, 양재역);
     }
 
     @Test
     void findDistance() {
-        int distance = path.findDistance(station3, station2);
+        int distance = path.findDistance(교대역, 양재역);
 
         assertThat(distance).isEqualTo(5);
     }

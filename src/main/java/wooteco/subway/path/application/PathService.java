@@ -1,6 +1,7 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.domain.Path;
@@ -26,8 +27,8 @@ public class PathService {
         Sections sections = sectionDao.findAll();
         Path path = new Path(sections);
 
-        Station sourceStation = stationDao.findById(sourceId);
-        Station targetStation = stationDao.findById(targetId);
+        Station sourceStation = stationDao.findById(sourceId).orElseThrow(StationNotFoundException::new);
+        Station targetStation = stationDao.findById(targetId).orElseThrow(StationNotFoundException::new);
 
         List<StationResponse> stationResponses = StationResponse.listOf(path.findPath(sourceStation, targetStation));
 

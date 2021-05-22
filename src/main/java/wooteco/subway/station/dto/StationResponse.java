@@ -34,4 +34,22 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StationResponse)) return false;
+
+        StationResponse that = (StationResponse) o;
+
+        if (!getId().equals(that.getId())) return false;
+        return getName().equals(that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId().hashCode();
+        result = 31 * result + getName().hashCode();
+        return result;
+    }
 }
