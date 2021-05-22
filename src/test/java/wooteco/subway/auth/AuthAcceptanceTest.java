@@ -26,9 +26,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        String token = 로그인되어_있음(EMAIL, PASSWORD).getAccessToken();
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청();
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(token);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -91,7 +92,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청() {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String token) {
         return RestAssured.given().log().all().
                 auth().oauth2(token).
                 accept(MediaType.APPLICATION_JSON_VALUE).

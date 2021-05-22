@@ -1,7 +1,6 @@
 package wooteco.subway;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -15,17 +14,15 @@ import static wooteco.subway.auth.AuthAcceptanceTest.*;
 @ActiveProfiles("test")
 public class AcceptanceTest {
     public static String token;
+
     @LocalServerPort
     int port;
-
-    @BeforeAll
-    static void beforeAll() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        token = 로그인되어_있음(EMAIL, PASSWORD).getAccessToken();
-    }
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        token = 로그인되어_있음(EMAIL, PASSWORD).getAccessToken();
     }
 }
