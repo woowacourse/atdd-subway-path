@@ -28,6 +28,18 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
+    private void validateLogin(TokenRequest tokenRequest) {
+        Optional<Member> foundMember = memberDao.findByEmail(tokenRequest.getEmail());
+
+        if (!foundMember.isPresent()) {
+            throw new AuthorizationException();
+        }
+
+        if (foundMember.get().hasDifferentPassword(tokenRequest.getPassword())) {
+            throw new AuthorizationException();
+        }
+    }
+
     public LoginMember findMemberByToken(String token) {
         if (jwtTokenProvider.validateToken(token)) {
             String payload = jwtTokenProvider.getPayload(token);
@@ -43,17 +55,5 @@ public class AuthService {
             return LoginMember.of(foundMember.get());
         }
         throw new AuthorizationException();
-    }
-
-    private void validateLogin(TokenRequest tokenRequest) {
-        Optional<Member> foundMember = memberDao.findByEmail(tokenRequest.getEmail());
-
-        if (!foundMember.isPresent()) {
-            throw new AuthorizationException();
-        }
-
-        if (foundMember.get().hasDifferentPassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException();
-        }
     }
 }
