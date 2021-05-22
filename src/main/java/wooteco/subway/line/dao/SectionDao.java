@@ -57,13 +57,16 @@ public class SectionDao {
                 .entrySet()
                 .stream()
                 .map(it ->
-                        new Section(
-                                (Long)it.getKey(),
-                                new Station((Long)it.getValue().get(0).get("UP_STATION_ID"),
-                                        (String)it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long)it.getValue().get(0).get("DOWN_STATION_ID"),
-                                        (String)it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int)it.getValue().get(0).get("SECTION_DISTANCE")))
+                {
+                    Map<String, Object> sectionInfo = it.getValue().get(0);
+                    return new Section(
+                            (Long)it.getKey(),
+                            new Station((Long) sectionInfo.get("UP_STATION_ID"),
+                                    (String)sectionInfo.get("UP_STATION_Name")),
+                            new Station((Long)sectionInfo.get("DOWN_STATION_ID"),
+                                    (String)sectionInfo.get("DOWN_STATION_Name")),
+                            (int)sectionInfo.get("SECTION_DISTANCE"));
+                })
                 .collect(Collectors.toList());
     }
 
