@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.exception.NullNameException;
+import wooteco.exception.badrequest.NullNameException;
 
 class NameTest {
 

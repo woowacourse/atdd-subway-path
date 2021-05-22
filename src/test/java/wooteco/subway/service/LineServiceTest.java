@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.notfound.NotFoundDataException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.service.dto.CreateLineDto;
@@ -133,13 +132,13 @@ public class LineServiceTest {
         String color = "파란색";
 
         when(mockLineDao.delete(id)).thenReturn(1);
-        when(mockLineDao.find(id)).thenThrow(NotFoundException.class);
+        when(mockLineDao.find(id)).thenThrow(NotFoundDataException.class);
 
         //when
         lineService.delete(new LineServiceDto(id));
 
         // then
         assertThatThrownBy(() -> lineService.findOne(new LineServiceDto(id)))
-            .isInstanceOf(NotFoundException.class);
+            .isInstanceOf(NotFoundDataException.class);
     }
 }

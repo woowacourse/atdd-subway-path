@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.exception.DuplicateException;
+import wooteco.exception.conflict.DuplicateException;
 
 class LinesTest {
 

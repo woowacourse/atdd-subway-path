@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import wooteco.exception.DuplicateException;
+import wooteco.exception.conflict.DuplicateException;
 
 public class Lines {
 

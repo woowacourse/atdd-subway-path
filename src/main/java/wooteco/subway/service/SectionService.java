@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
-import wooteco.exception.InvalidSectionOnLineException;
+import wooteco.exception.badrequest.InvalidSectionOnLineException;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;

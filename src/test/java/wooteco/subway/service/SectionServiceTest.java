@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.exception.InvalidDistanceException;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.badrequest.InvalidDistanceException;
+import wooteco.exception.notfound.NotFoundDataException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -126,7 +126,7 @@ public class SectionServiceTest {
         // when
         sectionService.delete(일호선, 동묘역.getId());
         Section section = sectionDao.findByLineIdAndUpStationId(일호선.getId(), 신설역.getId())
-            .orElseThrow(NotFoundException::new);
+            .orElseThrow(NotFoundDataException::new);
 
         // then
         assertThat(section.getUpStation()).isEqualTo(신설역);

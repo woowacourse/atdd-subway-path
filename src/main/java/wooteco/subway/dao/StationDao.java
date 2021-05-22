@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.notfound.NotFoundDataException;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -51,7 +51,7 @@ public class StationDao {
             String sql = "SELECT * FROM station WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException();
+            throw new NotFoundDataException();
         }
     }
 

@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.exception.InvalidDistanceException;
+import wooteco.exception.badrequest.InvalidDistanceException;
 
 public class Distance {
 

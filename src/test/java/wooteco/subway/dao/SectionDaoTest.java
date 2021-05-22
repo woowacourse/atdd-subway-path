@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.exception.InvalidSectionOnLineException;
+import wooteco.exception.badrequest.InvalidSectionOnLineException;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Id;
 import wooteco.subway.domain.Line;

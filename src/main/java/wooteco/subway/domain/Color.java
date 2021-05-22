@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.exception.NullColorException;
+import wooteco.exception.badrequest.NullColorException;
 
 public class Color {
 

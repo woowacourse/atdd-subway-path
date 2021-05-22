@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.notfound.NotFoundDataException;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationServiceDto;
@@ -43,7 +43,7 @@ public class StationService {
     @Transactional
     public void delete(@Valid StationServiceDto stationServiceDto) {
         if (stationDao.delete(stationServiceDto.getId()) == NOT_FOUND) {
-            throw new NotFoundException();
+            throw new NotFoundDataException();
         }
     }
 }

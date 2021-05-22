@@ -10,8 +10,8 @@ import java.util.Deque;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.exception.InvalidSectionOnLineException;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.badrequest.InvalidSectionOnLineException;
+import wooteco.exception.notfound.NotFoundDataException;
 
 class SectionsTest {
 
@@ -147,7 +147,7 @@ class SectionsTest {
 
         // then
         assertThatThrownBy(() -> sections.validateExistStation(새로운역))
-            .isInstanceOf(NotFoundException.class);
+            .isInstanceOf(NotFoundDataException.class);
     }
 
     @Test

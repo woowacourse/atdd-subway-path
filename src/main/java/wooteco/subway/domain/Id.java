@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.exception.NullIdException;
+import wooteco.exception.badrequest.NullIdException;
 
 public class Id {
 

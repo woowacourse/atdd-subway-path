@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-import wooteco.exception.DuplicateException;
+import wooteco.exception.conflict.DuplicateException;
 
 public class Section {
 

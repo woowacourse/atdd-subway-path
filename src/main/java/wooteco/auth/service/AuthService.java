@@ -5,7 +5,7 @@ import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 import wooteco.auth.dto.TokenResponse;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.exception.UnauthorizedException;
+import wooteco.exception.unahuthorized.AuthFailedException;
 
 @Service
 public class AuthService {
@@ -20,7 +20,7 @@ public class AuthService {
 
     public TokenResponse login(String email, String password) {
         Member member = memberDao.findByEmail(email)
-            .orElseThrow(UnauthorizedException::new);
+            .orElseThrow(AuthFailedException::new);
 
         member.validatePassword(password);
 
@@ -32,7 +32,7 @@ public class AuthService {
         if (jwtTokenProvider.validateToken(token)) {
             return;
         }
-        throw new UnauthorizedException();
+        throw new AuthFailedException();
     }
 
     public Long getPayload(String token) {

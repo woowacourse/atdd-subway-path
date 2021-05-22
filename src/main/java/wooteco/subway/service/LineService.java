@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.exception.NotFoundException;
+import wooteco.exception.notfound.NotFoundDataException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Lines;
@@ -63,14 +63,14 @@ public class LineService {
         lines.validateDuplicate(line);
 
         if (lineDao.update(lineServiceDto.getId(), line) == NOT_FOUND) {
-            throw new NotFoundException();
+            throw new NotFoundDataException();
         }
     }
 
     @Transactional
     public void delete(@Valid LineServiceDto lineServiceDto) {
         if (lineDao.delete(lineServiceDto.getId()) == NOT_FOUND) {
-            throw new NotFoundException();
+            throw new NotFoundDataException();
         }
     }
 

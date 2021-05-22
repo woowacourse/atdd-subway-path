@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.exception.NullNameException;
+import wooteco.exception.badrequest.NullNameException;
 
 public class Name {
 
