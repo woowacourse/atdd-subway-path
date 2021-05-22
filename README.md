@@ -54,4 +54,4 @@ npm run serve
 This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
 
 ## 📌 기능 요구사항
-- [ ] 최단 경로를 조회하는 API를 구현한다.
+- [X] 최단 경로를 조회하는 API를 구현한다.
