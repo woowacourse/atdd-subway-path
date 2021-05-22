@@ -1,7 +1,6 @@
 package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
@@ -22,10 +21,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
-        }
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -37,11 +33,7 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                             @Valid @RequestBody MemberRequest param,
-                                             BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
-        }
+                                             @Valid @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.noContent().build();
     }

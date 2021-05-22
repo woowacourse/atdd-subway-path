@@ -20,4 +20,8 @@ public class SubwayControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BindingResult> methodArgumentNotValid(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(e.getBindingResult());
+    }
 }
