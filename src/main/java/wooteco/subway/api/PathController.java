@@ -17,7 +17,6 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    // TODO: 경로조회 기능 구현하기
     @GetMapping
     ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") long source, @RequestParam("target") long target) {
         PathResponse pathResponse = pathService.findShortestPath(source, target);
