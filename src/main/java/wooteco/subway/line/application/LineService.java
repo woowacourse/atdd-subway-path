@@ -8,6 +8,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.domain.Subway;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -29,6 +30,8 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
+
+        updateSubway();
         return LineResponse.of(persistLine);
     }
 
@@ -64,10 +67,14 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+
+        updateSubway();
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+
+        updateSubway();
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -78,6 +85,8 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        updateSubway();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -87,6 +96,12 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        updateSubway();
     }
 
+    private void updateSubway() {
+        Subway subway = new Subway();
+        subway.updateSubway(findLines());
+    }
 }

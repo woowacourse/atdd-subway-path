@@ -13,14 +13,13 @@ import java.util.List;
 
 public class Subway {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> subway =
-        new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> subway;
 
-    public Subway(List<Line> lines) {
-        createMap(lines);
+    public Subway() {
     }
 
-    private void createMap(List<Line> lines) {
+    public void updateSubway(List<Line> lines) {
+        this.subway = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
         for (Line line : lines) {
             addToMap(line.getSections());
         }
@@ -54,5 +53,9 @@ public class Subway {
             new DijkstraShortestPath(subway);
 
         return dijkstraShortestPath.getPath(source, target);
+    }
+
+    public boolean isEmpty() {
+        return subway.vertexSet().isEmpty();
     }
 }

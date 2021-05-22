@@ -23,17 +23,24 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        Subway subway = new Subway(lineService.findLines());
+        Subway subway = new Subway();
+        if (subway.isEmpty()) {
+            subway.updateSubway(lineService.findLines());
+        }
 
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
-        List<StationResponse> shortestPath = subway.findPathRoute(source, target)
-            .stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+        List<StationResponse> shortestPath = shortestPathStations(subway, source, target);
         int distance = subway.findPathDistance(source, target);
 
         return new PathResponse(shortestPath, distance);
+    }
+
+    private List<StationResponse> shortestPathStations(Subway subway, Station source, Station target) {
+        return subway.findPathRoute(source, target)
+            .stream()
+            .map(station -> new StationResponse(station.getId(), station.getName()))
+            .collect(Collectors.toList());
     }
 }
