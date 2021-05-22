@@ -22,15 +22,9 @@ public class PathFinder {
     private void addSections(final List<Section> sections) {
         for (final Section section : sections) {
             //  If this graph already contains such vertex, 'addVertex' leaves this graph unchanged.
-            addStation(section.getUpStation());
-            addStation(section.getDownStation());
+            graph.addVertex(section.getUpStation());
+            graph.addVertex(section.getDownStation());
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-        }
-    }
-
-    private void addStation(Station station) {
-        if (graph.containsVertex(station)) {
-            graph.addVertex(station);
         }
     }
 
