@@ -9,6 +9,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.path.domain.ShortestPath;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
@@ -19,12 +20,14 @@ public class DataLoader implements CommandLineRunner {
     private LineDao lineDao;
     private SectionDao sectionDao;
     private MemberDao memberDao;
+    private ShortestPath shortestPath;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
+    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao, ShortestPath shortestPath) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.memberDao = memberDao;
+        this.shortestPath = shortestPath;
     }
 
     @Override
@@ -47,6 +50,8 @@ public class DataLoader implements CommandLineRunner {
 
         Member member = new Member("email@email.com", "password", 10);
         memberDao.insert(member);
+
+        shortestPath.refresh(stationDao.findAll(), sectionDao.findAll());
     }
 }
 
