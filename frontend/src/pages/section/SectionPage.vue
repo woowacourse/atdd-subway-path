@@ -78,16 +78,43 @@ import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import SectionCreateButton from "./components/SectionCreateButton";
 import SectionDeleteButton from "./components/SectionDeleteButton";
 
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    const response = await fetch("http://localhost:8080/stations", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getCookie("myCookie")
+      }
+    });
+    const stations = await response.json();
+    this.setStations([...stations])
+
+    const linesResponse = await fetch("http://localhost:8080/lines", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getCookie("myCookie")
+      },
+    });
+    const lines = await linesResponse.json()
+    this.setLines([...lines])
     this.initLinesView();
   },
   computed: {
@@ -120,8 +147,14 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        const response = await fetch("http://localhost:8080/lines/"+ this.activeLineId, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          }
+        });
+        this.activeLine = await response.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
