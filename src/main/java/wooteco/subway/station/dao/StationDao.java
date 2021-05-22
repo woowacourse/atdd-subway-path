@@ -37,7 +37,7 @@ public class StationDao {
     }
 
     public List<Station> findStationsByIds(String ids) {
-        String sql = "select * from STATION where id IN (" + ids + ")";
+        String sql = String.format("select * from STATION where id IN (%s)", ids);
         return jdbcTemplate.query(sql, rowMapper);
     }
 
