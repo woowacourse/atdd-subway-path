@@ -169,12 +169,12 @@ export default {
             distance: this.sectionForm.distance
           })
         });
-        if (!postSectionsResponse.ok){
+        if (!postSectionsResponse.ok) {
           throw new Error(`${postSectionsResponse.status}`);
         }
 
         const getLinesResponse = await fetch("http://localhost:8080/lines");
-        if (!getLinesResponse.ok){
+        if (!getLinesResponse.ok) {
           throw new Error(`${getLinesResponse.status}`);
         }
         const lines = await getLinesResponse.json();
