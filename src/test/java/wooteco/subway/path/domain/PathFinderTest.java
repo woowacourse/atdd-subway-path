@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathTest {
+class PathFinderTest {
 
     @DisplayName("가장 짧은 거리 목록과 거리 구하기")
     @Test
@@ -37,10 +37,10 @@ class PathTest {
                 new SectionTable(4L,1L, 역삼역.getId(), 몽촌역.getId(), 5),
                 new SectionTable(5L, 1L, 강남역.getId(), 몽촌역.getId(), 40)
         );
-        Path path = new Path(sectionTables);
-        List<Long> shortestStationIds = path.getShortestStations(강남역.getId(), 몽촌역.getId());
+        PathFinder pathFinder = new PathFinder(sectionTables);
+        List<Long> shortestStationIds = pathFinder.getShortestStations(강남역.getId(), 몽촌역.getId());
 
-        int shortestDistance = path.getShortestDistance(강남역.getId(), 몽촌역.getId());
+        int shortestDistance = pathFinder.getShortestDistance(강남역.getId(), 몽촌역.getId());
 
         assertThat(shortestStationIds.size()).isEqualTo(3);
         assertThat(shortestStationIds).containsExactly(강남역.getId(), 역삼역.getId(), 몽촌역.getId());

@@ -8,12 +8,12 @@ import wooteco.subway.line.dao.SectionTable;
 
 import java.util.List;
 
-public class Path {
+public class PathFinder {
     private final List<SectionTable> sectionTables;
     private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public Path(List<SectionTable> sectionTables) {
+    public PathFinder(List<SectionTable> sectionTables) {
         this.sectionTables = sectionTables;
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         setGraph();

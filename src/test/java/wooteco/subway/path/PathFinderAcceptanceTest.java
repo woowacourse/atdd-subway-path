@@ -23,7 +23,7 @@ import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathFinderAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
