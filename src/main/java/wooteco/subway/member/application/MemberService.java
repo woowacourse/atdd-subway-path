@@ -47,10 +47,4 @@ public class MemberService {
         member.validatePassword(password);
         return MemberResponse.of(member);
     }
-
-    public MemberResponse findByEmail(String email) {
-        Member member = memberDao.findByEmail(email)
-            .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
-        return MemberResponse.of(member);
-    }
 }
