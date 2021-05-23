@@ -17,21 +17,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private Subway subway;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService, Subway subway) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.subway = subway;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
 
-        updateSubway();
+        subway.addLine(persistLine);
         return LineResponse.of(persistLine);
     }
 
@@ -67,18 +70,19 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-
-        updateSubway();
     }
 
     public void deleteLineById(Long id) {
+        Line line = findLineById(id);
         lineDao.deleteById(id);
 
-        updateSubway();
+        subway.deleteLine(line);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        subway.deleteLine(line);
+
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
@@ -86,22 +90,19 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
 
-        updateSubway();
+        subway.addLine(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
+        subway.deleteLine(line);
+
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
 
-        updateSubway();
-    }
-
-    private void updateSubway() {
-        Subway subway = new Subway();
-        subway.updateSubway(findLines());
+        subway.addLine(line);
     }
 }

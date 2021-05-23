@@ -16,28 +16,29 @@ public class PathService {
 
     private LineService lineService;
     private StationService stationService;
+    private Subway subway;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService, Subway subway) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.subway = subway;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        Subway subway = new Subway();
-        if (subway.isEmpty()) {
-            subway.updateSubway(lineService.findLines());
+       if (subway.isEmpty()) {
+            subway.initializeSubway(lineService.findLines());
         }
 
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
-        List<StationResponse> shortestPath = shortestPathStations(subway, source, target);
+        List<StationResponse> shortestPath = shortestPathStations(source, target);
         int distance = subway.findPathDistance(source, target);
 
         return new PathResponse(shortestPath, distance);
     }
 
-    private List<StationResponse> shortestPathStations(Subway subway, Station source, Station target) {
+    private List<StationResponse> shortestPathStations(Station source, Station target) {
         return subway.findPathRoute(source, target)
             .stream()
             .map(station -> new StationResponse(station.getId(), station.getName()))
