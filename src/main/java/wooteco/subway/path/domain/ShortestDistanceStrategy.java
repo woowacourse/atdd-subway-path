@@ -24,6 +24,6 @@ public class ShortestDistanceStrategy implements PathStrategy {
         return stations.stream()
                 .filter(station -> station.hasSameId(id))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .get();
     }
 }

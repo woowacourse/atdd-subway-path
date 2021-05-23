@@ -69,6 +69,6 @@ public class SectionDao {
         return stations.stream()
                 .filter(station -> station.hasSameId(stationId))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .get();
     }
 }
