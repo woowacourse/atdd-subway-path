@@ -1,7 +1,9 @@
 package wooteco.subway.web.dto;
 
 public class PathRequest {
+    @StationId
     private Long source;
+    @StationId
     private Long target;
 
     public PathRequest() {

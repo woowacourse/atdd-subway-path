@@ -11,8 +11,8 @@
           <div class="px-4 pb-6">
             <div class="d-flex width-100">
               <v-select
-                v-model="path.source"
-                class="pr-4 path-station-select"
+                v-model="dijkstraPath.source"
+                class="pr-4 dijkstraPath-station-select"
                 :items="allStationsView"
                 label="출발역"
                 color="grey darken-1"
@@ -24,8 +24,8 @@
                 >mdi-arrow-right-bold</v-icon
               >
               <v-select
-                v-model="path.target"
-                class="pl-4 path-station-select"
+                v-model="dijkstraPath.target"
+                class="pl-4 dijkstraPath-station-select"
                 :items="allStationsView"
                 label="도착역"
                 color="grey darken-1"
@@ -159,7 +159,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        const pathResultResponse = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`);
+        const pathResultResponse = await fetch(`/api/paths?source=${this.dijkstraPath.source}&target=${this.dijkstraPath.target}`);
         this.pathResult = await pathResultResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -197,7 +197,7 @@ export default {
   },
   data() {
     return {
-      path: {
+      dijkstraPath: {
         source: "",
         target: "",
       },
@@ -211,7 +211,7 @@ export default {
 };
 </script>
 <style scoped>
-.path-station-select {
+.dijkstraPath-station-select {
   width: 200px;
 }
 

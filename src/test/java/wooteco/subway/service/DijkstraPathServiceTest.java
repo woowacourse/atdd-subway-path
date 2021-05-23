@@ -19,7 +19,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.PathResponse;
 
 @ExtendWith(MockitoExtension.class)
-class PathServiceTest {
+class DijkstraPathServiceTest {
 
     @Mock
     private LineDao lineDao;

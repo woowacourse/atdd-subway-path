@@ -1,12 +1,14 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
+import wooteco.subway.domain.DijkstraPath;
 import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.web.dto.PathResponse;
 
 @Service
@@ -21,10 +23,15 @@ public class PathService {
 
     public PathResponse findShortestPaths(Long sourceStationId, Long targetStationId) {
         final Lines lines = new Lines(lineDao.findAll());
-        final Path path = new Path(lines);
-        final List<Station> stations = path.shortestPath(sourceStationId, targetStationId);
-        final int distance = path.distance(sourceStationId, targetStationId);
+        final Stations stations = lines.stations();
+        final DijkstraPath dijkstraPath = new DijkstraPath(lines);
+        final List<Station> stationsInPath =
+            dijkstraPath.shortestPath(sourceStationId, targetStationId)
+            .stream()
+            .map(stations::findStationById)
+            .collect(Collectors.toList());
+        final int distance = dijkstraPath.distance(sourceStationId, targetStationId);
 
-        return new PathResponse(stations, distance);
+        return new PathResponse(stationsInPath, distance);
     }
 }
