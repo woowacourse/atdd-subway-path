@@ -77,13 +77,13 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import dialog from "../../../mixins/dialog";
-import Dialog from "../../../components/dialogs/Dialog";
-import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../../utils/constants";
-import validator from "../../../utils/validator";
-import {getFetch, postFetch} from "@/utils/fetch";
+import {mapGetters, mapMutations} from "vuex"
+import dialog from "../../../mixins/dialog"
+import Dialog from "../../../components/dialogs/Dialog"
+import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../../utils/constants"
+import validator from "../../../utils/validator"
+import {getFetch, postFetch} from "@/utils/fetch"
 
 export default {
   name: "SectionCreateButton",
@@ -96,77 +96,77 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES, SET_LINE]),
     initLineView() {
       if (this.lines.length < 1) {
-        return;
+        return
       }
       this.lineNameViews = this.lines.map(({name, id}) => {
         return {
           text: name,
           value: id,
-        };
-      });
+        }
+      })
     },
     async initLineStationsView() {
       try {
         this.selectedLine = await getFetch('/api/lines/{this.sectionForm.lineId}')
         if (this.selectedLine.stations?.length < 1) {
-          return;
+          return
         }
         this.lineStationsNameViews = this.selectedLine.stations?.map(
             (station) => {
               return {
                 text: station.name,
                 value: station.id,
-              };
+              }
             }
-        );
+        )
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     async initAllStationsView() {
       try {
         if (this.stations.length < 1) {
-          return;
+          return
         }
         this.allStationsView = this.stations.map(({name, id}) => {
           return {
             text: name,
             value: id,
-          };
-        });
+          }
+        })
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     isValid() {
-      return this.$refs.sectionForm.validate();
+      return this.$refs.sectionForm.validate()
     },
     onChangeLine() {
-      this.initLineStationsView();
-      this.initAllStationsView();
+      this.initLineStationsView()
+      this.initAllStationsView()
     },
     async onCreateSection() {
       if (!this.isValid()) {
-        return;
+        return
       }
       try {
         await postFetch("/api/section", {
           lineId: this.selectedLine.id,
           section: this.sectionForm,
-        });
-        const lines = await getFetch("/api/lines");
+        })
+        const lines = await getFetch("/api/lines")
         this.setLines(lines)
-        const line = this.lines.find(({id}) => id === this.selectedLine.id);
-        this.setLine(line);
-        this.$refs.sectionForm.resetValidation();
-        this.initSectionForm();
-        this.closeDialog();
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
+        const line = this.lines.find(({id}) => id === this.selectedLine.id)
+        this.setLine(line)
+        this.$refs.sectionForm.resetValidation()
+        this.initSectionForm()
+        this.closeDialog()
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     initSectionForm() {
@@ -175,7 +175,7 @@ export default {
         upStationId: "",
         downStationId: "",
         distance: "",
-      };
+      }
     },
   },
   data() {
@@ -192,9 +192,9 @@ export default {
       allStationsView: [],
       lineNameViews: [],
       valid: false,
-    };
+    }
   },
-};
+}
 </script>
 
 <style lange="scss" scoped>

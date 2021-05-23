@@ -38,12 +38,12 @@
 </template>
 
 <script>
-import LineCreateButton from "./components/LineCreateButton";
-import {SET_LINES, SET_STATIONS} from "../../store/shared/mutationTypes";
-import {mapGetters, mapMutations} from "vuex";
-import LineEditButton from "./components/LineEditButton";
-import LineDeleteButton from "./components/LineDeleteButton";
-import {getFetch} from "@/utils/fetch";
+import LineCreateButton from "./components/LineCreateButton"
+import {SET_LINES, SET_STATIONS} from "../../store/shared/mutationTypes"
+import {mapGetters, mapMutations} from "vuex"
+import LineEditButton from "./components/LineEditButton"
+import LineDeleteButton from "./components/LineDeleteButton"
+import {getFetch} from "@/utils/fetch"
 
 export default {
   name: "LinePage",
@@ -61,7 +61,7 @@ export default {
   methods: {
     ...mapMutations([SET_LINES, SET_STATIONS]),
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

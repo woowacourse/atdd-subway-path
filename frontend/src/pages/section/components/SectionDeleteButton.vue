@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
-import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../../utils/constants";
-import {deleteFetch, getFetch} from "@/utils/fetch";
+import {mapMutations} from "vuex"
+import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../../utils/constants"
+import {deleteFetch, getFetch} from "@/utils/fetch"
 
 export default {
   name: "SectionDeleteButton",
@@ -32,12 +32,12 @@ export default {
         })
         const line = await getFetch(`/api/line/${this.lineId}`)
         this.setLine({...line})
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
   },
-};
+}
 </script>

@@ -39,11 +39,11 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import {deleteFetch} from "@/utils/fetch";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes"
+import ConfirmDialog from "../../components/dialogs/ConfirmDialog"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import {deleteFetch} from "@/utils/fetch"
 
 export default {
   name: "MyPage",
@@ -60,20 +60,20 @@ export default {
           {
             color: "red lighten-1",
           }
-      );
+      )
       if (!confirm) {
-        return;
+        return
       }
       try {
         await deleteFetch(`/api/members/me`)
-        this.setMember(null);
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
-        await this.$router.replace("/");
+        this.setMember(null)
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS)
+        await this.$router.replace("/")
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.FAIL)
+        throw new Error(e)
       }
     },
   },
-};
+}
 </script>

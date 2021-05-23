@@ -22,16 +22,16 @@
 </template>
 
 <script>
-import {NAV_ITEMS} from "../../utils/constants";
+import {NAV_ITEMS} from "../../utils/constants"
 
 export default {
   name: "MainPage",
   data() {
     return {
       navItems: [...NAV_ITEMS],
-    };
+    }
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

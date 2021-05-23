@@ -53,11 +53,11 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import validator from "../../utils/validator";
-import {getFetch, postFetch} from "@/utils/fetch";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import validator from "../../utils/validator"
+import {getFetch, postFetch} from "@/utils/fetch"
 
 export default {
   name: "LoginPage",
@@ -67,23 +67,23 @@ export default {
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
     isValid() {
-      return this.$refs.loginForm.validate();
+      return this.$refs.loginForm.validate()
     },
     async onLogin() {
       if (!this.isValid()) {
-        return;
+        return
       }
       try {
-        const {email, password} = this.member;
+        const {email, password} = this.member
         const data = await postFetch("/api/login/token", {email, password})
         await localStorage.setItem("token", data.accessToken)
         const member = await getFetch("/api/members/me")
-        this.setMember(member);
-        await this.$router.replace(`/`);
-        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
+        this.setMember(member)
+        await this.$router.replace(`/`)
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL)
+        throw new Error(e)
       }
     },
   },
@@ -95,7 +95,7 @@ export default {
         email: "",
         password: "",
       },
-    };
+    }
   },
-};
+}
 </script>

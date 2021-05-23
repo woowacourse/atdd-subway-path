@@ -124,11 +124,11 @@ export default {
         await putFetch(`/api/lines/${lineId}`, lineEditFormBody)
         const lines = await getFetch("/api/lines")
         this.setLines([...lines])
-        this.closeDialog();
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
+        this.closeDialog()
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.FAIL)
+        throw new Error(e)
       }
     },
   },
@@ -143,7 +143,7 @@ export default {
       },
       valid: false,
       lineColors: [...LINE_COLORS],
-    };
+    }
   },
-};
+}
 </script>

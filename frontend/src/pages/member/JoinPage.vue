@@ -95,13 +95,13 @@ export default {
         return;
       }
       try {
-        const {email, age, password} = this.member;
+        const {email, age, password} = this.member
         const joinForm = {email: email, age: age, password: password}
         await postFetch("/api/members", joinForm)
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
-        await this.$router.replace(`/api/login`);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
+        await this.$router.replace(`/api/login`)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
       }
     },
   },
@@ -115,7 +115,7 @@ export default {
         password: "",
         confirmPassword: "",
       },
-    };
+    }
   },
-};
+}
 </script>

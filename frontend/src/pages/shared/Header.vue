@@ -51,10 +51,10 @@
 </template>
 
 <script>
-import {NAV_ITEMS} from "../../utils/constants";
-import {mapGetters} from "vuex";
-import LogoutButton from "./components/LogoutButton";
-import MyPageButton from "./components/MyPageButton";
+import {NAV_ITEMS} from "../../utils/constants"
+import {mapGetters} from "vuex"
+import LogoutButton from "./components/LogoutButton"
+import MyPageButton from "./components/MyPageButton"
 
 export default {
   name: "Header",
@@ -65,9 +65,9 @@ export default {
   data() {
     return {
       navItems: [...NAV_ITEMS],
-    };
+    }
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -145,11 +145,11 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import validator from "../../utils/validator";
-import {getFetch} from "@/utils/fetch";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import validator from "../../utils/validator"
+import {getFetch} from "@/utils/fetch"
 
 export default {
   name: "PathPage",
@@ -157,7 +157,7 @@ export default {
     ...mapGetters(["stations"]),
   },
   created() {
-    this.initAllStationsView();
+    this.initAllStationsView()
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
@@ -170,8 +170,8 @@ export default {
         })}`)
 
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     async initAllStationsView() {
@@ -179,17 +179,17 @@ export default {
         const stations = await getFetch("/api/stations")
         this.setStations(stations)
         if (this.stations.length < 1) {
-          return;
+          return
         }
         this.allStationsView = this.stations.map((station) => {
           return {
             text: station.name,
             value: station.id,
-          };
-        });
+          }
+        })
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     async onSearchMinimumDurationType() {
@@ -197,8 +197,8 @@ export default {
         // TODO 최소 시간을 검색하는 API를 추가해주세요.
         // this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
   },
@@ -213,9 +213,9 @@ export default {
       allStationsView: [],
       rules: {...validator},
       tab: null,
-    };
+    }
   },
-};
+}
 </script>
 <style scoped>
 .path-station-select {
