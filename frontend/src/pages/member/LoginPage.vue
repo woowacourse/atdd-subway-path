@@ -56,7 +56,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import {SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {get, post} from "../../utils/request";
+import {get, getWithToken, post} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
@@ -82,12 +82,8 @@ export default {
         }
 
         localStorage.setItem("token", data.accessToken);
-        this.setAccessToken(data.accessToken);
 
-        const member = await get("/api/members/me", {'Authorization': "Bearer " + this.accessToken})
-            .then(res => {
-              return res.json();
-            });
+        const member = await getWithToken("/api/members/me").then(res => {return res.json()});
 
         this.setMember(member);
         await this.$router.replace(`/`);

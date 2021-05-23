@@ -56,8 +56,9 @@
 <script>
 import validator from "../../utils/validator";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {getWithToken, keepLogin, postWithToken, remove} from "../../utils/request";
 import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
 export default {
   name: "StationPage",
@@ -65,15 +66,13 @@ export default {
     ...mapGetters(["stations", "accessToken"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("http://localhost:8080/stations", {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + localStorage.getItem("token")
-      }
+    const member = await keepLogin();
+    if (member.ok) {
+      const memberInfo = await member.json();
+      this.setMember(memberInfo);
     }
-    );
+
+    const response = await getWithToken("/api/stations", {'Authorization': "Bearer " + localStorage.getItem("token")});
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -81,7 +80,7 @@ export default {
     this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
   },
   methods: {
-    ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),
+    ...mapMutations([SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR]),
     isValid() {
       return this.$refs.stationForm.validate();
     },
@@ -90,21 +89,12 @@ export default {
         return;
       }
       try {
-        // TODO 역을 추가하는 API Sample
-        const response = await fetch("http://localhost:8080/stations", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.stationName,
-          }),
-        });
+        const response = await postWithToken("/api/stations", {name : this.stationName})
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
-        const newStation = await response.json();
 
+        const newStation = await response.json();
         this.setStations([...this.stations, newStation]);
         this.initStationForm();
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.SUCCESS);
@@ -119,8 +109,7 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
-        await fetch("/http://localhost:8080/stations/{id}");
+        await remove(`/api/stations/${stationId}`);
         const idx = this.stations.findIndex(
           (station) => station.id === stationId
         );

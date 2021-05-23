@@ -43,13 +43,20 @@ import { mapGetters, mapMutations } from "vuex";
 import {SET_ACCESS_TOKEN, SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import {remove} from "../../utils/request";
+import {keepLogin, remove} from "../../utils/request";
 
 export default {
   name: "MyPage",
   components: { ConfirmDialog },
   computed: {
     ...mapGetters(["member", "accessToken"]),
+  },
+  async created() {
+    const response = await keepLogin();
+    if (response.ok) {
+      const memberInfo = await response.json();
+      this.setMember(memberInfo);
+    }
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER, SET_ACCESS_TOKEN]),
@@ -65,7 +72,7 @@ export default {
         return;
       }
       try {
-        await remove("/api/members/me")
+        await remove("/api/members/me");
 
         this.setMember(null);
         this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);

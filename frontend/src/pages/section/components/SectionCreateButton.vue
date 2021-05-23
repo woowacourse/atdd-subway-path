@@ -86,6 +86,7 @@ import {
 } from "../../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../../utils/constants";
 import validator from "../../../utils/validator";
+import {getWithToken, postWithToken} from "@/utils/request";
 
 export default {
   name: "SectionCreateButton",
@@ -109,8 +110,8 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        this.selectedLine = await getWithToken(`/api/lines/${this.sectionForm.lineId}`)
+            .then(res => res.json());
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -156,13 +157,13 @@ export default {
       }
       try {
         // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
+        const {upStationId, downStationId, distance} = this.sectionForm;
+        await postWithToken(`/api/lines/${this.sectionForm.lineId}/sections`, {upStationId, downStationId, distance});
+
         // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        const lines = await getWithToken("/api/lines").then(res => res.json());
+        this.setLines(lines);
+
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();

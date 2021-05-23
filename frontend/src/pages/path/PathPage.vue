@@ -143,8 +143,9 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+import {SET_MEMBER, SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {getWithToken, keepLogin} from "../../utils/request";
 import validator from "../../utils/validator";
 
 export default {
@@ -152,15 +153,21 @@ export default {
   computed: {
     ...mapGetters(["stations"]),
   },
-  created() {
+  async created() {
+    const member = await keepLogin();
+    if (member.ok) {
+      const memberInfo = await member.json();
+      this.setMember(memberInfo);
+    }
+
     this.initAllStationsView();
   },
   methods: {
-    ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
+    ...mapMutations([SET_MEMBER, SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        this.pathResult = await getWithToken(`/api/paths?source=${this.path.source}&target=${this.path.target}`)
+            .then(res => res.json());
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +175,8 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const stations = await getWithToken("/api/stations").then(res => res.json());
+        this.setStations(stations);
         if (this.stations.length < 1) {
           return;
         }

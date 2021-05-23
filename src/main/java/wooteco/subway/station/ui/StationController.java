@@ -12,8 +12,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;

@@ -24,7 +24,7 @@
 <script>
 import { NAV_ITEMS } from "../../utils/constants";
 import {mapMutations} from "vuex";
-import {get} from "../../utils/request";
+import {keepLogin} from "../../utils/request";
 import {SET_MEMBER} from "@/store/shared/mutationTypes";
 
 export default {
@@ -33,13 +33,10 @@ export default {
     ...mapMutations([SET_MEMBER]),
   },
   async created() {
-    const accessToken = localStorage.getItem("token");
-    if (accessToken !== null) {
-      const member = await get("/api/members/me")
-      if (member.ok) {
-        const memberInfo = await member.json();
-        this.setMember(memberInfo);
-      }
+    const response = await keepLogin();
+    if (response.ok) {
+      const memberInfo = await response.json();
+      this.setMember(memberInfo);
     }
   },
   data() {
