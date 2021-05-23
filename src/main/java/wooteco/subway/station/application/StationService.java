@@ -38,6 +38,6 @@ public class StationService {
     }
 
     public Long findIdByName(String stationName) {
-        return stationDao.findByName(stationName);
+        return stationDao.findIdByName(stationName);
     }
 }

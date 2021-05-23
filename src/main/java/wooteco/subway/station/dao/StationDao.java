@@ -50,7 +50,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long findByName(String stationName) {
+    public Long findIdByName(String stationName) {
         String sql = "select id from STATION where name = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, stationName);
     }
