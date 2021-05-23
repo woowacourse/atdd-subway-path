@@ -4,51 +4,46 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.PathNotLinkedException;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.station.domain.Station;
+import wooteco.subway.line.dao.SectionTable;
 
 import java.util.List;
 
 public class Path {
-    private final Station source;
-    private final Station target;
-    private final List<Section> sections;
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final List<SectionTable> sectionTables;
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public Path(Station source, Station target, List<Section> sections) {
-        this.source = source;
-        this.target = target;
-        this.sections = sections;
+    public Path(List<SectionTable> sectionTables) {
+        this.sectionTables = sectionTables;
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         setGraph();
         this.dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
     private void setGraph() {
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+        for (SectionTable sectionTable : sectionTables) {
+            Long upStationId = sectionTable.getUpStationId();
+            Long downStationId = sectionTable.getDownStationId();
+            graph.addVertex(upStationId);
+            graph.addVertex(downStationId);
+            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), sectionTable.getDistance());
         }
     }
 
-    public List<Station> getShortestStations() {
-        List<Station> stations;
+    public List<Long> getShortestStations(Long sourceId, Long targetId) {
+        List<Long> stationIds;
         try {
-            stations = dijkstraShortestPath.getPath(source, target).getVertexList();
+            stationIds = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
 
         } catch (IllegalArgumentException e) {
             throw new PathNotLinkedException();
         }
 
-        return stations;
+        return stationIds;
     }
 
-    public int getShortestDistance() {
-        double pathWeight = dijkstraShortestPath.getPath(source, target).getWeight();
+    public int getShortestDistance(Long sourceId, Long targetId) {
+        double pathWeight = dijkstraShortestPath.getPath(sourceId, targetId).getWeight();
         return (int) pathWeight;
     }
 }

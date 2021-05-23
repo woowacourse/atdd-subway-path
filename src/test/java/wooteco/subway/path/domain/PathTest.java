@@ -2,6 +2,7 @@ package wooteco.subway.path.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.line.dao.SectionTable;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
@@ -28,12 +29,21 @@ class PathTest {
                 new Section(4L, 역삼역, 몽촌역, 5),
                 new Section(5L, 강남역, 몽촌역, 40)
         );
-        Path path = new Path(강남역, 몽촌역, sections);
-        List<Station> shortestPath = path.getShortestStations();
-        int shortestDistance = path.getShortestDistance();
 
-        assertThat(shortestPath.size()).isEqualTo(3);
-        assertThat(shortestPath).containsExactly(강남역, 역삼역, 몽촌역);
+        List<SectionTable> sectionTables = Arrays.asList(
+                new SectionTable(1L, 1L, 강남역.getId(), 잠실역.getId(), 10),
+                new SectionTable(2L, 1L, 잠실역.getId(), 몽촌역.getId(), 10),
+                new SectionTable(3L, 1L, 강남역.getId(), 역삼역.getId(), 10),
+                new SectionTable(4L,1L, 역삼역.getId(), 몽촌역.getId(), 5),
+                new SectionTable(5L, 1L, 강남역.getId(), 몽촌역.getId(), 40)
+        );
+        Path path = new Path(sectionTables);
+        List<Long> shortestStationIds = path.getShortestStations(강남역.getId(), 몽촌역.getId());
+
+        int shortestDistance = path.getShortestDistance(강남역.getId(), 몽촌역.getId());
+
+        assertThat(shortestStationIds.size()).isEqualTo(3);
+        assertThat(shortestStationIds).containsExactly(강남역.getId(), 역삼역.getId(), 몽촌역.getId());
         assertThat(shortestDistance).isEqualTo(15);
     }
 

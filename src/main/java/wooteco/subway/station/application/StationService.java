@@ -6,6 +6,7 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,5 +38,13 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public List<Station> findStationByIds(List<Long> shortestStationIds) {
+        List<Station> stations = new ArrayList<>();
+        for (Long id : shortestStationIds) {
+            stations.add(stationDao.findById(id));
+        }
+        return stations;
     }
 }

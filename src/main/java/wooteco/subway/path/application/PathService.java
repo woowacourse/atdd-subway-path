@@ -25,20 +25,13 @@ public class PathService {
 
 
     public PathResponse searchPath(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationService.findStationById(sourceStationId);
-        Station targetStation = stationService.findStationById(targetStationId);
         List<SectionTable> sectionTables = sectionDao.findAll();
-        List<Section> sections = new ArrayList<>();
-        for (SectionTable sectionTable : sectionTables) {
-            Station upStation = stationService.findStationById(sectionTable.getUpStationId());
-            Station downStation = stationService.findStationById(sectionTable.getDownStationId());
-            sections.add(new Section(sectionTable.getId(), upStation, downStation, sectionTable.getDistance()));
-        }
 
-        Path path = new Path(sourceStation, targetStation, sections);
-        List<Station> shortestStations = path.getShortestStations();
-        int shortestDistance = path.getShortestDistance();
 
+        Path path = new Path(sectionTables);
+        List<Long> shortestStationIds = path.getShortestStations(sourceStationId, targetStationId);
+        int shortestDistance = path.getShortestDistance(sourceStationId, targetStationId);
+        List<Station> shortestStations = stationService.findStationByIds(shortestStationIds);
         return new PathResponse(StationResponse.listOf(shortestStations), shortestDistance);
     }
 }
