@@ -1,6 +1,6 @@
 # step3-1 피드백
 
-- [ ] `@RequestParam` 지양? 최소한의 검증로직
+- [x] `@RequestParam` 지양? 최소한의 검증로직
 - [ ] Path의 필드 줄이기
 - [ ] Path의 적절한 클래스명은?
 - [ ] Path에서 키를 Station이라는 Entity로 가지는게 부담 StationId를 키로 가지는 것은?

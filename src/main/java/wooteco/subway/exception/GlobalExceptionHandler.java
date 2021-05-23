@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(PathNotLinkedException.class)
-    public ResponseEntity<String> handlePathNotLinkedException(PathNotLinkedException e) {
+    @ExceptionHandler({PathNotLinkedException.class, RequestInvalidException.class})
+    public ResponseEntity<String> handlePathNotLinkedException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

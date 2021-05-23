@@ -1,6 +1,6 @@
 package wooteco.subway.path;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
@@ -32,13 +33,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(Long source, Long target) {
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
             .then().log().all()
             .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_null_요청() {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/paths?source=&target=")
+                .then().log().all()
+                .extract();
     }
 
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response,
@@ -90,5 +100,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+    }
+
+
+    @DisplayName("실패 - RequestParam null 입력")
+    @Test
+    void findPathByDistanceFail() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_null_요청();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("입력정보가 유효하지 않습니다.");
     }
 }
