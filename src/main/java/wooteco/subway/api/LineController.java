@@ -25,7 +25,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest, BindingResult bindingResult) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest, BindingResult bindingResult) {
         validateRequestedParameter(bindingResult);
 
         LineResponse line = lineService.saveLine(lineRequest);
