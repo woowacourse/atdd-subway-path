@@ -57,7 +57,7 @@ import {mapGetters, mapMutations} from "vuex";
 import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
-import {postFetch} from "@/utils/fetch";
+import {getFetch, postFetch} from "@/utils/fetch";
 
 export default {
   name: "LoginPage",
@@ -77,17 +77,7 @@ export default {
         const {email, password} = this.member;
         const data = await postFetch("/api/login/token", {email, password})
         await localStorage.setItem("token", data.accessToken)
-        const member = await fetch("/api/members/me", {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `bearer ${localStorage.getItem("token")}`
-          }
-        }).then(data => {
-          if (!data.ok) {
-            throw new Error(`${data.status}`);
-          }
-          return data.json()
-        })
+        const member = await getFetch("/api/members/me")
         this.setMember(member);
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
