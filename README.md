@@ -20,7 +20,7 @@
 - [x] 전체 Line 데이터를 불러오는 API를 추가 (FE #onEditLine)
 - [x] 초기 역 데이터를 불러오는 API를 추가 (FE)
 - [x] 초기 노선 데이터를 불러오는 API를 추가 (FE)
-- [ ] 선택한 노선 데이터를 불러오는 API를 추가 (FE)
+- [x] 선택한 노선 데이터를 불러오는 API를 추가 (FE)
 - [ ] 출발역과 도착역 사이의 최단 거리 경로를 구하는 API를 구현하기 (BE)
 - [x] 최단 거리를 검색하는 API를 추가 (FE)
 - [x] 모든 역을 불러오는 API를 추가 (FE #initAllStationsView)

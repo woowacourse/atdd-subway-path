@@ -128,8 +128,8 @@ export default {
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        const lineDetailsResponse = await fetch(`http://localhost:8080/lines/${this.activeLineId}`);
+        this.activeLine = await lineDetailsResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
