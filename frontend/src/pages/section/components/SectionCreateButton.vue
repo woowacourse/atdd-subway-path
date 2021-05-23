@@ -155,14 +155,21 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        await fetch(`http://localhost:8080/lines/${this.selectedLine.id}/sections`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "upStationId": this.sectionForm.upStationId,
+            "downStationId": this.sectionForm.downStationId,
+            "distance": this.sectionForm.distance
+          })
+        });
+
+        const linesResponse = await fetch("http://localhost:8080/lines");
+        const lines = await linesResponse.json();
+        this.setLines([...lines])
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();
