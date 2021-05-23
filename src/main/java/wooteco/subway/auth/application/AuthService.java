@@ -23,18 +23,20 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateLogin(tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        Long memberId = findMemberId(tokenRequest);
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(memberId));
         return new TokenResponse(accessToken);
     }
 
-    private void validateLogin(TokenRequest tokenRequest) {
+    private Long findMemberId(TokenRequest tokenRequest) {
         Optional<Member> foundMember = Optional.ofNullable(memberDao.findByEmail(tokenRequest.getEmail())
                 .orElseThrow(AuthorizationException::new));
 
-        if (foundMember.get().hasDifferentPassword(tokenRequest.getPassword())) {
+        Member member = foundMember.get();
+        if (member.hasDifferentPassword(tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
+        return member.getId();
     }
 
     public LoginMember findMemberByToken(String token) {
