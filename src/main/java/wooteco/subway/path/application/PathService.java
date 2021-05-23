@@ -19,9 +19,9 @@ import wooteco.subway.station.dto.StationResponse;
 @Service
 public class PathService {
 
-    StationService stationService;
-    LineService lineService;
-    SectionDao sectionDao;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final SectionDao sectionDao;
 
     public PathService(StationService stationService,
         LineService lineService, SectionDao sectionDao) {
