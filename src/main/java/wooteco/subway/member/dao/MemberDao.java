@@ -65,16 +65,4 @@ public class MemberDao {
             return member;
         }, email).stream().findAny();
     }
-
-    public Optional<Member> findByEmailWithPassword(String email, String password) {
-        String sql = "SELECT id, email, password, age FROM member WHERE email = ? AND password = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Member member = new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getInt("age")
-            );
-            return member;
-        }, email, password).stream().findAny();
-    }
 }
