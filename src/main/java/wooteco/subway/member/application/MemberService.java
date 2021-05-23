@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -21,7 +22,7 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         Member member = memberDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
+                .orElseThrow(() -> new AuthorizationException("존재하지 않는 ID입니다."));
         return MemberResponse.of(member);
     }
 

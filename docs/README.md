@@ -39,3 +39,4 @@ Connection: keep-alive
 - [x] 토큰을 통한 인증 - 내 정보 기능 
     - [x] "/members/me" 요청 시 토큰을 확인하여 로그인 정보를 받아오기
     - [x] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+    - [x] Interceptor로 토큰이 있는지 확인
