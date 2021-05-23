@@ -150,7 +150,7 @@ import validator from "../../utils/validator";
 export default {
   name: "PathPage",
   computed: {
-    ...mapGetters(["stations"]),
+    ...mapGetters(["stations", "accessToken"]),
   },
   created() {
     this.initAllStationsView();
@@ -159,7 +159,12 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        this.pathResult = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}` )
+        this.pathResult = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);
@@ -173,7 +178,12 @@ export default {
     },
     async initAllStationsView() {
       try {
-        const response = await fetch("api/stations");
+        const response = await fetch("api/stations", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        });
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }

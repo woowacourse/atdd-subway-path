@@ -11,30 +11,30 @@
     <template slot="text">
       <v-form ref="lineEditForm" v-model="valid" @submit.prevent>
         <v-text-field
-          v-model="lineEditForm.name"
-          :rules="rules.line.name"
-          color="grey darken-1"
-          label="노선 이름"
-          placeholder="노선 이름"
-          outlined
+            v-model="lineEditForm.name"
+            :rules="rules.line.name"
+            color="grey darken-1"
+            label="노선 이름"
+            placeholder="노선 이름"
+            outlined
         ></v-text-field>
         <div class="d-flex">
           <v-text-field
-            v-model="lineEditForm.extraFare"
-            color="grey darken-1"
-            label="추가 요금"
-            placeholder="(선택) 추가 요금"
-            outlined
+              v-model="lineEditForm.extraFare"
+              color="grey darken-1"
+              label="추가 요금"
+              placeholder="(선택) 추가 요금"
+              outlined
           ></v-text-field>
         </div>
         <div>
           <v-text-field
-            v-model="lineEditForm.color"
-            :rules="rules.line.color"
-            :value="lineEditForm.color"
-            label="노선 색상"
-            filled
-            disabled
+              v-model="lineEditForm.color"
+              :rules="rules.line.color"
+              :value="lineEditForm.color"
+              label="노선 색상"
+              filled
+              disabled
           ></v-text-field>
           <p>
             노선의 색상을 아래 팔레트에서 선택해주세요.
@@ -43,17 +43,17 @@
             <div>
               <template v-for="(option, index) in lineColors">
                 <v-btn
-                  :key="option._id"
-                  small
-                  class="color-button ma-1"
-                  depressed
-                  min-width="30"
-                  :color="option.color"
-                  @click="setLineColor(option.color)"
+                    :key="option._id"
+                    small
+                    class="color-button ma-1"
+                    depressed
+                    min-width="30"
+                    :color="option.color"
+                    @click="setLineColor(option.color)"
                 ></v-btn>
                 <br
-                  v-if="index === 8 || index % 9 === 8"
-                  :key="`${option._id}-${index}`"
+                    v-if="index === 8 || index % 9 === 8"
+                    :key="`${option._id}-${index}`"
                 />
               </template>
             </div>
@@ -63,11 +63,12 @@
     </template>
     <template slot="action">
       <v-btn
-        :disabled="!valid"
-        @click.prevent="onEditLine"
-        color="amber"
-        depressed
-        >확인</v-btn
+          :disabled="!valid"
+          @click.prevent="onEditLine"
+          color="amber"
+          depressed
+      >확인
+      </v-btn
       >
     </template>
   </Dialog>
@@ -90,13 +91,13 @@ export default {
       required: true,
     },
   },
-  components: { Dialog },
+  components: {Dialog},
   mixins: [dialog],
   computed: {
-    ...mapGetters(["lines"]),
+    ...mapGetters(["lines", "accessToken"]),
   },
   created() {
-    this.lineEditForm = { ...this.line };
+    this.lineEditForm = {...this.line};
     this.lineColors = LINE_COLORS.map((color) => {
       return {
         _id: shortid.generate(),
@@ -110,7 +111,7 @@ export default {
       this.lineEditForm.color = color;
     },
     initEditingLine() {
-      this.lineEditForm = { ...this.line };
+      this.lineEditForm = {...this.line};
     },
     async onEditLine() {
       try {
@@ -118,6 +119,7 @@ export default {
           method: "PUT",
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + this.accessToken,
           },
           body: JSON.stringify({
             name: this.lineEditForm.name,
@@ -131,13 +133,17 @@ export default {
             throw new Error(`${response.status}`);
           }
         })
-        const lines = await fetch("api/lines")
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`${response.status}`);
-              }
-              return response.json();
-            })
+        const lines = await fetch("api/lines", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+          return response.json();
+        })
         this.setLines([...lines])
         this.closeDialog();
         this.showSnackbar(SNACKBAR_MESSAGES.LINE.UPDATE.SUCCESS);
@@ -149,7 +155,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       lineEditForm: {
         name: "",
         color: "",

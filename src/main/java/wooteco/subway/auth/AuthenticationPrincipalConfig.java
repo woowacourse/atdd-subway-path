@@ -10,6 +10,7 @@ import java.util.List;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
+
     private final AuthService authService;
 
     public AuthenticationPrincipalConfig(AuthService authService) {

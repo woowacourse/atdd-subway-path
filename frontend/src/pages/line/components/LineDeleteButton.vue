@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import {SET_LINES, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 
@@ -17,19 +17,29 @@ export default {
       required: true,
     },
   },
+  computed: {
+    ...mapGetters(["accessToken"]),
+  },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
         await fetch(`api/lines/${this.line.id}`, {
           method: "DELETE",
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
         })
         .then(response => {
           if(!response.ok) {
             throw new Error(`${response.status}`);
           }
         })
-        const lines = await fetch("api/lines")
+        const lines = await fetch("api/lines", {
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);

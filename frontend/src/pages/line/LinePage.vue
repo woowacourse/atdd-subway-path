@@ -48,10 +48,15 @@ export default {
   name: "LinePage",
   components: {LineDeleteButton, LineEditButton, LineCreateButton},
   computed: {
-    ...mapGetters(["lines"]),
+    ...mapGetters(["lines", "accessToken"]),
   },
   async created() {
-    const stations = await fetch("api/stations")
+    const stations = await fetch("api/stations", {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + this.accessToken,
+      }
+    })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);
@@ -60,7 +65,12 @@ export default {
         })
     this.setStations([...stations]);
 
-    const lines = await fetch("api/lines")
+    const lines = await fetch("api/lines", {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + this.accessToken,
+      }
+    })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);

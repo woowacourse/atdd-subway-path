@@ -62,10 +62,15 @@ import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 export default {
   name: "StationPage",
   computed: {
-    ...mapGetters(["stations"]),
+    ...mapGetters(["stations", "accessToken"]),
   },
   async created() {
-    const response = await fetch("api/stations");
+    const response = await fetch("api/stations", {
+      method: "GET",
+      headers: {
+        'Authorization': 'Bearer ' + this.accessToken,
+      }
+    });
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -85,7 +90,8 @@ export default {
         const response = await fetch("api/stations", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.accessToken,
           },
           body: JSON.stringify({
             name: this.stationName,
@@ -112,6 +118,9 @@ export default {
       try {
         await fetch(`api/stations/${stationId}`, {
           method: "DELETE",
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
         })
         .then(response => {
           if (!response.ok) {
