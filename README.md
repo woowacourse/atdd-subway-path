@@ -14,8 +14,8 @@
 
 ### 3단계
 - [x] 노선을 추가하는 API를 추가 (FE)
-- [ ] Line을 삭제하는 API를 추가 (FE)
-- [ ] 전체 Line 데이터를 불러오는 API를 추가 (FE #onDeleteLine)
+- [x] Line을 삭제하는 API를 추가 (FE)
+- [x] 전체 Line 데이터를 불러오는 API를 추가 (FE #onDeleteLine)
 - [ ] Line을 수정하는 API를 추가 (FE)
 - [ ] 전체 Line 데이터를 불러오는 API를 추가 (FE #onEditLine)
 - [ ] 초기 역 데이터를 불러오는 API를 추가 (FE)
