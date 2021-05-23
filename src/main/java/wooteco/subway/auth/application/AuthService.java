@@ -4,10 +4,9 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.ui.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -21,19 +20,20 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateLogin(tokenRequest);
-        final String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        final Member member = validateLogin(tokenRequest);
+        final String memberId = String.valueOf(member.getId());
+        final String accessToken = jwtTokenProvider.createToken(memberId);
         return new TokenResponse(accessToken);
     }
 
-    private void validateLogin(TokenRequest tokenRequest) {
+    private Member validateLogin(TokenRequest tokenRequest) {
         final String email = tokenRequest.getEmail();
         final String password = tokenRequest.getPassword();
-        final Optional<Member> member = memberDao.findByEmail(email);
-        if (!(member.isPresent() && member.get().getPassword().equals(password))) {
-            throw new AuthorizationException();
+        final Member member = memberDao.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+        if (!member.hasSamePassword(password)) {
+            throw new PasswordInvalidException();
         }
+        return member;
     }
-
-
 }
