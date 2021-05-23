@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import wooteco.dto.ErrorResponse;
 
 import java.sql.SQLException;
 
@@ -14,8 +15,9 @@ import java.sql.SQLException;
 @RestControllerAdvice(assignableTypes = {LineController.class, StationController.class, PathController.class})
 public class SubwayControllerAdvice {
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<String> handleSQLException(SQLException e) {
+    public ResponseEntity<ErrorResponse> handleSQLException(SQLException e) {
         e.printStackTrace();
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(e.getMessage()));
     }
 }
