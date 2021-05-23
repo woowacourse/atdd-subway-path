@@ -52,10 +52,6 @@ public class Sections {
         }
     }
 
-    public void addSections(Sections sections) {
-        this.sections.addAll(sections.getSections());
-    }
-
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
             .filter(it -> it.getUpStation().equals(section.getUpStation()))
