@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.exception.RequiredParameterValidationException;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
+
+import javax.validation.Valid;
+
+import static wooteco.util.ValidationUtil.validateRequestedParameter;
 
 @RestController
 @RequestMapping("/paths")
@@ -21,18 +24,12 @@ public class PathController {
     }
 
     @GetMapping
-    ResponseEntity<PathResponse> findShortestPath(@ModelAttribute PathRequest pathRequest, BindingResult bindingResult) {
+    ResponseEntity<PathResponse> findShortestPath(@ModelAttribute @Valid PathRequest pathRequest, BindingResult bindingResult) {
         validateRequestedParameter(bindingResult);
 
         long source = pathRequest.getSource();
         long target = pathRequest.getTarget();
         PathResponse pathResponse = pathService.findShortestPath(source, target);
         return ResponseEntity.ok(pathResponse);
-    }
-
-    private void validateRequestedParameter(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw RequiredParameterValidationException.from(bindingResult);
-        }
     }
 }

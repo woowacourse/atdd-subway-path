@@ -2,9 +2,14 @@ package wooteco.auth.dto;
 
 import wooteco.auth.domain.Member;
 
+import javax.validation.constraints.NotNull;
+
 public class MemberRequest {
+    @NotNull
     private String email;
+    @NotNull
     private String password;
+    @NotNull
     private Integer age;
 
     public MemberRequest() {

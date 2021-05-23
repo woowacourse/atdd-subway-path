@@ -3,8 +3,11 @@ package wooteco.subway.dto;
 import lombok.Getter;
 import wooteco.subway.domain.Station;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 public class StationRequest {
+    @NotNull
     private String name;
 
     public StationRequest() {

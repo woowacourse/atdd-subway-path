@@ -1,7 +1,11 @@
 package wooteco.auth.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class TokenRequest {
+    @NotNull
     private String email;
+    @NotNull
     private String password;
 
     public TokenRequest() {

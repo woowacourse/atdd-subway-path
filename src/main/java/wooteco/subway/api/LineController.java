@@ -1,14 +1,18 @@
 package wooteco.subway.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.LineService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static wooteco.util.ValidationUtil.validateRequestedParameter;
 
 @RestController
 @RequestMapping("/lines")
@@ -21,7 +25,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -37,7 +43,9 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -49,7 +57,9 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }

@@ -1,6 +1,7 @@
 package wooteco.auth.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.auth.dto.LoginMember;
 import wooteco.auth.dto.MemberRequest;
@@ -8,7 +9,10 @@ import wooteco.auth.dto.MemberResponse;
 import wooteco.auth.infrastructure.AuthenticationPrincipal;
 import wooteco.auth.service.MemberService;
 
+import javax.validation.Valid;
 import java.net.URI;
+
+import static wooteco.util.ValidationUtil.validateRequestedParameter;
 
 @RestController
 @RequestMapping("/members")
@@ -20,7 +24,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -32,7 +38,9 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody @Valid MemberRequest param, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -51,7 +59,9 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberRequest param, BindingResult bindingResult) {
+        validateRequestedParameter(bindingResult);
+
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
