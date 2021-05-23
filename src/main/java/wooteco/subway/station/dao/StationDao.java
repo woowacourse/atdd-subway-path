@@ -36,6 +36,11 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
+    public List<Station> findStationsByIds(String ids) {
+        String sql = String.format("select * from STATION where id IN (%s)", ids);
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<Station> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);

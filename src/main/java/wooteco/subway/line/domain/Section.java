@@ -28,6 +28,14 @@ public class Section {
         return id;
     }
 
+    public Long upStationId() {
+        return upStation.getId();
+    }
+
+    public Long downStationId() {
+        return downStation.getId();
+    }
+
     public Station getUpStation() {
         return upStation;
     }

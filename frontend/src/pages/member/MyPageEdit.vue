@@ -107,7 +107,6 @@ export default {
       try {
         const { email, age, password } = this.editingMember;
         const access_token = localStorage.getItem("token");
-        alert(access_token);
         const member_edit_response = await fetch("http://localhost:8080/members/me", {
           method: "PUT",
           headers: {

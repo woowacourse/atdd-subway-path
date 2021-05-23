@@ -1,7 +1,6 @@
 package wooteco.subway.auth.dto;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class TokenRequest {
     @NotEmpty
