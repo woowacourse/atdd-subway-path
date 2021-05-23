@@ -37,7 +37,8 @@ public class PathService {
         }
         Sections sections = new Sections(sectionsFromList);
 
-        DijkstraShortestPath dPath = findDijkstraShortestPath(sections);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dPath = findDijkstraShortestPath(
+            sections);
 
         List<StationResponse> stationResponses = findDijkstraShortestRoute(sourceStation,
             targetStation, dPath);
@@ -49,37 +50,35 @@ public class PathService {
 
     private List<StationResponse> findDijkstraShortestRoute(Station sourceStation,
         Station targetStation,
-        DijkstraShortestPath dPath) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dPath) {
         List<StationResponse> stationResponses = new ArrayList<>();
-        List<String> shortestPaths = dPath.getPath(sourceStation.getName(), targetStation.getName())
-            .getVertexList();
-        for (String shortestPathName : shortestPaths) {
-            stationResponses.add(new StationResponse(stationService.findIdByName(shortestPathName),
-                shortestPathName));
+        List<Station> shortestPaths = dPath.getPath(sourceStation, targetStation).getVertexList();
+
+        for (Station station : shortestPaths) {
+            stationResponses.add(new StationResponse(stationService.findIdByName(station.getName()),
+                station.getName()));
         }
         return stationResponses;
     }
 
-    private int findDijkstraShortestDistance(DijkstraShortestPath dPath,
+    private int findDijkstraShortestDistance(
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dPath,
         Station sourceStation, Station targetStation) {
-        return (int) dPath.getPathWeight(sourceStation.getName(), targetStation.getName());
+        return (int) dPath.getPathWeight(sourceStation, targetStation);
     }
 
-    private DijkstraShortestPath findDijkstraShortestPath(
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> findDijkstraShortestPath(
         Sections sections) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         for (Section section : sections.getSections()) {
-            String upStationName = section.getUpStation().getName();
-            String downStationName = section.getDownStation().getName();
-            graph.addVertex(upStationName);
-            graph.addVertex(downStationName);
-            graph.setEdgeWeight(graph.addEdge(upStationName, downStationName),
+            graph.addVertex(section.getUpStation());
+            graph.addVertex(section.getDownStation());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
                 section.getDistance());
         }
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath;
+        return new DijkstraShortestPath<>(graph);
     }
 
 }
