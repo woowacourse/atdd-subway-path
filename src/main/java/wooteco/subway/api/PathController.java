@@ -24,7 +24,7 @@ public class PathController {
     }
 
     @GetMapping
-    ResponseEntity<PathResponse> findShortestPath(@ModelAttribute @Valid PathRequest pathRequest, BindingResult bindingResult) {
+    public ResponseEntity<PathResponse> findShortestPath(@ModelAttribute @Valid PathRequest pathRequest, BindingResult bindingResult) {
         validateRequestedParameter(bindingResult);
 
         long source = pathRequest.getSource();
