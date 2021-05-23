@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -43,8 +43,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<LoginMember> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(loginMember);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(memberService.findMember(loginMember.getId()));
     }
 
     @PutMapping("/members/me")

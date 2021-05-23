@@ -8,7 +8,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.auth.dto.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 
