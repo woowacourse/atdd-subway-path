@@ -1,6 +1,7 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -22,6 +23,7 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public TokenResponse createToken(@Valid TokenRequest tokenRequest) {
         if (!checkValidLogin(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizationException();
