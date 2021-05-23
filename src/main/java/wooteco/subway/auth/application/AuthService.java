@@ -25,6 +25,13 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
+    public void validateToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            return;
+        }
+        throw new AuthorizationException("유효하지 않은 토큰입니다.");
+    }
+
     public Member findMemberByToken(String token) {
         String payload = jwtTokenProvider.getPayload(token);
         return findMember(payload);

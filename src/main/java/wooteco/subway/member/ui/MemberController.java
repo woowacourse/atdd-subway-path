@@ -2,11 +2,12 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -42,22 +43,19 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        Long id = (Long) request.getAttribute("id");
-        return ResponseEntity.ok(memberService.findMember(id));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.ok(memberService.findMember(member.getId()));
     }
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMin(
-            HttpServletRequest request, @RequestBody MemberRequest memberRequest) {
-        Long id = (Long) request.getAttribute("id");
-        return ResponseEntity.ok(memberService.updateMember(id, memberRequest));
+            @AuthenticationPrincipal Member member, @RequestBody MemberRequest memberRequest) {
+        return ResponseEntity.ok(memberService.updateMember(member.getId(), memberRequest));
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMemberOfMine(HttpServletRequest request) {
-        Long id = (Long) request.getAttribute("id");
-        memberService.deleteMember(id);
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal Member member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }
