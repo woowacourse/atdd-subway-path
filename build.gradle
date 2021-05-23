@@ -23,6 +23,7 @@ dependencies {
 
 	// log
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -34,7 +35,6 @@ dependencies {
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
 }
 
 test {
