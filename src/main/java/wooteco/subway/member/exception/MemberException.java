@@ -1,7 +1,5 @@
 package wooteco.subway.member.exception;
 
-import wooteco.subway.auth.exception.AuthError;
-
 public class MemberException extends RuntimeException {
     private int statusCode;
 

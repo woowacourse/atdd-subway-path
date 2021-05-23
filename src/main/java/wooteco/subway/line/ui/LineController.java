@@ -2,10 +2,13 @@ package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.exception.AuthException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.LineError;
+import wooteco.subway.line.exception.LineException;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -39,9 +42,6 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        System.out.println(lineUpdateRequest.getColor());
-        System.out.println(lineUpdateRequest.getName());
-        System.out.println(lineUpdateRequest.getUpStationId());
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -67,5 +67,11 @@ public class LineController {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+
+    @ExceptionHandler(LineException.class)
+    public ResponseEntity<String> handle(LineException e){
+        return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
     }
 }
