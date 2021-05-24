@@ -25,10 +25,10 @@ public class PathService {
     public PathResponse searchPath(Long sourceStationId, Long targetStationId) {
         List<SectionTable> sectionTables = sectionDao.findAll();
 
-
         PathFinder pathFinder = new PathFinder(sectionTables);
         List<Long> shortestStationIds = pathFinder.getShortestStations(sourceStationId, targetStationId);
         int shortestDistance = pathFinder.getShortestDistance(sourceStationId, targetStationId);
+
         List<Station> shortestStations = stationService.findStationByIds(shortestStationIds);
         return new PathResponse(StationResponse.listOf(shortestStations), shortestDistance);
     }

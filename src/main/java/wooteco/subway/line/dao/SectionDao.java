@@ -41,6 +41,10 @@ public class SectionDao {
         jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
     }
 
+    public void deleteById(Long sectionId) {
+        jdbcTemplate.update("delete from SECTION where id = ?", sectionId);
+    }
+
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()

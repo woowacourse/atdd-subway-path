@@ -34,7 +34,6 @@ public class PathFinder {
         List<Long> stationIds;
         try {
             stationIds = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
-
         } catch (IllegalArgumentException e) {
             throw new PathNotLinkedException();
         }
