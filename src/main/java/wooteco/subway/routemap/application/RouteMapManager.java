@@ -21,6 +21,10 @@ public class RouteMapManager {
         updateSections(lines);
     }
 
+    public void addStation(Station station) {
+        routeMap.addStation(station);
+    }
+
     public void updateStations(Set<Station> stations) {
         routeMap.updateStations(stations);
     }

@@ -18,6 +18,10 @@ public class RouteMap {
         this.graph = graph;
     }
 
+    public void addStation(Station station) {
+        graph.addVertex(station);
+    }
+
     public void updateStations(Set<Station> expectedStations) {
         removeStations(expectedStations);
         addStations(expectedStations);

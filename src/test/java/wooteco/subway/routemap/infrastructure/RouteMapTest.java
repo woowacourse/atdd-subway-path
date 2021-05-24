@@ -56,7 +56,21 @@ class RouteMapTest {
         return graph;
     }
 
-    @DisplayName("노선도의 역을 업데이트 한다. (역을 제거하는 경우)")
+    @DisplayName("노선도에 새로운 역을 추가한다.")
+    @Test
+    void addStation() {
+        // given
+        Station stationE = new Station(5L, "stationE");
+
+        // when
+        routeMap.addStation(stationE);
+
+        // then
+        assertThat(routeMap.toDistinctStations())
+            .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD, stationE);
+    }
+
+    @DisplayName("노선도의 역을 업데이트 한다. (역이 제거된 경우)")
     @Test
     void updateStations_removalCase() {
         // given
@@ -75,7 +89,7 @@ class RouteMapTest {
             .containsExactlyInAnyOrder(stationA, stationB);
     }
 
-    @DisplayName("노선도의 역을 업데이트 한다. (역을 추가하는 경우)")
+    @DisplayName("노선도의 역을 업데이트 한다. (역이 추가된 경우)")
     @Test
     void updateStations_addingCase() {
         // given
@@ -96,7 +110,7 @@ class RouteMapTest {
             .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD);
     }
 
-    @DisplayName("노선도의 역을 업데이트 한다. (역의 정보가 수정되는 경우)")
+    @DisplayName("노선도의 역을 업데이트 한다. (역의 정보가 수정된 경우)")
     @Test
     void updateStations_valueChangingCase() {
         // given
