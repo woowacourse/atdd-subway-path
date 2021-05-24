@@ -8,6 +8,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.domain.Subway;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -16,19 +17,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private Subway subway;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService, Subway subway) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.subway = subway;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
+
+        subway.addLine(persistLine);
         return LineResponse.of(persistLine);
     }
 
@@ -67,26 +73,36 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
+        Line line = findLineById(id);
         lineDao.deleteById(id);
+
+        subway.deleteLine(line);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        subway.deleteLine(line);
+
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        subway.addLine(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
+        subway.deleteLine(line);
+
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
-    }
 
+        subway.addLine(line);
+    }
 }

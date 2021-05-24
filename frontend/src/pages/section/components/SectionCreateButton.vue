@@ -109,8 +109,10 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        // 선택된 노선의 데이터를 가져오는 API.
+        const selectedLineResponse = await fetch(`/api/lines/${this.sectionForm.lineId}`);
+        this.selectedLine = await selectedLineResponse.json();
+
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -160,11 +162,15 @@ export default {
         //   lineId: this.selectedLine.id,
         //   section: this.sectionForm,
         // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+
+        // 전체 line을 불러오는 API
+        const linesResponse = await fetch("/api/lines");
+        const lines = linesResponse.json();
+        this.setLines(lines)
+
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
+
         this.$refs.sectionForm.resetValidation();
         this.initSectionForm();
         this.closeDialog();

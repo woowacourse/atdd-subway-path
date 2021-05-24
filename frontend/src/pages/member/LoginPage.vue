@@ -76,7 +76,7 @@ export default {
       }
       try {
         const { email, password } = this.member;
-        const response = await fetch("http://localhost:8080/login/member", {
+        const response = await fetch("/api/login/member", {
           method: "POST",
           headers: {
             "Content-Type": CONTENT_JSON
@@ -94,7 +94,7 @@ export default {
           throw new Error(`${response.status}`);
         }
 
-        const memberResponse = await fetch("http://localhost:8080/members/me", {
+        const memberResponse = await fetch("api/members/me", {
           method: "GET",
           headers: {
             "Content-Type": CONTENT_JSON,

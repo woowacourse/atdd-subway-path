@@ -106,7 +106,7 @@ export default {
     async onEditMember() {
       try {
         const { email, age, password } = this.editingMember;
-        const memberResponse = await fetch("http://localhost:8080/members/me", {
+        const memberResponse = await fetch("/api/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
