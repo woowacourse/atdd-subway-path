@@ -27,7 +27,7 @@ public class MemberService {
     }
 
     private void memberValidate(Member member) {
-        if (memberDao.existByEmail(member)) {
+        if (memberDao.existMemberOtherThanMeByEmail(member)) {
             throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
@@ -37,8 +37,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByPayLoad(String payLoad) {
-        return MemberResponse.of(memberDao.findByEmail(payLoad));
+    public MemberResponse findMemberByEmail(String email) {
+        return MemberResponse.of(memberDao.findByEmail(email));
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

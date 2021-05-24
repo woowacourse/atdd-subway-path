@@ -10,18 +10,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.MemberRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
-    private final MemberService memberService;
 
     public AuthenticationPrincipalArgumentResolver(
-        AuthService authService, MemberService memberService) {
+        AuthService authService) {
         this.authService = authService;
-        this.memberService = memberService;
     }
 
     @Override
@@ -29,12 +25,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
-    // parameter에 @AuthenticationPrincipal이 붙어있는 경우 동작
     @Override
-    public MemberResponse resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
-        String payLoad = AuthorizationExtractor.extract(
-            Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
-        return memberService.findMemberByPayLoad(authService.getPayLoad(payLoad));
+    public MemberRequest resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        HttpServletRequest httpServletRequest =
+            webRequest.getNativeRequest(HttpServletRequest.class);
+        String payLoad =
+            AuthorizationExtractor.extract(Objects.requireNonNull(httpServletRequest));
+        String email = authService.getPayLoad(payLoad);
+        return new MemberRequest(email);
     }
 }

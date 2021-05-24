@@ -27,6 +27,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService, memberService);
+        return new AuthenticationPrincipalArgumentResolver(authService);
     }
 }
