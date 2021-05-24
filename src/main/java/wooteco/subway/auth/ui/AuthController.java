@@ -10,7 +10,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
 import javax.validation.Valid;
-import java.util.Objects;
 
 @RestController
 public class AuthController {
