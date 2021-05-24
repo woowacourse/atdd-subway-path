@@ -3,31 +3,31 @@ package wooteco.subway.path.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.JgraphtPathFinder;
 import wooteco.subway.path.domain.ShortestPathFinder;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.exception.NotFoundStationException;
-import wooteco.subway.station.dao.StationDao;
+import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 @Service
 public class PathService {
 
-    private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final StationService stationService;
+    private final LineService lineService;
 
-    public PathService(StationDao stationDao, LineDao lineDao) {
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+    public PathService(StationService stationService, LineService lineService) {
+        this.stationService = stationService;
+        this.lineService = lineService;
     }
 
     public PathResponse findShortestStationPath(Long fromStationId, Long toStationId) {
-        List<Station> stations = stationDao.findAll();
-        List<Line> lines = lineDao.findAll();
+        List<Station> stations = stationService.findStations();
+        List<Line> lines = lineService.findLines();
         List<Section> sections = findAllSections(lines);
 
         ShortestPathFinder shortestPathFinder = new JgraphtPathFinder(stations, sections);
