@@ -1,13 +1,11 @@
 package wooteco.subway.path.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -38,27 +36,8 @@ public class DijkstraPath {
         return new DijkstraShortestPath<>(graph);
     }
 
-    private List<StationResponse> findShortestRouteToStationResponse(
-        StationService stationService) {
-        List<StationResponse> stationResponses = new ArrayList<>();
-        List<Station> shortestPaths = graph.getPath(sourceStation, targetStation).getVertexList();
-
-        for (Station station : shortestPaths) {
-            stationResponses.add(new StationResponse(stationService.findIdByName(station.getName()),
-                station.getName()));
-        }
-        return stationResponses;
-    }
-
-    public List<StationResponse> findShortestPath(StationService stationService) {
-        List<StationResponse> stationResponses = new ArrayList<>();
-        List<Station> shortestPaths = graph.getPath(sourceStation, targetStation).getVertexList();
-
-        for (Station station : shortestPaths) {
-            stationResponses.add(new StationResponse(stationService.findIdByName(station.getName()),
-                station.getName()));
-        }
-        return stationResponses;
+    public List<StationResponse> findShortestRouteToStationResponse() {
+        return StationResponse.listOf(graph.getPath(sourceStation, targetStation).getVertexList());
     }
 
     public int findShortestDistance() {

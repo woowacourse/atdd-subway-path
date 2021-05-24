@@ -36,7 +36,7 @@ public class PathService {
         Sections sections = new Sections(sectionsFromList);
 
         DijkstraPath dijkstraPath = new DijkstraPath(sourceStation, targetStation, sections);
-        List<StationResponse> stationResponses = dijkstraPath.findShortestPath(stationService);
+        List<StationResponse> stationResponses = dijkstraPath.findShortestRouteToStationResponse();
         int dDistance = dijkstraPath.findShortestDistance();
 
         return new PathResponse(stationResponses, dDistance);

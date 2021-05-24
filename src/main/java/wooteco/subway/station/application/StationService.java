@@ -37,7 +37,4 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
-    public Long findIdByName(String stationName) {
-        return stationDao.findIdByName(stationName);
-    }
 }
