@@ -16,6 +16,13 @@ import java.util.Optional;
 public class MemberDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
+    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+            new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getInt("age")
+            );
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -24,9 +31,9 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public boolean isNotExistUser(final String email, final String password) {
+    public boolean isExistUser(final String email, final String password) {
         final String sql = "SELECT EXISTS (SELECT * FROM MEMBER WHERE email = ? AND password = ?)";
-        return !jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email, password);
     }
 
     public boolean isExistEmail(final String email) {
@@ -67,12 +74,4 @@ public class MemberDao {
             return Optional.empty();
         }
     }
-
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
 }

@@ -16,7 +16,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // XXX :: Member를 Controller에서 확인하고, email만 넘겨서 token을 생성하는 것과 지금
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody final TokenRequest tokenRequest) {
         final String token = authService.createToken(tokenRequest);

@@ -1,5 +1,22 @@
 package wooteco.subway.path.ui;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import wooteco.subway.path.application.NewPathService;
+import wooteco.subway.path.dto.PathResponse;
+
+@Controller
 public class PathController {
-    // TODO: 경로조회 기능 구현하기
+
+    private final NewPathService pathService;
+
+    public PathController(final NewPathService pathService) {
+        this.pathService = pathService;
+    }
+
+    @GetMapping("/paths")
+    public ResponseEntity<PathResponse> findPath(final Long source, final Long target) {
+        return ResponseEntity.ok(pathService.findShortestPath(source, target));
+    }
 }

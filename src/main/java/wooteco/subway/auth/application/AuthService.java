@@ -5,23 +5,22 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.domain.AuthorizationPayLoad;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.application.MemberService;
 
 @Service
 public class AuthService {
 
-    // XXX :: MemberService와 MemberDao 중 선택의 근거
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberService memberService;
 
-    public AuthService(final JwtTokenProvider jwtTokenProvider, final MemberDao memberDao) {
+    public AuthService(final JwtTokenProvider jwtTokenProvider, final MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberService = memberService;
     }
 
     @Transactional(readOnly = true)
     public String createToken(final TokenRequest tokenRequest) {
-        if(memberDao.isNotExistUser(tokenRequest.getEmail(), tokenRequest.getPassword())){
+        if (!memberService.isExistUser(tokenRequest.getEmail(), tokenRequest.getPassword())) {
             throw new AuthorizedException("올바른 사용자가 아닙니다.");
         }
         return jwtTokenProvider.createToken(tokenRequest.getEmail());

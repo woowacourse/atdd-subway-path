@@ -9,9 +9,8 @@ import wooteco.subway.member.application.MemberException;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
-
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleUnhandledException() {
+    public ResponseEntity<String> handleUnhandledException(Exception e) {
         final String message = "Unhandled exception";
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
     }

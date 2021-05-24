@@ -43,15 +43,14 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // XXX :: 포장의 의미가 있을까?
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal final AuthorizationPayLoad payLoad) {
         final Member loginMember = memberService.findMemberByPayLoad(payLoad);
         return ResponseEntity.ok(MemberResponse.of(loginMember));
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal final AuthorizationPayLoad payLoad,
                                                              @RequestBody MemberRequest updateMember) {
         final Member loginMember = memberService.findMemberByPayLoad(payLoad);
         memberService.updateMember(loginMember.getId(), updateMember);
@@ -59,7 +58,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal AuthorizationPayLoad payLoad) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal final AuthorizationPayLoad payLoad) {
         final Member loginMember = memberService.findMemberByPayLoad(payLoad);
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();

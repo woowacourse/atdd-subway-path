@@ -9,11 +9,11 @@ import snackbar from "./modules/snackbar";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  modules: {
-    snackbar,
-    station,
-    line,
-    member,
-    auth,
-  },
+    modules: {
+        snackbar,
+        station,
+        line,
+        member,
+        auth,
+    },
 });

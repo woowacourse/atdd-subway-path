@@ -2,12 +2,11 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.application.NewPathService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -17,29 +16,27 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    private SectionService sectionService;
+    private StationService stationService;
+    private NewPathService pathService;
+
+    public LineService(LineDao lineDao, SectionService sectionService, StationService stationService, NewPathService pathService) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.sectionService = sectionService;
+        this.pathService = pathService;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
-    }
 
-    private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+
+        persistLine.addSection(sectionService.addInitSection(persistLine, upStation, downStation, request.getDistance()));
+        updatePath();
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
@@ -68,24 +65,20 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        updatePath();
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
-
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+        sectionService.addLineStation(findLineById(lineId), request);
+        updatePath();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
+        sectionService.removeLineStation(findLineById(lineId), stationService.findStationById(stationId));
+        updatePath();
+    }
 
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+    private void updatePath(){
+        pathService.update();
     }
 }

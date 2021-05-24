@@ -48,6 +48,10 @@ public class MemberService {
     public Member findMemberByPayLoad(final AuthorizationPayLoad payLoad) {
         final String email = payLoad.value();
         return memberDao.findByEmail(email)
-                .orElseThrow(()-> new MemberException("올바르지 않은 사용자 토큰입니다."));
+                .orElseThrow(() -> new MemberException("올바르지 않은 사용자 토큰입니다."));
+    }
+
+    public boolean isExistUser(final String email, final String password) {
+        return memberDao.isExistUser(email, password);
     }
 }

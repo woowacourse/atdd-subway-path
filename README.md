@@ -15,10 +15,20 @@
    - [읽어보기](https://ko.javascript.info/fetch-crossorigin)
 
 4. 테스트 코드
+   - Exception 상황을 가짜로 주입할 순 없을까?
     
 5. 코드 리팩토링
    - DB 예외 발생 위치 dao vs service ??
    - Optional은 항상 옳을까? dao에서 그냥 터트리는게 더 나을 수 도 있지 않을까?
+   - ```java
+private void replaceSectionWithDownStation(Section newSection, Section existSection) {
+   if (existSection.getDistance() <= newSection.getDistance()) {
+      throw new RuntimeException();
+   }
+   this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+   this.sections.remove(existSection);
+}
+```
    
 6. 꼼꼼한 예외 처리
    - 회원 등록, 정보 변경 시 -> Email 중복 여부 확인 
