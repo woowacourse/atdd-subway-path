@@ -11,13 +11,6 @@ import wooteco.subway.exception.dto.ExceptionResponse;
 
 @ControllerAdvice
 public class SubwayControllerAdvice {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> exception(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionResponse("서버에서 요청을 처리하지 못했습니다."));
-    }
-
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ExceptionResponse> authorization(SubwayException e) {
         return ResponseEntity
@@ -30,5 +23,12 @@ public class SubwayControllerAdvice {
         return ResponseEntity
                 .badRequest()
                 .body(e.getBindingResult());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> exception(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ExceptionResponse("서버에서 요청을 처리하지 못했습니다."));
     }
 }
