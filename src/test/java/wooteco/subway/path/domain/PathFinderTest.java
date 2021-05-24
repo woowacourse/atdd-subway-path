@@ -34,7 +34,7 @@ class PathFinderTest {
                 new SectionTable(1L, 1L, 강남역.getId(), 잠실역.getId(), 10),
                 new SectionTable(2L, 1L, 잠실역.getId(), 몽촌역.getId(), 10),
                 new SectionTable(3L, 1L, 강남역.getId(), 역삼역.getId(), 10),
-                new SectionTable(4L,1L, 역삼역.getId(), 몽촌역.getId(), 5),
+                new SectionTable(4L, 1L, 역삼역.getId(), 몽촌역.getId(), 5),
                 new SectionTable(5L, 1L, 강남역.getId(), 몽촌역.getId(), 40)
         );
         PathFinder pathFinder = new PathFinder(sectionTables);

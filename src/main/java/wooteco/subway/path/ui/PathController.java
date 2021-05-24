@@ -26,14 +26,12 @@ public class PathController {
     public ResponseEntity<PathResponse> searchPath(
             @ModelAttribute @Valid PathRequest pathRequest,
             BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             throw new RequestInvalidException();
         }
         PathResponse pathResponse = pathService.searchPath(pathRequest.getSource(), pathRequest.getTarget());
         return ResponseEntity.ok().body(pathResponse);
     }
-
-
 
 
 }
