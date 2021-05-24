@@ -4,10 +4,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.event.LineUpdatedEvent;
 import wooteco.subway.path.domin.Path;
 import wooteco.subway.path.domin.PathRepository;
 import wooteco.subway.station.domain.Station;
@@ -16,28 +18,29 @@ import java.util.List;
 
 @Repository
 public class PathRepositoryImpl implements PathRepository {
-    private final LineDao lineDao;
-
-    public PathRepositoryImpl(final LineDao lineDao) {
-        this.lineDao = lineDao;
-    }
+    DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
 
     @Override
     public Path generateShortestDistancePath(final Station start, final Station destination) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = buildAllPath();
+        if (graph == null) {
+            return new Path();
+        }
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
-                = new DijkstraShortestPath<>(graph);
-
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(start, destination);
-
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = graph.getPath(start, destination);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> buildAllPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    @Override
+    public void generateAllPath(List<Line> lines) {
+        if (lines.isEmpty()) {
+            return;
+        }
 
-        List<Line> lines = lineDao.findAll();
+        graph = new DijkstraShortestPath<>(buildAllPath(lines));
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> buildAllPath(List<Line> lines) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         lines.forEach(line -> {
             registerNode(line.getStations(), graph);
             registerEdgeDistanceWeight(line.getSections(), graph);
@@ -56,6 +59,4 @@ public class PathRepositoryImpl implements PathRepository {
                     section.getDistance());
         });
     }
-
-
 }
