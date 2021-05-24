@@ -8,14 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +31,14 @@ class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private StationDao stationDao;
-
-    @Mock
-    private SectionDao sectionDao;
+    private LineDao lineDao;
 
     private Station 흑기역;
     private Station 백기역;
     private Station 낙성대역;
     private Section 흑기백기구간;
     private Section 백기낙성대구간;
+    private Line 인천1호선;
 
     @BeforeEach
     void init() {
@@ -45,8 +47,9 @@ class PathServiceTest {
         흑기역 = new Station(1L, "흑기역");
         백기역 = new Station(2L, "백기역");
         낙성대역 = new Station(3L, "낙성대역");
-        흑기백기구간 = new Section(흑기역, 백기역, 4);
-        백기낙성대구간 = new Section(백기역, 낙성대역, 7);
+        흑기백기구간 = new Section(1L, 흑기역, 백기역, 4);
+        백기낙성대구간 = new Section(2L, 백기역, 낙성대역, 7);
+        인천1호선 = new Line(1L, "인천1호선", "화이트", new Sections(Arrays.asList(흑기백기구간,백기낙성대구간)));
     }
 
     @Test
@@ -73,16 +76,18 @@ class PathServiceTest {
     @Test
     void findShortestPath() {
         //given
-        잔체_역을_찾음();
-        잔체_구간을_찾음();
+        전체_노선을_찾음();
 
         //when
-        Station source = 아이디로_역을_찾음(흑기역);
-        Station target = 아이디로_역을_찾음(낙성대역);
-        PathResponse shortestPath = pathService.findShortestPath(source.getId(), target.getId());
+        PathResponse shortestPath = pathService.findShortestPath(흑기역.getId(), 낙성대역.getId());
 
         //then
         최단_경로_포함됨(shortestPath, Arrays.asList(흑기역, 백기역, 낙성대역));
+    }
+
+    private void 전체_노선을_찾음() {
+        when(lineDao.findAll()).thenReturn(Collections.singletonList(인천1호선));
+
     }
 
     private void 최단_경로_포함됨(PathResponse shortestPath, List<Station> stations) {
@@ -93,18 +98,5 @@ class PathServiceTest {
                 .map(Station::getName)
                 .collect(Collectors.toList());
         assertThat(pathsName).containsExactlyInAnyOrderElementsOf(stationsName);
-    }
-
-    private void 잔체_구간을_찾음() {
-        when(sectionDao.findAll()).thenReturn(Arrays.asList(흑기백기구간, 백기낙성대구간));
-    }
-
-    private void 잔체_역을_찾음() {
-        when(stationDao.findAll()).thenReturn(Arrays.asList(흑기역, 백기역, 낙성대역));
-    }
-
-    private Station 아이디로_역을_찾음(Station station) {
-        when(stationDao.findById(station.getId())).thenReturn(station);
-        return station;
     }
 }
