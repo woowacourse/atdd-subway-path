@@ -2,12 +2,16 @@ package wooteco.subway.path.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.JgraphtPathFinder;
+import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.ShortestPathFinder;
+import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.exception.NotFoundStationException;
 import wooteco.subway.station.application.StationService;
@@ -30,12 +34,11 @@ public class PathService {
         List<Line> lines = lineService.findLines();
         List<Section> sections = findAllSections(lines);
 
-        ShortestPathFinder shortestPathFinder = new JgraphtPathFinder(stations, sections);
-        Station fromStation = findStationById(stations,fromStationId);
+        SubwayMap subwayMap = new SubwayMap(stations, sections);
+        Station fromStation = findStationById(stations, fromStationId);
         Station toStation = findStationById(stations, toStationId);
-        List<Station> shortestPath = shortestPathFinder.findShortestPath(fromStation, toStation);
-        int shortestDistance = shortestPathFinder.findShortestDistance(fromStation, toStation);
-        return new PathResponse(StationResponse.listOf(shortestPath), shortestDistance);
+        Path path = subwayMap.getShortestPath(fromStation, toStation);
+        return new PathResponse(path);
     }
 
     private List<Section> findAllSections(List<Line> lines) {
