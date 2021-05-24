@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({PathNotLinkedException.class, RequestInvalidException.class})
-    public ResponseEntity<String> handlePathNotLinkedException(Exception e) {
+    public ResponseEntity<String> handlePathNotLinkedException(SubwayBadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
