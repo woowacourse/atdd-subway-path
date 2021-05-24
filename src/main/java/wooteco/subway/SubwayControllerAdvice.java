@@ -12,16 +12,22 @@ import wooteco.subway.exception.AuthorizationException;
 public class SubwayControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exception(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("서버에서 요청을 처리하지 못했습니다.");
     }
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<String> authorization(AuthorizationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BindingResult> methodArgumentNotValid(MethodArgumentNotValidException e) {
-        return ResponseEntity.badRequest().body(e.getBindingResult());
+        return ResponseEntity
+                .badRequest()
+                .body(e.getBindingResult());
     }
 }
