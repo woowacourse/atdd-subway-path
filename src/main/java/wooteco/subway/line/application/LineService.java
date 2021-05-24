@@ -8,6 +8,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.application.PathFinder;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -19,16 +20,19 @@ public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private PathFinder pathFinder;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService, PathFinder pathFinder) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
+        pathFinder.updateGraph(lineDao.findAll());
         return LineResponse.of(persistLine);
     }
 
@@ -45,7 +49,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -64,10 +68,12 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        pathFinder.updateGraph(lineDao.findAll());
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        pathFinder.updateGraph(lineDao.findAll());
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -78,6 +84,8 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        pathFinder.updateGraph(lineDao.findAll());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -87,5 +95,7 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        pathFinder.updateGraph(lineDao.findAll());
     }
 }

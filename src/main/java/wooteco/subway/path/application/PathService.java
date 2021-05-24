@@ -2,9 +2,8 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.path.domain.Path;
-import wooteco.subway.path.domain.ShortestPathStrategy;
-import wooteco.subway.path.domain.WeightedGraphStrategy;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -16,21 +15,23 @@ import java.util.List;
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
+    private final PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+        List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
-        Path path = new Path(lineService.findLines(), WeightedGraphStrategy.MULTI, ShortestPathStrategy.DIJKSTRA);
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-        List<Station> shortestPath = path.getShortestPath(sourceStation, targetStation);
-        List<StationResponse> shortestPathResponse = StationResponse.listOf(shortestPath);
-        int totalDistance = path.getTotalDistance(sourceStation, targetStation);
+        List<Station> shortestPath = subwayPath.getShortestPath();
+        int totalDistance = subwayPath.getTotalDistance();
 
-        return new PathResponse(shortestPathResponse, totalDistance);
+        return new PathResponse(StationResponse.listOf(shortestPath), totalDistance);
     }
 }
