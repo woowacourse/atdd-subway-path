@@ -1,4 +1,4 @@
-package wooteco.subway.auth;
+package wooteco.subway.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;
