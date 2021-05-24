@@ -4,6 +4,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Line {
     private Long id;
@@ -67,6 +68,10 @@ public class Line {
             return;
         }
         sections.addSection(section);
+    }
+
+    public Optional<Station> findStationById(Long stationId) {
+        return sections.findStationById(stationId);
     }
 
     public void removeSection(Station station) {

@@ -11,7 +11,7 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 public class Path {
     private final List<Line> lines;
@@ -22,22 +22,17 @@ public class Path {
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         GraphPath<Station, DefaultWeightedEdge> path = makeShortestPath().getPath(findStationById(sourceId), findStationById(targetId));
-       return new PathResponse(StationResponse.listOf(path.getVertexList()), (int) path.getWeight());
+        return new PathResponse(StationResponse.listOf(path.getVertexList()), (int) path.getWeight());
     }
 
     private Station findStationById(Long stationId) {
         return lines.stream()
-                .map(Line::sections)
-                .flatMap(it -> it.stream().flatMap(section -> Stream.of(
-                        section.getUpStation(),
-                        section.getDownStation()
-                        )))
-                .distinct()
-                .filter(station -> station.sameId(stationId))
+                .map(line -> line.findStationById(stationId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("찾을 수 없는 역입니다."));
+                .orElseThrow(() -> new IllegalStateException("전체 노선에 존재하지 않는 역입니다"));
     }
-
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> makeShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph =
