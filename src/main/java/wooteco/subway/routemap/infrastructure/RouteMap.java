@@ -18,8 +18,7 @@ public class RouteMap {
         this.graph = graph;
     }
 
-    public void updateStations(Lines lines) {
-        Set<Station> expectedStations = lines.toDistinctStations();
+    public void updateStations(Set<Station> expectedStations) {
         removeStations(expectedStations);
         addStations(expectedStations);
     }

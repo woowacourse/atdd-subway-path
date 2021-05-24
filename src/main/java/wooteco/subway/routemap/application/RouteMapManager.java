@@ -1,8 +1,11 @@
 package wooteco.subway.routemap.application;
 
+import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Lines;
 import wooteco.subway.routemap.infrastructure.RouteMap;
+import wooteco.subway.station.domain.Station;
 
 @Service
 public class RouteMapManager {
@@ -14,12 +17,12 @@ public class RouteMapManager {
     }
 
     public void updateMap(Lines lines) {
-        updateStations(lines);
+        updateStations(lines.toDistinctStations());
         updateSections(lines);
     }
 
-    public void updateStations(Lines lines) {
-        routeMap.updateStations(lines);
+    public void updateStations(Set<Station> stations) {
+        routeMap.updateStations(stations);
     }
 
     public void updateSections(Lines lines) {

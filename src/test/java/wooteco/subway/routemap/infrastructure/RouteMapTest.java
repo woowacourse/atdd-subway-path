@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
 import org.jgrapht.graph.Multigraph;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,10 +64,11 @@ class RouteMapTest {
             1L, "line", "green lighten-1",
             new Sections(Collections.singletonList(sectionAB))
         );
-        Lines expectedLines = new Lines(Collections.singletonList(lineAfterStationRemoved));
+        Set<Station> expectedStations = new Lines(Collections.singletonList(lineAfterStationRemoved))
+            .toDistinctStations();
 
         // when
-        routeMap.updateStations(expectedLines);
+        routeMap.updateStations(expectedStations);
 
         // then
         assertThat(routeMap.toDistinctStations())
@@ -83,10 +85,11 @@ class RouteMapTest {
             1L, "line", "green lighten-1",
             new Sections(Arrays.asList(sectionAB, sectionBC, sectionCD))
         );
-        Lines expectedLines = new Lines(Collections.singletonList(addedLine));
+        Set<Station> expectedStations = new Lines(Collections.singletonList(addedLine))
+            .toDistinctStations();
 
         // when
-        routeMap.updateStations(expectedLines);
+        routeMap.updateStations(expectedStations);
 
         // then
         assertThat(routeMap.toDistinctStations())
@@ -104,10 +107,11 @@ class RouteMapTest {
             1L, "line", "green lighten-1",
             new Sections(Arrays.asList(updatedSectionAB, sectionBC))
         );
-        Lines expectedLines = new Lines(Collections.singletonList(updatedLine));
+        Set<Station> expectedStations = new Lines(Collections.singletonList(updatedLine))
+            .toDistinctStations();
 
         // when
-        routeMap.updateStations(expectedLines);
+        routeMap.updateStations(expectedStations);
 
         // then
         assertThat(routeMap.toDistinctStations())
