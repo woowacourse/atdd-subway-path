@@ -9,6 +9,8 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public abstract class ShortestPathStrategy {
-    public abstract ShortestPathAlgorithm<Station, DefaultWeightedEdge> match(List<Line> lines);
+public class FloydWarshallShortestPathStrategy {
+    public ShortestPathAlgorithm<Station, DefaultWeightedEdge> match(List<Line> lines) {
+        return new FloydWarshallShortestPaths<>(new PathGraph(lines).graph());
+    }
 }

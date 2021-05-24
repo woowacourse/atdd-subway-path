@@ -3,6 +3,7 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.DijkstraShortestPathStrategy;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.ShortestPathStrategy;
 import wooteco.subway.path.dto.PathResponse;
@@ -22,7 +23,7 @@ public class PathService {
 
     public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
         List<Line> lines = lineDao.findAll();
-        Path path = new Path(ShortestPathStrategy.DIJKSTRA, lines);
+        Path path = new Path(new DijkstraShortestPathStrategy(), lines);
         Station sourceStation = findStationById(lines, sourceId);
         Station targetStation = findStationById(lines, targetId);
 
