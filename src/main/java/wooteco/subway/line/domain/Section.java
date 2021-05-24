@@ -40,4 +40,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
+    public String getDownStationName() {
+        return downStation.getName();
+    }
 }
