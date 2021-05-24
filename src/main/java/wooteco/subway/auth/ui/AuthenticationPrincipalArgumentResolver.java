@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -28,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String token = AuthorizationExtractor.extract(Objects.requireNonNull(request));
-        return authService.findMemberByToken(token);
+        String accessToken = AuthorizationExtractor.extract(Objects.requireNonNull(request));
+        return authService.findMemberByToken(accessToken);
     }
 }

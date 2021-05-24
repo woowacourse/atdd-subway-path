@@ -14,7 +14,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
-    private MemberService memberService;
+
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
