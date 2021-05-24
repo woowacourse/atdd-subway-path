@@ -8,16 +8,13 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
-public class DistanceMap {
+public abstract class AbstractStationMap implements StationMap{
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> map = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> map;
 
-    public DistanceMap() {
-    }
-
-    public ShortestPathMap toShortestPathMap(List<Line> lines) {
+    protected AbstractStationMap(List<Line> lines) {
+        this.map = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         connectMap(lines);
-        return new ShortestPathMap(map);
     }
 
     private void connectMap(List<Line> lines) {
@@ -39,4 +36,7 @@ public class DistanceMap {
         }
     }
 
+    protected WeightedMultigraph<Station, DefaultWeightedEdge> getMap() {
+        return map;
+    }
 }
