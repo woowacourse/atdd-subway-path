@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
-import wooteco.subway.exception.MemberNotFoundException;
+import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;

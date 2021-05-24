@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.exception.NoRowHasBeenModifiedException;
+import wooteco.subway.exception.badrequest.NoRowHasBeenModifiedException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;

@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.exception.PasswordMissMatchException;
+import wooteco.subway.exception.unauthorization.PasswordMissMatchException;
 
 public class Member {
     private Long id;
