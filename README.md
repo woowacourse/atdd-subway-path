@@ -7,7 +7,7 @@
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-dijkstraPath">
 </p>
 
 <br>
@@ -45,10 +45,10 @@ npm run serve
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-dijkstraPath/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/woowacourse/atdd-subway-dijkstraPath/blob/master/LICENSE) licensed.

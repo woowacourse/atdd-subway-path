@@ -11,8 +11,8 @@
           <div class="px-4 pb-6">
             <div class="d-flex width-100">
               <v-select
-                v-model="path.source"
-                class="pr-4 path-station-select"
+                v-model="dijkstraPath.source"
+                class="pr-4 dijkstraPath-station-select"
                 :items="allStationsView"
                 label="출발역"
                 color="grey darken-1"
@@ -24,8 +24,8 @@
                 >mdi-arrow-right-bold</v-icon
               >
               <v-select
-                v-model="path.target"
-                class="pl-4 path-station-select"
+                v-model="dijkstraPath.target"
+                class="pl-4 dijkstraPath-station-select"
                 :items="allStationsView"
                 label="도착역"
                 color="grey darken-1"
@@ -159,8 +159,8 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        const pathResultResponse = await fetch(`/api/paths?source=${this.dijkstraPath.source}&target=${this.dijkstraPath.target}`);
+        this.pathResult = await pathResultResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +168,9 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const stationsResponse = await fetch("/api/stations")
+        const stations = await stationsResponse.json();
+        this.setStations(stations)
         if (this.stations.length < 1) {
           return;
         }
@@ -188,7 +188,7 @@ export default {
     async onSearchMinimumDurationType() {
       try {
         // TODO 최소 시간을 검색하는 API를 추가해주세요.
-        // this.pathResultByMinimumDuration = await fetch("/paths", {})
+        this.pathResultByMinimumDuration = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -197,7 +197,7 @@ export default {
   },
   data() {
     return {
-      path: {
+      dijkstraPath: {
         source: "",
         target: "",
       },
@@ -211,7 +211,7 @@ export default {
 };
 </script>
 <style scoped>
-.path-station-select {
+.dijkstraPath-station-select {
   width: 200px;
 }
 

@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import wooteco.exception.notfound.StationNotFoundException;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.StationRequest;
@@ -23,7 +24,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        return stationDao.findById(id).orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {

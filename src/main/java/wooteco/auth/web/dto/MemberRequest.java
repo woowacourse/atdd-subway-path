@@ -6,11 +6,11 @@ import javax.validation.constraints.Positive;
 import wooteco.auth.domain.Member;
 
 public class MemberRequest {
-    @Email
+    @Email(message = "이메일 폼을 입력해주세요.")
     private String email;
-    @NotEmpty
+    @NotEmpty(message = "패스워드를 입력해주세요.")
     private String password;
-    @Positive
+    @Positive(message = "올바르지 않은 나이 형식입니다.")
     private Integer age;
 
     public MemberRequest() {
