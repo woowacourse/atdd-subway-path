@@ -29,7 +29,7 @@ public class Lines {
 
     public Line findLineBySectionContaining(Section section) {
         return lines.stream()
-            .filter(lines::contains)
+            .filter(line -> line.contains(section))
             .findAny()
             .orElseThrow(
                 () -> new ObjectNotFoundException(
