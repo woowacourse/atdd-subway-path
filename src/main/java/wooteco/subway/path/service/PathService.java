@@ -1,8 +1,8 @@
 package wooteco.subway.path.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.path.domin.Path;
-import wooteco.subway.path.domin.PathRepository;
+import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.PathRepository;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;

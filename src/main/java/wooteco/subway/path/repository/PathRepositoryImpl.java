@@ -7,8 +7,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.path.domin.Path;
-import wooteco.subway.path.domin.PathRepository;
+import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.PathRepository;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;

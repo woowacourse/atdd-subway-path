@@ -1,4 +1,4 @@
-package wooteco.subway.path.domin;
+package wooteco.subway.path.domain;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
