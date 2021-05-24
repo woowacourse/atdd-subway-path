@@ -3,6 +3,7 @@ package wooteco.subway.path.domain;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.strategy.shortestpath.ShortestPathStrategy;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
