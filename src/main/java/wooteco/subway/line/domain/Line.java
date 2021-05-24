@@ -1,6 +1,7 @@
 package wooteco.subway.line.domain;
 
 import java.util.List;
+import java.util.stream.Stream;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
@@ -74,5 +75,9 @@ public class Line {
 
     public boolean contains(Section section) {
         return sections.contains(section);
+    }
+
+    public Stream<Station> toStationStream() {
+        return getStations().stream();
     }
 }
