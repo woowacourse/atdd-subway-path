@@ -20,8 +20,8 @@ class RouteMapTest {
 
     private RouteMap routeMap;
     private Station stationA, stationB, stationC, stationD;
-    private Section sectionAB, sectionBC, sectionBD, sectionDC;
-    private Line lineA, lineB;
+    private Section sectionAB, sectionBC;
+    private Line line;
 
     @BeforeEach
     void setUp() {
@@ -44,81 +44,95 @@ class RouteMapTest {
         sectionAB = new Section(1L, stationA, stationB, 5);
         sectionBC = new Section(2L, stationB, stationC, 3);
 
-        lineA = new Line(
-            1L, "lineA", "green lighten-1",
+        line = new Line(
+            1L, "line", "green lighten-1",
             new Sections(Arrays.asList(sectionAB, sectionBC))
         );
 
-        graph.addEdge(stationA, stationB, new PathEdge(sectionAB, lineA));
-        graph.addEdge(stationB, stationC, new PathEdge(sectionBC, lineA));
-
-        // create LineB: B-D-C
-        sectionBD = new Section(3L, stationB, stationD, 1);
-        sectionDC = new Section(4L, stationD, stationC, 1);
-
-        lineB = new Line(
-            2L, "lineB", "black lighten-1",
-            new Sections(Arrays.asList(sectionBD, sectionDC))
-        );
-
-        graph.addEdge(stationB, stationD, new PathEdge(sectionBD, lineB));
-        graph.addEdge(stationD, stationC, new PathEdge(sectionDC, lineB));
+        graph.addEdge(stationA, stationB, new PathEdge(sectionAB, line));
+        graph.addEdge(stationB, stationC, new PathEdge(sectionBC, line));
 
         return graph;
     }
 
-    @DisplayName("노선도를 업데이트 한다. (역을 제거하는 경우)")
+    @DisplayName("노선도의 역을 업데이트 한다. (역을 제거하는 경우)")
     @Test
     void updateStations_removalCase() {
         // given
-        Lines expectedLines = new Lines(Collections.singletonList(lineA));
+        Line lineAfterStationRemoved = new Line(
+            1L, "line", "green lighten-1",
+            new Sections(Collections.singletonList(sectionAB))
+        );
+        Lines expectedLines = new Lines(Collections.singletonList(lineAfterStationRemoved));
 
         // when
         routeMap.updateStations(expectedLines);
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB, stationC);
+            .containsExactlyInAnyOrder(stationA, stationB);
     }
 
-    @DisplayName("노선도를 업데이트 한다. (역을 추가하는 경우)")
+    @DisplayName("노선도의 역을 업데이트 한다. (역을 추가하는 경우)")
     @Test
     void updateStations_addingCase() {
         // given
-        Station stationE = new Station(5L, "stationE");
-        Section sectionCE = new Section(5L, stationC, stationE, 3);
-        Line updatedLineB = new Line(
-            2L, "lineB", "black lighten-1",
-            new Sections(Arrays.asList(sectionBD, sectionDC, sectionCE))
+        Station stationD = new Station(4L, "stationD");
+        Section sectionCD = new Section(3L, stationC, stationD, 2);
+        Line addedLine = new Line(
+            1L, "line", "green lighten-1",
+            new Sections(Arrays.asList(sectionAB, sectionBC, sectionCD))
         );
-        Lines expectedLines = new Lines(Arrays.asList(lineA, updatedLineB));
+        Lines expectedLines = new Lines(Collections.singletonList(addedLine));
 
         // when
         routeMap.updateStations(expectedLines);
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD, stationE);
+            .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD);
     }
 
-    @DisplayName("노선도를 업데이트 한다. (역의 정보가 수정되는 경우)")
+    @DisplayName("노선도의 역을 업데이트 한다. (역의 정보가 수정되는 경우)")
     @Test
     void updateStations_valueChangingCase() {
         // given
         Station updatedStationA = new Station(stationA.getId(), "updated" + stationA.getName());
         Section updatedSectionAB = new Section(1L, updatedStationA, stationB, 5);
 
-        Line updatedLineA = new Line(
-            1L, "lineA", "green lighten-1",
+        Line updatedLine = new Line(
+            1L, "line", "green lighten-1",
             new Sections(Arrays.asList(updatedSectionAB, sectionBC))
         );
-        Lines expectedLines = new Lines(Arrays.asList(updatedLineA, lineB));
+        Lines expectedLines = new Lines(Collections.singletonList(updatedLine));
 
         // when
         routeMap.updateStations(expectedLines);
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(updatedStationA, stationB, stationC, stationD);
+            .containsExactlyInAnyOrder(updatedStationA, stationB, stationC);
+    }
+
+    @DisplayName("노선도의 구간을 업데이트 한다.")
+    @Test
+    void updateSections() {
+        // given
+        Section sectionDA = new Section(3L, stationD, stationA, 2);
+        Line updatedLine = new Line(
+            1L, "line", "green lighten-1",
+            new Sections(Arrays.asList(sectionDA, sectionAB))
+        );
+        Lines expectedLines = new Lines(Collections.singletonList(updatedLine));
+
+        // when
+        routeMap.updateSections(expectedLines);
+
+        // then
+        assertThat(routeMap.toPathEdges())
+            .containsExactlyInAnyOrder(
+                new PathEdge(sectionDA, updatedLine),
+                new PathEdge(sectionAB, updatedLine)
+            );
     }
 }

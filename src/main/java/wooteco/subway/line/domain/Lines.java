@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.ObjectNotFoundException;
 import wooteco.subway.station.domain.Station;
 
 public class Lines {
@@ -17,5 +18,23 @@ public class Lines {
         return lines.stream()
             .flatMap(Line::toStationStream)
             .collect(Collectors.toSet());
+    }
+
+    public Set<Section> toAllSections() {
+        return lines.stream()
+            .flatMap(Line::toSectionStream)
+            .collect(Collectors.toSet());
+    }
+
+    public Line findLineBySectionContaining(Section section) {
+        return lines.stream()
+            .filter(lines::contains)
+            .findAny()
+            .orElseThrow(
+                () -> new ObjectNotFoundException(
+                    String.format("전체 노선에 해당 구간이 없습니다. (상행: %s, 하행: %s)",
+                    section.getUpStation(), section.getDownStationName())
+                )
+            );
     }
 }

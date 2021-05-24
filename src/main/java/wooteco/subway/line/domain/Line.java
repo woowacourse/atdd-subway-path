@@ -80,4 +80,8 @@ public class Line {
     public Stream<Station> toStationStream() {
         return getStations().stream();
     }
+
+    public Stream<Section> toSectionStream() {
+        return sections.toStream();
+    }
 }

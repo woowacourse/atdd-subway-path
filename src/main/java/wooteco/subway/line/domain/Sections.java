@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -147,5 +148,9 @@ public class Sections {
 
     public boolean contains(Section section) {
         return sections.contains(section);
+    }
+
+    public Stream<Section> toStream() {
+        return sections.stream();
     }
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.routemap.infrastructure;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.Multigraph;
@@ -48,7 +49,30 @@ public class RouteMap {
         return leaveOnlyExistentInTarget(expectedStations, graph.vertexSet());
     }
 
+    public void updateSections(Lines lines) {
+        clearSection();
+        addSections(lines);
+    }
+
+    private void clearSection() {
+        graph.removeAllEdges(new LinkedHashSet<>(graph.edgeSet()));
+    }
+
+    private void addSections(Lines lines) {
+        lines.toAllSections().forEach(
+            section -> graph.addEdge(
+                section.getUpStation(),
+                section.getDownStation(),
+                new PathEdge(section, lines.findLineBySectionContaining(section))
+            )
+        );
+    }
+
     public Set<Station> toDistinctStations() {
         return graph.vertexSet();
+    }
+
+    public Set<PathEdge> toPathEdges() {
+        return graph.edgeSet();
     }
 }
