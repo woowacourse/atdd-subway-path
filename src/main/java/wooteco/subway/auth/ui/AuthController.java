@@ -23,12 +23,6 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest tokenRequest, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            throw new IllegalArgumentException(
-                    Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
-        }
-
         final TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok(tokenResponse);
     }
