@@ -70,7 +70,8 @@ npm run serve
 - [ ] 프론트엔드 경로 조회 API 구현 
 
 ## TODO
-- StationService @Transactional 동작 확인 
+- StationService @Transactional 동작 확인
+- LineService @Transactional 동작 확인
 
 <br>
 ## 📝 License
