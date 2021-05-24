@@ -70,6 +70,17 @@ class RouteMapTest {
             .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD, stationE);
     }
 
+    @DisplayName("노선도에서 역을 제거한다.")
+    @Test
+    void removeStation() {
+        // when
+        routeMap.removeStation(stationD);
+
+        // then
+        assertThat(routeMap.toDistinctStations())
+            .containsExactlyInAnyOrder(stationA, stationB, stationC);
+    }
+
     @DisplayName("노선도의 역을 업데이트 한다. (역이 제거된 경우)")
     @Test
     void updateStations_removalCase() {

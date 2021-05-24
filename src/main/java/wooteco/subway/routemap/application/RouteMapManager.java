@@ -1,6 +1,5 @@
 package wooteco.subway.routemap.application;
 
-import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Lines;
@@ -23,6 +22,10 @@ public class RouteMapManager {
 
     public void addStation(Station station) {
         routeMap.addStation(station);
+    }
+
+    public void removeStation(Station station) {
+        routeMap.removeStation(station);
     }
 
     public void updateStations(Set<Station> stations) {

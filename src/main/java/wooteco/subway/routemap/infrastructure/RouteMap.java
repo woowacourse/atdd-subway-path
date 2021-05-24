@@ -22,6 +22,10 @@ public class RouteMap {
         graph.addVertex(station);
     }
 
+    public void removeStation(Station station) {
+        graph.removeVertex(station);
+    }
+
     public void updateStations(Set<Station> expectedStations) {
         removeStations(expectedStations);
         addStations(expectedStations);

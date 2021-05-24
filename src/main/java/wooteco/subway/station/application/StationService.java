@@ -40,7 +40,10 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
+        Station station = findStationById(id);
         stationDao.deleteById(id);
+        routeMapManager.removeStation(station);
     }
 }
