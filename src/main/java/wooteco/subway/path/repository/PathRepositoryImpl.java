@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.domain.Path;
@@ -13,7 +12,6 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-@Repository
 public class PathRepositoryImpl implements PathRepository {
     DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
 

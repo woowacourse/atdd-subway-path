@@ -1,8 +1,6 @@
 package wooteco.subway.line.application;
 
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -33,11 +31,6 @@ public class LineService {
         this.sectionDao = sectionDao;
         this.stationService = stationService;
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void init() {
-        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
     }
 
     public LineResponse saveLine(LineRequest request) {
