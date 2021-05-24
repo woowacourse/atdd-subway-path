@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Lines;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -43,14 +44,11 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
+        return LineResponse.listOf(findLines());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public Lines findLines() {
+        return new Lines(lineDao.findAll());
     }
 
     public LineResponse findLineResponseById(Long id) {

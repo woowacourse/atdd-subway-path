@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import wooteco.subway.exception.ObjectNotFoundException;
 import wooteco.subway.station.domain.Station;
 
@@ -36,5 +37,9 @@ public class Lines {
                     section.getUpStation(), section.getDownStationName())
                 )
             );
+    }
+
+    public Stream<Line> toStream() {
+        return lines.stream();
     }
 }
