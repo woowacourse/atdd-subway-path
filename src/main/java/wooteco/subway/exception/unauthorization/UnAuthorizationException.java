@@ -10,11 +10,7 @@ public class UnAuthorizationException extends SubwayException {
         super(message, UNAUTHORIZED);
     }
 
-    public UnAuthorizationException(String message, HttpStatus httpStatus) {
-        super(message, httpStatus);
-    }
-
-    public UnAuthorizationException(String message, Throwable cause, HttpStatus httpStatus) {
-        super(message, cause, httpStatus);
+    public UnAuthorizationException(String message, Throwable cause) {
+        super(message, cause, UNAUTHORIZED);
     }
 }

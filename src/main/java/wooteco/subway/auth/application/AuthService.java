@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.notfound.EmailNotFoundException;
+import wooteco.subway.exception.unauthorization.EmailNotFoundException;
 import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.exception.unauthorization.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;

@@ -29,6 +29,6 @@ public class SubwayControllerAdvice {
     public ResponseEntity<ExceptionResponse> exception(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionResponse("서버에서 요청을 처리하지 못했습니다."));
+                .body(new ExceptionResponse("서버에서 오류가 발생했습니다."));
     }
 }

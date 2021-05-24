@@ -1,6 +1,8 @@
-package wooteco.subway.exception.notfound;
+package wooteco.subway.exception.unauthorization;
 
-public class EmailNotFoundException extends NotFoundException {
+import wooteco.subway.exception.notfound.NotFoundException;
+
+public class EmailNotFoundException extends UnAuthorizationException {
     private static final String MESSAGE = "이메일이 존재하지 않습니다.";
 
     public EmailNotFoundException() {
