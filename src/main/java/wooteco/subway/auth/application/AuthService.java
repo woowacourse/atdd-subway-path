@@ -21,7 +21,7 @@ public class AuthService {
 
     public TokenResponse generateToken(TokenRequest tokenRequest) {
         MemberResponse memberResponse = memberService.findMemberByTokenRequest(tokenRequest);
-        return new TokenResponse(jwtTokenProvider.createToken(memberResponse.getEmail()));
+        return new TokenResponse(jwtTokenProvider.createToken(memberResponse.getId() + "." + memberResponse.getEmail()));
     }
 
     public String getPayLoad(String token) {

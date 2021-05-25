@@ -73,4 +73,12 @@ public class MemberDao {
             jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail(), member.getId());
         return Objects.requireNonNull(isExistEmail);
     }
+
+    public boolean existMemberByEmail(Member member) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+
+        Boolean isExistEmail =
+            jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail());
+        return Objects.requireNonNull(isExistEmail);
+    }
 }

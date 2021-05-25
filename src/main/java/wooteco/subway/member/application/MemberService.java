@@ -22,13 +22,13 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = request.toMember();
-        memberValidate(member);
+        validateCreateMember(member);
         Member newMember = memberDao.insert(request.toMember());
         return MemberResponse.of(newMember);
     }
 
-    private void memberValidate(Member member) {
-        if (memberDao.existMemberOtherThanMeByEmail(member)) {
+    private void validateCreateMember(Member member) {
+        if (memberDao.existMemberByEmail(member)) {
             throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
@@ -38,15 +38,17 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(String email) {
-        return MemberResponse.of(memberDao.findByEmail(email));
-    }
-
     public void updateMember(Long id, MemberRequest memberRequest) {
         Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
             memberRequest.getAge());
-        memberValidate(member);
+        validateUpdateMember(member);
         memberDao.update(member);
+    }
+
+    private void validateUpdateMember(Member member) {
+        if (memberDao.existMemberOtherThanMeByEmail(member)) {
+            throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public void deleteMember(Long id) {

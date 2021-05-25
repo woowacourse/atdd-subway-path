@@ -34,7 +34,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             webRequest.getNativeRequest(HttpServletRequest.class);
         String payLoad =
             AuthorizationExtractor.extract(Objects.requireNonNull(httpServletRequest));
-        String email = authService.getPayLoad(payLoad);
-        return new MemberRequest(email);
+        String[] data = authService.getPayLoad(payLoad).split("\\.");
+
+        Long id = Long.parseLong(data[0]);
+        String email = data[1];
+
+        return new MemberRequest(id, email);
     }
 }
