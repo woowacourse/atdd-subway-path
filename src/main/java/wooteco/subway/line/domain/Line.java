@@ -1,8 +1,7 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.List;
+import wooteco.subway.station.domain.Station;
 
 public class Line {
     private Long id;
@@ -70,5 +69,15 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", color='" + color + '\'' +
+            ", sections=" + sections +
+            '}';
     }
 }
