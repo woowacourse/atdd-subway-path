@@ -34,10 +34,6 @@ public class PathService {
         List<Station> stationsInPath = shortestPath.getVertexList();
         int shortestDistance = (int) shortestPath.getWeight();
 
-        List<StationResponse> stationResponses = stationsInPath.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-
-        return new PathResponse(stationResponses, shortestDistance);
+        return new PathResponse(stationsInPath, shortestDistance);
     }
 }
