@@ -22,7 +22,7 @@ public class Route {
         initEdgeAndWeight(sections);
     }
 
-    private void initVertex(List<Station> stations) {
+    private void initVertex(Set<Station> stations) {
         for (Station station : stations) {
             route.addVertex(station);
         }
@@ -34,13 +34,13 @@ public class Route {
         }
     }
 
-    private List<Station> findUniqueStations(List<Section> sections) {
+    private Set<Station> findUniqueStations(List<Section> sections) {
         Set<Station> stations = new HashSet<>();
         for (Section section : sections) {
             stations.add(section.getUpStation());
             stations.add(section.getDownStation());
         }
-        return new ArrayList<>(stations);
+        return stations;
     }
 
     public List<Station> findShortestStation(Station sourceStation, Station targetStation) {
