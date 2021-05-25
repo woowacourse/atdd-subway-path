@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

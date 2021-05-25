@@ -6,7 +6,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
-import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 

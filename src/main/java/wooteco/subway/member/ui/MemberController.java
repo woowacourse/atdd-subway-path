@@ -3,8 +3,8 @@ package wooteco.subway.member.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.application.MemberService;
 import wooteco.subway.auth.dto.LoginMember;
+import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 

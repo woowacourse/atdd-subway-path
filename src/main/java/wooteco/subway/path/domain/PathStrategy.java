@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface PathStrategy {
     GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                                    List<Station> stations, Station source, Station target);
+                                                                  List<Station> stations, Station source, Station target);
 }
