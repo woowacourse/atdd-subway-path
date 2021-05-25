@@ -3,9 +3,9 @@ package wooteco.subway.path.dto;
 import javax.validation.constraints.NotNull;
 
 public class PathRequest {
-    @NotNull(message = "널일 수 없습니다.")
+    @NotNull(message = "출발역은 비어있을 수 없습니다.")
     private Long source;
-    @NotNull(message = "널일 수 없습니다.")
+    @NotNull(message = "도착역은 비어있을 수 없습니다.")
     private Long target;
 
     public PathRequest() {
