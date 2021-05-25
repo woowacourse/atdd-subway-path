@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -50,6 +51,14 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+
+    public List<Station> findAllByIds(List<Long> ids) {
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sql = String.format("select * from STATION where id in (%s)", inSql);
+
+        return jdbcTemplate.query(sql, rowMapper, ids.toArray());
     }
 
 }

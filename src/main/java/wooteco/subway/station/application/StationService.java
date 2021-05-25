@@ -43,11 +43,7 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
-    public List<Station> findStationByIds(List<Long> shortestStationIds) {
-        List<Station> stations = new ArrayList<>();
-        for (Long id : shortestStationIds) {
-            stations.add(stationDao.findById(id));
-        }
-        return stations;
+    public List<Station> findStationsByIds(List<Long> ids) {
+        return stationDao.findAllByIds(ids);
     }
 }

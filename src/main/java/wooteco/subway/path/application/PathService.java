@@ -9,7 +9,8 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -24,12 +25,23 @@ public class PathService {
 
     public PathResponse searchPath(Long sourceStationId, Long targetStationId) {
         List<SectionTable> sectionTables = sectionDao.findAll();
+        final Set<Long> ids = new HashSet<>();
+        sectionTables.forEach(section -> {
+            ids.add(section.getDownStationId());
+            ids.add(section.getUpStationId());
+        });
+
+        List<Station> stations = stationService.findStationsByIds(new ArrayList<>(ids));
+        final Map<Long, Station> stationStorage = new HashMap<>();
+        stations.forEach(station -> stationStorage.put(station.getId(), station));
 
         PathFinder pathFinder = new PathFinder(sectionTables);
         List<Long> shortestStationIds = pathFinder.getShortestStations(sourceStationId, targetStationId);
         int shortestDistance = pathFinder.getShortestDistance(sourceStationId, targetStationId);
 
-        List<Station> shortestStations = stationService.findStationByIds(shortestStationIds);
+        List<Station> shortestStations = shortestStationIds.stream()
+                .map(stationStorage::get)
+                .collect(Collectors.toList());
         return new PathResponse(StationResponse.listOf(shortestStations), shortestDistance);
     }
 }
