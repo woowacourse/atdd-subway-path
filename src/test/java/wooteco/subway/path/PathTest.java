@@ -27,10 +27,10 @@ public class PathTest {
         Section section2 = new Section(middle, target, 20);
         Sections sections = new Sections(Arrays.asList(section1, section2));
 
-        DijkstraPath dijkstraPath = new DijkstraPath(source, target, sections);
+        DijkstraPath dijkstraPath = new DijkstraPath(sections);
 
-        assertThat(dijkstraPath.findShortestDistance()).isEqualTo(30);
-        assertThat(dijkstraPath.findShortestRouteToStationResponse()).hasSize(3);
+        assertThat(dijkstraPath.findShortestDistance(source, target)).isEqualTo(30);
+        assertThat(dijkstraPath.findShortestRouteToStationResponse(source, target)).hasSize(3);
     }
 
 }

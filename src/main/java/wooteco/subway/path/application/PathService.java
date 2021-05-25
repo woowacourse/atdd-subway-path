@@ -29,15 +29,15 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
         List<Line> lines = lineService.findLines();
 
-        List<Section> sectionsFromList = new ArrayList<>();
-        for (Line line : lines) {
-            sectionsFromList.addAll(line.getSections().getSections());
-        }
-        Sections sections = new Sections(sectionsFromList);
+        List<Section> allSectionFromSubway = new ArrayList<>();
+        lines.stream().map(line -> line.getSections().getSections())
+            .forEach(allSectionFromSubway::addAll);
+        Sections sections = new Sections(allSectionFromSubway);
 
-        DijkstraPath dijkstraPath = new DijkstraPath(sourceStation, targetStation, sections);
-        List<StationResponse> stationResponses = dijkstraPath.findShortestRouteToStationResponse();
-        int dDistance = dijkstraPath.findShortestDistance();
+        DijkstraPath dijkstraPath = new DijkstraPath(sections);
+        List<StationResponse> stationResponses = dijkstraPath
+            .findShortestRouteToStationResponse(sourceStation, targetStation);
+        int dDistance = dijkstraPath.findShortestDistance(sourceStation, targetStation);
 
         return new PathResponse(stationResponses, dDistance);
     }

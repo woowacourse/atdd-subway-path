@@ -11,14 +11,9 @@ import wooteco.subway.station.dto.StationResponse;
 
 public class DijkstraPath {
 
-    private final Station sourceStation;
-    private final Station targetStation;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
 
-    public DijkstraPath(Station sourceStation, Station targetStation,
-        Sections sections) {
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
+    public DijkstraPath(Sections sections) {
         this.graph = createGraph(sections);
     }
 
@@ -36,11 +31,12 @@ public class DijkstraPath {
         return new DijkstraShortestPath<>(graph);
     }
 
-    public List<StationResponse> findShortestRouteToStationResponse() {
+    public List<StationResponse> findShortestRouteToStationResponse(Station sourceStation,
+        Station targetStation) {
         return StationResponse.listOf(graph.getPath(sourceStation, targetStation).getVertexList());
     }
 
-    public int findShortestDistance() {
+    public int findShortestDistance(Station sourceStation, Station targetStation) {
         return (int) graph.getPathWeight(sourceStation, targetStation);
     }
 }
