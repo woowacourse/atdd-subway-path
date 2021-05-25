@@ -22,14 +22,6 @@ class PathFinderTest {
         Station 역삼역 = new Station(4L, "역삼역");
 
         // 강남-잠실-몽촌:20 & 강남 - 역삼 - 몽촌:15 & 강남 - 몽촌: 40
-        List<Section> sections = Arrays.asList(
-                new Section(1L, 강남역, 잠실역, 10),
-                new Section(2L, 잠실역, 몽촌역, 10),
-                new Section(3L, 강남역, 역삼역, 10),
-                new Section(4L, 역삼역, 몽촌역, 5),
-                new Section(5L, 강남역, 몽촌역, 40)
-        );
-
         List<SectionTable> sectionTables = Arrays.asList(
                 new SectionTable(1L, 1L, 강남역.getId(), 잠실역.getId(), 10),
                 new SectionTable(2L, 1L, 잠실역.getId(), 몽촌역.getId(), 10),
