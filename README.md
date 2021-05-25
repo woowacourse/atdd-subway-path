@@ -67,7 +67,7 @@ npm run serve
 - [x] 경로 조회 기능 구현
   - [x] 최단 경로를 찾는 기능 구현
   - [x] 지하철 노선도를 관리하는 기능 구현
-- [ ] 프론트엔드 경로 조회 API 구현 
+- [x] 프론트엔드 경로 조회 API 구현 
 
 ## TODO
 - StationService @Transactional 동작 확인
