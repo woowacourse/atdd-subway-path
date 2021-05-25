@@ -88,7 +88,7 @@ export default {
   components: { Dialog },
   mixins: [dialog],
   computed: {
-    ...mapGetters(["lines", "stations"]),
+    ...mapGetters(["lines", "stations", "accessToken"]),
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES, SET_LINE]),
@@ -105,7 +105,12 @@ export default {
     },
     async initLineStationsView() {
       try {
-        this.selectedLine = await fetch(`api/lines/${this.sectionForm.lineId}`)
+        this.selectedLine = await fetch(`api/lines/${this.sectionForm.lineId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        })
         .then(response => {
           if(!response.ok) {
             throw new Error(`${response.status}`);
@@ -161,6 +166,7 @@ export default {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.accessToken,
           },
           body: JSON.stringify(this.sectionForm),
         })
@@ -170,7 +176,12 @@ export default {
           }
         })
 
-        const lines = await fetch("api/lines")
+        const lines = await fetch("api/lines", {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);

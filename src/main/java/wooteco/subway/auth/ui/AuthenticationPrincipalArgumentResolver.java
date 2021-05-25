@@ -1,23 +1,23 @@
 package wooteco.subway.auth.ui;
 
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.Member;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
-        this.authService = authService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -26,9 +26,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String token = AuthorizationExtractor.extract(Objects.requireNonNull(request));
-        return authService.findMemberByToken(token);
+        String accessToken = AuthorizationExtractor.extract(Objects.requireNonNull(request));
+        String memberId = jwtTokenProvider.getPayload(accessToken);
+
+        return new LoginMember(Long.valueOf(memberId));
     }
 }

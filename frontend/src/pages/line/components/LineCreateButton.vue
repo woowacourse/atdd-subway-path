@@ -132,7 +132,7 @@ export default {
   components: {Dialog},
   mixins: [dialog],
   computed: {
-    ...mapGetters(["stations", "lines"]),
+    ...mapGetters(["stations", "lines", "accessToken"]),
   },
   created() {
     this.lineColors = LINE_COLORS.map((color) => {
@@ -159,6 +159,7 @@ export default {
           method: "POST",
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + this.accessToken,
           },
           body: JSON.stringify(this.lineForm),
         }).then(response => {

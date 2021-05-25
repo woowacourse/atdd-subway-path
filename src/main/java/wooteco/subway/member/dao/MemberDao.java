@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,10 +9,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
-import javax.sql.DataSource;
-
 @Repository
 public class MemberDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
@@ -50,11 +50,6 @@ public class MemberDao {
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public Member findByEmailAndPassword(String email, String password) {
-        String sql = "select * from MEMBER where email = ? and password = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
     }
 
     public Member findByEmail(String email) {

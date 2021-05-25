@@ -82,13 +82,23 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    const response = await fetch("api/stations");
+    const response = await fetch("api/stations", {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + this.accessToken,
+      }
+    });
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
     const stations = await response.json();
     this.setStations([...stations]);
-    const lines = await fetch("api/lines")
+    const lines = await fetch("api/lines", {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + this.accessToken,
+      }
+    })
     .then(response => {
       if (!response.ok) {
         throw new Error(`${response.status}`);
@@ -99,7 +109,7 @@ export default {
     this.initLinesView();
   },
   computed: {
-    ...mapGetters(["lines", "line"]),
+    ...mapGetters(["lines", "line", "accessToken"]),
   },
   watch: {
     line() {
@@ -128,7 +138,12 @@ export default {
     },
     async onChangeLine() {
       try {
-        this.activeLine = await fetch(`api/lines/${this.activeLineId}`)
+        this.activeLine = await fetch(`api/lines/${this.activeLineId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken,
+          }
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error(`${response.status}`);

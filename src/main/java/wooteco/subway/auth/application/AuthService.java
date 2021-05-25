@@ -25,32 +25,25 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         String email = tokenRequest.getEmail();
         String password = tokenRequest.getPassword();
-        findByEmailAndPassword(email, password);
-        return new TokenResponse(jwtTokenProvider.createToken(email));
+        Member member = findMember(email, password);
+
+        String memberId = String.valueOf(member.getId());
+        return new TokenResponse(jwtTokenProvider.createToken(memberId));
     }
 
-    private Member findByEmailAndPassword(String email, String password) {
-        try {
-            return memberDao.findByEmailAndPassword(email, password);
-        } catch (EmptyResultDataAccessException e) {
+    private Member findMember(String email, String password) {
+        Member member = findMemberByEmail(email);
+        if (member.isNotValidPassword(password)) {
             throw new AuthException(AuthError.LOGIN_ERROR);
         }
-    }
-
-    public Member findMemberByToken(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthException(AuthError.TOKEN_EXPIRED);
-        }
-        String email = jwtTokenProvider.getPayload(token);
-
-        return findMemberByEmail(email);
+        return member;
     }
 
     private Member findMemberByEmail(String email) {
         try {
             return memberDao.findByEmail(email);
         } catch (EmptyResultDataAccessException e) {
-            throw new AuthException(AuthError.EMAIL_NOT_FOUND_ERROR);
+            throw new AuthException(AuthError.LOGIN_ERROR);
         }
     }
 }

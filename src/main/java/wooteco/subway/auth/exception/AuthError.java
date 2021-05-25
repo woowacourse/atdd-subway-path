@@ -1,20 +1,23 @@
 package wooteco.subway.auth.exception;
 
-public enum AuthError {
-    LOGIN_ERROR(401, "로그인에 실패하셨습니다"),
-    TOKEN_EXPIRED(401, "토큰이 만료되었습니다"),
-    EMAIL_NOT_FOUND_ERROR(401, "토큰의 이메일이 유효하지 않습니다");
+import org.springframework.http.HttpStatus;
 
-    private int statusCode;
+public enum AuthError {
+    LOGIN_ERROR(HttpStatus.UNAUTHORIZED, "로그인에 실패하셨습니다"),
+    TOKEN_EXPIRED_ERROR(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다"),
+    EMAIL_NOT_FOUND_ERROR(HttpStatus.UNAUTHORIZED, "토큰의 이메일이 유효하지 않습니다"),
+    REQUIRE_LOGIN_ERROR(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다.");
+
+    private HttpStatus status;
     private String message;
 
-    AuthError(int statusCode, String message) {
-        this.statusCode = statusCode;
+    AuthError(HttpStatus status, String message) {
+        this.status = status;
         this.message = message;
     }
 
     public int getStatusCode() {
-        return statusCode;
+        return status.value();
     }
 
     public String getMessage() {
