@@ -24,7 +24,7 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse findShortestDistancePath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId) {
         List<Station> stations = stationDao.findAll();
         List<Section> sections = sectionDao.findAll(stations);
         Path path = new Path(stations, sections, new ShortestDistanceStrategy());
