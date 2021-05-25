@@ -34,7 +34,7 @@ public class Path {
         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(Long sourceId, Long targetId) {
-        return this.pathStrategy.calculateShortestPath(graph, stations, sourceId, targetId);
+    public GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(Station source, Station target) {
+        return this.pathStrategy.calculateShortestPath(graph, stations, source, target);
     }
 }

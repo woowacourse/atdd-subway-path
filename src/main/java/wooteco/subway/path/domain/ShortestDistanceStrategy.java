@@ -11,21 +11,9 @@ import java.util.List;
 public class ShortestDistanceStrategy implements PathStrategy {
     @Override
     public GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                                           List<Station> stations, Long sourceId, Long targetId) {
+                                           List<Station> stations, Station source, Station target) {
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
-        Station source = getStation(stations, sourceId);
-        Station target = getStation(stations, targetId);
-
         return dijkstraShortestPath.getPath(source, target);
-    }
-
-    private Station getStation(List<Station> stations, Long id) {
-
-
-        return stations.stream()
-                .filter(station -> station.hasSameId(id))
-                .findAny()
-                .get();
     }
 }
