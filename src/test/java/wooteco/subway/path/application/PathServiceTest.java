@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import wooteco.subway.AcceptanceTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -20,8 +22,10 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-class PathServiceTest extends AcceptanceTest {
+@SpringBootTest
+@ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class PathServiceTest {
     @Autowired
     private LineDao lineDao;
     @Autowired
@@ -68,13 +72,10 @@ class PathServiceTest extends AcceptanceTest {
     @Test
     void searchPath() {
         PathResponse pathResponse = pathService.searchPath(강남역.getId(), 정자역.getId());
-        List<String> stations = pathResponse.getStations()
-                .stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
 
-        assertThat(pathResponse.getStations()).hasSize(2);
         assertThat(pathResponse.getDistance()).isEqualTo(10);
-        assertThat(stations).containsExactly(강남역.getName(), 정자역.getName());
+        assertThat(pathResponse.getStations()).hasSize(2)
+                .extracting("name")
+                .containsExactly(강남역.getName(), 정자역.getName());
     }
 }
