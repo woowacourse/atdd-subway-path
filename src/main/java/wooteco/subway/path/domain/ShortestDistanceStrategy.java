@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ShortestDistanceStrategy implements PathStrategy {
     @Override
-    public GraphPath calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+    public GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
                                            List<Station> stations, Long sourceId, Long targetId) {
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
         Station source = getStation(stations, sourceId);
         Station target = getStation(stations, targetId);
 
