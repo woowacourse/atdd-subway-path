@@ -21,6 +21,8 @@ public class ShortestDistanceStrategy implements PathStrategy {
     }
 
     private Station getStation(List<Station> stations, Long id) {
+
+
         return stations.stream()
                 .filter(station -> station.hasSameId(id))
                 .findAny()

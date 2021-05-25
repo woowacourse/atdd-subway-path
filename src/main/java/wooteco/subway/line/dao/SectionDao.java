@@ -54,21 +54,4 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
-
-    public List<Section> findAll(List<Station> stations) {
-        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Section(
-                rs.getLong("id"),
-                getStation(stations, rs.getLong("up_station_id")),
-                getStation(stations, rs.getLong("down_station_id")),
-                rs.getInt("distance")
-        ));
-    }
-
-    private Station getStation(List<Station> stations, Long stationId) {
-        return stations.stream()
-                .filter(station -> station.hasSameId(stationId))
-                .findAny()
-                .get();
-    }
 }
