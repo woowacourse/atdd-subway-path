@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus;
 
 public enum SubWayException {
 
-    DUPLICATE_EMAIL_EXCEPTION("중복된 이메일 입니다.", HttpStatus.BAD_REQUEST.value());
+    DUPLICATE_EMAIL_EXCEPTION("중복된 이메일 입니다.", HttpStatus.BAD_REQUEST.value()),
+    NOT_EXIST_STATION_EXCEPTION("존재하지 않는 역입니다.", HttpStatus.BAD_REQUEST.value()),
+    NOT_CONNECT_STATION_EXCEPTION("연결되지 않은 역입니다.", HttpStatus.BAD_REQUEST.value());
 
-    private static final String ERROR = "[ERROR] ";
+
     private final String message;
     private final int status;
 
@@ -16,7 +18,7 @@ public enum SubWayException {
     }
 
     public String message() {
-        return ERROR + message;
+        return message;
     }
 
     public int status() {

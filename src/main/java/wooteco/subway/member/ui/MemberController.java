@@ -50,7 +50,8 @@ public class MemberController {
 
     // TODO: 구현 하기
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal MemberRequest memberRequest) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+        @AuthenticationPrincipal MemberRequest memberRequest) {
         MemberResponse memberResponse = memberService.findMemberByEmail(memberRequest.getEmail());
         return ResponseEntity.ok(memberResponse);
     }

@@ -7,6 +7,8 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import wooteco.subway.exceptions.SubWayCustomException;
+import wooteco.subway.exceptions.SubWayException;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.dto.PathDto;
@@ -23,29 +25,24 @@ public class PathFinder {
     }
 
     public Path findPath(List<Station> stations, List<Section> sections, PathRequest pathRequest) {
+        Map<Long, Station> idToStation = idToStation(stations);
+        validateStation(pathRequest, idToStation);
+
         WeightedMultigraph<Long, DefaultWeightedEdge> graph =
             new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addVertex(graph, stations);
         addEdge(graph, sections);
 
         PathDto pathDto = pathAlgorithms.findPath(graph, pathRequest);
-        Map<Long, Station> idToStation = idToStation(stations);
         List<Station> pathStations = getPathStations(pathDto, idToStation);
 
         return new Path(pathStations, pathDto.getDistance());
     }
 
-    private void addVertex(WeightedMultigraph<Long, DefaultWeightedEdge> graph, List<Station> stations) {
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-    }
-
-    private void addEdge(WeightedMultigraph<Long, DefaultWeightedEdge> graph, List<Section> sections) {
-        for (Section section : sections) {
-            Long upStationId = section.getUpStation().getId();
-            Long downStationId = section.getDownStation().getId();
-            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
+    private void validateStation(PathRequest pathRequest, Map<Long, Station> idToStation) {
+        if (!idToStation.containsKey(pathRequest.getSource())
+            || !idToStation.containsKey(pathRequest.getTarget())) {
+            throw new SubWayCustomException(SubWayException.NOT_EXIST_STATION_EXCEPTION);
         }
     }
 
@@ -55,6 +52,22 @@ public class PathFinder {
             idToStation.put(station.getId(), station);
         }
         return idToStation;
+    }
+
+    private void addVertex(WeightedMultigraph<Long, DefaultWeightedEdge> graph,
+        List<Station> stations) {
+        for (Station station : stations) {
+            graph.addVertex(station.getId());
+        }
+    }
+
+    private void addEdge(WeightedMultigraph<Long, DefaultWeightedEdge> graph,
+        List<Section> sections) {
+        for (Section section : sections) {
+            Long upStationId = section.getUpStation().getId();
+            Long downStationId = section.getDownStation().getId();
+            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
+        }
     }
 
     private List<Station> getPathStations(PathDto pathDto, Map<Long, Station> idToStation) {

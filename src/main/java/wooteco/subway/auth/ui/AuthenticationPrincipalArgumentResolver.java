@@ -13,6 +13,7 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.dto.MemberRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(
@@ -26,7 +27,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public MemberRequest resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public MemberRequest resolveArgument(MethodParameter parameter,
+        ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+        WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest =
             webRequest.getNativeRequest(HttpServletRequest.class);
         String payLoad =

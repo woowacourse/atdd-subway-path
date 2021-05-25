@@ -23,6 +23,7 @@ public class SubwayAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception exception) {
         System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body("알 수 없는 에러가 발생했습니다.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            .body("알 수 없는 에러가 발생했습니다.");
     }
 }

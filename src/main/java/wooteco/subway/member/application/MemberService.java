@@ -13,6 +13,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
+
     private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -42,7 +43,8 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {
-        Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge());
         memberValidate(member);
         memberDao.update(member);
     }
@@ -52,10 +54,10 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByTokenRequest(TokenRequest tokenRequest) {
-        try{
+        try {
             Member member = memberDao.findByTokenRequest(tokenRequest);
             return MemberResponse.of(member);
-        } catch (EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             throw new UserLoginFailException();
         }
 
