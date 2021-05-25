@@ -72,17 +72,17 @@ public class SectionDao {
     }
 
     public List<Section> findAll() {
-        String sql = "SELECT \n"
-            + "  s.id AS section_id,\n"
-            + "  up_table.id AS up_id,\n"
-            + "  up_table.name AS up_name,\n"
-            + "  down_table.id AS down_id,\n"
-            + "  down_table.name AS down_name,\n"
-            + "  distance\n"
-            + "FROM\n"
-            + "  section AS s\n"
-            + "LEFT JOIN station AS up_table      ON s.up_station_id = up_table.id\n"
-            + "LEFT JOIN station AS down_table ON s.down_station_id = down_table.id\n";
+        String sql = "SELECT  "
+            + "  s.id AS section_id, "
+            + "  up_table.id AS up_id, "
+            + "  up_table.name AS up_name, "
+            + "  down_table.id AS down_id, "
+            + "  down_table.name AS down_name, "
+            + "  distance "
+            + "FROM "
+            + "  section AS s "
+            + "LEFT JOIN station AS up_table      ON s.up_station_id = up_table.id "
+            + "LEFT JOIN station AS down_table ON s.down_station_id = down_table.id";
         return jdbcTemplate.query(sql, mapper);
     }
 }
