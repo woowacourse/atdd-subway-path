@@ -53,8 +53,8 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByEmail(String email) {
+    public Optional<Member> findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
-        return DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, email));
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, email)));
     }
 }

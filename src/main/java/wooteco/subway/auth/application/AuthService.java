@@ -19,10 +19,8 @@ public class AuthService {
     }
 
     public TokenResponse login(String email, String password) {
-        Member member = memberDao.findByEmail(email);
-        if (member == null) {
-            throw new UnauthorizedException();
-        }
+        Member member = memberDao.findByEmail(email)
+            .orElseThrow(() -> new UnauthorizedException());
 
         member.validatePassword(password);
 
