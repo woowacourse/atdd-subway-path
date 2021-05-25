@@ -15,10 +15,6 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
