@@ -1,6 +1,7 @@
 package wooteco.subway.path.application;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
@@ -29,7 +30,7 @@ public class PathService {
         List<Section> sections = sectionDao.findAll(stations);
         Path path = new Path(stations, sections, new ShortestDistanceStrategy());
 
-        GraphPath shortestPath = path.calculateShortestPath(sourceId, targetId);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.calculateShortestPath(sourceId, targetId);
         List<Station> stationsInPath = shortestPath.getVertexList();
         int shortestDistance = (int) shortestPath.getWeight();
 

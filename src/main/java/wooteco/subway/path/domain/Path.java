@@ -24,7 +24,7 @@ public class Path {
         }
     }
 
-    public GraphPath calculateShortestPath(Long sourceId, Long targetId) {
+    public GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(Long sourceId, Long targetId) {
         return this.pathStrategy.calculateShortestPath(graph, stations, sourceId, targetId);
     }
 }

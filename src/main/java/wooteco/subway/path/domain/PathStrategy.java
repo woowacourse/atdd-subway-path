@@ -8,6 +8,6 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public interface PathStrategy {
-    GraphPath calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+    GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
                                     List<Station> stations, Long sourceId, Long targetId);
 }
