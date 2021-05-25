@@ -2,32 +2,32 @@ package wooteco.subway.path.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.domain.Section;
+import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 @Service
 public class PathService {
 
-    private final LineService lineService;
-    private final StationService stationService;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+    private final PathFinder pathFinder;
 
-    public PathService(LineService lineService,
-        StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
+    public PathService(StationDao stationDao, SectionDao sectionDao,
+        PathFinder pathFinder) {
+        this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
+        this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-
-        List<Line> lines = lineService.findLines();
-        Station sourceStation = stationService.findStationById(source);
-        Station targetStation = stationService.findStationById(target);
-
-
-
-        return null;
+    public PathResponse findPath(PathRequest pathRequest) {
+        List<Station> stations = stationDao.findAll();
+        List<Section> sections = sectionDao.findAll();
+        Path path = pathFinder.findPath(stations, sections, pathRequest);
+        return PathResponse.of(path);
     }
 }
