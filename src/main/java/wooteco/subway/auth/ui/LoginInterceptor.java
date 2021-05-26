@@ -16,16 +16,14 @@ public class LoginInterceptor implements HandlerInterceptor {
     private static final String ACCESS_REQUEST_METHOD = "Access-Control-Request-Method";
     private static final String ACCESS_REQUEST_HEADERS = "Access-Control-Request-Headers";
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public LoginInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws Exception {
-
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (isPreflighted(request)) {
             return true;
         }
@@ -35,8 +33,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private boolean isPreflighted(HttpServletRequest request) {
-        return isOptionsMethod(request) && hasOrigin(request)
-            && hasRequestHeaders(request) && hasRequestMethods(request);
+        return isOptionsMethod(request)
+            && hasOrigin(request)
+            && hasRequestHeaders(request)
+            && hasRequestMethods(request);
     }
 
     public boolean isOptionsMethod(HttpServletRequest request) {

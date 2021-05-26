@@ -34,6 +34,7 @@ public class JwtTokenProvider {
             .setSigningKey(secretKey)
             .parseClaimsJws(token)
             .getBody();
+
         return claims.get("id", Long.class);
     }
 

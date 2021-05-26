@@ -13,7 +13,7 @@ import wooteco.subway.member.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -30,6 +30,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = AuthorizationExtractor.extract(request);
-        return LoginMember.from(authService.findMemberByToken(token));
+        return LoginMember.from(
+            authService.findMemberByToken(token)
+        );
     }
 }
