@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import wooteco.subway.exception.DomainRelatedException;
+import wooteco.subway.exception.BusinessRelatedException;
 import wooteco.subway.station.domain.Station;
 
 public class Lines {
@@ -32,9 +32,9 @@ public class Lines {
             .filter(line -> line.contains(section))
             .findAny()
             .orElseThrow(
-                () -> new DomainRelatedException(
+                () -> new BusinessRelatedException(
                     String.format("전체 노선에 해당 구간이 없습니다. (상행: %s, 하행: %s)",
-                    section.getUpStation(), section.getDownStationName())
+                        section.getUpStation(), section.getDownStationName())
                 )
             );
     }
