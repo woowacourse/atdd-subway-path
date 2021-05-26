@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ public class Path {
 
     public Path(List<PathEdge> pathEdges) {
         validateExistence(pathEdges);
-        this.pathEdges = pathEdges;
+        this.pathEdges = new ArrayList<>(pathEdges);
     }
 
     private void validateExistence(List<PathEdge> pathEdges) {

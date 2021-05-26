@@ -22,11 +22,7 @@ public class Sections {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
-    }
-
-    public List<Section> getSections() {
-        return sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public void addSection(Section section) {
@@ -158,5 +154,9 @@ public class Sections {
 
     public Stream<Section> toStream() {
         return sections.stream();
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }
