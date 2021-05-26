@@ -1,7 +1,6 @@
 package wooteco.subway.station.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.routemap.application.RouteMapManager;
@@ -32,12 +31,10 @@ public class StationService {
         return stationDao.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
+        return StationResponse.listOf(stations);
     }
 
     @Transactional
