@@ -10,7 +10,6 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,13 +30,6 @@ public class PathService {
         Path path = graph.shortestPath(new Station(sourceId), new Station(targetId));
         return new PathResponse(StationResponse.listOf(combineStationById(path)), (int) path.distance());
     }
-
-//    private List<Station> combineStationById(Path path) {
-//        return path.stations()
-//                .stream()
-//                .map(station -> stationDao.findById(station.getId()))
-//                .collect(Collectors.toList());
-//    }
 
     private List<Station> combineStationById(Path path) {
         List<Long> stationIds = path.stations()
