@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import wooteco.subway.exception.DomainArisenException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -46,7 +47,7 @@ public class Sections {
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException("추가하려는 상행역과 하행역이 구간내에 없습니다.");
+            throw new DomainArisenException("추가하려는 상행역과 하행역이 구간내에 없습니다.");
         }
     }
 
@@ -54,7 +55,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException("추가하려는 상행역과 하행역이 이미 구간내에 존재합니다.");
+            throw new DomainArisenException("추가하려는 상행역과 하행역이 이미 구간내에 존재합니다.");
         }
     }
 
@@ -74,7 +75,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existentSection) {
         if (existentSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException("추가하려는 구간의 거리가 기존 구간의 거리보다 크거나 같습니다.");
+            throw new DomainArisenException("추가하려는 구간의 거리가 기존 구간의 거리보다 크거나 같습니다.");
         }
         this.sections.add(new Section(existentSection.getUpStation(), newSection.getUpStation(),
             existentSection.getDistance() - newSection.getDistance()));
@@ -83,7 +84,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException("추가하려는 구간의 거리가 기존 구간의 거리보다 크거나 같습니다.");
+            throw new DomainArisenException("추가하려는 구간의 거리가 기존 구간의 거리보다 크거나 같습니다.");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -116,7 +117,7 @@ public class Sections {
         return this.sections.stream()
             .filter(it -> !downStations.contains(it.getUpStation()))
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("상행 종점역 찾기에 실패했습니다."));
+            .orElseThrow(() -> new DomainArisenException("상행 종점역 찾기에 실패했습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -128,7 +129,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() < MINIMUM_STATIONS_IN_SECTIONS) {
-            throw new RuntimeException(
+            throw new DomainArisenException(
                 String.format("구간에는 최소 %s개의 역이 존재해야 합니다.", MINIMUM_STATIONS_IN_SECTIONS)
             );
         }

@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.exception.BusinessRelatedException;
 import wooteco.subway.exception.ObjectNotFoundException;
-import wooteco.subway.exception.ValidationFailureException;
 import wooteco.subway.exception.dto.ErrorResponse;
 
 @ControllerAdvice
 public class SpecificExceptionHandler {
 
-    @ExceptionHandler({BusinessRelatedException.class, ValidationFailureException.class})
+    @ExceptionHandler(BusinessRelatedException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(e.getMessage()));
