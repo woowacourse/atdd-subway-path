@@ -13,7 +13,7 @@ import wooteco.subway.exception.dto.ErrorResponse;
 public class SpecificExceptionHandler {
 
     @ExceptionHandler(BusinessRelatedException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BusinessRelatedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(e.getMessage()));
     }
@@ -25,7 +25,7 @@ public class SpecificExceptionHandler {
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(AuthorizationException e) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(ObjectNotFoundException e) {
         return ResponseEntity.status(HttpStatus. NOT_FOUND)
             .body(new ErrorResponse(e.getMessage()));
     }
