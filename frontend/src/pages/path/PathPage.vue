@@ -159,7 +159,6 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO [완료] 최단 거리를 검색하는 API를 추가해주세요.
         const response = await fetch(`http://localhost:8080/api/paths?source=${this.path.source}&target=${this.path.target}`);
         this.pathResult = await response.json();
       } catch (e) {
@@ -169,7 +168,6 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO [완료] 모든 역을 불러오는 API를 추가해주세요.
         const stationResponse = await fetch("http://localhost:8080/api/stations");
         const stations = await stationResponse.json();
         this.setStations(stations);

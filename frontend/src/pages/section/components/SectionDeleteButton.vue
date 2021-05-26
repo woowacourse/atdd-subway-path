@@ -25,7 +25,6 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        // TODO [완료] 해당 구간을 삭제하는 api를 작성해주세요.
         const deleteLineResponse = await fetch(`http://localhost:8080/api/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
           method: 'DELETE'
         });
@@ -33,7 +32,6 @@ export default {
           throw new Error(`${deleteLineResponse.status}`);
         }
 
-        // TODO [완료] 현재 active된 line의 데이터를 최신으로 불러와주세요.
         const getLineResponse = await fetch(`http://localhost:8080/api/lines/${this.lineId}`);
         const line = await getLineResponse.json();
         this.setLine({ ...line });

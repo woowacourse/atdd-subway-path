@@ -114,7 +114,6 @@ export default {
     },
     async onEditLine() {
       try {
-        // TODO [완료] Line을 수정하는 API를 추가해주세요.
         await fetch(`http://localhost:8080/api/lines/${this.line.id}`, {
           method: 'PUT',
           headers: {
@@ -123,7 +122,6 @@ export default {
           body: JSON.stringify(this.lineEditForm)
         });
 
-        // TODO [완료] 전체 Line 데이터를 불러오는 API를 추가해주세요.
         const linesResponse = await fetch("http://localhost:8080/api/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])
