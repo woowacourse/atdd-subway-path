@@ -92,7 +92,11 @@ export default {
             name: this.stationName,
           }),
         });
+
         if (!response.ok) {
+          response.text().then(function (data) {
+            alert(data);
+          })
           throw new Error(`${response.status}`);
         }
         const newStation = await response.json();
