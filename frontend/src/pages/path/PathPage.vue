@@ -159,7 +159,7 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        const response = await fetch(`http://localhost:8080/api/paths?source=${this.path.source}&target=${this.path.target}`);
+        const response = await fetch(`/api/paths?source=${this.path.source}&target=${this.path.target}`);
         this.pathResult = await response.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -168,7 +168,7 @@ export default {
     },
     async initAllStationsView() {
       try {
-        const stationResponse = await fetch("http://localhost:8080/api/stations");
+        const stationResponse = await fetch("/api/stations");
         const stations = await stationResponse.json();
         this.setStations(stations);
 

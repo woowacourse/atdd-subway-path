@@ -74,7 +74,7 @@ export default {
       }
       try {
         const {email, password} = this.member;
-        await fetch("http://localhost:8080/api/login/token", {
+        await fetch("/api/login/token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export default {
           localStorage.setItem("token", JSON.stringify(data));
         });
 
-        await fetch("http://localhost:8080/api/members/me", {
+        await fetch("/api/members/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

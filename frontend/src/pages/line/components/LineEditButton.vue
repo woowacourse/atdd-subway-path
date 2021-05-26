@@ -114,7 +114,7 @@ export default {
     },
     async onEditLine() {
       try {
-        await fetch(`http://localhost:8080/api/lines/${this.line.id}`, {
+        await fetch(`/api/lines/${this.line.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -122,7 +122,7 @@ export default {
           body: JSON.stringify(this.lineEditForm)
         });
 
-        const linesResponse = await fetch("http://localhost:8080/api/lines");
+        const linesResponse = await fetch("/api/lines");
         const lines = await linesResponse.json();
         this.setLines([...lines])
 

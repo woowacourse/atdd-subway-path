@@ -107,7 +107,7 @@ export default {
       try {
         const { email, age, password } = this.editingMember;
 
-        await fetch("http://localhost:8080/api/members/me", {
+        await fetch("/api/members/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export default {
           })
         })
 
-        await fetch("http://localhost:8080/api/members/me", {
+        await fetch("/api/members/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

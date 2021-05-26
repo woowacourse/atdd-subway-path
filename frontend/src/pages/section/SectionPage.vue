@@ -83,11 +83,11 @@ export default {
   name: "SectionPage",
   components: {SectionDeleteButton, SectionCreateButton},
   async created() {
-    const stationResponse = await fetch("http://localhost:8080/api/stations");
+    const stationResponse = await fetch("/api/stations");
     const stations = await stationResponse.json();
     this.setStations([...stations]);
 
-    const lineResponse = await fetch("http://localhost:8080/api/lines");
+    const lineResponse = await fetch("/api/lines");
     const lines = await lineResponse.json();
     this.setLines([...lines]);
 
@@ -123,7 +123,7 @@ export default {
     },
     async onChangeLine() {
       try {
-        const lineResponse = await fetch(`http://localhost:8080/api/lines/${this.activeLineId}`);
+        const lineResponse = await fetch(`/api/lines/${this.activeLineId}`);
         this.activeLine = await lineResponse.json();
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

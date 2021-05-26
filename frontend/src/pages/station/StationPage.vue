@@ -66,7 +66,7 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    const response = await fetch("http://localhost:8080/api/stations");
+    const response = await fetch("/api/stations");
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -83,7 +83,7 @@ export default {
         return;
       }
       try {
-        const response = await fetch("http://localhost:8080/api/stations", {
+        const response = await fetch("/api/stations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        const response = await fetch(`http://localhost:8080/api/stations/${stationId}`, {
+        const response = await fetch(`/api/stations/${stationId}`, {
           method: 'DELETE'
         });
         if (!response.ok) {
