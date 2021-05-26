@@ -7,9 +7,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationDao {
@@ -21,7 +23,6 @@ public class StationDao {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,5 +50,15 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Stations findByIds(List<Long> stationIds) {
+        String inSql = stationIds.stream().map(id -> id + "").collect(Collectors.joining(","));
+        return new Stations(jdbcTemplate.query(String.format("select * " +
+                "from STATION " +
+                "where id in (%s)", inSql), (rs, rowNum) ->
+                new Station(
+                        rs.getLong("id"),
+                        rs.getString("name"))));
     }
 }

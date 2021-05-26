@@ -51,7 +51,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<Long> expectedPathIds = expectedPath.stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
-
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 

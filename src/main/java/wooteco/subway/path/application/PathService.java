@@ -10,6 +10,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,10 +32,20 @@ public class PathService {
         return new PathResponse(StationResponse.listOf(combineStationById(path)), (int) path.distance());
     }
 
+//    private List<Station> combineStationById(Path path) {
+//        return path.stations()
+//                .stream()
+//                .map(station -> stationDao.findById(station.getId()))
+//                .collect(Collectors.toList());
+//    }
+
     private List<Station> combineStationById(Path path) {
-        return path.stations()
+        List<Long> stationIds = path.stations()
                 .stream()
-                .map(station -> stationDao.findById(station.getId()))
+                .map(Station::getId)
                 .collect(Collectors.toList());
+        return stationDao.findByIds(stationIds).sortedStation(stationIds);
     }
+
+
 }
