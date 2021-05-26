@@ -147,6 +147,20 @@ import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 export default {
   name: "PathPage",
   computed: {
@@ -159,8 +173,18 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        // TODO 최단 거리를 검색하는 API를 추가해주세요. [완료]
+
+        const shortestDistancePathResponse = await fetch("http://localhost:8080/paths?source=" + this.path.source +"&target=" + this.path.target, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          }
+        });
+
+        this.pathResult = await shortestDistancePathResponse.json();
+
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +192,18 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        // TODO 모든 역을 불러오는 API를 추가해주세요. [완료]
+        const response = await fetch("http://localhost:8080/stations", {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          }
+        });
+
+        const stations = await response.json();
+        this.setStations(stations);
+
         if (this.stations.length < 1) {
           return;
         }

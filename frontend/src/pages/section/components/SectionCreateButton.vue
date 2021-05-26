@@ -83,6 +83,20 @@ import {SET_LINE, SET_LINES, SHOW_SNACKBAR,} from "../../../store/shared/mutatio
 import {SNACKBAR_MESSAGES} from "../../../utils/constants";
 import validator from "../../../utils/validator";
 
+function getCookie(cookie_name) {
+  var x, y;
+  var val = document.cookie.split(';');
+
+  for (var i = 0; i < val.length; i++) {
+    x = val[i].substr(0, val[i].indexOf('='));
+    y = val[i].substr(val[i].indexOf('=') + 1);
+    x = x.replace(/^\s+|\s+$/g, '');
+    if (x == cookie_name) {
+      return unescape(y);
+    }
+  }
+}
+
 export default {
   name: "SectionCreateButton",
   components: { Dialog },
@@ -105,8 +119,15 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        const linesResponse = await fetch("http://localhost:8080/lines/" + this.sectionForm.lineId, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          },
+        });
+        this.selectedLine = await linesResponse.json()
+
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -151,16 +172,32 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        await fetch("http://localhost:8080/lines/"+ this.sectionForm.lineId + "/sections", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          },
+          body: JSON.stringify({
+            upStationId: this.sectionForm.upStationId,
+            downStationId: this.sectionForm.downStationId,
+            distance: this.sectionForm.distance
+          })
+        });
+        
+        const linesResponse = await fetch("http://localhost:8080/lines", {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("myCookie")
+          },
+        });
+        const lines = await linesResponse.json()
+        this.setLines([...lines])
+
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
+
         this.$refs.sectionForm.resetValidation();
         this.initSectionForm();
         this.closeDialog();

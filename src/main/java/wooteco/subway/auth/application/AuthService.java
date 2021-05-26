@@ -1,16 +1,13 @@
 package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.dto.LoginMember;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
-import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -23,37 +20,23 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateLogin(tokenRequest);
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getEmail());
+        Long memberId = findMemberId(tokenRequest);
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(memberId));
         return new TokenResponse(accessToken);
     }
 
+    private Long findMemberId(TokenRequest tokenRequest) {
+        Member member = memberDao.findByEmail(tokenRequest.getEmail())
+                .orElseThrow(AuthorizationException::new);
+
+        if (member.hasDifferentPassword(tokenRequest.getPassword())) {
+            throw new AuthorizationException();
+        }
+        return member.getId();
+    }
+
     public LoginMember findMemberByToken(String token) {
-        if (jwtTokenProvider.validateToken(token)) {
-            String payload = jwtTokenProvider.getPayload(token);
-            return findMember(payload);
-        }
-        throw new InvalidTokenException();
-    }
-
-    public LoginMember findMember(String principal) {
-        Optional<Member> foundMember = memberDao.findByEmail(principal);
-
-        if (foundMember.isPresent()) {
-            return LoginMember.of(foundMember.get());
-        }
-        throw new AuthorizationException();
-    }
-
-    private void validateLogin(TokenRequest tokenRequest) {
-        Optional<Member> foundMember = memberDao.findByEmail(tokenRequest.getEmail());
-
-        if (!foundMember.isPresent()) {
-            throw new AuthorizationException();
-        }
-
-        if (foundMember.get().isNotSamePassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException();
-        }
+        String payload = jwtTokenProvider.getPayload(token);
+        return new LoginMember(Long.valueOf(payload));
     }
 }
