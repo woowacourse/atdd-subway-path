@@ -5,6 +5,7 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.ObjectNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
@@ -40,6 +41,7 @@ public class AuthService {
 
     public Member findMemberByToken(String token) {
         Long id = jwtTokenProvider.getIdFromPayLoad(token);
-        return memberDao.findById(id);
+        return memberDao.findById(id)
+            .orElseThrow(() -> new ObjectNotFoundException("유저를 찾는데 실패했습니다."));
     }
 }

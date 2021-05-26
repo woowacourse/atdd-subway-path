@@ -2,6 +2,7 @@ package wooteco.subway.member.dao;
 
 import java.util.Optional;
 import javax.sql.DataSource;
+import javax.swing.text.html.Option;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -50,9 +51,11 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(
+            DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, id))
+        );
     }
 
     public Optional<Member> findByEmail(String email) {

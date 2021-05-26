@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.ObjectNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -21,8 +22,10 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberDao.findById(id);
-        return MemberResponse.from(member);
+        return MemberResponse.from(
+            memberDao.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("유저를 찾는데 실패했습니다."))
+        );
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

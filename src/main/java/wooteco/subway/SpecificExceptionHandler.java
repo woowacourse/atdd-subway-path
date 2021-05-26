@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.exception.DomainRelatedException;
+import wooteco.subway.exception.ObjectNotFoundException;
 import wooteco.subway.exception.ValidationFailureException;
 import wooteco.subway.exception.dto.ErrorResponse;
 
@@ -19,8 +20,14 @@ public class SpecificExceptionHandler {
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> handleAuthorizationFailure(AuthorizationException e) {
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus. NOT_FOUND)
             .body(new ErrorResponse(e.getMessage()));
     }
 }
