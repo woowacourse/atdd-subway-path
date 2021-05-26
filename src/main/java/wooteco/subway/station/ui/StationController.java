@@ -27,19 +27,19 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
+    public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
 }
