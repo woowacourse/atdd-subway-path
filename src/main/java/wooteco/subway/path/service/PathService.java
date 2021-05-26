@@ -26,7 +26,7 @@ public class PathService {
 
     public PathResponse findShortPath(Long source, Long target) {
         List<Section> sections = sectionDao.findAll();
-        PathGraph pathGraph = new PathGraph(sections);
+        PathGraph pathGraph = new PathGraph(new WeightedMultiAlgorithm(), sections);
         List<StationResponse> shortestPath = getShortestPath(pathGraph, source, target);
         int shortestDistance = pathGraph.getShortestDistance(source, target);
         return new PathResponse(shortestPath, shortestDistance);
