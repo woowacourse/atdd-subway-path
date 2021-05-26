@@ -2,12 +2,12 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.StationNonexistenceException;
-import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.Lines;
 import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.station.dao.StationDao;
+import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -16,24 +16,23 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final StationService stationService;
+    private final LineService lineService;
 
-    public PathService(StationDao stationDao, LineDao lineDao) {
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+    public PathService(StationService stationService, LineService lineService) {
+        this.stationService = stationService;
+        this.lineService = lineService;
     }
 
-    public PathResponse findShortestPaths(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationDao.findById(sourceStationId)
-                .orElseThrow(StationNonexistenceException::new);
-        Station targetStation = stationDao.findById(targetStationId)
-                .orElseThrow(StationNonexistenceException::new);
+    public PathResponse findShortestPaths(Long sourceId, Long targetId) {
+        Station source = stationService.findStationById(sourceId);
+        Station target = stationService.findStationById(targetId);
 
-        SubwayMap subwayMap = new SubwayMap(new Lines(lineDao.findAll()));
+        List<Line> lines = lineService.findLines();
+        SubwayMap subwayMap = new SubwayMap(new Lines(lines));
 
-        List<Station> stations = subwayMap.shortestPath(sourceStation, targetStation);
-        int distance = subwayMap.distance(sourceStation, targetStation);
+        List<Station> stations = subwayMap.shortestPath(source, target);
+        int distance = subwayMap.distance(source, target);
 
         return new PathResponse(StationResponse.listOf(stations), distance);
     }
