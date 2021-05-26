@@ -24,7 +24,7 @@ import wooteco.subway.member.domain.Member;
 public class AuthServiceTest {
 
     private static final String TEST_EMAIL = "email@email.com";
-    private static final String TEST_PASSWORD = "password";
+    private static final String TEST_PASSWORD = "1q2w3e4r!";
     private static final Integer AGE = 20;
 
     @Autowired

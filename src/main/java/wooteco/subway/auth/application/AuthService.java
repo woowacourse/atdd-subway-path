@@ -1,6 +1,8 @@
 package wooteco.subway.auth.application;
 
+import javax.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.InvalidTokenException;
