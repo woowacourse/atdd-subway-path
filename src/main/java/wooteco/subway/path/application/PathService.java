@@ -31,6 +31,7 @@ public class PathService {
                 .orElseThrow(StationNonexistenceException::new);
 
         SubwayMap subwayMap = new SubwayMap(new Lines(lineDao.findAll()));
+
         List<Station> stations = subwayMap.shortestPath(sourceStation, targetStation);
         int distance = subwayMap.distance(sourceStation, targetStation);
 
