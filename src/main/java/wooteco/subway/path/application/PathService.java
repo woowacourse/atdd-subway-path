@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.StationNonexistenceException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.path.domain.Lines;
-import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -30,9 +30,9 @@ public class PathService {
         Station targetStation = stationDao.findById(targetStationId)
                 .orElseThrow(StationNonexistenceException::new);
 
-        Path path = new Path(new Lines(lineDao.findAll()));
-        List<Station> stations = path.shortestPath(sourceStation, targetStation);
-        int distance = path.distance(sourceStation, targetStation);
+        SubwayMap subwayMap = new SubwayMap(new Lines(lineDao.findAll()));
+        List<Station> stations = subwayMap.shortestPath(sourceStation, targetStation);
+        int distance = subwayMap.distance(sourceStation, targetStation);
 
         return new PathResponse(StationResponse.listOf(stations), distance);
     }

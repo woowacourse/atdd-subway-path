@@ -7,10 +7,10 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class Path {
+public class SubwayMap {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
-    public Path(Lines lines) {
+    public SubwayMap(Lines lines) {
         this.shortestPath = new DijkstraShortestPath<>(graph(lines));
     }
 
