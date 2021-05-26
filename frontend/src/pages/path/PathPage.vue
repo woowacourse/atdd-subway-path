@@ -142,10 +142,11 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
+import {requestGet} from "@/utils/fetcher";
 
 export default {
   name: "PathPage",
@@ -159,7 +160,11 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
+        const params = {
+          'source' : this.path.source,
+          'target' : this.path.target
+        }
+        this.pathResult = await requestGet(`/paths`, params);
         // this.pathResult = await fetch("/paths", {})
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
@@ -168,9 +173,9 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const stations = await requestGet('/stations')
+        this.setStations([...stations]);
+
         if (this.stations.length < 1) {
           return;
         }

@@ -1,7 +1,6 @@
 package wooteco.subway.line.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -10,8 +9,12 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.event.LineUpdatedEvent;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -19,16 +22,21 @@ public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService,
+                       ApplicationEventPublisher applicationEventPublisher) {
+
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
+        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
         return LineResponse.of(persistLine);
     }
 
@@ -64,10 +72,13 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
+        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -78,6 +89,7 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -87,6 +99,6 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        applicationEventPublisher.publishEvent(new LineUpdatedEvent(findLines()));
     }
-
 }
