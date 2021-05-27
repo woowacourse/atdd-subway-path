@@ -79,10 +79,11 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import validator from "../../utils/validator";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import validator from "../../utils/validator"
+import {putFetch} from "@/utils/fetch"
 
 export default {
   name: "MypageEdit",
@@ -90,45 +91,30 @@ export default {
     ...mapGetters(["member"]),
   },
   created() {
-    const {email, age} = this.member;
+    const {email, age} = this.member
     this.editingMember = {
       email,
       age,
       password: "",
       confirmPassword: "",
-    };
+    }
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR, SET_MEMBER]),
     isValid() {
-      return this.$refs.memberEditForm.validate();
+      return this.$refs.memberEditForm.validate()
     },
     async onEditMember() {
       try {
-        // TODO member 정보를 update하는 API를 추가해주세요
-        const {email, age, password} = this.editingMember;
-        const response = await fetch(`/api/members/me`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `bearer ${this.$cookies.get("token")}`
-          },
-          body: JSON.stringify({
-            email,
-            age,
-            password
-          })
-        })
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
-        }
-        const updatedMember = await response.json();
-        this.setMember(updatedMember);
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS);
-        await this.$router.replace("/api/mypage");
+        const {email, age, password} = this.editingMember
+        const updateForm = {email, age, password}
+        const updatedMember = await putFetch(`/api/members/me`, updateForm)
+        this.setMember(updatedMember)
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.SUCCESS)
+        await this.$router.replace("/api/mypage")
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.EDIT.FAIL)
+        throw new Error(e)
       }
     },
   },
@@ -137,7 +123,7 @@ export default {
       editingMember: {},
       valid: false,
       rules: {...validator},
-    };
+    }
   },
-};
+}
 </script>

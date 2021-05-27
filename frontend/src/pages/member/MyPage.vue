@@ -39,10 +39,11 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
-import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_MEMBER, SHOW_SNACKBAR} from "../../store/shared/mutationTypes"
+import ConfirmDialog from "../../components/dialogs/ConfirmDialog"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import {deleteFetch} from "@/utils/fetch"
 
 export default {
   name: "MyPage",
@@ -59,30 +60,20 @@ export default {
           {
             color: "red lighten-1",
           }
-      );
+      )
       if (!confirm) {
-        return;
+        return
       }
       try {
-        // TODO 유저를 삭제하는 API를 추가해주세요
-        await fetch(`/api/members/me`, {
-          headers: {
-            "Authorization": `bearer ${this.$cookies.get("token")}`
-          },
-          method: "DELETE"
-        }).then(response => {
-          if (!response.ok) {
-            throw new Error(`${response.status}`);
-          }
-        })
-        this.setMember(null);
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS);
-        await this.$router.replace("/");
+        await deleteFetch(`/api/members/me`)
+        this.setMember(null)
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.SUCCESS)
+        await this.$router.replace("/")
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.MEMBER.DELETE.FAIL)
+        throw new Error(e)
       }
     },
   },
-};
+}
 </script>

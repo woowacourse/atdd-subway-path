@@ -73,23 +73,22 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import {SET_LINES, SET_STATIONS, SHOW_SNACKBAR,} from "../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../utils/constants";
-import SectionCreateButton from "./components/SectionCreateButton";
-import SectionDeleteButton from "./components/SectionDeleteButton";
+import {mapGetters, mapMutations} from "vuex"
+import {SET_LINES, SET_STATIONS, SHOW_SNACKBAR,} from "../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../utils/constants"
+import SectionCreateButton from "./components/SectionCreateButton"
+import SectionDeleteButton from "./components/SectionDeleteButton"
+import {getFetch} from "@/utils/fetch"
 
 export default {
   name: "SectionPage",
   components: {SectionDeleteButton, SectionCreateButton},
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
-    this.initLinesView();
+    const stations = await getFetch("/api/stations")
+    this.setStations([...stations])
+    const lines = await getFetch("/api/lines")
+    this.setLines([...lines])
+    this.initLinesView()
   },
   computed: {
     ...mapGetters(["lines", "line"]),
@@ -97,7 +96,7 @@ export default {
   watch: {
     line() {
       if (this.activeLine.id === this.line.id) {
-        this.activeLine = {...this.line};
+        this.activeLine = {...this.line}
       }
     },
   },
@@ -106,26 +105,25 @@ export default {
     initLinesView() {
       try {
         if (this.lines.length < 1) {
-          return;
+          return
         }
         this.lineNamesViews = this.lines.map(({name, id}) => {
           return {
             text: name,
             value: id,
-          };
-        });
+          }
+        })
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
     async onChangeLine() {
       try {
-        // TODO 선택한 노선 데이터를 불러오는 API를 추가해주세요.
-        // this.activeLine = await fetch("/lines/{this.activeLineId}");
+        this.activeLine = await getFetch(`/api/lines/${this.activeLineId}`)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
   },
@@ -134,9 +132,9 @@ export default {
       lineNamesViews: [],
       activeLineId: {},
       activeLine: {},
-    };
+    }
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -20,18 +20,18 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_ACCESS_TOKEN, SET_MEMBER]),
     logout() {
       try {
-        localStorage.setItem("token", "");
-        this.setAccessToken(null);
-        this.setMember(null);
-        this.$router.replace("/");
-        this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.SUCCESS);
+        localStorage.setItem("token", "")
+        this.setAccessToken(null)
+        this.setMember(null)
+        this.$router.replace("/")
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.FAIL);
-        console.error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGOUT.FAIL)
+        console.error(e)
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>

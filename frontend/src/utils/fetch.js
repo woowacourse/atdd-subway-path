@@ -1,14 +1,19 @@
 export {getFetch, postFetch, deleteFetch, putFetch}
 
 function getFetch(url) {
-    return fetch(`${url}`).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
-            throw new Error(data.status);
+    return fetch(`${url}`, {
+        headers : {
+            "Authorization": `bearer ${localStorage.getItem("token")}`
         }
-        return data.json()
-    });
+    })
+        .then(data => {
+            if (!data.ok) {
+                throw new Error(data.status);
+            }
+            return data.json()
+        }).catch((error) => {
+            console.log(error)
+        });
 }
 
 function postFetch(url, body = {}) {
@@ -16,16 +21,22 @@ function postFetch(url, body = {}) {
         method: "post",
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": `bearer ${localStorage.getItem("token")}`
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
         return data.json()
-    })
+    }).then(result => {
+        if (result.accessToken) {
+            localStorage.setItem("token", result.accessToken)
+        }
+        return result
+    }).catch((error) => {
+        console.log(error)
+    });
 }
 
 function putFetch(url, body = {}) {
@@ -33,36 +44,31 @@ function putFetch(url, body = {}) {
         method: "put",
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": `bearer ${localStorage.getItem("token")}`
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
         return data.json()
-    })
+    }).catch((error) => {
+        console.log(error)
+    });
 }
 
 function deleteFetch(url) {
     return fetch(`${url}`, {
         method: "delete",
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": `bearer ${localStorage.getItem("token")}`
         }
     }).then(data => {
-        if (data.status === 400) {
-            exceptionHandling(data.json());
-        } else if (!data.ok) {
+        if (!data.ok) {
             throw new Error(data.status);
         }
-        return data
-    })
-}
-
-function exceptionHandling(errorPromise) {
-    errorPromise.then(data => {
-        alert(data.errorMsg);
-    })
+    }).catch((error) => {
+        console.log(error)
+    });
 }

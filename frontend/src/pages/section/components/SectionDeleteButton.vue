@@ -5,9 +5,10 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
-import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes";
-import {SNACKBAR_MESSAGES} from "../../../utils/constants";
+import {mapMutations} from "vuex"
+import {SET_LINE, SHOW_SNACKBAR} from "../../../store/shared/mutationTypes"
+import {SNACKBAR_MESSAGES} from "../../../utils/constants"
+import {deleteFetch, getFetch} from "@/utils/fetch"
 
 export default {
   name: "SectionDeleteButton",
@@ -25,20 +26,18 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        // await fetch("/api/section/{id}", {
-        // lineId: this.lineId,
-        // stationId: this.stationId,
-        // })
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        // const line = await fetch("/api/line/{lineId}")
-        // this.setLine({ ...line })
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
+        await deleteFetch(`/api/section/${this.stationId}`, {
+          lineId: this.lineId,
+          stationId: this.stationId,
+        })
+        const line = await getFetch(`/api/line/${this.lineId}`)
+        this.setLine({...line})
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        throw new Error(e)
       }
     },
   },
-};
+}
 </script>

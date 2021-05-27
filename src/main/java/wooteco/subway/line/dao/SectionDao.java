@@ -53,4 +53,16 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public List<Section> findByStationIds(List<Long> stationIds) {
+        String inSql = String.join(",", stationIds.stream().map(id -> id + "").collect(Collectors.toList()));
+        return jdbcTemplate.query(String.format("select * " +
+                "from SECTION " +
+                "where up_station_id in (%s) or down_station_id in (%s)", inSql, inSql), (rs, rowNum) ->
+                new Section(
+                        rs.getLong("id"),
+                        rs.getLong("up_station_id"),
+                        rs.getLong("down_station_id"),
+                        rs.getInt("distance")));
+    }
 }

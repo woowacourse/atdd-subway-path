@@ -140,20 +140,20 @@ export default {
       return {
         _id: shortid.generate(),
         color,
-      };
-    });
+      }
+    })
   },
   methods: {
     ...mapMutations([SET_LINES, SHOW_SNACKBAR]),
     setLineColor(color) {
-      this.lineForm.color = color;
+      this.lineForm.color = color
     },
     isValid() {
-      return this.$refs.lineForm.validate();
+      return this.$refs.lineForm.validate()
     },
     async onCreateLine() {
       if (!this.isValid()) {
-        return;
+        return
       }
       try {
         const lineFormBody = {
@@ -164,14 +164,14 @@ export default {
           distance: this.lineForm.distance
         }
         const newLine = await postFetch("/api/lines", lineFormBody)
-        this.setLines([...this.lines, {...newLine}]);
+        this.setLines([...this.lines, {...newLine}])
         // setLines는 데이터를 관리하기 위해 단 1개 존재하는 저장소에 노선 정보를 저장하는 메서드입니다.
-        this.initLineForm();
-        this.closeDialog();
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS);
+        this.initLineForm()
+        this.closeDialog()
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.FAIL);
-        throw new Error(e);
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.CREATE.FAIL)
+        throw new Error(e)
       }
     },
     initLineForm() {
@@ -182,20 +182,20 @@ export default {
         downStationId: "",
         distance: "",
         extraFare: "",
-      };
-      this.$refs.lineForm.resetValidation();
+      }
+      this.$refs.lineForm.resetValidation()
     },
     initAllStationsView() {
       try {
         if (this.stations.length < 1) {
-          return;
+          return
         }
         this.allStationsView = this.stations.map((station) => {
           return {
             text: station.name,
             value: station.id,
-          };
-        });
+          }
+        })
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
       }
@@ -215,9 +215,9 @@ export default {
       valid: false,
       lineColors: [...LINE_COLORS],
       allStationsView: [],
-    };
+    }
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

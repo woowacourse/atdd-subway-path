@@ -22,14 +22,14 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINES]),
     async onDeleteLine() {
       try {
-        await deleteFetch("/api/lines/");
+        await deleteFetch(`/api/lines/${this.line.id}`)
         const lines = await getFetch("/api/lines")
         this.setLines([...lines])
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS);
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.FAIL);
+        this.showSnackbar(SNACKBAR_MESSAGES.LINE.DELETE.FAIL)
       }
     },
   },
-};
+}
 </script>
