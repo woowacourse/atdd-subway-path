@@ -1,4 +1,4 @@
-package wooteco.exception;
+package wooteco.common.exception;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindingResult;

@@ -1,4 +1,4 @@
-package wooteco.dto;
+package wooteco.common.dto;
 
 import java.util.Map;
 

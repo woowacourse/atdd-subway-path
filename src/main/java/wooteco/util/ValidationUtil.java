@@ -3,7 +3,7 @@ package wooteco.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
-import wooteco.exception.RequiredParameterValidationException;
+import wooteco.common.exception.RequiredParameterValidationException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValidationUtil {

@@ -1,4 +1,4 @@
-package wooteco.dto;
+package wooteco.common.dto;
 
 public class ErrorResponse {
     public final String message;

@@ -1,17 +1,17 @@
-package wooteco;
+package wooteco.common;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.dto.ErrorResponse;
-import wooteco.dto.ParameterValidationErrorResponse;
-import wooteco.exception.RequiredParameterValidationException;
+import wooteco.common.dto.ErrorResponse;
+import wooteco.common.dto.ParameterValidationErrorResponse;
+import wooteco.common.exception.RequiredParameterValidationException;
 
 @Order
 @RestControllerAdvice
-public class ControllerAdvice {
+public class GlobalControllerAdvice {
     @ExceptionHandler(RequiredParameterValidationException.class)
     public ResponseEntity<ParameterValidationErrorResponse> handleParameterValidationErrorResponse(RequiredParameterValidationException e) {
         return ResponseEntity.badRequest()
