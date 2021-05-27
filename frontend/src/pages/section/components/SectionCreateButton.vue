@@ -109,8 +109,8 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
-        // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
+        const lineDetailsResponse = await fetch(`http://localhost:8080/lines/${this.sectionForm.lineId}`);
+        this.selectedLine = await lineDetailsResponse.json();
         if (this.selectedLine.stations?.length < 1) {
           return;
         }
@@ -155,14 +155,21 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
-        // await fetch("/api/section", {
-        //   lineId: this.selectedLine.id,
-        //   section: this.sectionForm,
-        // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        await fetch(`http://localhost:8080/lines/${this.selectedLine.id}/sections`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "upStationId": this.sectionForm.upStationId,
+            "downStationId": this.sectionForm.downStationId,
+            "distance": this.sectionForm.distance
+          })
+        });
+
+        const linesResponse = await fetch("http://localhost:8080/lines");
+        const lines = await linesResponse.json();
+        this.setLines([...lines])
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();

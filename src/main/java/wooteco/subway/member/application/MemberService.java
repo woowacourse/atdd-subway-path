@@ -44,17 +44,7 @@ public class MemberService {
     public MemberResponse findMemberByEmailAndPassword(String email, String password) {
         Member member = memberDao.findByEmail(email)
             .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
-
-        if (!member.isEqualToPassword(password)) {
-            throw new AuthorizationException("비밀번호가 틀렸습니다!");
-        }
-
-        return MemberResponse.of(member);
-    }
-
-    public MemberResponse findByEmail(String email) {
-        Member member = memberDao.findByEmail(email)
-            .orElseThrow(() -> new AuthorizationException("이메일이 존재하지 않습니다."));
+        member.validatePassword(password);
         return MemberResponse.of(member);
     }
 }
