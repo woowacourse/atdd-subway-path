@@ -7,11 +7,11 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class PathRequest {
     @NotNull
-    private final long source;
+    private final Long source;
     @NotNull
-    private final long target;
+    private final Long target;
 
-    public PathRequest(long source, long target) {
+    public PathRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }
