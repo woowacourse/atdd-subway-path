@@ -25,14 +25,17 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_LINE]),
     async onDeleteLine() {
       try {
-        // TODO 해당 구간을 삭제하는 api를 작성해주세요.
-        // await fetch("/api/section/{id}", {
-        // lineId: this.lineId,
-        // stationId: this.stationId,
-        // })
-        // TODO 현재 active된 line의 데이터를 최신으로 불러와주세요.
-        // const line = await fetch("/api/line/{lineId}")
-        // this.setLine({ ...line })
+        const response = await fetch(`http://localhost:8080/lines/${this.lineId}/sections?stationId=${this.stationId}`, {
+          method: 'DELETE',
+          headers: {'Content-Type': 'application/json'},
+        });
+
+        if(!response.ok) {
+          throw new Error(response.status);
+        }
+        const line = await fetch(`http://localhost:8080/lines/${this.lineId}`)
+        .then(response => response.json());
+        this.setLine({ ...line})
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS);
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);

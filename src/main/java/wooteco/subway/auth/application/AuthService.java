@@ -20,25 +20,22 @@ public class AuthService {
 
     public TokenResponse login(String email, String password) {
         Member member = memberDao.findByEmail(email)
-            .orElseThrow(UnauthorizedException::new);
+            .orElseThrow(() -> new UnauthorizedException());
 
-        validatePassword(password, member.getPassword());
+        member.validatePassword(password);
 
         String jws = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(jws);
     }
 
-    private void validatePassword(String password, String savedPassword) {
-        if (!password.equals(savedPassword)) {
-            throw new IllegalArgumentException("로그인 실패");
-        }
-    }
-
-    public boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
-    }
-
     public Long getPayload(String token) {
+        if (!validateToken(token)) {
+            throw new UnauthorizedException();
+        }
         return Long.parseLong(jwtTokenProvider.getPayload(token));
+    }
+
+    private boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
     }
 }
