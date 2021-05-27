@@ -69,10 +69,6 @@ npm run serve
   - [x] 지하철 노선도를 관리하는 기능 구현
 - [x] 프론트엔드 경로 조회 API 구현 
 
-## TODO
-- StationService @Transactional 동작 확인
-- LineService @Transactional 동작 확인
-
 <br>
 ## 📝 License
 
