@@ -1,7 +1,5 @@
 package wooteco.subway.path.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.strategy.shortestpath.ShortestPathStrategy;
 import wooteco.subway.station.domain.Station;
@@ -18,12 +16,10 @@ public class Path {
     }
 
     public List<Station> shortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPathStrategy.match(lines).getPath(source, target);
-        return path.getVertexList();
+        return shortestPathStrategy.getVertexList(lines, source, target);
     }
 
     public int shortestDistance(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPathStrategy.match(lines).getPath(source, target);
-        return (int) path.getWeight();
+        return shortestPathStrategy.getWeight(lines, source, target);
     }
 }
