@@ -2,9 +2,7 @@ package wooteco.subway.path.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.line.dao.SectionDao;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.path.domain.PathGraph;
+import wooteco.subway.path.domain.PathGraphAlgorithm;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -13,27 +11,24 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
 public class PathService {
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final PathGraphAlgorithm pathGraphAlgorithm;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao) {
-        this.sectionDao = sectionDao;
+    public PathService(StationDao stationDao, PathGraphAlgorithm pathGraphAlgorithm) {
         this.stationDao = stationDao;
+        this.pathGraphAlgorithm = pathGraphAlgorithm;
     }
 
     public PathResponse findShortPath(Long source, Long target) {
-        List<Section> sections = sectionDao.findAll();
-        PathGraph pathGraph = new PathGraph(new WeightedMultiAlgorithm(), sections);
-        List<StationResponse> shortestPath = getShortestPath(pathGraph, source, target);
-        int shortestDistance = pathGraph.getShortestDistance(source, target);
-        return new PathResponse(shortestPath, shortestDistance);
+        List<Station> shortestPath = pathGraphAlgorithm.getShortestPath(source, target);
+        int shortestDistance = pathGraphAlgorithm.getShortestDistance(source, target);
+        List<StationResponse> stationResponses = stationsToStationResponses(shortestPath);
+        return new PathResponse(stationResponses, shortestDistance);
     }
 
-    private List<StationResponse> getShortestPath(PathGraph pathGraph, Long source, Long target) {
-        List<Station> shortestPath = pathGraph.getShortestPath(source, target);
+    private List<StationResponse> stationsToStationResponses(List<Station> shortestPath) {
         return shortestPath.stream()
                 .map(station -> stationDao.findById(station.getId()))
                 .map(StationResponse::of)
