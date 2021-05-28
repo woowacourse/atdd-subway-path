@@ -3,7 +3,7 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.DijkstraPath;
 import wooteco.subway.path.domain.Lines;
 import wooteco.subway.path.domain.SubwayMap;
 import wooteco.subway.path.dto.PathResponse;
@@ -28,8 +28,8 @@ public class PathService {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(new Lines(lines));
+        Lines lines = new Lines(lineService.findLines());
+        SubwayMap subwayMap = new SubwayMap(new DijkstraPath(lines));
 
         List<Station> stations = subwayMap.shortestPath(source, target);
         int distance = subwayMap.distance(source, target);
