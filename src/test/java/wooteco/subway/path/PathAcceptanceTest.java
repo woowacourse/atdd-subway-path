@@ -117,7 +117,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         경로_조회에_실패함(response, "해당 경로를 찾을 수 없습니다.");
     }
 
-    @DisplayName("동일한 역 2개로 최단 거리 경로를 조회한다.")
+    @DisplayName("출발역과 도착역을 같게해서 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistanceWithSameStation() {
         //when
