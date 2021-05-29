@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
@@ -139,5 +140,16 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public Optional<Station> findStationById(Long stationId) {
+        return sections.stream()
+                .flatMap(section -> Stream.of(
+                        section.getUpStation(),
+                        section.getDownStation()
+                ))
+                .distinct()
+                .filter(station -> station.sameId(stationId))
+                .findFirst();
     }
 }

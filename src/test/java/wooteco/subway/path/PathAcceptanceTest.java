@@ -35,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private TokenResponse tokenResponse;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -47,7 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
         강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
         양재역 = 지하철역_등록되어_있음("양재역", tokenResponse);
@@ -65,16 +66,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(남부터미널역.getId(), 강남역.getId(), tokenResponse);
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
+        적절한_경로_응답됨(response, Lists.newArrayList(남부터미널역, 양재역, 강남역));
+        총_거리가_응답됨(response, 12);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()

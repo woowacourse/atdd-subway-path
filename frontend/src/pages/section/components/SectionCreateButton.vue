@@ -109,7 +109,16 @@ export default {
     },
     async initLineStationsView() {
       try {
-        // TODO 선택된 노선의 데이터를 불러와주세요.
+        // TODO 선택된 노선의 데이터를 불러와주세요.(완료)
+        const lineRequest = {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.state.accessToken
+          },
+        };
+        const lineResponse = await fetch("/api/lines/" + this.sectionForm.lineId, lineRequest);
+        this.selectedLine = await lineResponse.json();
+
         // this.selectedLine = await fetch('/api/lines/{this.sectionForm.lineId}')
         if (this.selectedLine.stations?.length < 1) {
           return;
@@ -155,14 +164,39 @@ export default {
         return;
       }
       try {
-        // TODO 구간을 추가하는 API를 작성해주세요.
+        // TODO 구간을 추가하는 API를 작성해주세요.(완료)
+        const creatJson = {
+          lineId : this.sectionForm.lineId,
+          upStationId : this.sectionForm.upStationId,
+          downStationId : this.sectionForm.downStationId,
+          distance : this.sectionForm.distance,
+        }
+
+        const createRequest = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer' + this.$store.state.accessToken
+          },
+          body: JSON.stringify(creatJson)
+        };
+
+        await fetch("/api/lines/" + this.selectedLine.id + "/sections", createRequest);
         // await fetch("/api/section", {
         //   lineId: this.selectedLine.id,
         //   section: this.sectionForm,
         // });
-        // TODO 전체 line을 불러오는 API를 작성해주세요.
-        // const lines = await fetch("/api/lines");
-        // this.setLines(lines)
+        // TODO 전체 line을 불러오는 API를 작성해주세요.(완료)
+        const lineRequest = {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.state.accessToken
+          },
+        };
+        const lineResponse = await fetch("/api/lines", lineRequest);
+        const lines = await lineResponse.json();
+        this.setLines([...lines]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+
         const line = this.lines.find(({ id }) => id === this.selectedLine.id);
         this.setLine(line);
         this.$refs.sectionForm.resetValidation();

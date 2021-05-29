@@ -94,7 +94,7 @@ export default {
         return;
       }
       try {
-        // TODO member를 생성하는 API를 추가해주세요.
+        // TODO member를 생성하는 API를 추가해주세요.(완료)
         const jsonData = {
           email: this.member.email,
           password: this.member.password,

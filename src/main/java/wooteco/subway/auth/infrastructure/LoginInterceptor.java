@@ -1,5 +1,7 @@
 package wooteco.subway.auth.infrastructure;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 
@@ -7,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class LoginInterceptor implements HandlerInterceptor {
+    private final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
     private final AuthService authService;
 
     public LoginInterceptor(AuthService authService) {
@@ -15,8 +18,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if ("OPTION".equals(request.getMethod())) {
+            return true;
+        }
         String token = AuthorizationExtractor.extract(request);
         authService.validateToken(token);
+
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }

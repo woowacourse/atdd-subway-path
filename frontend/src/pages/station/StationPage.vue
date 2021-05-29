@@ -65,8 +65,14 @@ export default {
     ...mapGetters(["stations"]),
   },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("/api/stations");
+    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.(완료)
+    const request = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer' +  this.$store.state.accessToken
+      },
+    };
+    const response = await fetch("/api/stations", request);
     if (!response.ok) {
       throw new Error(`${response.status}`);
     }
@@ -83,16 +89,20 @@ export default {
         return;
       }
       try {
-        // TODO 역을 추가하는 API Sample
-        const response = await fetch("/api/stations", {
-          method: "POST",
+        // TODO 역을 추가하는 API Sample(완료)
+        const requestData = {
+          name: this.stationName,
+        };
+
+        const request = {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer' + this.$store.state.accessToken
           },
-          body: JSON.stringify({
-            name: this.stationName,
-          }),
-        });
+          body: JSON.stringify(requestData)
+        };
+        const response = await fetch("/api/stations", request);
         if (!response.ok) {
           throw new Error(`${response.status}`);
         }
@@ -112,11 +122,23 @@ export default {
     },
     async onDeleteStation(stationId) {
       try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
+        // TODO 역을 삭제하는 API를 추가해주세요.(완료)
         // await fetch("/api/stations/{id}");
         const idx = this.stations.findIndex(
           (station) => station.id === stationId
         );
+
+        const request = {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.state.accessToken
+          },
+        };
+        const response = await fetch("/api/stations/" + stationId , request);
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
+
         this.stations.splice(idx, 1);
         this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
       } catch (e) {

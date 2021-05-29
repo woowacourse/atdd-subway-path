@@ -1,5 +1,8 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -16,9 +19,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
+@CacheConfig(cacheNames = "cache::shortestPath")
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -27,6 +31,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @CacheEvict(allEntries = true)
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
@@ -48,15 +53,17 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
+    @CacheEvict(allEntries = true)
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
+    @Cacheable
     public List<Line> findAll() {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
                 "S.id as section_id, S.distance as section_distance, " +
@@ -105,6 +112,7 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(allEntries = true)
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }

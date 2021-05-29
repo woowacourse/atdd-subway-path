@@ -1,5 +1,7 @@
 package wooteco.subway.station.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/stations")
 public class StationController {
-    private StationService stationService;
+    private final Logger logger = LoggerFactory.getLogger(StationController.class);
+
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -34,6 +38,7 @@ public class StationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+        logger.error("들어옴?");
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

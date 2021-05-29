@@ -1,19 +1,15 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.exception.JwtLoginEmailException;
-import wooteco.subway.auth.exception.JwtLoginPasswordException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import java.util.Optional;
-
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
