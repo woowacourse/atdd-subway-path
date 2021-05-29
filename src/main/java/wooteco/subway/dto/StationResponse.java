@@ -1,10 +1,13 @@
 package wooteco.subway.dto;
 
+import lombok.Getter;
 import wooteco.subway.domain.Station;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Getter
 public class StationResponse {
     private Long id;
     private String name;
@@ -27,11 +30,16 @@ public class StationResponse {
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

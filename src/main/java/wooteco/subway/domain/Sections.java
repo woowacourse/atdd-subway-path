@@ -1,5 +1,9 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.BothOfStationExistInTheLineException;
+import wooteco.subway.exception.ExcessiveDistanceArgumentException;
+import wooteco.subway.exception.NoneOfStationExistException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +42,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new NoneOfStationExistException();
         }
     }
 
@@ -46,7 +50,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new BothOfStationExistInTheLineException();
         }
     }
 
@@ -66,7 +70,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new ExcessiveDistanceArgumentException();
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -74,7 +78,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new ExcessiveDistanceArgumentException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);

@@ -94,7 +94,7 @@ export default {
         return;
       }
       try {
-        // TODO member를 생성하는 API를 추가해주세요.
+        // member를 생성하는 API를 추가해주세요.
         const { email, age, password } = this.member;
         // todo: 배포시 base URL 바꾸기
         await fetch("http://localhost:8080/members", {

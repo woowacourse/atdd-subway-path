@@ -1,8 +1,13 @@
 package wooteco.subway.dto;
 
+import lombok.Getter;
 import wooteco.subway.domain.Station;
 
+import javax.validation.constraints.NotNull;
+
+@Getter
 public class StationRequest {
+    @NotNull
     private String name;
 
     public StationRequest() {
@@ -10,10 +15,6 @@ public class StationRequest {
 
     public StationRequest(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Station toStation() {

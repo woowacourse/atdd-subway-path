@@ -3,6 +3,7 @@ package wooteco.subway.line;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.auth.dto.TokenResponse;
+import wooteco.subway.util.AccountUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +34,28 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        setAuth();
+
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+    }
+
+    void setAuth() {
+        AccountUtil.requestSignUp("user@email.com", "password", 18);
+        AccountUtil.requestLogIn("user@email.com", "password").as(TokenResponse.class);
+    }
+
+    @AfterEach
+    void deleteAccount() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
+                .when().delete("/members/me");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -129,6 +148,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .body(params)
                 .when().post("/lines")
                 .then().log().all().
@@ -139,6 +159,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
@@ -148,6 +169,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .when().get("/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
@@ -158,6 +180,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .body(params)
                 .when().put("/lines/" + response.getId())
                 .then().log().all()
@@ -167,6 +190,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .when().delete("/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();

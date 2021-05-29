@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.auth.dto.TokenResponse;
+import wooteco.subway.util.AccountUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        setAuth();
+
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
@@ -53,6 +58,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    void setAuth() {
+        AccountUtil.requestSignUp("user@email.com", "password", 18);
+        AccountUtil.requestLogIn("user@email.com", "password").as(TokenResponse.class);
+    }
+
+    @AfterEach
+    void deleteAccount() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
+                .when().delete("/members/me");
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
@@ -70,6 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(AccountUtil.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
