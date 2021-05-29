@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.infrastructure.ShortestPath;
+import wooteco.subway.path.infrastructure.PathFinder;
+import wooteco.subway.path.infrastructure.SubwayMap;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -23,33 +25,26 @@ public class PathService {
 
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineDao.findAll();
+        List<Section> sections = getSectionsFromLines(lines);
 
-        List<Section> sections = lines.stream()
-            .flatMap(line -> line.getSections().getSections().stream())
-            .collect(toList());
+        SubwayMap subwayMap = new SubwayMap();
+        PathFinder pathFinder = new PathFinder(subwayMap.getSubwayMap(sections));
 
-        ShortestPath.Statistics statistics = getStatistics(source, target, lines, sections);
+        Station sourceStation = stationIdToStation(source, lines);
+        Station targetStation = stationIdToStation(target, lines);
+
+        Path path = pathFinder.getShortestPath(sourceStation, targetStation);
 
         return new PathResponse(
-            StationResponse.listOf(statistics.getShortestPath()),
-            statistics.getDistance()
+            StationResponse.listOf(path.getStationPath()), path.getDistance()
         );
     }
 
-    private ShortestPath.Statistics getStatistics(
-        Long source,
-        Long target,
-        List<Line> lines,
-        List<Section> sections
-    ) {
-        ShortestPath shortestPath = new ShortestPath(sections);
-
-        return shortestPath.statistics(
-            stationIdToStation(source, lines),
-            stationIdToStation(target, lines)
-        );
+    private List<Section> getSectionsFromLines(List<Line> lines) {
+        return lines.stream()
+            .flatMap(line -> line.getSections().getSections().stream())
+            .collect(toList());
     }
-
 
     private Station stationIdToStation(Long id, List<Line> lines) {
         return lines.stream()
