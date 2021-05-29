@@ -6,34 +6,28 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.infrastructure.ShortestPathWithDijkstra;
 import wooteco.subway.station.domain.Station;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Configuration
 public class PathConfig {
     private final SectionDao sectionDao;
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathConfig(SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
 
     @Bean
-    public WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph() {
-        this.graph =  new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        return this.graph;
+    public ShortestPathWithDijkstra shortestPathWithDijkstra() {
+        List<Section> sections = sectionDao.findAll();
+        return new ShortestPathWithDijkstra(weightedMultigraph(), new Sections(sections));
     }
 
-    @PostConstruct
-    public void init() {
-        List<Section> sections = sectionDao.findAll();
-
-        for (Section section : sections) {
-            graph.addVertex(section.getUpStation());
-            graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-        }
+    @Bean
+    public WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph() {
+        return new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 }

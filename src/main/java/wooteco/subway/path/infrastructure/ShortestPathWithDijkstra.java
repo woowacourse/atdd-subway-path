@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 import wooteco.subway.exception.badrequest.PathSearchFailByNotFoundStationException;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -15,13 +14,13 @@ import wooteco.subway.station.domain.Station;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
 public class ShortestPathWithDijkstra implements ShortestPath {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public ShortestPathWithDijkstra(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public ShortestPathWithDijkstra(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {
         this.graph = graph;
+        resetGraph(sections);
     }
 
     @Override
