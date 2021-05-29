@@ -16,8 +16,8 @@ import wooteco.subway.auth.exception.InvalidTokenException;
 @Component
 public class MemberAuthentication {
 
-    @Value("${property.url.member-authenticate}")
-    private String AUTHENTICATION_URL;
+    @Value("${property.url.base-url}")
+    private String authenticationUrl;
 
     public MemberAuthentication() {
     }
@@ -39,7 +39,7 @@ public class MemberAuthentication {
 
         try {
             ResponseEntity<Void> response = restTemplate.exchange(
-                AUTHENTICATION_URL,
+                authenticationUrl + "/member/authenticate",
                 HttpMethod.POST,
                 httpEntity,
                 Void.class
