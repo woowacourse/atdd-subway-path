@@ -11,18 +11,7 @@ import java.util.List;
 
 public class FloydWarshallShortestPathStrategy extends ShortestPathStrategy {
     @Override
-    public List<Station> getVertexList(List<Line> lines, Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = graphPath(lines, source, target);
-        return graphPath.getVertexList();
-    }
-
-    @Override
-    public int getWeight(List<Line> lines, Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = graphPath(lines, source, target);
-        return (int) graphPath.getWeight();
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> graphPath(List<Line> lines, Station source, Station target) {
+    public GraphPath<Station, DefaultWeightedEdge> graphPath(List<Line> lines, Station source, Station target) {
         FloydWarshallShortestPaths<Station, DefaultWeightedEdge> floydWarshallShortestPaths = new FloydWarshallShortestPaths<>(new PathGraph(lines).graph());
         return floydWarshallShortestPaths.getPath(source, target);
     }

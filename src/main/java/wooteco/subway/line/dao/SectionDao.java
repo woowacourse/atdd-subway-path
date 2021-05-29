@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-@CacheConfig(cacheNames = {"lines"})
+@CacheConfig(cacheNames = "cache::shortestPath")
 public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;

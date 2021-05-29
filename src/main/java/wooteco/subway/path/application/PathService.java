@@ -1,5 +1,8 @@
 package wooteco.subway.path.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -14,13 +17,17 @@ import java.util.Optional;
 
 @Service
 public class PathService {
+    private static final Logger logger = LoggerFactory.getLogger(PathService.class);
+
     private final LineDao lineDao;
 
     public PathService(final LineDao lineDao) {
         this.lineDao = lineDao;
     }
 
+    @Cacheable(value = "cache::shortestPath", key = "#sourceId.toString() + '::' + #targetId.toString()")
     public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+        logger.info("캐싱 되에에엠");
         List<Line> lines = lineDao.findAll();
         Path path = new Path(new DijkstraShortestPathStrategy(), lines);
         Station sourceStation = findStationById(lines, sourceId);

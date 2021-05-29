@@ -1,11 +1,8 @@
 package wooteco.subway.line.dao;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -22,10 +19,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-@CacheConfig(cacheNames = {"lines"})
+@CacheConfig(cacheNames = "cache::shortestPath")
 public class LineDao {
-    private final Logger logger = LoggerFactory.getLogger(LineDao.class);
-
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -70,7 +65,6 @@ public class LineDao {
 
     @Cacheable
     public List<Line> findAll() {
-        logger.info("캐시 들어오냐?");
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +

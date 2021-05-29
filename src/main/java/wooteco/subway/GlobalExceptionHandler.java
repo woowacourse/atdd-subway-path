@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
     }
 
-    @ExceptionHandler(value = {MemberException.class, IllegalStateException.class })
+    @ExceptionHandler(value = {MemberException.class, IllegalStateException.class})
     public ResponseEntity<String> badRequest(RuntimeException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
