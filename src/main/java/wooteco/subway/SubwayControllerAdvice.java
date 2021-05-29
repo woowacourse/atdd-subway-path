@@ -2,7 +2,6 @@ package wooteco.subway;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,16 +18,17 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BindingResult> methodArgumentNotValid(MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> methodArgumentNotValid(MethodArgumentNotValidException e) {
         return ResponseEntity
                 .badRequest()
-                .body(e.getBindingResult());
+                .body(new ExceptionResponse(e.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exception(Exception e) {
+        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionResponse("서버에서 오류가 발생했습니다."));
+                .body(new ExceptionResponse("서버에서 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 }
