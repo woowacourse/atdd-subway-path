@@ -68,35 +68,45 @@ export default {
     isValid() {
       return this.$refs.loginForm.validate();
     },
+
+    async getToken() {
+      const {email, password} = this.member;
+      const data = await fetch("login/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+      const token = await data.json();
+      localStorage.setItem("token", token["accessToken"]);
+    },
+
+    async showMember() {
+      const response = await fetch("members/me", {
+            headers: {
+              "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+          }
+      );
+      const member = await response.json();
+      this.setMember(member);
+    },
+
     async onLogin() {
       if (!this.isValid()) {
         return;
       }
+
       try {
         // TODO login API를 작성해주세요. (v)
-        const { email, password } = this.member;
-        const data = await fetch("login/token", {
-          method: "POST",
-          headers: {
-            "Content-Type" : "application/json"
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password
-          })
-        })
-        const token = await data.json();
-        localStorage.setItem("token", token["accessToken"]);
+        await getToken.call(this);
 
         // TODO member 데이터를 불러와 주세요. (v)
-        const response  = await fetch("members/me", {
-          headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-          }
-        }
-        );
-        const member = await response.json();
-        this.setMember(member);
+        await showMember.call(this);
 
         await this.$router.replace(`/`);
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS);
