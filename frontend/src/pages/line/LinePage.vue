@@ -51,7 +51,7 @@ export default {
     ...mapGetters(["lines"]),
   },
   async created() {
-    await fetch("http://localhost:8080/stations", {
+    await fetch("api/stations", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default {
       this.setStations([...data]);
     })
 
-    await fetch("http://localhost:8080/lines", {
+    await fetch("/api/lines", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,8 @@
 package wooteco.subway.member.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidMemberInformationException;
 import wooteco.subway.exception.NotExistMemberException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
@@ -21,21 +23,17 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findById(Long id) {
         Member member = memberDao.findById(id).orElseThrow(NotExistMemberException::new);
         return MemberResponse.of(member);
     }
 
-    public Long findMemberIdByEmail(String email) {
-        Long memberId = memberDao.findIdByEmail(email);
-        if (memberId != null) {
-            return memberId;
+    public Long findIdByEmailAndPassword(String email, String password) {
+        try {
+            return memberDao.findIdByEmailAndPassword(email, password);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidMemberInformationException();
         }
-        throw new NotExistMemberException();
-    }
-
-    public boolean containsMemberByEmailAndPassword(String email, String password) {
-        return memberDao.containsMemberByEmailAndPassword(email, password);
     }
 
     public void updateMember(Long id, MemberRequest memberRequest) {

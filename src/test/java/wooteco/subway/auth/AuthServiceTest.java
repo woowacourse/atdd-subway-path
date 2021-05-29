@@ -23,9 +23,10 @@ import wooteco.subway.member.domain.Member;
 @ActiveProfiles("test")
 public class AuthServiceTest {
 
-    private final String testEmail = "email@email.com";
-    private final String testPassword = "password";
-    private final Integer age = 20;
+    private static final String TEST_EMAIL = "email@email.com";
+    private static final String TEST_PASSWORD = "1q2w3e4r!";
+    private static final Integer AGE = 20;
+
     @Autowired
     private AuthService authService;
     @Autowired
@@ -35,8 +36,8 @@ public class AuthServiceTest {
     @Test
     public void createToken() {
         // given
-        memberDao.insert(new Member(testEmail, testPassword, age));
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        memberDao.insert(new Member(TEST_EMAIL, TEST_PASSWORD, AGE));
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
 
         // when
         String token = authService.createToken(tokenRequest);
@@ -49,7 +50,7 @@ public class AuthServiceTest {
     @Test
     public void createTokenInvalidMemberInformationException1() {
         // given
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
 
         // when, then
         assertThatThrownBy(() -> {
@@ -61,8 +62,8 @@ public class AuthServiceTest {
     @Test
     public void validToken() {
         // given
-        memberDao.insert(new Member(testEmail, testPassword, age));
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        memberDao.insert(new Member(TEST_EMAIL, TEST_PASSWORD, AGE));
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
         String token = authService.createToken(tokenRequest);
 
         // when, then
@@ -73,8 +74,8 @@ public class AuthServiceTest {
     @Test
     public void invalidToken() {
         // given
-        memberDao.insert(new Member(testEmail, testPassword, age));
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        memberDao.insert(new Member(TEST_EMAIL, TEST_PASSWORD, AGE));
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
         String token = authService.createToken(tokenRequest);
 
         // when, then
@@ -85,8 +86,8 @@ public class AuthServiceTest {
     @Test
     public void findLoginMemberId() {
         // given
-        memberDao.insert(new Member(testEmail, testPassword, age));
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        memberDao.insert(new Member(TEST_EMAIL, TEST_PASSWORD, AGE));
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
         String token = authService.createToken(tokenRequest);
 
         // when
@@ -100,8 +101,8 @@ public class AuthServiceTest {
     @Test
     public void findLoginMemberIdInvalidMemberInformationException() {
         // given
-        memberDao.insert(new Member(testEmail, testPassword, age));
-        TokenRequest tokenRequest = new TokenRequest(testEmail, testPassword);
+        memberDao.insert(new Member(TEST_EMAIL, TEST_PASSWORD, AGE));
+        TokenRequest tokenRequest = new TokenRequest(TEST_EMAIL, TEST_PASSWORD);
         String token = authService.createToken(tokenRequest);
 
         // when, then
