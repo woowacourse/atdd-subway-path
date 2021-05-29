@@ -34,12 +34,13 @@ public class MemberAuthentication {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(email, password), headers);
+        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(email, password),
+            headers);
         RestTemplate restTemplate = new RestTemplate();
 
         try {
             ResponseEntity<Void> response = restTemplate.exchange(
-                authenticationUrl + "/member/authenticate",
+                authenticationUrl + "/members/authentication",
                 HttpMethod.POST,
                 httpEntity,
                 Void.class
@@ -51,6 +52,7 @@ public class MemberAuthentication {
     }
 
     private static class TokenRequest {
+
         private final String email;
         private final String password;
 
