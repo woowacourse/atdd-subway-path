@@ -9,13 +9,13 @@ public class SubwayException extends RuntimeException {
 
     public SubwayException(String message, HttpStatus httpStatus) {
         super(message);
-        this.body = new ExceptionResponse(message);
+        this.body = new ExceptionResponse(message, httpStatus.value());
         this.httpStatus = httpStatus;
     }
 
     public SubwayException(String message, Throwable cause, HttpStatus httpStatus) {
         super(message, cause);
-        this.body = new ExceptionResponse(message);
+        this.body = new ExceptionResponse(message, httpStatus.value());
         this.httpStatus = httpStatus;
     }
 
