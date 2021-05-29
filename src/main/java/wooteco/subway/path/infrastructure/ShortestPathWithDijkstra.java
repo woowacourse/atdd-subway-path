@@ -18,8 +18,8 @@ public class ShortestPathWithDijkstra implements ShortestPath {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public ShortestPathWithDijkstra(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
-        this.graph = graph;
+    public ShortestPathWithDijkstra(List<Section> sections) {
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         resetGraph(sections);
     }
 
