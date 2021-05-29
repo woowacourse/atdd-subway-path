@@ -23,7 +23,7 @@ public class PathConfig {
     @Bean
     public ShortestPathWithDijkstra shortestPathWithDijkstra() {
         List<Section> sections = sectionDao.findAll();
-        return new ShortestPathWithDijkstra(weightedMultigraph(), new Sections(sections));
+        return new ShortestPathWithDijkstra(weightedMultigraph(), sections);
     }
 
     @Bean

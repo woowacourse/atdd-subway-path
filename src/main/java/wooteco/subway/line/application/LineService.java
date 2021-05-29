@@ -32,7 +32,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
-        pathService.resetPathGraphBySections(persistLine.getSections());
+        pathService.resetPathGraphBySections();
         return LineResponse.of(persistLine);
     }
 
@@ -83,7 +83,7 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
 
-        pathService.resetPathGraphBySections(line.getSections());
+        pathService.resetPathGraphBySections();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -94,6 +94,6 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
 
-        pathService.resetPathGraphBySections(line.getSections());
+        pathService.resetPathGraphBySections();
     }
 }

@@ -4,29 +4,29 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.exception.badrequest.PathSearchFailByNotFoundStationException;
+import wooteco.subway.exception.badrequest.InvalidPathException;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.ShortestPath;
 import wooteco.subway.station.domain.Station;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ShortestPathWithDijkstra implements ShortestPath {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public ShortestPathWithDijkstra(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {
+    public ShortestPathWithDijkstra(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
         this.graph = graph;
         resetGraph(sections);
     }
 
     @Override
-    public void resetGraph(Sections sections) {
+    public void resetGraph(List<Section> sections) {
         removeAllVertexes();
-        for (Section section : sections.getSections()) {
+        for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
@@ -40,12 +40,19 @@ public class ShortestPathWithDijkstra implements ShortestPath {
 
     @Override
     public Path getPath(Station source, Station target) {
+        validatePath(source, target);
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
             GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
             return new Path(path.getVertexList(), (int) path.getWeight());
-        } catch (IllegalArgumentException e) {
-            throw new PathSearchFailByNotFoundStationException();
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new InvalidPathException("해당 경로를 찾을 수 없습니다.");
+        }
+    }
+
+    private void validatePath(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new InvalidPathException("출발역과 도착역을 다르게 해서 경로를 조회해주세요.");
         }
     }
 }
