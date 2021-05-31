@@ -2,9 +2,9 @@ package wooteco.subway.member.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.DuplicateEmailException;
-import wooteco.subway.exception.MemberNotFoundException;
-import wooteco.subway.exception.NoRowHasBeenModifiedException;
+import wooteco.subway.exception.badrequest.DuplicateEmailException;
+import wooteco.subway.exception.badrequest.NoRowHasBeenModifiedException;
+import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;

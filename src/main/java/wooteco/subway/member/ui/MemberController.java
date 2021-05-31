@@ -1,7 +1,6 @@
 package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
@@ -13,7 +12,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
 
@@ -21,32 +20,25 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
-        }
+    @PostMapping
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<LoginMember> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(loginMember);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                             @Valid @RequestBody MemberRequest param,
-                                             BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
-        }
+                                             @Valid @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
