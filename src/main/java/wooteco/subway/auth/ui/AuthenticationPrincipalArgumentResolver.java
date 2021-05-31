@@ -28,8 +28,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public MemberRequest resolveArgument(MethodParameter parameter,
-        ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
-        WebDataBinderFactory binderFactory) {
+                                        ModelAndViewContainer mavContainer,
+                                        NativeWebRequest webRequest,
+                                        WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest =
             webRequest.getNativeRequest(HttpServletRequest.class);
         String payLoad =
