@@ -8,7 +8,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.path.application.PathFinder;
+import wooteco.subway.path.domain.PathFinder;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 

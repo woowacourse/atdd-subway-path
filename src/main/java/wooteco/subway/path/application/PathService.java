@@ -2,7 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.PathFinder;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
@@ -24,10 +24,9 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
-        List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
-        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+        SubwayPath subwayPath = pathFinder.findPath(sourceStation, targetStation);
 
         List<Station> shortestPath = subwayPath.getShortestPath();
         int totalDistance = subwayPath.getTotalDistance();

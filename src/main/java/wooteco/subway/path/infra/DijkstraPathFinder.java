@@ -1,49 +1,49 @@
-package wooteco.subway.path.application;
+package wooteco.subway.path.infra;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.springframework.stereotype.Component;
 import wooteco.subway.exception.path.InvalidPathException;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.ShortestPathStrategy;
+import wooteco.subway.path.domain.PathFinder;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-@Component
-public class PathFinder {
+public class DijkstraPathFinder implements PathFinder {
 
     private SubwayGraph subwayGraph;
+    private ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm;
 
-    public SubwayPath findPath(List<Line> lines, Station source, Station target) {
+    public DijkstraPathFinder(SubwayGraph subwayGraph, ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm) {
+        this.subwayGraph = subwayGraph;
+        this.shortestPathAlgorithm = shortestPathAlgorithm;
+    }
+
+    @Override
+    public SubwayPath findPath(Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException(source, target);
         }
-        if (subwayGraph == null) {
-            subwayGraph = initSubwayGraph(lines);
-        }
-
-        ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm = ShortestPathStrategy.DIJKSTRA.match(subwayGraph);
         GraphPath<Station, DefaultWeightedEdge> path = shortestPathAlgorithm.getPath(source, target);
+
         if (path == null) {
             throw new InvalidPathException(source, target);
         }
         return new SubwayPath(path);
     }
 
-    private SubwayGraph initSubwayGraph(List<Line> lines) {
-        SubwayGraph graph = new SubwayGraph(DefaultWeightedEdge.class);
-        graph.addVertices(lines);
-        graph.addEdges(lines);
-        return graph;
-    }
-
+    @Override
     public void updateGraph(List<Line> lines) {
         subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
         subwayGraph.addVertices(lines);
         subwayGraph.addEdges(lines);
+        shortestPathAlgorithm = new DijkstraShortestPath<>(subwayGraph);
+        subwayGraph.vertexSet().stream()
+                .map(Station::getName)
+                .forEach(it -> System.out.println("역 : " + it));
     }
 }
