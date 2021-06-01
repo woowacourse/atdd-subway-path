@@ -20,8 +20,8 @@ public class PathFinder {
 
     private final PathAlgorithms pathAlgorithms;
 
-    public PathFinder() {
-        pathAlgorithms = new DijkstraAlgorithm();
+    public PathFinder(PathAlgorithms pathAlgorithms) {
+        this.pathAlgorithms = pathAlgorithms;
     }
 
     public Path findPath(List<Station> stations, List<Section> sections, PathRequest pathRequest) {
