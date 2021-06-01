@@ -1,7 +1,11 @@
 package wooteco.subway.auth.ui;
 
+import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -35,10 +39,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             webRequest.getNativeRequest(HttpServletRequest.class);
         String payLoad =
             AuthorizationExtractor.extract(Objects.requireNonNull(httpServletRequest));
-        String[] data = authService.getPayLoad(payLoad).split("\\.");
+        Map<String, Object> data = authService.getPayLoadData(payLoad);
 
-        Long id = Long.parseLong(data[0]);
-        String email = data[1];
+        Long id = (long) (int) data.get("id");
+        String email = (String) data.get("email");
 
         return new MemberRequest(id, email);
     }
