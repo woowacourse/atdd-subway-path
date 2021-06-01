@@ -4,8 +4,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.exception.UserLoginFailException;
-import wooteco.subway.exceptions.SubWayCustomException;
 import wooteco.subway.exceptions.SubWayException;
+import wooteco.subway.exceptions.SubWayExceptionSet;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -29,7 +29,7 @@ public class MemberService {
 
     private void validateCreateMember(Member member) {
         if (memberDao.existMemberByEmail(member)) {
-            throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
+            throw new SubWayException(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
 
@@ -47,7 +47,7 @@ public class MemberService {
 
     private void validateUpdateMember(Member member) {
         if (memberDao.existMemberOtherThanMeByEmail(member)) {
-            throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
+            throw new SubWayException(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
 

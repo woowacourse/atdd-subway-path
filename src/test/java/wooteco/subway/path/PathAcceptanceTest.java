@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.exceptions.SubWayException;
+import wooteco.subway.exceptions.SubWayExceptionSet;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString())
-            .isEqualTo(SubWayException.NOT_EXIST_STATION_EXCEPTION.message());
+            .isEqualTo(SubWayExceptionSet.NOT_EXIST_STATION_EXCEPTION.message());
     }
 
     @DisplayName("연결되지 않은 역의 경로를 조회한다.")
@@ -89,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString())
-            .isEqualTo(SubWayException.NOT_CONNECT_STATION_EXCEPTION.message());
+            .isEqualTo(SubWayExceptionSet.NOT_CONNECT_STATION_EXCEPTION.message());
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {

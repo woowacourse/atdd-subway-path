@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.UserLoginFailException;
-import wooteco.subway.exceptions.SubWayCustomException;
+import wooteco.subway.exceptions.SubWayException;
 
 @ControllerAdvice
 public class SubwayAdvice {
@@ -15,8 +15,8 @@ public class SubwayAdvice {
         return ResponseEntity.status(exception.getStatusCode()).body(exception.getMessage());
     }
 
-    @ExceptionHandler(SubWayCustomException.class)
-    public ResponseEntity<String> handleSubWayCustomException(SubWayCustomException exception) {
+    @ExceptionHandler(SubWayException.class)
+    public ResponseEntity<String> handleSubWayCustomException(SubWayException exception) {
         return ResponseEntity.status(exception.status()).body(exception.message());
     }
 

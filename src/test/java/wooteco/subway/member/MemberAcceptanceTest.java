@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.exceptions.SubWayException;
+import wooteco.subway.exceptions.SubWayExceptionSet;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -103,9 +103,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 중복된_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
         assertThat(response.statusCode())
-            .isEqualTo(SubWayException.DUPLICATE_EMAIL_EXCEPTION.status());
+            .isEqualTo(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION.status());
         assertThat(response.body().asString())
-            .isEqualTo(SubWayException.DUPLICATE_EMAIL_EXCEPTION.message());
+            .isEqualTo(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION.message());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {

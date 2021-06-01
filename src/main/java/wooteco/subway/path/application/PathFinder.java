@@ -7,8 +7,8 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import wooteco.subway.exceptions.SubWayCustomException;
 import wooteco.subway.exceptions.SubWayException;
+import wooteco.subway.exceptions.SubWayExceptionSet;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.dto.PathDto;
@@ -42,7 +42,7 @@ public class PathFinder {
     private void validateStation(PathRequest pathRequest, Map<Long, Station> idToStation) {
         if (!idToStation.containsKey(pathRequest.getSource())
             || !idToStation.containsKey(pathRequest.getTarget())) {
-            throw new SubWayCustomException(SubWayException.NOT_EXIST_STATION_EXCEPTION);
+            throw new SubWayException(SubWayExceptionSet.NOT_EXIST_STATION_EXCEPTION);
         }
     }
 
