@@ -15,15 +15,15 @@ import wooteco.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class ShortestPathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -36,7 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
     }
@@ -46,11 +46,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(StationResponse::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         List<Long> expectedPathIds = expectedPath.stream()
                 .map(StationResponse::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
