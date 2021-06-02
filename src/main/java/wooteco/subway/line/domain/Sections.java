@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import wooteco.subway.exception.DomainArisenException;
 import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.station.domain.Station;
 
