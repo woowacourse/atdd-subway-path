@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.Path;
+import wooteco.subway.path.domain.PathAlgorithms;
 import wooteco.subway.path.dto.PathRequest;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dao.StationDao;
@@ -15,19 +16,25 @@ public class PathService {
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
-    private final PathFinder pathFinder;
+    private final PathAlgorithms pathAlgorithms;
 
     public PathService(StationDao stationDao, SectionDao sectionDao,
-        PathFinder pathFinder) {
+        PathAlgorithms pathAlgorithms) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
-        this.pathFinder = pathFinder;
+        this.pathAlgorithms = pathAlgorithms;
+    }
+
+    public void resetGraph() {
+        List<Section> sections = sectionDao.findAll();
+        pathAlgorithms.resetGraph(sections);
     }
 
     public PathResponse findPath(PathRequest pathRequest) {
-        List<Station> stations = stationDao.findAll();
-        List<Section> sections = sectionDao.findAll();
-        Path path = pathFinder.findPath(stations, sections, pathRequest);
+        Station source = stationDao.findById(pathRequest.getSource());
+        Station target = stationDao.findById(pathRequest.getTarget());
+        Path path = pathAlgorithms.findPath(source, target);
+
         return PathResponse.of(path);
     }
 }

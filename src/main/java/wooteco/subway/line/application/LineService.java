@@ -3,6 +3,7 @@ package wooteco.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -10,25 +11,29 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.application.PathService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 @Service
 public class LineService {
 
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
+    private final PathService pathService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService, PathService pathService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.pathService = pathService;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
+        pathService.resetGraph();
         return LineResponse.of(persistLine);
     }
 
@@ -45,7 +50,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(line -> LineResponse.of(line))
+            .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -78,6 +83,8 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        pathService.resetGraph();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -87,6 +94,8 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        pathService.resetGraph();
     }
 
 }
+
