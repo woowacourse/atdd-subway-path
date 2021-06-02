@@ -44,7 +44,7 @@ class PathTest {
         // when, then
         assertThatThrownBy(() -> new Path(pathEdges))
             .isInstanceOf(ValidationFailureException.class)
-            .hasMessageContaining("구간이 없는 경로는 생성할 수 없습니다");
+            .hasMessageContaining("Path 생성에 실패했습니다");
     }
 
     @DisplayName("구간에 속해있는 역 정보를 가져온다.")
