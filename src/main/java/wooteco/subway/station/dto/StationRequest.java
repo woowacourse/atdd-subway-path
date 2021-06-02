@@ -5,7 +5,7 @@ import wooteco.subway.station.domain.Station;
 
 public class StationRequest {
 
-    @NotBlank(message = "역이름이 없습니다.")
+    @NotBlank(message = "역이름이 비어있거나 공백입니다.")
     private String name;
 
     public StationRequest() {
