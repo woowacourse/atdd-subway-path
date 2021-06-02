@@ -1,9 +1,9 @@
 package wooteco.subway.path.application;
 
+import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.PathEdge;
 import wooteco.subway.path.exception.RoutingFailureException;
@@ -20,11 +20,13 @@ public class PathRouter {
 
     public Path findByShortest(Station departureStation, Station arrivalStation) {
         GraphPath<Station, PathEdge> graphPath = shortestPathAlgorithm.getPath(departureStation, arrivalStation);
+        validateExistentPath(graphPath);
+        return new Path(graphPath.getEdgeList());
+    }
 
-        try {
-            return new Path(graphPath.getEdgeList());
-        } catch (ValidationFailureException e) {
-            throw new RoutingFailureException(e.getMessage());
+    private void validateExistentPath(GraphPath<Station, PathEdge> graphPath) {
+        if (Objects.isNull(graphPath)) {
+            throw new RoutingFailureException("경로 없음");
         }
     }
 }
