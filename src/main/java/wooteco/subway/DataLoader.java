@@ -59,7 +59,7 @@ public class DataLoader implements CommandLineRunner {
 
         Member adult = new Member("adult@adult.com", "adult", 25);
         Member teenager = new Member("teenager@teenager.com", "teenager", 15);
-        Member child = new Member("b@b.com", "b", 10);
+        Member child = new Member("child@child.com", "child", 10);
         Member baby = new Member("baby@baby.com", "baby", 1);
         memberDao.insert(adult);
         memberDao.insert(teenager);

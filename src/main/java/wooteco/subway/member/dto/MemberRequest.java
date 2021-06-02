@@ -2,7 +2,6 @@ package wooteco.subway.member.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import wooteco.subway.member.domain.Member;
 
