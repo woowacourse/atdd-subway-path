@@ -3,9 +3,9 @@ package wooteco.subway.auth.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.auth.exception.AuthorizationFailureException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.ObjectNotFoundException;
+import wooteco.subway.exception.application.ObjectNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
@@ -28,14 +28,14 @@ public class AuthService {
 
     private long obtainVerifiedId(TokenRequest tokenRequest) {
         Member member = memberDao.findByEmail(tokenRequest.getEmail())
-            .orElseThrow(() -> new AuthorizationException(String.format("없는 이메일: %s", tokenRequest.getEmail())));
+            .orElseThrow(() -> new AuthorizationFailureException(String.format("없는 이메일: %s", tokenRequest.getEmail())));
         validateCorrectPassword(tokenRequest, member);
         return member.getId();
     }
 
     private void validateCorrectPassword(TokenRequest tokenRequest, Member member) {
         if (!member.checkPassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException(String.format("비밀번호 불일치: %s", tokenRequest.getEmail()));
+            throw new AuthorizationFailureException(String.format("비밀번호 불일치: %s", tokenRequest.getEmail()));
         }
     }
 

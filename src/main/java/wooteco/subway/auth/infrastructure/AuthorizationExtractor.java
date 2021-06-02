@@ -2,7 +2,7 @@ package wooteco.subway.auth.infrastructure;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.auth.exception.AuthorizationFailureException;
 
 public class AuthorizationExtractor {
 
@@ -18,7 +18,7 @@ public class AuthorizationExtractor {
                 return getAuthHeaderValue(request, headerValue);
             }
         }
-        throw new AuthorizationException("토큰 추출에 실패했습니다.");
+        throw new AuthorizationFailureException("토큰 추출에 실패했습니다.");
     }
 
 

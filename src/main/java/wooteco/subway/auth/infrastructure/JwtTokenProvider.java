@@ -7,7 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.auth.exception.AuthorizationFailureException;
 
 @Component
 public class JwtTokenProvider {
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthorizationException(e.getMessage());
+            throw new AuthorizationFailureException(e.getMessage());
         }
     }
 }
