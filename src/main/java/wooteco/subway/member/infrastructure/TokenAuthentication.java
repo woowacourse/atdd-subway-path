@@ -1,48 +1,51 @@
 package wooteco.subway.member.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
+import org.springframework.web.client.RestTemplate;
+import wooteco.subway.member.exception.InvalidTokenException;
 
 public class TokenAuthentication {
-    private static final String AUTHENTICATION_URL = "http://localhost:8080/auth/token";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final HttpClient httpClient;
+    @Value("${property.url.base-url}")
+    private String authenticationUrl;
 
-    public TokenAuthentication(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    public TokenAuthentication() {
     }
 
     public boolean validate(String token) {
-        try {
-            int statusCode = sendTokenRequestToAuthServer(new TokenRequest(token));
-
-            return statusCode == HttpURLConnection.HTTP_OK;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        HttpStatus status = sendTokenRequestToAuthServer(token);
+        if (status != HttpStatus.OK) {
+            throw new InvalidTokenException();
         }
+        return true;
     }
 
-    private int sendTokenRequestToAuthServer(TokenRequest tokenRequest) throws IOException {
-        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
+    private HttpStatus sendTokenRequestToAuthServer(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        httpPost.setEntity(
-                new StringEntity(
-                        OBJECT_MAPPER.writeValueAsString(tokenRequest),
-                        ContentType.APPLICATION_JSON
-                )
-        );
+        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(token), headers);
+        RestTemplate restTemplate = new RestTemplate();
 
-        HttpResponse execute = httpClient.execute(httpPost);
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                authenticationUrl + "/auth/token",
+                HttpMethod.POST,
+                httpEntity,
+                Void.class
+            );
+            return response.getStatusCode();
+        } catch (Unauthorized e) {
+            throw new InvalidTokenException();
+        }
 
-        return execute.getStatusLine().getStatusCode();
     }
 
     private static class TokenRequest {

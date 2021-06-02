@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.AuthenticationPrincipal;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.dto.TokenRequest;
@@ -13,6 +12,7 @@ import wooteco.subway.member.dto.TokenRequest;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
 
@@ -20,31 +20,29 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
 
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
 
         return ResponseEntity.ok().body(member);
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         String email = loginMember.getEmail();
-        Member member = memberService.findByEmail(email);
+        MemberResponse member = memberService.findByEmail(email);
 
-        return ResponseEntity.ok().body(
-                new MemberResponse(member)
-        );
+        return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest memberRequest) {
         String email = loginMember.getEmail();
@@ -55,14 +53,14 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getEmail());
 
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/members/authentication")
+    @PostMapping("/authentication")
     public ResponseEntity<Void> memberAuthenticate(@RequestBody TokenRequest tokenRequest) {
         memberService.authenticate(tokenRequest);
 

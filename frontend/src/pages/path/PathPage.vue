@@ -21,7 +21,8 @@
                 dense
               ></v-select>
               <v-icon class="relative arrow-right-icon"
-                >mdi-arrow-right-bold</v-icon
+              >mdi-arrow-right-bold
+              </v-icon
               >
               <v-select
                 v-model="path.target"
@@ -40,11 +41,12 @@
                 color="amber"
                 class="w-100"
                 depressed
-                >검색</v-btn
+              >검색
+              </v-btn
               >
             </div>
             <template v-if="pathResult">
-              <v-divider />
+              <v-divider/>
               <div class="d-flex justify-center mt-4">
                 <v-card width="400" flat>
                   <v-tabs
@@ -55,7 +57,8 @@
                   >
                     <v-tab>최단 거리</v-tab>
                     <v-tab @click="onSearchMinimumDurationType"
-                      >최소 시간</v-tab
+                    >최소 시간
+                    </v-tab
                     >
                   </v-tabs>
                   <v-tabs-items v-if="pathResult" v-model="tab">
@@ -63,16 +66,16 @@
                       <v-simple-table>
                         <template v-slot:default>
                           <thead>
-                            <tr>
-                              <th class="text-center">거리</th>
-                              <th class="text-center">요금</th>
-                            </tr>
+                          <tr>
+                            <th class="text-center">거리</th>
+                            <th class="text-center">요금</th>
+                          </tr>
                           </thead>
                           <tbody class="text-center">
-                            <tr>
-                              <td>{{ pathResult.distance }}km</td>
-                              <td>{{ pathResult.fare }}원</td>
-                            </tr>
+                          <tr>
+                            <td>{{ pathResult.distance }}km</td>
+                            <td>{{ pathResult.fare }}원</td>
+                          </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
@@ -81,18 +84,18 @@
                       <v-simple-table>
                         <template v-slot:default>
                           <thead>
-                            <tr>
-                              <th class="text-center">시간</th>
-                              <th class="text-center">요금</th>
-                            </tr>
+                          <tr>
+                            <th class="text-center">시간</th>
+                            <th class="text-center">요금</th>
+                          </tr>
                           </thead>
                           <tbody class="text-center">
-                            <tr>
-                              <td>
-                                {{ pathResultByMinimumDuration.duration }}분
-                              </td>
-                              <td>{{ pathResultByMinimumDuration.fare }}원</td>
-                            </tr>
+                          <tr>
+                            <td>
+                              {{ pathResultByMinimumDuration.duration }}분
+                            </td>
+                            <td>{{ pathResultByMinimumDuration.fare }}원</td>
+                          </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
@@ -100,7 +103,7 @@
                   </v-tabs-items>
                 </v-card>
               </div>
-              <v-divider />
+              <v-divider/>
               <div class="d-flex justify-center mt-4">
                 <v-card width="400" flat>
                   <template v-for="(station, index) in pathResult.stations">
@@ -127,7 +130,7 @@
                         {{ station.name }}
                       </v-chip>
                       <v-icon v-if="index < pathResult.stations.length - 1"
-                        >mdi-arrow-right-bold</v-icon
+                      >mdi-arrow-right-bold</v-icon
                       >
                     </span>
                   </template>
@@ -142,9 +145,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
+import {mapGetters, mapMutations} from "vuex";
+import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
+import {SNACKBAR_MESSAGES} from "../../utils/constants";
 import validator from "../../utils/validator";
 
 export default {
@@ -159,8 +162,13 @@ export default {
     ...mapMutations([SHOW_SNACKBAR, SET_STATIONS]),
     async onSearchResult() {
       try {
-        // TODO 최단 거리를 검색하는 API를 추가해주세요.
-        // this.pathResult = await fetch("/paths", {})
+        const response = await fetch(
+          `/api/paths?source=${this.path.source}&target=${this.path.target}`)
+        if (!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+
+        this.pathResult = await response.json()
       } catch (e) {
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL);
         throw new Error(e);
@@ -168,9 +176,13 @@ export default {
     },
     async initAllStationsView() {
       try {
-        // TODO 모든 역을 불러오는 API를 추가해주세요.
-        // const stations = await fetch("/stations")
-        // this.setStations(stations)
+        const response = await fetch('/api/stations')
+        if (!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+
+        const stations = await response.json()
+        this.setStations(stations)
         if (this.stations.length < 1) {
           return;
         }
@@ -204,7 +216,7 @@ export default {
       pathResult: null,
       pathResultByMinimumDuration: null,
       allStationsView: [],
-      rules: { ...validator },
+      rules: {...validator},
       tab: null,
     };
   },

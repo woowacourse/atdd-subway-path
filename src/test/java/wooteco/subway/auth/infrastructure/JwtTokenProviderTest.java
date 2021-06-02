@@ -1,18 +1,16 @@
 package wooteco.subway.auth.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Base64;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.boot.test.context.SpringBootTest;
+import wooteco.subway.AcceptanceTest;
 
-import java.util.Base64;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
-class JwtTokenProviderTest {
+class JwtTokenProviderTest extends AcceptanceTest {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -30,7 +28,7 @@ class JwtTokenProviderTest {
 
         JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
         Map<String, Object> payload = jacksonJsonParser.parseMap(
-                new String(decodedPayload)
+            new String(decodedPayload)
         );
 
         assertThat(payload.get("sub")).isEqualTo("test");

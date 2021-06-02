@@ -1,53 +1,58 @@
 package wooteco.subway.auth.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
+import org.springframework.web.client.RestTemplate;
+import wooteco.subway.auth.exception.InvalidMemberException;
+import wooteco.subway.auth.exception.InvalidTokenException;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
+@Component
 public class MemberAuthentication {
-    private static final String AUTHENTICATION_URL = "http://localhost:8080/members/authentication";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final HttpClient httpClient;
+    @Value("${property.url.base-url}")
+    private String authenticationUrl;
 
-    public MemberAuthentication(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    public MemberAuthentication() {
     }
 
     public boolean authenticate(String email, String password) {
+        HttpStatus status = sendLoginInformationToMemberServer(email, password);
+        if (status != HttpStatus.OK) {
+            throw new InvalidTokenException();
+        }
+        return true;
+    }
+
+    private HttpStatus sendLoginInformationToMemberServer(String email, String password) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        HttpEntity<TokenRequest> httpEntity = new HttpEntity<>(new TokenRequest(email, password),
+            headers);
+        RestTemplate restTemplate = new RestTemplate();
+
         try {
-            int statusCode = sendLoginInformationToMemberServer(email, password);
-
-
-            return statusCode == HttpURLConnection.HTTP_OK;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            ResponseEntity<Void> response = restTemplate.exchange(
+                authenticationUrl + "/members/authentication",
+                HttpMethod.POST,
+                httpEntity,
+                Void.class
+            );
+            return response.getStatusCode();
+        } catch (Unauthorized e) {
+            throw new InvalidMemberException();
         }
     }
 
-    private int sendLoginInformationToMemberServer(String email, String password) throws IOException {
-        HttpPost httpPost = new HttpPost(AUTHENTICATION_URL);
-
-        httpPost.setEntity(
-                new StringEntity(
-                        OBJECT_MAPPER.writeValueAsString(
-                                new TokenRequest(email, password)
-                        ), ContentType.APPLICATION_JSON
-                )
-        );
-
-        HttpResponse execute = httpClient.execute(httpPost);
-
-        return execute.getStatusLine().getStatusCode();
-    }
-
     private static class TokenRequest {
+
         private final String email;
         private final String password;
 

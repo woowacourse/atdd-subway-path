@@ -54,89 +54,97 @@
 </template>
 
 <script>
-import validator from "../../utils/validator";
-import { SNACKBAR_MESSAGES } from "../../utils/constants";
-import { mapGetters, mapMutations } from "vuex";
-import { SET_STATIONS, SHOW_SNACKBAR } from "../../store/shared/mutationTypes";
+  import validator from "../../utils/validator";
+  import {SNACKBAR_MESSAGES} from "../../utils/constants";
+  import {mapGetters, mapMutations} from "vuex";
+  import {SET_STATIONS, SHOW_SNACKBAR} from "../../store/shared/mutationTypes";
 
-export default {
-  name: "StationPage",
-  computed: {
-    ...mapGetters(["stations"]),
-  },
-  async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    const response = await fetch("http://localhost:8080/stations");
-    if (!response.ok) {
-      throw new Error(`${response.status}`);
-    }
-    const stations = await response.json();
-    this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
-  },
-  methods: {
-    ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),
-    isValid() {
-      return this.$refs.stationForm.validate();
+  export default {
+    name: "StationPage",
+    computed: {
+      ...mapGetters(["stations"]),
     },
-    async onCreateStation() {
-      if (!this.isValid()) {
-        return;
+    async created() {
+      const response = await fetch("/api/stations");
+      if (!response.ok) {
+        throw new Error(`${response.status}`);
       }
-      try {
-        // TODO 역을 추가하는 API Sample
-        const response = await fetch("http://localhost:8080/stations", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: this.stationName,
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
+      const stations = await response.json();
+      this.setStations([...stations]); // stations 데이터를 단 한개 존재하는 저장소에 등록
+    },
+    methods: {
+      ...mapMutations([SET_STATIONS, SHOW_SNACKBAR]),
+      isValid() {
+        return this.$refs.stationForm.validate();
+      },
+      async onCreateStation() {
+        if (!this.isValid()) {
+          return;
         }
-        const newStation = await response.json();
+        try {
+          const response = await fetch("/api/stations", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: this.stationName,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`${response.status}`);
+          }
+          const newStation = await response.json();
 
-        this.setStations([...this.stations, newStation]);
-        this.initStationForm();
-        this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.SUCCESS);
-      } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.FAIL);
-        throw new Error(e);
-      }
+          this.setStations([...this.stations, newStation]);
+
+          this.initStationForm();
+          this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.SUCCESS);
+        } catch (e) {
+          this.showSnackbar(SNACKBAR_MESSAGES.STATION.CREATE.FAIL);
+          throw new Error(e);
+        }
+      },
+      initStationForm() {
+        this.stationName = "";
+        this.$refs.stationForm.resetValidation();
+      },
+      async onDeleteStation(stationId) {
+        try {
+          const response = await fetch(
+            `/api/stations/${stationId}`,
+            {
+              method: 'DELETE'
+            }
+          )
+          if (!response.ok) {
+            throw new Error(`${response.error()}`)
+          }
+
+          const idx = this.stations.findIndex(
+            (station) => station.id === stationId
+          );
+          this.stations.splice(idx, 1);
+
+          this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
+        } catch (e) {
+          this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.FAIL);
+          throw new Error(e);
+        }
+      },
     },
-    initStationForm() {
-      this.stationName = "";
-      this.$refs.stationForm.resetValidation();
+    data() {
+      return {
+        rules: {...validator},
+        valid: false,
+        stationName: "",
+      };
     },
-    async onDeleteStation(stationId) {
-      try {
-        // TODO 역을 삭제하는 API를 추가해주세요.
-        // await fetch("http://localhost:8080/stations/{id}");
-        const idx = this.stations.findIndex(
-          (station) => station.id === stationId
-        );
-        this.stations.splice(idx, 1);
-        this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.SUCCESS);
-      } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.STATION.DELETE.FAIL);
-        throw new Error(e);
-      }
-    },
-  },
-  data() {
-    return {
-      rules: { ...validator },
-      valid: false,
-      stationName: "",
-    };
-  },
-};
+  };
 </script>
 
 <style lang="scss">
-.card-border {
-  border-top: 8px solid #ffc107 !important;
-}
+  .card-border {
+    border-top: 8px solid #ffc107 !important;
+  }
 </style>
