@@ -20,38 +20,37 @@ import wooteco.subway.station.domain.Station;
 class RouteMapTest {
 
     private RouteMap routeMap;
-    private Station stationA, stationB, stationC, stationD;
-    private Section sectionAB, sectionBC;
-    private Line line;
+    private Station 서초, 교대, 강남, 방배;
+    private Section 서초_교대, 교대_강남;
+    private Line 이호선;
 
     @BeforeEach
     void setUp() {
-        stationA = new Station(1L, "stationA");
-        stationB = new Station(2L, "stationB");
-        stationC = new Station(3L, "stationC");
-        stationD = new Station(4L, "stationD");
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        방배 = new Station(4L, "방배역");
         routeMap = new RouteMap(createDummyGraph());
     }
 
     private Multigraph<Station, PathEdge> createDummyGraph() {
         Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
 
-        graph.addVertex(stationA);
-        graph.addVertex(stationB);
-        graph.addVertex(stationC);
-        graph.addVertex(stationD);
+        graph.addVertex(서초);
+        graph.addVertex(교대);
+        graph.addVertex(강남);
+        graph.addVertex(방배);
 
-        // create LineA: A-B-C
-        sectionAB = new Section(1L, stationA, stationB, 5);
-        sectionBC = new Section(2L, stationB, stationC, 3);
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
 
-        line = new Line(
-            1L, "line", "green lighten-1",
-            new Sections(Arrays.asList(sectionAB, sectionBC))
+        이호선 = new Line(
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
         );
 
-        graph.addEdge(stationA, stationB, new PathEdge(sectionAB, line));
-        graph.addEdge(stationB, stationC, new PathEdge(sectionBC, line));
+        graph.addEdge(서초, 교대, new PathEdge(서초_교대, 이호선));
+        graph.addEdge(교대, 강남, new PathEdge(교대_강남, 이호선));
 
         return graph;
     }
@@ -60,36 +59,36 @@ class RouteMapTest {
     @Test
     void addStation() {
         // given
-        Station stationE = new Station(5L, "stationE");
+        Station 역삼 = new Station(5L, "역삼역");
 
         // when
-        routeMap.addStation(stationE);
+        routeMap.addStation(역삼);
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD, stationE);
+            .containsExactlyInAnyOrder(서초, 교대, 강남, 방배, 역삼);
     }
 
     @DisplayName("노선도에서 역을 제거한다.")
     @Test
     void removeStation() {
         // when
-        routeMap.removeStation(stationD);
+        routeMap.removeStation(방배);
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB, stationC);
+            .containsExactlyInAnyOrder(서초, 교대, 강남);
     }
 
     @DisplayName("노선도의 역을 업데이트 한다. (역이 제거된 경우)")
     @Test
     void updateStations_removalCase() {
         // given
-        Line lineAfterStationRemoved = new Line(
-            1L, "line", "green lighten-1",
-            new Sections(Collections.singletonList(sectionAB))
+        Line 강남역_제거된_이호선 = new Line(
+            1L, "2호선", "green lighten-1",
+            new Sections(Collections.singletonList(서초_교대))
         );
-        Set<Station> expectedStations = new Lines(Collections.singletonList(lineAfterStationRemoved))
+        Set<Station> expectedStations = new Lines(Collections.singletonList(강남역_제거된_이호선))
             .toDistinctStations();
 
         // when
@@ -97,18 +96,18 @@ class RouteMapTest {
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB);
+            .containsExactlyInAnyOrder(서초, 교대);
     }
 
     @DisplayName("노선도의 역을 업데이트 한다. (역이 추가된 경우)")
     @Test
     void updateStations_addingCase() {
         // given
-        Station stationD = new Station(4L, "stationD");
-        Section sectionCD = new Section(3L, stationC, stationD, 2);
+        Station 역삼 = new Station(4L, "역삼역");
+        Section 강남_역삼 = new Section(3L, 강남, 역삼, 2);
         Line addedLine = new Line(
-            1L, "line", "green lighten-1",
-            new Sections(Arrays.asList(sectionAB, sectionBC, sectionCD))
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남, 강남_역삼))
         );
         Set<Station> expectedStations = new Lines(Collections.singletonList(addedLine))
             .toDistinctStations();
@@ -118,19 +117,19 @@ class RouteMapTest {
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(stationA, stationB, stationC, stationD);
+            .containsExactlyInAnyOrder(서초, 교대, 강남, 역삼);
     }
 
     @DisplayName("노선도의 역을 업데이트 한다. (역의 정보가 수정된 경우)")
     @Test
     void updateStations_valueChangingCase() {
         // given
-        Station updatedStationA = new Station(stationA.getId(), "updated" + stationA.getName());
-        Section updatedSectionAB = new Section(1L, updatedStationA, stationB, 5);
+        Station 변경_서초역 = new Station(서초.getId(), "변경" + 서초.getName());
+        Section 변경_서초_교대 = new Section(1L, 변경_서초역, 교대, 5);
 
         Line updatedLine = new Line(
-            1L, "line", "green lighten-1",
-            new Sections(Arrays.asList(updatedSectionAB, sectionBC))
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(변경_서초_교대, 교대_강남))
         );
         Set<Station> expectedStations = new Lines(Collections.singletonList(updatedLine))
             .toDistinctStations();
@@ -140,17 +139,17 @@ class RouteMapTest {
 
         // then
         assertThat(routeMap.toDistinctStations())
-            .containsExactlyInAnyOrder(updatedStationA, stationB, stationC);
+            .containsExactlyInAnyOrder(변경_서초역, 교대, 강남);
     }
 
     @DisplayName("노선도의 구간을 업데이트 한다.")
     @Test
     void updateSections() {
         // given
-        Section sectionDA = new Section(3L, stationD, stationA, 2);
+        Section 방배_서초 = new Section(3L, 방배, 서초, 2);
         Line updatedLine = new Line(
-            1L, "line", "green lighten-1",
-            new Sections(Arrays.asList(sectionDA, sectionAB))
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(방배_서초, 서초_교대))
         );
         Lines expectedLines = new Lines(Collections.singletonList(updatedLine));
 
@@ -160,8 +159,8 @@ class RouteMapTest {
         // then
         assertThat(routeMap.toPathEdges())
             .containsExactlyInAnyOrder(
-                new PathEdge(sectionDA, updatedLine),
-                new PathEdge(sectionAB, updatedLine)
+                new PathEdge(방배_서초, updatedLine),
+                new PathEdge(서초_교대, updatedLine)
             );
     }
 }

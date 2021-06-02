@@ -16,34 +16,34 @@ import wooteco.subway.station.domain.Station;
 
 class PathEdgeTest {
 
-    private Station stationA, stationB, stationC;
-    private Section sectionAB, sectionBC;
-    private Line line;
+    private Station 서초, 교대, 강남;
+    private Section 서초_교대, 교대_강남;
+    private Line 이호선;
 
     @BeforeEach
     void setUp() {
-        stationA = new Station(1L, "stationA");
-        stationB = new Station(2L, "stationB");
-        stationC = new Station(3L, "stationC");
-        sectionAB = new Section(1L, stationA, stationB, 5);
-        sectionBC = new Section(2L, stationB, stationC, 3);
-        Sections sections = new Sections(Arrays.asList(sectionAB, sectionBC));
-        line = new Line(1L, "line", "green lighten-1", sections);
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
+        Sections sections = new Sections(Arrays.asList(서초_교대, 교대_강남));
+        이호선 = new Line(1L, "2호선", "green lighten-1", sections);
     }
 
     @DisplayName("생성에 성공한다.")
     @Test
     void creationSuccessful() {
         // when
-        PathEdge pathEdge = new PathEdge(sectionAB, line);
+        PathEdge pathEdge = new PathEdge(서초_교대, 이호선);
 
         // then
         assertAll(
             () -> assertThat(pathEdge).extracting("section")
-                .isEqualTo(sectionAB),
+                .isEqualTo(서초_교대),
 
             () -> assertThat(pathEdge).extracting("lineName")
-                .isEqualTo(line.getName())
+                .isEqualTo(이호선.getName())
         );
     }
 
@@ -51,10 +51,10 @@ class PathEdgeTest {
     @Test
     void creationFailed() {
         // given
-        Section section = new Section(3L, stationA, stationC, 7);
+        Section 서초_강남 = new Section(3L, 서초, 강남, 7);
 
         // when, then
-        assertThatThrownBy(() -> new PathEdge(section, line))
+        assertThatThrownBy(() -> new PathEdge(서초_강남, 이호선))
             .isInstanceOf(ValidationFailureException.class)
             .hasMessageContaining("노선에 해당 구간이 없습니다");
     }

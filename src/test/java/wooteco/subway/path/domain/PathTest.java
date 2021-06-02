@@ -19,21 +19,21 @@ import wooteco.subway.station.domain.Station;
 class PathTest {
 
     private List<PathEdge> pathEdges;
-    private Station stationA, stationB, stationC;
+    private Station 서초, 교대, 강남;
 
     @BeforeEach
     void setUp() {
-        stationA = new Station(1L, "stationA");
-        stationB = new Station(2L, "stationB");
-        stationC = new Station(3L, "stationC");
-        Section sectionAB = new Section(1L, stationA, stationB, 5);
-        Section sectionBC = new Section(2L, stationB, stationC, 3);
-        Sections sections = new Sections(Arrays.asList(sectionAB, sectionBC));
-        Line line = new Line(1L, "line", "green lighten-1", sections);
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        Section 서초_교대 = new Section(1L, 서초, 교대, 5);
+        Section 교대_강남 = new Section(2L, 교대, 강남, 3);
+        Sections sections = new Sections(Arrays.asList(서초_교대, 교대_강남));
+        Line 이호선 = new Line(1L, "2호선", "green lighten-1", sections);
 
         pathEdges = Arrays.asList(
-            new PathEdge(sectionAB, line),
-            new PathEdge(sectionBC, line)
+            new PathEdge(서초_교대, 이호선),
+            new PathEdge(교대_강남, 이호선)
         );
     }
 
@@ -54,7 +54,7 @@ class PathTest {
         List<Station> stations = new Path(pathEdges).toStations();
 
         // then
-        assertThat(stations).containsExactly(stationA, stationB, stationC);
+        assertThat(stations).containsExactly(서초, 교대, 강남);
     }
 
     @DisplayName("구간의 거리를 가져온다.")

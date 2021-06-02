@@ -19,14 +19,14 @@ import wooteco.subway.station.domain.Station;
 class PathRouterTest {
 
     private PathRouter pathRouter;
-    private Station stationA, stationB, stationC, stationD;
+    private Station 서초, 교대, 강남, 고터;
 
     @BeforeEach
     void setUp() {
-        stationA = new Station(1L, "stationA");
-        stationB = new Station(2L, "stationB");
-        stationC = new Station(3L, "stationC");
-        stationD = new Station(4L, "stationD");
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        고터 = new Station(4L, "고속터미널역");
         pathRouter = new PathRouter(
             new DijkstraShortestPath<>(createDummyGraph())
         );
@@ -35,34 +35,32 @@ class PathRouterTest {
     private Multigraph<Station, PathEdge> createDummyGraph() {
         Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
 
-        graph.addVertex(stationA);
-        graph.addVertex(stationB);
-        graph.addVertex(stationC);
-        graph.addVertex(stationD);
+        graph.addVertex(서초);
+        graph.addVertex(교대);
+        graph.addVertex(강남);
+        graph.addVertex(고터);
 
-        // create LineA: A-B-C
-        Section sectionAB = new Section(1L, stationA, stationB, 5);
-        Section sectionBC = new Section(2L, stationB, stationC, 3);
+        Section 서초_교대 = new Section(1L, 서초, 교대, 5);
+        Section 교대_강남 = new Section(2L, 교대, 강남, 3);
 
-        Line lineA = new Line(
-            1L, "lineA", "green lighten-1",
-            new Sections(Arrays.asList(sectionAB, sectionBC))
+        Line 이호선 = new Line(
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
         );
 
-        graph.addEdge(stationA, stationB, new PathEdge(sectionAB, lineA));
-        graph.addEdge(stationB, stationC, new PathEdge(sectionBC, lineA));
+        graph.addEdge(서초, 교대, new PathEdge(서초_교대, 이호선));
+        graph.addEdge(교대, 강남, new PathEdge(교대_강남, 이호선));
 
-        // create LineB: B-D-C
-        Section sectionBD = new Section(3L, stationB, stationD, 1);
-        Section sectionDC = new Section(4L, stationD, stationC, 1);
+        Section 교대_고터 = new Section(3L, 교대, 고터, 1);
+        Section 고터_강남 = new Section(4L, 고터, 강남, 1);
 
-        Line lineB = new Line(
-            2L, "lineB", "black lighten-1",
-            new Sections(Arrays.asList(sectionBD, sectionDC))
+        Line 삼호선 = new Line(
+            2L, "3호선", "orange lighten-1",
+            new Sections(Arrays.asList(교대_고터, 고터_강남))
         );
 
-        graph.addEdge(stationB, stationD, new PathEdge(sectionBD, lineB));
-        graph.addEdge(stationD, stationC, new PathEdge(sectionDC, lineB));
+        graph.addEdge(교대, 고터, new PathEdge(교대_고터, 삼호선));
+        graph.addEdge(고터, 강남, new PathEdge(고터_강남, 삼호선));
 
         return graph;
     }
@@ -71,10 +69,12 @@ class PathRouterTest {
     @Test
     void findByShortest() {
         // when
-        Path shortestPath = pathRouter.findByShortest(stationA, stationC);
+        Path shortestPath = pathRouter.findByShortest(서초, 강남);
 
         // that
         assertThat(shortestPath.toDistance())
             .isEqualTo(7);
     }
+
+
 }

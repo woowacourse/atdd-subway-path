@@ -11,38 +11,38 @@ import wooteco.subway.station.domain.Station;
 
 class LinesTest {
 
-    private Station stationA, stationB, stationC, stationD;
-    private Section sectionAB, sectionBC, sectionBD, sectionDC;
+    private Station 서초, 교대, 강남, 고터;
+    private Section 서초_교대, 교대_강남, 교대_고터, 고터_강남;
     private Lines lines;
 
     @BeforeEach
     void setUp() {
-        stationA = new Station(1L, "stationA");
-        stationB = new Station(2L, "stationB");
-        stationC = new Station(3L, "stationC");
-        stationD = new Station(4L, "stationD");
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        고터 = new Station(4L, "고속터미널역");
         lines = new Lines(
-            Arrays.asList(createLineA(), createLineB())
+            Arrays.asList(createLineTwo(), createLineThree())
         );
     }
 
-    private Line createLineA() {
-        sectionAB = new Section(1L, stationA, stationB, 5);
-        sectionBC = new Section(2L, stationB, stationC, 3);
+    private Line createLineTwo() {
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
 
         return new Line(
-            1L, "lineA", "green lighten-1",
-            new Sections(Arrays.asList(sectionAB, sectionBC))
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
         );
     }
 
-    private Line createLineB() {
-        sectionBD = new Section(3L, stationB, stationD, 1);
-        sectionDC = new Section(4L, stationD, stationC, 1);
+    private Line createLineThree() {
+        교대_고터 = new Section(3L, 교대, 고터, 1);
+        고터_강남 = new Section(4L, 고터, 강남, 1);
 
         return new Line(
-            2L, "lineB", "black lighten-1",
-            new Sections(Arrays.asList(sectionBD, sectionDC))
+            2L, "3호선", "orange lighten-1",
+            new Sections(Arrays.asList(교대_고터, 고터_강남))
         );
     }
 
@@ -53,7 +53,7 @@ class LinesTest {
         Set<Station> stations = lines.toDistinctStations();
 
         // then
-        assertThat(stations).containsExactlyInAnyOrder(stationA, stationB, stationC, stationD);
+        assertThat(stations).containsExactlyInAnyOrder(서초, 교대, 강남, 고터);
     }
 
     @DisplayName("전체 노선에서 모든 구간을 무작위 순서로 가져온다.")
@@ -63,17 +63,17 @@ class LinesTest {
         Set<Section> sections = lines.toAllSections();
 
         // then
-        assertThat(sections).containsExactlyInAnyOrder(sectionAB, sectionBC, sectionBD, sectionDC);
+        assertThat(sections).containsExactlyInAnyOrder(서초_교대, 교대_강남, 교대_고터, 고터_강남);
     }
 
     @DisplayName("전체 노선에서 특정 구간을 포함하는 노선을 알아낸다.")
     @Test
     void findLineBySectionContaining() {
         // when
-        Line line = lines.findLineBySectionContaining(sectionAB);
+        Line line = lines.findLineBySectionContaining(서초_교대);
 
         // then
         assertThat(line).usingRecursiveComparison()
-            .isEqualTo(createLineA());
+            .isEqualTo(createLineTwo());
     }
 }
