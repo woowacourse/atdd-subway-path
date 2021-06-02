@@ -51,7 +51,7 @@ public class LineService {
     }
 
     private Section addInitSection(Line line, LineRequest request) {
-        validaBothNonNull(request.getUpStationId(), request.getDownStationId());
+        validateSectionStations(request.getUpStationId(), request.getDownStationId());
 
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -59,9 +59,20 @@ public class LineService {
         return sectionDao.insert(line, section);
     }
 
-    private void validaBothNonNull(Long firstId, Long secondId) {
-        if (Objects.isNull(firstId) && Objects.isNull(secondId)) {
-            throw new ValidationFailureException("구간의 상행역과 하행역이 같을 수 없습니다.");
+    private void validateSectionStations(Long upStationId, Long downStationId) {
+        validateStationsNonNull(upStationId, downStationId);
+        validateDifferentStations(upStationId, downStationId);
+    }
+
+    private void validateStationsNonNull(Long upStationId, Long downStationId) {
+        if (Objects.isNull(upStationId) || Objects.isNull(downStationId)) {
+            throw new ValidationFailureException("추가하려는 구간의 상행역과 하행역에 null이 있습니다.");
+        }
+    }
+
+    private void validateDifferentStations(Long upStationId, Long downStationId) {
+        if (upStationId.equals(downStationId)) {
+            throw new ValidationFailureException("추가하려는 구간의 상행역과 하행역이 같습니다.");
         }
     }
 
@@ -115,6 +126,8 @@ public class LineService {
 
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
+        validateSectionStations(request.getUpStationId(), request.getDownStationId());
+
         try {
             Line line = findLineById(lineId);
             Station upStation = stationService.findStationById(request.getUpStationId());
