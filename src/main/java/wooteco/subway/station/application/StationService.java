@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.application.NonexistentTargetException;
 import wooteco.subway.routemap.application.RouteMapManager;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -27,8 +28,9 @@ public class StationService {
         return StationResponse.of(station);
     }
 
-    public Station findStationById(Long id) {
-        return stationDao.findById(id);
+    public Station findExistentStationById(Long id) {
+        return stationDao.findById(id)
+            .orElseThrow(() -> new NonexistentTargetException("역ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +41,7 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        Station station = findStationById(id);
+        Station station = findExistentStationById(id);
         stationDao.deleteById(id);
         routeMapManager.removeStation(station);
     }

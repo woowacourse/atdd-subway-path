@@ -17,8 +17,8 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long departureStationId, Long arrivalStationId) {
-        Station departureStation = stationService.findStationById(departureStationId);
-        Station arrivalStation = stationService.findStationById(arrivalStationId);
+        Station departureStation = stationService.findExistentStationById(departureStationId);
+        Station arrivalStation = stationService.findExistentStationById(arrivalStationId);
 
         return PathResponse.from(
             pathRouter.findByShortest(departureStation, arrivalStation)
