@@ -32,6 +32,17 @@ class PathRouterTest {
         );
     }
 
+    @DisplayName("역간의 최단 경로를 찾는다.")
+    @Test
+    void findByShortest() {
+        // when
+        Path shortestPath = pathRouter.findByShortest(서초, 강남);
+
+        // that
+        assertThat(shortestPath.toDistance())
+            .isEqualTo(7);
+    }
+
     private Multigraph<Station, PathEdge> createDummyGraph() {
         Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
 
@@ -64,17 +75,4 @@ class PathRouterTest {
 
         return graph;
     }
-
-    @DisplayName("역간의 최단 경로를 찾는다.")
-    @Test
-    void findByShortest() {
-        // when
-        Path shortestPath = pathRouter.findByShortest(서초, 강남);
-
-        // that
-        assertThat(shortestPath.toDistance())
-            .isEqualTo(7);
-    }
-
-
 }

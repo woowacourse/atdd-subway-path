@@ -26,26 +26,6 @@ class LinesTest {
         );
     }
 
-    private Line createLineTwo() {
-        서초_교대 = new Section(1L, 서초, 교대, 5);
-        교대_강남 = new Section(2L, 교대, 강남, 3);
-
-        return new Line(
-            1L, "2호선", "green lighten-1",
-            new Sections(Arrays.asList(서초_교대, 교대_강남))
-        );
-    }
-
-    private Line createLineThree() {
-        교대_고터 = new Section(3L, 교대, 고터, 1);
-        고터_강남 = new Section(4L, 고터, 강남, 1);
-
-        return new Line(
-            2L, "3호선", "orange lighten-1",
-            new Sections(Arrays.asList(교대_고터, 고터_강남))
-        );
-    }
-
     @DisplayName("전체 노선에서 모든 역을 무작위 순서로 가져온다.")
     @Test
     void toDistinctStations() {
@@ -75,5 +55,25 @@ class LinesTest {
         // then
         assertThat(line).usingRecursiveComparison()
             .isEqualTo(createLineTwo());
+    }
+
+    private Line createLineTwo() {
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
+
+        return new Line(
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
+        );
+    }
+
+    private Line createLineThree() {
+        교대_고터 = new Section(3L, 교대, 고터, 1);
+        고터_강남 = new Section(4L, 고터, 강남, 1);
+
+        return new Line(
+            2L, "3호선", "orange lighten-1",
+            new Sections(Arrays.asList(교대_고터, 고터_강남))
+        );
     }
 }

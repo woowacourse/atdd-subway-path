@@ -33,28 +33,6 @@ class RouteMapTest {
         routeMap = new RouteMap(createDummyGraph());
     }
 
-    private Multigraph<Station, PathEdge> createDummyGraph() {
-        Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
-
-        graph.addVertex(서초);
-        graph.addVertex(교대);
-        graph.addVertex(강남);
-        graph.addVertex(방배);
-
-        서초_교대 = new Section(1L, 서초, 교대, 5);
-        교대_강남 = new Section(2L, 교대, 강남, 3);
-
-        이호선 = new Line(
-            1L, "2호선", "green lighten-1",
-            new Sections(Arrays.asList(서초_교대, 교대_강남))
-        );
-
-        graph.addEdge(서초, 교대, new PathEdge(서초_교대, 이호선));
-        graph.addEdge(교대, 강남, new PathEdge(교대_강남, 이호선));
-
-        return graph;
-    }
-
     @DisplayName("노선도에 새로운 역을 추가한다.")
     @Test
     void addStation() {
@@ -162,5 +140,27 @@ class RouteMapTest {
                 new PathEdge(방배_서초, updatedLine),
                 new PathEdge(서초_교대, updatedLine)
             );
+    }
+
+    private Multigraph<Station, PathEdge> createDummyGraph() {
+        Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
+
+        graph.addVertex(서초);
+        graph.addVertex(교대);
+        graph.addVertex(강남);
+        graph.addVertex(방배);
+
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
+
+        이호선 = new Line(
+            1L, "2호선", "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
+        );
+
+        graph.addEdge(서초, 교대, new PathEdge(서초_교대, 이호선));
+        graph.addEdge(교대, 강남, new PathEdge(교대_강남, 이호선));
+
+        return graph;
     }
 }

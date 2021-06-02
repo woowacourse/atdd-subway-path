@@ -20,17 +20,12 @@ class PathTest {
 
     private List<PathEdge> pathEdges;
     private Station 서초, 교대, 강남;
+    private Section 서초_교대, 교대_강남;
+    private Line 이호선;
 
     @BeforeEach
     void setUp() {
-        서초 = new Station(1L, "서초역");
-        교대 = new Station(2L, "교대역");
-        강남 = new Station(3L, "강남역");
-        Section 서초_교대 = new Section(1L, 서초, 교대, 5);
-        Section 교대_강남 = new Section(2L, 교대, 강남, 3);
-        Sections sections = new Sections(Arrays.asList(서초_교대, 교대_강남));
-        Line 이호선 = new Line(1L, "2호선", "green lighten-1", sections);
-
+        initializeSubwayData();
         pathEdges = Arrays.asList(
             new PathEdge(서초_교대, 이호선),
             new PathEdge(교대_강남, 이호선)
@@ -65,5 +60,15 @@ class PathTest {
 
         // then
         assertThat(distance).isEqualTo(8);
+    }
+
+    private void initializeSubwayData() {
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        서초_교대 = new Section(1L, 서초, 교대, 5);
+        교대_강남 = new Section(2L, 교대, 강남, 3);
+        Sections sections = new Sections(Arrays.asList(서초_교대, 교대_강남));
+        이호선 = new Line(1L, "2호선", "green lighten-1", sections);
     }
 }
