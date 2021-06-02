@@ -2,11 +2,9 @@ package wooteco.subway.line.application;
 
 import java.util.List;
 import java.util.Objects;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.BusinessRelatedException;
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -38,16 +36,12 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        try {
-            Line persistLine = lineDao.insert(
-                new Line(request.getName(), request.getColor())
-            );
-            persistLine.addSection(addInitSection(persistLine, request));
-            routeMapManager.updateSections(findLines());
-            return LineResponse.of(persistLine);
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("노선 추가에 실패했습니다.");
-        }
+        Line persistLine = lineDao.insert(
+            new Line(request.getName(), request.getColor())
+        );
+        persistLine.addSection(addInitSection(persistLine, request));
+        routeMapManager.updateSections(findLines());
+        return LineResponse.of(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -82,78 +76,53 @@ public class LineService {
     }
 
     private Lines findLines() {
-        try {
-            return new Lines(lineDao.findAll());
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("노선 조회에 실패했습니다.");
-        }
+        return new Lines(lineDao.findAll());
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(
+            findLineById(id)
+        );
     }
 
     private Line findLineById(Long id) {
-        try {
-            return lineDao.findById(id);
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("노선 조회에 실패했습니다.");
-        }
+        return lineDao.findById(id);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        try {
-            lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-            routeMapManager.updateSections(findLines());
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException(
-                String.format("노선 정보 수정에 실패했습니다. (%s)", lineUpdateRequest.getName())
-            );
-        }
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        routeMapManager.updateSections(findLines());
     }
 
     @Transactional
     public void deleteLineById(Long id) {
-        try {
-            lineDao.deleteById(id);
-            routeMapManager.updateSections(findLines());
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("노선 제거에 실패했습니다.");
-        }
+        lineDao.deleteById(id);
+        routeMapManager.updateSections(findLines());
     }
 
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         validateSectionStations(request.getUpStationId(), request.getDownStationId());
 
-        try {
-            Line line = findLineById(lineId);
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            line.addSection(upStation, downStation, request.getDistance());
+        Line line = findLineById(lineId);
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        line.addSection(upStation, downStation, request.getDistance());
 
-            sectionDao.deleteByLineId(lineId);
-            sectionDao.insertSections(line);
-            routeMapManager.updateSections(findLines());
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("구간 추가에 실패했습니다.");
-        }
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.insertSections(line);
+        routeMapManager.updateSections(findLines());
     }
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
-        try {
-            Line line = findLineById(lineId);
-            Station station = stationService.findStationById(stationId);
-            line.removeSection(station);
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        line.removeSection(station);
 
-            sectionDao.deleteByLineId(lineId);
-            sectionDao.insertSections(line);
-            routeMapManager.updateSections(findLines());
-        } catch (DataAccessException e) {
-            throw new BusinessRelatedException("구간 제거에 실패했습니다.");
-        }
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.insertSections(line);
+        routeMapManager.updateSections(findLines());
     }
 }

@@ -25,7 +25,7 @@ public class SectionDao {
     }
 
     public Section insert(Line line, Section section) {
-        Map<String, Object> params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.station.domain.Station;
 
 public class Path {

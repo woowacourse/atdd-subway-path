@@ -3,7 +3,7 @@ package wooteco.subway.path.application;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.path.domain.Path;
 import wooteco.subway.path.domain.PathEdge;
 import wooteco.subway.path.exception.RoutingFailureException;

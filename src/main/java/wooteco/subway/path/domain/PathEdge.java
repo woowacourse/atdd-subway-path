@@ -2,7 +2,7 @@ package wooteco.subway.path.domain;
 
 import java.util.Objects;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
