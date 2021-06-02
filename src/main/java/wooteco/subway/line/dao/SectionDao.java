@@ -62,7 +62,7 @@ public class SectionDao {
             + "DST.name as downStationName, S.distance as distance "
             + "from SECTION as S "
             + "left outer join STATION as UST on S.up_station_id = UST.id "
-            + "left outer join STATION as DST on S.down_station_id = UST.id";
+            + "left outer join STATION as DST on S.down_station_id = DST.id";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         return toSection(result);

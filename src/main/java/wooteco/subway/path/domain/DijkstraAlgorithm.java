@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.List;
+import java.util.Optional;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.context.annotation.Primary;
@@ -27,13 +28,9 @@ public class DijkstraAlgorithm implements PathAlgorithms {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
             new DijkstraShortestPath<>(graph.getGraph());
 
-        try {
-            List<Station> paths = dijkstraShortestPath.getPath(source, target).getVertexList();
-            int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
-            return new Path(paths, distance);
-        } catch (NullPointerException e) {
-            throw new SubWayException(SubWayExceptionSet.NOT_CONNECT_STATION_EXCEPTION);
-        }
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+            .map(item -> new Path(item.getVertexList(), (int) item.getWeight()))
+            .orElseThrow(() -> new SubWayException(SubWayExceptionSet.NOT_CONNECT_STATION_EXCEPTION));
     }
 
     private void validateStation(Station source, Station target) {

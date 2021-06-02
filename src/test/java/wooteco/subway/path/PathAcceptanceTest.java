@@ -65,18 +65,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5);
     }
 
-    @DisplayName("존재하지 않는 역의 경로를 조회한다.")
-    @Test
-    void findPathByDistanceWithNotExistStation() {
-        //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 5L);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().asString())
-            .isEqualTo(SubWayExceptionSet.NOT_EXIST_STATION_EXCEPTION.message());
-    }
-
     @DisplayName("연결되지 않은 역의 경로를 조회한다.")
     @Test
     void findPathByDistanceWithNotConnectStation() {
