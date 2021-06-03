@@ -86,12 +86,26 @@ export default {
   name: "SectionPage",
   components: { SectionDeleteButton, SectionCreateButton },
   async created() {
-    // TODO 초기 역 데이터를 불러오는 API를 추가해주세요.
-    // const stations = await fetch("/api/stations")
-    // this.setStations([...stations])
-    // TODO 초기 노선 데이터를 불러오는 API를 추가해주세요.
-    // const lines = await fetch("/api/lines");
-    // this.setLines([...lines]);
+    // 초기 역 데이터를 불러오는 API를 추가해주세요.
+    const stations = await fetch("/api/stations", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then(res => {
+      return res.json();
+    })
+    this.setStations([...stations])
+    // 초기 노선 데이터를 불러오는 API를 추가해주세요.
+    const lines = await fetch("/api/lines", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then(res => {
+      return res.json();
+    })
+    this.setLines([...lines]);
     this.initLinesView();
   },
   computed: {
