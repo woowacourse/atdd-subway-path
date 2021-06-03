@@ -18,7 +18,8 @@ import wooteco.subway.station.domain.Station;
 
 class PathTest {
 
-    private List<PathEdge> pathEdges;
+    private List<Station> 이호선_역들;
+    private List<PathEdge> 이호선_구간들;
     private Station 서초, 교대, 강남;
     private Section 서초_교대, 교대_강남;
     private Line 이호선;
@@ -26,10 +27,7 @@ class PathTest {
     @BeforeEach
     void setUp() {
         initializeSubwayData();
-        pathEdges = Arrays.asList(
-            new PathEdge(서초_교대, 이호선),
-            new PathEdge(교대_강남, 이호선)
-        );
+        initializePathArguments();
     }
 
     @DisplayName("구간이 없는 경로는 생성에 실패한다.")
@@ -37,7 +35,7 @@ class PathTest {
     @ParameterizedTest
     void creationFailed(List<PathEdge> pathEdges) {
         // when, then
-        assertThatThrownBy(() -> new Path(pathEdges))
+        assertThatThrownBy(() -> new Path(이호선_역들, pathEdges))
             .isInstanceOf(ValidationFailureException.class)
             .hasMessageContaining("Path 생성에 실패했습니다");
     }
@@ -46,7 +44,8 @@ class PathTest {
     @Test
     void toStations() {
         // when
-        List<Station> stations = new Path(pathEdges).toStations();
+        List<Station> stations = new Path(이호선_역들, 이호선_구간들)
+            .toStations();
 
         // then
         assertThat(stations).containsExactly(서초, 교대, 강남);
@@ -56,7 +55,8 @@ class PathTest {
     @Test
     void toDistance() {
         // when
-        int distance = new Path(pathEdges).toDistance();
+        int distance = new Path(이호선_역들, 이호선_구간들)
+            .toDistance();
 
         // then
         assertThat(distance).isEqualTo(8);
@@ -68,7 +68,19 @@ class PathTest {
         강남 = new Station(3L, "강남역");
         서초_교대 = new Section(1L, 서초, 교대, 5);
         교대_강남 = new Section(2L, 교대, 강남, 3);
-        Sections sections = new Sections(Arrays.asList(서초_교대, 교대_강남));
-        이호선 = new Line(1L, "2호선", "green lighten-1", sections);
+        이호선 = new Line(
+            1L,
+            "2호선",
+            "green lighten-1",
+            new Sections(Arrays.asList(서초_교대, 교대_강남))
+        );
+    }
+
+    private void initializePathArguments() {
+        이호선_역들 = Arrays.asList(서초, 교대, 강남);
+        이호선_구간들 = Arrays.asList(
+            new PathEdge(서초_교대, 이호선),
+            new PathEdge(교대_강남, 이호선)
+        );
     }
 }

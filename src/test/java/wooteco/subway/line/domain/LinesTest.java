@@ -13,24 +13,18 @@ class LinesTest {
 
     private Station 서초, 교대, 강남, 고터;
     private Section 서초_교대, 교대_강남, 교대_고터, 고터_강남;
-    private Lines lines;
+    private Lines 전체노선;
 
     @BeforeEach
     void setUp() {
-        서초 = new Station(1L, "서초역");
-        교대 = new Station(2L, "교대역");
-        강남 = new Station(3L, "강남역");
-        고터 = new Station(4L, "고속터미널역");
-        lines = new Lines(
-            Arrays.asList(createLineTwo(), createLineThree())
-        );
+        initializeSubwayData();
     }
 
     @DisplayName("전체 노선에서 모든 역을 무작위 순서로 가져온다.")
     @Test
     void toDistinctStations() {
         // when
-        Set<Station> stations = lines.toDistinctStations();
+        Set<Station> stations = 전체노선.toDistinctStations();
 
         // then
         assertThat(stations).containsExactlyInAnyOrder(서초, 교대, 강남, 고터);
@@ -40,7 +34,7 @@ class LinesTest {
     @Test
     void toAllSections() {
         // when
-        Set<Section> sections = lines.toAllSections();
+        Set<Section> sections = 전체노선.toAllSections();
 
         // then
         assertThat(sections).containsExactlyInAnyOrder(서초_교대, 교대_강남, 교대_고터, 고터_강남);
@@ -50,14 +44,24 @@ class LinesTest {
     @Test
     void findLineBySectionContaining() {
         // when
-        Line line = lines.findLineBySectionContaining(서초_교대);
+        Line line = 전체노선.findLineBySectionContaining(서초_교대);
 
         // then
         assertThat(line).usingRecursiveComparison()
-            .isEqualTo(createLineTwo());
+            .isEqualTo(이호선_생성());
     }
 
-    private Line createLineTwo() {
+    private void initializeSubwayData() {
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        고터 = new Station(4L, "고속터미널역");
+        전체노선 = new Lines(
+            Arrays.asList(이호선_생성(), 삼호선_생성())
+        );
+    }
+
+    private Line 이호선_생성() {
         서초_교대 = new Section(1L, 서초, 교대, 5);
         교대_강남 = new Section(2L, 교대, 강남, 3);
 
@@ -67,7 +71,7 @@ class LinesTest {
         );
     }
 
-    private Line createLineThree() {
+    private Line 삼호선_생성() {
         교대_고터 = new Section(3L, 교대, 고터, 1);
         고터_강남 = new Section(4L, 고터, 강남, 1);
 
