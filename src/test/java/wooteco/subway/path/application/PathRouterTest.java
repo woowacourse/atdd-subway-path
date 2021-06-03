@@ -10,6 +10,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -40,11 +41,22 @@ class PathRouterTest {
         // that
         assertThat(shortestPath.toDistance())
             .isEqualTo(7);
+
+        assertThat(shortestPath.toStations())
+            .containsExactly(서초, 교대, 고터, 강남);
     }
 
-    @DisplayName("존재하지 않는 경로를 조회한 경우")
+    @DisplayName("같은역을 조회할 경우 예외 발생")
     @Test
-    void findByShortest_fail_nonsxistent() {
+    void findByShortest_fail_sameStations() {
+        assertThatThrownBy(() -> pathRouter.findByShortest(서초, 서초))
+            .isInstanceOf(ValidationFailureException.class)
+            .hasMessageContaining("Path 생성에 실패했습니다. (비어있는 간선)");
+    }
+
+    @DisplayName("존재하지 않는 경로를 조회한 경우 예외 발생")
+    @Test
+    void findByShortest_fail_nonexistent() {
         assertThatThrownBy(() -> pathRouter.findByShortest(서초, 노원))
             .isInstanceOf(RoutingFailureException.class)
             .hasMessageContaining("경로 없음");
