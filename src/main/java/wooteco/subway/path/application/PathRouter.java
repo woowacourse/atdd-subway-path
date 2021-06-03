@@ -21,7 +21,10 @@ public class PathRouter {
     public Path findByShortest(Station departureStation, Station arrivalStation) {
         GraphPath<Station, PathEdge> graphPath = shortestPathAlgorithm.getPath(departureStation, arrivalStation);
         validateExistentPath(graphPath);
-        return new Path(graphPath.getEdgeList());
+        return new Path(
+            graphPath.getVertexList(),
+            graphPath.getEdgeList()
+        );
     }
 
     private void validateExistentPath(GraphPath<Station, PathEdge> graphPath) {
