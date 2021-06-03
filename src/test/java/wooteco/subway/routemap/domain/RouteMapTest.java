@@ -1,4 +1,4 @@
-package wooteco.subway.routemap.infrastructure;
+package wooteco.subway.routemap.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,11 +26,8 @@ class RouteMapTest {
 
     @BeforeEach
     void setUp() {
-        서초 = new Station(1L, "서초역");
-        교대 = new Station(2L, "교대역");
-        강남 = new Station(3L, "강남역");
-        방배 = new Station(4L, "방배역");
-        routeMap = new RouteMap(createDummyGraph());
+        initializeSubwayData();
+        initializeRouteMap();
     }
 
     @DisplayName("노선도에 새로운 역을 추가한다.")
@@ -142,13 +139,11 @@ class RouteMapTest {
             );
     }
 
-    private Multigraph<Station, PathEdge> createDummyGraph() {
-        Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
-
-        graph.addVertex(서초);
-        graph.addVertex(교대);
-        graph.addVertex(강남);
-        graph.addVertex(방배);
+    private void initializeSubwayData() {
+        서초 = new Station(1L, "서초역");
+        교대 = new Station(2L, "교대역");
+        강남 = new Station(3L, "강남역");
+        방배 = new Station(4L, "방배역");
 
         서초_교대 = new Section(1L, 서초, 교대, 5);
         교대_강남 = new Section(2L, 교대, 강남, 3);
@@ -157,10 +152,19 @@ class RouteMapTest {
             1L, "2호선", "green lighten-1",
             new Sections(Arrays.asList(서초_교대, 교대_강남))
         );
+    }
+
+    private void initializeRouteMap() {
+        Multigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
+
+        graph.addVertex(서초);
+        graph.addVertex(교대);
+        graph.addVertex(강남);
+        graph.addVertex(방배);
 
         graph.addEdge(서초, 교대, new PathEdge(서초_교대, 이호선));
         graph.addEdge(교대, 강남, new PathEdge(교대_강남, 이호선));
 
-        return graph;
+        routeMap = new RouteMap(graph);
     }
 }

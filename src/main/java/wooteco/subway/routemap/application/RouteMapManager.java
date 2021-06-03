@@ -3,7 +3,7 @@ package wooteco.subway.routemap.application;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Lines;
-import wooteco.subway.routemap.infrastructure.RouteMap;
+import wooteco.subway.routemap.domain.RouteMap;
 import wooteco.subway.station.domain.Station;
 
 @Service

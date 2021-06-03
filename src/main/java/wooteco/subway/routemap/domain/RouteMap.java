@@ -1,4 +1,4 @@
-package wooteco.subway.routemap.infrastructure;
+package wooteco.subway.routemap.domain;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
