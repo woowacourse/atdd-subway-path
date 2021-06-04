@@ -7,13 +7,20 @@ import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Route {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> route;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private WeightedMultigraph<Station, DefaultWeightedEdge> route;
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public Route(List<Section> sections) {
+    public Route() {
+        route = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        dijkstraShortestPath = new DijkstraShortestPath<>(route);
+    }
+
+    public void updateGraph(List<Section> sections) {
         route = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath<>(route);
         initVertex(findUniqueStations(sections));

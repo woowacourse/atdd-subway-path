@@ -9,6 +9,7 @@ import wooteco.exception.badrequest.InvalidSectionOnLineException;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Route;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -20,10 +21,12 @@ public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationService stationService;
+    private final Route route;
 
-    public SectionService(SectionDao sectionDao, StationService stationService) {
+    public SectionService(SectionDao sectionDao, StationService stationService, Route route) {
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.route = route;
     }
 
     public SectionServiceDto saveByLineCreate(Line line, @Valid SectionServiceDto dto) {
@@ -50,14 +53,20 @@ public class SectionService {
     }
 
     private SectionServiceDto saveSectionAtEnd(Section section) {
-        return SectionServiceDto.from(sectionDao.insert(section));
+        SectionServiceDto sectionServiceDto = SectionServiceDto.from(sectionDao.insert(section));
+
+        route.updateGraph(sectionDao.findAll());
+        return sectionServiceDto;
     }
 
     private SectionServiceDto saveSectionAtMiddle(Section section, Sections sections) {
         Section legacySection = sections.findByMatchStation(section);
         sectionDao.delete(legacySection);
         sectionDao.insert(legacySection.updateForSave(section));
-        return SectionServiceDto.from(sectionDao.insert(section));
+        SectionServiceDto sectionServiceDto = SectionServiceDto.from(sectionDao.insert(section));
+
+        route.updateGraph(sectionDao.findAll());
+        return sectionServiceDto;
     }
 
     public void delete(Line line, @NotNull Long stationId) {
@@ -78,6 +87,8 @@ public class SectionService {
             sectionDao.deleteByLineIdAndUpStationId(line.getId(), station.getId());
         }
         sectionDao.deleteByLineIdAndDownStationId(line.getId(), station.getId());
+
+        route.updateGraph(sectionDao.findAll());
     }
 
     private void deleteStationAtMiddle(Line line, Station station) {
@@ -90,6 +101,8 @@ public class SectionService {
         sectionDao.delete(upSection);
         sectionDao.delete(downSection);
         sectionDao.insert(updatedSection);
+
+        route.updateGraph(sectionDao.findAll());
     }
 
     public List<StationResponse> findAllByLind(Line line) {

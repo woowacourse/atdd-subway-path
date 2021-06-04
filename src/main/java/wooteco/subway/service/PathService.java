@@ -11,19 +11,18 @@ import wooteco.subway.web.dto.response.PathResponse;
 @Service
 public class PathService {
 
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final Route route;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao) {
-        this.sectionDao = sectionDao;
+    public PathService(StationDao stationDao, Route route) {
         this.stationDao = stationDao;
+        this.route = route;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
         Station sourceStation = stationDao.findById(sourceId);
         Station targetStation = stationDao.findById(targetId);
 
-        Route route = new Route(sectionDao.findAll());
         List<Station> shortestStations = route.findShortestStation(sourceStation, targetStation);
         int shortestDistance = route.findShortestDistance(sourceStation, targetStation);
 

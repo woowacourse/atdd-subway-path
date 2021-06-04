@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.LineResponse;
@@ -126,5 +127,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+    }
+
+    @DisplayName("지하철 구간 변경내용이 반영되는지 확인한다.")
+    @Test
+    void findPathAfterUpdateGraph() {
+        // given
+        StationResponse 면목역 = 지하철역_등록되어_있음("면목역");
+
+        //when
+        ExtractableResponse<Response> beforeResponse = 거리_경로_조회_요청(1L, 2L);
+        지하철_구간_등록되어_있음(신분당선, 강남역, 면목역, 2);
+        ExtractableResponse<Response> afterResponse = 거리_경로_조회_요청(1L, 2L);
+
+        //then
+        적절한_경로_응답됨(beforeResponse, Lists.newArrayList(강남역, 양재역));
+        총_거리가_응답됨(beforeResponse, 10);
+
+        적절한_경로_응답됨(afterResponse, Lists.newArrayList(강남역, 면목역, 양재역));
+        총_거리가_응답됨(afterResponse, 10);
     }
 }
