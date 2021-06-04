@@ -12,11 +12,7 @@ public class MemberResponse {
     public MemberResponse() {
     }
 
-    public MemberResponse(String email) {
-        this.email = email;
-    }
-
-    public MemberResponse(Long id, String email, Integer age) {
+    private MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
@@ -27,8 +23,7 @@ public class MemberResponse {
     }
 
     public static MemberResponse from(LoginMember loginMember) {
-        return new MemberResponse(loginMember.getId(), loginMember.getEmail(),
-            loginMember.getAge());
+        return new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package wooteco.subway.auth;
+package wooteco.subway.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +13,8 @@ import wooteco.subway.auth.ui.LoginInterceptor;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
-    private AuthService authService;
-    private LoginInterceptor loginInterceptor;
+    private final AuthService authService;
+    private final LoginInterceptor loginInterceptor;
 
     public AuthenticationPrincipalConfig(AuthService authService, LoginInterceptor loginInterceptor) {
         this.authService = authService;
@@ -23,7 +23,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/members/?*");
+        registry.addInterceptor(loginInterceptor)
+            .addPathPatterns("/members/?*");
     }
 
     @Override

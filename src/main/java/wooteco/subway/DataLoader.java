@@ -6,9 +6,11 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Lines;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.routemap.application.RouteMapManager;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
@@ -16,21 +18,29 @@ import wooteco.subway.station.domain.Station;
 @Profile("!test")
 public class DataLoader implements CommandLineRunner {
 
-    private StationDao stationDao;
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private MemberDao memberDao;
+    private final StationDao stationDao;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final MemberDao memberDao;
+    private final RouteMapManager routeMapManager;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
-        MemberDao memberDao) {
+    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao,
+        RouteMapManager routeMapManager) {
+
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.memberDao = memberDao;
+        this.routeMapManager = routeMapManager;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        generateDummyData();
+        applyExistentDataToGraph();
+    }
+
+    private void generateDummyData() {
         Station 강남역 = stationDao.insert(new Station("강남역"));
         Station 판교역 = stationDao.insert(new Station("판교역"));
         Station 정자역 = stationDao.insert(new Station("정자역"));
@@ -47,14 +57,19 @@ public class DataLoader implements CommandLineRunner {
         이호선.addSection(new Section(역삼역, 잠실역, 10));
         sectionDao.insertSections(이호선);
 
-        Member member = new Member("email@email.com", "password", 10);
-        Member member2 = new Member("a@a.com", "a", 10);
-        Member member3 = new Member("b@b.com", "b", 10);
-        Member member4 = new Member("c@c.com", "c", 10);
-        memberDao.insert(member);
-        memberDao.insert(member2);
-        memberDao.insert(member3);
-        memberDao.insert(member4);
+        Member adult = new Member("adult@adult.com", "adult", 25);
+        Member teenager = new Member("teenager@teenager.com", "teenager", 15);
+        Member child = new Member("child@child.com", "child", 10);
+        Member baby = new Member("baby@baby.com", "baby", 1);
+        memberDao.insert(adult);
+        memberDao.insert(teenager);
+        memberDao.insert(child);
+        memberDao.insert(baby);
+    }
+
+    private void applyExistentDataToGraph() {
+        Lines lines = new Lines(lineDao.findAll());
+        routeMapManager.updateMap(lines);
     }
 }
 

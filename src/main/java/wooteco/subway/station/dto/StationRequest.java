@@ -1,9 +1,11 @@
 package wooteco.subway.station.dto;
 
+import javax.validation.constraints.NotBlank;
 import wooteco.subway.station.domain.Station;
 
 public class StationRequest {
 
+    @NotBlank(message = "역이름이 비어있거나 공백입니다.")
     private String name;
 
     public StationRequest() {

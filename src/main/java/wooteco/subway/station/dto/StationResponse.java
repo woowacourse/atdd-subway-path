@@ -12,7 +12,7 @@ public class StationResponse {
     public StationResponse() {
     }
 
-    public StationResponse(Long id, String name) {
+    private StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
