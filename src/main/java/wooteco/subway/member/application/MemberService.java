@@ -4,8 +4,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.exception.UserLoginFailException;
-import wooteco.subway.exceptions.SubWayCustomException;
 import wooteco.subway.exceptions.SubWayException;
+import wooteco.subway.exceptions.SubWayExceptionSet;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -13,6 +13,7 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
+
     private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -21,14 +22,14 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = request.toMember();
-        memberValidate(member);
+        validateCreateMember(member);
         Member newMember = memberDao.insert(request.toMember());
         return MemberResponse.of(newMember);
     }
 
-    private void memberValidate(Member member) {
-        if (memberDao.existByEmail(member)) {
-            throw new SubWayCustomException(SubWayException.DUPLICATE_EMAIL_EXCEPTION);
+    private void validateCreateMember(Member member) {
+        if (memberDao.existMemberByEmail(member)) {
+            throw new SubWayException(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
 
@@ -37,14 +38,17 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByPayLoad(String payLoad) {
-        return MemberResponse.of(memberDao.findByEmail(payLoad));
+    public void updateMember(Long id, MemberRequest memberRequest) {
+        Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(),
+            memberRequest.getAge());
+        validateUpdateMember(member);
+        memberDao.update(member);
     }
 
-    public void updateMember(Long id, MemberRequest memberRequest) {
-        Member member = new Member(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
-        memberValidate(member);
-        memberDao.update(member);
+    private void validateUpdateMember(Member member) {
+        if (memberDao.existMemberOtherThanMeByEmail(member)) {
+            throw new SubWayException(SubWayExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public void deleteMember(Long id) {
@@ -52,10 +56,10 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByTokenRequest(TokenRequest tokenRequest) {
-        try{
+        try {
             Member member = memberDao.findByTokenRequest(tokenRequest);
             return MemberResponse.of(member);
-        } catch (EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             throw new UserLoginFailException();
         }
 

@@ -1,19 +1,13 @@
 package wooteco.subway.member.domain;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
     private Integer age;
 
     public Member() {
-    }
-
-    public Member(Long id, String email, String password, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.age = age;
     }
 
     public Member(Long id, String email, Integer age) {
@@ -23,7 +17,13 @@ public class Member {
     }
 
     public Member(String email, String password, Integer age) {
-        this.id = 0L;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;

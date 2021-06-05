@@ -7,6 +7,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -21,10 +23,10 @@ public class AuthService {
 
     public TokenResponse generateToken(TokenRequest tokenRequest) {
         MemberResponse memberResponse = memberService.findMemberByTokenRequest(tokenRequest);
-        return new TokenResponse(jwtTokenProvider.createToken(memberResponse.getEmail()));
+        return new TokenResponse(jwtTokenProvider.createToken(memberResponse));
     }
 
-    public String getPayLoad(String token) {
+    public Map<String, Object> getPayLoadData(String token) {
         return jwtTokenProvider.getPayload(token);
     }
 }

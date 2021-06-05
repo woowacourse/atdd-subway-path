@@ -17,7 +17,7 @@ import wooteco.subway.member.dto.MemberResponse;
 @RestController
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -51,24 +51,25 @@ public class MemberController {
     // TODO: 구현 하기
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse) {
+        @AuthenticationPrincipal MemberRequest memberRequest) {
+        MemberResponse memberResponse = memberService.findMember(memberRequest.getId());
         return ResponseEntity.ok(memberResponse);
     }
 
     // TODO: 구현 하기
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse,
-        @RequestBody MemberRequest memberRequest) {
-        memberService.updateMember(memberResponse.getId(), memberRequest);
+        @AuthenticationPrincipal MemberRequest memberRequest1,
+        @RequestBody MemberRequest memberRequest2) {
+        memberService.updateMember(memberRequest1.getId(), memberRequest2);
         return ResponseEntity.ok().build();
     }
 
     // TODO: 구현 하기
     @DeleteMapping("/members/me")
     public ResponseEntity<Void> deleteMemberOfMine(
-        @AuthenticationPrincipal MemberResponse memberResponse) {
-        memberService.deleteMember(memberResponse.getId());
+        @AuthenticationPrincipal MemberRequest memberRequest) {
+        memberService.deleteMember(memberRequest.getId());
         return ResponseEntity.noContent().build();
     }
 }

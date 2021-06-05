@@ -41,8 +41,8 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql,
-            new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate
+            .update(sql, member.getEmail(), member.getPassword(), member.getAge(), member.getId());
     }
 
     public void deleteById(Long id) {
@@ -66,10 +66,19 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 
-    public boolean existByEmail(Member member) {
+    public boolean existMemberOtherThanMeByEmail(Member member) {
         String sql = "select exists (select * from MEMBER where email = ? and id <> ?)";
 
-        Boolean isExistEmail = jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail(), member.getId());
+        Boolean isExistEmail =
+            jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail(), member.getId());
+        return Objects.requireNonNull(isExistEmail);
+    }
+
+    public boolean existMemberByEmail(Member member) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+
+        Boolean isExistEmail =
+            jdbcTemplate.queryForObject(sql, boolean.class, member.getEmail());
         return Objects.requireNonNull(isExistEmail);
     }
 }
