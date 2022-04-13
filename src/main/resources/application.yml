@@ -7,9 +7,6 @@ spring:
   h2:
     console:
       enabled: true
-handlebars:
-  suffix: .html
-  enabled: true
 security:
   jwt:
     token:
