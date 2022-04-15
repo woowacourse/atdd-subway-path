@@ -57,18 +57,40 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, null);
 
         //then
         적절한_경로_응답됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        요금이_응답됨(response, 1250);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    @DisplayName("두 역의 최단 거리 경로를 나이를 고려하여 조회한다.")
+    @Test
+    void findPathByDistanceWithAge() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, 16);
+
+        //then
+        적절한_경로_응답됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        요금이_응답됨(response, 1250);
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, Integer age) {
+        if (age == null) {
+            return RestAssured
+                    .given().log().all()
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                    .then().log().all()
+                    .extract();
+        }
+
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/paths?source={sourceId}&target={targetId}&age={age}", source, target, age)
                 .then().log().all()
                 .extract();
     }
@@ -90,5 +112,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    public static void 요금이_응답됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }
