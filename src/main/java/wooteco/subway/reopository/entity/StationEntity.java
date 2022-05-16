@@ -1,17 +1,17 @@
-package wooteco.subway.dto;
+package wooteco.subway.reopository.entity;
 
-import wooteco.subway.domain.Station;
+public class StationEntity {
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class StationResponse {
     private Long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
+    public StationEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public StationEntity(String name) {
+        this(null, name);
     }
 
     public Long getId() {
