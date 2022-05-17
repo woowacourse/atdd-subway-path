@@ -34,9 +34,10 @@ public class Lines {
     }
 
     private Graph<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        sections.forEach(section -> addSection(graph, section));
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        for (Section section : sections) {
+            addSection(graph, section);
+        }
         return graph;
     }
 
