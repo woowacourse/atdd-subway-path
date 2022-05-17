@@ -4,7 +4,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.dto.PathDto;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,11 +18,11 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public PathDto findShortestPath(Long source, Long target) {
+    public Path findShortestPath(Long source, Long target) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         initPathGraph(graph, gatherStationIds());
         GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
-        return new PathDto(path.getVertexList(), (int) path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight());
     }
 
     private Set<Long> gatherStationIds() {

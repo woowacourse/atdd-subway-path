@@ -2,7 +2,6 @@ package wooteco.subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.dto.PathDto;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ class SectionsTest {
         Section section2 = new Section(2L, 1L, 2L, 3L, 20);
         Sections sections = new Sections(List.of(section1, section2));
 
-        PathDto shortestPath = sections.findShortestPath(1L, 3L);
+        Path shortestPath = sections.findShortestPath(1L, 3L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(30);
     }
