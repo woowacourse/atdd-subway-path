@@ -164,4 +164,8 @@ public class Sections {
     public boolean isEmpty() {
         return sections.isEmpty();
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
