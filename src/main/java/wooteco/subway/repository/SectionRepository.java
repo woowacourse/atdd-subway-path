@@ -101,4 +101,9 @@ public class SectionRepository {
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM SECTION WHERE id = ?", id);
     }
+
+    public List<Section> findAll() {
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION";
+        return jdbcTemplate.query(sql, ROW_MAPPER);
+    }
 }

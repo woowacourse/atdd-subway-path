@@ -1,6 +1,7 @@
 package wooteco.subway.repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -67,4 +68,7 @@ public class StationRepository {
         jdbcTemplate.update("DELETE FROM STATION");
     }
 
+    public List<Station> findAll() {
+        return jdbcTemplate.query("SELECT id, name FROM STATION", ROW_MAPPER);
+    }
 }

@@ -35,8 +35,11 @@ Content-Length: 239
 ```
 
 ### 예외 케이스
-* [ ] source 지하철 역이 없는 경우, target 지하철 역이 없는 경우
+* [x] source 지하철 역이 없는 경우, target 지하철 역이 없는 경우
     * 404 NOT FOUND
     
 * [ ] source에서 target으로 못 가는 경우
     * 400 BAD REQUEST
+  
+* [x] source와 target이 같은 경우 
+  * 400 BAD REQUEST
