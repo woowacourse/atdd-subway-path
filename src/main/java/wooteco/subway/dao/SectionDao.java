@@ -12,4 +12,6 @@ public interface SectionDao {
     boolean update(Long sectionId, Long downStationId, int distance);
 
     boolean deleteById(Long sectionId);
+
+    List<Section> findAll();
 }

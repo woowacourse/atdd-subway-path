@@ -64,4 +64,10 @@ public class SectionDaoImpl implements SectionDao {
         int updateSize = jdbcTemplate.update(sql, sectionId);
         return updateSize != 0;
     }
+
+    @Override
+    public List<Section> findAll() {
+        final String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, sectionMapper());
+    }
 }
