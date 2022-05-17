@@ -233,6 +233,32 @@ public class SectionsTest {
                 .containsExactly(강남역, 역삼역, 선릉역, 삼성역, 종합운동장역, 삼전역);
     }
 
+    @Test
+    @DisplayName("시작역과 종점역이 같을 경우 예외가 발생한다.")
+    void sameSourceTarget() {
+        // given
+        Sections sections = new Sections(전체_구간);
+
+        // when & then
+        assertThatThrownBy(() -> sections.findShortestPath(강남역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 같을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("각 구간 리스트들의 총 거리를 구할 수 있다.")
+    void calculatePathDistance() {
+        // given
+        Sections sections = new Sections(전체_구간);
+        List<Station> stations = sections.findShortestPath(강남역, 삼전역);
+
+        // when
+        int pathDistance = sections.calculatePathDistance(stations);
+
+        // then
+        assertThat(pathDistance).isEqualTo(25);
+    }
+
     private Sections createSections(Section section) {
         List<Section> sections = new ArrayList<>();
         sections.add(section);

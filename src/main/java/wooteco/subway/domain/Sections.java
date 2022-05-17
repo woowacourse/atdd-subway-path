@@ -150,12 +150,19 @@ public class Sections {
                 .findFirst();
     }
 
-    public List<Station> findShortestPath(Station startStation, Station endStation) {
+    public List<Station> findShortestPath(Station source, Station target) {
+        validateSameStation(source, target);
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph();
 
         return new DijkstraShortestPath(graph)
-                .getPath(startStation, endStation)
+                .getPath(source, target)
                 .getVertexList();
+    }
+
+    private void validateSameStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+        }
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph() {
@@ -178,6 +185,23 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public Section findSection(Station upStation, Station downStation) {
+        return values.stream()
+                .filter(value -> value.isSameUpStation(upStation) && value.isSameDownStation(downStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 구간이 없습니다."));
+    }
+
+    public int calculatePathDistance(List<Station> stations) {
+        int distance = 0;
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Section findSection = findSection(stations.get(i), stations.get(i + 1));
+            distance += findSection.getDistance();
+        }
+
+       return distance;
     }
 
     public List<Section> getValues() {
