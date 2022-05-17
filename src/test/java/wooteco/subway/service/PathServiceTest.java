@@ -35,7 +35,7 @@ class PathServiceTest {
     }
 
 
-    @DisplayName("경로를 조회할 수 있다.")
+    @DisplayName("하나의 line에서 경로를 조회할 수 있다.")
     @Test
     public void findPath() {
         // given
@@ -66,6 +66,58 @@ class PathServiceTest {
                         tuple(1L, "a"),
                         tuple(2L, "b"),
                         tuple(3L, "c")
+                );
+    }
+
+    @DisplayName("여러 개의 line에서 경로를 조회할 수 있다.")
+    @Test
+    public void findPath2() {
+        // given
+        final StationRequest a = new StationRequest("a");
+        final StationRequest b = new StationRequest("b");
+        final StationRequest c = new StationRequest("c");
+        final StationRequest d = new StationRequest("d");
+        final StationRequest e = new StationRequest("e");
+        final StationRequest f = new StationRequest("f");
+        final StationRequest g = new StationRequest("g");
+
+        final StationResponse response1 = stationService.save(a);
+        final StationResponse response2 = stationService.save(b);
+        final StationResponse response3 = stationService.save(c);
+        final StationResponse response4 = stationService.save(d);
+        final StationResponse response5 = stationService.save(e);
+        final StationResponse response6 = stationService.save(f);
+        final StationResponse response7 = stationService.save(g);
+
+        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10);
+        final Long 신분당선id = lineService.save(신분당선).getId();
+        sectionService.save(신분당선id, new SectionRequest(response1.getId(), response2.getId(), 4));
+        sectionService.save(신분당선id, new SectionRequest(response3.getId(), response7.getId(), 4));
+
+        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response2.getId(), response7.getId(), 21);
+        final Long 경중선id = lineService.save(경중선).getId();
+        sectionService.save(경중선id, new SectionRequest(response2.getId(), response4.getId(), 10));
+        sectionService.save(경중선id, new SectionRequest(response4.getId(), response5.getId(), 1));
+        sectionService.save(경중선id, new SectionRequest(response6.getId(), response7.getId(), 6));
+
+
+        final LineRequest 분당선 = new LineRequest("분당선", "bg-yellow-600", response3.getId(), response5.getId(), 5);
+        final Long 분당선id = lineService.save(분당선).getId();
+
+        // when
+        final PathResponse response = pathService.findPath(1L, 6L);
+
+        // then
+        assertThat(response).extracting("distance", "fare")
+                .containsExactly(19, 1450);
+        assertThat(response.getStations()).hasSize(5)
+                .extracting("id", "name")
+                .containsExactly(
+                        tuple(1L, "a"),
+                        tuple(2L, "b"),
+                        tuple(3L, "c"),
+                        tuple(5L, "e"),
+                        tuple(6L, "f")
                 );
     }
 }

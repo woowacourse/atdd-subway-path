@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -40,7 +41,11 @@ public class PathService {
     }
 
     private List<StationResponse> getStationResponses(List<Long> shortestPath) {
-        final List<Station> stations = stationDao.findAllByIds(shortestPath);
+        final List<Station> stations = shortestPath.stream()
+                .map(stationDao::findById)
+                .map(Optional::orElseThrow)
+                .collect(toList());
+
         return stations.stream()
                 .map(StationResponse::new)
                 .collect(toList());
