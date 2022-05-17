@@ -15,7 +15,8 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
-        final Section topSection = findTopSection(findAnySection());
+        final Section anySection = findAnySection();
+        final Section topSection = findTopSection(anySection);
         return createSortedStations(topSection);
     }
 
@@ -110,12 +111,14 @@ public class Sections {
     }
 
     private boolean isOverThanTopSection(final Section section) {
-        final Section topSection = findTopSection(findAnySection());
+        final Section anySection = findAnySection();
+        final Section topSection = findTopSection(anySection);
         return topSection.isLowerThan(section);
     }
 
     private boolean isUnderThanLastSection(final Section section) {
-        final Section lastSection = findLastSection(findAnySection());
+        final Section anySection = findAnySection();
+        final Section lastSection = findLastSection(anySection);
         return lastSection.isUpperThan(section);
     }
 
