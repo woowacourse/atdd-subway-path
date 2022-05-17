@@ -2,7 +2,7 @@
 
 ### 기능 요구사항
 
-- [ ] jgrapht 학습테스트 해보기
+- [x] jgrapht 학습테스트 해보기
 - [ ] 최단 거리 경로 로직 구현
     - [ ] 모든 section 가져오기
     - [ ] section 들로 jgrapht 로 graph 만들기
