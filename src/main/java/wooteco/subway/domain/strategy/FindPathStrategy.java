@@ -7,5 +7,4 @@ import wooteco.subway.domain.Station;
 public interface FindPathStrategy {
 
     Path findPath(Station source, Station target, Sections sections);
-
 }

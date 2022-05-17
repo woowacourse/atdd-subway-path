@@ -12,7 +12,7 @@ class PathTest {
 
     @Test
     @DisplayName("10km 이하일 때 기본 운임은 1250원이다.")
-    void calcualteDefaultFare() {
+    void calculateDefaultFare() {
         Path path = new Path(stations, 10);
 
         assertThat(path.calculateFare()).isEqualTo(1250);
