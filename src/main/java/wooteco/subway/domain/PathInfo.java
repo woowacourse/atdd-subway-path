@@ -42,4 +42,21 @@ public class PathInfo {
         }
         return sum;
     }
+
+    public int calculateScore(Station source, Station target) {
+        int distance = calculateMinDistance(source, target);
+        int cost = 1250;
+        if (distance > 50) {
+            cost += calculateCost(distance, 50, 8);
+            distance = 50;
+        }
+        if (distance > 10) {
+            cost += calculateCost(distance, 10, 5);
+        }
+        return cost;
+    }
+
+    private int calculateCost(int distance, int baseDistance, int unit) {
+        return ((distance - baseDistance -1 ) / unit + 1) * 100;
+    }
 }
