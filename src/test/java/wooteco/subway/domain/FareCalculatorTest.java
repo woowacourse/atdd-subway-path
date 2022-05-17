@@ -10,11 +10,11 @@ class FareCalculatorTest {
     @DisplayName("경로 거리가 10Km 이하면 1250이 부과된다.")
     @Test
     void calculateFare_basic() {
-        double distance = 10;
+        double distance = 11;
         FareCalculator fareCalculator = new FareCalculator(distance);
         int fare = fareCalculator.calculateFare();
 
-        assertThat(fare).isEqualTo(1250);
+        assertThat(fare).isEqualTo(1350);
     }
 
     @DisplayName("경로 거리가 10Km 초과이고 50Km 이하면 5km당 100원이 부과된다.")
