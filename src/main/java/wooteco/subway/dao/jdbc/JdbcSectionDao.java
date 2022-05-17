@@ -63,6 +63,12 @@ public class JdbcSectionDao implements SectionDao {
     }
 
     @Override
+    public List<Section> findAll() {
+        String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
+    }
+
+    @Override
     public void updateUpStationId(Long id, Long changeStationId, int calculateDistance) {
         String sql = "UPDATE section SET up_station_id=?, distance=? WHERE id=?";
         jdbcTemplate.update(sql, changeStationId, calculateDistance, id);
