@@ -43,16 +43,16 @@ class PathServiceTest {
         sectionDao.save(new Section(2L, station4, station3, 3));
 
         // when
-        PathFindResponse path = pathService.findPath(new PathFindRequest(1, 3, 15));
+        PathFindResponse path = pathService.findPath(new PathFindRequest(station1.getId(), station3.getId(), 15));
 
         // then
         assertAll(
                 () -> assertThat(path.getStations())
                         .extracting("id", "name")
                         .containsExactly(
-                                tuple(1L, "오리"),
-                                tuple(2L, "배카라"),
-                                tuple(3L, "오카라")
+                                tuple(station1.getId(), station1.getName()),
+                                tuple(station2.getId(), station2.getName()),
+                                tuple(station3.getId(), station3.getName())
                         ),
                 () -> assertThat(path.getDistance()).isEqualTo(4)
         );
