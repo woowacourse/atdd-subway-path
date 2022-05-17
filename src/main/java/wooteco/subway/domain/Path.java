@@ -31,7 +31,7 @@ public class Path {
     }
 
     private int calculateOverFare(int distance, int unitDistance) {
-        return (int) ((Math.ceil((distance - 1.0) / unitDistance) + 1) * ADDITIONAL_UNIT_FARE);
+        return (int) ((Math.ceil((distance - 1) / unitDistance) + 1) * ADDITIONAL_UNIT_FARE);
     }
 
     private int calculateFirstAdditionalFare() {
