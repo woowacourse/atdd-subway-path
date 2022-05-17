@@ -20,7 +20,8 @@ public class LineDao {
     private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -28,7 +29,7 @@ public class LineDao {
     }
 
     public Line save(Line line) {
-        final String sql = "insert into Line(name, color) values (?, ?)";
+        final String sql = "insert into Line(name, color, extra_fare) values (?, ?, ?)";
         if (isContainsLine(line)) {
             throw new IllegalStateException("노선 이름은 중복될 수 없습니다.");
         }
@@ -38,18 +39,20 @@ public class LineDao {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
         return new Line(
                 Objects.requireNonNull(keyHolder.getKey()).longValue(),
                 line.getName(),
-                line.getColor()
+                line.getColor(),
+                line.getExtraFare()
         );
     }
 
     public List<Line> findAll() {
-        final String sql = "select id, name, color from Line";
+        final String sql = "select id, name, color, extra_fare from Line";
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
@@ -60,7 +63,7 @@ public class LineDao {
     }
 
     public Line findById(Long id) {
-        final String sql = "select id, name, color from Line where id = ?";
+        final String sql = "select id, name, color, extra_fare from Line where id = ?";
         if (!isExistById(id)) {
             throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
         }
@@ -74,11 +77,11 @@ public class LineDao {
     }
 
     public void update(Long id, Line line) {
-        final String sql = "update Line set name = ?, color = ? where id = ?";
+        final String sql = "update Line set name = ?, color = ?, extra_fare = ? where id = ?";
         if (!isExistById(id)) {
             throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
         }
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
     public void deleteById(Long id) {

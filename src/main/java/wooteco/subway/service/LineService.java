@@ -32,7 +32,8 @@ public class LineService {
     public LineResponse save(final LineRequest lineRequest) {
         final Line line = new Line(
                 lineRequest.getName(),
-                lineRequest.getColor()
+                lineRequest.getColor(),
+                lineRequest.getExtraFare()
         );
         final Line newLine = lineDao.save(line);
 
@@ -49,7 +50,8 @@ public class LineService {
                 newLine.getId(),
                 newLine.getName(),
                 newLine.getColor(),
-                stationResponses
+                stationResponses,
+                lineRequest.getExtraFare()
         );
     }
 
@@ -66,19 +68,19 @@ public class LineService {
     public List<LineResponse> findAll() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), getStationResponsesByLine(it)))
+                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), getStationResponsesByLine(it), it.getExtraFare()))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LineResponse getById(final Long id) {
         final Line line = lineDao.findById(id);
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line), line.getExtraFare());
     }
 
     @Transactional
     public void update(final Long id, final LineRequest lineRequest) {
-        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor()));
+        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional
