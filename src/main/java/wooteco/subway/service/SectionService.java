@@ -55,7 +55,7 @@ public class SectionService {
                 .collect(Collectors.toList());
     }
 
-    private Station getStationById(List<Station> stations, Long id) {
+    public Station getStationById(List<Station> stations, Long id) {
         return stations.stream()
                 .filter(station -> station.getId().equals(id))
                 .findFirst()
@@ -64,5 +64,9 @@ public class SectionService {
 
     public List<Section> findAllByLineId(Long lineId) {
         return sectionDao.findAllByLineId(lineId);
+    }
+
+    public List<Section> findAll() {
+        return sectionDao.findAll();
     }
 }
