@@ -1,6 +1,7 @@
 package wooteco.subway.domain.strategy;
 
 import java.util.List;
+import java.util.Optional;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -20,12 +21,10 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
-        try {
-            GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(source, target);
-            return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
-        } catch (NullPointerException exception) {
-            throw new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다.");
-        }
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath shortestPath = Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
     private void addVertexStation(final Sections sections,
