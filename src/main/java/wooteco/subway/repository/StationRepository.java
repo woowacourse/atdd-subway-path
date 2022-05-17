@@ -53,12 +53,4 @@ public class StationRepository {
             .map(entity -> new Station(entity.getId(), entity.getName()))
             .collect(Collectors.toList());
     }
-
-    private void persistEach(List<Long> persistedIds, List<Station> stations) {
-        for (Station station : stations) {
-            final StationEntity entity = StationEntity.from(station);
-            final Long id = persistManager.persist(stationDao, entity, persistedIds);
-            SimpleReflectionUtils.injectId(station, id);
-        }
-    }
 }

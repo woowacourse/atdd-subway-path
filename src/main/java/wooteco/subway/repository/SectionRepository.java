@@ -53,12 +53,4 @@ public class SectionRepository {
                 new Distance(entity.getDistance()))
             ).collect(Collectors.toList());
     }
-
-    private void persistEach(Long lineId, List<Long> persistedIds, List<Section> sections) {
-        for (Section section : sections) {
-            final SectionEntity entity = SectionEntity.from(section, lineId);
-            final Long id = persistManager.persist(sectionDao, entity, persistedIds);
-            SimpleReflectionUtils.injectId(section, id);
-        }
-    }
 }

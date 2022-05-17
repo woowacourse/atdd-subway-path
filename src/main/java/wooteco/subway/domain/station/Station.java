@@ -23,10 +23,6 @@ public class Station {
         this(null, new Name(name));
     }
 
-    public Station() {
-        this(null);
-    }
-
     public boolean hasSameNameWith(Station otherStation) {
         return this.name.equals(otherStation.name);
     }

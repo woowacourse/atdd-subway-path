@@ -46,15 +46,6 @@ public class LineRepository {
             .collect(Collectors.toList());
     }
 
-    private void persistEach(List<Line> lines, List<Long> persistedIds) {
-        for (Line line : lines) {
-            LineEntity entity = LineEntity.from(line);
-            Long id = persistManager.persist(lineDao, entity, persistedIds);
-            SimpleReflectionUtils.injectId(line, id);
-            sectionRepository.persist(id, line.getSectionSeries());
-        }
-    }
-
     public List<Line> findAllLines() {
         return lineDao.findAll()
             .stream()
