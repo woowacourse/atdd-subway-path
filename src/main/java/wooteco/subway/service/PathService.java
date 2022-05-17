@@ -22,7 +22,8 @@ public class PathService {
 
         final PathCalculator pathCalculator = new PathCalculator(lines);
         final List<Station> stations = pathCalculator.findShortestPath(source, target);
+        final int distance = pathCalculator.findShortestDistance(source, target);
 
-        return new PathResponse(stations);
+        return new PathResponse(stations, distance);
     }
 }
