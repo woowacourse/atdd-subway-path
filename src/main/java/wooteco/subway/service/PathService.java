@@ -49,7 +49,7 @@ public class PathService {
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
 
         if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException("경로가 존재하지 않습니다.");
@@ -64,6 +64,14 @@ public class PathService {
         int shortestDistance = (int) shortestPath.getWeight();
         Fare fare = new Fare(shortestDistance);
         return new PathResponse(stationResponses, shortestDistance, fare.calculate());
+    }
+
+    private GraphPath getPath(Station source, Station target, DijkstraShortestPath dijkstraShortestPath) {
+        try {
+            return dijkstraShortestPath.getPath(source, target);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("노선에 등록되지 않는 지하철역입니다.");
+        }
     }
 
     private void fillGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Long lineId) {

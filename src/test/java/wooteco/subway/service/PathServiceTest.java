@@ -97,4 +97,19 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 부천역.getId(), 24))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("경로에 존재하지 않는 지하철역을 조회하면 예외를 던진다.")
+    @Test
+    void findPathNotExistsStation() {
+        StationResponse 건대입구역 = stationService.save(new StationRequest("건대입구역"));
+        StationResponse 강남구청역 = stationService.save(new StationRequest("강남구청역"));
+        LineRequest line7 = new LineRequest(
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10);
+        lineService.save(line7);
+
+        StationResponse 센트럴파트역 = stationService.save(new StationRequest("센트럴파트역"));
+
+        assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 센트럴파트역.getId(), 24))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
