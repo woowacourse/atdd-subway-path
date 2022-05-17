@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.utils.exception.SectionCreateException;
-import wooteco.subway.utils.exception.SectionDeleteException;
-import wooteco.subway.utils.exception.SectionNotFoundException;
-import wooteco.subway.utils.exception.StationNotFoundException;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
+import wooteco.subway.exception.SectionNotFoundException;
+import wooteco.subway.exception.StationNotFoundException;
 
 public class SectionsTest {
 

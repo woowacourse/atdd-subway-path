@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 public class LineRepositoryTest extends RepositoryTest {
 

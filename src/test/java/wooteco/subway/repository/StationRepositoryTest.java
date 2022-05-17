@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.IdNotFoundException;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.IdNotFoundException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 class StationRepositoryTest extends RepositoryTest {
 

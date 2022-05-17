@@ -11,8 +11,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.IdNotFoundException;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.IdNotFoundException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 @Repository
 public class StationRepository {

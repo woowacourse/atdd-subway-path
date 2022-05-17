@@ -1,4 +1,4 @@
-package wooteco.subway.ui;
+package wooteco.subway.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.dto.ErrorResponse;
-import wooteco.subway.utils.exception.NotFoundException;
-import wooteco.subway.utils.exception.SubwayException;
+import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class ControllerAdvice {

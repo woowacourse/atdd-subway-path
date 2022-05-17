@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.subway.utils.exception.SectionCreateException;
+import wooteco.subway.exception.SectionCreateException;
 
 public class Section {
 

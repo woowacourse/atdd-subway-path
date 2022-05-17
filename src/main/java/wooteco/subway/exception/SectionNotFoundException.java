@@ -1,4 +1,4 @@
-package wooteco.subway.utils.exception;
+package wooteco.subway.exception;
 
 public class SectionNotFoundException extends NotFoundException {
 

@@ -13,8 +13,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.IdNotFoundException;
-import wooteco.subway.utils.exception.SectionCreateException;
+import wooteco.subway.exception.IdNotFoundException;
+import wooteco.subway.exception.SectionCreateException;
 
 @Repository
 public class SectionRepository {

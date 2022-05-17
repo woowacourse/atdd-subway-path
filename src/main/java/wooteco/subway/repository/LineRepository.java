@@ -18,8 +18,8 @@ import wooteco.subway.domain.LineSection;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.IdNotFoundException;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.IdNotFoundException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 @Repository
 public class LineRepository {

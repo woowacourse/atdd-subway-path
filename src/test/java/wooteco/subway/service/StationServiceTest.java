@@ -22,8 +22,8 @@ import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.utils.exception.NameDuplicatedException;
-import wooteco.subway.utils.exception.SubwayException;
+import wooteco.subway.exception.NameDuplicatedException;
+import wooteco.subway.exception.SubwayException;
 
 @Transactional
 @SpringBootTest

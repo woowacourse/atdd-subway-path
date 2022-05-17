@@ -28,8 +28,8 @@ import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.utils.exception.SectionCreateException;
-import wooteco.subway.utils.exception.SectionDeleteException;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
 
 @Transactional
 @SpringBootTest

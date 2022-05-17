@@ -8,11 +8,11 @@ import java.util.Optional;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.utils.exception.SectionCreateException;
-import wooteco.subway.utils.exception.SectionDeleteException;
-import wooteco.subway.utils.exception.SectionNotFoundException;
-import wooteco.subway.utils.exception.StationNotFoundException;
-import wooteco.subway.utils.exception.SubwayException;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
+import wooteco.subway.exception.SectionNotFoundException;
+import wooteco.subway.exception.StationNotFoundException;
+import wooteco.subway.exception.SubwayException;
 
 public class Sections {
 
