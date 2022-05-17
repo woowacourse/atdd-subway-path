@@ -15,9 +15,4 @@ public class StationControllerAdvice {
     public ResponseEntity<String> IllegalArgumentExceptionHandle(ClientException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
-
-    @ExceptionHandler({SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<String> ConstraintViolationExceptionHandle(ClientException exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
-    }
 }
