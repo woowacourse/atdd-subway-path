@@ -1,0 +1,27 @@
+###
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "강남역"
+}
+
+###
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "청계산입구역"
+}
+
+###
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name" : "신분당선",
+  "color" : "빨강이",
+  "upStationId" : 1,
+  "downStationId" : 2,
+  "distance" : 100
+}

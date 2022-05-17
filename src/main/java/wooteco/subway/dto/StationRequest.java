@@ -1,8 +1,9 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.Station;
+import javax.validation.constraints.NotEmpty;
 
 public class StationRequest {
+    @NotEmpty(message = "이름을 입력해주세요!")
     private String name;
 
     public StationRequest() {
@@ -14,9 +15,5 @@ public class StationRequest {
 
     public String getName() {
         return name;
-    }
-
-    public Station toStation() {
-        return new Station(name);
     }
 }
