@@ -21,10 +21,7 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath =
-                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                        .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = calculateShortestPath(source, target, graph);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
@@ -42,5 +39,12 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         for (Section section : allSections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> calculateShortestPath(final Station source, final Station target,
+                                                                          final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
     }
 }
