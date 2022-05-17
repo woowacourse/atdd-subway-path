@@ -21,7 +21,7 @@
   - 거리에 따른 요금을 계산한다.
     - 10km 까지는 1250원이다.
     - 10~50km 까지는 5km마다 100원씩 증액한다.
-    - 50km 이상부터는 8km마다 100원씩 증액한다.
+    - 50km 초과부터는 8km마다 100원씩 증액한다.
 
 - [API 문서](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c4c291f19953498e8eda8a38253eed51#Path)
 
