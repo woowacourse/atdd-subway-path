@@ -258,12 +258,12 @@ class SectionsTest {
         Section 강남_잠실 = new Section(강남, 잠실, 3);
         Section 강남_홍대 = new Section(강남, 홍대, 10);
         Section 선릉_홍대 = new Section(선릉, 홍대, 2);
-        Section 잠실_홍대 = new Section(강남, 홍대, 5);
+        Section 잠실_홍대 = new Section(잠실, 홍대, 5);
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
 
-        //List<Station> path = sections.findShortestPath(강남, 홍대);
+        List<Station> path = sections.findShortestPath(강남, 홍대);
 
-        assertThat(sections.getSections().size()).isEqualTo(5);
+        assertThat(path.size()).isEqualTo(3);
     }
 }
