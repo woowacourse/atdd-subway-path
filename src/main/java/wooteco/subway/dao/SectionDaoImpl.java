@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -58,6 +59,13 @@ public class SectionDaoImpl implements SectionDao {
                 + "JOIN station AS downstation ON downstation.id = section.down_station_id "
                 + "WHERE line_id = (?) AND section.deleted = (?) AND upstation.deleted = (?) AND downstation.deleted = (?)";
         return jdbcTemplate.query(sql, sectionRowMapper(), lineId, false, false, false);
+    }
+
+    @Override
+    public List<Section> findAll() {
+        final String sql = "SELECT * FROM section WHERE deleted = ?";
+        return jdbcTemplate.query(sql, sectionRowMapper(), false);
+
     }
 
     @Override

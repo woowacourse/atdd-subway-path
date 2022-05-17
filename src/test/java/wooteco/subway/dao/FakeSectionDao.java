@@ -36,6 +36,11 @@ public class FakeSectionDao implements SectionDao {
     }
 
     @Override
+    public List<Section> findAll() {
+        return List.copyOf(sections);
+    }
+
+    @Override
     public int update(List<Section> sections) {
         for (Section section : sections) {
             updateBy(section);

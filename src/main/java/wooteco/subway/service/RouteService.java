@@ -9,6 +9,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Route;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 @Service
@@ -25,13 +26,14 @@ public class RouteService {
     }
 
     public void createRoute(final Long sourceStationId, final Long targetStationId, final int age) {
-        List<Line> lines = lineDao.findAll();
-        Route route = new Route();
-        for (Line line : lines) {
-            route.addSections(sectionDao.findByLineId(line.getId()));
-        }
         Station source = stationDao.findById(sourceStationId);
         Station target = stationDao.findById(targetStationId);
+        Route route = initRoute();
         route.calculateShortestPath(source, target);
+    }
+
+    private Route initRoute() {
+        Sections sections = new Sections(sectionDao.findAll());
+        return new Route(sections);
     }
 }
