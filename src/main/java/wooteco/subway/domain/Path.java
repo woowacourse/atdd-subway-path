@@ -16,8 +16,22 @@ public class Path {
     private final int distance;
 
     public Path(final List<Station> stations, final int distance) {
+        validateStations(stations);
+        validateDistance(distance);
         this.stations = stations;
         this.distance = distance;
+    }
+
+    public void validateStations(final List<Station> stations) {
+        if(stations.isEmpty()) {
+            throw new IllegalArgumentException("경로는 비어서는 안됩니다.");
+        }
+    }
+
+    public void validateDistance(final int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("거리는 0보다 커야합니다.");
+        }
     }
 
     public int calculateFare() {
