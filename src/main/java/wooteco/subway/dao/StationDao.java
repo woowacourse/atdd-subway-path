@@ -1,30 +1,81 @@
 package wooteco.subway.dao;
 
-import org.springframework.util.ReflectionUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
+@Repository
 public class StationDao {
-    private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
 
-    public static Station save(Station station) {
-        Station persistStation = createNewObject(station);
-        stations.add(persistStation);
-        return persistStation;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    public StationDao(NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public static List<Station> findAll() {
-        return stations;
+    public Station save(Station station) {
+        String sql = "INSERT INTO station (name) VALUES (:name)";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", station.getName());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
+
+        long stationId = keyHolder.getKey().longValue();
+
+        return new Station(stationId, station.getName());
     }
 
-    private static Station createNewObject(Station station) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, ++seq);
-        return station;
+    public List<Station> findAll() {
+        String sql = "SELECT * FROM station";
+
+        return jdbcTemplate.query(sql, new MapSqlParameterSource(),
+                getRowMapper());
+    }
+
+    public List<Station> findAllByLineId(Long lineId) {
+        final String sql = "SELECT * FROM station WHERE"
+                + " id IN(SELECT st.id FROM section AS se INNER JOIN station AS st"
+                + " ON se.up_station_id = st.id"
+                + " WHERE se.line_id = :lineId) OR"
+                + " id IN(SELECT st.id FROM section AS se INNER JOIN station AS st"
+                + " ON se.down_station_id = st.id"
+                + " WHERE se.line_id = :lineId)";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("lineId", lineId);
+
+        return jdbcTemplate.query(sql, params, getRowMapper());
+    }
+
+    public Station findById(Long id) {
+        String sql = "SELECT id, name FROM station WHERE id=:id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return jdbcTemplate.queryForObject(sql, params, getRowMapper());
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM station WHERE id=:id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        jdbcTemplate.update(sql, params);
+    }
+
+    private RowMapper<Station> getRowMapper() {
+        return (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name"));
     }
 }
