@@ -23,21 +23,22 @@ public class LineDaoImpl implements LineDao {
     private RowMapper<Line> lineRowMapper() {
         return (rs, rowNum) ->
                 new Line(rs.getLong("id"),
-                        rs.getString("name"), rs.getNString("color"));
+                        rs.getString("name"), rs.getNString("color"), rs.getInt("extraFare"));
     }
 
     @Override
     public Line save(Line line) {
-        final String sql = "INSERT INTO Line (name, color, deleted) VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO Line (name, color, extraFare, deleted) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
-            ps.setBoolean(3, false);
+            ps.setInt(3, line.getExtraFare());
+            ps.setBoolean(4, false);
             return ps;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
@@ -58,8 +59,8 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public int update(Line line) {
-        final String sql = "UPDATE line SET (name, color) = (?, ?) WHERE id = ? AND deleted = (?)";
-        return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId(), false);
+        final String sql = "UPDATE line SET (name, color, extraFare) = (?, ?, ?) WHERE id = ? AND deleted = (?)";
+        return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId(), false);
     }
 
     @Override

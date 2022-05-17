@@ -32,7 +32,7 @@ public class LineService {
     @Transactional
     public LineResponse save(final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         final Line newLine = lineDao.save(line);
         saveSection(newLine.getId(), lineRequest);
         return LineResponse.of(newLine, getStationsFromSection(newLine.getId()));
@@ -69,7 +69,7 @@ public class LineService {
     public int updateLine(final Long id, final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         Line line = lineDao.findById(id);
-        Line lineForUpdate = new Line(line.getId(), lineRequest.getName(), lineRequest.getColor());
+        Line lineForUpdate = new Line(line.getId(), lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         return lineDao.update(lineForUpdate);
     }
 

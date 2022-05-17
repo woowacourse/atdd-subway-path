@@ -25,7 +25,7 @@ public class LineDaoImplTest extends DaoImplTest{
     @DisplayName("노선정보를 저장한다.")
     @Test
     void save() {
-        Line line = new Line("분당선", "green");
+        Line line = new Line("분당선", "green", 900);
         Line newLine = lineDao.save(line);
 
         assertThat(newLine.getName()).isEqualTo("분당선");
@@ -35,8 +35,8 @@ public class LineDaoImplTest extends DaoImplTest{
     @DisplayName("노선정보들을 가져온다.")
     @Test
     void findAll() {
-        Line line = new Line("분당선", "green");
-        Line nextLine = new Line("신분당선", "green");
+        Line line = new Line("분당선", "green", 900);
+        Line nextLine = new Line("신분당선", "green", 900);
         lineDao.save(line);
         lineDao.save(nextLine);
 
@@ -48,7 +48,7 @@ public class LineDaoImplTest extends DaoImplTest{
     @DisplayName("노선 정보를 삭제한다.")
     @Test
     void delete() {
-        Line line = new Line("4호선", "blue");
+        Line line = new Line("4호선", "blue", 900);
         Line newLine = lineDao.save(line);
 
         assertThat(lineDao.delete(newLine.getId())).isOne();
@@ -57,7 +57,7 @@ public class LineDaoImplTest extends DaoImplTest{
     @DisplayName("노선 정보를 조회한다.")
     @Test
     void find() {
-        Line line = new Line("5호선", "blue");
+        Line line = new Line("5호선", "blue", 900);
         Line newLine = lineDao.save(line);
 
         assertThat(lineDao.findById(newLine.getId()).getName()).isEqualTo("5호선");
@@ -67,8 +67,8 @@ public class LineDaoImplTest extends DaoImplTest{
     @DisplayName("노선 정보를 변경한다.")
     @Test
     void update() {
-        Line line = new Line(1L,"7호선", "blue");
-        Line newLine = new Line(1L, "8호선", "red");
+        Line line = new Line(1L,"7호선", "blue", 900);
+        Line newLine = new Line(1L, "8호선", "red", 900);
 
         lineDao.save(line);
 

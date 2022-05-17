@@ -18,7 +18,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLines() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -41,8 +41,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        LineRequest firstLineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
-        LineRequest secondLineRequest = new LineRequest("분당4선", "bg-green-600", 1L, 3L, 10);
+        LineRequest firstLineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
+        LineRequest secondLineRequest = new LineRequest("분당4선", "bg-green-600", 1L, 3L, 10, 900);
 
         // when
         ExtractableResponse<Response> firstCreateResponse = RestAssured.given().log().all()
@@ -76,7 +76,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log()
@@ -108,7 +108,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void modifyLine() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log()
@@ -121,7 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         long resultLineId = response.jsonPath().getLong("id");
-        LineRequest newLineRequest = new LineRequest("4호선", "bg-red-600", 1L, 2L, 10);
+        LineRequest newLineRequest = new LineRequest("4호선", "bg-red-600", 1L, 2L, 10, 900);
 
         ExtractableResponse<Response> newResponse = RestAssured.given().log()
                 .all()
@@ -140,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
         // when
         ExtractableResponse<Response> response = RestAssured.given().log()
                 .all()

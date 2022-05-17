@@ -18,7 +18,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createSection() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
         SectionRequest sectionRequest = new SectionRequest(1L, 3L, 5);
 
         // when
@@ -48,7 +48,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteSection() {
         // given
-        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
         SectionRequest sectionRequest = new SectionRequest(1L, 3L, 5);
 
         // when
