@@ -9,23 +9,43 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathInfo {
 
+    private static final int BASIC_COST = 1250;
+    private static final int CHARGED_COST = 100;
+    private static final int CHARGED_DISTANCE_1 = 10;
+    private static final int CHARGED_DISTANCE_2 = 50;
+    private static final int CHARGED_UNIT_1 = 5;
+    private static final int CHARGED_UNIT_2 = 8;
+
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathInfo(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        stations.forEach(graph::addVertex);
+        setVertex(graph, stations);
+        setEdgeWeight(graph, sections, stations);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+    }
 
-        Map<Long, Station> sectionMap = new HashMap<>();
-        for (Station station : stations) {
-            sectionMap.put(station.getId(), station);
-        }
+    private void setVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
+        stations.forEach(graph::addVertex);
+    }
+
+    private void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+                               List<Section> sections, List<Station> stations) {
+        Map<Long, Station> sectionMap = initSectionMap(stations);
 
         for (Section section : sections) {
             Station downStation = sectionMap.get(section.getDownStationId());
             Station upStation = sectionMap.get(section.getUpStationId());
             graph.setEdgeWeight(graph.addEdge(downStation, upStation), section.getDistance());
         }
-        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+    }
+
+    private Map<Long, Station> initSectionMap(List<Station> stations) {
+        Map<Long, Station> sectionMap = new HashMap<>();
+        for (Station station : stations) {
+            sectionMap.put(station.getId(), station);
+        }
+        return sectionMap;
     }
 
     public List<Station> findPath(Station source, Station target) {
@@ -45,18 +65,18 @@ public class PathInfo {
 
     public int calculateScore(Station source, Station target) {
         int distance = calculateMinDistance(source, target);
-        int cost = 1250;
-        if (distance > 50) {
-            cost += calculateCost(distance, 50, 8);
-            distance = 50;
+        int cost = BASIC_COST;
+        if (distance > CHARGED_DISTANCE_2) {
+            cost += calculateCost(distance, CHARGED_DISTANCE_2, CHARGED_UNIT_2);
+            distance = CHARGED_DISTANCE_2;
         }
-        if (distance > 10) {
-            cost += calculateCost(distance, 10, 5);
+        if (distance > CHARGED_DISTANCE_1) {
+            cost += calculateCost(distance, CHARGED_DISTANCE_1, CHARGED_UNIT_1);
         }
         return cost;
     }
 
     private int calculateCost(int distance, int baseDistance, int unit) {
-        return ((distance - baseDistance - 1) / unit + 1) * 100;
+        return ((distance - baseDistance - 1) / unit + 1) * CHARGED_COST;
     }
 }

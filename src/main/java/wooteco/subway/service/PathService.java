@@ -13,6 +13,8 @@ import wooteco.subway.service.dto.StationResponse;
 
 @Service
 public class PathService {
+    
+    private static final String NO_STATION_ERROR = "해당 id인 역은 존재하지 않습니다";
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -41,7 +43,7 @@ public class PathService {
         return stations.stream()
                 .filter(it -> id.equals(it.getId()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 id인 역은 존재하지 않습니다"));
+                .orElseThrow(() -> new IllegalArgumentException(NO_STATION_ERROR));
     }
 
     private List<StationResponse> generateStationResponses(List<Station> stations) {
