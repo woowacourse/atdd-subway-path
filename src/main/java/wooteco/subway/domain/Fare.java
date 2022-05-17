@@ -3,8 +3,8 @@ package wooteco.subway.domain;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.domain.FeeException;
 
-public class Fee {
-    private final static Fee DEFAULT_FEE = new Fee(1250L);
+public class Fare {
+    private final static Fare DEFAULT_FARE = new Fare(1250L);
     private static final long DEFAULT_FEE_AMOUNT = 1250;
     private static final int EXTRA_FEE_AMOUNT = 2050;
     private static final int MAXIMUM_DEFAULT_DISTANCE = 10;
@@ -16,16 +16,16 @@ public class Fee {
 
     private final Long feeAmount;
 
-    public Fee(Long feeAmount) {
+    public Fare(Long feeAmount) {
         this.feeAmount = feeAmount;
     }
 
-    public static Fee from(int distance) {
+    public static Fare from(int distance) {
         if (distance <= MINIMUM_DISTANCE) {
             throw new FeeException(ExceptionMessage.UNDER_MIN_DISTANCE.getContent());
         }
         if (distance <= MAXIMUM_DEFAULT_DISTANCE) {
-            return DEFAULT_FEE;
+            return DEFAULT_FARE;
         }
         if (distance <= MAXIMUM_EXTRA_DISTANCE) {
             return calculateFee(distance - MAXIMUM_DEFAULT_DISTANCE, DEFAULT_UNIT, DEFAULT_FEE_AMOUNT);
@@ -33,12 +33,12 @@ public class Fee {
         return calculateFee(distance - MAXIMUM_EXTRA_DISTANCE, EXTRA_UNIT, EXTRA_FEE_AMOUNT);
     }
 
-    private static Fee calculateFee(int remainDistance, int unit, long baseFeeAmount) {
+    private static Fare calculateFee(int remainDistance, int unit, long baseFeeAmount) {
         int additionalFeeCount = remainDistance / unit;
         if (remainDistance % unit != MINIMUM_DISTANCE) {
             additionalFeeCount ++;
         }
-        return new Fee(baseFeeAmount + additionalFeeCount * PER_UNIT_FEE_AMOUNT);
+        return new Fare(baseFeeAmount + additionalFeeCount * PER_UNIT_FEE_AMOUNT);
     }
 
 
