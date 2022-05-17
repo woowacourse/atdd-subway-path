@@ -36,4 +36,9 @@ public class SubwayGraph {
         DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
         return pathFinder.getPath(source, target).getVertexList();
     }
+
+    public double findShortestDistance(Station source, Station target) {
+        DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
+        return pathFinder.getPath(source, target).getWeight();
+    }
 }

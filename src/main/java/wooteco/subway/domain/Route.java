@@ -11,9 +11,18 @@ public class Route {
     }
 
     public List<Station> calculateShortestPath(final Station source, final Station target) {
-        SubwayGraph subwayGraph = new SubwayGraph();
-        subwayGraph.init(sections);
+        SubwayGraph subwayGraph = initSubwayGraph();
         return subwayGraph.findShortestPath(source, target);
     }
 
+    public double calculateShortestDistance(final Station source, final Station target) {
+        SubwayGraph subwayGraph = initSubwayGraph();
+        return subwayGraph.findShortestDistance(source, target);
+    }
+
+    private SubwayGraph initSubwayGraph() {
+        SubwayGraph subwayGraph = new SubwayGraph();
+        subwayGraph.init(sections);
+        return subwayGraph;
+    }
 }
