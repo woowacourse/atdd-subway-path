@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import java.util.List;
 
 class PathTest {
@@ -56,7 +54,7 @@ class PathTest {
         assertThat(path.getFare(station1, station2)).isEqualTo(1250);
     }
 
-    @DisplayName("이용 거리 초과 시 추가운임 부과한다.")
+    @DisplayName("이용 거리 초과 시 추가운임을 부과한다.")
     @Test
     void calculateOverFare() {
         final Station station = new Station(4L, "교대역");
@@ -65,5 +63,16 @@ class PathTest {
         final Path path = Path.from(sections);
 
         assertThat(path.getFare(station1, station)).isEqualTo(1450);
+    }
+
+    @DisplayName("이용 거리 50km 초과 시 추가운임을 부과한다.")
+    @Test
+    void calculateOverFare_over50km() {
+        final Station station = new Station(4L, "교대역");
+        final Section section = new Section(3L, station3, station, 48, 1L);
+        sections.add(section);
+        final Path path = Path.from(sections);
+
+        assertThat(path.getFare(station1, station)).isEqualTo(2150);
     }
 }
