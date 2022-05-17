@@ -1,13 +1,23 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-
 public class FareCalculator {
 
-    private final List<Station> stations;
+    private final double distance;
 
-    public FareCalculator(List<Station> stations) {
-        this.stations = stations;
+    public FareCalculator(double distance) {
+        this.distance = distance;
     }
 
+    public int calculateFare() {
+        int fare = 1250;
+        if (distance > 10 && distance <= 50) {
+            fare += (int) ((Math.ceil((distance - 11) / 5)) * 100);
+        }
+        if (distance > 50) {
+            fare = 2050;
+            double a = distance - 50;
+            fare += (int) ((Math.ceil((a - 1) / 8)) * 100);
+        }
+        return fare;
+    }
 }

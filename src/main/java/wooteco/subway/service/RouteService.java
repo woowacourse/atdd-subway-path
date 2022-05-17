@@ -32,7 +32,7 @@ public class RouteService {
         Route route = initRoute();
         List<Station> stations = route.calculateShortestPath(source, target);
         double distance = route.calculateShortestDistance(source, target);
-
+        FareCalculator fareCalculator = new FareCalculator(distance);
     }
 
     private Route initRoute() {
