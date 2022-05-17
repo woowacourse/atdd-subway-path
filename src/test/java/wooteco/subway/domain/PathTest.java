@@ -41,4 +41,11 @@ class PathTest {
         Path path = Path.from(sections);
         assertThat(path.getVertexList(station1, station3)).containsAll(List.of(station1, station2, station3));
     }
+
+    @DisplayName("경로의 최단거리를 구한다.")
+    @Test
+    void getShortestDistance() {
+        final Path path = Path.from(sections);
+        assertThat(path.getDistance(station1, station3)).isEqualTo(15);
+    }
 }

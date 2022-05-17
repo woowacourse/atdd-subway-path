@@ -34,4 +34,8 @@ public class Path {
     public DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
         return dijkstraShortestPath;
     }
+
+    public double getDistance(final Station source, final Station target) {
+        return dijkstraShortestPath.getPath(source, target).getWeight();
+    }
 }
