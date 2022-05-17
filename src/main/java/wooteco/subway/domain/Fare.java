@@ -8,7 +8,14 @@ public class Fare {
     private final int distance;
 
     public Fare(int distance) {
+        validateDistance(distance);
         this.distance = distance;
+    }
+
+    private void validateDistance(int distance) {
+        if (distance < 0) {
+            throw new IllegalArgumentException("거리는 양수여야합니다.");
+        }
     }
 
 

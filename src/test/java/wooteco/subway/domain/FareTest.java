@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,13 @@ class FareTest {
 
         // then
         assertThat(result).isEqualTo(2150);
+    }
+
+    @Test
+    @DisplayName("거리가 음수일 경우 예외가 발생한다.")
+    public void validateDistance() {
+        // given
+        assertThatThrownBy(() -> new Fare(-1)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 양수여야합니다.");
     }
 }
