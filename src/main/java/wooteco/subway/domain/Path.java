@@ -12,6 +12,10 @@ public class Path {
         this.distance = distance;
     }
 
+    public int calculateFare() {
+        return 1250;
+    }
+
     public List<Station> getStations() {
         return stations;
     }
