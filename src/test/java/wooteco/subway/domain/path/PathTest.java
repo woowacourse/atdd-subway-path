@@ -11,8 +11,10 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class PathTest {
 
-    private final List<Station> STATIONS = List.of(new Station(1L, "역1"),
-            new Station(2L, "역2"), new Station(3L, "역3"));
+    private final List<Station> STATIONS = List.of(
+            new Station(1L, "역1"),
+            new Station(2L, "역2"),
+            new Station(3L, "역3"));
 
     @Test
     void 거리가_10_이하인_경우_1250원_반환() {
