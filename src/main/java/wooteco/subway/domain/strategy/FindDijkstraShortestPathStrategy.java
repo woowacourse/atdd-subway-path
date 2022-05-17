@@ -22,7 +22,6 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
 
         try {
             GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(source, target);
-            List vertexList = shortestPath.getVertexList();
             return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
         } catch (NullPointerException exception) {
             throw new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다.");
