@@ -11,4 +11,12 @@ public class Path {
         this.stations = stations;
         this.distance = distance;
     }
+
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }

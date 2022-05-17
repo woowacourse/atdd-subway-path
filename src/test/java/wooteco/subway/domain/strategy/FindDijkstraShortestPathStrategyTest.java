@@ -1,11 +1,13 @@
 package wooteco.subway.domain.strategy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -31,4 +33,28 @@ class FindDijkstraShortestPathStrategyTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
+    @Test
+    @DisplayName("최단거리 정보를 반환할 수 있다.")
+    void findPath() {
+        // given
+        Station station1 = new Station(1L, "오리");
+        Station station2 = new Station(2L, "배카라");
+        Station station3 = new Station(3L, "오카라");
+        Station station4 = new Station(4L, "레넌");
+
+        Sections sections = new Sections(
+                List.of(
+                new Section(1L, 1L, station1, station2, 2),
+                new Section(2L, 1L, station2, station3, 2),
+                new Section(3L, 1L, station1, station4, 3),
+                new Section(4L, 1L, station4, station3, 3)));
+
+        FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
+        Path path = findPathStrategy.findPath(station1, station3, sections);
+
+        assertAll(
+                () -> assertThat(path.getStations()).containsExactly(station1, station2, station3),
+                () -> assertThat(path.getDistance()).isEqualTo(4)
+        );
+    }
 }

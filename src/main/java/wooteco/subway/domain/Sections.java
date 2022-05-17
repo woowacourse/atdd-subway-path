@@ -1,10 +1,13 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import wooteco.subway.exception.NotFoundException;
 
 public class Sections {
@@ -191,6 +194,19 @@ public class Sections {
     private boolean isNotExistStation(final Station station) {
         return sections.stream()
                 .noneMatch(section -> section.containsStation(station));
+    }
+
+    public List<Station> getAllStations() {
+        List<Station> upStations = sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        List<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+        return Stream.of(upStations, downStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private Section calculateLastSection() {
