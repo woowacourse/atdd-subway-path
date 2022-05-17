@@ -1,7 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.AddSectionException;
 import wooteco.subway.exception.DeleteSectionException;
@@ -233,5 +235,14 @@ public class Sections {
 
     public List<Section> getSections() {
         return List.copyOf(sections);
+    }
+
+    public List<Station> getStations() {
+        Set<Station> stations = new HashSet<>();
+        for (Section section : sections) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        }
+        return new ArrayList<>(stations);
     }
 }
