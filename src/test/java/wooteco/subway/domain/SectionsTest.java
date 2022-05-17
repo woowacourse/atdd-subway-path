@@ -18,7 +18,7 @@ class SectionsTest {
 
         Sections sections = new Sections(List.of(section1, section2, section3));
 
-        assertThat(sections.getStationIds()).containsExactly(1L, 2L, 3L, 4L);
+        assertThat(sections.getSortedStationIdsInSingleLine()).containsExactly(1L, 2L, 3L, 4L);
     }
 
     @DisplayName("삭제 가능한 구간을 반환한다.")
@@ -59,5 +59,20 @@ class SectionsTest {
         Section mergedSection = sections.merge();
 
         assertThat(mergedSection.getDistance()).isEqualTo(20);
+    }
+
+    @DisplayName("출발역id와 도착역id를 받아, 최단 경로에 해당하는 지하철역 id들을 반환한다.")
+    @Test
+    void getShortestPath() {
+        Section section1 = new Section(1L, 1L, 1L, 2L, 2);
+        Section section2 = new Section(2L, 1L, 2L, 3L, 4);
+        Section section3 = new Section(3L, 1L, 3L, 4L, 6);
+        Section section4 = new Section(4L, 2L, 3L, 5L, 8);
+
+        Sections sections = new Sections(List.of(section1, section2, section3, section4));
+
+        List<Long> expected = List.of(1L, 2L, 3L, 5L);
+
+        assertThat(sections.getShortestPath(1L, 5L)).isEqualTo(expected);
     }
 }

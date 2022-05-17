@@ -52,7 +52,7 @@ public class LineService {
     public LineResponse findById(Long id) {
         Line line = lineDao.findById(id);
         Sections sections = sectionDao.findAllByLineId(id);
-        List<Station> stations = sections.getStationIds().stream()
+        List<Station> stations = sections.getSortedStationIdsInSingleLine().stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
 

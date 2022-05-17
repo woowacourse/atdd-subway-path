@@ -1,8 +1,10 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -21,7 +23,7 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public List<Long> getStationIds() {
+    public List<Long> getSortedStationIdsInSingleLine() {
         List<Long> stationIds = new ArrayList<>();
 
         Long upStationId = getUpStationId(sections);
@@ -90,6 +92,46 @@ public class Sections {
 
     public int size() {
         return sections.size();
+    }
+
+    public List<Long> getShortestPath(Long departureId, Long arrivalId) {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        addStationVertex(graph);
+        addSectionEdge(graph);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<String> stationIdValues = dijkstraShortestPath.getPath(String.valueOf(departureId),
+                        String.valueOf(arrivalId))
+                .getVertexList();
+        return stationIdValues.stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+    }
+
+    private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        for (Long stationId : getAllStationIds()) {
+            graph.addVertex(String.valueOf(stationId));
+        }
+    }
+
+    private List<Long> getAllStationIds() {
+        Set<Long> stationIds = new HashSet<>();
+
+        for (Section section : sections) {
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
+        }
+
+        return new ArrayList<>(stationIds);
+    }
+
+    private void addSectionEdge(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+            String upStationId = String.valueOf(section.getUpStationId());
+            String downStationId = String.valueOf(section.getDownStationId());
+            int distance = section.getDistance();
+            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), distance);
+        }
     }
 
     @Override
