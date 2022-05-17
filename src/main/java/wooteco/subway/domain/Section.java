@@ -2,10 +2,10 @@ package wooteco.subway.domain;
 
 public class Section {
 
-    private Long id;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
+    private final Long id;
 
     private Section(Long id, Station upStation, Station downStation, int distance) {
         this.id = id;
@@ -40,5 +40,15 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }

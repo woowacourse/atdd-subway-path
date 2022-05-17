@@ -3,8 +3,8 @@ package wooteco.subway.domain;
 import java.util.Objects;
 
 public class Station {
+    private final Name name;
     private Long id;
-    private Name name;
 
     public Station(Long id, String name) {
         this.id = id;
@@ -38,6 +38,14 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name=" + name +
+                '}';
     }
 }
 

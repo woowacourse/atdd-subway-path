@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Sections {
-    private List<Section> sections;
+    private final List<Section> sections;
 
     public Sections(Station upStation, Station downStation, int distance) {
         final Section section = Section.createWithoutId(upStation, downStation, distance);
