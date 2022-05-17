@@ -7,6 +7,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private Sections sections;
 
     private Line() {
@@ -18,18 +19,23 @@ public class Line {
         this.sections = new Sections(Collections.emptyList());
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         this(name, color);
         this.id = id;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, Section section) {
-        this(id, name, color);
+    public Line(Long id, String name, String color, int extraFare, Section section) {
+        this(name, color);
+        this.id = id;
+        this.extraFare = extraFare;
         this.sections = new Sections(List.of(section));
     }
 
-    public Line(Long id, String name, String color, List<Section> sections) {
-        this(id, name, color);
+    public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
+        this(name, color);
+        this.id = id;
+        this.extraFare = extraFare;
         this.sections = new Sections(sections);
     }
 
@@ -63,6 +69,14 @@ public class Line {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
+
+    public void setExtraFare(int extraFare) {
+        this.extraFare = extraFare;
     }
 
     public Sections getSections() {

@@ -25,9 +25,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private final StationRequest stationRequest2 = new StationRequest("역삼역");
     private final StationRequest stationRequest3 = new StationRequest("분당역");
     private final LineRequest lineRequest1 =
-            new LineRequest("신분당선", "bg-red-600", 1L, 2L, 20);
+            new LineRequest("신분당선", "bg-red-600",
+                    1L, 2L, 20, 900);
     private final LineRequest lineRequest2 =
-            new LineRequest("분당선", "bg-green-600", 1L, 3L, 15);
+            new LineRequest("분당선", "bg-green-600",
+                    1L, 3L, 15, 900);
 
     @DisplayName("지하철노선을 생성한다.")
     @Test

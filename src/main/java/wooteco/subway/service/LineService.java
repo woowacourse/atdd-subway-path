@@ -41,7 +41,7 @@ public class LineService {
         final Station downStation = findByStationId(lineRequest.getDownStationId());
         final List<StationResponse> stationResponses = makeStationResponseByStation(List.of(upStation, downStation));
 
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses);
     }
 
     private void checkExistLineByName(LineRequest lineRequest) {
@@ -54,7 +54,7 @@ public class LineService {
         final Long id = lineDao.save(lineRequest);
         final Section section = saveInitialSection(id, lineRequest.getUpStationId(), lineRequest.getDownStationId(),
                 lineRequest.getDistance());
-        return new Line(id, lineRequest.getName(), lineRequest.getColor(), section);
+        return new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare(), section);
     }
 
     private Section saveInitialSection(Long newLineId, Long upStationId, Long downStationId, int distance) {
@@ -129,7 +129,7 @@ public class LineService {
         final List<Station> stations = sortStations(line.getId(), sections);
 
         final List<StationResponse> stationResponses = makeStationResponseByStation(stations);
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses);
     }
 
     private List<Station> sortStations(Long lineId, List<Section> sections) {
@@ -155,9 +155,9 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public void updateLine(Long id, String name, String color) {
+    public void updateLine(Long id, String name, String color, int extraFare) {
         checkExistLineById(id);
-        lineDao.updateById(id, name, color);
+        lineDao.updateById(id, name, color, extraFare);
     }
 
     public void deleteLine(Long id) {
@@ -190,7 +190,7 @@ public class LineService {
         final Line findLine = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 노선이 존재하지 않습니다."));
         final List<Section> sections = sectionDao.findByLineId(lineId);
-        return new Line(findLine.getId(), findLine.getName(), findLine.getColor(), sections);
+        return new Line(findLine.getId(), findLine.getName(), findLine.getColor(), findLine.getExtraFare(), sections);
     }
 
     private void updateDownSectionByDeletion(Section upSection, Section downSection) {

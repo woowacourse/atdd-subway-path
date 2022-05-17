@@ -49,11 +49,12 @@ public class LineDaoImpl implements LineDao {
     }
 
     @Override
-    public void updateById(Long id, String name, String color) {
+    public void updateById(Long id, String name, String color, int extraFare) {
         Line line = findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
         line.setName(name);
         line.setColor(color);
+        line.setExtraFare(extraFare);
     }
 
     @Override

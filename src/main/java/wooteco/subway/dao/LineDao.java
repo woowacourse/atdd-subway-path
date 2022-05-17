@@ -16,7 +16,7 @@ public interface LineDao {
 
     boolean hasLine(String name);
 
-    void updateById(Long id, String name, String color);
+    void updateById(Long id, String name, String color, int extraFare);
 
     void deleteById(Long id);
 }

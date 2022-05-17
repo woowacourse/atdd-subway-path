@@ -7,6 +7,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
     private LineResponse() {
@@ -19,6 +20,11 @@ public class LineResponse {
         this.stations = stations;
     }
 
+    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
+        this(id, name, color, stations);
+        this.extraFare = extraFare;
+    }
+
     public Long getId() {
         return id;
     }
@@ -29,6 +35,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {

@@ -25,7 +25,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private final StationRequest 성수 = new StationRequest("성수역");
 
     private final LineRequest 이호선 =
-            new LineRequest("2호선", "bg-green-600", 1L, 4L, 50);
+            new LineRequest("2호선", "bg-green-600",
+                    1L, 4L, 50, 900);
 
     private final SectionRequest 건대입구_강남 =
             new SectionRequest(1L, 4L, 50);
@@ -140,7 +141,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                                             StationResponse stationResponse3) {
         final List<StationResponse> stationResponses =
                 List.of(stationResponse1, stationResponse2, stationResponse3);
-        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), stationResponses);
+        final LineResponse expected =
+                new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare(), stationResponses);
         final LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
 
         assertThat(actual)
@@ -267,7 +269,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                                             StationResponse stationResponse3) {
         final List<StationResponse> stationResponses =
                 List.of(stationResponse1, stationResponse2, stationResponse3);
-        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), stationResponses);
+        final LineResponse expected =
+                new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare(), stationResponses);
         final LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
 
         assertThat(actual)

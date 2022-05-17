@@ -80,7 +80,7 @@ public class JdbcLineDaoTest {
                 new LineRequest("다른분당선", "bg-blue-600", 3L, 4L, 10)
         );
         final String expected = "또다른분당선";
-        lineDao.updateById(lineId, expected, line3.getColor());
+        lineDao.updateById(lineId, expected, line3.getColor(), 0);
 
         final Line updatedLine = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
