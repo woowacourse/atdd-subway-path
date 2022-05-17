@@ -16,15 +16,15 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
     public Path findPath(final Station source, final Station target, final Sections sections) {
         sections.checkExistStations(source, target);
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addVertextStation(sections, graph);
+        addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
         GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(source, target);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
-    private void addVertextStation(final Sections sections,
-                                   final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addVertexStation(final Sections sections,
+                                  final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Station> allStations = sections.getAllStations();
         for (Station station : allStations) {
             graph.addVertex(station);
