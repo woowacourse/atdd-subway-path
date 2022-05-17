@@ -48,7 +48,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, new StationMapper());
     }
 
-    public List<Station> findByIdIn(Set<Long> ids) {
+    public List<Station> findByIdIn(List<Long> ids) {
         List<String> stringIds = ids.stream()
                 .map(id -> Long.toString(id))
                 .collect(Collectors.toList());
@@ -60,6 +60,11 @@ public class StationDao {
     public boolean existByName(String name) {
         String sql = "select EXISTS (select id from STATION where name = ?) as success";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, name));
+    }
+
+    public Station findByName(String name) {
+        String sql = String.format("select * from STATION where name = %s", name);
+        return jdbcTemplate.queryForObject(sql, new StationMapper());
     }
 
     private static class StationMapper implements RowMapper<Station> {

@@ -38,6 +38,11 @@ public class SectionDao {
         return jdbcTemplate.query(sql, new SectionMapper());
     }
 
+    public List<Section> findAll() {
+        String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, new SectionMapper());
+    }
+
     private static class SectionMapper implements RowMapper<Section> {
         public Section mapRow(ResultSet rs, int rowCnt) throws SQLException {
             return new Section(rs.getLong("id"), rs.getLong("line_id"),

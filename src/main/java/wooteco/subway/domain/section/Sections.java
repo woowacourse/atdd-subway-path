@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import wooteco.subway.domain.station.Station;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor
@@ -37,12 +34,13 @@ public class Sections {
         return sortStrategy.sort(sections, stations);
     }
 
-    public Set<Long> getStationIds() {
+    public List<Long> getStationIds() {
         Set<Long> stationIds = new HashSet<>();
         for (Section section : sections) {
             stationIds.add(section.getUpStationId());
             stationIds.add(section.getDownStationId());
         }
-        return stationIds;
+
+        return new ArrayList<>(stationIds);
     }
 }
