@@ -9,6 +9,7 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.NotFoundException;
 
 public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
 
@@ -19,8 +20,13 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
-        GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(source, target);
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        try {
+            GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(source, target);
+            List vertexList = shortestPath.getVertexList();
+            return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        } catch (NullPointerException exception) {
+            throw new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다.");
+        }
     }
 
     private void addVertexStation(final Sections sections,

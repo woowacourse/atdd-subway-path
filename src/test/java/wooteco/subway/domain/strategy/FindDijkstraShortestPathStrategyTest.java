@@ -11,6 +11,7 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.NotFoundException;
 
 class FindDijkstraShortestPathStrategyTest {
 
@@ -56,5 +57,25 @@ class FindDijkstraShortestPathStrategyTest {
                 () -> assertThat(path.getStations()).containsExactly(station1, station2, station3),
                 () -> assertThat(path.getDistance()).isEqualTo(4)
         );
+    }
+
+    @Test
+    @DisplayName("경로가 없는 경우 예외가 발생한다.")
+    void findPathExceptionByNotFoundPath() {
+        // given
+        Station station1 = new Station(1L, "오리");
+        Station station2 = new Station(2L, "배카라");
+        Station station3 = new Station(3L, "오카라");
+        Station station4 = new Station(4L, "레넌");
+
+        Sections sections = new Sections(
+                List.of(
+                        new Section(1L, 1L, station1, station2, 2),
+                        new Section(2L, 2L, station3, station4, 3)));
+
+        FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
+        assertThatThrownBy(() -> findPathStrategy.findPath(station1, station4, sections))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("갈 수 있는 경로를 찾을 수 없습니다.");
     }
 }
