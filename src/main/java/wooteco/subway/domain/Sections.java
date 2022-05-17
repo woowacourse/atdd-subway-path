@@ -108,9 +108,9 @@ public class Sections {
     }
 
     private void updateStationAndDistance(final Section section,
-                                          final Station upStation,
-                                          final Station downStation,
-                                          final int distance) {
+            final Station upStation,
+            final Station downStation,
+            final int distance) {
         section.updateStations(upStation, downStation);
         section.subtractDistance(distance);
     }
@@ -175,6 +175,11 @@ public class Sections {
                 .filter(value -> value.isSameUpStation(station))
                 .map(Section::getDownStation)
                 .findFirst();
+    }
+
+    public boolean isExistStation(final Station station) {
+        return values.stream()
+                .anyMatch(section -> section.have(station));
     }
 
     public List<Section> getValues() {
