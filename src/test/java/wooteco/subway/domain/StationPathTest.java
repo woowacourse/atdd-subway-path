@@ -48,6 +48,38 @@ public class StationPathTest {
         assertThat(stationPath.calculateFare(STANDARD_DISTANCE)).isEqualTo(1250);
     }
 
+    @DisplayName("10km 1회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverDefaultDistanceSingle() {
+        Sections sections = createSections();
+        StationPath stationPath = new StationPath(sections);
+        assertThat(stationPath.calculateFare(STANDARD_DISTANCE + 1)).isEqualTo(1350);
+    }
+
+    @DisplayName("10km 2회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverDefaultDistanceDouble() {
+        Sections sections = createSections();
+        StationPath stationPath = new StationPath(sections);
+        assertThat(stationPath.calculateFare(STANDARD_DISTANCE + 6)).isEqualTo(1450);
+    }
+
+    @DisplayName("50km 1회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverMaxDistanceSingle() {
+        Sections sections = createSections();
+        StationPath stationPath = new StationPath(sections);
+        assertThat(stationPath.calculateFare(51)).isEqualTo(2150);
+    }
+
+    @DisplayName("50km 2회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverMaxDistanceDouble() {
+        Sections sections = createSections();
+        StationPath stationPath = new StationPath(sections);
+        assertThat(stationPath.calculateFare(59)).isEqualTo(2250);
+    }
+
     private Sections createSections() {
         Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
         Section section1 = new Section(2L, 1L, 동묘앞역, 창신역, STANDARD_DISTANCE);
