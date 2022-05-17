@@ -8,6 +8,7 @@ import java.util.List;
 public class Path {
 
     private static final int MINIMUM_FARE = 1250;
+    private static final double MINIMUM_DISTANCE = 10;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public Path(final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -41,10 +42,16 @@ public class Path {
     }
 
     public int getFare(final Station source, final Station target) {
-        return calculateFare(getDistance(source, target));
+        final double distance = getDistance(source, target);
+
+        if (distance <= MINIMUM_DISTANCE) {
+            return MINIMUM_FARE;
+        }
+
+        return MINIMUM_FARE + calculateFare(distance - MINIMUM_DISTANCE);
     }
 
     private int calculateFare(final double distance) {
-        return MINIMUM_FARE;
+        return (int) ((Math.ceil((distance - 1) / 5)) * 100);
     }
 }
