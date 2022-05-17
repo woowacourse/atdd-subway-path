@@ -14,4 +14,6 @@ public interface SectionDao {
     int updateSections(List<Section> sections);
 
     int delete(long sectionId);
+
+    int deleteByLineId(long lineId);
 }

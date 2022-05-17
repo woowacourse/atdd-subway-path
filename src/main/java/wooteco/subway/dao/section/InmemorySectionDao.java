@@ -69,4 +69,16 @@ public class InmemorySectionDao implements SectionDao {
         sections.remove(sectionId);
         return 1;
     }
+
+    @Override
+    public int deleteByLineId(long lineId) {
+        List<Long> removeIds = sections.values().stream()
+                .filter(section -> section.getLineId() == lineId)
+                .map(section -> section.getId())
+                .collect(Collectors.toList());
+        for (Long id : removeIds) {
+            sections.remove(id);
+        }
+        return 1;
+    }
 }

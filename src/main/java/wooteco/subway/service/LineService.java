@@ -72,6 +72,7 @@ public class LineService {
     public void delete(final Long lineId) {
         checkExistLine(lineId);
         lineDao.delete(lineId);
+        sectionDao.deleteByLineId(lineId);
     }
 
     private void checkExistLine(final Long lineId) {

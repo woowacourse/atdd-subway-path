@@ -77,4 +77,15 @@ class InmemorySectionDaoTest {
 
         assertThat(sectionDao.delete(sectionId)).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("Section을 line별로 삭제할 수 있다.")
+    void deleteByLineId() {
+        long lineId = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long stationId1 = stationDao.save(new Station("오리"));
+        long stationId2 = stationDao.save(new Station("레넌"));
+        sectionDao.save(new Section(lineId, stationDao.findById(stationId1), stationDao.findById(stationId2), 10));
+
+        assertThat(sectionDao.deleteByLineId(lineId)).isEqualTo(1);
+    }
 }
