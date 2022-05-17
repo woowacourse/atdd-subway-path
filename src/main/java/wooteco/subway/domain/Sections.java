@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.dto.StationResponse;
 
 public class Sections {
 
@@ -150,34 +146,7 @@ public class Sections {
                 .findFirst();
     }
 
-    public List<Station> findShortestPath(Station source, Station target) {
-        validateSameStation(source, target);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph();
-
-        return new DijkstraShortestPath(graph)
-                .getPath(source, target)
-                .getVertexList();
-    }
-
-    private void validateSameStation(Station source, Station target) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
-        }
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph() {
-        WeightedMultigraph<Station , DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Station station : getDistinctStations()) {
-            graph.addVertex(station);
-        }
-        for (Section value : values) {
-            graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
-        }
-
-        return graph;
-    }
-
-    private Set<Station> getDistinctStations() {
+    public Set<Station> getDistinctStations() {
         Set<Station> stations = new HashSet<>();
         for (Section section : values) {
             stations.add(section.getUpStation());
@@ -185,23 +154,6 @@ public class Sections {
         }
 
         return stations;
-    }
-
-    public Section findSection(Station upStation, Station downStation) {
-        return values.stream()
-                .filter(value -> value.isSameUpStation(upStation) && value.isSameDownStation(downStation))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 구간이 없습니다."));
-    }
-
-    public int calculatePathDistance(List<Station> stations) {
-        int distance = 0;
-        for (int i = 0; i < stations.size() - 1; i++) {
-            Section findSection = findSection(stations.get(i), stations.get(i + 1));
-            distance += findSection.getDistance();
-        }
-
-       return distance;
     }
 
     public List<Section> getValues() {
