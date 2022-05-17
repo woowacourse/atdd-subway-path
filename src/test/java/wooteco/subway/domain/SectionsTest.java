@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.utils.exception.SectionCreateException;
 import wooteco.subway.utils.exception.SectionDeleteException;
+import wooteco.subway.utils.exception.SectionNotFoundException;
 import wooteco.subway.utils.exception.StationNotFoundException;
 
 public class SectionsTest {
@@ -168,11 +169,32 @@ public class SectionsTest {
                 .isInstanceOf(StationNotFoundException.class);
     }
 
+    @DisplayName("구간이 존재하지 않을 때 경로를 조회하면 에러가 발생한다.")
+    @Test
+    void sectionNotFoundMinDistance() {
+        Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
+        Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
+        Sections sections = new Sections(List.of(section, section1));
+        assertThatThrownBy(() -> sections.calculateMinDistance(신당역, 보문역))
+                .isInstanceOf(SectionNotFoundException.class);
+    }
+
     @DisplayName("최단경로의 모든 정점을 가져온다.")
     @Test
     void findShortestStations() {
         Sections sections = createSections();
         assertThat(sections.findShortestStations(신당역, 창신역)).containsExactly(신당역, 동묘앞역, 창신역);
+    }
+
+
+    @DisplayName("구간이 존재하지 않을 때 최단 경로 역을 조회하면 에러가 발생한다.")
+    @Test
+    void sectionNotFoundShortestStations() {
+        Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
+        Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
+        Sections sections = new Sections(List.of(section, section1));
+        assertThatThrownBy(() -> sections.findShortestStations(신당역, 보문역))
+                .isInstanceOf(SectionNotFoundException.class);
     }
 
     @DisplayName("10km 이하의 요금을 계산한다.")

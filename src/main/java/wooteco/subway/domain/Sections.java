@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.utils.exception.SectionCreateException;
 import wooteco.subway.utils.exception.SectionDeleteException;
+import wooteco.subway.utils.exception.SectionNotFoundException;
 import wooteco.subway.utils.exception.StationNotFoundException;
 import wooteco.subway.utils.exception.SubwayException;
 
@@ -187,7 +188,11 @@ public class Sections {
 
     public int calculateMinDistance(final Station startStation, final Station endStation) {
         validateExistStation(startStation, endStation);
-        return (int) createSectionDijkstraShortestPath().getPathWeight(startStation, endStation);
+        try {
+            return (int) createSectionDijkstraShortestPath().getPathWeight(startStation, endStation);
+        } catch (IllegalArgumentException e) {
+            throw new SectionNotFoundException();
+        }
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
@@ -213,7 +218,11 @@ public class Sections {
     }
 
     public List<Station> findShortestStations(final Station startStation, final Station endStation) {
-        return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
+        try {
+            return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
+        } catch (IllegalArgumentException e) {
+            throw new SectionNotFoundException();
+        }
     }
 
     public int calculateFare(final int distance) {
