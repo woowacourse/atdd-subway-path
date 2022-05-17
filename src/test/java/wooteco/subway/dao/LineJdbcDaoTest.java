@@ -33,7 +33,7 @@ public class LineJdbcDaoTest {
     @DisplayName("노선정보 저장")
     @Test
     void save() {
-        Line line = lineDao.save(new Line("분당선", "bg-red-600"));
+        Line line = lineDao.save(new Line("분당선", "bg-red-600", 900));
 
         assertThat(line.getName()).isEqualTo("분당선");
     }
@@ -47,7 +47,7 @@ public class LineJdbcDaoTest {
     @DisplayName("노선 정보 삭제")
     @Test
     void delete() {
-        Line lineResponse = lineDao.save(new Line("4호선", "blue"));
+        Line lineResponse = lineDao.save(new Line("4호선", "blue", 900));
 
         assertThat(lineDao.delete(lineResponse.getId())).isOne();
     }
@@ -55,7 +55,7 @@ public class LineJdbcDaoTest {
     @DisplayName("노선 정보 조회")
     @Test
     void find() {
-        Line lineResponse = lineDao.save(new Line("5호선", "blue"));
+        Line lineResponse = lineDao.save(new Line("5호선", "blue", 900));
 
         assertThat(lineDao.findById(lineResponse.getId()).getName()).isEqualTo("5호선");
     }
@@ -63,8 +63,8 @@ public class LineJdbcDaoTest {
     @DisplayName("노선 정보 변경")
     @Test
     void update() {
-        Line lineResponse = lineDao.save(new Line("7호선", "blue"));
+        Line lineResponse = lineDao.save(new Line("7호선", "blue", 900));
 
-        assertThat(lineDao.update(lineResponse.getId(), new Line("7호선", "red"))).isOne();
+        assertThat(lineDao.update(lineResponse.getId(), new Line("7호선", "red", 900))).isOne();
     }
 }

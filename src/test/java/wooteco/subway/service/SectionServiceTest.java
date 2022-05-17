@@ -31,7 +31,7 @@ class SectionServiceTest {
         StationResponse secondStation = stationService.save(new StationRequest("삼성역"));
         StationResponse thirdStation = stationService.save(new StationRequest("잠실역"));
 
-        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10);;
+        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
         LineResponse saveLine = lineService.save(line);
 
         assertThatNoException().isThrownBy(() -> sectionService.save(saveLine.getId(), new SectionRequest(secondStation.getId(),
@@ -44,7 +44,7 @@ class SectionServiceTest {
         StationResponse firstStation = stationService.save(new StationRequest("역삼역"));
         StationResponse secondStation = stationService.save(new StationRequest("삼성역"));
 
-        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10);;
+        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
         LineResponse saveLine = lineService.save(line);
 
         assertThatThrownBy(() ->sectionService.save(saveLine.getId(), new SectionRequest(firstStation.getId(),
@@ -69,7 +69,7 @@ class SectionServiceTest {
         StationResponse secondStation = stationService.save(new StationRequest("삼성역"));
         StationResponse thirdStation = stationService.save(new StationRequest("잠실역"));
 
-        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10);
+        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
         LineResponse saveLine = lineService.save(line);
 
         sectionService.save(saveLine.getId(), new SectionRequest(secondStation.getId(), thirdStation.getId(), 10),

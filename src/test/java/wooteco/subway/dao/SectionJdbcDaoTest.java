@@ -35,7 +35,7 @@ class SectionJdbcDaoTest {
         Station station = stationJdbcDao.save(new Station("강남역"));
         Station secondStation = stationJdbcDao.save(new Station("서초역"));
 
-        Line lineResponse = lineJdbcDao.save(new Line("분당선", "bg-red-600"));
+        Line lineResponse = lineJdbcDao.save(new Line("분당선", "bg-red-600", 900));
         Section section = sectionJdbcDao.save(lineResponse.getId(), new Section(0L, lineResponse.getId(),
                 station.getId(), secondStation.getId(), 10));
 
@@ -50,7 +50,7 @@ class SectionJdbcDaoTest {
         Station seocho = stationJdbcDao.save(new Station("서초역"));
         Station jamsil = stationJdbcDao.save(new Station("잠실역"));
 
-        Line line = lineJdbcDao.save(new Line("분당선", "bg-red-600"));
+        Line line = lineJdbcDao.save(new Line("분당선", "bg-red-600", 900));
         sectionJdbcDao.save(line.getId(), new Section(line.getId(), gangnam.getId(), seocho.getId(), 10));
         sectionJdbcDao.save(line.getId(), new Section(line.getId(), seocho.getId(), jamsil.getId(), 10));
 

@@ -9,21 +9,30 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
 
-    public Line(long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         validateNull(name, color);
+        validateExtraFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color) {
-        this(BASIC_ID, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(BASIC_ID, name, color, extraFare);
     }
 
     private void validateNull(String name, String color) {
         if (name.isBlank() || color.isBlank()) {
             throw new ClientException("지하철 노선의 이름과 색을 모두 입력해주세요.");
+        }
+    }
+
+    private void validateExtraFare(int extraFare) {
+        if (extraFare < 0) {
+            throw new ClientException("추가요금은 음수가 될 수 없습니다.");
         }
     }
 
@@ -41,5 +50,9 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

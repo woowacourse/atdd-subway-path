@@ -20,22 +20,25 @@ public class LineJdbcDao implements LineDao {
     }
 
     private RowMapper<Line> lineRowMapper() {
-        return (rs, rowNum) -> new Line(rs.getLong("id"),
-                rs.getString("name"), rs.getNString("color"));
+        return (rs, rowNum) -> new Line(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("color"),
+                rs.getInt("extraFare"));
     }
 
     @Override
     public Line save(Line line) {
-        final String sql = "insert into Line (name, color) values (?, ?)";
+        final String sql = "insert into Line (name, color, extraFare) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(),
-                line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override

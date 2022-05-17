@@ -33,12 +33,12 @@ public class LineService {
     @Transactional
     public LineResponse save(LineRequest request) {
         if (!lineDao.isExistByName(request.getName())) {
-            Line line = lineDao.save(new Line(request.getName(), request.getColor()));
+            Line line = lineDao.save(new Line(request.getName(), request.getColor(), request.getExtraFare()));
             sectionJdbcDao.save(line.getId(), new Section(line.getId(), request.getUpStationId(), request.getDownStationId(), request.getDistance()));
 
             Station upsStation = stationDao.findById(request.getUpStationId());
             Station downStation = stationDao.findById(request.getDownStationId());
-            return new LineResponse(line.getId(), line.getName(), line.getColor(), Set.of(upsStation, downStation));
+            return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), Set.of(upsStation, downStation));
         }
         throw new ClientException("이미 등록된 지하철노선입니다.");
     }
@@ -68,7 +68,7 @@ public class LineService {
             stations.add(toMapStations().get(section.getUpStationId()));
             stations.add(toMapStations().get(section.getDownStationId()));
         }
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations);
     }
 
     @Transactional(readOnly = true)
@@ -95,7 +95,7 @@ public class LineService {
         if (lineDao.isExistByName(request.getName()) && !lineDao.findById(id).isSameName(request.getName())) {
             throw new ClientException("해당 지하철 노선이 존재하고 있습니다.");
         }
-        return lineDao.update(id, new Line(request.getName(), request.getColor()));
+        return lineDao.update(id, new Line(request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     @Transactional
