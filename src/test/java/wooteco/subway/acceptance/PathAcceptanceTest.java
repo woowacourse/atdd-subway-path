@@ -16,7 +16,6 @@ import wooteco.subway.ui.dto.SectionRequest;
 class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
-    @DisplayName("존재하지 않는 노선을 생성한다.")
     void findShortestPath() {
         // given
         createStation("강남역");
@@ -58,7 +57,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .queryParam("source", 1)
-            .queryParam("target", 6)
+            .queryParam("target", 4)
             .queryParam("age", 20)
             .when()
             .get("/paths")
