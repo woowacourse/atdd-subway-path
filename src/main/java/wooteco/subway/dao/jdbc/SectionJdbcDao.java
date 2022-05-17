@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,13 @@ import wooteco.subway.domain.Station;
 
 @Repository
 public class SectionJdbcDao implements SectionDao {
+
+    private static final RowMapper<Section> SECTION_ROW_MAPPER = (resultSet, rowNumber) -> new Section(
+            resultSet.getLong("id"),
+            new Station(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name")),
+            new Station(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name")),
+            resultSet.getInt("distance")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -53,12 +61,17 @@ public class SectionJdbcDao implements SectionDao {
                 + "INNER JOIN STATION AS ds ON ds.id = s.down_station_id "
                 + "WHERE s.line_id = ?";
 
-        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> new Section(
-                resultSet.getLong("id"),
-                new Station(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name")),
-                new Station(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name")),
-                resultSet.getInt("distance")
-        ), lineId);
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
+    }
+
+    @Override
+    public List<Section> findAll() {
+        final String sql = "SELECT s.id, s.line_id, s.up_station_id, s.down_station_id, s.distance, "
+                + "us.name as up_station_name, ds.name as down_station_name "
+                + "FROM SECTION AS s "
+                + "INNER JOIN STATION AS us ON us.id = s.up_station_id "
+                + "INNER JOIN STATION AS ds ON ds.id = s.down_station_id";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 
     @Override
