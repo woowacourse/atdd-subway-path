@@ -7,6 +7,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -15,16 +17,18 @@ import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
+@Transactional(readOnly = true)
+@Service
 public class PathService {
 
-    private final StationService stationService;
-    private final LineService lineService;
     private final SectionDao sectionDao;
+    private final LineService lineService;
+    private final StationService stationService;
 
-    public PathService(StationService stationService, LineService lineService, SectionDao sectionDao) {
-        this.stationService = stationService;
-        this.lineService = lineService;
+    public PathService(SectionDao sectionDao, LineService lineService, StationService stationService) {
         this.sectionDao = sectionDao;
+        this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId, int age) {
