@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
@@ -54,6 +55,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         List<StationResponse> stations = pathResponse.getStations();
         assertAll(() -> {
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(stations).hasSize(3);
             assertThat(stations).containsExactly(new StationResponse(saved_신당역),
                     new StationResponse(saved_동묘앞역),
