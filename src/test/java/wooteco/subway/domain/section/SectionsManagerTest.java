@@ -8,9 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
-import wooteco.subway.domain.section.SectionsManager;
 import wooteco.subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -191,88 +188,62 @@ class SectionsManagerTest {
         }
     }
 
-    @DisplayName("extractNewSections 메서드는 수정된 구간 정보를 받아, 새로 생겨난 구간들의 리스트를 반환")
+    @DisplayName("compareDifference 메서드는 수정된 구간 정보를 받아, 생겨난 구간들과 없어진 구간들의 정보를 반환")
     @Nested
-    class ExtractNewSectionsTest {
+    class CompareDifferenceTest {
 
         private final Section SECTION1 = new Section(STATION1, STATION2, 10);
         private final Section SECTION2 = new Section(STATION2, STATION4, 10);
         private final Section SECTION3 = new Section(STATION4, STATION5, 10);
 
         @Test
-        void 현재_존재하는_구간들_중_인자로_들어온_구간들에는_않는_구간들의_리스트를_반환() {
+        void 인자로_들어온_구간들에서_새로_생겨났거나_없어진_구간들의_정보를_반환() {
             SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2));
             Section newSection1 = new Section(STATION2, STATION3, 5);
             Section newSection2 = new Section(STATION3, STATION4, 5);
             Sections updatedSections = new Sections(List.of(SECTION1, newSection1, newSection2));
 
-            List<Section> actual = sectionsManager.extractNewSections(updatedSections);
-            List<Section> expected = List.of(newSection1, newSection2);
+            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            List<Section> expectedNewSections = List.of(newSection1, newSection2);
+            List<Section> expectedOldSections = List.of(SECTION2);
+            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
-        void 새로_생겨난_구간들이_없는_경우_빈_리스트_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
-            Sections updatedSections = new Sections(List.of(SECTION1, SECTION2));
-
-            List<Section> actual = sectionsManager.extractNewSections(updatedSections);
-            List<Section> expected = List.of();
-
-            assertThat(actual).isEqualTo(expected);
-        }
-
-        @Test
-        void 현재와_동일한_구간들이_들어오더라도_예외는_발생하지_않으며_빈_리스트_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
-            Sections updatedSections = new Sections(List.of(SECTION1, SECTION2, SECTION3));
-
-            List<Section> actual = sectionsManager.extractNewSections(updatedSections);
-            List<Section> expected = List.of();
-
-            assertThat(actual).isEqualTo(expected);
-        }
-    }
-
-    @DisplayName("extractDeletedSections 메서드는 수정된 구간 정보를 받아, 제거된 구간들의 리스트를 반환")
-    @Nested
-    class ExtractDeletedSectionsTest {
-
-        private final Section SECTION1 = new Section(STATION1, STATION2, 10);
-        private final Section SECTION2 = new Section(STATION2, STATION3, 10);
-        private final Section SECTION3 = new Section(STATION3, STATION4, 10);
-
-        @Test
-        void 인자로_들어온_구간들에는_존재하지_않는_구간들의_리스트를_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
-            Sections updatedSections = new Sections(List.of(
-                    new Section(STATION1, STATION3, 20), SECTION3));
-
-            List<Section> actual = sectionsManager.extractDeletedSections(updatedSections);
-            List<Section> expected = List.of(SECTION1, SECTION2);
-
-            assertThat(actual).isEqualTo(expected);
-        }
-
-        @Test
-        void 이전에_존재하던_구간들이_그대로인_경우_빈_리스트_반환() {
+        void 생성된_구간만_존재하는_경우_제거된_구간들의_정보에는_빈_리스트_반환() {
             SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2));
             Sections updatedSections = new Sections(List.of(SECTION1, SECTION2, SECTION3));
 
-            List<Section> actual = sectionsManager.extractDeletedSections(updatedSections);
-            List<Section> expected = List.of();
+            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            List<Section> expectedNewSections = List.of(SECTION3);
+            List<Section> expectedOldSections = List.of();
+            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
-        void 현재와_동일한_구간들이_들어오더라도_예외는_발생하지_않으며_빈_리스트_반환() {
+        void 제거된_구간만_존재하는_경우_새로운_구간들의_정보에는_빈_리스트_반환() {
+            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
+            Sections updatedSections = new Sections(List.of(SECTION1, SECTION2));
+
+            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            List<Section> expectedNewSections = List.of();
+            List<Section> expectedOldSections = List.of(SECTION3);
+            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 현재와_동일한_구간들이_들어오더라도_예외는_발생하지_않으며_빈_리스트들을_반환() {
             SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
             Sections updatedSections = new Sections(List.of(SECTION1, SECTION2, SECTION3));
 
-            List<Section> actual = sectionsManager.extractDeletedSections(updatedSections);
-            List<Section> expected = List.of();
+            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            SectionsCompareResult expected = new SectionsCompareResult(List.of(), List.of());
 
             assertThat(actual).isEqualTo(expected);
         }

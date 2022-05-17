@@ -112,7 +112,14 @@ public class SectionsManager {
         return new Sections(sections);
     }
 
-    public List<Section> extractNewSections(Sections updatedSections) {
+    public SectionsCompareResult compareDifference(Sections updatedSections) {
+        List<Section> newSections = extractNewSections(updatedSections);
+        List<Section> deletedSections = extractOldSections(updatedSections);
+
+        return new SectionsCompareResult(newSections, deletedSections);
+    }
+
+    private List<Section> extractNewSections(Sections updatedSections) {
         List<Section> previous = sections.toSortedList();
         List<Section> current = updatedSections.toSortedList();
 
@@ -120,7 +127,7 @@ public class SectionsManager {
         return current;
     }
 
-    public List<Section> extractDeletedSections(Sections updatedSections) {
+    private List<Section> extractOldSections(Sections updatedSections) {
         List<Section> previous = sections.toSortedList();
         List<Section> current = updatedSections.toSortedList();
 

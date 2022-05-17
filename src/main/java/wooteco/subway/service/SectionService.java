@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.section.SectionsCompareResult;
 import wooteco.subway.domain.section.SectionsManager;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateSectionRequest;
@@ -41,7 +42,8 @@ public class SectionService {
     }
 
     private void updateSectionChanges(SectionsManager oldSectionsManager, Sections updatedSections, Long lineId) {
-        subwayRepository.deleteSections(lineId, oldSectionsManager.extractDeletedSections(updatedSections));
-        subwayRepository.saveSections(lineId, oldSectionsManager.extractNewSections(updatedSections));
+        SectionsCompareResult compareResult = oldSectionsManager.compareDifference(updatedSections);
+        subwayRepository.deleteSections(lineId, compareResult.getOldSections());
+        subwayRepository.saveSections(lineId, compareResult.getNewSections());
     }
 }
