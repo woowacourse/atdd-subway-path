@@ -5,6 +5,11 @@ import java.util.List;
 public class Path {
 
     private static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE_DISTANCE = 10;
+
+    private static final int FIRST_ADDITIONAL_UNIT_FARE = 100;
+    private static final int FIRST_ADDITIONAL_UNIT_DISTANCE = 5;
+    private static final int FIRST_ADDITIONAL_FARE_DISTANCE = 50;
 
     private final List<Station> stations;
     private final int distance;
@@ -15,11 +20,11 @@ public class Path {
     }
 
     public int calculateFare() {
-        if (distance <= 10) {
+        if (distance <= DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE;
         }
-        if (distance <= 50) {
-            return DEFAULT_FARE + calculateOverFare(distance - 10, 5, 100);
+        if (distance <= FIRST_ADDITIONAL_FARE_DISTANCE) {
+            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE, FIRST_ADDITIONAL_UNIT_FARE);
         }
         return 0;
     }
