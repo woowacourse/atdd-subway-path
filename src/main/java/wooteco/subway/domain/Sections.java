@@ -182,6 +182,17 @@ public class Sections {
                 .orElseThrow(notFoundSectionSupplier());
     }
 
+    public void checkExistStations(final Station source, final Station target) {
+        if (isNotExistStation(source) || isNotExistStation(target)) {
+            throw new IllegalStateException("현재 Sections에 존재하지 않는 station입니다.");
+        }
+    }
+
+    private boolean isNotExistStation(final Station station) {
+        return sections.stream()
+                .noneMatch(section -> section.containsStation(station));
+    }
+
     private Section calculateLastSection() {
         return calculateLastSection(findAnySection());
     }

@@ -276,4 +276,22 @@ class SectionsTest {
                         tuple(topSection.getId(), topStation, bottomStation, 7)
                 );
     }
+
+    @Test
+    @DisplayName("station이 포함되어있지 않으면 예외가 발생한다.")
+    void checkExistStationsExceptionByNotContain() {
+        // given
+        Station station1 = new Station(1L, "오리");
+        Station station2 = new Station(2L, "배카라");
+        Station station3 = new Station(3L, "오카라");
+        Station station4 = new Station(3L, "레넌");
+
+        Section section = new Section(1L, 1L, station1, station2, 3);
+        Sections sections = new Sections(List.of(section));
+
+        // when
+        assertThatThrownBy(() -> sections.checkExistStations(station3, station4))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("현재 Sections에 존재하지 않는 station입니다.");
+    }
 }
