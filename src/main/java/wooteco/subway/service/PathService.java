@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
@@ -26,19 +27,22 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long upStationId, Long downStationId) {
+        final GraphPath<Station, DefaultWeightedEdge> graphPath = findGraphPath(upStationId, downStationId);
+        validatePathExist(graphPath);
+
+        final List<Station> stations = graphPath.getVertexList();
+        final int shortestDistance = (int) graphPath.getWeight();
+        final Fare fare = Fare.from(shortestDistance);
+        return new PathResponse(stations, shortestDistance, fare.getValue());
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findGraphPath(Long upStationId, Long downStationId) {
         final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
                 new DijkstraShortestPath<>(initSubwayMap());
 
         final Station upStation = findStation(upStationId);
         final Station downStation = findStation(downStationId);
-        final GraphPath<Station, DefaultWeightedEdge> graphPath =
-                dijkstraShortestPath.getPath(upStation, downStation);
-        validatePathExist(graphPath);
-
-        final List<Station> stations = graphPath.getVertexList();
-        final int shortestDistance = (int) graphPath.getWeight();
-        final int fare = calculateFare(shortestDistance);
-        return new PathResponse(stations, shortestDistance, fare);
+        return dijkstraShortestPath.getPath(upStation, downStation);
     }
 
     private void validatePathExist(GraphPath<Station, DefaultWeightedEdge> graphPath) {
@@ -47,18 +51,8 @@ public class PathService {
         }
     }
 
-    private int calculateFare(int distance) {
-        if (distance <= 10) {
-            return 1250;
-        }
-        if (distance <= 50) {
-            return 1250 + (int) ((Math.ceil((distance - 11) / 5) + 1) * 100);
-        }
-        return 2050 + (int) ((Math.ceil((distance - 51) / 8) + 1) * 100);
-    }
-
     private WeightedMultigraph<Station, DefaultWeightedEdge> initSubwayMap() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addAllStations(graph);
         addAllSections(graph);
@@ -85,5 +79,4 @@ public class PathService {
         return stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
     }
-
 }
