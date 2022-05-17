@@ -1,12 +1,13 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class PathFinderTest {
+class PathTest {
 
     /*
     * 노선 2개 만들어서(1호선(~~~), 2호선(~~~))
@@ -16,6 +17,7 @@ class PathFinderTest {
     * 최단 경로를 잘 반환하는지
     * */
 
+    @DisplayName("경로를 탐색한다.")
     @Test
     void calculateMinPath() {
         // given
@@ -44,9 +46,42 @@ class PathFinderTest {
         line2.addSection(section2To4);
 
         Path pathFinder = new Path(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
+
+        // when
         List<Station> path = pathFinder.findRoute(station1, station5);
 
+        // then
         assertThat(path).containsExactly(station1, station2, station4, station5);
+    }
+
+    @DisplayName("이동할 수 있는 경로가 없는 경우 예외를 던진다.")
+    @Test
+    void throwExceptionWhenNoRoute() {
+        // given
+        Station station1 = new Station(1L, "station1");
+        Station station2 = new Station(2L, "station2");
+        Station station3 = new Station(3L, "station3");
+        Station station4 = new Station(4L, "station4");
+        Station station5 = new Station(5L, "station5");
+
+        Line line1 = new Line(1L, "line1", "color1");
+
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 10);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 10);
+
+        line1.addSection(section1To2);
+        line1.addSection(section2To3);
+
+        Line line2 = new Line(2L, "line2", "color2");
+
+        Section section4To5 = new Section(3L, line2.getId(), station4, station5, 10);
+        line2.addSection(section4To5);
+
+        Path path = new Path(List.of(section1To2, section2To3, section4To5));
+        // when && then
+        assertThatThrownBy(() -> path.findRoute(station1, station4))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이동 가능한 경로가 존재하지 않습니다");
     }
 
     @DisplayName("거리가 10km 미만이면 기본 요금으로 계산한다")

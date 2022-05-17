@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -28,16 +29,26 @@ public class Path {
     }
 
     public List<Station> findRoute(final Station source, final Station target) {
+        checkRouteExist(source, target);
         return path.getPath(source, target).getVertexList();
     }
 
     public int calculateDistance(final Station source, final Station target) {
+        checkRouteExist(source, target);
         return (int) path.getPath(source, target).getWeight();
     }
 
     public int calculateFare(final Station source, final Station target) {
+        checkRouteExist(source, target);
         int distance = (int) path.getPathWeight(source, target);
         return BASIC_FARE + calculateFare(distance);
+    }
+
+    private void checkRouteExist(final Station source, final Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = this.path.getPath(source, target);
+        if (path == null) {
+            throw new IllegalArgumentException("이동 가능한 경로가 존재하지 않습니다");
+        }
     }
 
     private void initGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
@@ -70,7 +81,8 @@ public class Path {
     }
 
     private int longDistanceUnit(final int distanceForPayingAdditionalAmount) {
-        return (int) (Math.ceil((distanceForPayingAdditionalAmount - 1) / LONG_DISTANCE_FARE_RATIO) + 1) * ADDITIONAL_FARE;
+        return (int) (Math.ceil((distanceForPayingAdditionalAmount - 1) / LONG_DISTANCE_FARE_RATIO) + 1)
+                * ADDITIONAL_FARE;
     }
 
     private int fullMiddleDistanceAdditionalFare() {
