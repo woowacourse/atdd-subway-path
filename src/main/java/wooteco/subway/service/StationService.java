@@ -2,8 +2,8 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.Stations;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.service.SectionService;
 
 @RestController

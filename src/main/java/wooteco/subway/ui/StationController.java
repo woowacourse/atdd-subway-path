@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.Stations;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
+import wooteco.subway.dto.station.StationRequest;
+import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.service.StationService;
 
 @RestController

@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Stations;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 

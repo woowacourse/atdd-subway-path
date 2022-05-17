@@ -2,10 +2,10 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.line.LineDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Section;
-import wooteco.subway.dto.LineRequest;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.exception.DataNotExistException;
 
 @Service

@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {

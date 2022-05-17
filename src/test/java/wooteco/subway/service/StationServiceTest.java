@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 

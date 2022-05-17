@@ -16,8 +16,8 @@ import wooteco.subway.dao.section.JdbcSectionDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineRequest;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 

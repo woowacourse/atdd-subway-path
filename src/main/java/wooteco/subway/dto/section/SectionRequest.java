@@ -1,6 +1,6 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.section;
 
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 public class SectionRequest {
 

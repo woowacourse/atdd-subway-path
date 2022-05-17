@@ -3,9 +3,9 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.section.SectionDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Stations;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Stations;
 
 @Service
 public class SectionService {
