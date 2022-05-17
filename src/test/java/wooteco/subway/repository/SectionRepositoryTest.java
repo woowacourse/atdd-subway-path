@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,13 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import wooteco.subway.dao.repository.JdbcLineRepository;
-import wooteco.subway.dao.repository.JdbcSectionRepository;
-import wooteco.subway.dao.repository.LineRepository;
-import wooteco.subway.dao.repository.SectionRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.repository.dao.LineDao;
+import wooteco.subway.repository.dao.SectionDao;
 
 @JdbcTest
 class SectionRepositoryTest {
@@ -31,7 +29,7 @@ class SectionRepositoryTest {
 	private DataSource dataSource;
 	private SectionRepository sectionRepository;
 	private LineRepository lineRepository;
-	private StationDao stationDao;
+	private StationRepository stationRepository;
 
 	private Station upStation;
 	private Station downStation;
@@ -40,11 +38,11 @@ class SectionRepositoryTest {
 
 	@BeforeEach
 	void init() {
-		stationDao = new JdbcStationDao(dataSource, jdbcTemplate);
-		sectionRepository = new JdbcSectionRepository(new SectionDao(dataSource, jdbcTemplate), stationDao);
+		stationRepository = new JdbcStationRepository(dataSource, jdbcTemplate);
+		sectionRepository = new JdbcSectionRepository(new SectionDao(dataSource, jdbcTemplate), stationRepository);
 		lineRepository = new JdbcLineRepository(new LineDao(dataSource, jdbcTemplate), sectionRepository);
-		Long upStationId = stationDao.save(new Station("강남역"));
-		Long downStationId = stationDao.save(new Station("역삼역"));
+		Long upStationId = stationRepository.save(new Station("강남역"));
+		Long downStationId = stationRepository.save(new Station("역삼역"));
 		upStation = new Station(upStationId, "강남역");
 		downStation = new Station(downStationId, "역삼역");
 		section = new Section(upStation, downStation, 10);

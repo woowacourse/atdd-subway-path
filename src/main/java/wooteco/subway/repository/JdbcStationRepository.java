@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import java.util.List;
 import java.util.Map;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
 @Repository
-public class JdbcStationDao implements StationDao {
+public class JdbcStationRepository implements StationRepository {
 
 	private static final String NO_SUCH_ID_ERROR = "해당 id에 맞는 지하철 역이 없습니다.";
 
 	private final SimpleJdbcInsert insertActor;
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 
-	public JdbcStationDao(DataSource dataSource, NamedParameterJdbcTemplate jdbcTemplate) {
+	public JdbcStationRepository(DataSource dataSource, NamedParameterJdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.insertActor = new SimpleJdbcInsert(dataSource)
 			.withTableName("station")

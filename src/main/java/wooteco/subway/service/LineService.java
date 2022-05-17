@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.dao.repository.LineRepository;
-import wooteco.subway.dao.repository.SectionRepository;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionsDirtyChecker;

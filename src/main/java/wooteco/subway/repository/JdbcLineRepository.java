@@ -1,12 +1,12 @@
-package wooteco.subway.dao.repository;
+package wooteco.subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.table.LineTable;
+import wooteco.subway.repository.dao.LineDao;
+import wooteco.subway.repository.table.LineTable;
 import wooteco.subway.domain.Line;
 
 @Repository

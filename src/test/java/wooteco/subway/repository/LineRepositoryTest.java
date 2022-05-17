@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -14,12 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import wooteco.subway.dao.repository.JdbcLineRepository;
-import wooteco.subway.dao.repository.JdbcSectionRepository;
-import wooteco.subway.dao.repository.LineRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.repository.dao.LineDao;
+import wooteco.subway.repository.dao.SectionDao;
 
 @JdbcTest
 class LineRepositoryTest {
@@ -29,13 +28,13 @@ class LineRepositoryTest {
 	@Autowired
 	private DataSource dataSource;
 	private LineRepository lineRepository;
-	private StationDao stationDao;
+	private StationRepository stationRepository;
 
 	@BeforeEach
 	void init() {
-		stationDao = new JdbcStationDao(dataSource, jdbcTemplate);
+		stationRepository = new JdbcStationRepository(dataSource, jdbcTemplate);
 		lineRepository = new JdbcLineRepository(new LineDao(dataSource, jdbcTemplate),
-			new JdbcSectionRepository(new SectionDao(dataSource, jdbcTemplate), stationDao));
+			new JdbcSectionRepository(new SectionDao(dataSource, jdbcTemplate), stationRepository));
 	}
 
 	@DisplayName("지하철 노선을 저장한다.")
@@ -69,8 +68,8 @@ class LineRepositoryTest {
 	@DisplayName("지하철 노선을 조회하면 구간도 함께 조회할 수 있다")
 	@Test
 	void findSections() {
-		Long upStationId = stationDao.save(new Station("강남역"));
-		Long downStationId = stationDao.save(new Station("역삼역"));
+		Long upStationId = stationRepository.save(new Station("강남역"));
+		Long downStationId = stationRepository.save(new Station("역삼역"));
 		Section section = new Section(
 			new Station(upStationId, "강남역"), new Station(downStationId, "역삼역"),
 			10);

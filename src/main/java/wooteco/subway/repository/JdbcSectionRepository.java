@@ -1,24 +1,23 @@
-package wooteco.subway.dao.repository;
+package wooteco.subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.table.SectionTable;
+import wooteco.subway.repository.dao.SectionDao;
+import wooteco.subway.repository.table.SectionTable;
 import wooteco.subway.domain.Section;
 
 @Repository
 public class JdbcSectionRepository implements SectionRepository {
 
 	private final SectionDao sectionDao;
-	private final StationDao stationDao;
+	private final StationRepository stationRepository;
 
-	public JdbcSectionRepository(SectionDao sectionDao, StationDao stationDao) {
+	public JdbcSectionRepository(SectionDao sectionDao, StationRepository stationRepository) {
 		this.sectionDao = sectionDao;
-		this.stationDao = stationDao;
+		this.stationRepository = stationRepository;
 	}
 
 	@Override
@@ -30,8 +29,8 @@ public class JdbcSectionRepository implements SectionRepository {
 	public Section findById(Long id) {
 		SectionTable sectionTable = sectionDao.findById(id);
 		return sectionTable.toEntity(
-			stationDao.findById(sectionTable.getUpStationId()),
-			stationDao.findById(sectionTable.getDownStationId())
+			stationRepository.findById(sectionTable.getUpStationId()),
+			stationRepository.findById(sectionTable.getDownStationId())
 		);
 	}
 
@@ -40,8 +39,8 @@ public class JdbcSectionRepository implements SectionRepository {
 		return sectionDao.findByLineId(lineId)
 			.stream()
 			.map(table -> table.toEntity(
-				stationDao.findById(table.getUpStationId()),
-				stationDao.findById(table.getDownStationId())
+				stationRepository.findById(table.getUpStationId()),
+				stationRepository.findById(table.getDownStationId())
 			)).collect(Collectors.toList());
 	}
 

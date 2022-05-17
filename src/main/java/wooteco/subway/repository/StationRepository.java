@@ -1,10 +1,10 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import java.util.List;
 
 import wooteco.subway.domain.Station;
 
-public interface StationDao {
+public interface StationRepository {
 	Long save(Station station);
 
 	List<Station> findAll();
