@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.ShortestPath;
 import wooteco.subway.domain.Station;
@@ -30,7 +31,6 @@ public class PathService {
         ShortestPath shortestPath = getShortestPath();
 
         List<StationServiceResponse> stations = getShortestPathStations(pathRequest, shortestPath);
-
         Fare fare = new Fare();
         int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
             pathRequest.getTarget());

@@ -35,7 +35,7 @@ public class StationDaoImpl implements StationDao {
 
     @Override
     public List<Station> findAll() {
-        final String sql = "SELECT id, name FROM station";
+        final String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, stationMapper());
     }
 
@@ -67,10 +67,10 @@ public class StationDaoImpl implements StationDao {
 
     @Override
     public List<Station> findById(List<Long> ids) {
-        final String sql = "SELECT * FROM station where id in ?";
         final String inputIds = ids.stream()
             .map(String::valueOf)
             .collect(Collectors.joining(", "));
-        return jdbcTemplate.query(sql, stationMapper(), inputIds);
+        final String sql = String.format("SELECT * FROM station where id in (%s)", inputIds);
+        return jdbcTemplate.query(sql, stationMapper());
     }
 }

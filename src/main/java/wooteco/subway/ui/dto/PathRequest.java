@@ -11,7 +11,7 @@ public class PathRequest {
     private Long source;
     @NotNull(message = "도착역Id를 입력해주세요.")
     private Long target;
-    @NotBlank(message = "나이를 입력해주세요.")
+    @NotNull(message = "나이를 입력해주세요.")
     private int age;
 
     public PathRequest() {
@@ -37,5 +37,17 @@ public class PathRequest {
 
     public PathServiceRequest toPathServiceRequest() {
         return new PathServiceRequest(source, target, age);
+    }
+
+    public void setSource(Long source) {
+        this.source = source;
+    }
+
+    public void setTarget(Long target) {
+        this.target = target;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
