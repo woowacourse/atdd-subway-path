@@ -32,6 +32,13 @@ class PathServiceTest {
 	private PathService pathService;
 	private final Map<String, Station> stations = new HashMap<>();
 
+	//            신사 (3호선)
+	//            |10|
+	// 신반포 (9호선) 잠원
+	//       \10\ |10|
+	// 내방 >10> 고속터미널 >10> 반포 >10> 논현 (7호선)
+	//            |10| \14\
+	//            서초 >3> 사평 (새호선)
 	@BeforeEach
 	void init() {
 		stations.putAll(saveStations("내방역", "고속터미널역", "반포역", "논현역"));
