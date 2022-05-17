@@ -73,4 +73,8 @@ public class SectionDao {
             .addValue("down_station_id", section.getDownStationId())
             .addValue("distance", section.getDistance());
     }
+
+    public List<SectionEntity> findAll() {
+        return null;
+    }
 }

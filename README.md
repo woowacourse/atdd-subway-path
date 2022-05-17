@@ -5,7 +5,7 @@
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-subwayGraph">
 </p>
 
 <br>
@@ -36,13 +36,13 @@
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-subwayGraph/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blob/master/LICENSE) licensed.
 
 # 기능 요구사항
 
@@ -117,14 +117,15 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 
 ### 지하철 경로 조회 API
 
-- [ ] 경로를 조회한다.
-    - [ ] jgrapht 라이브러리를 활용한다.
-        - [ ] 점(vertex)과 간선(edge), 그리고 가중치 개념을 이용
-            - [ ] 정점: 지하철역(Station)
-            - [ ] 간선: 지하철역 연결정보(Section)
-            - [ ] 가중치: 거리
-        - [ ] 최단 거리 기준 조회 시 가중치를 거리로 설정
-    - [ ] 최단 경로 및 거리를 반환한다.
+- [x] 경로를 조회한다.
+    - [x] jgrapht 라이브러리를 활용한다.
+        - [x] 점(vertex)과 간선(edge), 그리고 가중치 개념을 이용
+            - [x] 정점: 지하철역(Station)
+            - [x] 간선: 지하철역 연결정보(Section)
+            - [x] 가중치: 거리
+        - [x] 최단 거리 기준 조회 시 가중치를 거리로 설정
+    - [x] 최단 경로 및 거리를 반환한다.
+    - [x] 경로가 존재하는지 검증한다.
   
 - [ ] 요금을 계산한다.
     - [ ] 기본운임(10㎞ 이내): 기본운임 1,250원
