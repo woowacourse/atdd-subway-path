@@ -9,10 +9,10 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathInfo {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath dijkstraShortestPath;
 
     public PathInfo(List<Station> stations, List<Section> sections) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
 
         Map<Long, Station> sectionMap = new HashMap<>();
@@ -25,10 +25,21 @@ public class PathInfo {
             Station upStation = sectionMap.get(section.getUpStationId());
             graph.setEdgeWeight(graph.addEdge(downStation,upStation), section.getDistance());
         }
+        dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
     public List<Station> findPath(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
+    }
+
+    public int calculateMinDistance(Station source, Station target) {
+        List<Station> paths = findPath(source, target);
+        int size = paths.size();
+        int sum = 0;
+
+        for (int i = 0; i<size - 1; ++i) {
+            sum += dijkstraShortestPath.getPathWeight(paths.get(i), paths.get(i+1));
+        }
+        return sum;
     }
 }
