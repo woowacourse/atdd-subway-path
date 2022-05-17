@@ -7,17 +7,20 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathCalculator {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-            DefaultWeightedEdge.class);
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathCalculator(final List<Line> lines) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+                DefaultWeightedEdge.class);
         for (Line line : lines) {
             final List<Section> sections = line.getSections();
-            addSectionInGraph(sections);
+            addSectionInGraph(graph, sections);
         }
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    private void addSectionInGraph(final List<Section> sections) {
+    private void addSectionInGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+                                   final List<Section> sections) {
         for (Section section : sections) {
             final Station upStation = section.getUpStation();
             final Station downStation = section.getDownStation();
@@ -30,12 +33,10 @@ public class PathCalculator {
     }
 
     public List<Station> findShortestPath(final Station source, final Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
     public int findShortestDistance(final Station source, final Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         final double shortestDistance = dijkstraShortestPath.getPath(source, target).getWeight();
         return (int) shortestDistance;
     }
