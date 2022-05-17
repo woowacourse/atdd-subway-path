@@ -3,7 +3,6 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,8 +41,8 @@ class PathFinderTest {
         line2.addSection(section4To5);
         line2.addSection(section2To4);
 
-        PathFinder pathFinder = new PathFinder(List.of(line1, line2));
-        List<Station> path = pathFinder.findPath(station1, station5);
+        Path pathFinder = new Path(List.of(line1, line2));
+        List<Station> path = pathFinder.findRoute(station1, station5);
 
         assertThat(path).containsExactly(station1, station2, station4, station5);
     }
@@ -64,7 +63,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        PathFinder pathFinder = new PathFinder(List.of(line1));
+        Path pathFinder = new Path(List.of(line1));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
@@ -87,7 +86,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        PathFinder pathFinder = new PathFinder(List.of(line1));
+        Path pathFinder = new Path(List.of(line1));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
@@ -110,7 +109,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        PathFinder pathFinder = new PathFinder(List.of(line1));
+        Path pathFinder = new Path(List.of(line1));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then

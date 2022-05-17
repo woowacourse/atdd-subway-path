@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathFinder;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
@@ -101,14 +101,14 @@ public class LineService {
             List<Section> sectionsByLine = sectionService.findSectionsByLineId(line.getId());
             line.addAllSections(sectionsByLine);
         }
-        PathFinder pathFinder = new PathFinder(lines);
+        Path pathFinder = new Path(lines);
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
-        List<Station> path = pathFinder.findPath(sourceStation, targetStation);
-        int distance = pathFinder.getMinDistance(sourceStation, targetStation);
+        List<Station> path = pathFinder.findRoute(sourceStation, targetStation);
+        int distance = pathFinder.calculateDistance(sourceStation, targetStation);
         int fare = pathFinder.calculateFare(sourceStation, targetStation);
         return PathResponse.from(path, distance, fare);
     }
