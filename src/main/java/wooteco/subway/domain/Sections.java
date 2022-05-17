@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -94,18 +95,25 @@ public class Sections {
         return sections.size();
     }
 
-    public List<Long> getShortestPath(Long departureId, Long arrivalId) {
+    public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addStationVertex(graph);
         addSectionEdge(graph);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> stationIdValues = dijkstraShortestPath.getPath(String.valueOf(departureId),
-                        String.valueOf(arrivalId))
-                .getVertexList();
-        return stationIdValues.stream()
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
+        GraphPath path = dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
+        return getStationIds(path);
+    }
+
+    private List<Long> getStationIds(GraphPath<String, String> path) {
+        try {
+            List<String> stationIds = path.getVertexList();
+            return stationIds.stream()
+                    .map(Long::valueOf)
+                    .collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("연결되지 않은 구간입니다.");
+        }
     }
 
     private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
