@@ -41,7 +41,7 @@ class PathTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"20, 1450", "30, 1650", "50, 2050"})
+    @CsvSource(value = {"16, 1450", "20, 1450", "30, 1650", "50, 2050"})
     @DisplayName("50km 이하일 때 5km 마다 100원 추가된다.")
     void calculateFarLessThan50(final int distance, final int expected) {
         Path path = new Path(stations, distance);
@@ -50,7 +50,7 @@ class PathTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"58, 2150", "90, 2550"})
+    @CsvSource(value = {"58, 2150", "60, 2250", "90, 2550"})
     @DisplayName("50km 초과일 때 8km 마다 100원 추가된다.")
     void calculateMoreThan50(final int distance, final int expected) {
         Path path = new Path(stations, distance);

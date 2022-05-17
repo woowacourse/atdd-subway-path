@@ -50,9 +50,11 @@ class FindDijkstraShortestPathStrategyTest {
                 new Section(3L, 2L, station1, station4, 3),
                 new Section(4L, 2L, station4, station3, 3)));
 
+        //when
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
         Path path = findPathStrategy.findPath(station1, station3, sections);
 
+        //then
         assertAll(
                 () -> assertThat(path.getStations()).containsExactly(station1, station2, station3),
                 () -> assertThat(path.getDistance()).isEqualTo(4)
@@ -73,6 +75,7 @@ class FindDijkstraShortestPathStrategyTest {
                         new Section(1L, 1L, station1, station2, 2),
                         new Section(2L, 2L, station3, station4, 3)));
 
+        //when & then
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
         assertThatThrownBy(() -> findPathStrategy.findPath(station1, station4, sections))
                 .isInstanceOf(NotFoundException.class)
