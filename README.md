@@ -1,39 +1,44 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
-</p>
+# 지하철 경로 조회 🚈
 
-<br>
+## 기능 요구 사항
+### 경로 조회 기능 API
+- [ ] 최단 경로 조회 기능
+  - [ ] 동일한 역의 경로일 경우 에러 응답
+  - [ ] 이동할 수 없는 경로일 경우 에러 응답
 
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
-## 🚀 Getting Started
-### Usage
-#### application 구동
+#### 요금 계산 방법
+- 기본운임(10㎞ 이내): 기본운임 1,250원
+- 이용 거리 초과 시 추가운임 부과
+- 10km~50km: 5km 까지 마다 100원 추가
+- 50km 초과: 8km 까지 마다 100원 추가
 ```
-./gradlew bootRun
+9km = 1250원
+12km = 10km + 2km = 1350원
+16km = 10km + 6km = 1450원
+58km = 10km + 40km + 8km = 2150원
 ```
-<br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
+### 최단 경로 라이브러리 사용
+- jgrapht 라이브러리를 활용하면 간편하게 최단거리를 조회할 수 있음
+- 정점(vertex)과 간선(edge), 그리고 가중치 개념을 이용
+- 정점: 지하철역(Station)
+- 간선: 지하철역 연결정보(Section)
+- 가중치: 거리
+- 최단 거리 기준 조회 시 가중치를 거리로 설정
 
-<br>
+---
 
-## 🐞 Bug Report
+## 필요 기능
+- 모든 역과 노선 정보를 가지고 맵을 만든다.
+- 출발역과 도착역의 경로와 거리를 얻어온다.
+- 해당 거리에 대한 비용을 계산한다.
+- 경로, 거리, 비용을 포함하는 결과를 응답한다.
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+## 도메인 설계
+#### 지하철 노선도 (SubwayMap)
+- 모든 역과 노선 정보를 가지고 있다.
+- 출발역과 도착역이 주어지면 최단 경로와 거리를 계산한다.
 
-<br>
-
-## 📝 License
-
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+#### 경로 (Path)
+- 경로에 포함되는 역들과 거리를 담고 있다.
+- 거리에 대한 비용을 계산한다.
