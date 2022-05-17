@@ -23,7 +23,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private final StationRequest 사당 = new StationRequest("사당");
     private final StationRequest 방배 = new StationRequest("방배");
     private LineRequest 일호선 = new LineRequest("1호선", "bg-blue-200", 1L, 2L, 10);
-    private LineRequest 이호선 = new LineRequest("2호선", "bg-green-200", 1L, 2L, 10);
+    private LineRequest 이호선 = new LineRequest("2호선", "bg-green-300", 1L, 2L, 10);
 
     @BeforeEach
     void init() {

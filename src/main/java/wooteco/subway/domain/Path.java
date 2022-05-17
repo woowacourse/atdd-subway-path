@@ -8,8 +8,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private List<Long> shortestPath;
-    private int totalDistance;
+    private final List<Long> shortestPath;
+    private final int totalDistance;
 
     public Path(Long source, Long target, List<Long> stationIds, Sections sections) {
         validateExistStationId(source, target, stationIds);
