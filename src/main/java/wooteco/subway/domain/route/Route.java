@@ -7,9 +7,9 @@ import wooteco.subway.domain.station.Station;
 public class Route {
 
     private final List<Station> route;
-    private final double distance;
+    private final int distance;
 
-    public Route(List<Station> route, double distance) {
+    public Route(List<Station> route, int distance) {
         this.route = route;
         this.distance = distance;
     }
@@ -18,7 +18,7 @@ public class Route {
         return new ArrayList<>(route);
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 }

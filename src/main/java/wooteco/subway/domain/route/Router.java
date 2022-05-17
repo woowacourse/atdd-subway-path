@@ -54,7 +54,7 @@ public class Router {
         }
 
         List<Station> shortestPath = path.getVertexList();
-        double pathDistance = path.getWeight();
+        int pathDistance = (int) path.getWeight();
         return Optional.of(new Route(shortestPath, pathDistance));
     }
 

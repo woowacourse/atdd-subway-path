@@ -39,7 +39,7 @@ public class DtoAssembler {
         return new StationResponse(station.getId(), station.getName());
     }
 
-    public static RouteResponse routeResponse(Route route) {
-        return new RouteResponse(stationResponses(route.getRoute()), (int) route.getDistance(), 1000L);
+    public static RouteResponse routeResponse(Route route, Long fare) {
+        return new RouteResponse(stationResponses(route.getRoute()), route.getDistance(), fare);
     }
 }
