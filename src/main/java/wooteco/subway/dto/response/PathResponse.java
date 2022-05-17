@@ -6,24 +6,30 @@ import wooteco.subway.domain.Station;
 
 public class PathResponse {
 
-    private int distance;
     private List<StationResponse> stationResponses;
+    private int distance;
+    private int fare;
 
     private PathResponse() {
     }
 
-    public PathResponse(final List<Station> stations, final int distance) {
+    public PathResponse(final List<Station> stations, final int distance, final int fare) {
         this.stationResponses = stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
         this.distance = distance;
+        this.fare = fare;
+    }
+
+    public List<StationResponse> getStationResponses() {
+        return stationResponses;
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public List<StationResponse> getStationResponses() {
-        return stationResponses;
+    public int getFare() {
+        return fare;
     }
 }

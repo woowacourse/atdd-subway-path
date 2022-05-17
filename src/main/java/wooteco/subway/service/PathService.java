@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Station;
@@ -23,7 +24,8 @@ public class PathService {
         final PathCalculator pathCalculator = new PathCalculator(lines);
         final List<Station> stations = pathCalculator.findShortestPath(source, target);
         final int distance = pathCalculator.findShortestDistance(source, target);
+        final int fare = (new Fare()).calculate(distance);
 
-        return new PathResponse(stations, distance);
+        return new PathResponse(stations, distance, fare);
     }
 }
