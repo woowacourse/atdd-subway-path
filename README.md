@@ -24,8 +24,12 @@
   - [x] 이동 거리마다 추가 운임이 부과된다.
     - [x] 10KM 이내이면 1250원으로 계산한다
     - [x] 10~50 KM는 5KM마다 100원 추가.
-    - [x] 50 KM 초과는 8KM마다 100원 추가.
+    - [x] 50 KM 초과는 8KM마다 100원 추가.능
 
+# API 요구사항
+- [ ] `GET /paths?source={sourseId}&target={targetId}&age={age}`
+  - [ ] 응답으로 200 OK 상태를 반환
+  - [ ] BODY에 지나온 경로와 거리, 요금을 반환한다.
 <br>
 
 ## 🚀 Getting Started
