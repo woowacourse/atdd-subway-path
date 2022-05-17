@@ -30,13 +30,13 @@ public class JdbcSectionDao implements SectionDao {
             + "FROM section AS s "
             + "INNER JOIN line AS l ON s.line_id = l.id "
             + "INNER JOIN station AS us ON s.up_station_id = us.id "
-            + "INNER JOIN station AS ds ON s.down_station_id = ds.id "
-            + "WHERE s.line_id = ? ";
+            + "INNER JOIN station AS ds ON s.down_station_id = ds.id ";
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Section> rowMapper = (resultSet, rowNumber) -> new Section(
             resultSet.getLong("id"),
-            new Line(resultSet.getLong("line_id"), new Name(resultSet.getString("line_name")), resultSet.getString("line_color")),
+            new Line(resultSet.getLong("line_id"), new Name(resultSet.getString("line_name")),
+                    resultSet.getString("line_color")),
             new Station(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name")),
             new Station(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name")),
             new Distance(resultSet.getInt("distance"))
@@ -56,7 +56,7 @@ public class JdbcSectionDao implements SectionDao {
                 ps.setLong(1, section.getLineId());
                 ps.setLong(2, section.getUpStationId());
                 ps.setLong(3, section.getDownStationId());
-                ps.setInt(4 , section.getDistance());
+                ps.setInt(4, section.getDistance());
 
                 return ps;
             }, keyHolder);
@@ -71,14 +71,21 @@ public class JdbcSectionDao implements SectionDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId));
     }
 
+    @Override
+    public Sections findAll() {
+        final List<Section> query = jdbcTemplate.query(LINE_QUERY_SQL, rowMapper);
+        return new Sections(query);
+    }
+
     public Sections findAllByLineId(final Long lineId) {
-        final List<Section> query = jdbcTemplate.query(LINE_QUERY_SQL, rowMapper, lineId);
+        final List<Section> query = jdbcTemplate.query(LINE_QUERY_SQL + "WHERE s.line_id = ? ", rowMapper, lineId);
         return new Sections(query);
     }
 
     public Optional<Section> findBy(final Long lineId, final Long upStationId, final Long downStationId) {
         try {
-            final String sql = LINE_QUERY_SQL + "AND (s.up_station_id = ? OR s.down_station_id = ?)";
+            final String sql =
+                    LINE_QUERY_SQL + "WHERE s.line_id = ? AND (s.up_station_id = ? OR s.down_station_id = ?)";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId, upStationId, downStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -87,7 +94,7 @@ public class JdbcSectionDao implements SectionDao {
 
     public Optional<Section> findByLineIdAndUpStationId(final Long lineId, final Long upStationId) {
         try {
-            final String sql = LINE_QUERY_SQL + "AND  s.up_station_id = ?";
+            final String sql = LINE_QUERY_SQL + "WHERE s.line_id = ? AND  s.up_station_id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId, upStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -96,7 +103,7 @@ public class JdbcSectionDao implements SectionDao {
 
     public Optional<Section> findByLineIdAndDownStationId(final Long lineId, final Long downStationId) {
         try {
-            final String sql = LINE_QUERY_SQL + "AND  s.down_station_id = ?";
+            final String sql = LINE_QUERY_SQL + "WHERE s.line_id = ? AND  s.down_station_id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId, downStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -113,7 +120,7 @@ public class JdbcSectionDao implements SectionDao {
         final String parameters = IntStream.range(0, ids.size())
                 .mapToObj(it -> "?")
                 .collect(Collectors.joining(", "));
-        final String sql = "DELETE FROM section WHERE id IN ("+ parameters +")";
+        final String sql = "DELETE FROM section WHERE id IN (" + parameters + ")";
         return jdbcTemplate.update(sql, ids.toArray());
     }
 }

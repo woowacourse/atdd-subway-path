@@ -11,6 +11,8 @@ public interface SectionDao {
 
     boolean existStation(long stationId);
 
+    Sections findAll();
+
     Sections findAllByLineId(Long lineId);
 
     Optional<Section> findBy(Long lineId, Long upStationId, Long downStationId);

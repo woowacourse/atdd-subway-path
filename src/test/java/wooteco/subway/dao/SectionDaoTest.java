@@ -103,6 +103,24 @@ class SectionDaoTest extends DaoTest {
     }
 
     @Test
+    @DisplayName("모든 구간을 조회한다.")
+    void FindAll() {
+        // given
+        final Long redSectionId = sectionDao.insert(redSection);
+        final Long blueSectionId = sectionDao.insert(blueSection);
+
+        final Sections expected = new Sections(
+                List.of(toSectionWithId(redSectionId, redSection), toSectionWithId(blueSectionId, blueSection))
+        );
+
+        // when
+        final Sections actual = sectionDao.findAll();
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("역 아이디에 해당하는 모든 구간을 조회한다.")
     void FindAllByLineId() {
         // given
