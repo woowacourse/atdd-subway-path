@@ -24,8 +24,8 @@ public class SectionService {
 
     @Transactional
     public int save(final Long lineId, final SectionRequest sectionRequest) {
-        final Section section = createSection(lineId, sectionRequest);
         final Sections sections = new Sections(sectionDao.findByLineId(lineId));
+        final Section section = createSection(lineId, sectionRequest);
         final Section newSection = sectionDao.save(section);
         addSection(sections, newSection);
         return sectionDao.update(sections.getSections());

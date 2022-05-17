@@ -56,8 +56,8 @@ public class SectionDaoImpl implements SectionDao {
                 + "FROM section "
                 + "JOIN station AS upstation ON upstation.id = section.up_station_id "
                 + "JOIN station AS downstation ON downstation.id = section.down_station_id "
-                + "WHERE line_id = (?) AND section.deleted = (?)";
-        return jdbcTemplate.query(sql, sectionRowMapper(), lineId, false);
+                + "WHERE line_id = (?) AND section.deleted = (?) AND upstation.deleted = (?) AND downstation.deleted = (?)";
+        return jdbcTemplate.query(sql, sectionRowMapper(), lineId, false, false, false);
     }
 
     @Override
