@@ -49,7 +49,7 @@ public class StationService {
     }
 
     public int deleteStation(long id) {
-        stationDao.findById(id);
-        return stationDao.deleteStation(id);
+        Station station = stationDao.findById(id);
+        return stationDao.deleteStation(station.getId());
     }
 }

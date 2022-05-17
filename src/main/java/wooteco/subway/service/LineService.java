@@ -68,8 +68,8 @@ public class LineService {
 
     public int updateLine(final Long id, final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
-        lineDao.findById(id);
-        Line lineForUpdate = new Line(id, lineRequest.getName(), lineRequest.getColor());
+        Line line = lineDao.findById(id);
+        Line lineForUpdate = new Line(line.getId(), lineRequest.getName(), lineRequest.getColor());
         return lineDao.update(lineForUpdate);
     }
 
@@ -87,7 +87,7 @@ public class LineService {
     }
 
     public int deleteLine(final Long id) {
-        lineDao.findById(id);
-        return lineDao.delete(id);
+        Line line = lineDao.findById(id);
+        return lineDao.delete(line.getId());
     }
 }
