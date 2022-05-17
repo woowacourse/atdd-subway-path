@@ -1,9 +1,4 @@
-package wooteco.subway.dto;
-
-import wooteco.subway.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package wooteco.subway.controller.dto.station;
 
 public class StationResponse {
     private Long id;
@@ -23,5 +18,13 @@ public class StationResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "StationResponse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
