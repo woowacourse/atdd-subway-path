@@ -5,6 +5,7 @@ public class Fare {
     private static final int BASIC_FARE = 1250;
     private static final int FIRST_DISTANCE = 10;
     private static final int SECOND_DISTANCE = 50;
+    public static final int OVER_FARE = 100;
 
     private final int distance;
 
@@ -25,10 +26,10 @@ public class Fare {
     }
 
     private int calculateFareOverFirstDistance(int distance) {
-        return (int) (Math.ceil((distance - FIRST_DISTANCE) / 5.0) * 100);
+        return (int) (Math.ceil((distance - FIRST_DISTANCE) / 5.0) * OVER_FARE);
     }
 
     private int calculateFareOverSecondDistance() {
-        return (int) (Math.ceil((distance - SECOND_DISTANCE) / 8.0) * 100);
+        return (int) (Math.ceil((distance - SECOND_DISTANCE) / 8.0) * OVER_FARE);
     }
 }
