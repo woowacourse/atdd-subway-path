@@ -33,19 +33,19 @@ public class SectionService {
     @Transactional
     public void save(Long id, SectionRequest request, SectionsResponse response, LineResponse line) {
         validateLineExist(id);
-        SectionsOnLine sectionsOnLine = new SectionsOnLine(response.getSections());
-        sectionsOnLine.validateUpAndDownSameStation(request);
-        sectionsOnLine.validateSaveCondition(request, line);
+        LineSections lineSections = new LineSections(response.getSections());
+        lineSections.validateUpAndDownSameStation(request);
+        lineSections.validateSaveCondition(request, line);
 
-        if (sectionsOnLine.isAddSectionMiddle(request)) {
-            addMiddleSection(id, request, sectionsOnLine);
+        if (lineSections.isAddSectionMiddle(request)) {
+            addMiddleSection(id, request, lineSections);
             return;
         }
         sectionDao.save(id, new Section(id, request.getUpStationId(), request.getDownStationId(), request.getDistance()));
     }
 
-    private void addMiddleSection(Long id, SectionRequest request, SectionsOnLine sectionsOnLine) {
-        Optional<Section> targetSection = sectionsOnLine.getSections()
+    private void addMiddleSection(Long id, SectionRequest request, LineSections lineSections) {
+        Optional<Section> targetSection = lineSections.getSections()
                 .stream()
                 .filter(section -> section.hasSameStationId(request))
                 .findAny();
@@ -67,12 +67,12 @@ public class SectionService {
         validateStationExist(stationId);
         sectionDao.findById(id).validateDeleteCondition();
 
-        SectionsOnLine sectionsOnLine = sectionDao.findById(id);
-        if (sectionsOnLine.isMiddleSection(stationId)) {
-            deleteMiddleSection(id, sectionsOnLine.findDownSection(stationId).get(), sectionsOnLine.findUpSection(stationId).get());
+        LineSections lineSections = sectionDao.findById(id);
+        if (lineSections.isMiddleSection(stationId)) {
+            deleteMiddleSection(id, lineSections.findDownSection(stationId).get(), lineSections.findUpSection(stationId).get());
             return;
         }
-        deleteEndSection(id, sectionsOnLine.findDownSection(stationId), sectionsOnLine.findUpSection(stationId));
+        deleteEndSection(id, lineSections.findDownSection(stationId), lineSections.findUpSection(stationId));
     }
 
     private void validateLineExist(Long id) {

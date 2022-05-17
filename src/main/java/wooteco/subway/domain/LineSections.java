@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SectionsOnLine {
+public class LineSections {
 
     private static final int MINIMUM_SIZE = 1;
     private static final int RANDOM = 0;
 
     private final List<Section> sections;
 
-    public SectionsOnLine(List<Section> sections) {
+    public LineSections(List<Section> sections) {
         this.sections = new ArrayList<>(sections);
     }
 

@@ -7,7 +7,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.SectionsOnLine;
+import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -58,13 +58,13 @@ public class LineService {
             throw new ClientException("존재하지 않는 노선입니다.");
         }
         Line line = lineDao.findById(id);
-        SectionsOnLine sectionsOnLine = sectionJdbcDao.findById(line.getId());
-        return makeLineResponseWithLinkedStations(line, sectionsOnLine);
+        LineSections lineSections = sectionJdbcDao.findById(line.getId());
+        return makeLineResponseWithLinkedStations(line, lineSections);
     }
 
-    private LineResponse makeLineResponseWithLinkedStations(Line line, SectionsOnLine sectionsOnLine) {
+    private LineResponse makeLineResponseWithLinkedStations(Line line, LineSections lineSections) {
         Set<Station> stations = new LinkedHashSet<>();
-        for (Section section : sectionsOnLine.linkSections()) {
+        for (Section section : lineSections.linkSections()) {
             stations.add(toMapStations().get(section.getUpStationId()));
             stations.add(toMapStations().get(section.getDownStationId()));
         }
@@ -77,8 +77,8 @@ public class LineService {
             throw new ClientException("존재하지 않는 노선입니다.");
         }
 
-        SectionsOnLine sectionsOnLine = sectionJdbcDao.findById(id);
-        return new SectionsResponse(sectionsOnLine.linkSections());
+        LineSections lineSections = sectionJdbcDao.findById(id);
+        return new SectionsResponse(lineSections.linkSections());
     }
 
     private Map<Long, Station> toMapStations() {

@@ -5,9 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.SectionsOnLine;
+import wooteco.subway.domain.LineSections;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -45,9 +44,9 @@ public class SectionJdbcDao implements SectionDao {
     }
 
     @Override
-    public SectionsOnLine findById(Long lineId) {
+    public LineSections findById(Long lineId) {
         final String sql = "select * from section where line_id = (?)";
-        return new SectionsOnLine(jdbcTemplate.query(sql, (rs, rowNum) -> new Section(rs.getLong("id"),
+        return new LineSections(jdbcTemplate.query(sql, (rs, rowNum) -> new Section(rs.getLong("id"),
                 rs.getLong("line_id"), rs.getLong("up_station_id"),
                 rs.getLong("down_station_id"), rs.getInt("distance")), lineId));
     }
