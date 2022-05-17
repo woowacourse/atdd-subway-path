@@ -35,6 +35,10 @@ public class SectionService {
         return new Sections(sectionDao.findAllByLineId(lineId));
     }
 
+    public Sections findAll() {
+        return new Sections(sectionDao.findAll());
+    }
+
     private void updateUpStationId(Sections sections, Section newSection) {
         Section upStationIdSection = sections.getSectionByUpStationId(newSection.getUpStationId());
         upStationIdSection.validateDistance(newSection);
