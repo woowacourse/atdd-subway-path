@@ -33,4 +33,10 @@ public class PathCalculator {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
+
+    public int findShortestDistance(final Station source, final Station target) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        final double shortestDistance = dijkstraShortestPath.getPath(source, target).getWeight();
+        return (int) shortestDistance;
+    }
 }
