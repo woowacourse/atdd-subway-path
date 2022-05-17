@@ -10,6 +10,7 @@ import wooteco.subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationDao {
@@ -44,6 +45,25 @@ public class StationDao {
         String SQL = "select * from station join section on station.id = section.up_station_id " +
                 "or station.id = section.down_station_id where line_id = ?";
         return jdbcTemplate.query(SQL, rowMapper(), id);
+    }
+
+    public List<Station> findByIdIn(List<Long> stationIds) {
+        String sortedStationOdsString = stationIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        String SQL = String.format("select * from station where id in (%s) %s", sortedStationOdsString, orderByInClause(stationIds));
+        return jdbcTemplate.query(SQL, rowMapper());
+    }
+
+    private String orderByInClause(List<Long> stationIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int count = 1;
+        stringBuilder.append("order by case id ");
+        for (Long stationId : stationIds) {
+            stringBuilder.append(String.format("when %d then %d ", stationId, count++));
+        }
+        stringBuilder.append("end;");
+        return stringBuilder.toString();
     }
 
     private RowMapper<Station> rowMapper() {
