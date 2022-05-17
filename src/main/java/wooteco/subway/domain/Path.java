@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Path {
 
+    private static final int DEFAULT_FARE = 1250;
+
     private final List<Station> stations;
     private final int distance;
 
@@ -13,7 +15,17 @@ public class Path {
     }
 
     public int calculateFare() {
-        return 1250;
+        if (distance <= 10) {
+            return DEFAULT_FARE;
+        }
+        if (distance <= 50) {
+            return DEFAULT_FARE + calculateOverFare(distance - 10, 5, 100);
+        }
+        return 0;
+    }
+
+    private int calculateOverFare(int distance, int unitDistance, int overFare) {
+        return (int) ((Math.ceil((distance - 1) / unitDistance) + 1) * overFare);
     }
 
     public List<Station> getStations() {

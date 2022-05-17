@@ -18,4 +18,11 @@ class PathTest {
         assertThat(path.calculateFare()).isEqualTo(1250);
     }
 
+    @Test
+    @DisplayName("50km 이하일 때 5km 마다 100원 추가된다.")
+    void calculate50Fare() {
+        Path path = new Path(stations, 50);
+
+        assertThat(path.calculateFare()).isEqualTo(2050);
+    }
 }
