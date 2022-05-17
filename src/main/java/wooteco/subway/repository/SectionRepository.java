@@ -52,4 +52,10 @@ public class SectionRepository {
                 stations.findById(entity.getDownStationId()),
                 entity.getDistance());
     }
+
+    public List<Section> findAll() {
+        return sectionDao.findAll().stream()
+                .map(this::toSection)
+                .collect(Collectors.toList());
+    }
 }

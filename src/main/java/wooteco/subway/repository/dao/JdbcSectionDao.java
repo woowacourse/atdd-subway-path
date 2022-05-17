@@ -103,4 +103,10 @@ public class JdbcSectionDao implements SectionDao {
         final String sql = "SELECT * FROM section WHERE line_id = ? AND (up_station_id = ? OR down_station_id = ?)";
         return jdbcTemplate.query(sql, getRowMapper(), lineId, stationId, stationId);
     }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, getRowMapper());
+    }
 }

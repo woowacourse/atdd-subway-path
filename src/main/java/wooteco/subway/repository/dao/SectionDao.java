@@ -17,4 +17,6 @@ public interface SectionDao {
     int saveAll(List<SectionEntity> entities);
 
     List<SectionEntity> findByStationId(Long lineId, Long stationId);
+
+    List<SectionEntity> findAll();
 }
