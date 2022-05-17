@@ -9,7 +9,7 @@ public class Path {
 
     private static final int ADDITIONAL_UNIT_FARE = 100;
     private static final int FIRST_ADDITIONAL_UNIT_DISTANCE = 5;
-    private static final int SECOND_ADDITIONAL_UNIT_DISTANCE= 8;
+    private static final int OVER_ADDITIONAL_UNIT_DISTANCE = 8;
     private static final int FIRST_ADDITIONAL_FARE_DISTANCE = 50;
 
     private final List<Station> stations;
@@ -25,17 +25,28 @@ public class Path {
             return DEFAULT_FARE;
         }
         if (distance <= FIRST_ADDITIONAL_FARE_DISTANCE) {
-            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
-                    ADDITIONAL_UNIT_FARE);
+            return DEFAULT_FARE + calculateFirstAdditionalFare();
         }
-        return DEFAULT_FARE + calculateOverFare(FIRST_ADDITIONAL_FARE_DISTANCE - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
-                ADDITIONAL_UNIT_FARE)
-                + calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, SECOND_ADDITIONAL_UNIT_DISTANCE,
-                ADDITIONAL_UNIT_FARE);
+        return DEFAULT_FARE + calculateFirstAdditionalMaxFare() + calculateOverAdditionalFare();
     }
 
     private int calculateOverFare(int distance, int unitDistance, int overFare) {
         return (int) ((Math.ceil((distance - 1) / unitDistance) + 1) * overFare);
+    }
+
+    private int calculateFirstAdditionalFare() {
+        return calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
+                ADDITIONAL_UNIT_FARE);
+    }
+
+    private int calculateFirstAdditionalMaxFare() {
+        return calculateOverFare(FIRST_ADDITIONAL_FARE_DISTANCE - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
+                ADDITIONAL_UNIT_FARE);
+    }
+
+    private int calculateOverAdditionalFare() {
+        return calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, OVER_ADDITIONAL_UNIT_DISTANCE,
+                ADDITIONAL_UNIT_FARE);
     }
 
     public List<Station> getStations() {
