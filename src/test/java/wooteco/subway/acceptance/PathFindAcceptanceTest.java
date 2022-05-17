@@ -43,7 +43,7 @@ public class PathFindAcceptanceTest extends AcceptanceTest {
         Long stationId3 = postStations(new StationSaveRequest("선릉역"))
                 .as(StationResponse.class)
                 .getId();
-        Long lineId = postLines(new LineSaveRequest("신분당선", "bg-red-600", stationId1, stationId3, 10))
+        Long lineId = postLines(new LineSaveRequest("신분당선", "bg-red-600", stationId1, stationId3, 9))
                 .as(LineResponse.class)
                 .getId();
         postSections(lineId, new SectionSaveRequest(stationId2, stationId3, 6));
