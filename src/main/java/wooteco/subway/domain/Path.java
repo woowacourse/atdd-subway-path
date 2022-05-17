@@ -30,23 +30,21 @@ public class Path {
         return DEFAULT_FARE + calculateFirstAdditionalMaxFare() + calculateOverAdditionalFare();
     }
 
-    private int calculateOverFare(int distance, int unitDistance, int overFare) {
-        return (int) ((Math.ceil((distance - 1) / unitDistance) + 1) * overFare);
+    private int calculateOverFare(int distance, int unitDistance) {
+        return (int) ((Math.ceil((distance - 1.0) / unitDistance) + 1) * ADDITIONAL_UNIT_FARE);
     }
 
     private int calculateFirstAdditionalFare() {
-        return calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
-                ADDITIONAL_UNIT_FARE);
+        return calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE);
     }
 
     private int calculateFirstAdditionalMaxFare() {
-        return calculateOverFare(FIRST_ADDITIONAL_FARE_DISTANCE - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE,
-                ADDITIONAL_UNIT_FARE);
+        return calculateOverFare(FIRST_ADDITIONAL_FARE_DISTANCE - DEFAULT_FARE_DISTANCE,
+                FIRST_ADDITIONAL_UNIT_DISTANCE);
     }
 
     private int calculateOverAdditionalFare() {
-        return calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, OVER_ADDITIONAL_UNIT_DISTANCE,
-                ADDITIONAL_UNIT_FARE);
+        return calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, OVER_ADDITIONAL_UNIT_DISTANCE);
     }
 
     public List<Station> getStations() {
