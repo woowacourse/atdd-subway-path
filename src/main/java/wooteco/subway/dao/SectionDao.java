@@ -35,6 +35,11 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(SQL, rowMapper(), id);
     }
 
+    public List<Section> findAll() {
+        String SQL = "select * from section";
+        return jdbcTemplate.query(SQL, rowMapper());
+    }
+
     public List<Section> findAllByLineId(Long id) {
         String SQL = "select * from section where line_id = ?";
         return jdbcTemplate.query(SQL, rowMapper(), id);
