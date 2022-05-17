@@ -19,6 +19,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.exception.DuplicatedStationsException;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
 import java.util.List;
@@ -130,25 +131,12 @@ class LineServiceTest {
         verify(lineDao, times(1)).deleteById(1L);
     }
 
-    @DisplayName("중복된 지하철 역으로 노선을 등록할 경우 예외를 발생한다.")
-    @Test
-    void create_throwsExceptionIfStationsNameIsDuplicated() {
-        final Station station = new Station("선릉역");
-        final Section section = new Section(station, station, 10);
-        final Line line = new Line("2호선", "bg-green-600");
-
-        given(stationDao.findById(station.getId())).willReturn(Optional.of(station));
-
-        assertThatThrownBy(() -> lineService.createLine(line, section))
-                .isInstanceOf(DuplicateNameException.class)
-                .hasMessage("한 구간의 지하철 역들의 이름은 중복될 수 없습니다.");
-    }
-
     @DisplayName("노선 등록 시, 지하철 역이 존재하지 않는다면 예외를 발생한다.")
     @Test
     void create_throwsExceptionIfStationsDoesNotExist() {
-        final Station station = new Station("선릉역");
-        final Section section = new Section(station, station, 10);
+        final Station station1 = new Station("역삼역");
+        final Station station2 = new Station("교대역");
+        final Section section = new Section(station1, station2, 10);
         final Line line = new Line("2호선", "bg-green-600");
 
         assertThatThrownBy(() -> lineService.createLine(line, section))

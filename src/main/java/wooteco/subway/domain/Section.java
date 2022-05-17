@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.domain.exception.DuplicatedStationsException;
 import java.util.Objects;
 
 public class Section {
@@ -11,6 +12,7 @@ public class Section {
     private final Long lineId;
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance, final Long lineId) {
+        validateDuplicatedStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -47,6 +49,12 @@ public class Section {
 
     public Section merge(final Section section) {
         return new Section(this.upStation, section.downStation, mergeDistance(section), this.lineId);
+    }
+
+    private void validateDuplicatedStations(final Station upStation, final Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new DuplicatedStationsException();
+        }
     }
 
     private int calculateDistance(final Section section) {

@@ -86,9 +86,5 @@ public class LineService {
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
         final Station downStation = stationDao.findById(section.getDownStation().getId())
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
-
-        if (upStation.getName().equals(downStation.getName())) {
-            throw new DuplicateNameException("한 구간의 지하철 역들의 이름은 중복될 수 없습니다.");
-        }
     }
 }

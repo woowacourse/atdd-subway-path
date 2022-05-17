@@ -1,12 +1,14 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.domain.exception.DuplicatedStationsException;
 
 class SectionTest {
 
@@ -33,11 +35,20 @@ class SectionTest {
         assertThat(section1.isGreaterOrEqualTo(section2)).isEqualTo(expected);
     }
 
+
+    @DisplayName("중복된 지하철 역으로 노선을 등록할 경우 예외를 발생한다.")
+    @Test
+    void create_throwsExceptionIfStationsNameIsDuplicated() {
+        assertThatThrownBy(() -> new Section(upStation1, upStation1, 10))
+                .isInstanceOf(DuplicatedStationsException.class)
+                .hasMessage("구간 등록시 지하철 역들은 중복될 수 없습니다.");
+    }
+
     @DisplayName("하행역들로 구간을 생성한다.")
     @Test
     void createSectionByUpStation() {
         final Section section1 = new Section(upStation1, downStation1, 5);
-        final Section section2 = new Section(upStation1, downStation2, 10);
+        final Section section2 = new Section(downStation2, upStation1, 10);
 
         final Section newSection = section1.createSectionByUpStation(section2);
 
@@ -54,7 +65,7 @@ class SectionTest {
     @Test
     void createSectionByDownStation() {
         final Section section1 = new Section(upStation1, downStation1, 5);
-        final Section section2 = new Section(upStation2, downStation1, 10);
+        final Section section2 = new Section(upStation2, upStation1, 10);
 
         final Section newSection = section1.createSectionByDownStation(section2);
 
