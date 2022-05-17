@@ -5,13 +5,14 @@ import java.util.Map;
 
 public class BodyCreator {
     static Map<String, String> makeLineBodyForPost(String name, String color, String upStationId, String downStationId,
-        String distance) {
+        String distance, String extraFare) {
         Map<String, String> body = new HashMap<>();
         body.put("name", name);
         body.put("color", color);
         body.put("upStationId", upStationId);
         body.put("downStationId", downStationId);
         body.put("distance", distance);
+        body.put("extraFare", extraFare);
         return body;
     }
 

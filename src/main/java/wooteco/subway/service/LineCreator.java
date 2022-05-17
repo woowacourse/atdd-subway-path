@@ -32,7 +32,7 @@ public class LineCreator {
         validateNotExists(lineId);
         LineEntity lineEntity = lineDao.find(lineId);
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-            new Sections(findSections(lineEntity.getId())));
+            lineEntity.getExtraFare(), new Sections(findSections(lineEntity.getId())));
     }
 
     private List<Section> findSections(Long lineId) {

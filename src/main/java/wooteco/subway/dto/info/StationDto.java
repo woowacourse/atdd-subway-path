@@ -1,10 +1,10 @@
 package wooteco.subway.dto.info;
 
 public class StationDto {
-    private long id;
+    private Long id;
     private String name;
 
-    public StationDto(long id, String name) {
+    public StationDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -13,7 +13,7 @@ public class StationDto {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

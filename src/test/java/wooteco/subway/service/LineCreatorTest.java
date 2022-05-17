@@ -31,7 +31,7 @@ public class LineCreatorTest {
 
         stationDao.save(new Station("강남역"));
         stationDao.save(new Station("선릉역"));
-        lineDao.save(new Line("2호선", "green"));
+        lineDao.save(new Line("2호선", "green", 900));
         sectionDao.save(1L, new Section(new Station(1L, "강남역"), new Station(2L, "선릉역"), 10));
     }
 

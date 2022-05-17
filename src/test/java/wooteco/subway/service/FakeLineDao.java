@@ -20,7 +20,8 @@ public class FakeLineDao implements LineDao {
     public LineEntity save(Line line) {
         Line persistLine = createNewObject(line);
         lines.put(persistLine.getId(), persistLine);
-        return new LineEntity(persistLine.getId(), persistLine.getName(), persistLine.getColor());
+        return new LineEntity(persistLine.getId(), persistLine.getName(), persistLine.getColor(),
+            persistLine.getExtraFare());
     }
 
     @Override
@@ -41,14 +42,14 @@ public class FakeLineDao implements LineDao {
     public List<LineEntity> findAll() {
         return lines.values()
             .stream()
-            .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor()))
+            .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()))
             .collect(Collectors.toList());
     }
 
     @Override
     public LineEntity find(Long id) {
         Line line = lines.get(id);
-        return new LineEntity(line.getId(), line.getName(), line.getColor());
+        return new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override

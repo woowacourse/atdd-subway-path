@@ -12,12 +12,12 @@ import wooteco.subway.dto.response.StationResponse;
 
 public class LineConverter {
     static LineUpdateRequest toInfo(Long id, LineRequest lineRequest) {
-        return new LineUpdateRequest(id, lineRequest.getName(), lineRequest.getColor());
+        return new LineUpdateRequest(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
     }
 
     static LineServiceRequest toInfo(LineRequest lineRequest) {
         return new LineServiceRequest(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
-            lineRequest.getDownStationId(), lineRequest.getDistance());
+            lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }
 
     static LineResponse toResponse(LineServiceResponse lineServiceResponse) {
@@ -25,7 +25,6 @@ public class LineConverter {
             .map(StationConverter::toResponse)
             .collect(Collectors.toList());
         return new LineResponse(lineServiceResponse.getId(), lineServiceResponse.getName(),
-            lineServiceResponse.getColor(),
-            stationResponses);
+            lineServiceResponse.getColor(), lineServiceResponse.getExtraFare(), stationResponses);
     }
 }

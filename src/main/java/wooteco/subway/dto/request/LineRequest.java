@@ -6,6 +6,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private Integer distance;
+    private Integer extraFare;
 
     private LineRequest() {
     }
@@ -28,5 +29,9 @@ public class LineRequest {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 }

@@ -23,7 +23,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -43,7 +43,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -63,7 +63,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -87,7 +87,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -112,7 +112,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -132,7 +132,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -153,7 +153,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -170,7 +170,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 

@@ -43,10 +43,11 @@ public class LineService {
         String lineColor = lineInfo.getColor();
         Long upStationId = lineInfo.getUpStationId();
         Long downStationId = lineInfo.getDownStationId();
+        int extraFare = lineInfo.getExtraFare();
 
         validateBeforeSave(lineName, upStationId, downStationId);
 
-        Line lineToAdd = new Line(lineName, lineColor);
+        Line lineToAdd = new Line(lineName, lineColor, extraFare);
         LineEntity lineEntity = lineDao.save(lineToAdd);
 
         saveFirstSection(lineInfo.getDistance(), upStationId, downStationId, lineEntity.getId());
@@ -54,7 +55,7 @@ public class LineService {
         Line resultLine = lineCreator.createLine(lineEntity.getId());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
-            convertStationToInfo(resultLine.getStations()));
+            resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
     }
 
     private void validateBeforeSave(String lineName, Long upStationId, Long downStationId) {
@@ -80,7 +81,7 @@ public class LineService {
         List<LineServiceResponse> lineServiceResponses = new ArrayList<>();
         for (Line line : lines) {
             lineServiceResponses.add(new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
-                convertStationToInfo(line.getStations())));
+                line.getExtraFare(), convertStationToInfo(line.getStations())));
         }
         return lineServiceResponses;
     }
@@ -90,7 +91,7 @@ public class LineService {
         LineEntity lineEntity = lineDao.find(id);
         Line line = lineCreator.createLine(lineEntity.getId());
         return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
-            convertStationToInfo(line.getStations()));
+            line.getExtraFare(), convertStationToInfo(line.getStations()));
     }
 
     private List<StationDto> convertStationToInfo(List<Station> stations) {
@@ -102,10 +103,11 @@ public class LineService {
     public void update(LineUpdateRequest lineUpdateRequest) {
         Long id = lineUpdateRequest.getId();
         String name = lineUpdateRequest.getName();
+        int extraFare = lineUpdateRequest.getExtraFare();
 
         validateNotExists(id);
         validateNameDuplication(name);
-        Line line = new Line(id, name, lineUpdateRequest.getColor());
+        Line line = new Line(id, name, lineUpdateRequest.getColor(), extraFare);
         lineDao.update(line);
     }
 

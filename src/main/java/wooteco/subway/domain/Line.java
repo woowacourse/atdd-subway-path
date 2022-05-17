@@ -13,29 +13,34 @@ public class Line {
     private Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private Sections sections;
 
-    public Line(String name, String color) {
+    //TODO: validateExtraFare 만들기
+    public Line(String name, String color, int extraFare) {
         validateNameSize(name);
         validateColorSize(color);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         validateNameSize(name);
         validateColorSize(color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         validateNameSize(name);
         validateColorSize(color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -77,6 +82,10 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<Station> getStations() {

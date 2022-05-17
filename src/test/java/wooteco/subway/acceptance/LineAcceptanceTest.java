@@ -28,7 +28,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -45,12 +45,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -66,12 +66,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
         ExtractableResponse<Response> createResponse2 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("3호선", "blue", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("3호선", "blue", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -97,7 +97,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -134,13 +134,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
         String uri = createResponse1.header("Location");
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green"), uri);
+        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -152,7 +152,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green"), "/lines/1");
+        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), "/lines/1");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -166,18 +166,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
         String uri = createResponse1.header("Location");
 
         ExtractableResponse<Response> createResponse2 = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10", "900"),
             "/lines"
         );
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green"), uri);
+        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -191,7 +191,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("선릉역");
 
         ExtractableResponse<Response> createResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10"),
+            BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10", "900"),
             "/lines"
         );
 
@@ -215,10 +215,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private Map<String, String> makeBodyForPut(String name, String color) {
+    private Map<String, String> makeBodyForPut(String name, String color, String extraFare) {
         Map<String, String> body = new HashMap<>();
         body.put("name", name);
         body.put("color", color);
+        body.put("extraFare", extraFare);
         return body;
     }
 

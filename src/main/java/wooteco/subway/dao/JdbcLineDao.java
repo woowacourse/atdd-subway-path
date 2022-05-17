@@ -20,7 +20,8 @@ public class JdbcLineDao implements LineDao {
     private final RowMapper<LineEntity> lineRowMapper = (resultSet, rowMapper) -> new LineEntity(
         resultSet.getLong("id"),
         resultSet.getString("name"),
-        resultSet.getString("color")
+        resultSet.getString("color"),
+        resultSet.getInt("extra_fare")
     );
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
@@ -29,12 +30,13 @@ public class JdbcLineDao implements LineDao {
 
     public LineEntity save(Line line) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO LINE(name, color) VALUES(?, ?)";
+        String sql = "INSERT INTO LINE(name, color, extra_fare) VALUES(?, ?, ?)";
 
         jdbcTemplate.update((Connection conn) -> {
             PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"id"});
             pstmt.setString(1, line.getName());
             pstmt.setString(2, line.getColor());
+            pstmt.setInt(3, line.getExtraFare());
             return pstmt;
         }, keyHolder);
 
@@ -53,12 +55,12 @@ public class JdbcLineDao implements LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "SELECT id, name, color FROM LINE";
+        String sql = "SELECT id, name, color, extra_fare FROM LINE";
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
     public LineEntity find(Long id) {
-        String sql = "SELECT id, name, color FROM LINE WHERE id =?";
+        String sql = "SELECT id, name, color, extra_fare FROM LINE WHERE id =?";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
@@ -68,8 +70,8 @@ public class JdbcLineDao implements LineDao {
     }
 
     public void update(Line line) {
-        String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        String sql = "UPDATE LINE SET name = ?, color = ? , extra_fare = ? WHERE id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
     public void delete(Long id) {

@@ -12,7 +12,8 @@ public class LineTest {
     void validateNameNull() {
         String name = null;
         String color = "green";
-        assertThatThrownBy(() -> new Line(name, color)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+        assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 이름입니다.");
     }
 
@@ -21,7 +22,8 @@ public class LineTest {
     void validateNameBlank() {
         String name = "";
         String color = "green";
-        assertThatThrownBy(() -> new Line(name, color)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+        assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 이름입니다.");
     }
 
@@ -36,7 +38,9 @@ public class LineTest {
 
         String color = "green";
         String finalName = name;
-        assertThatThrownBy(() -> new Line(finalName, color)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+
+        assertThatThrownBy(() -> new Line(finalName, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 이름입니다.");
     }
 
@@ -45,7 +49,9 @@ public class LineTest {
     void validateColorNull() {
         String color = null;
         String name = "2호선";
-        assertThatThrownBy(() -> new Line(name, color)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+
+        assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 색상입니다.");
     }
 
@@ -54,7 +60,9 @@ public class LineTest {
     void validateColorBlank() {
         String color = "";
         String name = "2호선";
-        assertThatThrownBy(() -> new Line(name, color)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+
+        assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 색상입니다.");
     }
 
@@ -69,7 +77,9 @@ public class LineTest {
 
         String name = "2호선";
         String finalColor = color;
-        assertThatThrownBy(() -> new Line(name, finalColor)).isInstanceOf(IllegalArgumentException.class)
+        int extraFare = 900;
+
+        assertThatThrownBy(() -> new Line(name, finalColor, extraFare)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재할 수 없는 색상입니다.");
     }
 }
