@@ -81,6 +81,11 @@ public class SectionDaoImpl implements SectionDao {
                 .orElseThrow(() -> new NoSuchElementException("해당하는 구간이 존재하지 않습니다."));
     }
 
+    @Override
+    public List<Section> findAll() {
+        return List.copyOf(sections);
+    }
+
     private Section createNewObject(Section section) {
         Field field = ReflectionUtils.findField(Section.class, "id");
         field.setAccessible(true);

@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +20,7 @@ public class JdbcSectionDao implements SectionDao{
     private final LineDao lineDao;
     private final StationDao stationDao;
 
-    private RowMapper<SectionEntity> stationRowMapper = (resultSet, rowNum) -> new SectionEntity(
+    private RowMapper<SectionEntity> sectionRowMapper = (resultSet, rowNum) -> new SectionEntity(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
             resultSet.getLong("up_station_id"),
@@ -61,7 +62,7 @@ public class JdbcSectionDao implements SectionDao{
     public Section findById(Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE id = ?";
-            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, stationRowMapper, id);
+            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, id);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()),
                     stationDao.findById(sectionEntity.getUpStationId()),
@@ -76,7 +77,7 @@ public class JdbcSectionDao implements SectionDao{
     public List<Section> findByLineId(Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = ?";
-            List<SectionEntity> sectionEntity = jdbcTemplate.query(sql, stationRowMapper, id);
+            List<SectionEntity> sectionEntity = jdbcTemplate.query(sql, sectionRowMapper, id);
             List<Section> sections = new ArrayList<>();
             for (SectionEntity entity : sectionEntity) {
                 sections.add(new Section(entity.getId(),
@@ -107,7 +108,7 @@ public class JdbcSectionDao implements SectionDao{
     public Section findByLineIdAndUpStationId(Long lineId, Long upStationId) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = ? AND up_station_id = ?";
-            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, stationRowMapper, lineId, upStationId);
+            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, upStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()),
                     stationDao.findById(sectionEntity.getUpStationId()),
@@ -122,7 +123,7 @@ public class JdbcSectionDao implements SectionDao{
     public Section findByLineIdAndDownStationId(Long lineId, Long downStationId) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = ? AND down_station_id = ?";
-            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, stationRowMapper, lineId, downStationId);
+            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, downStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()),
                     stationDao.findById(sectionEntity.getUpStationId()),
@@ -131,5 +132,20 @@ public class JdbcSectionDao implements SectionDao{
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<Section> findAll() {
+        final String sql = "SELECT * FROM SECTION";
+        List<SectionEntity> sectionEntities = jdbcTemplate.query(sql, sectionRowMapper);
+        List<Section> sections = new LinkedList<>();
+        for (SectionEntity sectionEntity : sectionEntities) {
+            sections.add(new Section(sectionEntity.getId(),
+                    lineDao.findById(sectionEntity.getLineId()),
+                    stationDao.findById(sectionEntity.getUpStationId()),
+                    stationDao.findById(sectionEntity.getDownStationId()),
+                    sectionEntity.getDistance()));
+        }
+        return sections;
     }
 }

@@ -7,7 +7,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final WeightedMultigraph<String, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
 
     public Path(Sections sections) {
         graph = new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -15,30 +15,30 @@ public class Path {
         addEdge(sections);
     }
 
-    public List<String> createShortestPath(Station upStation, Station downStation) {
+    public List<Long> createShortestPath(Long upStationId, Long downStationId) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        List<String> shortestPath = dijkstraShortestPath.getPath(upStation.getName(),
-                downStation.getName()).getVertexList();
+        List<Long> shortestPath = dijkstraShortestPath.getPath(upStationId,
+                downStationId).getVertexList();
 
         return shortestPath;
     }
 
-    public int calculateDistance(Station upStation, Station downStation) {
+    public int calculateDistance(Long upStationId, Long downStationId) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return (int)(dijkstraShortestPath.getPath(upStation.getName(), downStation.getName()).getWeight());
+        return (int)(dijkstraShortestPath.getPath(upStationId, downStationId).getWeight());
     }
 
     private void addVertex(Sections sections) {
         for (Station station : sections.getStations()) {
-            graph.addVertex(station.getName());
+            graph.addVertex(station.getId());
         }
     }
 
     private void addEdge(Sections sections) {
         for (Section section : sections.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName(),
-                    section.getDownStation().getName()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(),
+                    section.getDownStation().getId()), section.getDistance());
         }
     }
 }
