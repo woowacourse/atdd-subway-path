@@ -40,8 +40,7 @@ public class Sections {
         }
 
         for (Section section : sections) {
-            graph.setEdgeWeight(
-                    graph.addEdge(section.getUpStationId(), section.getDownStationId()),
+            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
                     section.getDistance());
         }
     }
