@@ -16,7 +16,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/path")
+    @GetMapping("/paths")
     public ResponseEntity<PathResponse> showPath(@RequestParam final Long source,
                                                  @RequestParam final Long target,
                                                  @RequestParam final int age) {

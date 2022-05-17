@@ -27,7 +27,7 @@ class PathControllerTest {
     @Test
     void showPath() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/path?source=1&target=3&age=15");
+                .get("/paths?source=1&target=3&age=15");
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
