@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,15 +78,15 @@ public class Sections {
 
     public List<Long> sortedStationId() {
         Long upStationId = findUpTerminalStationId();
-        List<Long> sectionIds = new ArrayList<>(List.of(upStationId));
-        Map<Long, Long> sectionId = getSectionIds();
+        List<Long> stationIds = new ArrayList<>(List.of(upStationId));
+        Map<Long, Long> stationIdsInSections = getSectionIds();
 
-        for (int i = 0; i < sectionId.size(); i++) {
-            upStationId = sectionId.get(upStationId);
-            sectionIds.add(upStationId);
+        for (int i = 0; i < stationIdsInSections.size(); i++) {
+            upStationId = stationIdsInSections.get(upStationId);
+            stationIds.add(upStationId);
         }
 
-        return sectionIds;
+        return stationIds;
     }
 
     private boolean isSingleSection() {
@@ -93,5 +95,9 @@ public class Sections {
 
     public boolean canRemoveSection() {
         return !(isSingleSection() || sections.isEmpty());
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }
