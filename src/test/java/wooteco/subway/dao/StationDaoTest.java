@@ -67,7 +67,8 @@ class StationDaoTest {
         stationDao.save(STATION_FIXTURE2);
         stationDao.save(STATION_FIXTURE3);
 
-        assertThat(stationDao.findAll()).isEqualTo(List.of(STATION_FIXTURE, STATION_FIXTURE2, STATION_FIXTURE3));
+        assertThat(stationDao.findAll()).extracting("name")
+                .isEqualTo(List.of(STATION_FIXTURE.getName(), STATION_FIXTURE2.getName(), STATION_FIXTURE3.getName()));
     }
 
     @Test

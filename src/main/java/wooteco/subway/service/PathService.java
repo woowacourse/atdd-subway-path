@@ -8,17 +8,22 @@ import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.StationRepository;
 
 @Service
 public class PathService {
 
+    private final StationRepository stationRepository;
     private final LineRepository lineRepository;
 
-    public PathService(final LineRepository lineRepository) {
+    public PathService(final StationRepository stationRepository, final LineRepository lineRepository) {
+        this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(final Station source, final Station target) {
+    public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+        final Station source = stationRepository.findById(sourceId);
+        final Station target = stationRepository.findById(targetId);
         final List<Line> lines = lineRepository.findAll();
 
         final PathCalculator pathCalculator = new PathCalculator(lines);
