@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.DataNotExistException;
@@ -23,30 +23,23 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
-        List<Station> stations = stationService.findAll();
-        List<Long> stationIds = getStationIds(stations);
-        validateStation(source, target, stationIds);
+        Stations stations = stationService.findAll();
+        validateStation(stations, source, target);
 
-        Path path = Path.of(sectionService.findAll(), stationIds);
+        Path path = Path.of(sectionService.findAll(), stations.getStationIds());
         List<Long> shortestPath = path.findPath(source, target);
         int distance = path.findDistance(source, target);
         return getPathResponse(stations, shortestPath, distance);
     }
 
-    private List<Long> getStationIds(List<Station> stations) {
-        return stations.stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-    }
-
-    private void validateStation(Long source, Long target, List<Long> stationIds) {
-        validateStationExist(stationIds, source);
-        validateStationExist(stationIds, target);
+    private void validateStation(Stations stations, Long source, Long target) {
+        validateStationExist(stations, source);
+        validateStationExist(stations, target);
         validateStationSame(source, target);
     }
 
-    private void validateStationExist(List<Long> stationIds, Long stationId) {
-        if (!stationIds.contains(stationId)) {
+    private void validateStationExist(Stations stations, Long stationId) {
+        if (!stations.contains(stationId)) {
             throw new DataNotExistException("존재하지 않는 역입니다.");
         }
     }
@@ -57,15 +50,15 @@ public class PathService {
         }
     }
 
-    private PathResponse getPathResponse(List<Station> stations, List<Long> shortestPath, int distance) {
+    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, int distance) {
         List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
         Fare fare = new Fare(distance);
         return new PathResponse(stationsResponses, distance, fare.calculate());
     }
 
-    private List<StationResponse> getStationsResponses(List<Station> stations, List<Long> shortestPath) {
+    private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {
         return shortestPath.stream()
-                .map(id -> sectionService.getStationById(stations, id))
+                .map(stations::findStationById)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
     }

@@ -1,9 +1,9 @@
 package wooteco.subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
@@ -27,8 +27,8 @@ public class StationService {
         }
     }
 
-    public List<Station> findAll() {
-        return stationDao.findAll();
+    public Stations findAll() {
+        return new Stations(stationDao.findAll());
     }
 
     public void delete(Long id) {
