@@ -43,7 +43,7 @@ public class PathManager {
         return adjacentPaths;
     }
 
-    public PathResult calculateOptimalPath(Station startStation, Station endStation) {
+    public Path calculateOptimalPath(Station startStation, Station endStation) {
         validateRegisteredStations(startStation, endStation);
         validateNonSelfLoop(startStation, endStation);
         Map<Station, Integer> distanceResults = getInitialDistanceResultsMap(startStation);
@@ -58,7 +58,7 @@ public class PathManager {
             }
         }
         validatePathConnection(endStation, distanceResults);
-        return new PathResult(distanceResults.get(endStation), toSortedPath(endStation, routeMap));
+        return new Path(distanceResults.get(endStation), toSortedPath(endStation, routeMap));
     }
 
     private void validateRegisteredStations(Station startStation, Station endStation) {
