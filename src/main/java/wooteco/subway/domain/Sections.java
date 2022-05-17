@@ -149,13 +149,13 @@ public class Sections {
         }
     }
 
-    public List<StationResponse> sortSections() {
-        List<StationResponse> stationResponses = new ArrayList<>();
+    public List<Station> sortSections() {
+        List<Station> stationResponses = new ArrayList<>();
         Station firstStation = findFirstStation();
-        stationResponses.add(new StationResponse(firstStation));
+        stationResponses.add(firstStation);
         while (nextStation(firstStation).isPresent()) {
             firstStation = nextStation(firstStation).get();
-            stationResponses.add(new StationResponse(firstStation));
+            stationResponses.add(firstStation);
         }
         return stationResponses;
     }

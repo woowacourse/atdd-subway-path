@@ -25,8 +25,8 @@ public class LineService {
     private final StationRepository stationRepository;
 
     public LineService(LineRepository lineRepository,
-                       SectionRepository sectionRepository,
-                       StationRepository stationRepository) {
+            SectionRepository sectionRepository,
+            StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
@@ -62,7 +62,7 @@ public class LineService {
                 .map(line -> new LineResponse(line.getId(),
                         line.getName(),
                         line.getColor(),
-                        line.getSections().sortSections()))
+                        toStationResponses(line.getSections().sortSections())))
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +72,14 @@ public class LineService {
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
-                new Sections(sectionRepository.findByLineId(id)).sortSections());
+                toStationResponses(new Sections(sectionRepository.findByLineId(id))
+                        .sortSections()));
+    }
+
+    private List<StationResponse> toStationResponses(List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::new)
+                .collect(Collectors.toList());
     }
 
     public void update(final Long id, final LineRequest lineRequest) {
