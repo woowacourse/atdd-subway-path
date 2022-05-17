@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -177,5 +178,17 @@ public class Sections {
     public Section getDownsideSection() {
         List<Section> sortedSections = createSortedSections();
         return sortedSections.get(sortedSections.size() - 1);
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
+
+
+    public Section findSection(Long upStationId, Long downStationId) {
+        return sections.stream()
+                .filter(section -> section.isSameUpStationId(upStationId) && section.isSameDownStationId(downStationId))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("맞는 섹션 없음"));
     }
 }
