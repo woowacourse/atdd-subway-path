@@ -1,22 +1,20 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class FeeTest {
+class FareTest {
 
     @DisplayName("경로의 요금을 구한다.")
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 6, 10})
     void getFare(final int distance) {
-        final Fee fee = new Fee(distance);
-        assertThat(fee.getPrice()).isEqualTo(1250);
+        final Fare fare = Fare.from(distance);
+        assertThat(fare.getPrice()).isEqualTo(1250);
     }
 
     @DisplayName("이용 거리 10km 초과 50km 이하시 추가운임을 부과한다.")
@@ -30,8 +28,8 @@ class FeeTest {
             "50, 2050"
     })
     void calculateOverFare_below50km(final int distance, final int price) {
-        final Fee fee = new Fee(distance);
-        assertThat(fee.getPrice()).isEqualTo(price);
+        final Fare fare = Fare.from(distance);
+        assertThat(fare.getPrice()).isEqualTo(price);
     }
 
     @DisplayName("이용 거리 50km 초과시 추가운임을 부과한다.")
@@ -42,7 +40,7 @@ class FeeTest {
             "100, 2750"
     })
     void calculateOverFare_over50km(final int distance, final int price) {
-        final Fee fee = new Fee(distance);
-        assertThat(fee.getPrice()).isEqualTo(price);
+        final Fare fare = Fare.from(distance);
+        assertThat(fare.getPrice()).isEqualTo(price);
     }
 }
