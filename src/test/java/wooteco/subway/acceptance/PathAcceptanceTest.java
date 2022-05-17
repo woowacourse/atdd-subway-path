@@ -60,6 +60,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().asString()).contains("20");
+        assertThat(response.body().asString()).contains("1450");
     }
 
     private void createStationResponseOf(Map<String, String> params) {

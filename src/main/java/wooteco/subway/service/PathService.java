@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.PathResponse;
@@ -22,13 +23,15 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPath(Long source, Long target) {
+    public PathResponse searchPath(Long source, Long target, int age) {
         Path path = new Path(stationDao.findAll(), sectionDao.findAll());
 
         List<Long> shortestPath = path.getShortestPath(source, target);
         int distance = path.calculateShortestDistance(source, target);
 
-        return new PathResponse(createStationResponseOf(shortestPath), distance, 0);
+        Fare fare = new Fare(distance, age);
+
+        return new PathResponse(createStationResponseOf(shortestPath), distance, fare.calculateFare());
     }
 
     private List<StationResponse> createStationResponseOf(List<Long> stationIds) {
