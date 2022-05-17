@@ -67,8 +67,8 @@ public class LineJdbcDao implements LineDao {
 
     @Override
     public int update(Long id, Line line) {
-        final String sql = "update line set (name, color) = (?, ?) where id = ?";
-        return jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        final String sql = "update line set (name, color, extraFare) = (?, ?, ?) where id = ?";
+        return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
     @Override
