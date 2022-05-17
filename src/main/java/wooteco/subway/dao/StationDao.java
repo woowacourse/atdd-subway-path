@@ -38,8 +38,7 @@ public class StationDao {
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
 
-        return jdbcTemplate.query(sql, new MapSqlParameterSource(),
-                getRowMapper());
+        return jdbcTemplate.query(sql, new MapSqlParameterSource(), getRowMapper());
     }
 
     public List<Station> findAllByLineId(Long lineId) {

@@ -3,6 +3,8 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 @JdbcTest
@@ -110,5 +113,28 @@ class SectionDaoTest {
         sectionDao.deleteById(savedSection.getId());
 
         assertThat(sectionDao.findAllByLineId(line.getId()).size()).isZero();
+    }
+
+    @DisplayName("모든 구간을 찾아낸다.")
+    @Test
+    void findAll() {
+        Station upStation1 = stationDao.save(new Station("강남역"));
+        Station downStation1 = stationDao.save(new Station("선릉역"));
+        Line line1 = lineDao.save(new Line("2호선", "green"));
+
+        Section section1 = new Section(line1.getId(), upStation1.getId(), downStation1.getId(), 10);
+
+        Station upStation2 = stationDao.save(new Station("수서역"));
+        Station downStation2 = stationDao.save(new Station("가락시장역"));
+        Line line2 = lineDao.save(new Line("3호선", "orange"));
+
+        Section section2 = new Section(line2.getId(), upStation2.getId(), downStation2.getId(), 10);
+
+        Section savedSection1 = sectionDao.save(section1);
+        Section savedSection2 = sectionDao.save(section2);
+
+        Sections expected = new Sections(List.of(savedSection1, savedSection2));
+
+        assertThat(sectionDao.findAll()).isEqualTo(expected);
     }
 }
