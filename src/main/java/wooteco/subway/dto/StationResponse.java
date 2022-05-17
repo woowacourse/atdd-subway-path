@@ -1,27 +1,13 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.Station;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class StationResponse {
     private Long id;
     private String name;
-
-    public StationResponse() {
-    }
-
-    public StationResponse(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 }
