@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -46,6 +49,9 @@ public class StationService {
     }
 
     private void checkExistStationById(Long id) {
+        sectionDao.findByStationId(id).ifPresent(it -> {
+            throw new IllegalArgumentException("해당 지하철역은 사용되고 있으므로 삭제할 수 없습니다.");
+        });
         stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "번에 해당하는 역이 존재하지 않습니다."));
     }
