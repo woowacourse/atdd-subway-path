@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.domain.Line;
-import wooteco.subway.exception.datanotfound.DataNotFoundException;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 
 public class FakeLineDao implements LineDao {
