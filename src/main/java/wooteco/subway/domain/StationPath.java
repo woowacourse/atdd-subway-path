@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -21,11 +22,12 @@ public class StationPath {
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        sections.sortSections()
-                .forEach(graph::addVertex);
-        sections.getValues()
-                .forEach(section -> assignWeight(graph, section));
-
+        for (Station station : sections.sortSections()) {
+            graph.addVertex(station);
+        }
+        for (Section section : sections.getValues()) {
+            assignWeight(graph, section);
+        }
         return new DijkstraShortestPath<>(graph);
     }
 
@@ -37,5 +39,9 @@ public class StationPath {
         if (!sections.isExistStation(startStation) || !sections.isExistStation(endStation)) {
             throw new StationNotFoundException();
         }
+    }
+
+    public List<Station> findShortestStations(final Station startStation, final Station endStation) {
+        return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
     }
 }
