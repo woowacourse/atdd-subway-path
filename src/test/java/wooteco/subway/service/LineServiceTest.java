@@ -4,14 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.LineService;
+import wooteco.subway.application.SectionService;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.dao.jdbc.LineJdbcDao;
+import wooteco.subway.dao.jdbc.SectionJdbcDao;
+import wooteco.subway.dao.jdbc.StationJdbcDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineSaveRequest;
@@ -19,19 +28,24 @@ import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.NoSuchLineException;
 
-@SpringBootTest
-@Transactional
+@JdbcTest
 class LineServiceTest {
 
     @Autowired
-    private LineService sut;
+    private JdbcTemplate jdbcTemplate;
 
-    @Autowired
+    private LineService lineService;
     private StationDao stationDao;
-
-    @Autowired
     private SectionDao sectionDao;
 
+    @BeforeEach
+    void setUp(){
+        stationDao = new StationJdbcDao(jdbcTemplate);
+        sectionDao = new SectionJdbcDao(jdbcTemplate);
+        LineDao lineDao = new LineJdbcDao(jdbcTemplate);
+        SectionService sectionService = new SectionService(sectionDao, stationDao);
+        lineService = new LineService(stationDao, lineDao, sectionService);
+    }
     @DisplayName("노선을 성공적으로 등록한다")
     @Test
     void testCreateLine() {
@@ -40,7 +54,7 @@ class LineServiceTest {
         Station station2 = stationDao.save(new Station("station2"));
 
         // when
-        LineResponse lineResponse = sut.createLine(
+        LineResponse lineResponse = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
 
         // then
@@ -58,11 +72,11 @@ class LineServiceTest {
         // given
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
-        LineResponse expected = sut.createLine(
+        LineResponse expected = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
 
         // when
-        LineResponse actual = sut.findLine(expected.getId());
+        LineResponse actual = lineService.findLine(expected.getId());
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -74,13 +88,13 @@ class LineServiceTest {
         // given
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
-        LineResponse createdLine = sut.createLine(
+        LineResponse createdLine = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
 
-        sut.deleteLineById(createdLine.getId());
+        lineService.deleteLineById(createdLine.getId());
 
         // when && then
-        assertThatThrownBy(() -> sut.findLine(createdLine.getId()))
+        assertThatThrownBy(() -> lineService.findLine(createdLine.getId()))
                 .isInstanceOf(NoSuchLineException.class);
     }
 
@@ -90,11 +104,11 @@ class LineServiceTest {
         // given
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
-        LineResponse createdLine = sut.createLine(
+        LineResponse createdLine = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
 
         // when
-        sut.deleteLineById(createdLine.getId());
+        lineService.deleteLineById(createdLine.getId());
 
         // then
         assertThat(sectionDao.findByLineId(createdLine.getId())).isEmpty();
@@ -106,16 +120,16 @@ class LineServiceTest {
         // given
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
-        LineResponse createdLine1 = sut.createLine(
+        LineResponse createdLine1 = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
 
         Station station3 = stationDao.save(new Station("station3"));
         Station station4 = stationDao.save(new Station("station4"));
-        LineResponse createdLine2 = sut.createLine(
+        LineResponse createdLine2 = lineService.createLine(
                 new LineSaveRequest("line2", "color2", station3.getId(), station4.getId(), 10));
 
         // when
-        List<LineResponse> lines = sut.findLines();
+        List<LineResponse> lines = lineService.findLines();
 
         // then
         assertThat(lines).usingRecursiveComparison().isEqualTo(List.of(createdLine1, createdLine2));
@@ -129,14 +143,14 @@ class LineServiceTest {
         Station station2 = stationDao.save(new Station("station2"));
         Station station3 = stationDao.save(new Station("station3"));
 
-        LineResponse createdLine = sut.createLine(
+        LineResponse createdLine = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station3.getId(), 10));
 
         // when
-        sut.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 3));
+        lineService.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 3));
 
         // then
-        LineResponse line = sut.findLine(createdLine.getId());
+        LineResponse line = lineService.findLine(createdLine.getId());
         assertThat(line).usingRecursiveComparison()
                 .isEqualTo(new LineResponse(createdLine.getId(), createdLine.getName(), createdLine.getColor(),
                         List.of(StationResponse.from(station1),
@@ -152,15 +166,15 @@ class LineServiceTest {
         Station station2 = stationDao.save(new Station("station2"));
         Station station3 = stationDao.save(new Station("station3"));
 
-        LineResponse createdLine = sut.createLine(
+        LineResponse createdLine = lineService.createLine(
                 new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
-        sut.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 10));
+        lineService.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 10));
 
         // when
-        sut.deleteSection(createdLine.getId(), station3.getId());
+        lineService.deleteSection(createdLine.getId(), station3.getId());
 
         // then
-        LineResponse line = sut.findLine(createdLine.getId());
+        LineResponse line = lineService.findLine(createdLine.getId());
         assertThat(line).usingRecursiveComparison().isEqualTo(new LineResponse(createdLine.getId(),
                 createdLine.getName(), createdLine.getColor(), createdLine.getStations()));
     }

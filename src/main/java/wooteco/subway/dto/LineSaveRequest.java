@@ -4,11 +4,14 @@ import wooteco.subway.domain.Line;
 
 public class LineSaveRequest {
 
-    private final String name;
-    private final String color;
-    private final Long upStationId;
-    private final Long downStationId;
-    private final int distance;
+    private String name;
+    private String color;
+    private Long upStationId;
+    private Long downStationId;
+    private int distance;
+
+    private LineSaveRequest() {
+    }
 
     public LineSaveRequest(final String name, final String color, final Long upStationId, final Long downStationId,
                            final int distance) {

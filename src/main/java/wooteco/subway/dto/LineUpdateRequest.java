@@ -1,8 +1,10 @@
 package wooteco.subway.dto;
 
 public class LineUpdateRequest {
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
+
+    private LineUpdateRequest(){}
 
     public LineUpdateRequest(String name, String color) {
         this.name = name;

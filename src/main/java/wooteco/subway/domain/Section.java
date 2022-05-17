@@ -10,7 +10,7 @@ public class Section {
     private Station downStation;
     private int distance;
 
-    public Section(Long id, final Long lineId, Station upStation, Station downStation, int distance) {
+    public Section(final Long id, final Long lineId, Station upStation, Station downStation, final int distance) {
         validateMoreThanZero(distance);
         validateDifferentStation(upStation, downStation);
         this.id = id;
@@ -20,7 +20,7 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(final Long lineId, Station upStation, Station downStation, int distance) {
+    public Section(final Long lineId, Station upStation, Station downStation, final int distance) {
         this(null, lineId, upStation, downStation, distance);
     }
 

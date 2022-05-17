@@ -18,8 +18,7 @@ public class Path {
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> initPath(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initGraph(graph, sections);
         return new DijkstraShortestPath<>(graph);
     }

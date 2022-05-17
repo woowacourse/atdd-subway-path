@@ -6,9 +6,11 @@ import wooteco.subway.domain.Station;
 
 public class PathResponse {
 
-    private final List<StationResponse> stations;
-    private final int distance;
-    private final int fare;
+    private List<StationResponse> stations;
+    private int distance;
+    private int fare;
+
+    private PathResponse(){}
 
     public static PathResponse from(final List<Station> stations, final int distance, final int fare) {
         List<StationResponse> stationResponses = stations.stream()
