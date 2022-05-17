@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class StationTest {
     @Test
-    @DisplayName("역 id가 같으면 역이 서로 같다고 판단한다.")
+    @DisplayName("id와 이름이 같으면 역이 서로 같다고 판단한다.")
     void isSameStation() {
         // given
         final Station station1 = new Station(1L, "역이름");
@@ -21,7 +21,7 @@ public class StationTest {
     }
 
     @Test
-    @DisplayName("역 id가 다르면 역이 서로 다르다고 판단한다.")
+    @DisplayName("id와 이름 중 하나라도 다르면 역이 서로 다르다고 판단한다.")
     void isDifferentStation() {
         // given
         final Station station1 = new Station(1L, "역이름");
@@ -33,5 +33,4 @@ public class StationTest {
         // then
         assertThat(actual).isFalse();
     }
-
 }

@@ -36,11 +36,12 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(getId(), station.getId());
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(),
+                station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getId(), getName());
     }
 }

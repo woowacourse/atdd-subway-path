@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -14,10 +15,9 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        Set<Station> stations = sections.stream()
-                .map(section -> section.getUpStation())
-                .collect(Collectors.toSet());
+        Set<Station> stations = new LinkedHashSet<>();
         for (Section section : sections) {
+            stations.add(section.getUpStation());
             stations.add(section.getDownStation());
         }
         return new ArrayList<>(stations);
@@ -69,5 +69,9 @@ public class Sections {
 
     public boolean hasStation(Station station) {
         return getStations().contains(station);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
