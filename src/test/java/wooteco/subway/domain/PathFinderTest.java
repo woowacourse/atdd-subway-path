@@ -41,7 +41,7 @@ class PathFinderTest {
         line2.addSection(section4To5);
         line2.addSection(section2To4);
 
-        Path pathFinder = new Path(List.of(line1, line2));
+        Path pathFinder = new Path(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
         List<Station> path = pathFinder.findRoute(station1, station5);
 
         assertThat(path).containsExactly(station1, station2, station4, station5);
@@ -63,7 +63,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        Path pathFinder = new Path(List.of(line1));
+        Path pathFinder = new Path(List.of(section1To2, section2To3));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
@@ -86,7 +86,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        Path pathFinder = new Path(List.of(line1));
+        Path pathFinder = new Path(List.of(section1To2, section2To3));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
@@ -109,7 +109,7 @@ class PathFinderTest {
         line1.addSection(section2To3);
 
         // when
-        Path pathFinder = new Path(List.of(line1));
+        Path pathFinder = new Path(List.of(section1To2, section2To3));
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then

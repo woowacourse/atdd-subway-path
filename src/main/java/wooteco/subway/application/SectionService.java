@@ -46,4 +46,8 @@ public class SectionService {
     public void deleteAllSectionsRelevantToLine(Long lineId) {
         sectionDao.deleteSectionsByLineId(lineId);
     }
+
+    public List<Section> findAll() {
+        return sectionDao.findAll();
+    }
 }

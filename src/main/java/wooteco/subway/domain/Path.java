@@ -13,14 +13,14 @@ public class Path {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
 
-    public Path(final List<Line> lines) {
-        path = initPath(lines);
+    public Path(final List<Section> sections) {
+        path = initPath(sections);
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> initPath(List<Line> lines) {
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> initPath(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
-        initGraph(graph, lines);
+        initGraph(graph, sections);
         return new DijkstraShortestPath<>(graph);
     }
 
@@ -38,14 +38,7 @@ public class Path {
     }
 
     private void initGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                           final List<Line> lines) {
-        for (Line line : lines) {
-            addVertexAndEdge(graph, line);
-        }
-    }
-
-    private void addVertexAndEdge(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Line line) {
-        List<Section> sections = line.getSections();
+                           final List<Section> sections) {
         for (Section section : sections) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();

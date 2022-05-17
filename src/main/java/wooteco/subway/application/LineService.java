@@ -96,12 +96,8 @@ public class LineService {
     }
 
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        List<Line> lines = lineDao.findAll();
-        for (Line line : lines) {
-            List<Section> sectionsByLine = sectionService.findSectionsByLineId(line.getId());
-            line.addAllSections(sectionsByLine);
-        }
-        Path pathFinder = new Path(lines);
+        Path pathFinder = new Path(sectionService.findAll());
+
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
