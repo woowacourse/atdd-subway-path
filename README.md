@@ -1,39 +1,18 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
-</p>
+### step1 요구사항
+- [ERROR] 출발역과 도착역이 Sections에 포함되지 않으면 예외가 발생한다.
+- [ERROR] 출발역에서 도착역으로 가는 경로가 포함되어 있지 않으면 예외가 발생한다.
 
-<br>
-
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
-## 🚀 Getting Started
-### Usage
-#### application 구동
-```
-./gradlew bootRun
-```
-<br>
-
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
-
-<br>
-
-## 🐞 Bug Report
-
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
-
-<br>
-
-## 📝 License
-
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+- 출발역과 도착역 그리고 전체 Section정보를 받아 경로를 만드는 전략이 존재한다.
+- 전략의 경우 다익스트라 라이브러리를 사용한 전략이 존재한다.
+    - 정점(vertex) : 지하철 역 (Station)
+    - 간선(edge) : 지하철역 연결정보(Section)
+    - 가중치(edgeWeight) : 거리
+    - 최단 거리 기준 조회 시 가중치를 거리로 설정한다.
+    - 들어온 Station List 정보를 반환한다.
+- Path
+    - path는 거리와 station정보를 가지고 있다.
+    - path에서는 가지고 있는 stations의 모든 거리를 계산할 수 있다.
+    - path에서는 거리에 따른 돈 계산을 반환할 수 있다.
+        - 기본 운임 (10km 이내)는 1,250원이다.
+        - 10~50km까지는 5km마다 100원을 추가한다.
+        - 50km 초과 시 8km까지 마다 100원을 추가한다.
