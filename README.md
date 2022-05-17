@@ -2,17 +2,10 @@
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
 <p align="center">
-<<<<<<< HEAD
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacourse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
   <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-map">
-=======
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
->>>>>>> master
 </p>
 
 <br>
@@ -80,8 +73,4 @@
 
 ## 📝 License
 
-<<<<<<< HEAD
 This project is [MIT](https://github.com/woowacourse/atdd-subway-map/blob/master/LICENSE) licensed.
-=======
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
->>>>>>> master
