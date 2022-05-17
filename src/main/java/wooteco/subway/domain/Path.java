@@ -26,7 +26,8 @@ public class Path {
         if (distance <= FIRST_ADDITIONAL_FARE_DISTANCE) {
             return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE, FIRST_ADDITIONAL_UNIT_FARE);
         }
-        return 0;
+        return DEFAULT_FARE + calculateOverFare(FIRST_ADDITIONAL_FARE_DISTANCE - DEFAULT_FARE_DISTANCE, FIRST_ADDITIONAL_UNIT_DISTANCE, FIRST_ADDITIONAL_UNIT_FARE)
+                + calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, 8, FIRST_ADDITIONAL_UNIT_FARE);
     }
 
     private int calculateOverFare(int distance, int unitDistance, int overFare) {
