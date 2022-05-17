@@ -7,15 +7,16 @@ create table if not exists STATION
     id bigint auto_increment not null,
     name varchar(255) not null unique,
     primary key(id)
-    );
+);
 
 create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
     color varchar(20) not null unique,
+    extra_fare int default 0,
     primary key(id)
-    );
+);
 
 create table if not exists "SECTION"
 (
@@ -29,7 +30,7 @@ create table if not exists "SECTION"
     foreign key (line_id) references LINE(id) on delete cascade,
     foreign key (up_station_id) references STATION(id),
     foreign key (down_station_id) references STATION(id)
-    );
+);
 
 INSERT INTO LINE (name, color)
 VALUES ('신분당선', 'yellow');

@@ -15,7 +15,7 @@ import wooteco.subway.dto.SectionRequest;
 public class SectionAcceptanceTest extends AcceptanceTest {
 
     private LineRequest createLineRequest(String name, String color) {
-        return new LineRequest(name, color, 1L, 2L, 10);
+        return new LineRequest(name, color, 1L, 2L, 10, 0);
     }
 
     @Test

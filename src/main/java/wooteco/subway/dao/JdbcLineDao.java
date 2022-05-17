@@ -18,16 +18,17 @@ public class JdbcLineDao implements LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
     private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
-        resultSet.getLong("id"),
-        resultSet.getString("name"),
-        resultSet.getString("color")
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
-            .withTableName("LINE")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("LINE")
+                .usingGeneratedKeyColumns("id");
     }
 
     @Override
@@ -60,8 +61,8 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public void update(Long lineId, Line line) {
-        String sql = "UPDATE LINE SET name = (?), color = (?) WHERE id = (?)";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), lineId);
+        String sql = "UPDATE LINE SET name = (?), color = (?), extra_fare = (?) WHERE id = (?)";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), lineId);
     }
 
     @Override

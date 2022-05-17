@@ -29,7 +29,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 생성한다.")
     void LineCreateTest() {
-        Long lineId = lineDao.save(new Line("신분당선", "red"));
+        Long lineId = lineDao.save(new Line("신분당선", "red", 0));
 
         assertThat(lineDao.findById(lineId))
             .extracting("name", "color")
@@ -39,7 +39,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 단건 조회한다.")
     void LineReadTest() {
-        Long lineId = lineDao.save(new Line("1호선", "dark-blue"));
+        Long lineId = lineDao.save(new Line("1호선", "dark-blue", 0));
 
         Line line = lineDao.findById(lineId);
 
@@ -51,7 +51,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 삭제한다.")
     void LineDeleteTest() {
-        Long lineId = lineDao.save(new Line("신분당선", "red"));
+        Long lineId = lineDao.save(new Line("신분당선", "red", 0));
 
         lineDao.deleteById(lineId);
 
@@ -62,7 +62,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 전체 조회한다.")
     void findAll() {
-        Long lineId = lineDao.save(new Line("신분당선", "red"));
+        Long lineId = lineDao.save(new Line("신분당선", "red", 0));
         List<Line> lines = lineDao.findAll();
 
         assertThat(lines).hasSize(1)
@@ -75,9 +75,9 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 업데이트한다.")
     void update() {
-        Long lineId = lineDao.save(new Line("신분당선", "red"));
+        Long lineId = lineDao.save(new Line("신분당선", "red", 0));
 
-        lineDao.update(lineId, new Line("분당선", "yellow"));
+        lineDao.update(lineId, new Line("분당선", "yellow", 0));
 
         Line newLine = lineDao.findById(lineId);
 
