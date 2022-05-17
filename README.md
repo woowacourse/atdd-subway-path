@@ -41,7 +41,6 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 ### 기능 요구 사항
 1. 최단 경로 기능
    - 출발역과 도착역을 입력받아 최단 거리를 구한다.
-   - 출발역과 도착역이 같은 경우 예외를 발생시킨다.
    - 출발역과 도착역이 존재하지 않는 역인 경우 예외를 발생시킨다.
    - 출발역에서 도착역으로 갈 수 없는 경우 예외를 발생시킨다.
    
