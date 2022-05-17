@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -14,6 +15,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.FindDijkstraShortestPathStrategy;
 import wooteco.subway.dto.path.PathFindRequest;
 import wooteco.subway.dto.path.PathFindResponse;
+import wooteco.subway.exception.NotFoundException;
 
 class PathServiceTest {
 
@@ -57,5 +59,22 @@ class PathServiceTest {
                 () -> assertThat(path.getDistance()).isEqualTo(4),
                 () -> assertThat(path.getFare()).isEqualTo(1250)
         );
+    }
+
+    @Test
+    @DisplayName("찾을 수 없는 경로가 들어오는 경우 예외 발생")
+    void findPathExceptionByNotFoundPath() {
+        // given
+        Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
+        Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
+        Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
+        Station station4 = stationDao.findById(stationDao.save(new Station("레넌")));
+
+        sectionDao.save(new Section(1L, station1, station3, 2));
+        sectionDao.save(new Section(2L, station2, station4, 3));
+
+        // when & then
+        assertThatThrownBy(() -> pathService.findPath(new PathFindRequest(station1.getId(), station4.getId(), 15)))
+                .isInstanceOf(NotFoundException.class);
     }
 }
