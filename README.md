@@ -1,39 +1,13 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
-</p>
+## 지하철 경로조회 미션
 
-<br>
+### 기능 요구사항
 
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
-## 🚀 Getting Started
-### Usage
-#### application 구동
-```
-./gradlew bootRun
-```
-<br>
-
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
-
-<br>
-
-## 🐞 Bug Report
-
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
-
-<br>
-
-## 📝 License
-
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+- [ ] jgrapht 학습테스트 해보기
+- [ ] 최단 거리 경로 로직 구현
+    - [ ] 모든 section 가져오기
+    - [ ] section 들로 jgrapht 로 graph 만들기
+    - [ ] jgrapht 로 최단거리의 경로를 구하기
+- [ ] 요금 계산 로직 구현
+    - [ ] 기본운임(10㎞ 이내): 기본운임 1,250원
+    - [ ] 10km~50km: 5km 까지 마다 100원 추가
+    - [ ] 50km 초과: 8km 까지 마다 100원 추가
