@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -26,7 +27,7 @@ public class SubwayMap {
         return new DijkstraShortestPath<>(graph);
     }
 
-    public void searchPath(final Station sourceStation, final Station targetStation) {
+    public List<Station> searchPath(final Station sourceStation, final Station targetStation) {
         validateStations(sourceStation, targetStation);
 
         final GraphPath<Station, DefaultWeightedEdge> shortestPath = shortestPathMap.getPath(sourceStation,
@@ -35,6 +36,7 @@ public class SubwayMap {
         if (shortestPath == null) {
             throw new NoSuchPathException();
         }
+        return shortestPath.getVertexList();
     }
 
     private void validateStations(final Station sourceStation, final Station targetStation) {

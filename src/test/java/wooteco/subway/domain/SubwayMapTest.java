@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -63,7 +64,7 @@ class SubwayMapTest {
 
     @Test
     @DisplayName("출발역과 도착익이 동일한 경로를 조회할 경우 예외를 던진다.")
-    void GetPath_SameStations_ExceptionThrown() {
+    void SearchPath_SameStations_ExceptionThrown() {
         assertThatThrownBy(() -> subwayMap.searchPath(gangnam, gangnam))
                 .isInstanceOf(IllegalInputException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
@@ -71,8 +72,26 @@ class SubwayMapTest {
 
     @Test
     @DisplayName("경로를 찾을 수 없는 경우 예외를 던진다.")
-    void GetPath_InvalidPath_ExceptionThrown() {
+    void SearchPath_InvalidPath_ExceptionThrown() {
         assertThatThrownBy(() -> subwayMap.searchPath(gangnam, oksu))
                 .isInstanceOf(NoSuchPathException.class);
+    }
+
+    @Test
+    @DisplayName("출발역에서 도착역의 최단 경로를 탐색한다. (강남역 -> 서울숲역)")
+    void SearchPath() {
+        // given
+        final List<Station> expected = List.of(
+                gangnam,
+                yeoksam,
+                seolleung,
+                seoulForest
+        );
+
+        // when
+        final List<Station> actual = subwayMap.searchPath(gangnam, seoulForest);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 }
