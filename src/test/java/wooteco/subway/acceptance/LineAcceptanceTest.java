@@ -82,7 +82,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // given
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 20);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 20, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
@@ -109,19 +109,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 Arguments.arguments(
                         "이미 존재하는 노선 이름으로 생성",
-                        new LineCreateRequest("신분당선", "bg-red-600", 1L, 2L, 10)
+                        new LineCreateRequest("신분당선", "bg-red-600", 1L, 2L, 10, 0)
                 ),
                 Arguments.arguments(
                         "구간 거리가 음수",
-                        new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, -10)
+                        new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, -10, 0)
                 ),
                 Arguments.arguments(
                         "구간 거리가 0",
-                        new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 0)
+                        new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 0, 0)
                 ),
                 Arguments.arguments(
                         "존재하지 않는 역 등록 시도",
-                        new LineCreateRequest("2호선", "bg-green-500", 1L, 6L, 10)
+                        new LineCreateRequest("2호선", "bg-green-500", 1L, 6L, 10, 0)
                 )
         );
     }
@@ -182,7 +182,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //when
         String name = "다른분당선";
-        LineRequest lineRequest = new LineRequest(name, "bg-red-600");
+        LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
         ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
 
@@ -198,7 +198,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //when
         String name = "분당선";
-        LineRequest lineRequest = new LineRequest(name, "bg-red-600");
+        LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
         ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
 

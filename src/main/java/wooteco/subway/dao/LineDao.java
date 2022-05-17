@@ -24,7 +24,8 @@ public class LineDao {
     private final RowMapper<Line> eventRowMapper = (resultSet, rowNum)
             -> new Line(resultSet.getLong("id")
             , resultSet.getString("name")
-            , resultSet.getString("color"));
+            , resultSet.getString("color")
+            , resultSet.getInt("extra_fare"));
 
     public LineDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

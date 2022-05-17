@@ -24,7 +24,7 @@ class LineDaoTest {
     @Test
     void save() {
         // given
-        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2);
+        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2, 0);
 
         // when
         Long id = lineDao.save(line);
@@ -75,7 +75,7 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "신분당선", "red");
+        Line expected = new Line(1L, "신분당선", "red", 0);
 
         // when
         Optional<Line> line = lineDao.findById(1L);
@@ -102,7 +102,7 @@ class LineDaoTest {
     void update() {
         // given
         Long id = 1L;
-        LineRequest lineRequest = new LineRequest("신분당선", "pink");
+        LineRequest lineRequest = new LineRequest("신분당선", "pink", 0);
 
         // when
         lineDao.update(id, lineRequest);

@@ -7,16 +7,19 @@ public class LineCreateRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int extraFare;
 
     private LineCreateRequest() {
     }
 
-    public LineCreateRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineCreateRequest(String name, String color, Long upStationId, Long downStationId, int distance,
+                             int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -39,6 +42,10 @@ public class LineCreateRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     @Override
     public String toString() {
         return "LineCreateRequest{" +
@@ -47,6 +54,7 @@ public class LineCreateRequest {
                 ", upStationId=" + upStationId +
                 ", downStationId=" + downStationId +
                 ", distance=" + distance +
+                ", extraFare=" + extraFare +
                 '}';
     }
 }
