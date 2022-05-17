@@ -96,24 +96,23 @@ public class Sections {
     }
 
     public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        addStationVertex(graph);
-        addSectionEdge(graph);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
-        return getStationIds(path);
-    }
-
-    private List<Long> getStationIds(GraphPath<String, String> path) {
         try {
-            List<String> stationIds = path.getVertexList();
+            List<String> stationIds = findShortestPath(departureId, arrivalId).getVertexList();
             return stationIds.stream()
                     .map(Long::valueOf)
                     .collect(Collectors.toList());
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("연결되지 않은 구간입니다.");
         }
+    }
+
+    private GraphPath findShortestPath(Long departureId, Long arrivalId) {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        addStationVertex(graph);
+        addSectionEdge(graph);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        return dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
     }
 
     private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
@@ -139,6 +138,14 @@ public class Sections {
             String downStationId = String.valueOf(section.getDownStationId());
             int distance = section.getDistance();
             graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), distance);
+        }
+    }
+
+    public double getShortestPathDistance(Long departureId, Long arrivalId) {
+        try {
+            return findShortestPath(departureId, arrivalId).getWeight();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("연결되지 않은 구간입니다.");
         }
     }
 
