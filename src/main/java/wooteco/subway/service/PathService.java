@@ -12,14 +12,14 @@ import wooteco.subway.domain.Station;
 @Transactional(readOnly = true)
 public class PathService {
 
-	private final LineRepository lineRepository;
+    private final LineRepository lineRepository;
 
-	public PathService(LineRepository lineRepository) {
-		this.lineRepository = lineRepository;
-	}
+    public PathService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
+    }
 
-	public Path findPath(Station source, Station target) {
-		Lines lines = new Lines(lineRepository.findAll());
-		return lines.findPath(source, target);
-	}
+    public Path findPath(Station source, Station target) {
+        Lines lines = new Lines(lineRepository.findAll());
+        return lines.findPath(source, target);
+    }
 }

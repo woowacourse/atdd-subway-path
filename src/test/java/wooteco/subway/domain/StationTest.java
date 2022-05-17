@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 
 class StationTest {
 
-	@Test
-	void isSameId() {
-		Station station = new Station(1L, "강남역");
-		assertThat(station.isSameId(1L)).isTrue();
-	}
+    @Test
+    void isSameId() {
+        Station station = new Station(1L, "강남역");
+        assertThat(station.isSameId(1L)).isTrue();
+    }
 
-	@Test
-	void isSameName() {
-		Station station = new Station("강남역");
-		assertThat(station.isSameName("강남역")).isTrue();
-	}
+    @Test
+    void isSameName() {
+        Station station = new Station("강남역");
+        assertThat(station.isSameName("강남역")).isTrue();
+    }
 }

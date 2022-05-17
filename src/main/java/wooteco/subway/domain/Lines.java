@@ -13,39 +13,39 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Lines {
 
-	private final List<Line> value;
+    private final List<Line> value;
 
-	public Lines(List<Line> value) {
-		this.value = new ArrayList<>(value);
-	}
+    public Lines(List<Line> value) {
+        this.value = new ArrayList<>(value);
+    }
 
-	public Path findPath(Station source, Station target) {
-		List<Section> sections = getSections();
-		GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(initGraph(sections))
-			.getPath(source, target);
-		return new Path(path.getVertexList(), path.getWeight());
-	}
+    public Path findPath(Station source, Station target) {
+        List<Section> sections = getSections();
+        GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(initGraph(sections))
+            .getPath(source, target);
+        return new Path(path.getVertexList(), path.getWeight());
+    }
 
-	private List<Section> getSections() {
-		return value.stream()
-			.map(Line::getSections)
-			.flatMap(Collection::stream)
-			.collect(Collectors.toList());
-	}
+    private List<Section> getSections() {
+        return value.stream()
+            .map(Line::getSections)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
 
-	private Graph<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph
-			= new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		sections.forEach(section -> addSection(graph, section));
-		return graph;
-	}
+    private Graph<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        sections.forEach(section -> addSection(graph, section));
+        return graph;
+    }
 
-	private void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
-		graph.addVertex(section.getUpStation());
-		graph.addVertex(section.getDownStation());
-		graph.setEdgeWeight(
-			graph.addEdge(section.getUpStation(), section.getDownStation()),
-			section.getDistance()
-		);
-	}
+    private void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        graph.setEdgeWeight(
+            graph.addEdge(section.getUpStation(), section.getDownStation()),
+            section.getDistance()
+        );
+    }
 }

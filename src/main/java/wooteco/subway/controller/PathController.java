@@ -15,19 +15,19 @@ import wooteco.subway.service.StationService;
 @Controller
 public class PathController {
 
-	private final StationService stationService;
-	private final PathService pathService;
+    private final StationService stationService;
+    private final PathService pathService;
 
-	public PathController(StationService stationService, PathService pathService) {
-		this.stationService = stationService;
-		this.pathService = pathService;
-	}
+    public PathController(StationService stationService, PathService pathService) {
+        this.stationService = stationService;
+        this.pathService = pathService;
+    }
 
-	@GetMapping("/paths")
-	public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
-		Station source = stationService.findOne(pathRequest.getSource());
-		Station target = stationService.findOne(pathRequest.getTarget());
-		Path path = pathService.findPath(source, target);
-		return ResponseEntity.ok().body(PathResponse.from(path));
-	}
+    @GetMapping("/paths")
+    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
+        Station source = stationService.findOne(pathRequest.getSource());
+        Station target = stationService.findOne(pathRequest.getTarget());
+        Path path = pathService.findPath(source, target);
+        return ResponseEntity.ok().body(PathResponse.from(path));
+    }
 }
