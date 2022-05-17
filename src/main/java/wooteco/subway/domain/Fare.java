@@ -7,7 +7,7 @@ public class Fare {
     private static final int STANDARD_DISTANCE = 10;
     private static final int SECOND_ADDITION_DISTANCE = 50;
     private static final int SECOND_ADDITION_FEE_UNIT = 5;
-    private static final int THIRD_ADDITION_FEE_UNIT = 5;
+    private static final int THIRD_ADDITION_FEE_UNIT = 8;
     private static final int ADDITION_UNIT_FEE = 100;
 
     public int calculate(int distance) {

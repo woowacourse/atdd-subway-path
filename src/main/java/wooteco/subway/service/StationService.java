@@ -22,8 +22,8 @@ public class StationService {
     @Transactional
     public StationServiceResponse save(StationServiceRequest stationServiceRequest) {
         validateDuplicationName(stationServiceRequest.getName());
-        Station savedStation = stationDao.save(new Station(stationServiceRequest.getName()));
-        return new StationServiceResponse(savedStation.getId(), savedStation.getName());
+        Long savedId = stationDao.save(new Station(stationServiceRequest.getName()));
+        return new StationServiceResponse(savedId, stationServiceRequest.getName());
     }
 
     private void validateDuplicationName(String name) {

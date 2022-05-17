@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,23 +42,27 @@ class StationDaoImplTest {
         Station Station = new Station("범고래");
 
         // when
-        Station result = stationDao.save(Station);
+        Long result = stationDao.save(Station);
 
         // then
-        assertThat(Station.getName()).isEqualTo(result.getName());
+        assertThat(result).isNotNull();
     }
 
     @Test
     void findAll() {
         // given
-        Station station1 = stationDao.save(new Station("범고래"));
-        Station station2 = stationDao.save(new Station("애쉬"));
+        Long savedId1 = stationDao.save(new Station("범고래"));
+        Long savedId2 = stationDao.save(new Station("애쉬"));
 
         // when
         List<Station> stations = stationDao.findAll();
 
         // then
-        assertThat(stations).containsExactly(station1, station2);
+        assertAll(
+            () -> assertThat(stations.size()).isEqualTo(2),
+            () -> assertThat(savedId1).isNotNull(),
+            () -> assertThat(savedId2).isNotNull()
+        );
     }
 
     @Test
@@ -77,13 +82,14 @@ class StationDaoImplTest {
     @Test
     void delete() {
         // given
-        Station Station = stationDao.save(new Station("범고래"));
+        Station station = new Station("범고래");
+        Long savedId = stationDao.save(station);
 
         // when
-        stationDao.deleteById(Station.getId());
+        stationDao.deleteById(savedId);
         List<Station> stationEntities = stationDao.findAll();
 
         // then
-        assertThat(stationEntities).doesNotContain(Station);
+        assertThat(stationEntities).doesNotContain(station);
     }
 }
