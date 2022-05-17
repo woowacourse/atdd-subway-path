@@ -224,4 +224,14 @@ class SectionsTest {
                 () -> assertThat(foundSection.get().getDistance()).isEqualTo(20)
         );
     }
+
+    @DisplayName("Sections에 포함된 지하철 역들을 추출한다.")
+    @Test
+    void extractStations() {
+        List<Station> result = sections.extractStations();
+        assertAll(
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result).contains(upStation, downStation)
+        );
+    }
 }

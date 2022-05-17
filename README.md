@@ -3,10 +3,10 @@
 ### 기능 요구사항
 
 - [x] jgrapht 학습테스트 해보기
-- [ ] 최단 거리 경로 로직 구현
-    - [ ] 모든 section 가져오기
-    - [ ] section 들로 jgrapht 로 graph 만들기
-    - [ ] jgrapht 로 최단거리의 경로를 구하기
+- [x] 최단 거리 경로 로직 구현
+    - [x] 모든 section 가져오기
+    - [x] section 들로 jgrapht 로 graph 만들기
+    - [x] jgrapht 로 최단거리의 경로를 구하기
 - [ ] 요금 계산 로직 구현
     - [ ] 기본운임(10㎞ 이내): 기본운임 1,250원
     - [ ] 10km~50km: 5km 까지 마다 100원 추가
