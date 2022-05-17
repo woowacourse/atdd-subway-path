@@ -26,7 +26,7 @@ public class SectionService {
                 .orElseThrow(() -> new NoSuchStationException(upStationId));
         Station downStation = stationDao.findById(downStationId)
                 .orElseThrow(() -> new NoSuchStationException(downStationId));
-        return sectionDao.save(lineId, new Section(upStation, downStation, distance));
+        return sectionDao.save(lineId, new Section(lineId, upStation, downStation, distance));
     }
 
     @Transactional(readOnly = true)

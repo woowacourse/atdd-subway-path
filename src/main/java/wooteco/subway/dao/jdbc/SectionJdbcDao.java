@@ -19,6 +19,7 @@ public class SectionJdbcDao implements SectionDao {
 
     private static final RowMapper<Section> SECTION_ROW_MAPPER = (resultSet, rowNumber) -> new Section(
             resultSet.getLong("id"),
+            resultSet.getLong("line_id"),
             new Station(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name")),
             new Station(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name")),
             resultSet.getInt("distance")
@@ -48,7 +49,7 @@ public class SectionJdbcDao implements SectionDao {
             return preparedStatement;
         }, keyHolder);
 
-        return new Section(keyHolder.getKey().longValue(), section.getUpStation(), section.getDownStation(),
+        return new Section(keyHolder.getKey().longValue(), lineId, section.getUpStation(), section.getDownStation(),
                 section.getDistance());
     }
 

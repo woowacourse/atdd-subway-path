@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
 
 class SectionTest {
+
+    private static final Long DUMMY_LINE_ID = 1L;
 
     @DisplayName("거리가 1 미만인 구간은 생성할 수 없다.")
     @Test
@@ -18,7 +18,7 @@ class SectionTest {
         Station downStation = new Station(2L, "시청");
         int distance = 0;
 
-        assertThatThrownBy(() -> new Section(1L, upStation, downStation, distance))
+        assertThatThrownBy(() -> new Section(1L, DUMMY_LINE_ID, upStation, downStation, distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("거리가 1 미만");
     }
@@ -29,7 +29,7 @@ class SectionTest {
         Station station1 = new Station(1L, "station1");
         Station station2 = new Station(2L, "station2");
         Station station3 = new Station(3L, "station3");
-        Section section = new Section(1L, station1, station2, 10);
+        Section section = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
 
         assertAll(
                 () -> assertThat(section.contains(station1)).isTrue(),
@@ -46,10 +46,10 @@ class SectionTest {
         Station station3 = new Station(3L, "station3");
 
 
-        Section section1 = new Section(1L, station1, station2, 10);
-        Section section2 = new Section(2L, station1, station2, 9);
-        Section section3 = new Section(3L, station2, station1, 8);
-        Section section4 = new Section(4L, station2, station3, 7);
+        Section section1 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
+        Section section2 = new Section(2L, DUMMY_LINE_ID, station1, station2, 9);
+        Section section3 = new Section(3L, DUMMY_LINE_ID, station2, station1, 8);
+        Section section4 = new Section(4L, DUMMY_LINE_ID, station2, station3, 7);
 
         assertAll(
                 () -> assertThat(section1.containsSameStations(section2)).isTrue(),

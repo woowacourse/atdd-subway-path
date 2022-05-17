@@ -5,21 +5,23 @@ import java.util.Objects;
 public class Section {
 
     private final Long id;
+    private final Long lineId;
     private Station upStation;
     private Station downStation;
     private int distance;
 
-    public Section(Long id, Station upStation, Station downStation, int distance) {
+    public Section(Long id, final Long lineId, Station upStation, Station downStation, int distance) {
         validateMoreThanZero(distance);
         validateDifferentStation(upStation, downStation);
         this.id = id;
+        this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
-        this(null, upStation, downStation, distance);
+    public Section(final Long lineId, Station upStation, Station downStation, int distance) {
+        this(null, lineId, upStation, downStation, distance);
     }
 
     public boolean contains(final Station station) {
@@ -52,6 +54,10 @@ public class Section {
 
     public long getId() {
         return id;
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 
     public Station getUpStation() {

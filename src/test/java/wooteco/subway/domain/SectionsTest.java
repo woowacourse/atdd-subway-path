@@ -9,12 +9,10 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
 
 class SectionsTest {
 
+    private static final Long DUMMY_LINE_ID = 1L;
 
     private Station station1;
     private Station station2;
@@ -35,7 +33,7 @@ class SectionsTest {
     void addSection() {
         // given
         Sections sections = new Sections();
-        Section section1TO2 = new Section(1L, station1, station2, 10);
+        Section section1TO2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
 
         // when
         sections.add(section1TO2);
@@ -49,8 +47,8 @@ class SectionsTest {
     void addSectionToUp() {
         // given
         Sections sections = new Sections();
-        Section section2To3 = new Section(1L, station2, station3, 10);
-        Section section1To2 = new Section(2L, station1, station2, 10);
+        Section section2To3 = new Section(1L, DUMMY_LINE_ID, station2, station3, 10);
+        Section section1To2 = new Section(2L, DUMMY_LINE_ID, station1, station2, 10);
 
         sections.add(section2To3);
 
@@ -66,8 +64,8 @@ class SectionsTest {
     void addSectionToDown() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(2L, station1, station2, 10);
-        Section section2To3 = new Section(1L, station2, station3, 10);
+        Section section1To2 = new Section(2L, DUMMY_LINE_ID, station1, station2, 10);
+        Section section2To3 = new Section(1L, DUMMY_LINE_ID, station2, station3, 10);
 
         sections.add(section1To2);
 
@@ -83,11 +81,11 @@ class SectionsTest {
     void throwExceptionWhenAlreadyRegisteredSameStation() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
         sections.add(section1To2);
 
         // when && then
-        Section alreadyExist = new Section(2L, station1, station2, 9);
+        Section alreadyExist = new Section(2L, DUMMY_LINE_ID, station1, station2, 9);
         assertThatThrownBy(() -> sections.add(alreadyExist))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("연결 가능한 구간이 아닙니다.");
@@ -98,13 +96,13 @@ class SectionsTest {
     void throwExceptionWhenBothStationsRegistered() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
         sections.add(section1To2);
-        Section section2To3 = new Section(2L, station2, station3, 10);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 10);
         sections.add(section2To3);
 
         // when && then
-        Section section1To3 = new Section(2L, station1, station3, 10);
+        Section section1To3 = new Section(2L, DUMMY_LINE_ID, station1, station3, 10);
         assertThatThrownBy(() -> sections.add(section1To3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("연결 가능한 구간이 아닙니다.");
@@ -115,11 +113,11 @@ class SectionsTest {
     void cannotAddSection() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
         sections.add(section1To2);
 
         // when && then
-        Section section3To4 = new Section(1L, station3, station4, 10);
+        Section section3To4 = new Section(1L, DUMMY_LINE_ID, station3, station4, 10);
         assertThatThrownBy(() -> sections.add(section3To4))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("연결 가능한 구간이 아닙니다.");
@@ -130,17 +128,17 @@ class SectionsTest {
     void addSectionNotMakingForkRoadCaseOne() {
         // given
         Sections sections = new Sections();
-        Section section1To3 = new Section(1L, station1, station3, 10);
+        Section section1To3 = new Section(1L, DUMMY_LINE_ID, station1, station3, 10);
         sections.add(section1To3);
 
         // when
-        Section section1To2 = new Section(2L, station1, station2, 7);
+        Section section1To2 = new Section(2L, DUMMY_LINE_ID, station1, station2, 7);
         sections.add(section1To2);
         // then
         Set<Section> values = sections.values();
         assertThat(values).containsOnly(
-                new Section(1L, station1, station2, 7),
-                new Section(2L, station2, station3, 3)
+                new Section(1L, DUMMY_LINE_ID, station1, station2, 7),
+                new Section(2L, DUMMY_LINE_ID, station2, station3, 3)
         );
     }
 
@@ -149,18 +147,18 @@ class SectionsTest {
     void addSectionNotMakingForkRoadCaseTwo() {
         // given
         Sections sections = new Sections();
-        Section section1To3 = new Section(1L, station1, station3, 10);
+        Section section1To3 = new Section(1L, DUMMY_LINE_ID, station1, station3, 10);
         sections.add(section1To3);
 
         // when
-        Section section2To3 = new Section(2L, station2, station3, 7);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 7);
         sections.add(section2To3);
 
         // then
         Set<Section> values = sections.values();
         assertThat(values).containsOnly(
-                new Section(1L, station1, station2, 3),
-                new Section(2L, station2, station3, 7)
+                new Section(1L, DUMMY_LINE_ID, station1, station2, 3),
+                new Section(2L, DUMMY_LINE_ID, station2, station3, 7)
         );
     }
 
@@ -169,12 +167,11 @@ class SectionsTest {
     void throwExceptionWhenAddSectionNotMakingForkRoadCaseOne() {
         // given
         Sections sections = new Sections();
-        Section section1To3 = new Section(1L, station1, station3, 10);
+        Section section1To3 = new Section(1L, DUMMY_LINE_ID, station1, station3, 10);
         sections.add(section1To3);
 
-
         // when && then
-        Section section1To2 = new Section(2L, station1, station2, 10);
+        Section section1To2 = new Section(2L, DUMMY_LINE_ID, station1, station2, 10);
         assertThatThrownBy(() -> sections.add(section1To2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("구간의 길이가 올바르지 않습니다.");
@@ -185,11 +182,11 @@ class SectionsTest {
     void throwExceptionWhenAddSectionNotMakingForkRoadCaseTwo() {
         // given
         Sections sections = new Sections();
-        Section section1To3 = new Section(1L, station1, station3, 10);
+        Section section1To3 = new Section(1L, DUMMY_LINE_ID, station1, station3, 10);
         sections.add(section1To3);
 
         // when && then
-        Section section2To3 = new Section(2L, station2, station3, 10);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 10);
         assertThatThrownBy(() -> sections.add(section2To3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("구간의 길이가 올바르지 않습니다.");
@@ -200,8 +197,8 @@ class SectionsTest {
     void removeUpStation() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
-        Section section2To3 = new Section(2L, station2, station3, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 10);
         sections.add(section1To2);
         sections.add(section2To3);
 
@@ -217,9 +214,9 @@ class SectionsTest {
     void removeDownStation() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
-        Section section2To3 = new Section(2L, station2, station3, 10);
-        Section section3To4 = new Section(3L, station3, station4, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 10);
+        Section section3To4 = new Section(3L, DUMMY_LINE_ID, station3, station4, 10);
         sections.add(section1To2);
         sections.add(section2To3);
         sections.add(section3To4);
@@ -236,9 +233,9 @@ class SectionsTest {
     void removeInterStation() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
-        Section section2To3 = new Section(2L, station2, station3, 10);
-        Section section3To4 = new Section(3L, station3, station4, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
+        Section section2To3 = new Section(2L, DUMMY_LINE_ID, station2, station3, 10);
+        Section section3To4 = new Section(3L, DUMMY_LINE_ID, station3, station4, 10);
         sections.add(section1To2);
         sections.add(section2To3);
         sections.add(section3To4);
@@ -246,11 +243,10 @@ class SectionsTest {
         // when
         sections.removeStation(station2);
 
-
         // then
         assertThat(sections.values()).containsOnly(
-                new Section(1L, station1, station3, 20),
-                new Section(3L, station3, station4, 10)
+                new Section(1L, DUMMY_LINE_ID, station1, station3, 20),
+                new Section(3L, DUMMY_LINE_ID, station3, station4, 10)
         );
     }
 
@@ -259,7 +255,7 @@ class SectionsTest {
     void cannotRemoveStationWhenSingleSection() {
         // given
         Sections sections = new Sections();
-        Section section1To2 = new Section(1L, station1, station2, 10);
+        Section section1To2 = new Section(1L, DUMMY_LINE_ID, station1, station2, 10);
         sections.add(section1To2);
 
         // when && then
@@ -278,8 +274,8 @@ class SectionsTest {
     void cannotRemoveNonExistStation() {
         // given
         Sections sections = new Sections();
-        sections.add(new Section(1L, station1, station2, 10));
-        sections.add(new Section(2L, station2, station3, 10));
+        sections.add(new Section(1L, DUMMY_LINE_ID, station1, station2, 10));
+        sections.add(new Section(2L, DUMMY_LINE_ID, station2, station3, 10));
 
         // when && then
         assertThatThrownBy(() -> sections.removeStation(station4))
@@ -292,8 +288,8 @@ class SectionsTest {
     void returnSortedStations() {
         // given
         Sections sections = new Sections();
-        sections.add(new Section(1L, station1, station3, 10));
-        sections.add(new Section(2L, station3, station2, 10));
+        sections.add(new Section(1L, DUMMY_LINE_ID, station1, station3, 10));
+        sections.add(new Section(2L, DUMMY_LINE_ID, station3, station2, 10));
 
         // when
         List<Station> stations = sections.sortedStations();
