@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -49,6 +50,11 @@ public class PathService {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+
+        if (Objects.isNull(shortestPath)) {
+            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
+        }
+
         List<Station> vertexes = shortestPath.getVertexList();
 
         List<StationResponse> stationResponses = vertexes.stream()

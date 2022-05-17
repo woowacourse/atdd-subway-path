@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
@@ -76,5 +77,24 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
+    }
+    
+    @DisplayName("다른 노선의 갈 수 없는 경로를 조회하면 예외를 던진다.")
+    @Test
+    void findPathCanNotGo() {
+
+        StationResponse 건대입구역 = stationService.save(new StationRequest("건대입구역"));
+        StationResponse 강남구청역 = stationService.save(new StationRequest("강남구청역"));
+        StationResponse 부천역 = stationService.save(new StationRequest("부천역"));
+        StationResponse 중동역 = stationService.save(new StationRequest("중동역"));
+        LineRequest line7 = new LineRequest(
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10);
+        lineService.save(line7);
+        LineRequest line1 = new LineRequest(
+                "1호선", "blue", 부천역.getId(), 중동역.getId(), 5);
+        lineService.save(line1);
+
+        assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 부천역.getId(), 24))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
