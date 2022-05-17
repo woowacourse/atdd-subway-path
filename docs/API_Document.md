@@ -370,3 +370,47 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 ```
 </details>
+
+---
+
+### 경로 조회
+
+<details>
+<summary>HTTP request</summary>
+
+```
+GET /paths?source=1&target=5&age=15 HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+```
+
+</details>
+
+<details>
+<summary>HTTP response</summary>
+
+```
+HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 239
+
+{
+    "stations" : [ {
+        "id" : 1,
+        "name" : "지하철역이름"
+    }, {
+        "id" : 2,
+        "name" : "새로운지하철역이름"
+    }, {
+        "id" : 5,
+        "name" : "또다른지하철역이름"
+    } ],
+    "distance" : 9,
+    "fare" : 1250
+}
+```
+
+</details>
