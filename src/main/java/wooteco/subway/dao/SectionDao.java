@@ -44,4 +44,9 @@ public class SectionDao {
         final String sql = "delete from section where line_id=?";
         jdbcTemplate.update(sql, lineId);
     }
+
+    public List<Section> findAll() {
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from section";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 }

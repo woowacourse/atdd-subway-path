@@ -14,6 +14,11 @@ public class ErrorControllerAdvice {
         return ResponseEntity.badRequest().header("error", exception.getMessage()).build();
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Void> illegalArgumentExceptionHandler(Exception exception) {
+        return ResponseEntity.badRequest().build();
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Void> noSuchElementExceptionHandler(Exception exception) {
         return ResponseEntity.badRequest().header("error", exception.getMessage()).build();
