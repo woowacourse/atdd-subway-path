@@ -62,11 +62,6 @@ public class StationDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, name));
     }
 
-    public Station findByName(String name) {
-        String sql = String.format("select * from STATION where name = %s", name);
-        return jdbcTemplate.queryForObject(sql, new StationMapper());
-    }
-
     private static class StationMapper implements RowMapper<Station> {
         public Station mapRow(ResultSet rs, int rowCnt) throws SQLException {
             return new Station(rs.getLong("id"), rs.getString("name"));
