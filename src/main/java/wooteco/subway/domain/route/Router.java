@@ -10,9 +10,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
+@Component
 public class Router {
 
     public Route findShortestRoute(List<Section> sections, Station source, Station target) {

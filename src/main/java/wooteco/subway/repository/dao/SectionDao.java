@@ -1,7 +1,7 @@
 package wooteco.subway.repository.dao;
 
 import java.util.List;
-
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
 import wooteco.subway.repository.dao.entity.section.SectionEntity;
 
 @Component
@@ -39,6 +37,11 @@ public class SectionDao {
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(sectionEntity);
         return jdbcInsert.executeAndReturnKey(parameters)
                 .longValue();
+    }
+
+    public List<SectionEntity> findAll() {
+        String query = "SELECT * FROM Section";
+        return jdbcTemplate.query(query, ROW_MAPPER);
     }
 
     public List<SectionEntity> findAllByLineId(Long lineId) {

@@ -3,12 +3,11 @@ package wooteco.subway.repository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Repository;
-
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.SectionRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.repository.dao.LineDao;
@@ -26,7 +25,7 @@ import wooteco.subway.repository.exception.NoSuchSectionException;
 import wooteco.subway.repository.exception.NoSuchStationException;
 
 @Repository
-public class SubwayRepository implements LineRepository, StationRepository {
+public class SubwayRepository implements LineRepository, StationRepository, SectionRepository {
 
     private static final Long TEMPORARY_ID = 0L;
 
@@ -237,5 +236,16 @@ public class SubwayRepository implements LineRepository, StationRepository {
             throw new IllegalStateException(
                     String.format("지하철역을 구간으로 지니고 있는 지하철노선이 존재합니다. [지하철역 : %s]", station.getName()));
         }
+    }
+
+    @Override
+    public List<Section> findSections() {
+        return sectionDao.findAll()
+                .stream()
+                .map(sectionEntity -> EntityAssembler.section(
+                        findStationById(sectionEntity.getUpStationId()),
+                        findStationById(sectionEntity.getDownStationId()),
+                        sectionEntity))
+                .collect(Collectors.toUnmodifiableList());
     }
 }
