@@ -3,7 +3,9 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,35 +22,66 @@ import wooteco.subway.controller.dto.PathResponse;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
 import wooteco.subway.controller.dto.StationResponse;
+import wooteco.subway.domain.Station;
 
 @DisplayName("경로 조회 인수 테스트")
 @SpringBootAcceptanceTest
 public class PathAcceptanceTest {
 
-	private List<Long> stationIds;
+	private final Map<String, Station> stations = new HashMap<>();
 
+	//           (2호선)
+	//            교대역
+	//              11
+	// 강남역 >11> 역삼역 >10> 선릉역 (신분당선)
+	//              10
+	//            잠실역
 	@BeforeEach
 	void init() {
-		stationIds = RestUtil.postStations("강남역", "역삼역", "선릉역", "교대역", "잠실역");
-		LineRequest lineRequest1 = new LineRequest(
-			"신분당선", "bg-red-600", stationIds.get(0), stationIds.get(1), 11);
-		ExtractableResponse<Response> lineResponse = RestUtil.post(lineRequest1);
-		Long lineId = RestUtil.getIdFromLine(lineResponse);
-		RestUtil.post(lineId, new SectionRequest(stationIds.get(1), stationIds.get(2), 10));
+		stations.putAll(postStations("강남역", "역삼역", "선릉역", "교대역", "잠실역"));
 
-		LineRequest lineRequest2 = new LineRequest(
-			"2호선", "bg-red-600", stationIds.get(3), stationIds.get(1), 11);
-		ExtractableResponse<Response> lineResponse2 = RestUtil.post(lineRequest2);
+		ExtractableResponse<Response> lineResponse = RestUtil.post(new LineRequest(
+			"신분당선", "bg-red-600",
+			stations.get("강남역").getId(),
+			stations.get("역삼역").getId(), 11)
+		);
+		Long lineId = RestUtil.getIdFromLine(lineResponse);
+		RestUtil.post(lineId,
+			new SectionRequest(
+				stations.get("역삼역").getId(),
+				stations.get("선릉역").getId(), 10)
+		);
+
+		ExtractableResponse<Response> lineResponse2 = RestUtil.post( new LineRequest(
+			"2호선", "bg-red-600",
+			stations.get("교대역").getId(),
+			stations.get("역삼역").getId(), 11)
+		);
 		Long lineId2 = RestUtil.getIdFromLine(lineResponse2);
-		RestUtil.post(lineId2, new SectionRequest(stationIds.get(1), stationIds.get(4), 10));
+		RestUtil.post(lineId2,
+			new SectionRequest(
+				stations.get("역삼역").getId(),
+				stations.get("잠실역").getId(), 10)
+		);
+	}
+
+	private Map<String, Station> postStations(String... names) {
+		Map<String, Station> stations = new HashMap<>();
+		List<Long> ids = RestUtil.postStations(names);
+		int index = 0;
+		for (String name : names) {
+			stations.put(name, new Station(ids.get(index), name));
+			index++;
+		}
+		return stations;
 	}
 
 	@DisplayName("경로를 조회한다.")
 	@Test
 	void findPath() {
 		//given
-		Long source = stationIds.get(0);
-		Long target = stationIds.get(4);
+		Long source = stations.get("강남역").getId();
+		Long target = stations.get("잠실역").getId();
 		// when
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
 			.when()
@@ -78,7 +111,7 @@ public class PathAcceptanceTest {
 		Long stationId = RestUtil.getIdFromStation(stationResponse);
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
 			.when()
-			.get("/paths?source=" + stationIds.get(0) + "&target=" + stationId + "&age=15")
+			.get("/paths?source=" + stations.get("강남역").getId() + "&target=" + stationId + "&age=15")
 			.then().log().all()
 			.extract();
 
