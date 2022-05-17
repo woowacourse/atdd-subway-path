@@ -9,7 +9,6 @@ import wooteco.subway.domain.section.SectionRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.dto.DtoAssembler;
 import wooteco.subway.service.dto.RouteResponse;
-import wooteco.subway.service.dto.station.StationResponse;
 
 @Service
 public class RouteService {
@@ -29,8 +28,7 @@ public class RouteService {
 
         final Route shortestRoute = router.findShortestRoute(sections, sourceStation, targetStation);
 
-        final List<StationResponse> stationResponses = DtoAssembler.stationResponses(shortestRoute.getRoute());
-        return new RouteResponse(stationResponses, (int) shortestRoute.getDistance(), 1000L);
+        return DtoAssembler.routeResponse(shortestRoute);
     }
 }
 

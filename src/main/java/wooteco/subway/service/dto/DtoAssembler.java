@@ -2,8 +2,8 @@ package wooteco.subway.service.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.route.Route;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.dto.line.LineRequest;
@@ -37,5 +37,9 @@ public class DtoAssembler {
 
     public static StationResponse stationResponse(Station station) {
         return new StationResponse(station.getId(), station.getName());
+    }
+
+    public static RouteResponse routeResponse(Route route) {
+        return new RouteResponse(stationResponses(route.getRoute()), (int) route.getDistance(), 1000L);
     }
 }
