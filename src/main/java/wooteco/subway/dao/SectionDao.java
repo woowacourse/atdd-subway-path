@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 
 @Repository
 public class SectionDao {
@@ -19,6 +20,18 @@ public class SectionDao {
 
     public void save(List<Section> sections, Long lineId) {
         batchInsert(sections, lineId);
+    }
+
+    public List<Section> findAll() {
+        final String sql =
+                "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
+                        "from sections s " +
+                        "join station us on s.up_station_id = us.id " +
+                        "join station ds on s.down_station_id = ds.id";
+        return jdbcTemplate.query(sql, ((rs, rowNum) -> {
+            return Section.createWithId(rs.getLong("sid"), new Station(rs.getLong("usid"), rs.getString("usname")),
+                    new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
+        }));
     }
 
     private int[] batchInsert(List<Section> sections, Long lineId) {
