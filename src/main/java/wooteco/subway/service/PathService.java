@@ -10,6 +10,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -54,7 +55,9 @@ public class PathService {
                 .map(StationResponse::new)
                 .collect(toList());
 
-        return new PathResponse(stationResponses, (int) shortestPath.getWeight());
+        int shortestDistance = (int) shortestPath.getWeight();
+        Fare fare = new Fare(shortestDistance);
+        return new PathResponse(stationResponses, shortestDistance, fare.calculate());
     }
 
     private void fillGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Long lineId) {
