@@ -15,12 +15,14 @@ import wooteco.subway.domain.station.Station;
 
 public class Router {
 
-    public Optional<Route> findShortestRoute(List<Section> sections, Station source, Station target) {
+    public Route findShortestRoute(List<Section> sections, Station source, Station target) {
         List<Station> stations = extractStations(sections);
 
         validateSourceAndTargetExist(stations, source, target);
 
-        return findShortestRoute(stations, sections, source, target);
+        Optional<Route> route = findShortestRoute(stations, sections, source, target);
+
+        return route.orElseThrow(() -> new IllegalStateException("출발지부터 도착지까지 구간이 연결되어 있지 않습니다."));
     }
 
     private List<Station> extractStations(List<Section> sections) {
