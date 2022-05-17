@@ -1,6 +1,7 @@
 package wooteco.subway.dao.section;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,11 @@ public class InmemorySectionDao implements SectionDao {
                 .stream()
                 .filter(section -> section.getLineId() == lineId)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Section> findAll() {
+        return new ArrayList<>(sections.values());
     }
 
     @Override

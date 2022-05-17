@@ -9,6 +9,8 @@ public interface SectionDao {
 
     List<Section> findAllByLineId(long lineId);
 
+    List<Section> findAll();
+
     int updateSections(List<Section> sections);
 
     int delete(long sectionId);

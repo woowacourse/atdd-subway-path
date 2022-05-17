@@ -65,6 +65,20 @@ class JdbcSectionDaoTest {
     }
 
     @Test
+    @DisplayName("모든 Section을 조회할 수 있다.")
+    void findAll() {
+        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
+        Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
+        Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
+
+        sectionDao.save(new Section(id, station1, station2, 2));
+        sectionDao.save(new Section(id, station2, station3, 2));
+
+        assertThat(sectionDao.findAll()).hasSize(2);
+    }
+
+    @Test
     @DisplayName("Sections를 업데이트할 수 있다.")
     void updateSections() {
         long id = lineDao.save(new Line("신분당선", "bg-red-600"));
