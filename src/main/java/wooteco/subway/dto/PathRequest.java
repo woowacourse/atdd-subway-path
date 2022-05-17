@@ -12,12 +12,16 @@ public class PathRequest {
         this.age = age;
     }
 
-    @Override
-    public String toString() {
-        return "PathRequest{" +
-                "source=" + source +
-                ", target=" + target +
-                ", age=" + age +
-                '}';
+    public Long getSource() {
+        return source;
     }
+
+    public Long getTarget() {
+        return target;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
 }

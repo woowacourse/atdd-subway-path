@@ -1,4 +1,4 @@
-package wooteco.subway.ui;
+package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,7 +25,7 @@ import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
-class PathControllerTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private LineRepository lineRepository;

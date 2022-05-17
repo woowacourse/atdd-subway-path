@@ -218,6 +218,7 @@ public class Sections {
     }
 
     public List<Station> findShortestStations(final Station startStation, final Station endStation) {
+        validateExistStation(startStation, endStation);
         try {
             return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
         } catch (IllegalArgumentException e) {
