@@ -96,23 +96,35 @@ public class Sections {
     }
 
     public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
-        try {
-            List<String> stationIds = findShortestPath(departureId, arrivalId).getVertexList();
-            return stationIds.stream()
-                    .map(Long::valueOf)
-                    .collect(Collectors.toList());
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("연결되지 않은 구간입니다.");
-        }
+        List<String> stationIds = findShortestPath(departureId, arrivalId).getVertexList();
+        return stationIds.stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
     }
 
     private GraphPath findShortestPath(Long departureId, Long arrivalId) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addStationVertex(graph);
         addSectionEdge(graph);
+        GraphPath path = getGraphPath(departureId, arrivalId, graph);
+        validateConnection(path);
+        return path;
+    }
 
+    private void validateConnection(GraphPath path) {
+        if (path == null) {
+            throw new IllegalArgumentException("연결되지 않은 구간입니다.");
+        }
+    }
+
+    private GraphPath getGraphPath(Long departureId, Long arrivalId,
+                                   WeightedMultigraph<String, DefaultWeightedEdge> graph) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
+        try {
+            return dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("구간에 등록 되지 않은 역입니다.");
+        }
     }
 
     private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
@@ -141,9 +153,9 @@ public class Sections {
         }
     }
 
-    public double getShortestPathDistance(Long departureId, Long arrivalId) {
+    public int getShortestPathDistance(Long departureId, Long arrivalId) {
         try {
-            return findShortestPath(departureId, arrivalId).getWeight();
+            return (int) findShortestPath(departureId, arrivalId).getWeight();
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("연결되지 않은 구간입니다.");
         }
