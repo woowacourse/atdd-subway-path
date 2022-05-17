@@ -3,7 +3,6 @@ package wooteco.subway.service;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -35,12 +34,12 @@ public class PathService {
         List<Long> lineIds = lineService.findAll()
                 .stream()
                 .map(LineResponse::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         for (Long lineId : lineIds) {
-            fillStationsGraph(graph, lineId);
+            fillGraph(graph, lineId);
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
@@ -54,11 +53,13 @@ public class PathService {
         return new PathResponse(stationResponses, (int) shortestPath.getWeight());
     }
 
-    private void fillStationsGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Long lineId) {
+    private void fillGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Long lineId) {
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
+
         for (Station station : sections.getStations()) {
             graph.addVertex(station);
         }
+
         for (Section section : sections.getValue()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
