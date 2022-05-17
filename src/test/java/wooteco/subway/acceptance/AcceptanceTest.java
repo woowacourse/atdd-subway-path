@@ -8,7 +8,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql("/schema.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@ActiveProfiles("test")
 public class AcceptanceTest {
     @LocalServerPort
     int port;
