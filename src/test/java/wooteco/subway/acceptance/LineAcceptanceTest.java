@@ -19,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @DisplayName("노선 관련 기능")
@@ -30,20 +32,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Autowired
     private StationRepository stationRepository;
 
-    private Station 강남역;
-    private Station 역삼역;
-    private Station 선릉역;
-
-    @BeforeEach
-    void createStations() {
-        강남역 = stationRepository.save(new Station("강남역"));
-        역삼역 = stationRepository.save(new Station("역삼역"));
-        선릉역 = stationRepository.save(new Station("선릉역"));
-    }
+    @Autowired
+    private LineRepository lineRepository;
 
     @DisplayName("노선을 생성하면 201 created를 반환하고 Location header에 url resource를 반환한다.")
     @Test
     void createLine() {
+        Station 강남역 = stationRepository.save(new Station("강남역"));
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> response = httpPostTest(params, "/lines");
 
@@ -54,6 +51,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성하면 400 bad-request가 발생한다.")
     @Test
     void createLineWithDuplicateName() {
+        lineRepository.save(new Line("신분당선", "bg-red-600"));
         LineRequest params = new LineRequest("신분당선", "bg-red-600");
 
         httpPostTest(params, "/lines");
@@ -65,6 +63,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 노선을 조회하면 200 ok와 노선 정보를 반환한다.")
     @Test
     void getLines() {
+        Station 강남역 = stationRepository.save(new Station("강남역"));
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
         LineRequest newBundangLine = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> newBundangPostResponse = httpPostTest(newBundangLine, "/lines");
 
@@ -86,6 +87,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("단건 노선을 조회하면 200 OK와 노선 정보를 반환한다")
     @Test
     void getLine() {
+        Station 강남역 = stationRepository.save(new Station("강남역"));
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
 
@@ -107,6 +111,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 수정하면 200 OK를 반환한다.")
     @Test
     void updateLine() {
+        Station 강남역 = stationRepository.save(new Station("강남역"));
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
 
@@ -128,6 +135,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 제거하면 204 No Content를 반환한다.")
     @Test
     void deleteStation() {
+        Station 강남역 = stationRepository.save(new Station("강남역"));
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
 
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
@@ -136,12 +146,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = httpDeleteTest(uri);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @AfterEach
-    void tearDown() {
-        stationRepository.deleteById(강남역.getId());
-        stationRepository.deleteById(역삼역.getId());
-        stationRepository.deleteById(선릉역.getId());
     }
 }

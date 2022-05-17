@@ -54,6 +54,7 @@ public class SectionService {
         }
     }
 
+    @Transactional(readOnly = true)
     public PathResponse calculateMinDistance(final PathRequest pathRequest) {
         Sections sections = new Sections(sectionRepository.findAll());
         Station startStation = stationRepository.findById(pathRequest.getSource());
