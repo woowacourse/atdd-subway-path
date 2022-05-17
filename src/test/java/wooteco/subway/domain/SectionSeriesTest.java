@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.property.Distance;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.SectionSeries;
+import wooteco.subway.exception.RowNotFoundException;
+import wooteco.subway.exception.SectionNotEnoughException;
 
 class SectionSeriesTest {
 
@@ -110,5 +112,64 @@ class SectionSeriesTest {
         // then
         assertThatExceptionOfType(RuntimeException.class)
             .isThrownBy(() -> sectionSeries.add(newSection));
+    }
+
+    @Test
+    @DisplayName("구간이 부족하면 삭제할수 없다.")
+    public void throwsExceptionWhenSectionsNotEnough() {
+        // given & when
+        final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb()));
+        // then
+        assertThatExceptionOfType(SectionNotEnoughException.class)
+            .isThrownBy(() -> sectionSeries.remove(getStationA()));
+    }
+
+    @Test
+    @DisplayName("중간 구간을 삭제한다.")
+    public void removeSection() {
+        // given
+        final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
+
+        // when
+        sectionSeries.remove(getStationB());
+
+        // then
+        assertThat(sectionSeries.getSections()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("상행 종점을 삭제한다.")
+    public void removeUpTerminal() {
+        // given
+        final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
+
+        // when
+        sectionSeries.remove(getStationA());
+
+        // then
+        assertThat(sectionSeries.getSections()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("하행 종점을 삭제한다.")
+    public void removeDownTerminal() {
+        // given
+        final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
+
+        // when
+        sectionSeries.remove(getStationC());
+
+        // then
+        assertThat(sectionSeries.getSections()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("삭제하려는 역이 구간에 등록되어 있지 않으면 예외를 던진다.")
+    public void throwsExceptionWithEmptyId() {
+        // given & when
+        final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
+        // then
+        assertThatExceptionOfType(RowNotFoundException.class)
+            .isThrownBy(() -> sectionSeries.remove(getStationX()));
     }
 }
