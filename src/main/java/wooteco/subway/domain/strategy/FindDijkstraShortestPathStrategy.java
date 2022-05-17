@@ -21,9 +21,10 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath shortestPath = Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath =
+                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                        .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
