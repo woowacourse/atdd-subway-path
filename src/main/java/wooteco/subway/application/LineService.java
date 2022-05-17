@@ -95,6 +95,7 @@ public class LineService {
         return line;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
         Path pathFinder = new Path(sectionService.findAll());
 
