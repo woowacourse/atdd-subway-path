@@ -38,11 +38,11 @@ public class Path {
         }
     }
 
-    public List<Long> findShortestPath(Long source, Long target) {
+    public List<Long> findPath(Long source, Long target) {
         return getPath(source, target).getVertexList();
     }
 
-    public int findShortestDistance(Long source, Long target) {
+    public int findDistance(Long source, Long target) {
         return (int) getPath(source, target).getWeight();
     }
 

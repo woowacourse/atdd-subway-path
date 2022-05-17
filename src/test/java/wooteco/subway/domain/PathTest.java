@@ -24,7 +24,7 @@ public class PathTest {
     void findShortestPath() {
         Path path = Path.of(sections, stationIds);
 
-        assertThat(path.findShortestPath(1L, 4L)).containsExactly(1L, 2L, 5L, 4L);
+        assertThat(path.findPath(1L, 4L)).containsExactly(1L, 2L, 5L, 4L);
     }
 
     @DisplayName("최단 거리를 구한다.")
@@ -32,7 +32,7 @@ public class PathTest {
     void findShortestDistance() {
         Path path = Path.of(sections, stationIds);
 
-        assertThat(path.findShortestDistance(1L, 4L)).isEqualTo(9);
+        assertThat(path.findDistance(1L, 4L)).isEqualTo(9);
     }
 
     @DisplayName("경로가 존재하지 않는 경우 예외가 발생한다.")
@@ -48,7 +48,7 @@ public class PathTest {
 
         Path path = Path.of(sections, stationIds);
 
-        assertThatThrownBy(() -> path.findShortestPath(1L, 5L))
+        assertThatThrownBy(() -> path.findPath(1L, 5L))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("경로가 존재하지 않습니다.");
     }
