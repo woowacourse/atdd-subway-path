@@ -42,17 +42,18 @@ class FindDijkstraShortestPathStrategyTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "레넌");
-
         Sections sections = new Sections(
                 List.of(
                 new Section(1L, 1L, station1, station2, 2),
                 new Section(2L, 1L, station2, station3, 2),
                 new Section(3L, 2L, station1, station4, 3),
                 new Section(4L, 2L, station4, station3, 3)));
-
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
+
+        // when
         Path path = findPathStrategy.findPath(station1, station3, sections);
 
+        // then
         assertAll(
                 () -> assertThat(path.getStations()).containsExactly(station1, station2, station3),
                 () -> assertThat(path.getDistance()).isEqualTo(4)
@@ -67,13 +68,13 @@ class FindDijkstraShortestPathStrategyTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "레넌");
-
         Sections sections = new Sections(
                 List.of(
                         new Section(1L, 1L, station1, station2, 2),
                         new Section(2L, 2L, station3, station4, 3)));
-
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
+
+        // when & then
         assertThatThrownBy(() -> findPathStrategy.findPath(station1, station4, sections))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("갈 수 있는 경로를 찾을 수 없습니다.");
