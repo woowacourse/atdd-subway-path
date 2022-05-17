@@ -50,4 +50,14 @@ public class JGraphPathFinder implements PathFinder {
             throw new PathException(ExceptionMessage.NOT_FOUND_PATH.getContent());
         }
     }
+
+    @Override
+    public List<Station> calculatePath(Station from, Station to) {
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        try {
+            return dijkstraShortestPath.getPath(from, to).getVertexList();
+        } catch (IllegalArgumentException | NullPointerException exception) {
+            throw new PathException(ExceptionMessage.NOT_FOUND_PATH.getContent());
+        }
+    }
 }

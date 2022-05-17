@@ -67,4 +67,19 @@ class PathFinderTest {
         assertThatThrownBy(() -> path.calculateDistance(station1, station4))
                 .isInstanceOf(PathException.class);
     }
+
+    @Test
+    @DisplayName("두 역의 경로 거리를 반환한다.")
+    void calculateStationPath() {
+        // given
+        PathFinder pathFinder = JGraphPathFinder.of(sections);
+
+        // when
+        List<Station> path = pathFinder.calculatePath(station1, station3);
+
+        // then
+        assertThat(path.size()).isEqualTo(3);
+        assertThat(path).containsExactly(station1, station2, station3);
+    }
+
 }
