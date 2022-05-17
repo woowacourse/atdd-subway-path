@@ -1,10 +1,13 @@
 package wooteco.subway.domain;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.utils.exception.StationNotFoundException;
 
 public class StationPath {
 
-    private Sections sections;
+    private final Sections sections;
 
     public StationPath(final Sections sections) {
         this.sections = sections;
@@ -12,7 +15,22 @@ public class StationPath {
 
     public int calculateMinDistance(final Station startStation, final Station endStation) {
         validateExistStation(startStation, endStation);
-        return 20;
+        return (int) createSectionDijkstraShortestPath().getPathWeight(startStation, endStation);
+    }
+
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        sections.sortSections()
+                .forEach(graph::addVertex);
+        sections.getValues()
+                .forEach(section -> assignWeight(graph, section));
+
+        return new DijkstraShortestPath<>(graph);
+    }
+
+    private void assignWeight(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Section section) {
+        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
     private void validateExistStation(Station startStation, Station endStation) {
