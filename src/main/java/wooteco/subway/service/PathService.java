@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathManager;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.dto.response.DtoAssembler;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.repository.SubwayRepository;
@@ -25,6 +26,6 @@ public class PathService {
         Station endStation = stationRepository.findExistingStation(targetStationId);
         Path optimalPath = pathManager.calculateOptimalPath(startStation, endStation);
 
-        return PathResponse.of(optimalPath);
+        return DtoAssembler.assemble(optimalPath);
     }
 }
