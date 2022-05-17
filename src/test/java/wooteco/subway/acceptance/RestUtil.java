@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,10 +11,19 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
+import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
 import wooteco.subway.controller.dto.StationResponse;
 
 public class RestUtil {
+
+	public static List<Long> postStations(String... names) {
+		List<Long> ids = new ArrayList<>();
+		for (String name : names) {
+			ids.add(getIdFromStation(post(new StationRequest(name))));
+		}
+		return ids;
+	}
 
 	public static ExtractableResponse<Response> post(StationRequest stationRequest) {
 		return RestAssured.given()
@@ -35,6 +45,16 @@ public class RestUtil {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> post(Long lineId, SectionRequest sectionRequest) {
+		return RestAssured.given()
+			.body(sectionRequest)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.post("/lines/" + lineId + "/sections")
+			.then()
+			.extract();
+	}
+
 	public static ExtractableResponse<Response> get(String url) {
 		return RestAssured.given()
 			.when()
@@ -42,7 +62,6 @@ public class RestUtil {
 			.then()
 			.extract();
 	}
-
 
 	public static Long getIdFromStation(ExtractableResponse<Response> response) {
 		return response.jsonPath()

@@ -110,7 +110,7 @@ class LinesTest {
 			.containsExactly("내방역", "고속터미널역", "서초역", "사평역");
 	}
 
-	@DisplayName("")
+	@DisplayName("최단 경로 거리를 반환한다.")
 	@Test
 	void pathDistance() {
 		// given
