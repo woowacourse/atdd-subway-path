@@ -18,7 +18,8 @@ public class PathService {
     private final StationDao stationDao;
     private final FindPathStrategy findPathStrategy;
 
-    public PathService(final SectionDao sectionDao, final StationDao stationDao, final FindPathStrategy findPathStrategy) {
+    public PathService(final SectionDao sectionDao, final StationDao stationDao,
+                       final FindPathStrategy findPathStrategy) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.findPathStrategy = findPathStrategy;
