@@ -37,7 +37,7 @@ class StationDaoTest extends DaoTest {
 
         List<StationEntity> actual = dao.findAllByIds(List.of(1L, 3L));
         List<StationEntity> expected = List.of(
-                new StationEntity(1L, "이미 존재하는 역 이름"),
+                new StationEntity(1L, "강남역"),
                 new StationEntity(3L, "잠실역"));
 
         assertThat(actual).isEqualTo(expected);

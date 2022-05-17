@@ -37,13 +37,14 @@ public class StationEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StationEntity stationEntity = (StationEntity) o;
-        return Objects.equals(id, stationEntity.id);
+        StationEntity that = (StationEntity) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name);
     }
 
     @Override

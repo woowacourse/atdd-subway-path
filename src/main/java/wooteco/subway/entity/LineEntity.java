@@ -43,13 +43,15 @@ public class LineEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineEntity lineEntity = (LineEntity) o;
-        return Objects.equals(id, lineEntity.id);
+        LineEntity that = (LineEntity) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(color, that.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name, color);
     }
 
     @Override
