@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.FindPathStrategy;
 import wooteco.subway.dto.path.PathFindRequest;
+import wooteco.subway.dto.path.PathFindResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,10 +24,10 @@ public class PathService {
         this.findPathStrategy = findPathStrategy;
     }
 
-    public Path findPath(final PathFindRequest pathFindRequest) {
+    public PathFindResponse findPath(final PathFindRequest pathFindRequest) {
         Sections sections = new Sections(sectionDao.findAll());
         Station source = stationDao.findById(pathFindRequest.getSource());
         Station target = stationDao.findById(pathFindRequest.getTarget());
-        return findPathStrategy.findPath(source, target, sections);
+        return PathFindResponse.from(findPathStrategy.findPath(source, target, sections));
     }
 }

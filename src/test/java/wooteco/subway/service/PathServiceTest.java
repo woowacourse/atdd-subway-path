@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.AfterEach;
@@ -8,11 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.dao.section.InmemorySectionDao;
 import wooteco.subway.dao.station.InmemoryStationDao;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.FindDijkstraShortestPathStrategy;
 import wooteco.subway.dto.path.PathFindRequest;
+import wooteco.subway.dto.path.PathFindResponse;
 
 class PathServiceTest {
 
@@ -38,15 +39,21 @@ class PathServiceTest {
 
         sectionDao.save(new Section(1L, station1, station2, 2));
         sectionDao.save(new Section(1L, station2, station3, 2));
-        sectionDao.save(new Section(1L, station1, station4, 3));
-        sectionDao.save(new Section(1L, station4, station3, 3));
+        sectionDao.save(new Section(2L, station1, station4, 3));
+        sectionDao.save(new Section(2L, station4, station3, 3));
 
         // when
-        Path path = pathService.findPath(new PathFindRequest(1, 3, 15));
+        PathFindResponse path = pathService.findPath(new PathFindRequest(1, 3, 15));
 
         // then
         assertAll(
-                () -> assertThat(path.getStations()).containsExactly(station1, station2, station3),
+                () -> assertThat(path.getStations())
+                        .extracting("id", "name")
+                        .containsExactly(
+                                tuple(1L, "오리"),
+                                tuple(2L, "배카라"),
+                                tuple(3L, "오카라")
+                        ),
                 () -> assertThat(path.getDistance()).isEqualTo(4)
         );
     }

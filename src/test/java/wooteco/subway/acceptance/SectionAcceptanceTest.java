@@ -19,7 +19,7 @@ import wooteco.subway.dto.station.StationSaveRequest;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    private ExtractableResponse<Response> postSections(final Long lineId, final SectionSaveRequest sectionSaveRequest) {
+    public static ExtractableResponse<Response> postSections(final Long lineId, final SectionSaveRequest sectionSaveRequest) {
         return RestAssured.given().log().all()
                 .body(sectionSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

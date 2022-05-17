@@ -2,7 +2,7 @@ package wooteco.subway.domain.strategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -46,8 +46,8 @@ class FindDijkstraShortestPathStrategyTest {
                 List.of(
                 new Section(1L, 1L, station1, station2, 2),
                 new Section(2L, 1L, station2, station3, 2),
-                new Section(3L, 1L, station1, station4, 3),
-                new Section(4L, 1L, station4, station3, 3)));
+                new Section(3L, 2L, station1, station4, 3),
+                new Section(4L, 2L, station4, station3, 3)));
 
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
         Path path = findPathStrategy.findPath(station1, station3, sections);
