@@ -40,6 +40,14 @@ public class StationPathTest {
         assertThat(stationPath.findShortestStations(신당역, 창신역)).containsExactly(신당역, 동묘앞역, 창신역);
     }
 
+    @DisplayName("10km 이하의 요금을 계산한다.")
+    @Test
+    void calculateDefaultFare() {
+        Sections sections = createSections();
+        StationPath stationPath = new StationPath(sections);
+        assertThat(stationPath.calculateFare(STANDARD_DISTANCE)).isEqualTo(1250);
+    }
+
     private Sections createSections() {
         Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
         Section section1 = new Section(2L, 1L, 동묘앞역, 창신역, STANDARD_DISTANCE);

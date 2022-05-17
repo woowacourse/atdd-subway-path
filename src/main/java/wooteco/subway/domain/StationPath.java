@@ -8,6 +8,9 @@ import wooteco.subway.utils.exception.StationNotFoundException;
 
 public class StationPath {
 
+    private static final int DEFAULT_DISTANCE = 10;
+    private static final int DEFAULT_FARE = 1250;
+
     private final Sections sections;
 
     public StationPath(final Sections sections) {
@@ -43,5 +46,12 @@ public class StationPath {
 
     public List<Station> findShortestStations(final Station startStation, final Station endStation) {
         return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
+    }
+
+    public int calculateFare(final int distance) {
+        if (distance <= DEFAULT_DISTANCE) {
+            return DEFAULT_FARE;
+        }
+        return 100;
     }
 }
