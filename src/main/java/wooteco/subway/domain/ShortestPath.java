@@ -7,7 +7,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class PathInfo {
+public class ShortestPath {
 
     private static final int BASIC_COST = 1250;
     private static final int CHARGED_COST = 100;
@@ -18,7 +18,7 @@ public class PathInfo {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathInfo(List<Station> stations, List<Section> sections) {
+    public ShortestPath(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         setVertex(graph, stations);
         setEdgeWeight(graph, sections, stations);
@@ -52,7 +52,7 @@ public class PathInfo {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public int calculateMinDistance(Station source, Station target) {
+    public int calculateDistance(Station source, Station target) {
         List<Station> paths = findPath(source, target);
         int size = paths.size();
         int sum = 0;
@@ -64,7 +64,7 @@ public class PathInfo {
     }
 
     public int calculateScore(Station source, Station target) {
-        int distance = calculateMinDistance(source, target);
+        int distance = calculateDistance(source, target);
         int cost = BASIC_COST;
         if (distance > CHARGED_DISTANCE_2) {
             cost += calculateCost(distance, CHARGED_DISTANCE_2, CHARGED_UNIT_2);
