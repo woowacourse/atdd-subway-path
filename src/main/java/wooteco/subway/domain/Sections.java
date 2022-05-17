@@ -186,7 +186,7 @@ public class Sections {
     }
 
     public void checkExistStations(final Station source, final Station target) {
-        if (isNotExistStation(source) || isNotExistStation(target)) {
+        if (isNotExistStation(source) && isNotExistStation(target)) {
             throw new IllegalStateException("현재 Sections에 존재하지 않는 station입니다.");
         }
     }
