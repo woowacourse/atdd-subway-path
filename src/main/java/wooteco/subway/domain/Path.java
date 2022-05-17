@@ -25,7 +25,18 @@ public class Path {
     }
 
     public List<Long> calculateShortestPath(Long source, Long target) {
+        Optional<GraphPath> path = makeGraphPath(source, target);
 
+        return path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE)).getVertexList();
+    }
+
+    public int calculateShortestDistance(Long source, Long target) {
+        Optional<GraphPath> path = makeGraphPath(source, target);
+
+        return (int) path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE)).getWeight();
+    }
+
+    private Optional<GraphPath> makeGraphPath(Long source, Long target) {
         Optional<GraphPath> path;
 
         try {
@@ -36,6 +47,6 @@ public class Path {
             throw new IllegalArgumentException(NOT_EXIST_STATION);
         }
 
-        return path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE)).getVertexList();
+        return path;
     }
 }

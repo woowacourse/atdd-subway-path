@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class PathTest {
 
     @Test
-    @DisplayName("하나의 구간의 최단 거리를 확인한다.")
+    @DisplayName("하나의 구간의 최단 경로를 확인한다.")
     void calculateShortestPath() {
         Path path = new Path(List.of(new Section(1L, 1L, 2L, 5)));
         List<Long> paths = path.calculateShortestPath(1L, 2L);
@@ -19,13 +19,32 @@ public class PathTest {
     }
 
     @Test
-    @DisplayName("여러 구간인 경우 최단 거리를 확인한다.")
+    @DisplayName("여러 구간인 경우 최단 경로를 확인한다.")
     void calculateShortestTwoPath() {
         Path path = new Path(List.of(new Section(1L, 1L, 2L, 5), new Section(1L, 2L, 3L, 6),
                 new Section(1L, 2L, 4L, 2), new Section(1L, 3L, 4L, 1)));
         List<Long> paths = path.calculateShortestPath(1L, 3L);
 
         assertThat(paths).containsExactly(1L, 2L, 4L, 3L);
+    }
+
+    @Test
+    @DisplayName("하나의 구간의 최단 거리를 확인한다.")
+    void calculateShortestDistance() {
+        Path path = new Path(List.of(new Section(1L, 1L, 2L, 5)));
+        int distance = path.calculateShortestDistance(1L, 2L);
+
+        assertThat(distance).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("여러 구간인 경우 최단 거리를 확인한다.")
+    void calculateShortestDistanceWithManySections() {
+        Path path = new Path(List.of(new Section(1L, 1L, 2L, 5), new Section(1L, 2L, 3L, 6),
+                new Section(1L, 2L, 4L, 2), new Section(1L, 3L, 4L, 1)));
+        int distance = path.calculateShortestDistance(1L, 3L);
+
+        assertThat(distance).isEqualTo(8);
     }
 
     @Test
