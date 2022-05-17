@@ -135,6 +135,7 @@ public class LineService {
     private Map<Long, String> initNameMap(Long id) {
         return stationDao.findByLineId(id)
                 .stream()
+                .distinct()
                 .collect(Collectors.toMap(Station::getId, Station::getName));
     }
 
