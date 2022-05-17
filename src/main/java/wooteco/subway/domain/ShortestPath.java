@@ -53,14 +53,7 @@ public class ShortestPath {
     }
 
     public int calculateDistance(Station source, Station target) {
-        List<Station> paths = findPath(source, target);
-        int size = paths.size();
-        int sum = 0;
-
-        for (int i = 1; i < size; i++) {
-            sum += dijkstraShortestPath.getPathWeight(paths.get(i - 1), paths.get(i));
-        }
-        return sum;
+        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public int calculateScore(Station source, Station target) {
