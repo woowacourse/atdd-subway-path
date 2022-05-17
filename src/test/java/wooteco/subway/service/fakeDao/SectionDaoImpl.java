@@ -42,15 +42,16 @@ public class SectionDaoImpl implements SectionDao {
     }
 
     @Override
+    public List<Section> findAll() {
+        return sections;
+    }
+
+    @Override
     public Optional<Section> findByStationId(Long stationId) {
         return sections.stream()
                 .filter(it -> Objects.equals(it.getUpStationId(), stationId) ||
                         Objects.equals(it.getDownStationId(), stationId))
                 .findFirst();
-    }
-
-    public List<Section> findAll() {
-        return sections;
     }
 
     @Override

@@ -28,12 +28,13 @@ public class JdbcSectionDaoTest {
 
         jdbcTemplate.execute("drop table SECTION if exists");
         jdbcTemplate.execute("drop table LINE if exists");
-        jdbcTemplate.execute("create table if not exists LINE(\n"
-                + "    id bigint auto_increment not null,\n"
-                + "    name varchar(255) not null unique,\n"
-                + "    color varchar(20) not null,\n"
-                + "    primary key(id)\n"
-                + ");");
+        jdbcTemplate.execute("create table if not exists LINE(\n" +
+                "    id        bigint auto_increment not null,\n" +
+                "    name      varchar(255)          not null unique,\n" +
+                "    color     varchar(20)           not null,\n" +
+                "    extraFare int,\n" +
+                "    primary key (id)\n" +
+                ");");
         jdbcTemplate.execute("create table if not exists SECTION(\n" +
                 "    id              bigint auto_increment not null,\n" +
                 "    line_id         bigint                not null,\n" +
@@ -43,7 +44,7 @@ public class JdbcSectionDaoTest {
                 "    primary key (id),\n" +
                 "    constraint line_id foreign key (line_id) references LINE (id) on delete cascade\n" +
                 ");");
-        jdbcTemplate.execute("insert into LINE (name, color) values ('2호선', 'bg-green-600')");
+        jdbcTemplate.execute("insert into LINE (name, color, extraFare) values ('2호선', 'bg-green-600', 900)");
         section1 = new Section(1L, lineId, 1L, 2L, 20);
         sectionDao.save(section1);
     }
@@ -80,6 +81,18 @@ public class JdbcSectionDaoTest {
         final List<Section> actual = sectionDao.findByLineId(lineId);
 
         assertThat(actual).containsAll(List.of(section1, expected));
+    }
+
+    @Test
+    @DisplayName("지하철 구간을 모두 조회한다.")
+    void findAll() {
+        jdbcTemplate.execute("insert into LINE (name, color, extraFare) values ('7호선', 'bg-green-600', 1000)");
+        final Section section2 = new Section(2L, 2L, 3L, 10);
+        sectionDao.save(section2);
+
+        final List<Section> actual = sectionDao.findAll();
+
+        assertThat(actual).containsAll(List.of(section1, section2));
     }
 
     @Test
