@@ -9,23 +9,23 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathInfo {
 
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathInfo(List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
 
         Map<Long, Station> sectionMap = new HashMap<>();
-        for(Station station : stations) {
+        for (Station station : stations) {
             sectionMap.put(station.getId(), station);
         }
 
-        for(Section section : sections) {
+        for (Section section : sections) {
             Station downStation = sectionMap.get(section.getDownStationId());
             Station upStation = sectionMap.get(section.getUpStationId());
-            graph.setEdgeWeight(graph.addEdge(downStation,upStation), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(downStation, upStation), section.getDistance());
         }
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
     public List<Station> findPath(Station source, Station target) {
@@ -37,8 +37,8 @@ public class PathInfo {
         int size = paths.size();
         int sum = 0;
 
-        for (int i = 0; i<size - 1; ++i) {
-            sum += dijkstraShortestPath.getPathWeight(paths.get(i), paths.get(i+1));
+        for (int i = 0; i < size - 1; ++i) {
+            sum += dijkstraShortestPath.getPathWeight(paths.get(i), paths.get(i + 1));
         }
         return sum;
     }
@@ -57,6 +57,6 @@ public class PathInfo {
     }
 
     private int calculateCost(int distance, int baseDistance, int unit) {
-        return ((distance - baseDistance -1 ) / unit + 1) * 100;
+        return ((distance - baseDistance - 1) / unit + 1) * 100;
     }
 }
