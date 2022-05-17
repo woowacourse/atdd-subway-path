@@ -16,18 +16,18 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
-public class LineCreatorTest {
+public class DomainCreatorServiceTest {
     private LineDao lineDao;
     private StationDao stationDao;
     private SectionDao sectionDao;
-    private LineCreator lineCreator;
+    private DomainCreatorService domainCreatorService;
 
     @BeforeEach
     void setUp() {
         lineDao = new FakeLineDao();
         sectionDao = new FakeSectionDao();
         stationDao = new FakeStationDao();
-        lineCreator = new LineCreator(lineDao, sectionDao, stationDao);
+        domainCreatorService = new DomainCreatorService(lineDao, sectionDao, stationDao);
 
         stationDao.save(new Station("강남역"));
         stationDao.save(new Station("선릉역"));
@@ -38,7 +38,7 @@ public class LineCreatorTest {
     @DisplayName("정상적으로 Line을 만드는지 테스트")
     @Test
     void createLine() {
-        Line line = lineCreator.createLine(1L);
+        Line line = domainCreatorService.createLine(1L);
         Sections sections = line.getSections();
 
         assertThat(line.getId()).isEqualTo(1L);

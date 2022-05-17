@@ -42,6 +42,17 @@ public class FakeSectionDao implements SectionDao {
     }
 
     @Override
+    public List<SectionEntity> findAll() {
+        return sections.entrySet().stream()
+            .map(entry -> {
+                Section section = entry.getKey();
+                Long lineId = entry.getValue();
+                return new SectionEntity(section.getId(), lineId, section.getUpStationId(), section.getDownStationId(),
+                    section.getDistance());
+            }).collect(Collectors.toList());
+    }
+
+    @Override
     public void update(Long lineId, Section section) {
         Section section1 = sections.keySet().stream()
             .filter(section2 -> section2.isSameId(section.getId()))

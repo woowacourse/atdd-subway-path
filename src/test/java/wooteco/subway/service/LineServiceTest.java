@@ -24,7 +24,7 @@ public class LineServiceTest {
         fakeSectionDao = new FakeSectionDao();
         fakeStationDao = new FakeStationDao();
         lineService = new LineService(fakeLineDao, fakeSectionDao, fakeStationDao,
-            new LineCreator(fakeLineDao, fakeSectionDao, fakeStationDao));
+            new DomainCreatorService(fakeLineDao, fakeSectionDao, fakeStationDao));
 
         fakeStationDao.save(new Station("강남역"));
         fakeStationDao.save(new Station("선릉역"));

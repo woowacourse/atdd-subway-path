@@ -3,6 +3,7 @@ package wooteco.subway.dao;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import wooteco.subway.domain.Section;
@@ -10,6 +11,14 @@ import wooteco.subway.dto.SectionEntity;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
+
+    private final RowMapper<SectionEntity> sectionRowMapper = (resultSet, rowMapper) -> new SectionEntity(
+        resultSet.getLong("id"),
+        resultSet.getLong("line_id"),
+        resultSet.getLong("up_station_id"),
+        resultSet.getLong("down_station_id"),
+        resultSet.getInt("distance")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,13 +35,13 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<SectionEntity> findByLine(Long lineId) {
         String sql = "SELECT * FROM SECTION WHERE line_id = ?";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new SectionEntity(
-            resultSet.getLong("id"),
-            resultSet.getLong("line_id"),
-            resultSet.getLong("up_station_id"),
-            resultSet.getLong("down_station_id"),
-            resultSet.getInt("distance")
-        ), lineId);
+        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+    }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT * FROM SECTION";
+        return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
     @Override

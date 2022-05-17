@@ -28,13 +28,14 @@ public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final LineCreator lineCreator;
+    private final DomainCreatorService domainCreatorService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao, LineCreator lineCreator) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
+        DomainCreatorService domainCreatorService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.lineCreator = lineCreator;
+        this.domainCreatorService = domainCreatorService;
     }
 
     @Transactional
@@ -52,7 +53,7 @@ public class LineService {
 
         saveFirstSection(lineInfo.getDistance(), upStationId, downStationId, lineEntity.getId());
 
-        Line resultLine = lineCreator.createLine(lineEntity.getId());
+        Line resultLine = domainCreatorService.createLine(lineEntity.getId());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
             resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
@@ -75,7 +76,7 @@ public class LineService {
         List<Line> lines = new ArrayList<>();
         List<LineEntity> lineEntities = lineDao.findAll();
         for (LineEntity lineEntity : lineEntities) {
-            lines.add(lineCreator.createLine(lineEntity.getId()));
+            lines.add(domainCreatorService.createLine(lineEntity.getId()));
         }
 
         List<LineServiceResponse> lineServiceResponses = new ArrayList<>();
@@ -89,7 +90,7 @@ public class LineService {
     public LineServiceResponse find(Long id) {
         validateNotExists(id);
         LineEntity lineEntity = lineDao.find(id);
-        Line line = lineCreator.createLine(lineEntity.getId());
+        Line line = domainCreatorService.createLine(lineEntity.getId());
         return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
             line.getExtraFare(), convertStationToInfo(line.getStations()));
     }

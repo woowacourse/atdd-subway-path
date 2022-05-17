@@ -22,14 +22,14 @@ public class SectionService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final LineCreator lineCreator;
+    private final DomainCreatorService domainCreatorService;
 
     public SectionService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
-        LineCreator lineCreator) {
+        DomainCreatorService domainCreatorService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.lineCreator = lineCreator;
+        this.domainCreatorService = domainCreatorService;
     }
 
     @Transactional
@@ -43,7 +43,7 @@ public class SectionService {
         Section section = new Section(stationDao.getStation(upStationId), stationDao.getStation(downStationId),
             sectionCreateRequest.getDistance());
         LineEntity lineEntity = lineDao.find(lineId);
-        Line line = lineCreator.createLine(lineEntity.getId());
+        Line line = domainCreatorService.createLine(lineEntity.getId());
         line.updateToAdd(section);
 
         sectionDao.save(line.getId(), section);
@@ -69,7 +69,7 @@ public class SectionService {
         validateNotExistsLine(lineId);
         validateNotExistStation(stationId);
 
-        Line line = lineCreator.createLine(lineId);
+        Line line = domainCreatorService.createLine(lineId);
         Station station = stationDao.getStation(stationId);
         Section deletedSection = line.delete(station);
 

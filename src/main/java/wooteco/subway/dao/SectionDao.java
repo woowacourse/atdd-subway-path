@@ -10,6 +10,8 @@ public interface SectionDao {
 
     List<SectionEntity> findByLine(Long lineId);
 
+    List<SectionEntity> findAll();
+
     void update(Long lineId, Section section);
 
     void deleteAll(Long lineId);

@@ -9,23 +9,31 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.LineEntity;
 import wooteco.subway.dto.SectionEntity;
 
 @Service
-public class LineCreator {
+public class DomainCreatorService {
     private static final String ERROR_MESSAGE_NOT_EXISTS_ID = "존재하지 않는 지하철 노선 id입니다.";
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    LineCreator(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    DomainCreatorService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+    }
+
+    Path createPath() {
+        List<Section> sections = sectionDao.findAll().stream()
+            .map(this::findSection)
+            .collect(Collectors.toList());
+        return new Path(new Sections(sections));
     }
 
     Line createLine(Long lineId) {
