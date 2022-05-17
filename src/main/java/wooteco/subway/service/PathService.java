@@ -3,11 +3,9 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.ShortestPath;
 import wooteco.subway.domain.Station;
@@ -16,7 +14,6 @@ import wooteco.subway.service.dto.PathServiceResponse;
 import wooteco.subway.service.dto.StationServiceResponse;
 
 @Service
-@Transactional(readOnly = true)
 public class PathService {
 
     private final SectionDao sectionDao;
@@ -34,7 +31,7 @@ public class PathService {
         Fare fare = new Fare();
         int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
             pathRequest.getTarget());
-        int fee = fare.calculateFare(shortestDistance);
+        int fee = fare.calculate(shortestDistance);
 
         return new PathServiceResponse(stations, shortestDistance, fee);
     }
