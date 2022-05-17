@@ -45,22 +45,6 @@ class LineDaoTest {
         assertThat(lineDao.existLineById(lineId)).isTrue();
     }
 
-    @DisplayName("해당 이름의 지하철 노선이 있다면 true를 반환한다.")
-    @Test
-    void existLineByName() {
-        lineDao.save(LINE);
-
-        assertThat(lineDao.existLineByName("신분당선")).isTrue();
-    }
-
-    @DisplayName("해당 색상의 지하철 노선이 있다면 true를 반환한다.")
-    @Test
-    void existLineByColor() {
-        lineDao.save(LINE);
-
-        assertThat(lineDao.existLineByColor("bg-red-600")).isTrue();
-    }
-
     @DisplayName("지하철 노선의 전체 목록을 조회한다.")
     @Test
     void findAll() {

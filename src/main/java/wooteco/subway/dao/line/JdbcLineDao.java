@@ -12,13 +12,11 @@ import wooteco.subway.domain.Line;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> {
-        return new Line(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("color")
-        );
-    };
+    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("color")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -45,18 +43,6 @@ public class JdbcLineDao implements LineDao {
     public boolean existLineById(Long id) {
         final String sql = "select exists (select * from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
-    }
-
-    @Override
-    public boolean existLineByName(String name) {
-        final String sql = "select exists (select * from LINE where name = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
-    }
-
-    @Override
-    public boolean existLineByColor(String color) {
-        final String sql = "select exists (select * from LINE where color = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 
     @Override

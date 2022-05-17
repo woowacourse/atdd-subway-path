@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Stations;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -44,8 +45,8 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> showLines() {
-        List<Line> lines = lineService.findAll();
-        List<LineResponse> lineResponses = lines.stream()
+        Lines lines = lineService.findAll();
+        List<LineResponse> lineResponses = lines.getLines().stream()
                 .map(line -> new LineResponse(line, getStationResponses(line.getId())))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(lineResponses);
