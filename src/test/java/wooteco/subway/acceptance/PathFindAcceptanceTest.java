@@ -54,6 +54,4 @@ public class PathFindAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-
-
 }
