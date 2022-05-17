@@ -8,8 +8,11 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class Path {
 
     private static final int BASIC_FARE = 1250;
-    private static final int BASIC_DISTANCE = 10;
-    private static final int LEVEL_ONE_ADDITIONAL_DISTANCE = 50;
+    private static final int SHORT_DISTANCE_UPPER_BOUND = 10;
+    private static final int MIDDLE_DISTANCE_UPPER_BOUND = 50;
+    private static final int ADDITIONAL_FARE = 100;
+    public static final int MIDDLE_DISTANCE_FARE_RATIO = 5;
+    public static final int LONG_DISTANCE_FARE_RATIO = 8;
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
 
@@ -49,14 +52,29 @@ public class Path {
     }
 
     private int calculateFare(int distance) {
-        if (distance < BASIC_DISTANCE) {
+        if (distance < SHORT_DISTANCE_UPPER_BOUND) {
             return 0;
         }
 
-        if (distance < LEVEL_ONE_ADDITIONAL_DISTANCE) {
-            return (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100);
+        if (distance < MIDDLE_DISTANCE_UPPER_BOUND) {
+            int distanceForPayingAdditionalAmount = distance - SHORT_DISTANCE_UPPER_BOUND;
+            return middleDistanceUnit(distanceForPayingAdditionalAmount) * ADDITIONAL_FARE;
         }
 
-        return 800 + (int) ((Math.ceil(((distance - 50) - 1) / 8) + 1) * 100);
+        int distanceForPayingAdditionalAmount = distance - MIDDLE_DISTANCE_UPPER_BOUND;
+        return fullMiddleDistanceAdditionalFare() + longDistanceUnit(distanceForPayingAdditionalAmount);
+    }
+
+    private int middleDistanceUnit(final int distanceForPayingAdditionalAmount) {
+        return (int) Math.ceil((distanceForPayingAdditionalAmount - 1) / MIDDLE_DISTANCE_FARE_RATIO) + 1;
+    }
+
+    private int longDistanceUnit(final int distanceForPayingAdditionalAmount) {
+        return (int) (Math.ceil((distanceForPayingAdditionalAmount - 1) / LONG_DISTANCE_FARE_RATIO) + 1) * ADDITIONAL_FARE;
+    }
+
+    private int fullMiddleDistanceAdditionalFare() {
+        return (MIDDLE_DISTANCE_UPPER_BOUND - SHORT_DISTANCE_UPPER_BOUND) / MIDDLE_DISTANCE_FARE_RATIO
+                * ADDITIONAL_FARE;
     }
 }
