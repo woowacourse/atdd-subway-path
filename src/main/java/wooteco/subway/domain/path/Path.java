@@ -14,11 +14,7 @@ public class Path {
         this.stations = stations;
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
-     public int calculateFare() {
+    public int calculateFare() {
          int basicFare = 1250;
          int fareBetween10And50 = Math.min(800, calculateOverFare(totalDistance - 10, 5));
          int fareOver50 = calculateOverFare(totalDistance - 50, 8);
@@ -30,6 +26,14 @@ public class Path {
             return 0;
         }
         return (int) ((Math.ceil((overDistance - 1) / limit) + 1) * 100);
+    }
+
+    public int getTotalDistance() {
+        return totalDistance;
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 
     @Override
