@@ -6,11 +6,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LearningTest {
     @Test
@@ -62,6 +64,62 @@ public class LearningTest {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         List<Station> shortestPath = dijkstraShortestPath.getPath(강남, 홍대).getVertexList();
 
+        dijkstraShortestPath.getPath(강남, 홍대).getEdgeList();
+
         assertThat(shortestPath).contains(강남, 선릉, 홍대);
+    }
+
+    @Test
+    @DisplayName("최단경로 패키지 사용 연습")
+    void getStationShortestSection() {
+        Station 강남 = new Station("강남역");
+        Station 선릉 = new Station("선릉역");
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+
+        Section 강남_선릉 = new Section(강남, 선릉, 3);
+        Section 강남_잠실 = new Section(강남, 잠실, 3);
+        Section 강남_홍대 = new Section(강남, 홍대, 10);
+        Section 선릉_홍대 = new Section(선릉, 홍대, 2);
+        Section 잠실_홍대 = new Section(강남, 홍대, 5);
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+                = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        graph.addVertex(강남);
+        graph.addVertex(선릉);
+        graph.addVertex(잠실);
+        graph.addVertex(홍대);
+        graph.setEdgeWeight(graph.addEdge(강남, 선릉), 3);
+        graph.setEdgeWeight(graph.addEdge(강남, 잠실), 3);
+        graph.setEdgeWeight(graph.addEdge(강남, 홍대), 10);
+        graph.setEdgeWeight(graph.addEdge(선릉, 홍대), 2);
+        graph.setEdgeWeight(graph.addEdge(잠실, 홍대), 5);
+
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<Station> shortestPath = dijkstraShortestPath.getPath(강남, 홍대).getVertexList();
+
+        double distance = dijkstraShortestPath.getPath(강남, 홍대).getWeight();
+
+        assertThat(distance).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("전체 노선에 대한 sections를 생성한다.")
+    void createSections() {
+        Station 강남 = new Station("강남역");
+        Station 선릉 = new Station("선릉역");
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+
+        Section 강남_선릉 = new Section(강남, 선릉, 3);
+        Section 강남_잠실 = new Section(강남, 잠실, 3);
+        Section 강남_홍대 = new Section(강남, 홍대, 10);
+        Section 선릉_홍대 = new Section(선릉, 홍대, 2);
+        Section 잠실_홍대 = new Section(강남, 홍대, 5);
+
+        Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+
+        assertThat(sections.getSections().size()).isEqualTo(5);
     }
 }

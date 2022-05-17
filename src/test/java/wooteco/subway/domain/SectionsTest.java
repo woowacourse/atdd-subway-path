@@ -245,4 +245,25 @@ class SectionsTest {
                 () -> assertThat(result.get(3)).isEqualTo(DtoE)
         );
     }
+
+    @DisplayName("Sections에서 최단 경로를 찾는다.")
+    @Test
+    void findShortestPath() {
+        Station 강남 = new Station("강남역");
+        Station 선릉 = new Station("선릉역");
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+
+        Section 강남_선릉 = new Section(강남, 선릉, 3);
+        Section 강남_잠실 = new Section(강남, 잠실, 3);
+        Section 강남_홍대 = new Section(강남, 홍대, 10);
+        Section 선릉_홍대 = new Section(선릉, 홍대, 2);
+        Section 잠실_홍대 = new Section(강남, 홍대, 5);
+
+        Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+
+        //List<Station> path = sections.findShortestPath(강남, 홍대);
+
+        assertThat(sections.getSections().size()).isEqualTo(5);
+    }
 }
