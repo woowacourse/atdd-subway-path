@@ -14,7 +14,7 @@ public class FareTest {
         Fare fare = new Fare();
 
         // when
-        int result = fare.calculateFare(9);
+        int result = fare.calculate(9);
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -27,7 +27,7 @@ public class FareTest {
         Fare fare = new Fare();
 
         // when
-        int result = fare.calculateFare(12);
+        int result = fare.calculate(12);
 
         // then
         assertThat(result).isEqualTo(1350);
@@ -40,7 +40,7 @@ public class FareTest {
         Fare fare = new Fare();
 
         // when
-        int result = fare.calculateFare(58);
+        int result = fare.calculate(58);
 
         // then
         assertThat(result).isEqualTo(2150);
