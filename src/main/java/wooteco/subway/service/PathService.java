@@ -33,6 +33,6 @@ public class PathService {
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, shortestDistance, 0);
+        return new PathResponse(stationResponses, shortestDistance, path.calculateFare(source, target));
     }
 }
