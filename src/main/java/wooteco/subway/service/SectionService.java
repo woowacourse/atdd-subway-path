@@ -5,14 +5,17 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.*;
+import wooteco.subway.domain.dto.PathDto;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.SectionsResponse;
 import wooteco.subway.exception.ClientException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SectionService {
@@ -30,19 +33,19 @@ public class SectionService {
     @Transactional
     public void save(Long id, SectionRequest request, SectionsResponse response, LineResponse line) {
         validateLineExist(id);
-        Sections sections = new Sections(response.getSections());
-        sections.validateUpAndDownSameStation(request);
-        sections.validateSaveCondition(request, line);
+        SectionsOnLine sectionsOnLine = new SectionsOnLine(response.getSections());
+        sectionsOnLine.validateUpAndDownSameStation(request);
+        sectionsOnLine.validateSaveCondition(request, line);
 
-        if (sections.isAddSectionMiddle(request)) {
-            addMiddleSection(id, request, sections);
+        if (sectionsOnLine.isAddSectionMiddle(request)) {
+            addMiddleSection(id, request, sectionsOnLine);
             return;
         }
         sectionDao.save(id, new Section(id, request.getUpStationId(), request.getDownStationId(), request.getDistance()));
     }
 
-    private void addMiddleSection(Long id, SectionRequest request, Sections sections) {
-        Optional<Section> targetSection = sections.getSections()
+    private void addMiddleSection(Long id, SectionRequest request, SectionsOnLine sectionsOnLine) {
+        Optional<Section> targetSection = sectionsOnLine.getSections()
                 .stream()
                 .filter(section -> section.hasSameStationId(request))
                 .findAny();
@@ -64,12 +67,12 @@ public class SectionService {
         validateStationExist(stationId);
         sectionDao.findById(id).validateDeleteCondition();
 
-        Sections sections = sectionDao.findById(id);
-        if (sections.isMiddleSection(stationId)) {
-            deleteMiddleSection(id, sections.findDownSection(stationId).get(), sections.findUpSection(stationId).get());
+        SectionsOnLine sectionsOnLine = sectionDao.findById(id);
+        if (sectionsOnLine.isMiddleSection(stationId)) {
+            deleteMiddleSection(id, sectionsOnLine.findDownSection(stationId).get(), sectionsOnLine.findUpSection(stationId).get());
             return;
         }
-        deleteEndSection(id, sections.findDownSection(stationId), sections.findUpSection(stationId));
+        deleteEndSection(id, sectionsOnLine.findDownSection(stationId), sectionsOnLine.findUpSection(stationId));
     }
 
     private void validateLineExist(Long id) {
@@ -98,5 +101,17 @@ public class SectionService {
         if (downSection.isEmpty()) {
             sectionDao.delete(id, upSection.get());
         }
+    }
+
+    public PathResponse findShortestPath(Long source, Long target) {
+        Sections sections = new Sections(sectionDao.findAll());
+        PathDto shortestPathDto = sections.findShortestPath(source, target);
+        List<Station> stations = shortestPathDto.getStationIds().stream()
+                .map(stationDao::findById)
+                .collect(Collectors.toList());
+
+        int distance = shortestPathDto.getDistance();
+        Fare fare = new Fare(shortestPathDto.getDistance());
+        return new PathResponse(stations, distance, fare.getFare());
     }
 }

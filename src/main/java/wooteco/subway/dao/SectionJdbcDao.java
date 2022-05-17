@@ -1,13 +1,16 @@
 package wooteco.subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.SectionsOnLine;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class SectionJdbcDao implements SectionDao {
@@ -16,6 +19,13 @@ public class SectionJdbcDao implements SectionDao {
 
     public SectionJdbcDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private RowMapper<Section> sectionRowMapper() {
+        return (rs, rowNum) -> new Section(
+                rs.getLong("id"),
+                rs.getLong("line_id"), rs.getLong("up_station_id"),
+                rs.getLong("down_station_id"), rs.getInt("distance"));
     }
 
     @Override
@@ -35,9 +45,9 @@ public class SectionJdbcDao implements SectionDao {
     }
 
     @Override
-    public Sections findById(Long lineId) {
+    public SectionsOnLine findById(Long lineId) {
         final String sql = "select * from section where line_id = (?)";
-        return new Sections(jdbcTemplate.query(sql, (rs, rowNum) -> new Section(rs.getLong("id"),
+        return new SectionsOnLine(jdbcTemplate.query(sql, (rs, rowNum) -> new Section(rs.getLong("id"),
                 rs.getLong("line_id"), rs.getLong("up_station_id"),
                 rs.getLong("down_station_id"), rs.getInt("distance")), lineId));
     }
@@ -46,5 +56,11 @@ public class SectionJdbcDao implements SectionDao {
     public void delete(Long lineId, Section section) {
         final String sql = "delete from section where line_id = ? and up_station_id = ? and down_station_id = ?";
         jdbcTemplate.update(sql, lineId, section.getUpStationId(), section.getDownStationId());
+    }
+
+    @Override
+    public List<Section> findAll() {
+        final String sql = "select * from section";
+        return jdbcTemplate.query(sql, sectionRowMapper());
     }
 }
