@@ -20,11 +20,11 @@ public class SectionService {
     }
 
     public void enroll(Long lineId, SectionRequest sectionRequest) {
-        final SectionSeries sectionSeries = new SectionSeries(sectionRepository.findAllSections(lineId));
+        final SectionSeries sectionSeries = new SectionSeries(sectionRepository.findAllSectionsByLineId(lineId));
         final Section newSection = create(
-            sectionRequest.getUpStationId(),
-            sectionRequest.getDownStationId(),
-            sectionRequest.getDistance()
+                sectionRequest.getUpStationId(),
+                sectionRequest.getDownStationId(),
+                sectionRequest.getDistance()
         );
         sectionSeries.add(newSection);
         sectionRepository.persist(lineId, sectionSeries);
@@ -32,14 +32,14 @@ public class SectionService {
 
     Section create(Long upStationId, Long downStationId, int distance) {
         return new Section(
-            stationService.findOne(upStationId),
-            stationService.findOne(downStationId),
-            new Distance(distance)
+                stationService.findOne(upStationId),
+                stationService.findOne(downStationId),
+                new Distance(distance)
         );
     }
 
     public void delete(Long lineId, Long stationId) {
-        final SectionSeries sectionSeries = new SectionSeries(sectionRepository.findAllSections(lineId));
+        final SectionSeries sectionSeries = new SectionSeries(sectionRepository.findAllSectionsByLineId(lineId));
         sectionSeries.remove(stationService.findOne(stationId));
         sectionRepository.persist(lineId, sectionSeries);
     }

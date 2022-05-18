@@ -6,6 +6,8 @@ import wooteco.subway.entity.SectionEntity;
 
 public interface SectionDao extends UpdateDao<SectionEntity> {
 
+    List<SectionEntity> findAll();
+
     List<SectionEntity> findSectionsByLineId(Long lineId);
 
 }

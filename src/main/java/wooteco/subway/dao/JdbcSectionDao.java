@@ -17,11 +17,11 @@ import wooteco.subway.entity.SectionEntity;
 @Repository
 public class JdbcSectionDao implements SectionDao {
     public static final RowMapper<SectionEntity> SECTION_ENTITY_ROW_MAPPER = (resultSet, rowNum) -> new SectionEntity(
-        resultSet.getLong("id"),
-        resultSet.getLong("line_id"),
-        resultSet.getLong("up_station_id"),
-        resultSet.getLong("down_station_id"),
-        resultSet.getInt("distance")
+            resultSet.getLong("id"),
+            resultSet.getLong("line_id"),
+            resultSet.getLong("up_station_id"),
+            resultSet.getLong("down_station_id"),
+            resultSet.getInt("distance")
     );
     /*
     id              BIGINT AUTO_INCREMENT NOT NULL,
@@ -40,18 +40,18 @@ public class JdbcSectionDao implements SectionDao {
 
     public JdbcSectionDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("section")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Long save(SectionEntity entity) {
         return jdbcInsert.executeAndReturnKey(Map.of(
-            "line_id", entity.getLineId(),
-            "up_station_id", entity.getUpStationId(),
-            "down_station_id", entity.getDownStationId(),
-            "distance", entity.getDistance()
+                "line_id", entity.getLineId(),
+                "up_station_id", entity.getUpStationId(),
+                "down_station_id", entity.getDownStationId(),
+                "distance", entity.getDistance()
         )).longValue();
     }
 
@@ -63,6 +63,13 @@ public class JdbcSectionDao implements SectionDao {
             return null;
         }
         return id;
+    }
+
+    @Override
+    public List<SectionEntity> findAll() {
+        final String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, SECTION_ENTITY_ROW_MAPPER);
+
     }
 
     public List<SectionEntity> findSectionsByLineId(Long lineId) {
@@ -83,10 +90,10 @@ public class JdbcSectionDao implements SectionDao {
     public Long update(SectionEntity entity) {
         final String sql = "UPDATE section SET up_station_id = ?, down_station_id = ? WHERE id = ?";
         final int updateCount = jdbcTemplate.update(
-            sql,
-            entity.getUpStationId(),
-            entity.getDownStationId(),
-            entity.getId()
+                sql,
+                entity.getUpStationId(),
+                entity.getDownStationId(),
+                entity.getId()
         );
         if (!isUpdated(updateCount)) {
             return null;

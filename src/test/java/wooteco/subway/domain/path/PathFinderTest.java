@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.fixture.LineFixture;
+import wooteco.subway.domain.fixture.SectionFixture;
 import wooteco.subway.domain.line.LineSeries;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.PathNotFoundException;
 
@@ -20,15 +22,16 @@ class PathFinderTest {
     @DisplayName("올바른 경로를 찾는다.")
     public void findPath() {
         // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineBd()));
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
+        final List<Section> sections = List.of(SectionFixture.getSectionAb(), SectionFixture.getSectionBc());
+        final PathFinder pathFinder = PathFinder.of(sections, getStationA(), getStationC());
 
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationD());
+        final List<Station> shortestPath = pathFinder.findShortestPath();
+
         // then
         Assertions.assertAll(
-            () -> assertThat(shortestPath).hasSize(3),
-            () -> assertThat(shortestPath).containsExactly(getStationA(), getStationB(), getStationD())
+                () -> assertThat(shortestPath).hasSize(3),
+                () -> assertThat(shortestPath).containsExactly(getStationA(), getStationB(), getStationC())
         );
     }
 
@@ -36,14 +39,18 @@ class PathFinderTest {
     @DisplayName("최단 경로를 찾는다.")
     public void findShortedPath() {
         // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineAc()));
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
+        final List<Section> sections = List.of(SectionFixture.getSectionAb(), SectionFixture.getSectionBc(), SectionFixture.getSectionAc());
+        final PathFinder pathFinder = PathFinder.of(sections, getStationA(), getStationC());
+
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationC());
+        final List<Station> shortestPath = pathFinder.findShortestPath();
+        final int distance = pathFinder.findDistance();
+
         // then
         Assertions.assertAll(
-            () -> assertThat(shortestPath).hasSize(2),
-            () -> assertThat(shortestPath).containsExactly(getStationA(), getStationC())
+                () -> assertThat(shortestPath).hasSize(2),
+                () -> assertThat(shortestPath).containsExactly(getStationA(), getStationC()),
+                () -> assertThat(distance).isEqualTo(5)
         );
     }
 
@@ -51,69 +58,21 @@ class PathFinderTest {
     @DisplayName("역이 구간에 등록되지 않아서 경로가 없는 경우 예외를 던진다.")
     public void throwsExceptionWithPathNotFoundOfStationNotEnrolled() {
         // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineBd()));
+        final List<Section> sections = List.of(SectionFixture.getSectionAb());
 
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
+        // when & then
         assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.findShortestPath(getStationA(), getStationX()));
+                .isThrownBy(() -> PathFinder.of(sections, getStationA(), getStationC()));
     }
 
     @Test
     @DisplayName("구간이 겹치지 않아서 경로가 없는 경우 예외를 던진다.")
     public void throwsExceptionWithPathNotFoundOfSeperatedLine() {
         // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineXy()));
+        final List<Section> sections = List.of(SectionFixture.getSectionAb(), SectionFixture.getSectionXy());
 
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
+        // when & then
         assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.findShortestPath(getStationA(), getStationX()));
-    }
-
-    @Test
-    @DisplayName("경로에 대한 길이를 구한다.")
-    public void findDistance() {
-        // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineBd()));
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // when
-        final int distance = pathFinder.getDistance(getStationA(), getStationD());
-
-        // then
-        assertThat(distance).isEqualTo(17);
-    }
-
-    @Test
-    @DisplayName("역이 구간에 등록되지 않아서 길이가 없는 경우 예외를 던진다.")
-    public void throwsExceptionWithPathNotFoundOfStationNotEnrolledWhenFindDistance() {
-        // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineBd()));
-
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
-        assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.getDistance(getStationA(), getStationX()));
-    }
-
-    @Test
-    @DisplayName("구간이 겹치지 않아서 길이가 없는 경우 예외를 던진다.")
-    public void throwsExceptionWithPathNotFoundOfSeperatedLineWhenFindDistance() {
-        // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineXy()));
-
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
-        assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.getDistance(getStationA(), getStationX()));
+                .isThrownBy(() -> PathFinder.of(sections, getStationA(), getStationX()));
     }
 }

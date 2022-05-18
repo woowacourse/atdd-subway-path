@@ -20,14 +20,14 @@ public class SectionRepository {
     private final SectionDao sectionDao;
 
     public SectionRepository(PersistManager<SectionEntity> persistManager,
-        StationRepository stationRepository, SectionDao sectionDao) {
+                             StationRepository stationRepository, SectionDao sectionDao) {
         this.persistManager = persistManager;
         this.stationRepository = stationRepository;
         this.sectionDao = sectionDao;
     }
 
     public void persist(Long lineId, SectionSeries sectionSeries) {
-        final List<Long> persistedIds = toIds(findAllSections(lineId));
+        final List<Long> persistedIds = toIds(findAllSectionsByLineId(lineId));
         final List<Section> sections = sectionSeries.getSections();
         for (Section section : sections) {
             final SectionEntity entity = SectionEntity.from(section, lineId);
@@ -40,17 +40,26 @@ public class SectionRepository {
 
     private List<Long> toIds(List<Section> sections) {
         return sections.stream()
-            .map(Section::getId)
-            .collect(Collectors.toList());
+                .map(Section::getId)
+                .collect(Collectors.toList());
     }
 
-    public List<Section> findAllSections(Long lineId) {
+    public List<Section> findAllSections() {
+        final List<SectionEntity> entities = sectionDao.findAll();
+        return convertToSection(entities);
+    }
+
+    public List<Section> findAllSectionsByLineId(Long lineId) {
         final List<SectionEntity> entities = sectionDao.findSectionsByLineId(lineId);
+        return convertToSection(entities);
+    }
+
+    private List<Section> convertToSection(List<SectionEntity> entities) {
         return entities.stream()
-            .map(entity -> new Section(entity.getId(),
-                stationRepository.findById(entity.getUpStationId()),
-                stationRepository.findById(entity.getDownStationId()),
-                new Distance(entity.getDistance()))
-            ).collect(Collectors.toList());
+                .map(entity -> new Section(entity.getId(),
+                        stationRepository.findById(entity.getUpStationId()),
+                        stationRepository.findById(entity.getDownStationId()),
+                        new Distance(entity.getDistance()))
+                ).collect(Collectors.toList());
     }
 }

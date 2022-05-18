@@ -69,7 +69,7 @@ class SectionRepositoryTest {
         sectionSeries.add(new Section(getStationB(), getStationC(), new Distance(10)));
         sectionRepository.persist(lineId, sectionSeries);
         // then
-        assertThat(sectionRepository.findAllSections(lineId)).hasSize(1);
+        assertThat(sectionRepository.findAllSectionsByLineId(lineId)).hasSize(1);
     }
 
     @Test
@@ -84,6 +84,6 @@ class SectionRepositoryTest {
         sectionRepository.persist(lineId, removed);
 
         // then
-        assertThat(sectionRepository.findAllSections(lineId)).hasSize(1);
+        assertThat(sectionRepository.findAllSectionsByLineId(lineId)).hasSize(1);
     }
 }

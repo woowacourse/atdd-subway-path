@@ -15,39 +15,27 @@ public class Fare {
 
     private final int amount;
 
-    public Fare() {
-        this(BASIC_FARE);
+    public Fare(int distance) {
+        amount = calculateFare(distance);
     }
 
-    public Fare(int amount) {
-        validateNotPositive(amount);
-        this.amount = amount;
-    }
+    private int calculateFare(int distance) {
+        int result = BASIC_FARE;
 
-    private void validateNotPositive(int amount) {
-        if (amount < 0) {
-            throw new NegativeFareException("운임 요금은 음수일 수 없습니다.");
-        }
-    }
-
-    public Fare calculate(Distance distance) {
-        int result = amount;
-
-        final int value = distance.getValue();
         result += Math.min(
-            calculateExtraFare(value - BASE_DISTANCE_THRESHOLD, LOW_EXTRA_UNIT),
-            HIGH_EXTRA_UNIT * EXTRA_FARE
+                calculateExtraFare(distance - BASE_DISTANCE_THRESHOLD, LOW_EXTRA_UNIT),
+                HIGH_EXTRA_UNIT * EXTRA_FARE
         );
-        result += calculateExtraFare(value - EXTRA_FARE_DISTANCE_THRESHOLD, HIGH_EXTRA_UNIT);
+        result += calculateExtraFare(distance - EXTRA_FARE_DISTANCE_THRESHOLD, HIGH_EXTRA_UNIT);
 
-        return new Fare(result);
+        return result;
     }
 
     private int calculateExtraFare(int distance, int unit) {
         if (distance <= 0) {
             return 0;
         }
-        return (int)((Math.ceil((distance - 1) / unit) + 1) * EXTRA_FARE);
+        return (int) ((Math.ceil((distance - 1) / unit) + 1) * EXTRA_FARE);
     }
 
     public int getAmount() {
