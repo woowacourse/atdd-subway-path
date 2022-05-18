@@ -77,4 +77,50 @@ class PathTest {
 
         assertThat(fare).isEqualTo(3650);
     }
+
+    @DisplayName("경로의 최단 거리를 계산한다.")
+    @Test
+    void calculateShortestDistance() {
+        Station 강남 = new Station("강남역");
+        Station 선릉 = new Station("선릉역");
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+
+        Section 강남_선릉 = new Section(강남, 선릉, 3);
+        Section 강남_잠실 = new Section(강남, 잠실, 3);
+        Section 강남_홍대 = new Section(강남, 홍대, 10);
+        Section 선릉_홍대 = new Section(선릉, 홍대, 2);
+        Section 잠실_홍대 = new Section(잠실, 홍대, 5);
+
+        Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대));
+
+        int distance = path.calculateShortestDistance();
+
+        assertThat(distance).isEqualTo(5);
+    }
+
+    @DisplayName("최단 경로의 역 리스트를 반환한다.")
+    @Test
+    void findStationsOnPath() {
+        Station 강남 = new Station("강남역");
+        Station 선릉 = new Station("선릉역");
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+
+        Section 강남_선릉 = new Section(강남, 선릉, 3);
+        Section 강남_잠실 = new Section(강남, 잠실, 3);
+        Section 강남_홍대 = new Section(강남, 홍대, 10);
+        Section 선릉_홍대 = new Section(선릉, 홍대, 2);
+        Section 잠실_홍대 = new Section(잠실, 홍대, 5);
+
+        Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대));
+
+        List<Station> stationsOnPath = path.findStationsOnPath();
+
+        assertThat(stationsOnPath).contains(강남, 선릉, 홍대);
+    }
 }
