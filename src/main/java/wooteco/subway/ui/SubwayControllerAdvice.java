@@ -16,6 +16,7 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> subwayException(Exception exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
+        exception.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 예외가 발생했습니다.");
     }
 }
