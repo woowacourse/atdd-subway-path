@@ -51,4 +51,18 @@ class PathTest {
                 .isInstanceOf(NotFoundStationException.class)
                 .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }
+
+    @Test
+    @DisplayName("주어진 출발지와 도착지가 같은 경우 예외 발생")
+    void createWithSameStations() {
+        List<Section> sections = List.of(
+                Section.createOf(1L, 1L, 1L, 2L, 5, 1L),
+                Section.createOf(2L, 1L, 2L, 3L, 5, 2L),
+                Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
+        );
+
+        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 1L))
+                .isInstanceOf(NotFoundPathException.class)
+                .hasMessageContaining("같은 위치로는 경로를 찾을 수 없습니다.");
+    }
 }

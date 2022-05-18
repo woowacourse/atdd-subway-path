@@ -18,4 +18,6 @@ public interface SectionDao {
     List<Section> findByLineIdAndStationId(long lineId, long stationId);
 
     void updateLineOrderByDec(long lineId, Long lineOrder);
+
+    List<Section> findAll();
 }

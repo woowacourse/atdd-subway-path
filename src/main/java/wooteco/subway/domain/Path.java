@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -12,11 +13,13 @@ public class Path {
 
     private final LinkedList<Section> path;
 
+
     private Path(LinkedList<Section> path) {
         this.path = path;
     }
 
     public static Path of(Sections sections, long sourceId, long targetId) {
+        validateMovement(sourceId, targetId);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
@@ -25,6 +28,12 @@ public class Path {
 
         LinkedList<Section> path = toSections(sections, shortestPath);
         return new Path(path);
+    }
+
+    private static void validateMovement(long sourceId, long targetId) {
+        if (sourceId == targetId) {
+            throw new NotFoundPathException("같은 위치로는 경로를 찾을 수 없습니다.");
+        }
     }
 
     private static List<Long> findShortestPath(long sourceId, long targetId,
@@ -65,7 +74,13 @@ public class Path {
                 .sum();
     }
 
-    public LinkedList<Section> getPath() {
-        return path;
+    public List<Long> getStationIds() {
+        List<Long> stationIds = path.stream()
+                .map(Section::getUpStationId)
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        stationIds.add(path.getLast().getDownStationId());
+
+        return stationIds;
     }
 }

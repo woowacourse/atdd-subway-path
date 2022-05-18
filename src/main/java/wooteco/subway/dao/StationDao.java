@@ -14,4 +14,6 @@ public interface StationDao {
     Station findById(Long stationId);
 
     boolean existByName(Station station);
+
+    boolean existById(Long stationId);
 }

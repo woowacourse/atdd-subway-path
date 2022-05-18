@@ -10,6 +10,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.DuplicateStationException;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
 @Transactional
@@ -55,5 +56,12 @@ public class StationService {
 
     public void delete(Long stationId) {
         stationDao.deleteById(stationId);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateExistById(Long stationId) {
+        if (!stationDao.existById(stationId)) {
+            throw new NotFoundStationException("존재하지 않는 지하철 역입니다.");
+        }
     }
 }
