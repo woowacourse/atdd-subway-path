@@ -46,9 +46,13 @@ public class SubwayMap {
     public Path findShortestPath(Station source, Station target) {
         GraphPath path = pathFinder.getPath(source, target);
 
+        checkNoPath(path);
+        return Path.of(path.getVertexList(), path.getWeight());
+    }
+
+    private void checkNoPath(GraphPath path) {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
-        return Path.of(path.getVertexList(), path.getWeight());
     }
 }
