@@ -34,6 +34,10 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
+    public boolean isLessThanOrEqual(final int standardValue) {
+        return value <= standardValue;
+    }
+
     public int getValue() {
         return value;
     }
