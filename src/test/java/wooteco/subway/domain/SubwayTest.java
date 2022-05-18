@@ -10,10 +10,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.domain.vo.Path;
 import wooteco.subway.exception.EmptyResultException;
 
-public class SubwayMapTest {
-    private static SubwayMap subwayMap;
+public class SubwayTest {
+    private static Subway subway;
     private static final List<Station> stations = new ArrayList<>();
 
     @BeforeAll
@@ -27,7 +28,7 @@ public class SubwayMapTest {
         Line line2 = createLine2();
         Line line3 = createLine3();
         Line line4 = createLine4();
-        subwayMap = SubwayMap.of(List.of(line1, line2, line3, line4));
+        subway = Subway.of(List.of(line1, line2, line3, line4));
     }
 
     private static Line createLine1() {
@@ -61,49 +62,72 @@ public class SubwayMapTest {
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 10km 이내인 경우 경로, 거리, 요금은 1250원이 반환되어야 한다.")
+    @DisplayName("0 -> 1의 경로는 0 1, 거리는 5가 반환되어야 한다.")
     void findShortestPath1() {
-        Path path = subwayMap.findShortestPath(stations.get(0), stations.get(1));
+        Path path = subway.findShortestPath(stations.get(0), stations.get(1));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1)),
-            () -> assertThat(path.getDistance()).isEqualTo(5),
-            () -> assertThat(path.calculateFare()).isEqualTo(1250)
+            () -> assertThat(path.getDistance()).isEqualTo(5)
         );
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로, 거리, 요금은 1450원 이 반환되어야 한다.")
+    @DisplayName("0 -> 6의 경로는 0 1 4 5 6, 거리는 20이 반환되어야 한다.")
+    // @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로, 거리, 요금은 1450원 이 반환되어야 한다.")
     void findShortestPath2() {
-        Path path = subwayMap.findShortestPath(stations.get(0), stations.get(6));
+        Path path = subway.findShortestPath(stations.get(0), stations.get(6));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1), stations.get(4), stations.get(5), stations.get(6)),
-            () -> assertThat(path.getDistance()).isEqualTo(20),
-            () -> assertThat(path.calculateFare()).isEqualTo(1450)
+            () -> assertThat(path.getDistance()).isEqualTo(20)
         );
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로, 거리, 요금은 2150원 이 반환되어야 한다.")
+    @DisplayName("0 -> 8의 경로는 0 1 2 7 8, 거리는 58이 반환되어야 한다.")
+    // @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로, 거리, 요금은 2150원 이 반환되어야 한다.")
     void findShortestPath3() {
-        Path path = subwayMap.findShortestPath(stations.get(0), stations.get(8));
+        Path path = subway.findShortestPath(stations.get(0), stations.get(8));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(7), stations.get(8)),
-            () -> assertThat(path.getDistance()).isEqualTo(58),
-            () -> assertThat(path.calculateFare()).isEqualTo(2150)
+            () -> assertThat(path.getDistance()).isEqualTo(58)
         );
     }
 
     @Test
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
-        assertThatThrownBy(() -> subwayMap.findShortestPath(stations.get(0), stations.get(9)))
+        assertThatThrownBy(() -> subway.findShortestPath(stations.get(0), stations.get(9)))
             .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
             .isInstanceOf(EmptyResultException.class);
+    }
+
+    @Test
+    @DisplayName("0 -> 1 경로의 요금은 1250원이어야 한다.")
+    void calculateFare1() {
+        Path path = subway.findShortestPath(stations.get(0), stations.get(1));
+        int fare = subway.calculateFare(path.getDistance());
+        assertThat(fare).isEqualTo(1250);
+    }
+
+    @Test
+    @DisplayName("0 -> 6 경로의 요금은 1450원이어야 한다.")
+    void calculateFare2() {
+        Path path = subway.findShortestPath(stations.get(0), stations.get(6));
+        int fare = subway.calculateFare(path.getDistance());
+        assertThat(fare).isEqualTo(1450);
+    }
+
+    @Test
+    @DisplayName("0 -> 8 경로의 요금은 2150원이어야 한다.")
+    void calculateFare3() {
+        Path path = subway.findShortestPath(stations.get(0), stations.get(8));
+        int fare = subway.calculateFare(path.getDistance());
+        assertThat(fare).isEqualTo(2150);
     }
 }

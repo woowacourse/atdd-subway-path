@@ -1,52 +1,35 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-
-public class Path {
-    private static final int BASE_FARE = 1250;
+public class Fare {
     private static final int MINIMUM_BOUNDARY = 10;
     private static final int MAXIMUM_BOUNDARY = 50;
     private static final int OVER_TEN_POLICY = 5;
     private static final int OVER_FIFTY_POLICY = 8;
     private static final int SURCHARGE = 100;
 
-    private final List<Station> stations;
-    private final int distance;
+    private final int baseFare;
 
-    private Path(List<Station> stations, int distance) {
-        this.stations = stations;
-        this.distance = distance;
+    public Fare(int baseFare) {
+        this.baseFare = baseFare;
     }
 
-    public static Path of(List<Station> stations, double distance) {
-        return new Path(stations, (int) Math.floor(distance));
-    }
+    public int calculateFare(int distance) {
+        int fare = baseFare;
 
-    public List<Station> getStations() {
-        return this.stations;
-    }
-
-    public int getDistance() {
-        return this.distance;
-    }
-
-    public int calculateFare() {
-        int fare = BASE_FARE;
-
-        fare = belowMaximumBoundary(fare);
-        fare = overMaximumBoundary(fare);
+        fare = belowMaximumBoundary(fare, distance);
+        fare = overMaximumBoundary(fare, distance);
 
         return fare;
     }
 
-    private int belowMaximumBoundary(int fare) {
+    private int belowMaximumBoundary(int fare, int distance) {
         if (MINIMUM_BOUNDARY < distance && distance <= MAXIMUM_BOUNDARY) {
             fare += calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
         }
         return fare;
     }
 
-    private int overMaximumBoundary(int fare) {
+    private int overMaximumBoundary(int fare, int distance) {
         if (MAXIMUM_BOUNDARY < distance) {
             fare += calculateOverFare(MAXIMUM_BOUNDARY - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
             fare += calculateOverFare(distance - MAXIMUM_BOUNDARY, OVER_FIFTY_POLICY);

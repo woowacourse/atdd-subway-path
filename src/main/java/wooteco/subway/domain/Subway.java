@@ -7,16 +7,21 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.domain.vo.Path;
 import wooteco.subway.exception.EmptyResultException;
 
-public class SubwayMap {
-    private final DijkstraShortestPath pathFinder;
+public class Subway {
+    private static final int BASE_FARE = 1250;
 
-    private SubwayMap(DijkstraShortestPath pathFinder) {
+    private final DijkstraShortestPath pathFinder;
+    private final Fare fare;
+
+    public Subway(DijkstraShortestPath pathFinder, Fare fare) {
         this.pathFinder = pathFinder;
+        this.fare = fare;
     }
 
-    public static SubwayMap of(List<Line> lines) {
+    public static Subway of(List<Line> lines) {
         WeightedMultigraph graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
@@ -27,7 +32,7 @@ public class SubwayMap {
             addEdge(graph, line.getSections());
         }
 
-        return new SubwayMap(new DijkstraShortestPath(graph));
+        return new Subway(new DijkstraShortestPath(graph), new Fare(BASE_FARE));
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
@@ -50,5 +55,9 @@ public class SubwayMap {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
         return Path.of(path.getVertexList(), path.getWeight());
+    }
+
+    public int calculateFare(int distance) {
+        return fare.calculateFare(distance);
     }
 }

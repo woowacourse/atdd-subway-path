@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.vo.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayMap;
+import wooteco.subway.domain.Subway;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.EmptyResultException;
 
@@ -30,12 +30,12 @@ public class PathService {
         validateSameStation(sourceStationId, targetStationId);
 
         List<Line> lines = lineDao.findAll();
-        SubwayMap subwayMap = SubwayMap.of(lines);
+        Subway subway = Subway.of(lines);
         Station source = findStationById(sourceStationId);
         Station target = findStationById(targetStationId);
 
-        Path path = subwayMap.findShortestPath(source, target);
-        return PathResponse.of(path);
+        Path path = subway.findShortestPath(source, target);
+        return PathResponse.of(path, subway.calculateFare(path.getDistance()));
     }
 
     private void validateSameStation(Long sourceStationId, Long targetStationId) {
