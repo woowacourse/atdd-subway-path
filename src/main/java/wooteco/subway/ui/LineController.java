@@ -24,7 +24,6 @@ import wooteco.subway.service.SectionService;
 public class LineController {
 
     private final LineService lineService;
-
     private final SectionService sectionService;
 
     public LineController(final LineService lineService, final SectionService sectionService) {

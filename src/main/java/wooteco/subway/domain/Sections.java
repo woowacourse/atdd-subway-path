@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Sections {
+
     private static final int MINIMUM_SIZE = 1;
     private static final int NEEDS_MERGE_SIZE = 2;
     private static final int FIRST = 0;
