@@ -1,12 +1,8 @@
 package wooteco.subway.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.service.SectionService;
@@ -21,15 +17,14 @@ public class SectionController {
     }
 
     @PostMapping("/lines/{lineId}/sections")
-    public ResponseEntity<Void> enrollSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public void enrollSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         sectionService.enroll(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{lineId}/sections")
-    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         sectionService.delete(lineId, stationId);
-        return ResponseEntity.ok().build();
     }
 
 }
