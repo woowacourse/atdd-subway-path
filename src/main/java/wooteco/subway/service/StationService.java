@@ -1,4 +1,4 @@
-package wooteco.subway.application;
+package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;

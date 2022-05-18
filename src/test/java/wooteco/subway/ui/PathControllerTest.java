@@ -13,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.application.StationService;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.StationService;
 
 @SpringBootTest
 @AutoConfigureMockMvc

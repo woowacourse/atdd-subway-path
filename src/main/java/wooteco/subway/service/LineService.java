@@ -1,4 +1,4 @@
-package wooteco.subway.application;
+package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

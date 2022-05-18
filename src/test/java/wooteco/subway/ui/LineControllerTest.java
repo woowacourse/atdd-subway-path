@@ -18,11 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.application.LineService;
-import wooteco.subway.application.StationService;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.service.LineService;
+import wooteco.subway.service.StationService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
