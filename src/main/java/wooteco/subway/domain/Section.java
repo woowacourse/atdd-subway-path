@@ -4,10 +4,10 @@ public class Section {
 
     private final Station upStation;
     private final Station downStation;
-    private final int distance;
+    private final Distance distance;
     private final Long id;
 
-    private Section(Long id, Station upStation, Station downStation, int distance) {
+    private Section(Long id, Station upStation, Station downStation, Distance distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -15,10 +15,14 @@ public class Section {
     }
 
     public static Section createWithId(Long id, Station upStation, Station downStation, int distance) {
-        return new Section(id, upStation, downStation, distance);
+        return new Section(id, upStation, downStation, new Distance(distance));
     }
 
     public static Section createWithoutId(Station upStation, Station downStation, int distance) {
+        return new Section(null, upStation, downStation, new Distance(distance));
+    }
+
+    public static Section createWithoutId(Station upStation, Station downStation, Distance distance) {
         return new Section(null, upStation, downStation, distance);
     }
 
@@ -38,17 +42,17 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
     @Override
     public String toString() {
         return "Section{" +
-                "id=" + id +
-                ", upStation=" + upStation +
+                "upStation=" + upStation +
                 ", downStation=" + downStation +
                 ", distance=" + distance +
+                ", id=" + id +
                 '}';
     }
 }

@@ -31,7 +31,7 @@ public class Path {
 
             graph.addVertex(upStation);
             graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance().getValue());
         }
 
         final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);

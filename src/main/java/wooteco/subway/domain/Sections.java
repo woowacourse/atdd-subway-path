@@ -55,7 +55,7 @@ public class Sections {
         sections.remove(upLineSection);
         sections.add(section);
         sections.add(Section.createWithoutId(section.getDownStation(), upLineSection.getDownStation(),
-                upLineSection.getDistance() - section.getDistance()));
+                upLineSection.getDistance().subtract(section.getDistance())));
     }
 
     private void updateSectionWithDownBranch(Section section) {
@@ -63,8 +63,7 @@ public class Sections {
         validateDistance(section, downLineSection);
         sections.remove(downLineSection);
         sections.add(Section.createWithoutId(downLineSection.getUpStation(), section.getUpStation(),
-                downLineSection.getDistance() - section
-                        .getDistance()));
+                downLineSection.getDistance().subtract(section.getDistance())));
         sections.add(section);
     }
 
@@ -116,7 +115,7 @@ public class Sections {
     }
 
     private void validateDistance(Section section, Section section1) {
-        if (section1.getDistance() <= section.getDistance()) {
+        if (section1.getDistance().isLessThanOrEqualTo(section.getDistance())) {
             throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같으면 등록이 불가합니다.");
         }
     }
@@ -152,8 +151,7 @@ public class Sections {
         sections.remove(section);
         sections.remove(upSection);
         final Section editedSection = Section.createWithoutId(upSection.getUpStation(), section.getDownStation(),
-                upSection.getDistance() + section
-                        .getDistance());
+                upSection.getDistance().add(section.getDistance()));
         sections.add(editedSection);
     }
 

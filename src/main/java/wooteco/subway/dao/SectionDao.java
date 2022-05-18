@@ -43,7 +43,7 @@ public class SectionDao {
                         ps.setLong(1, lineId);
                         ps.setLong(2, sections.get(i).getUpStation().getId());
                         ps.setLong(3, sections.get(i).getDownStation().getId());
-                        ps.setInt(4, sections.get(i).getDistance());
+                        ps.setInt(4, sections.get(i).getDistance().getValue());
                     }
 
                     @Override

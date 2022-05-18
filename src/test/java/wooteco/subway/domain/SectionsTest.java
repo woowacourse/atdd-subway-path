@@ -245,7 +245,7 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(stations.contains(downStation)).isFalse(),
                 () -> assertThat(section1.getDownStation()).isEqualTo(newDownStation),
-                () -> assertThat(section1.getDistance()).isEqualTo(17)
+                () -> assertThat(section1.getDistance()).isEqualTo(new Distance(17))
         );
     }
 
