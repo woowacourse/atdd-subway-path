@@ -19,7 +19,7 @@ import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
-class PathAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("경로를 조회한다.")
     @Test
@@ -59,7 +59,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 , new Station(6L, "이수역"), new Station(7L, "건대역"))));
     }
 
-    private void createSection(Long lineId, SectionRequest sectionRequest) {
+    private void createSection(final Long lineId, final SectionRequest sectionRequest) {
         ExtractableResponse<Response> sectionResponse = RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +69,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void createLine(LineRequest lineRequest) {
+    private void createLine(final LineRequest lineRequest) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -79,7 +79,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void createStation(StationRequest stationRequest) {
+    private void createStation(final StationRequest stationRequest) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

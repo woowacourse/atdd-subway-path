@@ -66,7 +66,7 @@ class PathServiceTest {
         );
     }
 
-    private List<Station> createStation(PathResponse pathResponse) {
+    private List<Station> createStation(final PathResponse pathResponse) {
         return pathResponse.getStations().stream()
                 .map(it -> new Station(it.getId(), it.getName()))
                 .collect(Collectors.toList());

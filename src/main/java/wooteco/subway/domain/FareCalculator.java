@@ -12,7 +12,7 @@ public class FareCalculator {
 
     private final double distance;
 
-    public FareCalculator(double distance) {
+    public FareCalculator(final double distance) {
         this.distance = distance;
     }
 
@@ -26,11 +26,11 @@ public class FareCalculator {
         return BASIC_FARE;
     }
 
-    private int addSecondExtraFare(double distance) {
+    private int addSecondExtraFare(final double distance) {
         return (int) ((Math.ceil((distance) / SECOND_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
     }
 
-    private int addFirstExtraFare(double distance) {
+    private int addFirstExtraFare(final double distance) {
         return (int) ((Math.ceil((distance) / FIRST_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
     }
 }

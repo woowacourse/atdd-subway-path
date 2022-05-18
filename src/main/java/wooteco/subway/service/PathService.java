@@ -29,7 +29,7 @@ public class PathService {
         return createPathResponse(source, target);
     }
 
-    private PathResponse createPathResponse(Station source, Station target) {
+    private PathResponse createPathResponse(final Station source, final Station target) {
         Path path = initPath();
         List<Station> stations = path.calculateShortestPath(source, target);
         double distance = path.calculateShortestDistance(source, target);
@@ -42,12 +42,12 @@ public class PathService {
         return new Path(sections);
     }
 
-    private int createFare(double distance) {
+    private int createFare(final double distance) {
         FareCalculator fareCalculator = new FareCalculator(distance);
         return fareCalculator.calculateFare();
     }
 
-    private List<StationResponse> convertToStationResponses(List<Station> stations) {
+    private List<StationResponse> convertToStationResponses(final List<Station> stations) {
         return stations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());

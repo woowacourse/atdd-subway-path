@@ -19,28 +19,28 @@ public class SubwayGraph {
         addSectionsToEdge(sections);
     }
 
-    private void addStationsToVertex(Sections sections) {
+    private void addStationsToVertex(final Sections sections) {
         for (Station station : sections.getStations()) {
             subwayGraph.addVertex(station);
         }
     }
 
-    private void addSectionsToEdge(Sections sections) {
+    private void addSectionsToEdge(final Sections sections) {
         for (Section section : sections.getSections()) {
             subwayGraph.setEdgeWeight(subwayGraph.addEdge(section.getUpStation(), section.getDownStation()),
                     section.getDistance());
         }
     }
 
-    public List<Station> findShortestPath(Station source, Station target) {
+    public List<Station> findShortestPath(final Station source, final Station target) {
         return graphResult(source, target).getVertexList();
     }
 
-    public double findShortestDistance(Station source, Station target) {
+    public double findShortestDistance(final Station source, final Station target) {
         return graphResult(source, target).getWeight();
     }
 
-    private GraphPath graphResult(Station source, Station target) {
+    private GraphPath graphResult(final Station source, final Station target) {
         DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
         return pathFinder.getPath(source, target);
     }

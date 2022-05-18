@@ -37,6 +37,5 @@ class PathTest {
         double distance = path.calculateShortestDistance(new Station(1L, "잠실역"), new Station(4L, "건대역"));
 
         assertThat(distance).isEqualTo(10);
-
     }
 }
