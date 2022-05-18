@@ -1,6 +1,5 @@
 package wooteco.subway.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -8,7 +7,7 @@ import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathFindResult;
+import wooteco.subway.dto.PathFindResponse;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathFindResult findPath(Long from, Long to) {
+    public PathFindResponse findPath(Long from, Long to) {
         List<Section> sections = sectionDao.findAll();
         PathFinder pathFinder = new PathFinder(sections);
         List<Long> path = pathFinder.findPath(from, to);
@@ -33,6 +32,6 @@ public class PathService {
         int fare = fareCalculator.calculateFare(distance);
         List<Station> stations = stationDao.findByIdIn(path);
 
-        return PathFindResult.of(stations, distance, fare);
+        return PathFindResponse.of(stations, distance, fare);
     }
 }

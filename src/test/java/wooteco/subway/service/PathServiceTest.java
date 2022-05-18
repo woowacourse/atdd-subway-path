@@ -76,7 +76,7 @@ class PathServiceTest {
     @Test
     void findPath() {
         setUpSubwayMap();
-        PathFindResult result = pathService.findPath(기흥역.getId(), 한티역.getId());
+        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId());
         System.out.println(result.getStations());
         assertAll(
                 () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),
