@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.LineRequest;
@@ -19,6 +20,7 @@ import wooteco.subway.service.LineService;
 import wooteco.subway.service.SectionService;
 
 @RestController
+@RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
@@ -30,40 +32,40 @@ public class LineController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/lines")
+    @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody @Valid final LineRequest lineRequest) {
         final LineResponse lineResponse = lineService.create(lineRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
 
-    @GetMapping("/lines")
+    @GetMapping
     public List<LineResponse> getAllLines() {
         return lineService.getAll();
     }
 
-    @GetMapping("/lines/{lineId}")
+    @GetMapping("/{lineId}")
     public LineResponse getLineById(@PathVariable final Long lineId) {
         return lineService.getById(lineId);
     }
 
-    @PutMapping("/lines/{lineId}")
+    @PutMapping("/{lineId}")
     public void updateLine(@PathVariable final Long lineId, @RequestBody @Valid final LineRequest lineRequest) {
         lineService.modify(lineId, lineRequest);
     }
 
-    @DeleteMapping("/lines/{lineId}")
+    @DeleteMapping("/{lineId}")
     public ResponseEntity<Void> deleteLine(@PathVariable final Long lineId) {
         lineService.remove(lineId);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/lines/{id}/sections")
+    @PostMapping("/{id}/sections")
     public void addSection(@PathVariable final Long id, @RequestBody @Valid final SectionRequest sectionRequest) {
         sectionService.create(id, sectionRequest);
     }
 
-    @DeleteMapping("/lines/{id}/sections")
+    @DeleteMapping("/{id}/sections")
     public void deleteSection(@PathVariable final Long id, @RequestParam final Long stationId) {
         sectionService.remove(id, stationId);
     }
