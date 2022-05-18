@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.ui.dto.LineRequest;
+import wooteco.subway.ui.dto.LineResponse;
+import wooteco.subway.ui.dto.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -160,7 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         long savedLineId = Long.parseLong(response.header("Location").split("/")[2]);
 
-        LineRequest updateRequest = new LineRequest("3호선", "orange");
+        LineRequest updateRequest = new LineRequest("3호선", "orange", null, null, 0);
 
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .body(updateRequest)

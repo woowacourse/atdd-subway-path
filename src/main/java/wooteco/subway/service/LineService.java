@@ -11,9 +11,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineServiceResponse;
 
 @Service
 public class LineService {
@@ -29,39 +28,38 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse save(LineRequest lineRequest) {
-        Line savedLine = lineDao.save(new Line(lineRequest.getName(), lineRequest.getColor()));
-        Station upStation = stationDao.findById(lineRequest.getUpStationId());
-        Station downStation = stationDao.findById(lineRequest.getDownStationId());
+    public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
+        Line savedLine = lineDao.save(new Line(lineServiceRequest.getName(), lineServiceRequest.getColor()));
+        Station upStation = stationDao.findById(lineServiceRequest.getUpStationId());
+        Station downStation = stationDao.findById(lineServiceRequest.getDownStationId());
         Section section = new Section(savedLine.getId(), upStation.getId(), downStation.getId(),
-                lineRequest.getDistance());
+                lineServiceRequest.getDistance());
         sectionDao.save(section);
-        return new LineResponse(savedLine.getId(), savedLine.getName(), savedLine.getColor(),
-                List.of(new StationResponse(upStation), new StationResponse(downStation)));
+        return new LineServiceResponse(savedLine, List.of(upStation, downStation));
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findAll() {
+    public List<LineServiceResponse> findAll() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(line -> LineResponse.of(line, stationDao.findAllByLineId(line.getId())))
+                .map(line -> new LineServiceResponse(line, stationDao.findAllByLineId(line.getId())))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findById(Long id) {
+    public LineServiceResponse findById(Long id) {
         Line line = lineDao.findById(id);
         Sections sections = sectionDao.findAllByLineId(id);
         List<Station> stations = sections.getSortedStationIdsInSingleLine().stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
 
-        return LineResponse.of(line, stations);
+        return new LineServiceResponse(line, stations);
     }
 
     @Transactional
-    public void update(Long id, LineRequest lineRequest) {
-        lineDao.updateById(id, new Line(lineRequest.getName(), lineRequest.getColor()));
+    public void update(Long id, String name, String color) {
+        lineDao.updateById(id, new Line(name, color));
     }
 
     @Transactional

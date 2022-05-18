@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.service.dto.StationServiceResponse;
 
 @Service
 public class StationService {
@@ -19,17 +18,17 @@ public class StationService {
     }
 
     @Transactional
-    public StationResponse save(StationRequest stationRequest) {
-        Station station = new Station(stationRequest.getName());
+    public StationServiceResponse save(String name) {
+        Station station = new Station(name);
         Station savedStation = stationDao.save(station);
-        return new StationResponse(savedStation.getId(), savedStation.getName());
+        return new StationServiceResponse(savedStation);
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAll() {
+    public List<StationServiceResponse> findAll() {
         List<Station> stations = stationDao.findAll();
         return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationServiceResponse::new)
                 .collect(Collectors.toList());
     }
 

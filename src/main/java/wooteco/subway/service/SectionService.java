@@ -10,7 +10,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.service.dto.SectionServiceRequest;
 
 @Transactional
 @Service
@@ -27,14 +27,13 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public void save(Long lineId, SectionRequest sectionRequest) {
-        validate(lineId, sectionRequest);
-        Long upStationId = sectionRequest.getUpStationId();
-        Long downStationId = sectionRequest.getDownStationId();
-        Section newSection = new Section(lineId,
-                sectionRequest.getUpStationId(),
-                sectionRequest.getDownStationId(),
-                sectionRequest.getDistance());
+    public void save(SectionServiceRequest sectionServiceRequest) {
+        validate(sectionServiceRequest);
+        Long lineId = sectionServiceRequest.getLindId();
+        Long upStationId = sectionServiceRequest.getUpStationId();
+        Long downStationId = sectionServiceRequest.getDownStationId();
+        Section newSection = new Section(lineId, upStationId, downStationId, sectionServiceRequest.getDistance());
+
         sectionDao.findBy(lineId, upStationId, downStationId)
                 .ifPresentOrElse(
                         section -> insert(section, newSection),
@@ -42,15 +41,16 @@ public class SectionService {
                 );
     }
 
-    private void validate(Long lineId, SectionRequest sectionRequest) {
-        List<Long> stationIds = stationDao.findAllByLineId(lineId)
+    private void validate(SectionServiceRequest sectionServiceRequest) {
+        List<Long> stationIds = stationDao.findAllByLineId(sectionServiceRequest.getLindId())
                 .stream()
                 .map(Station::getId)
                 .collect(Collectors.toList());
 
-        long matchingStations = Stream.of(sectionRequest.getUpStationId(), sectionRequest.getDownStationId())
-                .filter(stationIds::contains)
-                .count();
+        long matchingStations =
+                Stream.of(sectionServiceRequest.getUpStationId(), sectionServiceRequest.getDownStationId())
+                        .filter(stationIds::contains)
+                        .count();
 
         if (matchingStations != MATCHING_STATION_SIZE) {
             throw new IllegalArgumentException("상행 종점과 하행 종점 중 하나의 종점만 포함되어야 합니다.");

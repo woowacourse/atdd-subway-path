@@ -12,9 +12,10 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.PathDto;
+import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineServiceResponse;
+import wooteco.subway.service.dto.PathServiceRequest;
+import wooteco.subway.service.dto.PathServiceResponse;
 
 @SpringBootTest
 class PathServiceTest extends ServiceTest {
@@ -41,16 +42,18 @@ class PathServiceTest extends ServiceTest {
         Station station3 = stationDao.save(new Station("수서역"));
         Station station4 = stationDao.save(new Station("가락시장역"));
 
-        LineResponse line = lineService.save(new LineRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
 
-        PathDto pathDto = pathService.findShortestPath(station1.getId(), station4.getId());
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
 
         assertAll(
-                () -> assertThat(pathDto.getStations()).containsExactly(station1, station2, station4),
-                () -> assertThat(pathDto.getDistance()).isEqualTo(6),
-                () -> assertThat(pathDto.getFare()).isEqualTo(1250)
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(1250)
         );
     }
 
@@ -63,11 +66,13 @@ class PathServiceTest extends ServiceTest {
         Station station4 = stationDao.save(new Station("가락시장역"));
         Station station5 = stationDao.save(new Station("천호역"));
 
-        LineResponse line = lineService.save(new LineRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(station1.getId(), station5.getId()))
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
+
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간에 등록 되지 않은 역입니다.");
     }
@@ -81,11 +86,13 @@ class PathServiceTest extends ServiceTest {
         Station station4 = stationDao.save(new Station("가락시장역"));
         Station station5 = stationDao.save(new Station("천호역"));
 
-        LineResponse line = lineService.save(new LineRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineRequest("3호선", "orange", station5.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station5.getId(), station4.getId(), 4));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(station1.getId(), station5.getId()))
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
+
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 구간입니다.");
     }

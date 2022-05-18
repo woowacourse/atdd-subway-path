@@ -1,21 +1,19 @@
-package wooteco.subway.dto;
+package wooteco.subway.service.dto;
 
-public class LineRequest {
+public class LineServiceRequest {
+
     private String name;
     private String color;
     private Long upStationId;
     private Long downStationId;
     private int distance;
 
-    public LineRequest() {
-    }
-
-    public LineRequest(String name, String color) {
+    public LineServiceRequest(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineServiceRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this(name, color);
         this.upStationId = upStationId;
         this.downStationId = downStationId;

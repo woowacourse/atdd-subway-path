@@ -1,6 +1,7 @@
-package wooteco.subway.dto;
+package wooteco.subway.ui.dto;
 
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.StationServiceResponse;
 
 public class StationResponse {
     private Long id;
@@ -12,6 +13,10 @@ public class StationResponse {
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public StationResponse(StationServiceResponse stationServiceResponse) {
+        this(stationServiceResponse.getId(), stationServiceResponse.getName());
     }
 
     public StationResponse(Station station) {

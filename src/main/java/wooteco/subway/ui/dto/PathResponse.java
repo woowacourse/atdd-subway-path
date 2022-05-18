@@ -1,7 +1,8 @@
-package wooteco.subway.dto;
+package wooteco.subway.ui.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.service.dto.PathServiceResponse;
 
 public class PathResponse {
 
@@ -18,12 +19,12 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public PathResponse(PathDto pathDto) {
-        this(pathDto.getStations()
+    public PathResponse(PathServiceResponse pathServiceResponse) {
+        this(pathServiceResponse.getStations()
                         .stream()
                         .map(StationResponse::new)
                         .collect(Collectors.toList()),
-                pathDto.getDistance(), pathDto.getFare());
+                pathServiceResponse.getDistance(), pathServiceResponse.getFare());
     }
 
     public List<StationResponse> getStationResponses() {

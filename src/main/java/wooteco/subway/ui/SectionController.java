@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.SectionService;
+import wooteco.subway.ui.dto.SectionRequest;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
@@ -23,7 +23,7 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        sectionService.save(lineId, sectionRequest);
+        sectionService.save(sectionRequest.toServiceRequest(lineId));
         return ResponseEntity.ok().build();
     }
 
