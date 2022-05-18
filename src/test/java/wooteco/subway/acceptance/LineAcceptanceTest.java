@@ -51,7 +51,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
-        System.out.println("sdadasd");
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
