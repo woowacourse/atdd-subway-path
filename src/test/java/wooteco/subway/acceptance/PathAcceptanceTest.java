@@ -116,7 +116,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(30);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(expectedDistance));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1650));
 
         // when
         final ExtractableResponse<Response> response = getResponseExtractableResponse(gangnam.getId(),
@@ -144,7 +144,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 dapsimni
         );
         final Distance expectedDistance = new Distance(59);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(expectedDistance));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(2250));
 
         // when
         final ExtractableResponse<Response> response = getResponseExtractableResponse(yeoksam.getId(),

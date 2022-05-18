@@ -27,10 +27,11 @@ public class PathResponse {
         final List<StationResponse> stationResponses = stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
+
         return new PathResponse(
                 stationResponses,
                 distance.getValue(),
-                fare.calculate()
+                fare.getValue()
         );
     }
 

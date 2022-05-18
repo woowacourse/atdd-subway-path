@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class FareTest {
+class DistanceTest {
 
     @ParameterizedTest
     @DisplayName("10km 이내의 거리에 대한 기본 요금을 계산한다.")
@@ -15,42 +15,39 @@ class FareTest {
     void Calculate_LessThan10_BasicFareReturned(final int distanceValue) {
         // given
         final Distance distance = new Distance(distanceValue);
-        final Fare fare = new Fare(distance);
 
         // when
-        final int actual = fare.calculate();
+        final Fare actual = distance.calculateFare();
 
         // then
-        assertThat(actual).isEqualTo(1_250);
+        assertThat(actual.getValue()).isEqualTo(1_250);
     }
 
     @ParameterizedTest
     @DisplayName("10km ~ 50km 사이의 거리에 대한 요금을 계산한다.")
     @CsvSource(value = {"11:1350", "12:1350", "49:2050", "50:2050"}, delimiter = ':')
-    void Calculate_MoreThan10_ExtraFareReturned(final int distanceValue, final int expectedFare) {
+    void Calculate_MoreThan10_ExtraFareReturned(final int distanceValue, final int expected) {
         // given
         final Distance distance = new Distance(distanceValue);
-        final Fare fare = new Fare(distance);
 
         // when
-        final int actual = fare.calculate();
+        final Fare actual = distance.calculateFare();
 
         // then
-        assertThat(actual).isEqualTo(expectedFare);
+        assertThat(actual.getValue()).isEqualTo(expected);
     }
 
     @ParameterizedTest
     @DisplayName("50km 초과 거리에 대한 요금을 계산한다.")
     @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
-    void Calculate_MoreThan50_ExtraFareReturned(final int distanceValue, final int expectedFare) {
+    void Calculate_MoreThan50_ExtraFareReturned(final int distanceValue, final int expected) {
         // given
         final Distance distance = new Distance(distanceValue);
-        final Fare fare = new Fare(distance);
 
         // when
-        final int actual = fare.calculate();
+        final Fare actual = distance.calculateFare();
 
         // then
-        assertThat(actual).isEqualTo(expectedFare);
+        assertThat(actual.getValue()).isEqualTo(expected);
     }
 }
