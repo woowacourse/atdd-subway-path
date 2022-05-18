@@ -24,6 +24,10 @@ public class Station {
         return id;
     }
 
+    public boolean hasId(Long stationId) {
+        return id.equals(stationId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

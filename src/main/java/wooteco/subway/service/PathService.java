@@ -1,16 +1,14 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.ShortestPath;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.*;
 import wooteco.subway.service.dto.PathServiceRequest;
 import wooteco.subway.service.dto.PathServiceResponse;
 import wooteco.subway.service.dto.StationServiceResponse;
@@ -33,7 +31,7 @@ public class PathService {
         List<StationServiceResponse> stations = getShortestPathStations(pathRequest, shortestPath);
         Fare fare = new Fare();
         int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
-            pathRequest.getTarget());
+                pathRequest.getTarget());
         int fee = fare.calculateFare(shortestDistance);
 
         return new PathServiceResponse(stations, shortestDistance, fee);
@@ -45,16 +43,14 @@ public class PathService {
     }
 
     private List<StationServiceResponse> getShortestPathStations(PathServiceRequest pathRequest, ShortestPath shortestPath) {
-        List<Long> stationIds = shortestPath.findShortestPath(pathRequest.getSource(),
-            pathRequest.getTarget());
-
-        return toStationServiceResponse(
-            stationDao.findById(stationIds));
+        List<Long> stationIds = shortestPath.findShortestPath(pathRequest.getSource(), pathRequest.getTarget());
+        Stations stations = new Stations(stationDao.findById(stationIds));
+        return toStationServiceResponse(stations.arrangeStationsByIds(stationIds));
     }
 
     private List<StationServiceResponse> toStationServiceResponse(List<Station> stations) {
         return stations.stream()
-            .map(i -> new StationServiceResponse(i.getId(), i.getName()))
-            .collect(Collectors.toList());
+                .map(i -> new StationServiceResponse(i.getId(), i.getName()))
+                .collect(Collectors.toList());
     }
 }
