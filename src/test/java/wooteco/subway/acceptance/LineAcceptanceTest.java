@@ -1,21 +1,22 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
+import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.StationRequest;
+import wooteco.subway.ui.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -34,10 +35,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLine(lineRequest);
+        LineResponse lineResponse = response.as(LineResponse.class);
+        List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank(),
+                () -> assertThat(lineResponse.getName()).isEqualTo("2호선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("green"),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(station1.getId()),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(station1.getName()),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(station2.getId()),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(station2.getName())
+        );
     }
 
     @DisplayName("기존에 존재하는 노선의 이름으로 노선을 생성한다.")
@@ -56,14 +67,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLine(lineRequest);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("이름은 중복될 수 없습니다.")
+        );
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
-    void getLines() {
+    void getAllLines() {
         /// given
         StationRequest stationRequest1 = new StationRequest("강남역");
         StationRequest stationRequest2 = new StationRequest("역삼역");
@@ -78,25 +93,37 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest1 = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
         LineRequest lineRequest2 = new LineRequest("3호선", "orange", station3.getId(), station4.getId(), 10);
 
-        ExtractableResponse<Response> createResponse1 = createLine(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = createLine(lineRequest2);
+        createLine(lineRequest1);
+        createLine(lineRequest2);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = findAllLines();
+        List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class);
+
+        LineResponse lineResponse1 = lineResponses.get(0);
+        List<StationResponse> stationResponses1 = lineResponse1.getStations();
+        LineResponse lineResponse2 = lineResponses.get(1);
+        List<StationResponse> stationResponses2 = lineResponse2.getStations();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Long> expectedLineIds = Arrays.asList(createResponse1, createResponse2).stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineResponse1.getId()).isEqualTo(1L),
+                () -> assertThat(lineResponse1.getName()).isEqualTo("2호선"),
+                () -> assertThat(lineResponse1.getColor()).isEqualTo("green"),
+                () -> assertThat(stationResponses1.get(0).getId()).isEqualTo(station1.getId()),
+                () -> assertThat(stationResponses1.get(0).getName()).isEqualTo(station1.getName()),
+                () -> assertThat(stationResponses1.get(1).getId()).isEqualTo(station2.getId()),
+                () -> assertThat(stationResponses1.get(1).getName()).isEqualTo(station2.getName()),
+
+                () -> assertThat(lineResponse2.getId()).isEqualTo(2L),
+                () -> assertThat(lineResponse2.getName()).isEqualTo("3호선"),
+                () -> assertThat(lineResponse2.getColor()).isEqualTo("orange"),
+                () -> assertThat(stationResponses2.get(0).getId()).isEqualTo(station3.getId()),
+                () -> assertThat(stationResponses2.get(0).getName()).isEqualTo(station3.getName()),
+                () -> assertThat(stationResponses2.get(1).getId()).isEqualTo(station4.getId()),
+                () -> assertThat(stationResponses2.get(1).getName()).isEqualTo(station4.getName())
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
@@ -133,11 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + 1)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = findLineById(1L);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -162,16 +185,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         LineRequest updateRequest = new LineRequest("3호선", "orange", null, null, 0);
 
-        ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
-                .body(updateRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/lines/" + savedLineId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> updateResponse = updateLine(savedLineId, updateRequest);
+
+        LineResponse lineResponse = findLineById(savedLineId).as(LineResponse.class);
 
         // then
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineResponse.getName()).isEqualTo(updateRequest.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(updateRequest.getColor())
+        );
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -186,17 +209,42 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
 
-        ExtractableResponse<Response> createResponse = createLine(lineRequest);
+        LineResponse lineResponse = createLine(lineRequest).as(LineResponse.class);
 
         // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = deleteById(lineResponse.getId());
+        List<LineResponse> lineResponses = findAllLines().jsonPath().getList(".", LineResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(lineResponses).isEmpty()
+        );
+    }
+
+    private ExtractableResponse<Response> findAllLines() {
+        return RestAssured.given().log().all()
+                .when()
+                .get("/lines")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> updateLine(long savedLineId, LineRequest updateRequest) {
+        return RestAssured.given().log().all()
+                .body(updateRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put("/lines/" + savedLineId)
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> deleteById(Long lindId) {
+        return RestAssured.given().log().all()
+                .when()
+                .delete("/lines/" + lindId)
+                .then().log().all()
+                .extract();
     }
 }

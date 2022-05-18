@@ -14,14 +14,16 @@ class SectionTest {
     @Test
     void constructor_SameStation_ThrowsException() {
         assertThatThrownBy(() -> new Section(1L, 1L, 1L, 1L, 10))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("상행 종점과 하행 종점은 같을 수 없습니다.");
     }
 
     @DisplayName("거리가 1 미만인 구간 생성 시 예외가 발생한다.")
     @Test
     void constructor_InvalidDistance_ThrowsException() {
         assertThatThrownBy(() -> new Section(1L, 1L, 1L, 2L, 0))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("역간의 거리는 1 이상이어야 합니다.");
     }
 
     @DisplayName("구간을 나눈다.")
@@ -49,12 +51,29 @@ class SectionTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("두 구간을 합친다.")
+    @DisplayName("전방 구간에 후방 구간을 합친다.")
     @Test
-    void merge() {
+    void mergeForward() {
         Section section = new Section(1L, 1L, 1L, 2L, 10);
         Section mergedSection = section.merge(new Section(2L, 1L, 2L, 3L, 10));
 
-        assertThat(mergedSection.getDistance()).isEqualTo(20);
+        assertAll(
+                () -> assertThat(mergedSection.getDistance()).isEqualTo(20),
+                () -> assertThat(mergedSection.getUpStationId()).isEqualTo(1L),
+                () -> assertThat(mergedSection.getDownStationId()).isEqualTo(3L)
+        );
+    }
+
+    @DisplayName("후방 구간에 전방 구간을 합친다.")
+    @Test
+    void mergeBackward() {
+        Section section = new Section(1L, 1L, 2L, 3L, 10);
+        Section mergedSection = section.merge(new Section(2L, 1L, 1L, 2L, 10));
+
+        assertAll(
+                () -> assertThat(mergedSection.getDistance()).isEqualTo(20),
+                () -> assertThat(mergedSection.getUpStationId()).isEqualTo(1L),
+                () -> assertThat(mergedSection.getDownStationId()).isEqualTo(3L)
+        );
     }
 }

@@ -33,9 +33,12 @@ public class AcceptanceTest {
         jdbcTemplate.execute("DELETE FROM section");
         jdbcTemplate.execute("DELETE FROM station");
         jdbcTemplate.execute("DELETE FROM line");
+        jdbcTemplate.execute("ALTER TABLE station ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE line ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE section ALTER COLUMN id RESTART WITH 1");
     }
 
-    protected ExtractableResponse<Response> createStation(StationRequest stationRequest) {
+    ExtractableResponse<Response> createStation(StationRequest stationRequest) {
         return RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +48,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    protected ExtractableResponse<Response> createLine(LineRequest lineRequest) {
+    ExtractableResponse<Response> createLine(LineRequest lineRequest) {
         return RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -55,12 +58,20 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    protected ExtractableResponse<Response> createSection(long lineId, SectionRequest sectionRequest) {
+    ExtractableResponse<Response> createSection(long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .extract();
+    }
+
+    ExtractableResponse<Response> findLineById(Long lineId) {
+        return RestAssured.given().log().all()
+                .when()
+                .get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
     }

@@ -71,7 +71,7 @@ public class Sections {
 
     private void validateSectionSize(List<Section> sections) {
         if (sections.size() == MINIMUM_SECTION_SIZE) {
-            throw new IllegalArgumentException("구간을 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("구간이 하나뿐이라 삭제할 수 없습니다.");
         }
     }
 
@@ -154,11 +154,7 @@ public class Sections {
     }
 
     public int getShortestPathDistance(Long departureId, Long arrivalId) {
-        try {
-            return (int) findShortestPath(departureId, arrivalId).getWeight();
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("연결되지 않은 구간입니다.");
-        }
+        return (int) findShortestPath(departureId, arrivalId).getWeight();
     }
 
     @Override
