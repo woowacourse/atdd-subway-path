@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import java.util.Objects;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -30,6 +31,14 @@ public class Path {
     public int calculateMinDistance() {
         try {
             return (int) graph.getPath(startStation, endStation).getWeight();
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new SectionNotFoundException();
+        }
+    }
+
+    public List<Station> findShortestStations() {
+        try {
+            return graph.getPath(startStation, endStation).getVertexList();
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }

@@ -28,6 +28,13 @@ public class PathTest {
         assertThat(path.calculateMinDistance()).isEqualTo(20);
     }
 
+    @DisplayName("경로 중 최단 경로에 포함되는 역을 반환한다.")
+    @Test
+    void findShortestStations() {
+        Path path = new Path(PathGraph.create(createSections()), 신당역, 창신역);
+        assertThat(path.findShortestStations()).containsExactly(신당역, 동묘앞역, 창신역);
+    }
+
     private Sections createSections() {
         Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
         Section section1 = new Section(2L, 1L, 동묘앞역, 창신역, STANDARD_DISTANCE);
