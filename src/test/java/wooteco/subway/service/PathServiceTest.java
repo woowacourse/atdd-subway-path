@@ -14,8 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
-import wooteco.subway.service.dto.PathRequestDto;
-import wooteco.subway.service.dto.PathResponseDto;
+import wooteco.subway.service.dto.path.PathRequestDto;
+import wooteco.subway.service.dto.path.PathResponseDto;
 import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
 

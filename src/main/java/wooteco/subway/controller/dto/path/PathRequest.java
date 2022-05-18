@@ -6,7 +6,7 @@ public class PathRequest {
     private Long target;
     private int age;
 
-    public PathRequest() {
+    private PathRequest() {
     }
 
     public PathRequest(Long source, Long target, int age) {

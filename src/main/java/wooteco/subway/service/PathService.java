@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.PathRequestDto;
-import wooteco.subway.service.dto.PathResponseDto;
-import wooteco.subway.service.dto.ServiceDtoAssembler;
+import wooteco.subway.service.dto.path.PathRequestDto;
+import wooteco.subway.service.dto.path.PathResponseDto;
 import wooteco.subway.service.dto.station.StationResponseDto;
 
 @Service

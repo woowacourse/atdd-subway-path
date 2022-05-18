@@ -1,4 +1,4 @@
-package wooteco.subway.service.dto;
+package wooteco.subway.service.dto.path;
 
 import java.util.List;
 import wooteco.subway.service.dto.station.StationResponseDto;
