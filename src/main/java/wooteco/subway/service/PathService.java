@@ -10,8 +10,6 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,7 +38,7 @@ public class PathService {
     private List<StationResponse> createStationResponseOf(List<Long> path) {
         List<Station> stations = stationDao.findByIdIn(path);
 
-        Map<Long,String> stationMap = stations.stream()
+        Map<Long, String> stationMap = stations.stream()
                 .collect(Collectors.toMap(Station::getId, Station::getName));
 
         return path.stream()

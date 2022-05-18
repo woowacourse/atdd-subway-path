@@ -43,7 +43,7 @@ public class LineService {
     }
 
     private void checkDuplication(Line line) {
-        if(lineDao.existByName(line.getName())){
+        if (lineDao.existByName(line.getName())) {
             throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
         }
     }

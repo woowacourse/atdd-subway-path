@@ -25,12 +25,12 @@ public class StationService {
     }
 
     private void checkDuplication(Station station) {
-        if(stationDao.existByName(station.getName())){
+        if (stationDao.existByName(station.getName())) {
             throw new IllegalArgumentException("이미 존재하는 역 이름입니다.");
         }
     }
 
-    public List<StationResponse> findAll(){
+    public List<StationResponse> findAll() {
         List<Station> stations = stationDao.findAll();
         return stations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))

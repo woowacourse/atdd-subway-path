@@ -14,8 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
-public class StationServiceTest
-{
+public class StationServiceTest {
     @Autowired
     private StationDao stationDao;
 
@@ -31,19 +30,19 @@ public class StationServiceTest
 
     @Test
     @DisplayName("역을 생성한다.")
-    void saveStation(){
+    void saveStation() {
         assertThat(stationService.save(new StationRequest("사당역")).getName()).isEqualTo("사당역");
     }
 
     @Test
     @DisplayName("역을 모두 조회한다.")
-    void findAllStations(){
+    void findAllStations() {
         assertThat(stationService.findAll()).hasSize(3);
     }
 
     @Test
     @DisplayName("역을 제거한다.")
-    void deleteStation(){
+    void deleteStation() {
         stationService.delete(1L);
         assertThat(stationService.findAll()).hasSize(2);
     }

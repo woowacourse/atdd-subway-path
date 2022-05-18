@@ -6,7 +6,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.*;
 import wooteco.subway.dto.SectionRequest;
 
-import java.util.*;
+import java.util.Optional;
 
 @Transactional
 @Service

@@ -12,7 +12,7 @@ public class Path {
     private final Graph<Long, DefaultWeightedEdge> graph;
     private final PathFindingStrategy pathFindingStrategy;
 
-    public Path(List<Station> stations, List<Section> sections, PathFindingStrategy pathFindingStrategy){
+    public Path(List<Station> stations, List<Section> sections, PathFindingStrategy pathFindingStrategy) {
         this.graph = generateGraph(stations, sections);
         this.pathFindingStrategy = pathFindingStrategy;
     }
@@ -29,7 +29,7 @@ public class Path {
             Long downStationId = section.getDownStationId();
             graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
         }
-        
+
         return graph;
     }
 

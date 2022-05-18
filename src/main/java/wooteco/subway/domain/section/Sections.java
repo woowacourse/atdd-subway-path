@@ -17,7 +17,7 @@ public class Sections {
         this.sortStrategy = sortStrategy;
     }
 
-    public void save(Section section){
+    public void save(Section section) {
         creationStrategy.save(sections, section);
     }
 
@@ -25,7 +25,7 @@ public class Sections {
         return creationStrategy.fixOverLappedSection(sections, section);
     }
 
-    public void delete(Long lineId, Long stationId){
+    public void delete(Long lineId, Long stationId) {
         deletionStrategy.delete(sections, lineId, stationId);
     }
 
@@ -33,7 +33,7 @@ public class Sections {
         return deletionStrategy.fixDisconnectedSection(sections, lineId, stationId);
     }
 
-    public List<Station> sort(List<Station> stations){
+    public List<Station> sort(List<Station> stations) {
         return sortStrategy.sort(sections, stations);
     }
 

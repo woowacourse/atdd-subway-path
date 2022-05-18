@@ -1,7 +1,5 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,34 +13,29 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.SectionRequest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @Sql("classpath:truncate.sql")
 public class SectionServiceTest {
 
-    @Autowired
-    private StationDao stationDao;
-
-    @Autowired
-    private LineDao lineDao;
-
-    @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
-    private SectionService sectionService;
-
     Long 강남 = 1L;
     Long 선릉 = 2L;
     Long 잠실 = 3L;
-
     Station 강남역 = new Station(1L, "강남역");
     Station 선릉역 = new Station(2L, "선릉역");
     Station 잠실역 = new Station(3L, "잠실역");
-
     Line 지하철2호선 = new Line("2호선", "green");
-
     SectionRequest sectionRequest1 = new SectionRequest(강남, 선릉, 10);
     SectionRequest sectionRequest2 = new SectionRequest(선릉, 잠실, 10);
+    @Autowired
+    private StationDao stationDao;
+    @Autowired
+    private LineDao lineDao;
+    @Autowired
+    private SectionDao sectionDao;
+    @Autowired
+    private SectionService sectionService;
 
     @BeforeEach
     void setUp() {

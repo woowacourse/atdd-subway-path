@@ -18,7 +18,7 @@ public class StationDaoTest {
     private StationDao stationDao;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         stationDao = new StationDao(dataSource);
         stationDao.insert(new Station("강남역"));
     }

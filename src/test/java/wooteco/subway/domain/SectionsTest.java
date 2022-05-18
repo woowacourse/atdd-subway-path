@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SectionsTest {
@@ -19,7 +19,7 @@ public class SectionsTest {
     private Sections sections;
 
     @BeforeEach
-    void setSections(){
+    void setSections() {
         List<Section> sectionList = new ArrayList<>();
         sectionList.add(new Section(1L, 1L, 1L, 2L, 10));
 
@@ -28,7 +28,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("섹션을 성공적으로 생성")
-    void saveSection(){
+    void saveSection() {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
@@ -37,20 +37,20 @@ public class SectionsTest {
 
     @Test
     @DisplayName("상행역과 하행역이 모두 존재하는 경우에 대한 예외처리")
-    void checkExistence(){
+    void checkExistence() {
         Section section = new Section(2L, 1L, 1L, 2L, 15);
 
-        assertThatThrownBy(()->sections.save(section))
+        assertThatThrownBy(() -> sections.save(section))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행역과 하행역이 이미 모두 존재합니다.");
     }
 
     @Test
     @DisplayName("노선에 상행역과 하행역이 모두 존재하지 않는 경우에 대한 예외처리")
-    void checkConnected(){
+    void checkConnected() {
         Section section = new Section(2L, 1L, 3L, 4L, 15);
 
-        assertThatThrownBy(()->sections.save(section))
+        assertThatThrownBy(() -> sections.save(section))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("기존 노선과 연결된 구간이 아닙니다.");
 
@@ -58,17 +58,17 @@ public class SectionsTest {
 
     @Test
     @DisplayName("갈래길의 길이가 기존 구간보다 긴 경우에 대한 예외처리")
-    void checkDistance(){
+    void checkDistance() {
         Section section = new Section(2L, 1L, 1L, 3L, 15);
 
-        assertThatThrownBy(()->sections.save(section))
+        assertThatThrownBy(() -> sections.save(section))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("적절한 거리가 아닙니다.");
     }
 
     @Test
     @DisplayName("갈래길이 발생하지 않으면 Optional.empty를 반환.")
-    void overLappedSectionNotExist(){
+    void overLappedSectionNotExist() {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
 
         assertTrue(sections.fixOverLappedSection(section).isEmpty());
@@ -76,7 +76,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("갈래길이 발생하면 수정된 기존 구간을 반환.")
-    void fixOverLappedSection(){
+    void fixOverLappedSection() {
         Section section = new Section(2L, 1L, 1L, 3L, 10);
 
         assertTrue(sections.fixOverLappedSection(section).isPresent());
@@ -84,7 +84,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("섹션 제거")
-    void deleteSection(){
+    void deleteSection() {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
         sections.delete(1L, 2L);
@@ -94,15 +94,15 @@ public class SectionsTest {
 
     @Test
     @DisplayName("제거하려는 구간이 노선의 유일한 구간인 경우에 대한 예외처리")
-    void checkDelete(){
-        assertThatThrownBy(()->sections.delete(1L, 2L))
+    void checkDelete() {
+        assertThatThrownBy(() -> sections.delete(1L, 2L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선의 유일한 구간은 삭제할 수 없습니다.");
     }
 
     @Test
     @DisplayName("구간 제거로 인해 끊긴 구간이 없으면 Optional.empty를 반환")
-    void disconnectedSectionNotExist(){
+    void disconnectedSectionNotExist() {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
@@ -111,7 +111,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("구간 제거로 인해 끊긴 구간이 있으면 수정된 구간을 반환")
-    void fixDisconnectedSection(){
+    void fixDisconnectedSection() {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
@@ -120,7 +120,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("역 정렬")
-    void SortStations(){
+    void SortStations() {
 
         List<Station> stations = new ArrayList<>(List.of(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "선릉역")));
         Section section = new Section(2L, 1L, 3L, 1L, 5);
