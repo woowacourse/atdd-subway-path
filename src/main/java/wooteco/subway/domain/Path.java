@@ -1,9 +1,12 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.NoSuchPathException;
 
 public class Path {
 
@@ -31,14 +34,23 @@ public class Path {
     }
 
     public List<Station> findRoute(final Station source, final Station target) {
+        validateExistsPath(source, target);
         return path.getPath(source, target).getVertexList();
     }
 
     public int calculateDistance(final Station source, final Station target) {
-        return (int) path.getPath(source, target).getWeight();
+        validateExistsPath(source, target);
+        return  (int) path.getPathWeight(source, target);
+    }
+
+    private void validateExistsPath(final Station source, final Station target) {
+        if (this.path.getPath(source, target) == null) {
+            throw new NoSuchPathException(source.getId(), target.getId());
+        }
     }
 
     public int calculateFare(final Station source, final Station target) {
+        validateExistsPath(source, target);
         int distance = (int) path.getPathWeight(source, target);
         return BASIC_FARE + calculateFare(distance);
     }
