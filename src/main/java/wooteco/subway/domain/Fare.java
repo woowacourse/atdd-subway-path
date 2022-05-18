@@ -18,8 +18,8 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare from(int distance) {
-        return new Fare(DEFAULT_FARE + calculateOverFare(distance));
+    public static Fare from(Distance distance) {
+        return new Fare(DEFAULT_FARE + calculateOverFare(distance.getValue()));
     }
 
     private static int calculateOverFare(int distance) {

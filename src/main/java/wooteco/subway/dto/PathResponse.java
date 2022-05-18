@@ -15,7 +15,7 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
-        this.distance = path.getDistance();
+        this.distance = path.getDistance().getValue();
         this.fare = path.getFare().getValue();
     }
 

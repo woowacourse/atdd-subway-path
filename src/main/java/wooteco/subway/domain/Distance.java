@@ -11,6 +11,10 @@ public class Distance {
         this.value = value;
     }
 
+    public Distance(double value) {
+        this((int) value);
+    }
+
     private void validatePositive(int value) {
         if (value <= 0) {
             throw new IllegalArgumentException("거리는 0이하가 될 수 없습니다.");
