@@ -44,6 +44,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    /*
+      Scenario: 경로 조회 실패
+           when: 경로 조회를 요청한다.
+           if: 출발역과 도착역이 같다.
+           then: 에러 메시지를 응답한다.
+     */
+    @Test
+    @DisplayName("출발역과 도착역 사이의 경로를 조회한다.")
+    void find_sameStation() {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SINSA);
+        final Long stationId3 = createStation(GANGNAM);
+        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        createSection(lineId, stationId2, stationId3, 10);
+
+        // when
+        final ExtractableResponse<Response> response = getPath(stationId1, stationId1, 29);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /*
+      Scenario: 경로 조회 실패
+           when: 경로 조회를 요청한다.
+           if: 출발역과 도착역 사이의 경로가 없다.
+           then: 에러 메시지를 응답한다.
+     */
+
     private ExtractableResponse<Response> getPath(Long source, Long target, int age) {
         final Map<String, Object> params = new HashMap<>();
         params.put("source", source);
@@ -57,13 +87,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-
-    /*
-      Scenario: 경로 조회 실패
-           when: 경로 조회를 요청한다.
-           if: 출발역과 도착역 사이의 경로가 없다.
-           then: 에러 메시지를 응답한다.
-     */
 
     private Long createStation(final String name) {
         final Map<String, String> params = new HashMap<>();

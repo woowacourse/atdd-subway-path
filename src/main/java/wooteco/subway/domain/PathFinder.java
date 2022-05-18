@@ -24,8 +24,15 @@ public class PathFinder {
     }
 
     public Path findPath(final Station source, final Station target) {
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+        validateSameStation(source, target);
+        final List<Station> route = dijkstraShortestPath.getPath(source, target).getVertexList();
         final int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
-        return new Path(shortestPath, distance);
+        return new Path(route, distance);
+    }
+
+    private void validateSameStation(final Station source, final Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+        }
     }
 }
