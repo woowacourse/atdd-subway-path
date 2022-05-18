@@ -23,7 +23,12 @@ public class Subway {
 
     public static Subway of(List<Line> lines) {
         WeightedMultigraph graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        initGraph(lines, graph);
 
+        return new Subway(new DijkstraShortestPath(graph), new Fare(BASE_FARE));
+    }
+
+    private static void initGraph(List<Line> lines, WeightedMultigraph graph) {
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
@@ -31,8 +36,6 @@ public class Subway {
         for(Line line : lines){
             addEdge(graph, line.getSections());
         }
-
-        return new Subway(new DijkstraShortestPath(graph), new Fare(BASE_FARE));
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
@@ -51,10 +54,14 @@ public class Subway {
     public Path findShortestPath(Station source, Station target) {
         GraphPath path = pathFinder.getPath(source, target);
 
+        validateEmptyPath(path);
+        return Path.of(path.getVertexList(), path.getWeight());
+    }
+
+    private void validateEmptyPath(GraphPath path) {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
-        return Path.of(path.getVertexList(), path.getWeight());
     }
 
     public int calculateFare(int distance) {
