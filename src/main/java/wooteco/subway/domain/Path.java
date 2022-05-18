@@ -25,6 +25,17 @@ public class Path {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
                 DefaultWeightedEdge.class);
 
+        addSectionsToGraph(sections, graph);
+
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        try {
+            return shortestPath.getPath(departure, arrival);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("찾으시는 경로가 존재하지 않습니다!");
+        }
+    }
+
+    private void addSectionsToGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
             final Station upStation = section.getUpStation();
             final Station downStation = section.getDownStation();
@@ -33,9 +44,6 @@ public class Path {
             graph.addVertex(downStation);
             graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
         }
-
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(departure, arrival);
     }
 
     public List<Station> getStations() {

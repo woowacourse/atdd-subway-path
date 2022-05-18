@@ -20,10 +20,10 @@ public class PathService {
     }
 
     public PathResponse getPath(Long sourceStationId, Long targetStationId) {
-        List<Section> sections = sectionDao.findAll();
-
         Station departure = stationService.findStationById(sourceStationId);
         Station arrival = stationService.findStationById(targetStationId);
+
+        List<Section> sections = sectionDao.findAll();
 
         return new PathResponse(new Path(sections, departure, arrival));
     }
