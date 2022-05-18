@@ -11,14 +11,17 @@ public class BasicFareStrategy implements FareStrategy {
     @Override
     public int calculate(int distance) {
         int overDistance = distance - BASE_DISTANCE;
-        return Math.max(calculateOverFare(overDistance), MIN_EXTRA_FARE);
+        if (overDistance >= MIN_EXTRA_FARE) {
+            return calculateOverFare(overDistance);
+        }
+        return MIN_EXTRA_FARE;
     }
 
     private int calculateOverFare(int distance) {
-        if (distance > FIRST_ROLE_STANDARD_DISTANCE) {
-            return (int) ((Math.ceil((FIRST_ROLE_STANDARD_DISTANCE - 1) / FIRST_ROLE_EXTRA_FARE_STANDARD) + 1) * 100)
-                    + (int) ((Math.ceil((distance - FIRST_ROLE_STANDARD_DISTANCE - 1) / SECOND_ROLE_EXTRA_FARE_STANDARD) + 1) * 100);
+        if (distance > 40) {
+            return (int) (Math.ceil((40 - 1) / 5) + 1) * 100
+                    + (int) (Math.ceil((distance - 41) / 8) + 1) * 100;
         }
-        return (int) ((Math.ceil((distance - 1) / FIRST_ROLE_EXTRA_FARE_STANDARD) + 1) * 100);
+        return (int) (Math.ceil((distance - 1) / 5) + 1) * 100;
     }
 }
