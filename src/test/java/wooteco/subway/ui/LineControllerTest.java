@@ -1,4 +1,4 @@
-package wooteco.subway.acceptance.ui;
+package wooteco.subway.ui;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,8 +51,8 @@ class LineControllerTest {
         final LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), 10);
 
         mockMvc.perform(post("/lines")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lineRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(lineRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("name").value(name))
                 .andExpect(jsonPath("color").value(color))
@@ -90,8 +90,8 @@ class LineControllerTest {
         final LineRequest lineRequest = new LineRequest(name, color, 1L, 2L, 10);
 
         mockMvc.perform(put("/lines/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lineRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(lineRequest)))
                 .andExpect(status().isOk());
     }
 
@@ -110,8 +110,8 @@ class LineControllerTest {
         final SectionRequest sectionRequest = new SectionRequest(잠실.getId(), 석촌.getId(), 10);
 
         mockMvc.perform(post("/lines/1/sections")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(sectionRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sectionRequest)))
                 .andExpect(status().isOk());
     }
 
@@ -123,7 +123,7 @@ class LineControllerTest {
         lineService.addSection(1L, 잠실.getId(), 석촌.getId(), 10);
 
         mockMvc.perform(delete("/lines/1/sections")
-                .param("stationId", "1"))
+                        .param("stationId", "1"))
                 .andExpect(status().isNoContent());
     }
 
@@ -131,7 +131,7 @@ class LineControllerTest {
     @DisplayName("구간이 1개인 상태에서 구간의 역을 삭제하면 400에러가 발생한다.")
     void deleteFinalSection() throws Exception {
         mockMvc.perform(delete("/lines/1/sections")
-                .param("stationId", "1"))
+                        .param("stationId", "1"))
                 .andExpect(status().isBadRequest());
     }
 }

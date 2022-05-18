@@ -1,4 +1,4 @@
-package wooteco.subway.acceptance.application;
+package wooteco.subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.application.StationService;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 

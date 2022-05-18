@@ -1,4 +1,4 @@
-package wooteco.subway.acceptance.ui;
+package wooteco.subway.ui;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

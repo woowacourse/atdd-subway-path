@@ -1,12 +1,12 @@
-package wooteco.subway.acceptance.application;
+package wooteco.subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
-import static wooteco.subway.acceptance.Fixture.강남역;
-import static wooteco.subway.acceptance.Fixture.청계산입구역;
+import static wooteco.subway.Fixture.강남역;
+import static wooteco.subway.Fixture.청계산입구역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.application.LineService;
-import wooteco.subway.application.StationService;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;

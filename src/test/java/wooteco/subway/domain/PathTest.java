@@ -1,4 +1,4 @@
-package wooteco.subway.acceptance.domain;
+package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,9 +6,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
 
 class PathTest {
     private Station 강남역;

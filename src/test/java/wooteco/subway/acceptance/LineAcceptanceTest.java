@@ -1,22 +1,21 @@
-package wooteco.subway.acceptance.acceptance;
+package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.LINE_URL;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.STATION_URL;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.deleteMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.getExpectedLineIds;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.getMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.getResultLineIds;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.postMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.putMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.강남역;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.백석역;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.신분당선;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.양재역;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.일산역;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.청계산입구역;
+import static wooteco.subway.acceptance.AcceptanceFixture.LINE_URL;
+import static wooteco.subway.acceptance.AcceptanceFixture.STATION_URL;
+import static wooteco.subway.acceptance.AcceptanceFixture.deleteMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.getExpectedLineIds;
+import static wooteco.subway.acceptance.AcceptanceFixture.getMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.getResultLineIds;
+import static wooteco.subway.acceptance.AcceptanceFixture.postMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.putMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.강남역;
+import static wooteco.subway.acceptance.AcceptanceFixture.백석역;
+import static wooteco.subway.acceptance.AcceptanceFixture.신분당선;
+import static wooteco.subway.acceptance.AcceptanceFixture.양재역;
+import static wooteco.subway.acceptance.AcceptanceFixture.일산역;
+import static wooteco.subway.acceptance.AcceptanceFixture.청계산입구역;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.acceptance.AcceptanceTest;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 

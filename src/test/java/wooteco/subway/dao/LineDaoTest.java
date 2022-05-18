@@ -1,9 +1,9 @@
-package wooteco.subway.acceptance.dao;
+package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.acceptance.Fixture.강남역;
-import static wooteco.subway.acceptance.Fixture.청계산입구역;
+import static wooteco.subway.Fixture.강남역;
+import static wooteco.subway.Fixture.청계산입구역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 
 @JdbcTest

@@ -1,14 +1,14 @@
-package wooteco.subway.acceptance.acceptance;
+package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.LINE_URL;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.STATION_URL;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.getMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.postMethodRequest;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.강남역;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.신분당선;
-import static wooteco.subway.acceptance.acceptance.AcceptanceFixture.청계산입구역;
+import static wooteco.subway.acceptance.AcceptanceFixture.LINE_URL;
+import static wooteco.subway.acceptance.AcceptanceFixture.STATION_URL;
+import static wooteco.subway.acceptance.AcceptanceFixture.getMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.postMethodRequest;
+import static wooteco.subway.acceptance.AcceptanceFixture.강남역;
+import static wooteco.subway.acceptance.AcceptanceFixture.신분당선;
+import static wooteco.subway.acceptance.AcceptanceFixture.청계산입구역;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
