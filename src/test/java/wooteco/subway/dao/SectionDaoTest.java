@@ -46,6 +46,23 @@ public class SectionDaoTest {
                 .isEqualTo(section);
     }
 
+    @Test
+    @DisplayName("등록된 전체 구간을 조회한다.")
+    void findAll() {
+        // given
+        Station gangnam = stationDao.save(new Station("강남역"));
+        Station yeoksam = stationDao.save(new Station("역삼역"));
+        Station seolleung = stationDao.save(new Station("선릉역"));
+
+        Line line = lineDao.save(new Line("2호선", "초록색"));
+        Section gangnam_yeoksam = sectionDao.save(line, new Section(line.getId(), gangnam, yeoksam, 1));
+        Section yeoksam_seolleung = sectionDao.save(line, new Section(line.getId(), yeoksam, seolleung, 1));
+
+        List<Section> sections = sectionDao.findAll();
+
+        assertThat(sections).containsOnly(gangnam_yeoksam, yeoksam_seolleung);
+    }
+
     @DisplayName("노선을 받아서 구간을 조회한다.")
     @Test
     void findByLineId() {
