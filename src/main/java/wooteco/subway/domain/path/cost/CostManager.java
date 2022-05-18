@@ -13,7 +13,6 @@ public class CostManager {
     public CostManager(List<CostSection> costSections) {
         this.costSections = new ArrayList<>(costSections);
         Collections.sort(this.costSections);
-
     }
 
     public int calculateFare(int totalDistance) {
