@@ -3,15 +3,13 @@ package wooteco.subway.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.*;
 
@@ -41,7 +39,9 @@ class PathServiceTest {
     @BeforeEach
     void setUp() {
         pathService = new PathService(
-                new StationDao(jdbcTemplate, dataSource), new SectionDao(jdbcTemplate,dataSource));
+                new FareCalculator(),
+                new SectionDao(jdbcTemplate, dataSource),
+                new StationDao(jdbcTemplate, dataSource));
     }
 
     void setUpSubwayMap() {
@@ -70,37 +70,6 @@ class PathServiceTest {
 
         LineResponse 우테코선 = lineService.create(new LineRequest("우테코선", "red", 모란역.getId(),
                 선정릉역.getId(), 6));
-    }
-
-    @DisplayName("자연수 이외의 입력은 예외를 반환한다")
-    @ParameterizedTest(name = "허용되지 않는 거리 : {0}")
-    @ValueSource(ints = {0, -1})
-    void throwExceptionWhenNotNaturalNumberInput(int distance) {
-        org.assertj.core.api.Assertions.assertThatThrownBy(
-                () -> pathService.calculateFare(distance)
-        ).isInstanceOf(Exception.class);
-    }
-
-    @DisplayName("10km 까지는 기본적으로 1250원이다.")
-    @ParameterizedTest(name = "거리가 {0} km 일 때는 1250원이다")
-    @ValueSource(ints = {8, 10})
-    void calculateFareUntil_10km(int distance) {
-        assertThat(pathService.calculateFare(distance)).isEqualTo(1_250);
-
-    }
-
-    @DisplayName("10~50km 까지는 5km 마다 100원씩 증액한다")
-    @ParameterizedTest(name = "거리가 {0} km 일 때는 {1} 원이다")
-    @CsvSource(value = {"11 - 1350", "14 - 1350", "50 - 2050"}, delimiterString = " - ")
-    void calculateFareBetween_10km_and_50km(int distance, int fare) {
-        assertThat(pathService.calculateFare(distance)).isEqualTo(fare);
-    }
-
-    @DisplayName("50km 초과시 8km 마다 100원씩 증액한다")
-    @ParameterizedTest(name = "거리가 {0} km 일 때는 {1} 원이다")
-    @CsvSource(value = {"51 - 2150", "58 - 2150", "59 - 2250"}, delimiterString = " - ")
-    void calculateFareOver_50km(int distance, int fare) {
-        assertThat(pathService.calculateFare(distance)).isEqualTo(fare);
     }
 
     @DisplayName("경로를 올바르게 조회한다.")
