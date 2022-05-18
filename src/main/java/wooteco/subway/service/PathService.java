@@ -15,7 +15,6 @@ import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -24,12 +23,10 @@ import wooteco.subway.dto.StationResponse;
 public class PathService {
 
     private final SectionDao sectionDao;
-    private final LineService lineService;
     private final StationService stationService;
 
-    public PathService(SectionDao sectionDao, LineService lineService, StationService stationService) {
+    public PathService(SectionDao sectionDao, StationService stationService) {
         this.sectionDao = sectionDao;
-        this.lineService = lineService;
         this.stationService = stationService;
     }
 
@@ -37,15 +34,16 @@ public class PathService {
         Station source = stationService.findById(sourceId).toStation();
         Station target = stationService.findById(targetId).toStation();
 
-        List<Long> lineIds = lineService.findAll()
-                .stream()
-                .map(LineResponse::getId)
-                .collect(toList());
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        for (Long lineId : lineIds) {
-            fillGraph(graph, lineId);
+        Sections sections = new Sections(sectionDao.findAll());
+        for (Station station : sections.getStations()) {
+            graph.addVertex(station);
+        }
+
+        for (Section section : sections.getValue()) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
@@ -71,18 +69,6 @@ public class PathService {
             return dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("노선에 등록되지 않는 지하철역입니다.");
-        }
-    }
-
-    private void fillGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Long lineId) {
-        Sections sections = new Sections(sectionDao.findByLineId(lineId));
-
-        for (Station station : sections.getStations()) {
-            graph.addVertex(station);
-        }
-
-        for (Section section : sections.getValue()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
     }
 }

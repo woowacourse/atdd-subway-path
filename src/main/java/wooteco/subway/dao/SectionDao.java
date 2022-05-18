@@ -93,6 +93,20 @@ public class SectionDao {
         return jdbcTemplate.query(sql, Map.of("lineId", lineId), generateRowMapper());
     }
 
+    public List<Section> findAll() {
+        String sql = "select s.id, "
+                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.up_station_id, up.name as up_station_name, "
+                + "s.down_station_id, down.name as down_station_name, "
+                + "s.distance "
+                + "from SECTION s "
+                + "join LINE l on s.line_id = l.id "
+                + "join STATION up on s.up_station_id = up.id "
+                + "join STATION down on s.down_station_id = down.id";
+
+        return jdbcTemplate.query(sql, generateRowMapper());
+    }
+
     private RowMapper<Section> generateRowMapper() {
         return (resultSet, rowNum) -> {
             Long sectionId = resultSet.getLong("id");
