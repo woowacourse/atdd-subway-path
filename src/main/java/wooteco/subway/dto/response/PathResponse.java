@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.cost.CostManager;
 import wooteco.subway.domain.station.Station;
 
 public class PathResponse {
@@ -20,10 +21,10 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(Path path) {
+    public static PathResponse of(Path path, CostManager costManager) {
         List<StationResponse> stations = toStationResponse(path.getStations());
         int distance = path.getTotalDistance();
-        int fare = path.calculateFare();
+        int fare = costManager.calculateFare(distance);
         return new PathResponse(stations, distance, fare);
     }
 
