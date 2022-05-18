@@ -7,6 +7,8 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.exception.EmptyResultException;
+
 public class SubwayMap {
     private final DijkstraShortestPath pathFinder;
 
@@ -41,9 +43,12 @@ public class SubwayMap {
         }
     }
 
-    public Path findShortestPath(Station station1, Station station2) {
-        GraphPath path = pathFinder.getPath(station1, station2);
+    public Path findShortestPath(Station source, Station target) {
+        GraphPath path = pathFinder.getPath(source, target);
 
+        if (path == null) {
+            throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
+        }
         return Path.of(path.getVertexList(), path.getWeight());
     }
 }
