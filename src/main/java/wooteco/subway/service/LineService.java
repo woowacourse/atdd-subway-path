@@ -7,7 +7,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -82,8 +82,8 @@ public class LineService {
     }
 
     private List<StationResponse> createStationResponseByLineId(Long lineId) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
-        List<Long> sortedStationIds = sections.getSortedStationIds();
+        LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
+        List<Long> sortedStationIds = lineSections.getSortedStationIds();
         List<Station> stations = stationDao.findAllByLineId(lineId);
 
         return convertSortedStationIdToResponses(sortedStationIds, stations);

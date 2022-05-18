@@ -7,11 +7,11 @@ import wooteco.subway.exception.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sections {
+public class LineSections {
 
     private final List<Section> values;
 
-    public Sections(List<Section> values) {
+    public LineSections(List<Section> values) {
         this.values = sortSections(values);
     }
 

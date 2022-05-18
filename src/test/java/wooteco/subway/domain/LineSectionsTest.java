@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class SectionsTest {
+class LineSectionsTest {
 
     private final Long lineId = 1L;
     private final Long lastUpStationId = 3L;
@@ -23,20 +23,20 @@ class SectionsTest {
 
     private Section section1;
     private Section section2;
-    private Sections sections;
+    private LineSections lineSections;
 
     @BeforeEach
     void setUp() {
         section1 = new Section(1L, lineId, lastUpStationId, middleStationId, 10);
         section2 = new Section(2L, lineId, middleStationId, lastDownStationId, 10);
-        sections = new Sections(List.of(section1, section2));
+        lineSections = new LineSections(List.of(section1, section2));
     }
 
     @DisplayName("상행 구간을 등록한다.")
     @Test
     void addLastUpSection() {
         Section newSection = new Section(lineId, newStationId, lastUpStationId, 10);
-        SectionsToBeCreatedAndUpdated result = sections.add(newSection);
+        SectionsToBeCreatedAndUpdated result = lineSections.add(newSection);
 
         assertAll(
                 () -> assertThat(result.getSectionToBeCreated()).isEqualTo(newSection),
@@ -48,7 +48,7 @@ class SectionsTest {
     @Test
     void addLastDownSection() {
         Section newSection = new Section(lineId, lastDownStationId, newStationId, 10);
-        SectionsToBeCreatedAndUpdated result = sections.add(newSection);
+        SectionsToBeCreatedAndUpdated result = lineSections.add(newSection);
 
         assertAll(
                 () -> assertThat(result.getSectionToBeCreated()).isEqualTo(newSection),
@@ -60,7 +60,7 @@ class SectionsTest {
     @Test
     void addMiddleSectionInFrontOfExistSection() {
         Section newSection = new Section(lineId, lastUpStationId, newStationId, 7);
-        SectionsToBeCreatedAndUpdated result = sections.add(newSection);
+        SectionsToBeCreatedAndUpdated result = lineSections.add(newSection);
 
         Section updatedSection = new Section(section1.getId(), section1.getLineId(),
                 newStationId, section1.getDownStationId(), section1.getDistance() - 7);
@@ -74,7 +74,7 @@ class SectionsTest {
     @Test
     void addMiddleSectionBehindOfExistSection() {
         Section newSection = new Section(lineId, newStationId, middleStationId, 7);
-        SectionsToBeCreatedAndUpdated result = sections.add(newSection);
+        SectionsToBeCreatedAndUpdated result = lineSections.add(newSection);
 
         Section updatedSection = new Section(section1.getId(), section1.getLineId(),
                 section1.getUpStationId(), newStationId, section1.getDistance() - 7);
@@ -89,7 +89,7 @@ class SectionsTest {
     void throwsExceptionWhenNewSectionDistanceLongerThanExistSection() {
         Section newSection = new Section(lineId, newStationId, middleStationId, 10);
 
-        assertThatThrownBy(() -> sections.add(newSection))
+        assertThatThrownBy(() -> lineSections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("새로운 구간의 길이는 기존 역 사이의 길이보다 작아야 합니다.");
     }
@@ -99,7 +99,7 @@ class SectionsTest {
     void throwsExceptionWhenAddSectionWithNotExistStations() {
         Section newSection = new Section(lineId, 100L, 101L, 10);
 
-        assertThatThrownBy(() -> sections.add(newSection))
+        assertThatThrownBy(() -> lineSections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구간을 추가하기 위해서는 노선에 들어있는 역이 필요합니다.");
     }
@@ -109,7 +109,7 @@ class SectionsTest {
     void throwsExceptionWhenAddSectionWithAllExistStationInLine() {
         Section newSection = new Section(lineId, lastUpStationId, lastDownStationId, 10);
 
-        assertThatThrownBy(() -> sections.add(newSection))
+        assertThatThrownBy(() -> lineSections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.");
     }
@@ -117,7 +117,7 @@ class SectionsTest {
     @DisplayName("상행역을 삭제한다.")
     @Test
     void deleteLastUpStation() {
-        SectionsToBeDeletedAndUpdated result = sections.delete(lastUpStationId);
+        SectionsToBeDeletedAndUpdated result = lineSections.delete(lastUpStationId);
 
         assertAll(
                 () -> assertThat(result.getSectionToBeRemoved()).isEqualTo(section1),
@@ -128,7 +128,7 @@ class SectionsTest {
     @DisplayName("하행역을 삭제한다.")
     @Test
     void deleteLastDownStation() {
-        SectionsToBeDeletedAndUpdated result = sections.delete(lastDownStationId);
+        SectionsToBeDeletedAndUpdated result = lineSections.delete(lastDownStationId);
 
         assertAll(
                 () -> assertThat(result.getSectionToBeRemoved()).isEqualTo(section2),
@@ -139,7 +139,7 @@ class SectionsTest {
     @DisplayName("중간역을 삭제한다.")
     @Test
     void deleteMiddleStation() {
-        SectionsToBeDeletedAndUpdated result = sections.delete(middleStationId);
+        SectionsToBeDeletedAndUpdated result = lineSections.delete(middleStationId);
 
         Section updatedSection = new Section(section1.getId(), section1.getLineId(),
                 section1.getUpStationId(), section2.getDownStationId(), section1.getDistance() + section2.getDistance());
@@ -152,7 +152,7 @@ class SectionsTest {
     @DisplayName("노선에 존재하지 않는 역을 삭제할 시 예외가 발생한다.")
     @Test
     void throwsExceptionWhenDeleteStationNotExistInLine() {
-        assertThatThrownBy(() -> sections.delete(newStationId))
+        assertThatThrownBy(() -> lineSections.delete(newStationId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageMatching("현재 라인에 존재하지 않는 역입니다.");
     }
@@ -160,8 +160,8 @@ class SectionsTest {
     @DisplayName("구간이 하나인 노선은 구간 삭제가 불가능하다.")
     @Test
     void throwsExceptionWhenDeleteStationWithOnlyOneSectionInLine() {
-        Sections sectionsThatHaveOneSection = new Sections(List.of(section1));
-        assertThatThrownBy(() -> sectionsThatHaveOneSection.delete(middleStationId))
+        LineSections lineSectionsThatHaveOneSection = new LineSections(List.of(section1));
+        assertThatThrownBy(() -> lineSectionsThatHaveOneSection.delete(middleStationId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구간이 하나인 노선에서는 구간 삭제가 불가합니다.");
     }
@@ -169,7 +169,7 @@ class SectionsTest {
     @DisplayName("역의 id를 상행부터 하행 순으로 반환한다.")
     @Test
     void getSortedStationIds() {
-        List<Long> sortedStationIds = sections.getSortedStationIds();
+        List<Long> sortedStationIds = lineSections.getSortedStationIds();
         List<Long> expected = List.of(3L, 1L, 2L);
 
         assertThat(sortedStationIds).isEqualTo(expected);
