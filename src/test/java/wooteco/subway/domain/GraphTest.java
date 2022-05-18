@@ -26,7 +26,7 @@ class GraphTest {
 
         assertAll(
                 () -> assertThat(path.getVertexes()).containsExactly(서울대입구역, 봉천역, 신림역),
-                () -> assertThat(path.getWeight()).isEqualTo(30)
+                () -> assertThat(path.getDistance()).isEqualTo(30)
         );
     }
 }
