@@ -21,12 +21,6 @@ public class Section {
         this.distance = distance;
     }
 
-    private void checkPositiveDistance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("구간거리는 음수일 수 없습니다.");
-        }
-    }
-
     public boolean isSameUpStation(Station upStation) {
         return this.upStation.equals(upStation);
     }
@@ -69,5 +63,11 @@ public class Section {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    private void checkPositiveDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("구간거리는 음수일 수 없습니다.");
+        }
     }
 }

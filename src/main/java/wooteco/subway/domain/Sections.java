@@ -68,6 +68,25 @@ public class Sections {
         return sections;
     }
 
+    public Section splitSection(Section newSection) {
+        Station upStation = newSection.getUpStation();
+        Station downStation = newSection.getDownStation();
+        int distance = newSection.getDistance();
+
+        if (hasSameUpStation(upStation)) {
+            Section existSection = findSectionWithUpStation(upStation);
+            int existDistance = existSection.getDistance();
+            return new Section(existSection.getId(), newSection.getLine(), downStation,
+                    existSection.getDownStation(), existDistance - distance);
+        }
+
+        Section existSection = findSectionWithDownStation(downStation);
+        int existDistance = existSection.getDistance();
+        return new Section(existSection.getId(), newSection.getLine(),
+                existSection.getUpStation(),
+                upStation, existDistance - distance);
+    }
+
     private List<Section> sort(List<Section> sections) {
         List<Section> sortedSection = new ArrayList<>();
         Section next = findFirstSection(sections);
@@ -118,25 +137,6 @@ public class Sections {
                 .filter(section -> section.isSameUpStation(lastUpStation))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("상행종점이 없습니다."));
-    }
-
-    public Section splitSection(Section newSection) {
-        Station upStation = newSection.getUpStation();
-        Station downStation = newSection.getDownStation();
-        int distance = newSection.getDistance();
-
-        if (hasSameUpStation(upStation)) {
-            Section existSection = findSectionWithUpStation(upStation);
-            int existDistance = existSection.getDistance();
-            return new Section(existSection.getId(), newSection.getLine(), downStation,
-                    existSection.getDownStation(), existDistance - distance);
-        }
-
-        Section existSection = findSectionWithDownStation(downStation);
-        int existDistance = existSection.getDistance();
-        return new Section(existSection.getId(), newSection.getLine(),
-                existSection.getUpStation(),
-                upStation, existDistance - distance);
     }
 }
 
