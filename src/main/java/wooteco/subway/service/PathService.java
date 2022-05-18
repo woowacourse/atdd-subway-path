@@ -9,13 +9,14 @@ import wooteco.subway.domain.BasicFareStrategy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 
 @Service
 public class PathService {
+
+    private static final int BASIC_FARE = 1250;
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -31,7 +32,7 @@ public class PathService {
 
         List<Section> sections = sectionDao.findAll();
 
-        Path path = new Path(new Sections(sections));
+        Path path = new Path(sections);
         List<Long> shortestPath = path.createShortestPath(source, target);
 
         List<Station> stations = shortestPath.stream()
@@ -39,7 +40,7 @@ public class PathService {
                 .collect(Collectors.toList());
 
         int distance = path.calculateDistance(source, target);
-        Fare fare = new Fare(1250);
+        Fare fare = new Fare(BASIC_FARE);
 
         return new PathResponse(stations, distance,
                 fare.calculateFare(distance, new BasicFareStrategy()));

@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Station {
 
-    private Long id;
     private final String name;
+    private Long id;
 
     public Station(Long id, String name) {
         this.id = id;
@@ -16,16 +16,20 @@ public class Station {
         this(null, name);
     }
 
+    public boolean isSameStation(Station target) {
+        return this.equals(target);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

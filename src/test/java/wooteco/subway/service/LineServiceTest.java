@@ -88,7 +88,8 @@ public class LineServiceTest {
 
         // then
         final Line updatedLine = lineDao.findById(lineResponse.getId());
-        final Long actual = getSections(updatedLine).getLastUpStation().getId();
+        Sections sections = getSections(updatedLine);
+        final Long actual = sections.getLastUpStation(sections.getSections()).getId();
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -111,7 +112,8 @@ public class LineServiceTest {
 
         // then
         final Line updatedLine = lineDao.findById(lineResponse.getId());
-        final Long actual = getSections(updatedLine).getLastDownStation().getId();
+        Sections sections = getSections(updatedLine);
+        final Long actual = getSections(updatedLine).getLastDownStation(sections.getSections()).getId();
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -264,8 +266,8 @@ public class LineServiceTest {
 
         // then
         Sections sections = getSections(lineDao.findById(lineId));
-        Long upStationId = sections.getLastUpStation().getId();
-        Long downStationId = sections.getLastDownStation().getId();
+        Long upStationId = sections.getLastUpStation(sections.getSections()).getId();
+        Long downStationId = sections.getLastDownStation(sections.getSections()).getId();
 
         assertThat(upStationId).isEqualTo(station1.getId());
         assertThat(downStationId).isEqualTo(station3.getId());

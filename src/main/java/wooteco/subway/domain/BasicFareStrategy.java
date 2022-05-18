@@ -3,11 +3,12 @@ package wooteco.subway.domain;
 public class BasicFareStrategy implements FareStrategy {
 
     private static final int BASIC_DISTANCE = 10;
+    private static final int MIN_EXTRA_FARE = 0;
 
     @Override
     public int calculate(int distance) {
         int overDistance = distance - BASIC_DISTANCE;
-        return Math.max(calculateOverFare(overDistance), 0);
+        return Math.max(calculateOverFare(overDistance), MIN_EXTRA_FARE);
     }
 
     private int calculateOverFare(int distance) {

@@ -88,29 +88,15 @@ public class LineService {
         final Station upStation = stationDao.findById(sectionRequest.getUpStationId());
         final Station downStation = stationDao.findById(sectionRequest.getDownStationId());
         final int distance = sectionRequest.getDistance();
+        Section newSection = new Section(line, upStation, downStation, distance);
 
         checkSectionHasNotAnyStation(sections, upStation, downStation);
         checkSectionHasAllStation(sections, upStation, downStation);
 
-        if (sections.hasSameUpStation(upStation)) {
-            Section existSection = sectionDao.findByLineIdAndUpStationId(lineId,
-                    sectionRequest.getUpStationId());
-            int existDistance = existSection.getDistance();
-            Section updateSection = new Section(existSection.getId(), line, downStation,
-                    existSection.getDownStation(), existDistance - distance);
-            sectionDao.update(updateSection);
+        if (sections.isSplit(upStation, downStation)) {
+            Section updatedSection = sections.splitSection(newSection);
+            sectionDao.update(updatedSection);
         }
-
-        if (sections.hasSameDownStation(downStation)) {
-            Section existSection = sectionDao.findByLineIdAndDownStationId(lineId,
-                    sectionRequest.getDownStationId());
-            int existDistance = existSection.getDistance();
-            Section updateSection = new Section(existSection.getId(), line,
-                    existSection.getUpStation(),
-                    upStation, existDistance - distance);
-            sectionDao.update(updateSection);
-        }
-
         sectionDao.save(new Section(line, upStation, downStation, distance));
     }
 
@@ -123,22 +109,21 @@ public class LineService {
         checkOnlyOneSection(sections);
         checkNotContainStation(sections, station);
 
-        //종점이 제거될 경우
-        //1.상행종점
-        if (sections.getLastUpStation().equals(station)) {
-            Section existSection = sectionDao.findByLineIdAndUpStationId(lineId, station.getId());
-            sectionDao.deleteById(existSection.getId());
+
+        Station lastUpStation = sections.getLastUpStation(sections.getSections());
+        if (lastUpStation.isSameStation(station)) {
+            Section upSection = sectionDao.findByLineIdAndUpStationId(lineId, stationId);
+            sectionDao.deleteById(upSection.getId());
             return;
         }
 
-        //2.하행종점
-        if (sections.getLastDownStation().equals(station)) {
-            Section existSection = sectionDao.findByLineIdAndDownStationId(lineId, station.getId());
-            sectionDao.deleteById(existSection.getId());
+        Station lastDownStation = sections.getLastDownStation(sections.getSections());
+        if (lastDownStation.isSameStation(station)) {
+            Section downSection = sectionDao.findByLineIdAndDownStationId(lineId, stationId);
+            sectionDao.deleteById(downSection.getId());
             return;
         }
 
-        //중간역 제거
         if (sections.hasSameUpStation(station) && sections.hasSameDownStation(station)) {
             Section upSection = sectionDao.findByLineIdAndDownStationId(lineId, stationId);
             Section downSection = sectionDao.findByLineIdAndUpStationId(lineId, stationId);
