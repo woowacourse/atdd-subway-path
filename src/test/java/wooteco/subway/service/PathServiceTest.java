@@ -43,21 +43,34 @@ class PathServiceTest {
     @BeforeEach
     public void setUp() {
         stations = createStations();
+        createLine1();
+        createLine2();
+        createLine3();
+        createLine4();
+    }
+
+    private void createLine1() {
         Long lineId1 = lineDao.save(new Line("1", "red"));
         sectionDao.save(new Section(stations.get(0), stations.get(1), 5), lineId1);
         sectionDao.save(new Section(stations.get(1), stations.get(2), 15), lineId1);
         sectionDao.save(new Section(stations.get(2), stations.get(3), 10), lineId1);
+    }
 
+    private void createLine2() {
         Long lineId2 = lineDao.save(new Line("2", "greed"));
         sectionDao.save(new Section(stations.get(1), stations.get(4), 4), lineId2);
         sectionDao.save(new Section(stations.get(4), stations.get(5), 7), lineId2);
         sectionDao.save(new Section(stations.get(5), stations.get(6), 4), lineId2);
+    }
 
+    private void createLine3() {
         Long lineId3 = lineDao.save(new Line("3", "orange"));
         sectionDao.save(new Section(stations.get(6), stations.get(2), 10), lineId3);
         sectionDao.save(new Section(stations.get(2), stations.get(7), 15), lineId3);
         sectionDao.save(new Section(stations.get(7), stations.get(8), 23), lineId3);
+    }
 
+    private void createLine4() {
         Long lineId4 = lineDao.save(new Line("4", "blue"));
         sectionDao.save(new Section(stations.get(9), stations.get(10), 10), lineId4);
     }
