@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
+import wooteco.subway.controller.dto.path.PathRequest;
 import wooteco.subway.controller.dto.line.LineRequest;
 import wooteco.subway.controller.dto.line.LineResponse;
 import wooteco.subway.controller.dto.section.SectionRequest;
@@ -122,6 +123,14 @@ public class ResponseCreator {
         return RestAssured.given().log().all()
                 .when()
                 .delete("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    protected static ExtractableResponse<Response> createGetPathResponse(PathRequest pathRequest) {
+        return RestAssured.given().log().all()
+                .when()
+                .get("/lines")
                 .then().log().all()
                 .extract();
     }

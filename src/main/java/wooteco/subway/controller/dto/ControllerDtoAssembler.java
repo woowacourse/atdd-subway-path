@@ -2,9 +2,11 @@ package wooteco.subway.controller.dto;
 
 import wooteco.subway.controller.dto.line.LineRequest;
 import wooteco.subway.controller.dto.line.LineResponse;
+import wooteco.subway.controller.dto.path.PathRequest;
 import wooteco.subway.controller.dto.path.PathResponse;
 import wooteco.subway.controller.dto.section.SectionRequest;
 import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.service.dto.PathRequestDto;
 import wooteco.subway.service.dto.PathResponseDto;
 import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.line.LineResponseDto;
@@ -46,5 +48,9 @@ public class ControllerDtoAssembler {
                 .map(it -> new StationResponse(it.getId(), it.getName()))
                 .collect(Collectors.toList());
         return new PathResponse(stationResponses, pathResponseDto.getDistance(), pathResponseDto.getFare());
+    }
+
+    public static PathRequestDto pathRequestDto(PathRequest pathRequest) {
+        return new PathRequestDto(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge());
     }
 }
