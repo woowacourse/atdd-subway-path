@@ -21,13 +21,12 @@ public class FareBasicStrategy implements FareStrategy {
             return BASIC_FARE + calculateStepOne(distance);
         }
 
-        return BASIC_FARE + calculateStepOne(distance)+ calculateStepTwo(distance);
+        return BASIC_FARE + calculateStepOne(distance) + calculateStepTwo(distance);
     }
 
     private int calculateStepOne(int distance) {
-        return (int) Math.ceil(
-                (Math.min(distance - BASIC_DISTANCE, STEP_ONE_DISTANCE - BASIC_DISTANCE) / STEP_ONE_CHARGE_DISTANCE)
-                        * ADDITIONAL_FARE);
+        return (int) Math.ceil(Math.min(
+                distance - BASIC_DISTANCE, STEP_ONE_DISTANCE - BASIC_DISTANCE) / STEP_ONE_CHARGE_DISTANCE) * ADDITIONAL_FARE;
     }
 
     private int calculateStepTwo(int distance) {
