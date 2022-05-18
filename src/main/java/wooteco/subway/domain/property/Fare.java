@@ -5,8 +5,14 @@ import wooteco.subway.exception.NegativeFareException;
 public class Fare {
 
     private static final int BASIC_FARE = 1250;
-    private static final Distance BASE_DISTANCE = new Distance(10);
-    private static final Distance TOP_DISTANCE = new Distance(50);
+    private static final int EXTRA_FARE = 100;
+
+    private static final int BASE_DISTANCE_THRESHOLD = 10;
+    private static final int EXTRA_FARE_DISTANCE_THRESHOLD = 50;
+
+    private static final int LOW_EXTRA_UNIT = 5;
+    private static final int HIGH_EXTRA_UNIT = 8;
+
     private final int amount;
 
     public Fare() {
@@ -24,25 +30,27 @@ public class Fare {
         }
     }
 
-    public int getAmount() {
-        return amount;
+    public Fare calculate(Distance distance) {
+        int result = amount;
+
+        final int value = distance.getValue();
+        result += Math.min(
+            calculateExtraFare(value - BASE_DISTANCE_THRESHOLD, LOW_EXTRA_UNIT),
+            HIGH_EXTRA_UNIT * EXTRA_FARE
+        );
+        result += calculateExtraFare(value - EXTRA_FARE_DISTANCE_THRESHOLD, HIGH_EXTRA_UNIT);
+
+        return new Fare(result);
     }
 
-    public Fare calculate(Distance distance) {
-        // TODO
-        int leftDistance = distance.getValue() - 10;
-        int resultAmount = amount;
-
-        if (leftDistance > 0) {
-            int extraFareCount = Math.min((leftDistance / 5) + 1, 8);
-            resultAmount += extraFareCount * 100;
-            leftDistance -= extraFareCount * 5;
+    private int calculateExtraFare(int distance, int unit) {
+        if (distance <= 0) {
+            return 0;
         }
+        return (int)((Math.ceil((distance - 1) / unit) + 1) * EXTRA_FARE);
+    }
 
-        if (leftDistance > 0) {
-            resultAmount += (leftDistance / 8) * 100;
-        }
-
-        return new Fare(resultAmount);
+    public int getAmount() {
+        return amount;
     }
 }
