@@ -151,8 +151,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 Section section = getSections().get(0);
                 assertAll(
                         () -> assertThat(getSections().size()).isEqualTo(1),
-                        () -> assertThat(section.getUpStationId()).isEqualTo(2),
-                        () -> assertThat(section.getDownStationId()).isEqualTo(3)
+                        () -> assertThat(section.getUpStationId()).isNotNull(),
+                        () -> assertThat(section.getDownStationId()).isNotNull()
                 );
             }
         }
