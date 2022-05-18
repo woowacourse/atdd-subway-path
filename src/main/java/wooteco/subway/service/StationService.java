@@ -32,6 +32,16 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Station findById(Long lindId) {
+        return stationDao.findById(lindId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Station> findAllByLineId(Long lindId) {
+        return stationDao.findAllByLineId(lindId);
+    }
+
     @Transactional
     public void deleteById(Long id) {
         stationDao.deleteById(id);

@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -17,24 +15,24 @@ import wooteco.subway.service.dto.LineServiceResponse;
 @Service
 public class LineService {
 
-    private final StationDao stationDao;
+    private final StationService stationService;
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final SectionService sectionService;
 
-    public LineService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao) {
-        this.stationDao = stationDao;
+    public LineService(StationService stationService, LineDao lineDao, SectionService sectionService) {
+        this.stationService = stationService;
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.sectionService = sectionService;
     }
 
     @Transactional
     public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
         Line savedLine = lineDao.save(new Line(lineServiceRequest.getName(), lineServiceRequest.getColor()));
-        Station upStation = stationDao.findById(lineServiceRequest.getUpStationId());
-        Station downStation = stationDao.findById(lineServiceRequest.getDownStationId());
+        Station upStation = stationService.findById(lineServiceRequest.getUpStationId());
+        Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
         Section section = new Section(savedLine.getId(), upStation.getId(), downStation.getId(),
                 lineServiceRequest.getDistance());
-        sectionDao.save(section);
+        sectionService.save(section);
         return new LineServiceResponse(savedLine, List.of(upStation, downStation));
     }
 
@@ -42,16 +40,16 @@ public class LineService {
     public List<LineServiceResponse> findAll() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(line -> new LineServiceResponse(line, stationDao.findAllByLineId(line.getId())))
+                .map(line -> new LineServiceResponse(line, stationService.findAllByLineId(line.getId())))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LineServiceResponse findById(Long id) {
         Line line = lineDao.findById(id);
-        Sections sections = sectionDao.findAllByLineId(id);
+        Sections sections = sectionService.findAllByLineId(id);
         List<Station> stations = sections.getSortedStationIdsInSingleLine().stream()
-                .map(stationDao::findById)
+                .map(stationService::findById)
                 .collect(Collectors.toList());
 
         return new LineServiceResponse(line, stations);

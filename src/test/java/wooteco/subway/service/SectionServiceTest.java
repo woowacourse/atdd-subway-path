@@ -46,7 +46,7 @@ class SectionServiceTest extends ServiceTest {
 
         Station middleStation = stationDao.save(new Station("선릉역"));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), upStation.getId(), middleStation.getId(), 5);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
@@ -65,7 +65,7 @@ class SectionServiceTest extends ServiceTest {
 
         Station middleStation = stationDao.save(new Station("선릉역"));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), middleStation.getId(), downStation.getId(), 5);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
@@ -84,7 +84,7 @@ class SectionServiceTest extends ServiceTest {
 
         Station farUpStation = stationDao.save(new Station("강남역"));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), farUpStation.getId(), upStation.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
@@ -103,7 +103,7 @@ class SectionServiceTest extends ServiceTest {
 
         Station farDownStation = stationDao.save(new Station("잠실역"));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), downStation.getId(), farDownStation.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
@@ -121,7 +121,7 @@ class SectionServiceTest extends ServiceTest {
                 10));
 
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), upStation.getId(), downStation.getId(), 5);
-        assertThatThrownBy(() -> sectionService.save(sectionServiceRequest))
+        assertThatThrownBy(() -> sectionService.connect(sectionServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -134,7 +134,7 @@ class SectionServiceTest extends ServiceTest {
         LineServiceResponse lineServiceResponse = lineService.save(lineServiceRequest);
 
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), upStation.getId(), downStation.getId(), 10);
-        assertThatThrownBy(() -> sectionService.save(sectionServiceRequest))
+        assertThatThrownBy(() -> sectionService.connect(sectionServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -151,7 +151,7 @@ class SectionServiceTest extends ServiceTest {
                 station2.getId(),
                 10));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), station2.getId(), station3.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         sectionService.delete(lineServiceResponse.getId(), station1.getId());
 
@@ -171,7 +171,7 @@ class SectionServiceTest extends ServiceTest {
                 station2.getId(),
                 10));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), station2.getId(), station3.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         sectionService.delete(lineServiceResponse.getId(), station3.getId());
 
@@ -191,7 +191,7 @@ class SectionServiceTest extends ServiceTest {
                 station2.getId(),
                 10));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), station2.getId(), station3.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         sectionService.delete(lineServiceResponse.getId(), station2.getId());
 
@@ -224,7 +224,7 @@ class SectionServiceTest extends ServiceTest {
                 station2.getId(),
                 10));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(), station2.getId(), station3.getId(), 10);
-        sectionService.save(sectionServiceRequest);
+        sectionService.connect(sectionServiceRequest);
 
         assertThatThrownBy(() -> sectionService.delete(lineServiceResponse.getId(), station4.getId()))
                 .isInstanceOf(EmptyResultDataAccessException.class);

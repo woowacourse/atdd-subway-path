@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -19,15 +18,19 @@ public class SectionService {
     private static final int MATCHING_STATION_SIZE = 1;
     private static final int DELETABLE_SECTION_SIZE = 2;
 
-    private final StationDao stationDao;
+    private final StationService stationService;
     private final SectionDao sectionDao;
 
-    public SectionService(StationDao stationDao, SectionDao sectionDao) {
-        this.stationDao = stationDao;
+    public SectionService(StationService stationService, SectionDao sectionDao) {
+        this.stationService = stationService;
         this.sectionDao = sectionDao;
     }
 
-    public void save(SectionServiceRequest sectionServiceRequest) {
+    public void save(Section section) {
+        sectionDao.save(section);
+    }
+
+    public void connect(SectionServiceRequest sectionServiceRequest) {
         validate(sectionServiceRequest);
         Long lineId = sectionServiceRequest.getLindId();
         Long upStationId = sectionServiceRequest.getUpStationId();
@@ -42,7 +45,7 @@ public class SectionService {
     }
 
     private void validate(SectionServiceRequest sectionServiceRequest) {
-        List<Long> stationIds = stationDao.findAllByLineId(sectionServiceRequest.getLindId())
+        List<Long> stationIds = stationService.findAllByLineId(sectionServiceRequest.getLindId())
                 .stream()
                 .map(Station::getId)
                 .collect(Collectors.toList());
@@ -86,5 +89,13 @@ public class SectionService {
             Section mergedSection = sectionsToDelete.merge();
             sectionDao.save(mergedSection);
         }
+    }
+
+    public Sections findAllByLineId(Long lineId) {
+        return sectionDao.findAllByLineId(lineId);
+    }
+
+    public Sections findAll() {
+        return sectionDao.findAll();
     }
 }
