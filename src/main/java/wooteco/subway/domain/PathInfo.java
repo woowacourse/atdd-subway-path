@@ -33,14 +33,7 @@ public class PathInfo {
     }
 
     public int calculateMinDistance(Station source, Station target) {
-        List<Station> paths = findPath(source, target);
-        int size = paths.size();
-        int sum = 0;
-
-        for (int i = 0; i<size - 1; ++i) {
-            sum += dijkstraShortestPath.getPathWeight(paths.get(i), paths.get(i+1));
-        }
-        return sum;
+        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public int calculateScore(Station source, Station target) {
