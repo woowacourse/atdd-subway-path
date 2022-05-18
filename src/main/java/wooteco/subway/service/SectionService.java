@@ -61,7 +61,8 @@ public class SectionService {
     }
 
     public void deleteByLineIdAndStationId(long lineId, long stationId) {
-        LineSections lineSections = new LineSections(sectionDao.findByLineIdAndStationId(lineId, stationId));
+        LineSections lineSections = new LineSections(
+            sectionDao.findByLineIdAndStationId(lineId, stationId));
         if (lineSections.hasTwoSection()) {
             Section upsideSection = lineSections.getUpsideSection();
             Section downsideSection = lineSections.getDownsideSection();

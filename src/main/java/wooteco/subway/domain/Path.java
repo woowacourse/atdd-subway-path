@@ -21,7 +21,8 @@ public class Path {
         validateMovement(sourceId, targetId);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
 
         List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
@@ -47,14 +48,16 @@ public class Path {
     }
 
     private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(Sections sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
 
         List<Long> stationIds = sections.getStationIds();
         stationIds.forEach(graph::addVertex);
 
         sections.getSections().forEach(
-                section -> graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                        section.getDistance())
+            section -> graph.setEdgeWeight(
+                graph.addEdge(section.getUpStationId(), section.getDownStationId()),
+                section.getDistance())
         );
         return graph;
     }
@@ -70,8 +73,8 @@ public class Path {
 
     public int getTotalDistance() {
         return path.stream()
-                .mapToInt(Section::getDistance)
-                .sum();
+            .mapToInt(Section::getDistance)
+            .sum();
     }
 
     public List<Long> getStationIds(long sourceId, long targetId) {

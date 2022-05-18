@@ -21,11 +21,12 @@ public class Fare {
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
             return new Fare(STANDARD_FARE
-                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
+                + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
         }
         return new Fare(STANDARD_FARE
-                + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
-                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
+            + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE,
+            FIRST_OVER_DISTANCE_UNIT)
+            + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
     }
 
     private static int calculateOverFare(int distance, int unit) {

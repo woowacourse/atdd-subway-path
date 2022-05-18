@@ -29,14 +29,14 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(new PathRequest(5L, 6L, 10));
 
         assertAll(
-                () -> assertThat(pathResponse.getStations())
-                        .extracting("id", "name")
-                        .containsExactly(
-                                tuple(5L, "강남역"),
-                                tuple(6L, "청계산입구역")
-                        ),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+            () -> assertThat(pathResponse.getStations())
+                .extracting("id", "name")
+                .containsExactly(
+                    tuple(5L, "강남역"),
+                    tuple(6L, "청계산입구역")
+                ),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
 
@@ -44,8 +44,8 @@ class PathServiceTest {
     @DisplayName("출발지와 도착지가 등록되지 않은 지하철역일 경우에 예외 발생")
     void findPathWithNotFoundStation() {
         assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(0L, 1L, 10)))
-                .isInstanceOf(NotFoundStationException.class)
-                .hasMessageContaining("존재하지 않는 지하철 역입니다.");
+            .isInstanceOf(NotFoundStationException.class)
+            .hasMessageContaining("존재하지 않는 지하철 역입니다.");
     }
 
     @Test
@@ -54,15 +54,15 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(new PathRequest(1L, 7L, 10));
 
         assertAll(
-                () -> assertThat(pathResponse.getStations())
-                        .extracting("id", "name")
-                        .containsExactly(
-                                tuple(1L, "신도림역"),
-                                tuple(2L, "왕십리역"),
-                                tuple(7L, "상일동역")
-                        ),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+            () -> assertThat(pathResponse.getStations())
+                .extracting("id", "name")
+                .containsExactly(
+                    tuple(1L, "신도림역"),
+                    tuple(2L, "왕십리역"),
+                    tuple(7L, "상일동역")
+                ),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
         );
     }
 
@@ -72,15 +72,15 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(new PathRequest(7L, 1L, 10));
 
         assertAll(
-                () -> assertThat(pathResponse.getStations())
-                        .extracting("id", "name")
-                        .containsExactly(
-                                tuple(7L, "상일동역"),
-                                tuple(2L, "왕십리역"),
-                                tuple(1L, "신도림역")
-                        ),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+            () -> assertThat(pathResponse.getStations())
+                .extracting("id", "name")
+                .containsExactly(
+                    tuple(7L, "상일동역"),
+                    tuple(2L, "왕십리역"),
+                    tuple(1L, "신도림역")
+                ),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
         );
     }
 }

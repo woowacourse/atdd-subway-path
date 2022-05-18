@@ -18,7 +18,8 @@ public class Section {
         this.lineOrder = lineOrder;
     }
 
-    public Section(Long id, long lineId, long upStationId, long downStationId, int distance, Long lineOrder) {
+    public Section(Long id, long lineId, long upStationId, long downStationId, int distance,
+                   Long lineOrder) {
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -48,7 +49,7 @@ public class Section {
         return downStationId;
     }
 
-    public List<Long> getAllStations(){
+    public List<Long> getAllStations() {
         return List.of(upStationId, downStationId);
     }
 
@@ -77,7 +78,7 @@ public class Section {
     }
 
     public long getOppositeStation(long stationId) {
-        if(upStationId == stationId){
+        if (upStationId == stationId) {
             return downStationId;
         }
         return upStationId;

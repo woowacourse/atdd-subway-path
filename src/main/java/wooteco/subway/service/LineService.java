@@ -29,7 +29,8 @@ public class LineService {
     }
 
     public LineResponse save(final LineRequest lineRequest) {
-        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(),
+            lineRequest.getExtraFare());
         validateCreateRequest(newLine);
 
         Long lineId = lineDao.save(newLine);
@@ -59,7 +60,8 @@ public class LineService {
 
     private LineResponse createLineResponse(Line newLine, List<StationResponse> stations) {
         return new LineResponse(
-                newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(), stations);
+            newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(),
+            stations);
     }
 
     private List<StationResponse> getStationsByStationIds(Long line) {
@@ -81,7 +83,8 @@ public class LineService {
     }
 
     public void update(Long lineId, LineRequest lineRequest) {
-        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(),
+            lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
 
         lineDao.update(lineId, newLine);

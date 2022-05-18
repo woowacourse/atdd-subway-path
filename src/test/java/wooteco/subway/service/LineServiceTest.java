@@ -97,7 +97,8 @@ class LineServiceTest {
     void validateDuplicationColorTest() {
         lineService.save(LINE_REQUEST);
 
-        assertThatThrownBy(() -> lineService.save(new LineRequest("line2", "red", null, null, 0, 0)))
+        assertThatThrownBy(
+            () -> lineService.save(new LineRequest("line2", "red", null, null, 0, 0)))
             .isInstanceOf(DuplicateLineException.class)
             .hasMessageContaining("이미 존재하는 노선 색깔입니다.");
     }

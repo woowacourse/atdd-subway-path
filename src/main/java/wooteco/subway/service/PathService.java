@@ -27,9 +27,11 @@ public class PathService {
     public PathResponse findShortestPath(PathRequest pathRequest) {
         validateExistStations(pathRequest);
         List<Section> allSections = sectionDao.findAll();
-        Path shortestPath = Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget());
+        Path shortestPath = Path.of(new Sections(allSections), pathRequest.getSource(),
+            pathRequest.getTarget());
         Fare fare = Fare.from(shortestPath.getTotalDistance());
-        List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
+        List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(),
+            pathRequest.getTarget());
         List<StationResponse> stations = stationService.findByStationIds(stationIds);
         return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
     }
