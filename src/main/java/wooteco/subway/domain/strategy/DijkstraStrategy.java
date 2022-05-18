@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.domain.*;
 import java.util.Optional;
 
+@Component
 public class DijkstraStrategy implements ShortestPathStrategy {
 
     @Override

@@ -8,6 +8,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.DijkstraStrategy;
+import wooteco.subway.domain.strategy.ShortestPathStrategy;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
 import wooteco.subway.exception.PathNotExistsException;
@@ -19,10 +20,12 @@ public class PathService {
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final ShortestPathStrategy strategy;
 
-    public PathService(final StationDao stationDao, final SectionDao sectionDao) {
+    public PathService(final StationDao stationDao, final SectionDao sectionDao, final ShortestPathStrategy strategy) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.strategy = strategy;
     }
 
     public Path createPath(final long sourceId, final long targetId, final int age) {
@@ -36,8 +39,6 @@ public class PathService {
 
         validateSectionExistByStationId(sections, sourceId);
         validateSectionExistByStationId(sections, targetId);
-
-        final DijkstraStrategy strategy = new DijkstraStrategy();
 
         return strategy.findPath(source, target, sections)
                 .orElseThrow(PathNotExistsException::new);
