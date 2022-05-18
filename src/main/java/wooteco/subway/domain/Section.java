@@ -1,8 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class Section {
+public class Section extends DefaultWeightedEdge {
 
     private static final int MIN_DISTANCE = 1;
     private static final String INVALID_DISTANCE_ERROR_MESSAGE = String.format("거리는 %d 이상이어야 합니다.", MIN_DISTANCE);
