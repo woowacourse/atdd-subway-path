@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,10 +69,8 @@ public class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getStations()).usingRecursiveComparison()
-                        .isEqualTo(List.of(StationResponse.from(서울대입구역),
-                                StationResponse.from(봉천역),
-                                StationResponse.from(신림역)))
+                () -> assertThat(pathResponse.getStations()).extracting("name")
+                        .containsExactly("서울대입구역", "봉천역", "신림역")
         );
     }
 
