@@ -23,11 +23,7 @@ public class Section {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
-        validateUpAndDownAreDifferent(upStation, downStation);
-        validateDistance(distance);
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
     }
 
     private void validateUpAndDownAreDifferent(Station up, Station down) {

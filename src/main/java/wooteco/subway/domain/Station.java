@@ -16,8 +16,7 @@ public class Station {
     }
 
     public Station(String name) {
-        validateNameSize(name);
-        this.name = name;
+        this(null, name);
     }
 
     private void validateNameSize(String name) {
