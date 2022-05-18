@@ -46,10 +46,6 @@ class LineAcceptanceTest extends AcceptanceTest {
         stationId2 = getSavedStationIdByResponse(response2);
     }
 
-    private long getSavedStationIdByResponse(ExtractableResponse<Response> response1) {
-        return Long.parseLong(response1.header("Location").split("/")[2]);
-    }
-
     private ExtractableResponse<Response> createStation(StationRequest stationRequest1) {
         return RestAssured.given().log().all()
             .body(stationRequest1)
@@ -326,15 +322,6 @@ class LineAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ValidatableResponse createSectionRequest(SectionRequest sectionRequest, String uri) {
-        return RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post(uri + "/sections")
-            .then().log().all();
-    }
-
     private Long createNewStation(String stationName) {
         StationRequest newStationRequest = new StationRequest(stationName);
         ExtractableResponse<Response> response = createStation(newStationRequest);
@@ -392,22 +379,5 @@ class LineAcceptanceTest extends AcceptanceTest {
             stationId2,
             10
         );
-    }
-
-    private ValidatableResponse getLineRequest(String uri) {
-        return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get(uri)
-            .then().log().all();
-    }
-
-    private ValidatableResponse createLineRequest(LineRequest lineRequest) {
-        return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest)
-            .when()
-            .post("/lines")
-            .then().log().all();
     }
 }

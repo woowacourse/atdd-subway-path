@@ -47,7 +47,7 @@
     - [x] 이용 거리 초과 시 추가운임 부과
       - [x] 10km~50km: 5km 까지 마다 100원 추가
       - [x] 50km 초과: 8km 까지 마다 100원 추가
-- [ ] get / 경로 조회 api 등록
+- [x] get / 경로 조회 api 등록
 - 변경된 API 스펙은 [API 문서 v3](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c4c291f19953498e8eda8a38253eed51#Path) 참고
 
 
