@@ -16,7 +16,7 @@ import wooteco.subway.dto.PathResponse;
 import java.util.List;
 import java.util.Objects;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class PathService {
     private final StationDao stationDao;
