@@ -77,13 +77,13 @@ public class PathServiceTest {
 
     @Test
     @DisplayName("요청에 해당 역이 존재하지 않을 때 예외를 발생시킨다.")
-    void StationNotExistByRequest() {
+    void stationNotExistByRequest() {
         // given
         final Long station1_id = StationDaoImpl.getInstance().save(station1);
         final Long station2_id = StationDaoImpl.getInstance().save(station2);
 
         //when then
-        assertThatThrownBy(() -> pathService.findShortestPath(station1_id, station2_id+1L))
+        assertThatThrownBy(() -> pathService.findShortestPath(station1_id, station2_id + 1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 역이 존재하지 않습니다.");
     }
