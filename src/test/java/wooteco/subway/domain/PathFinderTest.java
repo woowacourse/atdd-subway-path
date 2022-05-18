@@ -4,9 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setPrintAssertionsDescription;
 
 class PathFinderTest {
 
@@ -15,8 +18,8 @@ class PathFinderTest {
     @BeforeEach
     void setUp() {
         Long 노선_1 = 1L;
-        Long 노선_2 = 1L;
-        Long 노선_3 = 1L;
+        Long 노선_2 = 2L;
+        Long 노선_3 = 3L;
 
         List<Section> sections = List.of(
                 new Section(1L, 2L, 50, 노선_1),
@@ -55,5 +58,17 @@ class PathFinderTest {
     void findDistanceWithTransfer() {
         int distance = pathFinder.findDistance(1L, 6L);
         assertThat(distance).isEqualTo(61);
+    }
+
+    public static void main(String[] args) {
+        List<Integer> as = List.of(1, 2, 3);
+        List<Integer> bs = List.of(2, 3, 1);
+
+        LinkedList<Integer> list = as.stream()
+                .flatMap(a -> bs.stream()
+                        .filter(b -> b.equals(a)))
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        System.out.println("list = " + list);
     }
 }

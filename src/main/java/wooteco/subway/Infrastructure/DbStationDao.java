@@ -55,7 +55,8 @@ public class DbStationDao implements StationDao {
                 .collect(Collectors.joining(", "));
         String selectInClauseQuery = String.format("SELECT id, name FROM STATION WHERE id IN (%s)", sortedStationsIdsString);
 
-        return jdbcTemplate.query(selectInClauseQuery, ROW_MAPPER);
+        List<Station> stations = jdbcTemplate.query(selectInClauseQuery, ROW_MAPPER);
+        return sort(sortedStationIds, stations);
     }
 
     @Override

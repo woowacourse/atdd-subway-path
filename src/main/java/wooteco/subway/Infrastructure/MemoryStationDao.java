@@ -31,9 +31,11 @@ public class MemoryStationDao implements StationDao {
 
     @Override
     public List<Station> findByIdIn(Collection<Long> sortedStations) {
-        return stations.stream()
-                .filter(station -> station.getId().equals(sortedStations))
+        LinkedList<Station> stations = this.stations.stream()
+                .filter(it -> sortedStations.contains(it.getId()))
                 .collect(Collectors.toCollection(LinkedList::new));
+
+        return sort(sortedStations, stations);
     }
 
     @Override

@@ -13,9 +13,9 @@ public class PathFinder {
     private final List<Section> values;
     private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder(List<Section> values) {
-        this.values = values;
-        this.dijkstraShortestPath = initDijkstraShortestPath(values);
+    public PathFinder(List<Section> sections) {
+        this.values = sections;
+        this.dijkstraShortestPath = initDijkstraShortestPath(sections);
     }
 
     public List<Long> findPath(Long from, Long to) {

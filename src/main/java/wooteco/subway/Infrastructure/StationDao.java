@@ -2,9 +2,8 @@ package wooteco.subway.Infrastructure;
 
 import wooteco.subway.domain.Station;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public interface StationDao {
     long save(Station station);
@@ -22,4 +21,11 @@ public interface StationDao {
     void deleteById(Long id);
 
     void deleteAll();
+
+    default LinkedList<Station> sort(Collection<Long> sortedIds, Collection<Station> stations) {
+        return sortedIds.stream()
+                .flatMap(sortedId -> stations.stream()
+                        .filter(station -> station.getId().equals(sortedId)))
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
 }

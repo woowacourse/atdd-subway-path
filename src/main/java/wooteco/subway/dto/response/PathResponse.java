@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import wooteco.subway.domain.Station;
 
+import java.util.Collection;
 import java.util.List;
 
 @Getter
