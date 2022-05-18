@@ -12,7 +12,7 @@ class FareTest {
     @Test
     public void chargeDefaultFare() {
         // given
-        final Fare fare = new Fare(10);
+        final Fare fare = new Fare(9);
 
         // when
         final int result = fare.calculate();

@@ -25,9 +25,9 @@ public class Fare {
         }
 
         if (distance <= 50) {
-            return BASIC_FARE + (int) Math.ceil(((double)(distance - 10) / 5)) * ADDITIONAL_FARE;
+            return BASIC_FARE + (int) (Math.ceil((double) (distance - 10) / 5)) * 100;
         }
 
-        return BASIC_FARE + 800 + (int) Math.ceil(((double)(distance - 50) / 8)) * ADDITIONAL_FARE;
+        return BASIC_FARE + 800 + (int) Math.ceil(((double) (distance - 50) / 8)) * ADDITIONAL_FARE;
     }
 }
