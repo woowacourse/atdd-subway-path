@@ -16,7 +16,7 @@ import wooteco.subway.domain.station.Station;
 class StationDaoTest {
 
     private static final Station STATION = new Station("강남역");
-    
+
     private JdbcStationDao stationDao;
 
     @Autowired

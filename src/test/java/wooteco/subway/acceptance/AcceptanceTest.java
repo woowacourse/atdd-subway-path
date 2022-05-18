@@ -19,13 +19,13 @@ import wooteco.subway.dto.station.StationRequest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
 
-    @LocalServerPort
-    int port;
-
     protected static final StationRequest 대흥역 = new StationRequest("대흥역");
     protected static final StationRequest 공덕역 = new StationRequest("공덕역");
     protected static final StationRequest 광흥창역 = new StationRequest("광흥창역");
     protected static final StationRequest 상수역 = new StationRequest("상수역");
+
+    @LocalServerPort
+    int port;
 
     @BeforeEach
     public void setUp() {
