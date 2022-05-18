@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
@@ -42,7 +43,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
                             .then().log().all()
                             .extract();
 
-                    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+                    assertAll(
+                            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                            () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10)
+                    );
+                }),
+
+                dynamicTest("서로 다른 노선을 포함한 경로를 조회한다.", () -> {
+                    ExtractableResponse<Response> response = RestAssured.given().log().all()
+                            .when()
+                            .get("/paths?source={sourceId}&target={targetId}&age={age}",
+                                    강남구청역, 낙성대역, 24)
+                            .then().log().all()
+                            .extract();
+
+                    assertAll(
+                            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                            () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(15)
+                    );
+                }),
+
+                dynamicTest("서로 같은 역의 경로를 조회한다.", () -> {
+                    ExtractableResponse<Response> response = RestAssured.given().log().all()
+                            .when()
+                            .get("/paths?source={sourceId}&target={targetId}&age={age}",
+                                    강남구청역, 강남구청역, 24)
+                            .then().log().all()
+                            .extract();
+
+                    assertAll(
+                            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                            () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(0)
+                    );
                 }),
 
                 dynamicTest("다른 노선의 갈 수 없는 경로를 조회한다.", () -> {
