@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.List;
+
 public class Section {
 
     private Long id;
@@ -44,6 +46,10 @@ public class Section {
 
     public long getDownStationId() {
         return downStationId;
+    }
+
+    public List<Long> getAllStations(){
+        return List.of(upStationId, downStationId);
     }
 
     public int getDistance() {

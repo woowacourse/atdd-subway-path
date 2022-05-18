@@ -1,11 +1,10 @@
 package wooteco.subway.exception;
 
-public class DuplicateLineException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public DuplicateLineException() {
-    }
+public final class DuplicateLineException extends SubwayException {
 
     public DuplicateLineException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

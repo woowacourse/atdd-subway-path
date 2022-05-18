@@ -4,8 +4,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.SectionRequest;
 
 @Service
@@ -32,10 +32,10 @@ public class SectionService {
         long downStationId = sectionReq.getDownStationId();
         int distance = sectionReq.getDistance();
 
-        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
-        sections.validateSection(upStationId, downStationId, distance);
+        LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
+        lineSections.validateSection(upStationId, downStationId, distance);
 
-        List<Section> targetSections = sections.findOverlapSection(upStationId, downStationId,
+        List<Section> targetSections = lineSections.findOverlapSection(upStationId, downStationId,
             distance);
         updateSections(targetSections);
     }
@@ -56,20 +56,20 @@ public class SectionService {
     }
 
     public List<Long> findAllStationByLineId(long lineId) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
-        return sections.getStationsId();
+        LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
+        return lineSections.getStationsId();
     }
 
     public void deleteByLineIdAndStationId(long lineId, long stationId) {
-        Sections sections = new Sections(sectionDao.findByLineIdAndStationId(lineId, stationId));
-        if (sections.hasTwoSection()) {
-            Section upsideSection = sections.getUpsideSection();
-            Section downsideSection = sections.getDownsideSection();
+        LineSections lineSections = new LineSections(sectionDao.findByLineIdAndStationId(lineId, stationId));
+        if (lineSections.hasTwoSection()) {
+            Section upsideSection = lineSections.getUpsideSection();
+            Section downsideSection = lineSections.getDownsideSection();
 
             deleteAndUnionTwoSection(lineId, upsideSection, downsideSection);
             return;
         }
-        deleteSingleSection(lineId, sections);
+        deleteSingleSection(lineId, lineSections);
     }
 
     private void deleteAndUnionTwoSection(long lineId, Section upsideSection,
@@ -84,8 +84,8 @@ public class SectionService {
         sectionDao.updateLineOrderByDec(lineId, downsideSection.getLineOrder());
     }
 
-    private void deleteSingleSection(long lineId, Sections sections) {
-        Section section = sections.getSingleDeleteSection();
+    private void deleteSingleSection(long lineId, LineSections lineSections) {
+        Section section = lineSections.getSingleDeleteSection();
         sectionDao.deleteById(section.getId());
 
         sectionDao.updateLineOrderByDec(lineId, section.getLineOrder());

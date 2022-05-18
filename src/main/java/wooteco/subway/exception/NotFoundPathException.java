@@ -2,9 +2,9 @@ package wooteco.subway.exception;
 
 import org.springframework.http.HttpStatus;
 
-public final class DuplicateStationException extends SubwayException {
+public final class NotFoundPathException extends SubwayException{
 
-    public DuplicateStationException(String message) {
+    public NotFoundPathException(String message) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 }

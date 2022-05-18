@@ -1,12 +1,12 @@
 package wooteco.subway.domain;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.NotFoundPathException;
+import wooteco.subway.exception.NotFoundStationException;
 
 public class Path {
 
@@ -20,20 +20,33 @@ public class Path {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        List<Long> shortestPath = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+
+        List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
         LinkedList<Section> path = toSections(sections, shortestPath);
         return new Path(path);
     }
 
+    private static List<Long> findShortestPath(long sourceId, long targetId,
+                                               DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
+        try {
+            return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+        } catch (NullPointerException exception) {
+            throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
+        } catch (IllegalArgumentException exception){
+            throw new NotFoundStationException("해당 지하철역이 등록이 안되어 있습니다.");
+        }
+    }
+
     private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(Sections sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        Set<Long> stationIds = new HashSet<>(sections.getStationsId());
+
+        List<Long> stationIds = sections.getStationIds();
         stationIds.forEach(graph::addVertex);
 
         sections.getSections().forEach(
                 section -> graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                section.getDistance()));
+                        section.getDistance()));
         return graph;
     }
 
@@ -50,5 +63,9 @@ public class Path {
         return path.stream()
                 .mapToInt(Section::getDistance)
                 .sum();
+    }
+
+    public LinkedList<Section> getPath() {
+        return path;
     }
 }
