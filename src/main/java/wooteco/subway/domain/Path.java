@@ -6,7 +6,7 @@ import java.util.List;
 public class Path {
 
     private static final int BASIC_FARE = 1250;
-    private static final int FIRST_SECTION_BASIC_FARE = 800;
+    private static final int FIRST_SECTION_FULL_FARE = 800;
     private static final int FIRST_SECTION_UNIT = 5;
     private static final int SECOND_SECTION_UNIT = 8;
 
@@ -25,7 +25,7 @@ public class Path {
         if (distance <= 50) {
             return calcAdditionalFare(distance - 10, FIRST_SECTION_UNIT);
         }
-        return FIRST_SECTION_BASIC_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT);
+        return FIRST_SECTION_FULL_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT);
     }
 
     private int calcAdditionalFare(int distance, int unit) {
@@ -36,7 +36,6 @@ public class Path {
         }
         return BASIC_FARE + fare;
     }
-
 
     public List<Long> getStationIds() {
         return Collections.unmodifiableList(stationIds);
