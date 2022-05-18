@@ -24,18 +24,24 @@ public class PathService {
     }
 
     public PathResponse find(final Long sourceStationId, final Long targetStationId) {
-        final Station sourceStation = stationDao.findById(sourceStationId)
-                .orElseThrow(NoSuchStationException::new);
-        final Station targetStation = stationDao.findById(targetStationId)
-                .orElseThrow(NoSuchStationException::new);
-
-        final Sections sections = sectionDao.findAll();
-        SubwayMap subwayMap = new SubwayMap(sections);
+        final SubwayMap subwayMap = toSubwayMap();
+        final Station sourceStation = findStationById(sourceStationId);
+        final Station targetStation = findStationById(targetStationId);
 
         final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
         final Fare fare = distance.calculateFare();
 
         return PathResponse.of(stations, distance, fare);
+    }
+
+    private SubwayMap toSubwayMap() {
+        final Sections sections = sectionDao.findAll();
+        return new SubwayMap(sections);
+    }
+
+    private Station findStationById(final Long stationId) {
+        return stationDao.findById(stationId)
+                .orElseThrow(NoSuchStationException::new);
     }
 }
