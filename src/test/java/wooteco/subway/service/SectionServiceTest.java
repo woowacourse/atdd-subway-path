@@ -1,10 +1,5 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +13,12 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.SectionRequest;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
@@ -35,18 +36,14 @@ class SectionServiceTest {
     @Autowired
     private SectionDao sectionDao;
 
-    Line savedLine;
-
-    Station upStation;
-
-    Station downStation;
-
-    Section section;
+    private Line savedLine;
+    private Station downStation;
+    private Section section;
 
     @BeforeEach
     void setup() {
         savedLine = lineDao.save(new Line("5호선", "bg-purple-600"));
-        upStation = stationDao.save(new Station("아차산역"));
+        Station upStation = stationDao.save(new Station("아차산역"));
         downStation = stationDao.save(new Station("군자역"));
         section = sectionDao.save(new Section(upStation, downStation, 10, savedLine.getId()));
     }
@@ -60,9 +57,9 @@ class SectionServiceTest {
 
         assertAll(
                 () -> assertThat(savedSection.getId()).isNotNull(),
-                () -> assertThat(savedSection.getUpStation()).isEqualTo(downStation),
-                () -> assertThat(savedSection.getDownStation()).isEqualTo(newStation),
-                () -> assertThat(savedSection.getDistance()).isEqualTo(sectionRequest.getDistance())
+                () -> assertThat(savedSection.getUpStation().getName()).isEqualTo("군자역"),
+                () -> assertThat(savedSection.getDownStation().getName()).isEqualTo("마장역"),
+                () -> assertThat(savedSection.getDistance()).isEqualTo(10)
         );
     }
 
@@ -81,11 +78,12 @@ class SectionServiceTest {
         assert (foundSection.isPresent());
 
         assertAll(
-                () -> assertThat(savedSection.getUpStation()).isEqualTo(newStation),
-                () -> assertThat(savedSection.getDownStation()).isEqualTo(downStation),
-                () -> assertThat(savedSection.getDistance()).isEqualTo(sectionRequest.getDistance()),
-                () -> assertThat(foundSection.get()).usingRecursiveComparison()
-                        .isEqualTo(new Section(section.getId(), upStation, newStation, 1, savedLine.getId()))
+                () -> assertThat(savedSection.getUpStation().getName()).isEqualTo("마장역"),
+                () -> assertThat(savedSection.getDownStation().getName()).isEqualTo("군자역"),
+                () -> assertThat(savedSection.getDistance()).isEqualTo(9),
+                () -> assertThat(foundSection.get().getUpStation().getName()).isEqualTo("아차산역"),
+                () -> assertThat(foundSection.get().getDownStation().getName()).isEqualTo("마장역"),
+                () -> assertThat(foundSection.get().getDistance()).isEqualTo(1)
         );
     }
 
@@ -106,9 +104,11 @@ class SectionServiceTest {
 
         assert (foundSection.isPresent());
 
-        assertThat(foundSection.get()).usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(new Section(upStation, newStation, 20, savedLine.getId()));
+        assertAll(
+                () -> assertThat(foundSection.get().getUpStation().getName()).isEqualTo("아차산역"),
+                () -> assertThat(foundSection.get().getDownStation().getName()).isEqualTo("마장역"),
+                () -> assertThat(foundSection.get().getDistance()).isEqualTo(20)
+        );
     }
 
     @DisplayName("특정 노선의 종점 구간을 삭제한다.")
@@ -127,8 +127,10 @@ class SectionServiceTest {
 
         assert (foundSection.isPresent());
 
-        assertThat(foundSection.get()).usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(new Section(upStation, downStation, 10, savedLine.getId()));
+        assertAll(
+                () -> assertThat(foundSection.get().getUpStation().getName()).isEqualTo("아차산역"),
+                () -> assertThat(foundSection.get().getDownStation().getName()).isEqualTo("군자역"),
+                () -> assertThat(foundSection.get().getDistance()).isEqualTo(10)
+        );
     }
 }
