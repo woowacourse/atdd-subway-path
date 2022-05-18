@@ -11,7 +11,6 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.NotFoundException;
 
 @Component
 public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
@@ -47,6 +46,6 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
                                                                           final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+                .orElseThrow(this::notFoundPathException);
     }
 }
