@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.JGraphPathFinder;
 import wooteco.subway.domain.PathFinder;
@@ -12,6 +13,7 @@ import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
 @Service
+@Transactional
 public class PathService {
 
     private final SectionRepository sectionRepository;
@@ -22,6 +24,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse getPath(Long from, Long to) {
         List<Section> allSections = sectionRepository.findAll();
         PathFinder pathFinder = JGraphPathFinder.of(allSections);
