@@ -1,13 +1,12 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import wooteco.subway.exception.NotFoundException;
 
 public class Sections {
@@ -197,15 +196,15 @@ public class Sections {
     }
 
     public List<Station> getAllStations() {
-        List<Station> upStations = sections.stream()
-                .map(Section::getUpStation)
-                .collect(Collectors.toList());
-        List<Station> downStations = sections.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList());
-        return Stream.of(upStations, downStations)
-                .flatMap(Collection::stream)
-                .distinct()
+        List<Station> stations = new ArrayList<>();
+        stations.addAll(convertedStations(Section::getUpStation));
+        stations.addAll(convertedStations(Section::getDownStation));
+        return stations;
+    }
+
+    private List<Station> convertedStations(Function<Section, Station> sectionToStationConvertor) {
+        return sections.stream()
+                .map(sectionToStationConvertor)
                 .collect(Collectors.toList());
     }
 
