@@ -7,11 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.duplicate.DuplicateSectionException;
-import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.invalidrequest.InvalidSectionCreateRequestException;
 import wooteco.subway.exception.notfound.SectionNotFoundException;
 
@@ -213,50 +209,6 @@ public class Sections {
         return values.stream()
                 .noneMatch(section -> section.containStation(target.getUpStation()) && section.containStation(
                         target.getDownStation()));
-    }
-
-    public List<Station> findShortestPath(Station source, Station target) {
-        validateSourceAndTargetNotSame(source, target);
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph();
-
-        return new DijkstraShortestPath<>(graph)
-                .getPath(source, target)
-                .getVertexList();
-    }
-
-    private void validateSourceAndTargetNotSame(Station source, Station target) {
-        if (source.equals(target)) {
-            throw new DuplicateStationException("경로의 시작과 끝은 같은 역일 수 없습니다.");
-        }
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : getSortedStations()) {
-            graph.addVertex(station);
-        }
-        for (Section value : values) {
-            graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
-        }
-        return graph;
-    }
-
-    public Section findSection(Station upStation, Station downStation) {
-        Section section = new Section(upStation, downStation, 1);
-        return values.stream()
-                .filter(value -> value.hasSameUpStation(section) && value.hasSameDownStation(section))
-                .findAny()
-                .orElseThrow(() -> new SectionNotFoundException("해당하는 구간이 없습니다."));
-    }
-
-    public int calculatePathDistance(List<Station> stations) {
-        int distance = 0;
-        for (int i = 0; i < stations.size() - 1; i++) {
-            Section findSection = findSection(stations.get(i), stations.get(i + 1));
-            distance += findSection.getDistance();
-        }
-        return distance;
     }
 
     public List<Section> getValues() {
