@@ -34,7 +34,7 @@ class PathManagerTest {
                     new Section(STATION2, STATION5, 100),
                     new Section(STATION5, STATION3, 100),
                     new Section(STATION3, STATION6, 100));
-            PathManager pathManager = PathManager.of(sections);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections));
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
             Path expected = new Path(1, List.of(STATION2, STATION3));
@@ -52,7 +52,7 @@ class PathManagerTest {
                     new Section(STATION2, STATION5, 100),
                     new Section(STATION5, STATION3, 5),
                     new Section(STATION3, STATION6, 6));
-            PathManager pathManager = PathManager.of(sections);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections));
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
             Path expected = new Path(10, List.of(STATION2, STATION4, STATION5, STATION3));
@@ -66,7 +66,7 @@ class PathManagerTest {
             List<Section> sections = List.of(new Section(STATION1, STATION2, 10),
                     new Section(STATION2, STATION3, 100),
                     new Section(STATION3, STATION4, 20));
-            PathManager pathManager = PathManager.of(sections);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, nonRegisteredStation))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -75,7 +75,7 @@ class PathManagerTest {
         @Test
         void 출발점과_도착점이_동일한_경우_예외_발생() {
             List<Section> sections = List.of(new Section(STATION1, STATION2, 10));
-            PathManager pathManager = PathManager.of(sections);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, STATION1))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +85,7 @@ class PathManagerTest {
         void 도달할_수_없는_경로를_조회하려는_경우_예외_발생() {
             List<Section> sections = List.of(new Section(STATION1, STATION2, 10),
                     new Section(STATION3, STATION4, 20));
-            PathManager pathManager = PathManager.of(sections);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, STATION3))
                     .isInstanceOf(IllegalArgumentException.class);

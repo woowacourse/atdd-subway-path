@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 public class PathManager {
@@ -18,47 +17,50 @@ public class PathManager {
     private static final String SELF_LOOP_EXCEPTION = "출발점과 도착점은 동일할 수 없습니다.";
 
     private final Map<Station, List<PathElement>> pathMap;
+    private final Map<Station, Integer> distanceResults;
+    private final Map<Station, Station> routeMap;
+    private final PriorityQueue<PathElement> queue;
 
     private PathManager(Map<Station, List<PathElement>> pathMap) {
         this.pathMap = pathMap;
+        distanceResults = new HashMap<>();
+        routeMap = new HashMap<>();
+        queue = new PriorityQueue<>();
     }
 
-    public static PathManager of(List<Section> sections) {
-        return new PathManager(toAdjacentPath(sections));
-    }
-
-    private static Map<Station, List<PathElement>> toAdjacentPath(List<Section> sections) {
-        Map<Station, List<PathElement>> adjacentPaths = new HashMap<>();
-        for (Section section : sections) {
-            adjacentPaths.put(section.getUpStation(), new ArrayList<>());
-            adjacentPaths.put(section.getDownStation(), new ArrayList<>());
-        }
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            int distance = section.getDistance();
-            adjacentPaths.get(upStation).add(new PathElement(downStation, distance));
-            adjacentPaths.get(downStation).add(new PathElement(upStation, distance));
-        }
-        return adjacentPaths;
+    public static PathManager of(Map<Station, List<PathElement>> pathMap) {
+        return new PathManager(pathMap);
     }
 
     public Path calculateOptimalPath(Station startStation, Station endStation) {
         validateRegisteredStations(startStation, endStation);
         validateNonSelfLoop(startStation, endStation);
-        Map<Station, Integer> distanceResults = getInitialDistanceResultsMap(startStation);
-        Map<Station, Station> routeMap = getPreviousRouteMap();
-        PriorityQueue<PathElement> queue = new PriorityQueue<>();
+        initializeDistanceResultsMap(startStation);
         queue.add(new PathElement(startStation, START_STATION_DISTANCE));
 
         while (!queue.isEmpty()) {
             PathElement current = queue.poll();
-            if (distanceResults.get(current.station) >= current.distance) {
-                updateShortestPath(distanceResults, routeMap, queue, current);
+            Station nowStation = current.getStation();
+            int nowDistance = current.getDistance();
+            if (distanceResults.get(nowStation) >= nowDistance) {
+                updateNextShortestPath(nowStation, nowDistance);
             }
         }
         validatePathConnection(endStation, distanceResults);
-        return new Path(distanceResults.get(endStation), toSortedPath(endStation, routeMap));
+        return new Path(distanceResults.get(endStation), backTrackPath(startStation, endStation));
+    }
+
+    private void updateNextShortestPath(Station nowStation, int nowDistance) {
+        for (PathElement next : pathMap.get(nowStation)) {
+            Station nextStation = next.getStation();
+            int nextDistance = next.getDistance();
+            int connectedDistance = nowDistance + nextDistance;
+            if (distanceResults.get(nextStation) > connectedDistance) {
+                distanceResults.put(nextStation, connectedDistance);
+                queue.add(new PathElement(nextStation, connectedDistance));
+                routeMap.put(nextStation, nowStation);
+            }
+        }
     }
 
     private void validateRegisteredStations(Station startStation, Station endStation) {
@@ -73,36 +75,11 @@ public class PathManager {
         }
     }
 
-    private Map<Station, Integer> getInitialDistanceResultsMap(Station startStation) {
-        Map<Station, Integer> distanceResults = new HashMap<>();
+    private void initializeDistanceResultsMap(Station startStation) {
         for (Station station : pathMap.keySet()) {
             distanceResults.put(station, INFINITE_DISTANCE);
         }
         distanceResults.put(startStation, START_STATION_DISTANCE);
-        return distanceResults;
-    }
-
-    private Map<Station, Station> getPreviousRouteMap() {
-        Map<Station, Station> prevRoute = new HashMap<>();
-        for (Station station : pathMap.keySet()) {
-            prevRoute.put(station, null);
-        }
-        return prevRoute;
-    }
-
-    private void updateShortestPath(Map<Station, Integer> distanceResults,
-                                    Map<Station, Station> routeMap,
-                                    PriorityQueue<PathElement> queue,
-                                    PathElement current) {
-        for (PathElement next : pathMap.get(current.station)) {
-            Station nextStation = next.station;
-            int connectedDistance = current.distance + next.distance;
-            if (distanceResults.get(nextStation) > connectedDistance) {
-                distanceResults.put(nextStation, connectedDistance);
-                queue.add(new PathElement(nextStation, connectedDistance));
-                routeMap.put(nextStation, current.station);
-            }
-        }
     }
 
     private void validatePathConnection(Station endStation, Map<Station, Integer> distanceResults) {
@@ -111,30 +88,15 @@ public class PathManager {
         }
     }
 
-    private List<Station> toSortedPath(Station endStation, Map<Station, Station> routeMap) {
+    private List<Station> backTrackPath(Station startStation, Station endStation) {
         Station current = endStation;
         List<Station> optimalPath = new ArrayList<>();
-        while (current != null) {
+        while (!current.equals(startStation)) {
             optimalPath.add(current);
             current = routeMap.get(current);
         }
+        optimalPath.add(current);
         Collections.reverse(optimalPath);
         return optimalPath;
-    }
-
-    private static class PathElement implements Comparable<PathElement> {
-
-        private final Station station;
-        private final int distance;
-
-        private PathElement(Station station, int distance) {
-            this.station = station;
-            this.distance = distance;
-        }
-
-        @Override
-        public int compareTo(PathElement o) {
-            return Integer.compare(this.distance, o.distance);
-        }
     }
 }
