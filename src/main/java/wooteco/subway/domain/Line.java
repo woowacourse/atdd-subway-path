@@ -1,7 +1,5 @@
 package wooteco.subway.domain;
 
-import java.util.Objects;
-
 public class Line {
 
     private Long id;
@@ -17,6 +15,7 @@ public class Line {
         this.color = color;
         this.extraFare = extraFare;
     }
+
     public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
