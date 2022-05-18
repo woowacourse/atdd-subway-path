@@ -224,8 +224,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> createStationResponse(StationRequest stationRequest) {
-        return RestAssured.given().log().all()
+    private void createStationResponse(StationRequest stationRequest) {
+        RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

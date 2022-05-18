@@ -297,8 +297,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> createLineResponse(LineRequest lineRequest) {
-        return RestAssured.given().log().all()
+    private void createLineResponse(LineRequest lineRequest) {
+        RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -308,8 +308,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> createStationResponse(StationRequest stationRequest) {
-        return RestAssured.given().log().all()
+    private void createStationResponse(StationRequest stationRequest) {
+        RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
