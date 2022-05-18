@@ -1,5 +1,8 @@
 package wooteco.subway.domain.strategy;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class BasicFareStrategy implements FareStrategy {
 
     private static final int BASIC_FARE = 1250;
