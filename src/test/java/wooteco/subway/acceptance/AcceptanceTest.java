@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,5 +103,24 @@ public class AcceptanceTest {
 
     public long getSavedStationIdByResponse(ExtractableResponse<Response> response1) {
         return Long.parseLong(response1.header("Location").split("/")[2]);
+=======
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ActiveProfiles("test")
+public class AcceptanceTest {
+    @LocalServerPort
+    int port;
+
+    @BeforeEach
+    public void setUp() {
+        RestAssured.port = port;
+>>>>>>> master
     }
 }

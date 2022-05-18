@@ -2,10 +2,17 @@
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
 <p align="center">
+<<<<<<< HEAD
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacourse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
   <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-map">
+=======
+  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
+    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
+  </a>
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
+>>>>>>> master
 </p>
 
 <br>
@@ -50,6 +57,7 @@
 - [x] get / 경로 조회 api 등록
 - 변경된 API 스펙은 [API 문서 v3](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c4c291f19953498e8eda8a38253eed51#Path) 참고
 
+<br>
 
 ## 🚀 Getting Started
 ### Usage
@@ -72,4 +80,8 @@
 
 ## 📝 License
 
+<<<<<<< HEAD
 This project is [MIT](https://github.com/woowacourse/atdd-subway-map/blob/master/LICENSE) licensed.
+=======
+This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+>>>>>>> master
