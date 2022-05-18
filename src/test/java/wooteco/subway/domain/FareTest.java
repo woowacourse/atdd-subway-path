@@ -38,4 +38,19 @@ class FareTest {
         // then
         assertThat(actual).isEqualTo(expectedFare);
     }
+
+    @ParameterizedTest
+    @DisplayName("50km 초과 거리에 대한 요금을 계산한다.")
+    @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
+    void Calculate_MoreThan50_ExtraFareReturned(final int distanceValue, final int expectedFare) {
+        // given
+        final Distance distance = new Distance(distanceValue);
+        final Fare fare = new Fare(distance);
+
+        // when
+        final int actual = fare.calculate();
+
+        // then
+        assertThat(actual).isEqualTo(expectedFare);
+    }
 }
