@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.path.DijkstraStrategy;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Station;

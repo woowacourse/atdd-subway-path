@@ -39,7 +39,7 @@ public class LineDao {
     }
 
     public void delete(Long id) {
-        String sql = "delete from STATION where id = :id";
+        String sql = "delete from LINE where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
