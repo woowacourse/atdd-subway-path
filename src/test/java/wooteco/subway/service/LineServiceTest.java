@@ -46,6 +46,7 @@ class LineServiceTest {
         SectionService sectionService = new SectionService(sectionDao, stationDao);
         lineService = new LineService(stationDao, lineDao, sectionService);
     }
+
     @DisplayName("노선을 성공적으로 등록한다")
     @Test
     void testCreateLine() {
