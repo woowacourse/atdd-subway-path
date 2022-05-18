@@ -9,6 +9,8 @@ public interface SectionDao {
 
     int saveAll(List<SectionDto> sectionDtos);
 
+    List<SectionDto> findAll();
+
     SectionDto findById(Long id);
 
     List<SectionDto> findByLineId(Long id);

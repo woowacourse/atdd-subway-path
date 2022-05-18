@@ -44,6 +44,12 @@ public class JdbcSectionDao implements SectionDao {
     }
 
     @Override
+    public List<SectionDto> findAll() {
+        String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, mapper());
+    }
+
+    @Override
     public SectionDto findById(Long id) {
         String sql = "select * from SECTION where id = :id";
         return jdbcTemplate.queryForObject(sql, Map.of("id", id), mapper());

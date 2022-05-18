@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -39,5 +40,13 @@ public class Path {
     private int calculateOverFareOver50(double distance) {
         return calculateOverFareUnder50(50) +
          (int) (Math.ceil((distance - 50) / 8) * 100);
+    }
+
+    public List<Station> findStationsOnPath() {
+        return graphPath.getVertexList();
+    }
+
+    public int calculateShortestDistance() {
+        return (int) graphPath.getWeight();
     }
 }
