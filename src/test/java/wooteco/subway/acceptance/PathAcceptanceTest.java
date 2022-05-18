@@ -52,6 +52,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(request.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("존재하지 않는 역의 경로를 찾을때는 400 코드가 반환된다.")
+    @Test
+    void findPathWithNotExistStation() {
+        String uri = pathRequestFormat(기흥역_id, 100L);
+
+        ExtractableResponse<Response> request = RestAssuredConvenienceMethod.getRequest(uri);
+
+        assertThat(request.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private String pathRequestFormat(Long from, Long to) {
         return String.format("/paths?source=%d&target=%d&age=15", from, to);
     }

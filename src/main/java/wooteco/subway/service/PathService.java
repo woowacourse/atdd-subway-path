@@ -8,6 +8,7 @@ import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathFindResponse;
+import wooteco.subway.exception.NotFoundException;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class PathService {
     }
 
     public PathFindResponse findPath(Long from, Long to) {
+        validateExistStations(from, to);
         List<Section> sections = sectionDao.findAll();
         PathFinder pathFinder = new PathFinder(sections);
         List<Long> path = pathFinder.findPath(from, to);
@@ -33,5 +35,11 @@ public class PathService {
         List<Station> stations = stationDao.findByIdIn(path);
 
         return PathFindResponse.of(stations, distance, fare);
+    }
+
+    private void validateExistStations(Long from, Long to) {
+        if (!stationDao.existStationById(from) || !stationDao.existStationById(to)) {
+            throw new NotFoundException("등록되지 않은 역으로는 구간을 만들 수 없습니다.");
+        }
     }
 }
