@@ -21,11 +21,6 @@ import wooteco.subway.domain.Station;
 @Repository
 public class LineDao {
 
-    private static final RowMapper<Line> lineRowMapper = (resultSet, rowNum) ->
-        new Line(resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getString("color"));
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public LineDao(NamedParameterJdbcTemplate jdbcTemplate) {

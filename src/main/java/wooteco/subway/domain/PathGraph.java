@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathGraph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
         DefaultWeightedEdge.class);
 
     public PathGraph(List<Line> lines) {
@@ -36,9 +36,9 @@ public class PathGraph {
     }
 
     public Path findShortestPath(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath
-            = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+            = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         return new Path(path.getVertexList(), (int) path.getWeight());
     }
 }

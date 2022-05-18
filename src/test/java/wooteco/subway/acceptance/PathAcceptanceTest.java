@@ -1,7 +1,6 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.acceptance.SimpleRestAssured.*;
 
@@ -17,7 +16,7 @@ import wooteco.subway.dto.PathResponse;
 @DisplayName("/paths에 대한 인수테스트")
 public class PathAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("GET /paths - 경로 조회 테스트")
+    @DisplayName("GET /paths?source={source}&target={target}&age={age} - 경로 조회 테스트")
     @Nested
     class ShowPath extends AcceptanceTest {
 

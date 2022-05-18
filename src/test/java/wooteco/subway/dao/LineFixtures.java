@@ -18,6 +18,7 @@ public class LineFixtures {
             params.add(source);
         }
 
-        jdbcTemplate.batchUpdate("INSERT INTO line (name, color) VALUES (:name, :color)", params.toArray(MapSqlParameterSource[]::new));
+        jdbcTemplate.batchUpdate("INSERT INTO line (name, color) VALUES (:name, :color)",
+            params.toArray(MapSqlParameterSource[]::new));
     }
 }

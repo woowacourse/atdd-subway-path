@@ -10,9 +10,6 @@ public class Section {
     private Station downStation;
     private int distance;
 
-    public Section() {
-    }
-
     public Section(Long id, Long lineId, Station upStation, Station downStation,
         Integer distance) {
         this.id = id;

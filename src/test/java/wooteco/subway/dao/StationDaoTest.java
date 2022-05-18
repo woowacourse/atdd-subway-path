@@ -35,9 +35,9 @@ class StationDaoTest {
         List<Station> actual = dao.findAll();
 
         List<Station> expected = List.of(
-                new Station(1L, "중복되는 역 이름"),
-                new Station(2L, "선릉역"),
-                new Station(3L, "잠실역"));
+            new Station(1L, "중복되는 역 이름"),
+            new Station(2L, "선릉역"),
+            new Station(3L, "잠실역"));
 
         assertThat(actual).isEqualTo(expected);
     }

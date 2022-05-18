@@ -43,7 +43,6 @@ class SectionDaoTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-
     @Test
     void existByLineId_메서드_해당_Line_id로_존재_하는지_확인() {
         dao.save(new Section(1L, new Station(1L, "문정역"), new Station(2L, "장지역"), 10));

@@ -26,7 +26,7 @@ public class SimpleRestAssured {
             .then().log().all()
             .extract();
     }
-
+    
     public static ExtractableResponse<Response> put(Map<String, String> params, String path) {
         return RestAssured.given().log().all()
             .body(params)

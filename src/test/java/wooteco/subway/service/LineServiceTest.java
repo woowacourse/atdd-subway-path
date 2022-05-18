@@ -176,7 +176,8 @@ class LineServiceTest {
         void 유효한_구간을_입력한_경우_성공() {
             SectionRequest request = new SectionRequest(2L, 8L, 3);
 
-            assertThatCode(() -> lineService.addStationToLine(1L, request)).doesNotThrowAnyException();
+            assertThatCode(
+                () -> lineService.addStationToLine(1L, request)).doesNotThrowAnyException();
         }
 
         @Test

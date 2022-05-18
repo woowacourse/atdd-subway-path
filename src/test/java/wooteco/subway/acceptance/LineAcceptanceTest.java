@@ -304,14 +304,16 @@ class LineAcceptanceTest extends AcceptanceTest {
             postLine(makeLineJson("신분당선", "빨간색", 1L, 3L, 10));
             SimpleRestAssured.post(makeSectionJson(1L, 2L, 5), "/lines/1/sections");
 
-            ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=" + 2);
+            ExtractableResponse<Response> response = SimpleRestAssured.delete(
+                "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         }
 
         @Test
         void 입력한_노선이_존재하지_않는_경우_404_NOT_FOUND() {
-            ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=" + 2);
+            ExtractableResponse<Response> response = SimpleRestAssured.delete(
+                "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         }
@@ -322,7 +324,8 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("양재역"));
             postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
 
-            ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=" + 3);
+            ExtractableResponse<Response> response = SimpleRestAssured.delete(
+                "/lines/1/sections?stationId=" + 3);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -334,7 +337,8 @@ class LineAcceptanceTest extends AcceptanceTest {
             postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
             SimpleRestAssured.delete("/lines/1/sections?stationId=" + 1);
 
-            ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=" + 2);
+            ExtractableResponse<Response> response = SimpleRestAssured.delete(
+                "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }

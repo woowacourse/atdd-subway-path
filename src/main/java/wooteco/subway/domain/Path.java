@@ -4,6 +4,13 @@ import java.util.List;
 
 public class Path {
 
+    private static final int BASE_FARE = 1250;
+    private static final int FIRST_DEFAULT_FARE = 800;
+    private static final int FIRST_SURCHARGE_DISTANCE = 10;
+    private static final int SECOND_SURCHARGE_DISTANCE = 50;
+    private static final int FIRST_SURCHARGE_DIVIDE_DISTANCE = 5;
+    private static final int SECOND_SURCHARGE_DIVIDE_DISTANCE = 8;
+
     private final List<Station> stations;
     private final int distance;
 
@@ -13,13 +20,16 @@ public class Path {
     }
 
     public int calculateFare() {
-        if (distance <= 10) {
-            return 1250;
+        if (distance <= FIRST_SURCHARGE_DISTANCE) {
+            return BASE_FARE;
         }
-        if (distance <= 50) {
-            return 1250 + calculateOverFare(distance - 10, 5);
+        if (distance <= SECOND_SURCHARGE_DISTANCE) {
+            return BASE_FARE + calculateOverFare(distance - FIRST_SURCHARGE_DISTANCE,
+                FIRST_SURCHARGE_DIVIDE_DISTANCE);
         }
-        return 1250 + 800 + calculateOverFare(distance - 50, 8);
+        return BASE_FARE + FIRST_DEFAULT_FARE + calculateOverFare(
+            distance - SECOND_SURCHARGE_DISTANCE,
+            SECOND_SURCHARGE_DIVIDE_DISTANCE);
     }
 
     private int calculateOverFare(int distance, int divideDistance) {

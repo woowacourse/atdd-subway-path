@@ -16,6 +16,7 @@ public class StationFixtures {
             params.add(source);
         }
 
-        jdbcTemplate.batchUpdate("INSERT INTO station (name) VALUES (:name) ", params.toArray(MapSqlParameterSource[]::new));
+        jdbcTemplate.batchUpdate("INSERT INTO station (name) VALUES (:name) ",
+            params.toArray(MapSqlParameterSource[]::new));
     }
 }

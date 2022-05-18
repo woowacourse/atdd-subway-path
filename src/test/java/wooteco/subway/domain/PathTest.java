@@ -1,12 +1,12 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@SuppressWarnings("NonAsciiCharacters")
 class PathTest {
 
     @ParameterizedTest(name = "거리가 {0}일 때, 요금이 {1}원이다.")
