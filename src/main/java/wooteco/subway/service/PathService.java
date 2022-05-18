@@ -6,10 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwaySectionsGraph;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -29,19 +28,14 @@ public class PathService {
         Station source = stationService.findById(sourceId).toStation();
         Station target = stationService.findById(targetId).toStation();
 
-        Sections sections = new Sections(sectionDao.findAll());
-        Path shortestPath = new Path(sections);
+        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sectionDao.findAll());
 
-        List<StationResponse> stationResponses = convertToStationResponse(source, target, shortestPath);
-
-        int shortestDistance = shortestPath.getDistance(source, target);
-        Fare fare = new Fare(shortestDistance);
-        return new PathResponse(stationResponses, shortestDistance, fare.calculate());
+        Path path = subwaySectionsGraph.getShortestPath(source, target);
+        return new PathResponse(convertToStationResponse(path.getStations()), path.getDistance(), path.calculateFare());
     }
 
-    private List<StationResponse> convertToStationResponse(Station source, Station target, Path shortestPath) {
-        return shortestPath.getStations(source, target)
-                .stream()
+    private List<StationResponse> convertToStationResponse(List<Station> stations) {
+        return stations.stream()
                 .map(StationResponse::new)
                 .collect(toList());
     }
