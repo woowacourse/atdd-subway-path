@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -29,8 +28,7 @@ public class PathService {
         Station source = stationService.findById(sourceId).toStation();
         Station target = stationService.findById(targetId).toStation();
 
-        Sections sections = new Sections(sectionDao.findAll());
-        Path shortestPath = new Path(sections);
+        Path shortestPath = new Path(sectionDao.findAll());
 
         List<StationResponse> stationResponses = convertToStationResponse(source, target, shortestPath);
 

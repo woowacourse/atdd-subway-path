@@ -11,17 +11,18 @@ public class Path {
 
     private final DijkstraShortestPath dijkstraShortestPath;
 
-    public Path(Sections sections) {
+    public Path(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        fillVertexes(sections.getStations(), graph);
-        fillEdge(sections.getValue(), graph);
+        fillVertexes(sections, graph);
+        fillEdge(sections, graph);
 
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void fillVertexes(List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : stations) {
-            graph.addVertex(station);
+    private void fillVertexes(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+            graph.addVertex(section.getUpStation());
+            graph.addVertex(section.getDownStation());
         }
     }
 
