@@ -1,8 +1,11 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.Station;
+import org.jetbrains.annotations.NotNull;
+import wooteco.subway.domain.station.Station;
 
 public class StationRequest {
+
+    @NotNull
     private String name;
 
     public StationRequest() {
