@@ -89,6 +89,32 @@ public class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("등록된 전체 구간에 대한 정보를 조회할 수 있다.")
+    void findAll() {
+        // given
+        Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역")));
+        Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역")));
+        Station 선릉역 = stationDao.findById(stationDao.save(new Station("선릉역")));
+
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색")));
+        Section 강남_역삼 = new Section(이호선.getId(), 강남역, 역삼역, 10);
+        Section 역삼_선릉 = new Section(이호선.getId(), 역삼역, 선릉역, 10);
+        Long 강남_역삼_id = sectionDao.save(강남_역삼);
+        Long 역삼_선릉_id = sectionDao.save(역삼_선릉);
+
+        // when
+        List<Section> sections = sectionDao.findAll();
+
+        // then
+        assertThat(sections).hasSize(2)
+                .extracting(Section::getUpStation, Section::getDownStation, Section::getDistance)
+                .containsOnly(
+                        tuple(강남역, 역삼역, 10),
+                        tuple(역삼역, 선릉역, 10)
+                );
+    }
+
+    @Test
     @DisplayName("구간에 대한 정보를 변경할 수 있다.")
     void update() {
         // given

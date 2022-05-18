@@ -7,7 +7,7 @@ import wooteco.subway.domain.Station;
 public class Fixture {
 
     // 2호선
-    public static final Station 강남역 = new Station("강남약");
+    public static final Station 강남역 = new Station("강남역");
     public static final Station 역삼역 = new Station("역삼역");
     public static final Station 선릉역 = new Station("선릉역");
     public static final Station 삼성역 = new Station("삼성역");

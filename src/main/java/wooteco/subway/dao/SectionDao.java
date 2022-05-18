@@ -95,4 +95,14 @@ public class SectionDao {
             );
         });
     }
+
+    public List<Section> findAll() {
+        String sql = "SELECT s.id AS section_id, s.line_id, s.up_station_id, s.down_station_id, s.distance,"
+                + " us.name AS up_station_name, ds.name AS down_station_name"
+                + " FROM section AS s"
+                + " LEFT JOIN station AS us ON us.id = s.up_station_id"
+                + " LEFT JOIN station AS ds ON ds.id = s.down_station_id";
+
+        return namedParameterJdbcTemplate.query(sql, rowMapper());
+    }
 }
