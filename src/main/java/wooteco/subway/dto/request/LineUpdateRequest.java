@@ -1,4 +1,4 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
@@ -25,5 +25,5 @@ public class LineUpdateRequest {
     public String getColor() {
         return color;
     }
-    
+
 }

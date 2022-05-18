@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineCreateRequest;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.dto.request.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")

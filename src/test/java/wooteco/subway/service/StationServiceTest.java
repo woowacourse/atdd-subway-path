@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
 

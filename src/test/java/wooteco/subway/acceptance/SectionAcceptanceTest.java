@@ -7,9 +7,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dto.LineCreateRequest;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.dto.request.StationRequest;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 

@@ -10,10 +10,10 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineCreateRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineUpdateRequest;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.request.LineUpdateRequest;
+import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.duplicate.DuplicateLineException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
 

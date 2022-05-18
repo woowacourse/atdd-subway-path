@@ -15,9 +15,9 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dto.LineCreateRequest;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

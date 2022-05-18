@@ -13,11 +13,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.LineCreateRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineUpdateRequest;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.request.LineUpdateRequest;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
