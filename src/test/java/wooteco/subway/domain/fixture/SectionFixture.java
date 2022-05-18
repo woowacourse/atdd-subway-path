@@ -22,4 +22,8 @@ public class SectionFixture {
     public static Section getSectionXy() {
         return new Section(3L, getStationX(), getStationY(), new Distance(5));
     }
+
+    public static Section getSectionBd() {
+        return new Section(4L, getStationB(), getStationD(), new Distance(10));
+    }
 }

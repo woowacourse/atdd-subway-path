@@ -16,6 +16,10 @@ public class StationFixture {
         return new Station(3L, "답십리역");
     }
 
+    public static Station getStationD() {
+        return new Station(4L, "아차아차");
+    }
+
     public static Station getStationX() {
         return new Station(4L, "장한평역");
     }
