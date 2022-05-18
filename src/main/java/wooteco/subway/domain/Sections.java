@@ -105,7 +105,6 @@ public class Sections {
         }
     }
 
-
     public boolean hasStationFrontOrBack(Station upStation, Station downStation) {
         return existUpStation(downStation) || existDownStation(upStation);
     }
