@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createStation;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -212,7 +213,9 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선 Id를 입력 받아 조회한다.")
     void findLineById() {
         // given
-        Long lineId = saveLine();
+        Long station1 = createStation("강남역");
+        Long station2 = createStation("역삼역");
+        Long lineId = AcceptanceTestFixture.createLine("3호선", "bg-orange-600", station1, station2, 4);
 
         // when
         RestAssured.given().log().all()
@@ -221,42 +224,5 @@ class LineAcceptanceTest extends AcceptanceTest {
             .get("/lines/" + lineId)
             .then().log().all()
             .statusCode(HttpStatus.OK.value());
-    }
-
-    Long createStation(String name) {
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-
-        // when
-        String uri = createResponse.header("Location");
-        return Long.parseLong(uri.split("/")[2]);
-    }
-
-    Long saveLine() {
-        // given
-        Long station1 = createStation("강남역");
-        Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract();
-
-        String uri = response.header("Location");
-        return Long.parseLong(uri.split("/")[2]);
     }
 }

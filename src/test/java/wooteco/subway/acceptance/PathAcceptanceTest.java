@@ -2,20 +2,19 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createLine;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createSection;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createStation;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.PathServiceResponse;
-import wooteco.subway.ui.dto.LineRequest;
-import wooteco.subway.ui.dto.SectionRequest;
 
 class PathAcceptanceTest extends AcceptanceTest {
 
@@ -53,43 +52,5 @@ class PathAcceptanceTest extends AcceptanceTest {
             () -> assertThat(result.getFare()).isEqualTo(1350),
             () -> assertThat(result.getDistance()).isEqualTo(12)
         );
-    }
-
-    private void createLine(String name, String color, Long upStationId, Long downStationId,
-        int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId,
-            distance);
-        RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract();
-    }
-
-    private void createSection(Long upStationId, Long downStationId, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, distance);
-        RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + 1L + "/sections")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
-    }
-
-    void createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
     }
 }
