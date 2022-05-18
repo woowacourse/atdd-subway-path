@@ -11,29 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.section.SectionRequest;
-import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
-
-    private static final StationRequest 광흥창역 = new StationRequest("광흥창역");
-    private static final StationRequest 상수역 = new StationRequest("상수역");
-
-    private Long getPostLineId(LineRequest lineRequest) {
-        return Long.valueOf(postLineResponse(lineRequest)
-                .header("Location")
-                .split("/")[2]);
-    }
-
-    private ExtractableResponse<Response> postSectionResponse(Long lineId, SectionRequest sectionRequest) {
-        return RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
-    }
 
     private ExtractableResponse<Response> deleteSectionResponse(Long lineId, Long stationId) {
         return RestAssured.given().log().all()
@@ -45,7 +25,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private Long getLineId(Long stationId1, Long stationId2) {
         LineRequest 육호선 = new LineRequest("육호선", "bg-red-600", stationId1, stationId2, 10);
-        return getPostLineId(육호선);
+        return postLineId(육호선);
     }
 
     @DisplayName("지하철 구간을 생성한다.")

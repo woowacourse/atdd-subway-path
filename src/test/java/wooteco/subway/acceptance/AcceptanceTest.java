@@ -12,6 +12,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -23,6 +24,8 @@ public class AcceptanceTest {
 
     protected static final StationRequest 대흥역 = new StationRequest("대흥역");
     protected static final StationRequest 공덕역 = new StationRequest("공덕역");
+    protected static final StationRequest 광흥창역 = new StationRequest("광흥창역");
+    protected static final StationRequest 상수역 = new StationRequest("상수역");
 
     @BeforeEach
     public void setUp() {
@@ -45,6 +48,12 @@ public class AcceptanceTest {
                 .extract();
     }
 
+    protected Long postLineId(LineRequest lineRequest) {
+        return Long.valueOf(postLineResponse(lineRequest)
+                .header("Location")
+                .split("/")[2]);
+    }
+
     protected ExtractableResponse<Response> postLineResponse(LineRequest lineRequest) {
         return RestAssured.given().log().all()
                 .body(lineRequest)
@@ -60,5 +69,15 @@ public class AcceptanceTest {
         return Stream.of(response1, response2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
+    }
+
+    protected ExtractableResponse<Response> postSectionResponse(Long lineId, SectionRequest sectionRequest) {
+        return RestAssured.given().log().all()
+                .body(sectionRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .extract();
     }
 }
