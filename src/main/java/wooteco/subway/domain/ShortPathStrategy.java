@@ -23,24 +23,6 @@ public class ShortPathStrategy implements PathStrategy {
         return (int) buildSubwayMap(stations, sections).getPath(from, to).getWeight();
     }
 
-    @Override
-    public int calculateFee(List<Station> stations, List<Section> sections, Station from, Station to) {
-        int distance = calculateDistance(stations, sections, from, to);
-        int cost = 1250;
-        if (distance > 50) {
-            cost += calculateCost(distance, 50, 8);
-            distance = 50;
-        }
-        if (distance > 10) {
-            cost += calculateCost(distance, 10, 5);
-        }
-        return cost;
-    }
-
-    private int calculateCost(int distance, int baseDistance, int unit) {
-        return ((distance - baseDistance -1 ) / unit + 1) * 100;
-    }
-
     private DijkstraShortestPath buildSubwayMap(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, Section> graph = new WeightedMultigraph(Section.class);
         stations.forEach(graph::addVertex);

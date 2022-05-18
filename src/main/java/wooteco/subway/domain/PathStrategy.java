@@ -9,6 +9,4 @@ public interface PathStrategy {
     List<Section> findSections(List<Station> stations, List<Section> sections, Station from, Station to);
 
     int calculateDistance(List<Station> stations, List<Section> sections, Station from, Station to);
-
-    int calculateFee(List<Station> stations, List<Section> sections, Station from, Station to);
 }
