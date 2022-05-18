@@ -14,9 +14,9 @@ import wooteco.subway.dao.FakeStationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.PathsResponse;
 
-class PathServiceTest {
+class PathsServiceTest {
 
     private PathService pathService;
 
@@ -54,20 +54,20 @@ class PathServiceTest {
         fakeSectionDao.save(new Section(3L, new Station(7L, "건대역"), new Station(8L, "사가정역"), 5));
         fakeSectionDao.save(new Section(4L, new Station(8L, "사가정역"), new Station(4L, "이대역"), 7));
 
-        PathResponse pathResponse = pathService.createPath(sourceStationId, targetStationId, age);
+        PathsResponse pathsResponse = pathService.createPaths(sourceStationId, targetStationId, age);
 
         assertAll(
-                () -> assertThat(createStation(pathResponse)).isEqualTo(
+                () -> assertThat(createStation(pathsResponse)).isEqualTo(
                         List.of(new Station(4L, "이대역"), new Station(5L, "학동역")
                                 , new Station(6L, "이수역"), new Station(7L, "건대역"))
                 ),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathsResponse.getDistance()).isEqualTo(10),
+                () -> assertThat(pathsResponse.getFare()).isEqualTo(1250)
         );
     }
 
-    private List<Station> createStation(final PathResponse pathResponse) {
-        return pathResponse.getStations().stream()
+    private List<Station> createStation(final PathsResponse pathsResponse) {
+        return pathsResponse.getStations().stream()
                 .map(it -> new Station(it.getId(), it.getName()))
                 .collect(Collectors.toList());
 

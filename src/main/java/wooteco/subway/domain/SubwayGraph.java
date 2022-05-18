@@ -10,38 +10,40 @@ public class SubwayGraph {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> subwayGraph;
 
-    public SubwayGraph() {
+    public SubwayGraph(final Sections sections) {
         subwayGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        addStationsToSubwayVertex(sections);
+        addSectionsToSubwayEdge(sections);
     }
 
-    public void init(final Sections sections) {
-        addStationsToVertex(sections);
-        addSectionsToEdge(sections);
-    }
-
-    private void addStationsToVertex(final Sections sections) {
+    private void addStationsToSubwayVertex(final Sections sections) {
         for (Station station : sections.getStations()) {
             subwayGraph.addVertex(station);
         }
     }
 
-    private void addSectionsToEdge(final Sections sections) {
+    private void addSectionsToSubwayEdge(final Sections sections) {
         for (Section section : sections.getSections()) {
             subwayGraph.setEdgeWeight(subwayGraph.addEdge(section.getUpStation(), section.getDownStation()),
                     section.getDistance());
         }
     }
 
-    public List<Station> findShortestPath(final Station source, final Station target) {
-        return graphResult(source, target).getVertexList();
+    public Paths createPathsResult(final Station source, final Station target) {
+        GraphPath subwayGraphResult = createSubwayGraphResult(source, target);
+        List<Station> stations = subwayGraphResult.getVertexList();
+        double distance = subwayGraphResult.getWeight();
+        int fare = createFare(distance);
+        return new Paths(stations, distance, fare);
     }
 
-    public double findShortestDistance(final Station source, final Station target) {
-        return graphResult(source, target).getWeight();
-    }
-
-    private GraphPath graphResult(final Station source, final Station target) {
+    private GraphPath createSubwayGraphResult(final Station source, final Station target) {
         DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
         return pathFinder.getPath(source, target);
+    }
+
+    private int createFare(final double distance) {
+        FareCalculator fareCalculator = new FareCalculator(distance);
+        return fareCalculator.calculateFare();
     }
 }

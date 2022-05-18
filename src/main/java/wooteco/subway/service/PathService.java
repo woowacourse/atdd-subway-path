@@ -1,16 +1,13 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Paths;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.dto.PathsResponse;
 
 @Service
 public class PathService {
@@ -23,33 +20,20 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse createPath(final Long sourceStationId, final Long targetStationId, final int age) {
+    public PathsResponse createPaths(final Long sourceStationId, final Long targetStationId, final int age) {
         Station source = stationDao.findById(sourceStationId);
         Station target = stationDao.findById(targetStationId);
-        return createPathResponse(source, target);
+        return createPathsResponse(source, target);
     }
 
-    private PathResponse createPathResponse(final Station source, final Station target) {
-        Path path = initPath();
-        List<Station> stations = path.calculateShortestPath(source, target);
-        double distance = path.calculateShortestDistance(source, target);
-        int fare = createFare(distance);
-        return new PathResponse(convertToStationResponses(stations), distance, fare);
+    private PathsResponse createPathsResponse(final Station source, final Station target) {
+        SubwayGraph subwayGraph = initSubwayGraph();
+        Paths paths = subwayGraph.createPathsResult(source, target);
+        return PathsResponse.of(paths);
     }
 
-    private Path initPath() {
+    private SubwayGraph initSubwayGraph() {
         Sections sections = new Sections(sectionDao.findAll());
-        return new Path(sections);
-    }
-
-    private int createFare(final double distance) {
-        FareCalculator fareCalculator = new FareCalculator(distance);
-        return fareCalculator.calculateFare();
-    }
-
-    private List<StationResponse> convertToStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
+        return new SubwayGraph(sections);
     }
 }

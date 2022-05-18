@@ -19,7 +19,7 @@ import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathsAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("경로를 조회한다.")
     @Test
