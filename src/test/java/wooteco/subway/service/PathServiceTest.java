@@ -63,9 +63,9 @@ class PathServiceTest {
         assertThat(response.getStations()).hasSize(3)
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(1L, "a"),
-                        tuple(2L, "b"),
-                        tuple(3L, "c")
+                        tuple(response1.getId(), "a"),
+                        tuple(response2.getId(), "b"),
+                        tuple(response3.getId(), "c")
                 );
     }
 
@@ -104,8 +104,9 @@ class PathServiceTest {
         final LineRequest 분당선 = new LineRequest("분당선", "bg-yellow-600", response3.getId(), response5.getId(), 5);
         final Long 분당선id = lineService.save(분당선).getId();
 
+
         // when
-        final PathResponse response = pathService.findPath(1L, 6L);
+        final PathResponse response = pathService.findPath(response1.getId(), response6.getId());
 
         // then
         assertThat(response).extracting("distance", "fare")
@@ -113,11 +114,11 @@ class PathServiceTest {
         assertThat(response.getStations()).hasSize(5)
                 .extracting("id", "name")
                 .containsExactly(
-                        tuple(1L, "a"),
-                        tuple(2L, "b"),
-                        tuple(3L, "c"),
-                        tuple(5L, "e"),
-                        tuple(6L, "f")
+                        tuple(response1.getId(), "a"),
+                        tuple(response2.getId(), "b"),
+                        tuple(response3.getId(), "c"),
+                        tuple(response5.getId(), "e"),
+                        tuple(response6.getId(), "f")
                 );
     }
 }
