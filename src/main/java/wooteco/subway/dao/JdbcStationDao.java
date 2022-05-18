@@ -16,15 +16,15 @@ public class JdbcStationDao implements StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
     private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
-        resultSet.getLong("id"),
-        resultSet.getString("name")
+            resultSet.getLong("id"),
+            resultSet.getString("name")
     );
 
     public JdbcStationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
-            .withTableName("STATION")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("STATION")
+                .usingGeneratedKeyColumns("id");
     }
 
     @Override

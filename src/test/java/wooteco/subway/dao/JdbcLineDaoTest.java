@@ -32,8 +32,8 @@ class JdbcLineDaoTest {
         Long lineId = lineDao.save(new Line("신분당선", "red", 0));
 
         assertThat(lineDao.findById(lineId))
-            .extracting("name", "color")
-            .containsExactly("신분당선", "red");
+                .extracting("name", "color")
+                .containsExactly("신분당선", "red");
     }
 
     @Test
@@ -44,8 +44,8 @@ class JdbcLineDaoTest {
         Line line = lineDao.findById(lineId);
 
         assertThat(line)
-            .extracting("name", "color")
-            .containsExactly("1호선", "dark-blue");
+                .extracting("name", "color")
+                .containsExactly("1호선", "dark-blue");
     }
 
     @Test
@@ -56,7 +56,7 @@ class JdbcLineDaoTest {
         lineDao.deleteById(lineId);
 
         assertThatThrownBy(() -> lineDao.findById(lineId))
-            .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -66,8 +66,8 @@ class JdbcLineDaoTest {
         List<Line> lines = lineDao.findAll();
 
         assertThat(lines).hasSize(1)
-            .extracting("name", "color")
-            .containsExactly(tuple("신분당선", "red"));
+                .extracting("name", "color")
+                .containsExactly(tuple("신분당선", "red"));
 
         lineDao.deleteById(lineId);
     }
@@ -82,8 +82,8 @@ class JdbcLineDaoTest {
         Line newLine = lineDao.findById(lineId);
 
         assertThat(newLine)
-            .extracting("name", "color")
-            .containsExactly("분당선", "yellow");
+                .extracting("name", "color")
+                .containsExactly("분당선", "yellow");
 
         lineDao.deleteById(lineId);
     }

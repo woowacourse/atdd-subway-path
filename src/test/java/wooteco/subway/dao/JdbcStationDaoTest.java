@@ -29,8 +29,8 @@ class JdbcStationDaoTest {
         Long stationId = stationDao.save(new Station("선릉역"));
 
         assertThat(stationDao.findAll()).hasSize(1)
-            .extracting("name")
-            .containsExactly("선릉역");
+                .extracting("name")
+                .containsExactly("선릉역");
     }
 
     @Test
@@ -41,8 +41,8 @@ class JdbcStationDaoTest {
         List<Station> stations1 = stationDao.findAll();
 
         assertThat(stations1).hasSize(1)
-            .extracting("name")
-            .containsExactly("잠실역");
+                .extracting("name")
+                .containsExactly("잠실역");
     }
 
     @Test

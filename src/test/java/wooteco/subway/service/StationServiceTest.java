@@ -34,8 +34,8 @@ class StationServiceTest {
         stationService.save(new StationRequest("station3"));
 
         assertThat(stationService.findAll()).hasSize(3)
-            .extracting("name")
-            .containsExactly("station1", "station2", "station3");
+                .extracting("name")
+                .containsExactly("station1", "station2", "station3");
     }
 
     @Test
@@ -48,8 +48,8 @@ class StationServiceTest {
         List<StationResponse> stations = stationService.findAll();
 
         assertThat(stations).hasSize(3)
-            .extracting("name")
-            .containsExactly("station1", "station2", "station3");
+                .extracting("name")
+                .containsExactly("station1", "station2", "station3");
     }
 
     @Test
@@ -70,7 +70,7 @@ class StationServiceTest {
         stationService.save(new StationRequest("station1"));
 
         assertThatThrownBy(() -> stationService.save(new StationRequest("station1")))
-            .isInstanceOf(DuplicateStationException.class)
-            .hasMessageContaining("이미 존재하는 역 이름입니다.");
+                .isInstanceOf(DuplicateStationException.class)
+                .hasMessageContaining("이미 존재하는 역 이름입니다.");
     }
 }

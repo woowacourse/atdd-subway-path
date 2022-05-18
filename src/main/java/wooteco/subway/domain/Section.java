@@ -48,7 +48,7 @@ public class Section {
         return downStationId;
     }
 
-    public List<Long> getAllStations(){
+    public List<Long> getAllStations() {
         return List.of(upStationId, downStationId);
     }
 
@@ -77,7 +77,7 @@ public class Section {
     }
 
     public long getOppositeStation(long stationId) {
-        if(upStationId == stationId){
+        if (upStationId == stationId) {
             return downStationId;
         }
         return upStationId;

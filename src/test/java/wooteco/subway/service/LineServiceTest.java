@@ -22,7 +22,7 @@ import wooteco.subway.exception.DuplicateLineException;
 class LineServiceTest {
 
     public static final LineRequest LINE_REQUEST =
-        new LineRequest("신분당선", "red", 1L, 2L, 6, 0);
+            new LineRequest("신분당선", "red", 1L, 2L, 6, 0);
 
     private final LineService lineService;
 
@@ -37,8 +37,8 @@ class LineServiceTest {
         LineResponse lineResponse = lineService.save(LINE_REQUEST);
 
         assertThat(lineService.findById(lineResponse.getId()))
-            .extracting("name", "color")
-            .containsExactly("신분당선", "red");
+                .extracting("name", "color")
+                .containsExactly("신분당선", "red");
     }
 
     @Test
@@ -49,8 +49,8 @@ class LineServiceTest {
         LineResponse result = lineService.findById(lineResponse.getId());
 
         assertThat(result)
-            .extracting("name", "color")
-            .containsExactly("신분당선", "red");
+                .extracting("name", "color")
+                .containsExactly("신분당선", "red");
     }
 
     @Test
@@ -61,7 +61,7 @@ class LineServiceTest {
         lineService.delete(deleteId);
 
         assertThatThrownBy(() -> lineService.findById(deleteId))
-            .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -74,11 +74,11 @@ class LineServiceTest {
         List<LineResponse> lines = lineService.findAll();
 
         assertThat(lines).hasSize(3)
-            .extracting("name", "color")
-            .containsExactly(
-                tuple("line1", "green"),
-                tuple("line2", "yellow"),
-                tuple("line3", "blue"));
+                .extracting("name", "color")
+                .containsExactly(
+                        tuple("line1", "green"),
+                        tuple("line2", "yellow"),
+                        tuple("line3", "blue"));
     }
 
     @Test
@@ -87,9 +87,9 @@ class LineServiceTest {
         lineService.save(LINE_REQUEST);
 
         assertThatThrownBy(() -> lineService.save(
-            new LineRequest("신분당선", "yellow", 1L, 2L, 3, 0)))
-            .isInstanceOf(DuplicateLineException.class)
-            .hasMessageContaining("이미 존재하는 노선 이름입니다.");
+                new LineRequest("신분당선", "yellow", 1L, 2L, 3, 0)))
+                .isInstanceOf(DuplicateLineException.class)
+                .hasMessageContaining("이미 존재하는 노선 이름입니다.");
     }
 
     @Test
@@ -98,8 +98,8 @@ class LineServiceTest {
         lineService.save(LINE_REQUEST);
 
         assertThatThrownBy(() -> lineService.save(new LineRequest("line2", "red", null, null, 0, 0)))
-            .isInstanceOf(DuplicateLineException.class)
-            .hasMessageContaining("이미 존재하는 노선 색깔입니다.");
+                .isInstanceOf(DuplicateLineException.class)
+                .hasMessageContaining("이미 존재하는 노선 색깔입니다.");
     }
 
     @Test
@@ -109,11 +109,11 @@ class LineServiceTest {
         Long lineId = lineResponse.getId();
 
         lineService.update(lineId, new LineRequest(
-            "line2", "yellow", 1L, 2L, 6, 0));
+                "line2", "yellow", 1L, 2L, 6, 0));
 
         assertThat(lineService.findById(lineId))
-            .extracting("name", "color")
-            .containsExactly("line2", "yellow");
+                .extracting("name", "color")
+                .containsExactly("line2", "yellow");
     }
 
     @Test
@@ -121,13 +121,13 @@ class LineServiceTest {
     void updateDuplicateNameExceptionTest() {
         lineService.save(LINE_REQUEST);
         LineResponse lineResponse = lineService.save(
-            new LineRequest("2호선", "blue", 3L, 4L, 5, 0));
+                new LineRequest("2호선", "blue", 3L, 4L, 5, 0));
 
         assertThatThrownBy(() ->
-            lineService.update(lineResponse.getId(),
-                new LineRequest("신분당선", "yellow", 3L, 4L, 5, 0)))
-            .isInstanceOf(DuplicateLineException.class)
-            .hasMessageContaining("이미 존재하는 노선 이름으로 업데이트할 수 없습니다.");
+                lineService.update(lineResponse.getId(),
+                        new LineRequest("신분당선", "yellow", 3L, 4L, 5, 0)))
+                .isInstanceOf(DuplicateLineException.class)
+                .hasMessageContaining("이미 존재하는 노선 이름으로 업데이트할 수 없습니다.");
     }
 
     @Test
@@ -135,12 +135,12 @@ class LineServiceTest {
     void updateDuplicateColorExceptionTest() {
         lineService.save(LINE_REQUEST);
         LineResponse lineResponse = lineService.save(
-            new LineRequest("2호선", "blue", 2L, 3L, 5, 0));
+                new LineRequest("2호선", "blue", 2L, 3L, 5, 0));
 
         assertThatThrownBy(() ->
-            lineService.update(lineResponse.getId(),
-                new LineRequest("1호선", "red", 2L, 3L, 5, 0)))
-            .isInstanceOf(DuplicateLineException.class)
-            .hasMessageContaining("이미 존재하는 노선 색깔로 업데이트할 수 없습니다.");
+                lineService.update(lineResponse.getId(),
+                        new LineRequest("1호선", "red", 2L, 3L, 5, 0)))
+                .isInstanceOf(DuplicateLineException.class)
+                .hasMessageContaining("이미 존재하는 노선 색깔로 업데이트할 수 없습니다.");
     }
 }

@@ -16,7 +16,7 @@ import wooteco.subway.dto.SectionRequest;
 class SectionServiceTest {
 
     public static final SectionRequest GIVEN_SECTION_REQ =
-        new SectionRequest(1L, 2L, 6);
+            new SectionRequest(1L, 2L, 6);
 
     private final SectionService sectionService;
 
@@ -32,8 +32,8 @@ class SectionServiceTest {
 
         // when, then
         assertThatCode(() ->
-            sectionService.firstSave(1L, GIVEN_SECTION_REQ))
-            .doesNotThrowAnyException();
+                sectionService.firstSave(1L, GIVEN_SECTION_REQ))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -47,7 +47,7 @@ class SectionServiceTest {
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("상행, 하행이 대상 노선에 둘 다 존재합니다.");
+                .hasMessage("상행, 하행이 대상 노선에 둘 다 존재합니다.");
     }
 
     @Test
@@ -58,11 +58,11 @@ class SectionServiceTest {
 
         // when
         Throwable thrown = catchThrowable(
-            () -> sectionService.save(1L, new SectionRequest(3L, 4L, 6)));
+                () -> sectionService.save(1L, new SectionRequest(3L, 4L, 6)));
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+                .hasMessage("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
     }
 
     @Test
@@ -73,11 +73,11 @@ class SectionServiceTest {
 
         // when
         Throwable thrown = catchThrowable(
-            () -> sectionService.save(1L, new SectionRequest(1L, 3L, 6)));
+                () -> sectionService.save(1L, new SectionRequest(1L, 3L, 6)));
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
+                .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
     }
 
     @Test
@@ -88,11 +88,11 @@ class SectionServiceTest {
 
         // when
         Throwable thrown = catchThrowable(
-            () -> sectionService.save(1L, new SectionRequest(3L, 2L, 6)));
+                () -> sectionService.save(1L, new SectionRequest(3L, 2L, 6)));
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
+                .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
     }
 
     @Test
@@ -106,7 +106,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 2L, 3L);
+                .containsExactly(1L, 2L, 3L);
     }
 
     @Test
@@ -120,7 +120,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 2L, 3L);
+                .containsExactly(1L, 2L, 3L);
     }
 
     @Test
@@ -134,7 +134,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 2L, 3L);
+                .containsExactly(1L, 2L, 3L);
 
     }
 
@@ -149,7 +149,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 2L, 3L);
+                .containsExactly(1L, 2L, 3L);
     }
 
     @Test
@@ -164,7 +164,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(2L, 3L);
+                .containsExactly(2L, 3L);
     }
 
     @Test
@@ -179,7 +179,7 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 2L);
+                .containsExactly(1L, 2L);
     }
 
     @Test
@@ -194,6 +194,6 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
-            .containsExactly(1L, 3L);
+                .containsExactly(1L, 3L);
     }
 }

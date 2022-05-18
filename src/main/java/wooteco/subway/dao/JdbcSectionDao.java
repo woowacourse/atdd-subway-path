@@ -16,19 +16,19 @@ public class JdbcSectionDao implements SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
     private final RowMapper<Section> sectionRowMapper = (rs, rowNum) -> new Section(
-        rs.getLong("id"),
-        rs.getLong("line_id"),
-        rs.getLong("up_station_id"),
-        rs.getLong("down_station_id"),
-        rs.getInt("distance"),
-        rs.getLong("line_order")
+            rs.getLong("id"),
+            rs.getLong("line_id"),
+            rs.getLong("up_station_id"),
+            rs.getLong("down_station_id"),
+            rs.getInt("distance"),
+            rs.getLong("line_order")
     );
 
     public JdbcSectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         insertActor = new SimpleJdbcInsert(dataSource)
-            .withTableName("SECTION")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("SECTION")
+                .usingGeneratedKeyColumns("id");
     }
 
     @Override
@@ -46,8 +46,8 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public boolean existByLineId(long lineId) {
         String sql = "SELECT EXISTS ("
-            + "SELECT * FROM \"SECTION\" WHERE line_id = (?)"
-            + ")";
+                + "SELECT * FROM \"SECTION\" WHERE line_id = (?)"
+                + ")";
         return jdbcTemplate.queryForObject(sql, boolean.class, lineId);
     }
 
@@ -66,7 +66,7 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<Section> findByLineIdAndStationId(long lineId, long stationId) {
         String sql = "SELECT * FROM \"SECTION\""
-            + " WHERE line_id = (?) AND (up_station_id = (?) OR down_station_id = (?))";
+                + " WHERE line_id = (?) AND (up_station_id = (?) OR down_station_id = (?))";
         return jdbcTemplate.query(sql, sectionRowMapper, lineId, stationId, stationId);
     }
 

@@ -73,14 +73,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private List<Long> extractLineIdsWithUri(ExtractableResponse<Response> createResponse1,
                                              ExtractableResponse<Response> createResponse2) {
         return Stream.of(createResponse1, createResponse2)
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
     }
 
     private List<Long> extractLineIdsWithJson(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", LineResponse.class).stream()
-            .map(LineResponse::getId)
-            .collect(Collectors.toList());
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -129,7 +129,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response =
-            requestHttpPut(newLineRequest, uri);
+                requestHttpPut(newLineRequest, uri);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

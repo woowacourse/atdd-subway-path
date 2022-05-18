@@ -26,7 +26,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-            requestHttpPost(stationRequest, "/stations");
+                requestHttpPost(stationRequest, "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -42,7 +42,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-            requestHttpPost(stationRequest, "/stations");
+                requestHttpPost(stationRequest, "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -54,11 +54,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
         /// given
         StationRequest stationRequest1 = new StationRequest("강남역");
         ExtractableResponse<Response> createResponse1 =
-            requestHttpPost(stationRequest1, "/stations");
+                requestHttpPost(stationRequest1, "/stations");
 
         StationRequest stationRequest2 = new StationRequest("역삼역");
         ExtractableResponse<Response> createResponse2 =
-            requestHttpPost(stationRequest2, "/stations");
+                requestHttpPost(stationRequest2, "/stations");
 
         // when
         ExtractableResponse<Response> response = requestHttpGet("/stations");
@@ -67,23 +67,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<Long> expectedStationIds = extractStationIdsWithLocation(createResponse1,
-            createResponse2);
+                createResponse2);
         List<Long> resultStationIds = extractStationIdsWithJson(response);
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
     private List<Long> extractStationIdsWithJson(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", StationResponse.class)
-            .stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
+                .stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
     }
 
     private List<Long> extractStationIdsWithLocation(ExtractableResponse<Response> createResponse1,
                                                      ExtractableResponse<Response> createResponse2) {
         return Stream.of(createResponse1, createResponse2)
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -92,7 +92,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationRequest stationRequest = new StationRequest("강남역");
         ExtractableResponse<Response> createResponse =
-            requestHttpPost(stationRequest, "/stations");
+                requestHttpPost(stationRequest, "/stations");
 
         // when
         String uri = createResponse.header("Location");

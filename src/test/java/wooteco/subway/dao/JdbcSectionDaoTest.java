@@ -47,8 +47,8 @@ class JdbcSectionDaoTest {
 
         // then
         assertThat(sectionDao.findAllByLineId(1L))
-            .extracting("lineOrder")
-            .containsExactly(2L);
+                .extracting("lineOrder")
+                .containsExactly(2L);
     }
 
     @Test
@@ -63,8 +63,8 @@ class JdbcSectionDaoTest {
 
         // then
         assertThat(sectionDao.findAllByLineId(1L))
-            .extracting("lineOrder")
-            .containsExactly(1L, 1L);
+                .extracting("lineOrder")
+                .containsExactly(1L, 1L);
     }
 
     @Test
@@ -104,8 +104,8 @@ class JdbcSectionDaoTest {
 
         // then
         assertThat(sections).hasSize(2)
-            .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
-            .containsExactly(tuple(1L, 1L, 2L, 6, 1L), tuple(1L, 2L, 3L, 2, 2L));
+                .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
+                .containsExactly(tuple(1L, 1L, 2L, 6, 1L), tuple(1L, 2L, 3L, 2, 2L));
     }
 
     @Test
@@ -121,8 +121,8 @@ class JdbcSectionDaoTest {
 
         // when
         assertThat(sections).hasSize(2)
-            .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
-            .containsExactly(tuple(1L, 1L, 2L, 6, 1L), tuple(1L, 2L, 3L, 2, 2L));
+                .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
+                .containsExactly(tuple(1L, 1L, 2L, 6, 1L), tuple(1L, 2L, 3L, 2, 2L));
     }
 
     @Test
@@ -137,7 +137,7 @@ class JdbcSectionDaoTest {
 
         // when
         assertThat(sectionDao.findAllByLineId(1L)).hasSize(1)
-            .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
-            .containsExactly(tuple(1L, 1L, 2L, 6, 1L));
+                .extracting("lineId", "upStationId", "downStationId", "distance", "lineOrder")
+                .containsExactly(tuple(1L, 1L, 2L, 6, 1L));
     }
 }

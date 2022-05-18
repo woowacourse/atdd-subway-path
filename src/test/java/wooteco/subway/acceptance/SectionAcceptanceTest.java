@@ -29,7 +29,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-            requestHttpPost(sectionRequest, "/lines/2/sections");
+                requestHttpPost(sectionRequest, "/lines/2/sections");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -46,7 +46,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-            requestHttpDelete(sectionRequest, "/lines/2/sections?stationId=2");
+                requestHttpDelete(sectionRequest, "/lines/2/sections?stationId=2");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

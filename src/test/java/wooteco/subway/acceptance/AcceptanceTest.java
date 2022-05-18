@@ -24,50 +24,50 @@ public class AcceptanceTest {
 
     private <T> RequestSpecification createBody(T request) {
         return RestAssured.given()
-            .log()
-            .all()
-            .body(request);
+                .log()
+                .all()
+                .body(request);
     }
 
     ExtractableResponse<Response> requestHttpGet(String uri) {
         return RestAssured.given().log().all()
-            .when()
-            .get(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .get(uri)
+                .then().log().all()
+                .extract();
     }
 
     <T> ExtractableResponse<Response> requestHttpPost(T request, String uri) {
         return createBody(request)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post(uri)
-            .then().log().all()
-            .extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post(uri)
+                .then().log().all()
+                .extract();
     }
 
     <T> ExtractableResponse<Response> requestHttpPut(T request, String uri) {
         return createBody(request)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put(uri)
-            .then().log().all()
-            .extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put(uri)
+                .then().log().all()
+                .extract();
     }
 
     ExtractableResponse<Response> requestHttpDelete(String uri) {
         return RestAssured.given().log().all()
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
     }
 
     <T> ExtractableResponse<Response> requestHttpDelete(T request, String uri) {
         return createBody(request)
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
     }
 }
