@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class Line {
-    private Long id;
-    private Name name;
-    private String color;
-    private Sections sections;
+    private final Long id;
+    private final Name name;
+    private final String color;
+    private final Sections sections;
 
     private Line(Long id, String name, String color, Sections sections) {
         this.id = id;
@@ -17,12 +17,13 @@ public class Line {
         this.sections = sections;
     }
 
-    public static Line initialCreateWithoutId(String name, String color, Station upStation, Station downStation, int distance) {
+    public static Line initialCreateWithoutId(String name, String color, Station upStation, Station downStation,
+                                              int distance) {
         return new Line(null, name, color, new Sections(upStation, downStation, distance));
     }
 
     public static Line createWithoutSection(Long id, String name, String color) {
-        return new Line(id, name, color,null);
+        return new Line(id, name, color, null);
     }
 
     public static Line createWithId(Long id, String name, String color, List<Section> sections) {

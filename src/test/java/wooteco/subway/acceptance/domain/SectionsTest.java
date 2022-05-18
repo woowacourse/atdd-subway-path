@@ -14,12 +14,12 @@ import wooteco.subway.domain.Station;
 
 public class SectionsTest {
 
-    private Station upStation = new Station("강남역");
-    private Station downStation = new Station("청계산입구역");
+    private final Station upStation = new Station("강남역");
+    private final Station downStation = new Station("청계산입구역");
     private Line line;
-    
+
     @BeforeEach
-    void init(){
+    void init() {
         line = Line.initialCreateWithoutId("신분당선", "빨간색", upStation, downStation, 7);
     }
 
@@ -192,7 +192,7 @@ public class SectionsTest {
         assertThatThrownBy(() -> line.addSection(section))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-    
+
     @Test
     @DisplayName("상행 종점이 제거될 경우 다음역이 종점이 됨")
     void deleteSectionWithUpTerminal() {
@@ -228,7 +228,7 @@ public class SectionsTest {
                 () -> assertThat(sections.stream().anyMatch(it -> it.getUpStation().equals(downStation))).isFalse()
         );
     }
-    
+
     @Test
     @DisplayName("강남-청계산입구-양재역 에서 청계산입구가 제거되면 강남-양재가 된다.")
     void deleteSectionOnMiddle() {
@@ -251,7 +251,7 @@ public class SectionsTest {
                 () -> assertThat(section1.getDistance()).isEqualTo(17)
         );
     }
-    
+
     @Test
     @DisplayName("구간이 하나면 역을 제거할 수 없다.")
     void deleteExceptionByFinalSection() {
