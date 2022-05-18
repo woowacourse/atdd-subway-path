@@ -138,7 +138,7 @@ public class Sections {
     public List<Section> delete(final Station station) {
         validateDelete();
         List<Section> sections = values.stream()
-                .filter(value -> value.have(station))
+                .filter(value -> value.haveStation(station))
                 .collect(toList());
         values.removeAll(sections);
         if (isSectionNeedMerge(sections)) {
@@ -217,7 +217,7 @@ public class Sections {
 
     private boolean isExistStation(final Station station) {
         return values.stream()
-                .anyMatch(section -> section.have(station));
+                .anyMatch(section -> section.haveStation(station));
     }
 
     public List<Station> findShortestStations(final Station startStation, final Station endStation) {

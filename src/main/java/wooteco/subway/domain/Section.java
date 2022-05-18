@@ -95,7 +95,7 @@ public class Section {
         return equals(section) && isSameStations(section);
     }
 
-    public boolean have(final Station station) {
+    public boolean haveStation(final Station station) {
         return isSameUpStation(station) || isSameDownStation(station);
     }
 
