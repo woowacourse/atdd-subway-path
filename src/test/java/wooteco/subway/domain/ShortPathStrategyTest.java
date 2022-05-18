@@ -6,11 +6,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-class PathInfoTest {
+class ShortPathStrategyTest {
 
     private final List<Station> stations = List.of(
             new Station(1L, "v1"),
@@ -30,10 +28,10 @@ class PathInfoTest {
     @Test
     void create() {
         // given
-        PathInfo pathInfo = new PathInfo(stations, sections);
+        PathStrategy strategy = new ShortPathStrategy();
 
         // when
-        List<Station> result = pathInfo.findPath(new Station(3L, "v3"), new Station(1L, "v1"));
+        List<Station> result = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
 
         // then
         List<Station> expected = List.of(
@@ -49,10 +47,10 @@ class PathInfoTest {
     @Test
     void calculateDistance() {
         // given
-        PathInfo pathInfo = new PathInfo(stations, sections);
+        PathStrategy strategy = new ShortPathStrategy();
 
         // when
-        int result = pathInfo.calculateMinDistance(new Station(3L, "v3"), new Station(1L, "v1"));
+        int result = strategy.calculateDistance(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
 
         // then
         assertThat(result).isEqualTo(5);
@@ -65,10 +63,10 @@ class PathInfoTest {
         // given
         List<Station> stations = List.of(new Station(1L, "1"), new Station(2L, "2"));
         List<Section> sections = List.of(new Section(1L, 1L, 1L, 2L, distance));
-        PathInfo pathInfo = new PathInfo(stations, sections);
+        PathStrategy strategy = new ShortPathStrategy();
 
         // when
-        int result = pathInfo.calculateScore(new Station(1L, "1"), new Station(2L, "2"));
+        int result = strategy.calculateFee(stations, sections, new Station(1L, "1"), new Station(2L, "2"));
 
         // then
         assertThat(result).isEqualTo(expected);
