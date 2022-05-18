@@ -10,7 +10,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-
     private final LinkedList<Section> path;
 
     private Path(LinkedList<Section> path) {
@@ -18,28 +17,33 @@ public class Path {
     }
 
     public static Path from(Sections sections, long sourceId, long targetId) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        List<Long> shortestPath = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+
+        LinkedList<Section> path = toSections(sections, shortestPath);
+        return new Path(path);
+    }
+
+    private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(Sections sections) {
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         Set<Long> stationIds = new HashSet<>(sections.getStationsId());
         stationIds.forEach(graph::addVertex);
-        sections.getSections().forEach(section -> {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                    section.getDistance());
-        });
 
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
-        List<Long> shortestPath
-                = dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+        sections.getSections().forEach(
+                section -> graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
+                section.getDistance()));
+        return graph;
+    }
 
+    private static LinkedList<Section> toSections(Sections sections, List<Long> shortestPath) {
         LinkedList<Section> path = new LinkedList<>();
 
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
         }
-
-        return new Path(path);
+        return path;
     }
 
     public int getTotalDistance() {
