@@ -33,9 +33,9 @@ public class ShortestPathTest {
         ShortestPath shortestPath = new ShortestPath(sections);
 
         // when
-        List<Long> stationIds = shortestPath.findShortestPath(1L, 4L);
+        List<Long> stationIds = shortestPath.findShortestPath(4L, 1L);
 
         // then
-        assertThat(stationIds).containsExactlyElementsOf(List.of(1L, 2L, 3L, 4L));
+        assertThat(stationIds).containsExactlyElementsOf(List.of(4L, 3L, 2L, 1L));
     }
 }

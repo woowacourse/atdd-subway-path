@@ -36,8 +36,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .queryParam("source", 1)
-            .queryParam("target", 3)
+            .queryParam("source", 4)
+            .queryParam("target", 1)
             .queryParam("age", 20)
             .when()
             .get("/paths")
@@ -49,9 +49,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         JsonPath jsonPath = response.jsonPath();
         PathServiceResponse result = jsonPath.getObject("", PathServiceResponse.class);
         assertAll(
-            () -> assertThat(result.getStations().size()).isEqualTo(3),
-            () -> assertThat(result.getFare()).isEqualTo(1250),
-            () -> assertThat(result.getDistance()).isEqualTo(7)
+            () -> assertThat(result.getStations().size()).isEqualTo(4),
+            () -> assertThat(result.getFare()).isEqualTo(1350),
+            () -> assertThat(result.getDistance()).isEqualTo(12)
         );
     }
 
