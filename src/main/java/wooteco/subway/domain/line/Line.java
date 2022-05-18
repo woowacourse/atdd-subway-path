@@ -36,6 +36,10 @@ public class Line {
         this(null, name, color);
     }
 
+    public Line update(Line updateLine) {
+        return new Line(id, updateLine.name, updateLine.color, sectionSeries);
+    }
+
     public void addSection(Section section) {
         sectionSeries.add(section);
     }

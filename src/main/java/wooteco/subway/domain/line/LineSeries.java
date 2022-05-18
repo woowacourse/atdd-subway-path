@@ -44,7 +44,7 @@ public class LineSeries {
 
     public void update(Line updateLine) {
         final Line foundLine = findLine(updateLine);
-        lines.set(lines.indexOf(foundLine), updateLine);
+        lines.set(lines.indexOf(foundLine), foundLine.update(updateLine));
     }
 
     private Line findLine(Line updateLine) {
