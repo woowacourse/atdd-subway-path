@@ -40,7 +40,7 @@ public class Path {
     }
 
     private int belowMaximumBoundary(int fare) {
-        if (MINIMUM_BOUNDARY <= distance && distance <= MAXIMUM_BOUNDARY) {
+        if (MINIMUM_BOUNDARY < distance && distance <= MAXIMUM_BOUNDARY) {
             fare += calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
         }
         return fare;
@@ -55,6 +55,6 @@ public class Path {
     }
 
     private int calculateOverFare(int overDistance, int policy) {
-        return ((overDistance / policy) * SURCHARGE);
+        return (int)((Math.ceil((overDistance - 1) / policy) + 1) * SURCHARGE);
     }
 }
