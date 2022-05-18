@@ -61,41 +61,38 @@ public class SubwayMapTest {
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 10km 이내인 경우 경로, 거리, 요금은 1250원이 반환되어야 한다.")
+    @DisplayName("최단경로 거리의 합이 10km 이내인 경우 경로(1,2), 거리(5)가 반환된다.")
     void findShortestPath1() {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(1));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1)),
-            () -> assertThat(path.getDistance()).isEqualTo(5),
-            () -> assertThat(path.calculateFare()).isEqualTo(1250)
+            () -> assertThat(path.getDistance()).isEqualTo(5)
         );
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로, 거리, 요금은 1450원 이 반환되어야 한다.")
+    @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로(1,2,5,6,7), 거리(20)이 반환된다.")
     void findShortestPath2() {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(6));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1), stations.get(4), stations.get(5), stations.get(6)),
-            () -> assertThat(path.getDistance()).isEqualTo(20),
-            () -> assertThat(path.calculateFare()).isEqualTo(1450)
+            () -> assertThat(path.getDistance()).isEqualTo(20)
         );
     }
 
     @Test
-    @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로, 거리, 요금은 2150원 이 반환되어야 한다.")
+    @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로(1,2,3,8,9), 거리(58)이 반환되어야 한다.")
     void findShortestPath3() {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(8));
 
         assertAll(
             () -> assertThat(path.getStations())
                 .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(7), stations.get(8)),
-            () -> assertThat(path.getDistance()).isEqualTo(58),
-            () -> assertThat(path.calculateFare()).isEqualTo(2150)
+            () -> assertThat(path.getDistance()).isEqualTo(58)
         );
     }
 

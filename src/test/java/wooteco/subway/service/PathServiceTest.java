@@ -30,7 +30,7 @@ class PathServiceTest {
     private final SectionDao sectionDao;
 
     private final PathService pathService;
-    private List<Station> stations;
+    private List<Station> stations = createStations();
 
     PathServiceTest(LineDao lineDao, StationDao stationDao, SectionDao sectionDao,
         PathService pathService) {
@@ -42,7 +42,6 @@ class PathServiceTest {
 
     @BeforeEach
     public void setUp() {
-        stations = createStations();
         createLine1();
         createLine2();
         createLine3();
