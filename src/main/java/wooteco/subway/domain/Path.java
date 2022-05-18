@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -44,7 +45,7 @@ public class Path {
     }
 
     private void validateExistsPath(final Station source, final Station target) {
-        if (this.path.getPath(source, target) == null) {
+        if (Objects.isNull(this.path.getPath(source, target))) {
             throw new NoSuchPathException(source.getId(), target.getId());
         }
     }
