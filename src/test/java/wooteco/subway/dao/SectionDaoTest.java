@@ -1,7 +1,6 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -75,5 +75,16 @@ public class SectionDaoTest {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> sectionDao.delete(section))
                 .withMessageContaining("존재하지 않습니다");
+    }
+
+    @DisplayName("저장한 모든 구간 목록을 불러온다")
+    @Test
+    void findAll() {
+        Section section = new Section(downTermination, station, 10);
+
+        line.addSection(section);
+
+        sectionDao.save(line.getSections(), line.getId());
+        assertThat(sectionDao.findAll()).hasSize(2);
     }
 }

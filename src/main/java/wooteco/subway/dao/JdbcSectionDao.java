@@ -1,15 +1,22 @@
 package wooteco.subway.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
@@ -70,6 +77,33 @@ public class JdbcSectionDao implements SectionDao {
     public int deleteByLine(Long lineId) {
         String sql = "DELETE FROM section WHERE line_id = ?";
         return delete(sql, lineId);
+    }
+
+    @Override
+    public List<Section> findAll() {
+        String sql = "SELECT "
+                + "sec.id, sec.distance, "
+                + "sec.up_station_id, us.name up_station_name,"
+                + "sec.down_station_id, ds.name down_station_name "
+                + "FROM section AS sec "
+                + "JOIN station AS us ON sec.up_station_id = us.id "
+                + "JOIN station AS ds ON sec.down_station_id = ds.id ";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToSection(resultSet));
+    }
+
+    private Section mapToSection(ResultSet resultSet) throws SQLException {
+        Long upStationId = resultSet.getLong("up_station_id");
+        String upStationName = resultSet.getString("up_station_name");
+
+        Long downStationId = resultSet.getLong("down_station_id");
+        String downStationName = resultSet.getString("down_station_name");
+
+        return new Section(
+                resultSet.getLong("id"),
+                new Station(upStationId, upStationName),
+                new Station(downStationId, downStationName),
+                resultSet.getInt("distance")
+        );
     }
 
     private int delete(String sql, Long id) {
