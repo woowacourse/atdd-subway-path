@@ -71,8 +71,9 @@ class LineServiceTest {
                 }),
 
                 dynamicTest("노선의 저장 시 상행과 하행이 같은 지하철역인 경우 예외를 던진다.", () -> {
+                    Station station = generateStation("중동역");
                     LineRequest lineRequest = new LineRequest(
-                            "3호선", "bg-green-600", 1L, 1L, 10);
+                            "3호선", "bg-green-600", station.getId(), station.getId(), 10);
 
                     assertThatThrownBy(() -> lineService.save(lineRequest))
                             .isInstanceOf(IllegalArgumentException.class)
