@@ -138,8 +138,7 @@ public class Sections {
     public List<Section> delete(final Station station) {
         validateDelete();
         List<Section> sections = values.stream()
-                .filter(value -> value.isSameUpStation(station)
-                        || value.isSameDownStation(station))
+                .filter(value -> value.have(station))
                 .collect(toList());
         values.removeAll(sections);
         if (isSectionNeedMerge(sections)) {
@@ -196,8 +195,7 @@ public class Sections {
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Station station : sortSections()) {
             graph.addVertex(station);
         }
@@ -215,6 +213,11 @@ public class Sections {
         if (!isExistStation(startStation) || !isExistStation(endStation)) {
             throw new StationNotFoundException();
         }
+    }
+
+    private boolean isExistStation(final Station station) {
+        return values.stream()
+                .anyMatch(section -> section.have(station));
     }
 
     public List<Station> findShortestStations(final Station startStation, final Station endStation) {
@@ -240,11 +243,6 @@ public class Sections {
 
     private int calculateOverFare(final int distance, final int unit) {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
-    }
-
-    private boolean isExistStation(final Station station) {
-        return values.stream()
-                .anyMatch(section -> section.have(station));
     }
 
     public List<Section> getValues() {
