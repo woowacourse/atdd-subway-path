@@ -69,39 +69,53 @@ class PathServiceTest {
                 () -> assertThat(pathResponseDto.getFare()).isEqualTo(1650)
         );
     }
-//
-//    @Test
-//    @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
-//    void FindPathWithDuplicatedNodes() {
-//        //given
-//        List<Long> stationIds = stationService.findStations().stream()
-//                .map(StationResponseDto::getId)
-//                .collect(Collectors.toList());
-//        lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5));
-//        Sections sections = sectionService.findAll();
-//        Path path = new Path(1L, 5L, stationIds, sections);
-//        //when
-//        List<Long> actualPath = path.getShortestPath();
-//        int actualTotalDistance = path.getTotalDistance();
-//        //then
-//        assertAll(
-//                () -> assertThat(actualPath).containsExactly(1L, 3L, 4L, 5L),
-//                () -> assertThat(actualTotalDistance).isEqualTo(25)
-//        );
-//    }
-//
-//    @Test
-//    @DisplayName("없는 출발 역 또는 도착 역 Id 를 입력받으면 예외를 반환한다.")
-//    void FindPathWithNotExistsStationId() {
-//        //given
-//        List<Long> stationIds = stationService.findStations().stream()
-//                .map(StationResponseDto::getId)
-//                .collect(Collectors.toList());
-//        Sections sections = sectionService.findAll();
-//        //when
-//        //then
-//        assertThatThrownBy(() -> new Path(1L, -1L, stationIds, sections))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessage("[ERROR] 역을 찾을 수 없습니다");
-//    }
+
+    @Test
+    @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
+    void FindPathWithDuplicatedNodes() {
+        //given
+        lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5));
+        Long source = 1L;
+        Long target = 5L;
+        int age = 15;
+        //when
+        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        //then
+        assertAll(
+                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
+                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1550)
+        );
+    }
+
+    @Test
+    @DisplayName("없는 출발 역 또는 도착 역 Id 를 입력받으면 예외를 반환한다.")
+    void FindPathWithNotExistsStationId() {
+        //given
+        Long source = -1L;
+        Long target = 5L;
+        int age = 15;
+        //when
+        //then
+        assertThatThrownBy(() -> pathService.getPath(new PathRequestDto(source, target, age)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 역을 찾을 수 없습니다");
+    }
+
+    @Test
+    @DisplayName("경로를 찾을 수 없으면 예외을 반환한다.")
+    void FindPathWithNotExistsPath() {
+        //given
+        Long source = 1L;
+        Long target = 7L;
+        int age = 15;
+        stationService.createStation("Station6");
+        stationService.createStation("Station7");
+        lineService.create(new LineRequestDto("3호선", "bg-black-100", 6L, 7L, 5));
+        //when
+        //then
+        assertThatThrownBy(() -> pathService.getPath(new PathRequestDto(source, target, age)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 경로를 찾을 수 없습니다");
+    }
 }
