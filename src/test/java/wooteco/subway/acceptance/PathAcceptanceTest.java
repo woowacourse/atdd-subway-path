@@ -42,7 +42,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
 
-        List<StationResponse> stationResponses = pathResponse.getStationResponses();
+        List<StationResponse> stationResponses = pathResponse.getStations();
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),

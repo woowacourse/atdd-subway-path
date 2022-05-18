@@ -6,15 +6,15 @@ import wooteco.subway.service.dto.PathServiceResponse;
 
 public class PathResponse {
 
-    private List<StationResponse> stationResponses;
+    private List<StationResponse> stations;
     private int distance;
     private int fare;
 
     public PathResponse() {
     }
 
-    private PathResponse(List<StationResponse> stationResponses, int distance, int fare) {
-        this.stationResponses = stationResponses;
+    private PathResponse(List<StationResponse> stations, int distance, int fare) {
+        this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
@@ -27,8 +27,8 @@ public class PathResponse {
                 pathServiceResponse.getDistance(), pathServiceResponse.getFare());
     }
 
-    public List<StationResponse> getStationResponses() {
-        return stationResponses;
+    public List<StationResponse> getStations() {
+        return stations;
     }
 
     public int getDistance() {
