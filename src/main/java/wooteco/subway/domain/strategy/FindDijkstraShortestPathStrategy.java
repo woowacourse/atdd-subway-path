@@ -6,13 +6,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
-@Component
 public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
 
     @Override
