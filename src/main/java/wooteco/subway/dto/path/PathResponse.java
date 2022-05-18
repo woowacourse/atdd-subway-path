@@ -14,12 +14,14 @@ public class PathResponse {
     private int distance;
     private int fare;
 
+    private PathResponse() {
+    }
+
     private PathResponse(final List<StationResponse> stations, final int distance, final int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
-
 
     public static PathResponse of(final List<Station> stations, final Distance distance, final Fare fare) {
         final List<StationResponse> stationResponses = stations.stream()
@@ -30,6 +32,18 @@ public class PathResponse {
                 distance.getValue(),
                 fare.calculate()
         );
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     @Override
