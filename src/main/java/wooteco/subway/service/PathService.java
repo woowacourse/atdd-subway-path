@@ -2,11 +2,11 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayMap;
 import wooteco.subway.dto.path.PathResponse;
@@ -15,11 +15,11 @@ import wooteco.subway.exception.station.NoSuchStationException;
 @Service
 public class PathService {
 
-    private final SectionDao sectionDao;
+    private final LineDao lineDao;
     private final StationDao stationDao;
 
-    public PathService(final SectionDao sectionDao, final StationDao stationDao) {
-        this.sectionDao = sectionDao;
+    public PathService(final LineDao lineDao, final StationDao stationDao) {
+        this.lineDao = lineDao;
         this.stationDao = stationDao;
     }
 
@@ -36,8 +36,8 @@ public class PathService {
     }
 
     private SubwayMap toSubwayMap() {
-        final Sections sections = sectionDao.findAll();
-        return new SubwayMap(sections);
+        final List<Line> lines = lineDao.findAll();
+        return new SubwayMap(lines);
     }
 
     private Station findStationById(final Long stationId) {

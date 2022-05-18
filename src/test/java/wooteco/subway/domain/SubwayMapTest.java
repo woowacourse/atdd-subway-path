@@ -29,37 +29,41 @@ class SubwayMapTest {
         yeoksam = new Station(2L, "역삼역");
         seolleung = new Station(3L, "선릉역");
         samsung = new Station(4L, "삼성역");
+
         seoulForest = new Station(5L, "서울숲역");
         wangsimni = new Station(6L, "왕십리역");
+
         yacksu = new Station(7L, "약수역");
         geumho = new Station(8L, "금호역");
         oksu = new Station(9L, "옥수역");
 
-        final Line greenLine = new Line("2호선", "green");
-        final Line yellowLine = new Line("수인분당선", "yellow");
-        final Line orangeLine = new Line("3호선", "orange");
-
+        Line greenLine = null;
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
-
-        final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
-        final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
-
-        final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
-        final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
-
-        final Sections sections = new Sections(List.of(
+        greenLine = new Line(1L, new Name("2호선"), "green", new Sections(List.of(
                 greenSectionA,
                 greenSectionB,
-                greenSectionC,
+                greenSectionC
+        )));
+
+        Line yellowLine = null;
+        final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
+        final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
+        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", new Sections(List.of(
                 yellowSectionA,
-                yellowSectionB,
+                yellowSectionB
+        )));
+
+        Line orangeLine = null;
+        final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
+        final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
+        orangeLine = new Line(2L, new Name("3호선"), "orange", new Sections(List.of(
                 orangeSectionA,
                 orangeSectionB
-        ));
+        )));
 
-        subwayMap = new SubwayMap(sections);
+        subwayMap = new SubwayMap(List.of(greenLine, yellowLine, orangeLine));
     }
 
     @Test
