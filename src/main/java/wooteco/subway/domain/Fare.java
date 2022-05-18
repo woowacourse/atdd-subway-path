@@ -8,6 +8,7 @@ public class Fare {
     private static final int MAXIMUM_DISTANCE_BOUNDARY = 50;
     private static final int BELOW_FIFTY_KM_POLICY = 5;
     private static final int ABOVE_FIFTY_KM_POLICY = 8;
+    private static final int MAXIMUM_ADDITIONAL_FAIR_PRICE_BELOW_FIFTY_KM_POLICY = 800;
 
     private final int price;
 
@@ -32,7 +33,8 @@ public class Fare {
             return calculateFareFeeByPolicy(distance - MINIMUM_DISTANCE_BOUNDARY, BELOW_FIFTY_KM_POLICY);
         }
 
-        return 800 + calculateFareFeeByPolicy(distance - MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
+        return MAXIMUM_ADDITIONAL_FAIR_PRICE_BELOW_FIFTY_KM_POLICY +
+                calculateFareFeeByPolicy(distance - MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
     }
 
     private static int calculateFareFeeByPolicy(final double overFaredDistance, final int policy) {
