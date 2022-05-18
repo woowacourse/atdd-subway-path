@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
@@ -25,7 +26,7 @@ class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private StationService stationService;
+    private StationDao stationDao;
     @Mock
     private SectionDao sectionDao;
 
@@ -40,8 +41,8 @@ class PathServiceTest {
         final List<Section> sections = List.of(Section.createWithoutId(강남역, 역삼역, distance));
 
         given(sectionDao.findAll()).willReturn(sections);
-        doReturn(강남역).when(stationService).findStationById(1L);
-        doReturn(역삼역).when(stationService).findStationById(2L);
+        doReturn(강남역).when(stationDao).findById(1L);
+        doReturn(역삼역).when(stationDao).findById(2L);
         // when
         PathResponse pathResponse = pathService.getPath(1L, 2L);
         // then

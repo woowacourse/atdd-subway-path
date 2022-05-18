@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.LineResponse;
@@ -32,6 +33,8 @@ class LineServiceTest {
     @Mock
     private SectionDao sectionDao;
     @Mock
+    private StationDao stationDao;
+    @Mock
     private StationService stationService;
 
     @Test
@@ -43,8 +46,8 @@ class LineServiceTest {
         final Line line = Line.initialCreateWithoutId(name, color, 강남역, 청계산입구역, 1);
         given(lineDao.existsByName(name)).willReturn(false);
         given(lineDao.save(any())).willReturn(line);
-        doReturn(강남역).when(stationService).findStationById(1L);
-        doReturn(청계산입구역).when(stationService).findStationById(2L);
+        doReturn(강남역).when(stationDao).findById(1L);
+        doReturn(청계산입구역).when(stationDao).findById(2L);
 
         //when
         final LineResponse lineResponse = lineService.save(name, color, 1L, 2L, 1);

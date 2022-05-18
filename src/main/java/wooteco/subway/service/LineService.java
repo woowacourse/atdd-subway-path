@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -19,20 +20,20 @@ public class LineService {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationService stationService;
+    private final StationDao stationDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationService = stationService;
+        this.stationDao = stationDao;
     }
 
     @Transactional
     public LineResponse save(String name, String color, Long upStationId, Long downStationId, int distance) {
         validateName(name);
 
-        final Station upStation = stationService.findStationById(upStationId);
-        final Station downStation = stationService.findStationById(downStationId);
+        final Station upStation = stationDao.findById(upStationId);
+        final Station downStation = stationDao.findById(downStationId);
 
         final Line line = Line.initialCreateWithoutId(name, color, upStation, downStation, distance);
         final Line savedLine = lineDao.save(line);
@@ -77,8 +78,8 @@ public class LineService {
     public void addSection(Long lineId, Long upStationId, Long downStationId, int distance) {
         final Line savedLine = lineDao.findById(lineId);
 
-        final Station upStation = stationService.findStationById(upStationId);
-        final Station downStation = stationService.findStationById(downStationId);
+        final Station upStation = stationDao.findById(upStationId);
+        final Station downStation = stationDao.findById(downStationId);
         savedLine.addSection(Section.createWithoutId(upStation, downStation, distance));
 
         updateSection(lineId, savedLine);
@@ -88,7 +89,7 @@ public class LineService {
     public void deleteSection(Long lineId, Long stationId) {
         final Line savedLine = lineDao.findById(lineId);
 
-        final Station station = stationService.findStationById(stationId);
+        final Station station = stationDao.findById(stationId);
 
         savedLine.deleteSection(station);
 
