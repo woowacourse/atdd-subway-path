@@ -11,7 +11,9 @@ import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,23 +38,15 @@ public class PathService {
     }
 
     private List<StationResponse> createStationResponseOf(List<Long> path) {
-        List<Station> stations = arrangeStations(path);
-
-        return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
-    }
-
-    private List<Station> arrangeStations(List<Long> path) {
         List<Station> stations = stationDao.findByIdIn(path);
+        Map<Long, String> map = new HashMap<>();
 
-        List<Station> sortedStations = new ArrayList<>();
-        for (Long node : path) {
-            stations.stream()
-                    .filter(station -> node.equals(station.getId()))
-                    .findFirst()
-                    .ifPresent(sortedStations::add);
+        for (Station station : stations) {
+            map.put(station.getId(), station.getName());
         }
-        return sortedStations;
+
+        return path.stream()
+                .map(node -> new StationResponse(node, map.get(node)))
+                .collect(Collectors.toList());
     }
 }
