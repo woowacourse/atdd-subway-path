@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Path {
@@ -15,7 +16,7 @@ public class Path {
     }
 
     public List<Station> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public double getDistance() {

@@ -24,7 +24,6 @@ public class DijkstraStrategy implements ShortestPathStrategy {
         return new Path(path.getVertexList(), path.getWeight(), Fare.from(path.getWeight()));
     }
 
-
     private WeightedMultigraph<Station, DefaultWeightedEdge> initializeGraph(
             final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Sections sections) {
 
