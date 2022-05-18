@@ -98,7 +98,7 @@ public class SectionsTest {
     @Test
     @DisplayName("상행역 종점을 제거한다.")
     void deleteFinalUpStation() {
-        sections.delete(new Station(1L));
+        sections.delete(new Station(1L, "강남역"));
 
         assertThat(sections.hasSection(section1)).isFalse();
     }
@@ -106,7 +106,7 @@ public class SectionsTest {
     @Test
     @DisplayName("하행역 종점을 제거한다.")
     void deleteFinalDownStation() {
-        sections.delete(new Station(4L));
+        sections.delete(new Station(4L, "건대입구역"));
 
         assertThat(sections.hasSection(section3)).isFalse();
     }
@@ -117,7 +117,7 @@ public class SectionsTest {
         final Section section =
                 new Section(2L, 4L, 25);
 
-        sections.delete(new Station(3L));
+        sections.delete(new Station(3L, "잠실역"));
 
         assertThat(sections.hasSection(section)).isTrue();
     }
@@ -125,7 +125,7 @@ public class SectionsTest {
     @Test
     @DisplayName("존재하지 않는 역을 제거하려 할 때 예외를 발생시킨다.")
     void deleteNotExistSection() {
-        assertThatThrownBy(() -> sections.delete(new Station(5L)))
+        assertThatThrownBy(() -> sections.delete(new Station(5L, "성수역")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }
@@ -133,10 +133,10 @@ public class SectionsTest {
     @Test
     @DisplayName("구간이 하나인 노선에서 역을 제거할 때 예외를 발생시킨다.")
     void deleteWhenOnlyOneSection() {
-        sections.delete(new Station(3L));
-        sections.delete(new Station(2L));
+        sections.delete(new Station(3L, "잠실역"));
+        sections.delete(new Station(2L, "삼성역"));
 
-        assertThatThrownBy(() -> sections.delete(new Station(4L)))
+        assertThatThrownBy(() -> sections.delete(new Station(4L, "건대입구역")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간이 하나만 존재하는 노선입니다.");
     }

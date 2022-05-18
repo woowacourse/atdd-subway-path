@@ -9,11 +9,6 @@ public class Station {
     private Station() {
     }
 
-    public Station(Long id) {
-        this.id = id;
-        this.name = "";
-    }
-
     public Station(String name) {
         this.name = name;
     }
