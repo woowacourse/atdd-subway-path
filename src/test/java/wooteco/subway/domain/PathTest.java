@@ -49,4 +49,25 @@ class PathTest {
 
 //        assertThat(shortestPath).containsExactly("강남역", "역삼역", "선릉역");
     }
+
+    @Test
+    void createShortestPathWithTransferLine() {
+        List<Section> sections = new ArrayList<>();
+        Line 이호선 = new Line("2호선", "bg-red-200");
+        Line 구호선 = new Line("9호선", "bg-blue-200");
+        Station 성수역 = new Station(1L, "성수역");
+        Station 건대입구 = new Station(2L, "건대입구");
+        Station 강남구청 = new Station(3L, "강남구청");
+
+
+        sections.add(new Section(이호선, 성수역, 건대입구, 10));
+        sections.add(new Section(구호선, 건대입구, 강남구청, 10));
+
+        Path path = new Path(new Sections(sections));
+        List<Long> shortestPath = path.createShortestPath(성수역.getId(),강남구청.getId());
+
+        assertThat(path.calculateDistance(성수역.getId(), 강남구청.getId())).isEqualTo(20);
+
+        assertThat(shortestPath).containsExactly(성수역.getId(), 건대입구.getId(), 강남구청.getId());
+    }
 }

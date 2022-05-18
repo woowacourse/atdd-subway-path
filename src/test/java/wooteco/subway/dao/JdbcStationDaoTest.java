@@ -21,12 +21,6 @@ public class JdbcStationDaoTest {
     void setUp() {
         stationDao = new JdbcStationDao(jdbcTemplate);
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS STATION(\n"
-                + "    id BIGINT AUTO_INCREMENT NOT NULL,\n"
-                + "    name VARCHAR(255) NOT NULL UNIQUE,\n"
-                + "    PRIMARY KEY(id)\n"
-                + ");");
-
         final Station station1 = new Station("지하철역이름");
         final Station station2 = new Station("새로운지하철역이름");
         stationDao.save(station1);

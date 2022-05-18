@@ -21,13 +21,6 @@ public class JdbcLineDaoTest {
     void setUp() {
         lineDao = new JdbcLineDao(jdbcTemplate);
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS LINE(\n"
-                + "    id BIGINT AUTO_INCREMENT NOT NULL,\n"
-                + "    name VARCHAR(255) NOT NULL UNIQUE,\n"
-                + "    color VARCHAR(20) NOT NULL,\n"
-                + "    PRIMARY KEY(id)\n"
-                + ");");
-
         final Line line1 = new Line("분당선", "bg-red-600");
         final Line line2 = new Line("신분당선", "bg-orange-600");
         lineDao.save(line1);
