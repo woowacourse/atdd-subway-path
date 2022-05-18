@@ -44,7 +44,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(pathResponse.getStations()).hasSize(3),
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(7)
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
 

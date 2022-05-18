@@ -18,6 +18,6 @@ public class PathConverter {
             .stream()
             .map(stationDto -> new StationResponse(stationDto.getId(), stationDto.getName()))
             .collect(Collectors.toList());
-        return new PathResponse(stationResponses, pathServiceResponse.getDistance());
+        return new PathResponse(stationResponses, pathServiceResponse.getDistance(), pathServiceResponse.getFare());
     }
 }
