@@ -10,16 +10,16 @@ public class Stations {
         this.stations = stations;
     }
 
-    public Station findStationById(Long stationId) {
-        return stations.stream()
-                .filter(station -> station.hasId(stationId))
-                .findFirst()
-                .orElseThrow();
-    }
-
     public List<Station> arrangeStationsByIds(List<Long> stationIds) {
         return stationIds.stream()
                 .map(this::findStationById)
                 .collect(Collectors.toList());
+    }
+
+    private Station findStationById(Long stationId) {
+        return stations.stream()
+                .filter(station -> station.hasId(stationId))
+                .findFirst()
+                .orElseThrow();
     }
 }
