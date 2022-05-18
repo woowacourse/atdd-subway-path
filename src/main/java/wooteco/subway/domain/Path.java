@@ -8,10 +8,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
+
     private final List<Station> stations;
     private final int distance;
     private final Fare fare;
-
 
     public Path(List<Section> sections, Station departure, Station arrival) {
         final GraphPath<Station, DefaultWeightedEdge> path = generatePath(sections, departure, arrival);

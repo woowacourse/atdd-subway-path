@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import wooteco.subway.domain.Path;
 
 public class PathResponse {
+
     private final List<StationResponse> stations;
     private final int distance;
     private final int fare;

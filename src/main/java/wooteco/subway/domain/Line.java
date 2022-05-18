@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Line {
+
     private final Long id;
     private final Name name;
     private final String color;

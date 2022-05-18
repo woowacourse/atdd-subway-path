@@ -61,11 +61,12 @@ public class LineDao {
     }
 
     private List<Section> findSectionsByLineId(Long lineId) {
-        final String sql = "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
-                "from sections s " +
-                "join station us on s.up_station_id = us.id " +
-                "join station ds on s.down_station_id = ds.id " +
-                "where line_id = ?";
+        final String sql =
+                "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
+                        "from sections s " +
+                        "join station us on s.up_station_id = us.id " +
+                        "join station ds on s.down_station_id = ds.id " +
+                        "where line_id = ?";
         return jdbcTemplate.query(sql, ((rs, rowNum) -> {
             return Section.createWithId(rs.getLong("sid"), new Station(rs.getLong("usid"), rs.getString("usname")),
                     new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
