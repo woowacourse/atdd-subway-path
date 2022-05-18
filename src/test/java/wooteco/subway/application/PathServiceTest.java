@@ -1,6 +1,5 @@
 package wooteco.subway.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -14,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnsearchablePathException;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.PathSummary;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.AddSectionRequest;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -40,16 +38,22 @@ class PathServiceTest {
     private Station station1;
     private Station station2;
     private Station station3;
+    private Station station4;
     private Line line1;
+    private Line line2;
 
     @BeforeEach
     void setUp() {
         station1 = stationService.save(new StationRequest("강남역"));
         station2 = stationService.save(new StationRequest("역삼역"));
         station3 = stationService.save(new StationRequest("잠실역"));
+        station4 = stationService.save(new StationRequest("선릉역"));
         line1 = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10));
-        sectionService.addSection(line1.getId(), new AddSectionRequest(station2.getId(), station3.getId(), 5));
+            new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 5));
+        sectionService.addSection(line1.getId(), new AddSectionRequest(station2.getId(), station3.getId(), 4));
+
+        line2 = lineService.save(
+            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3));
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")
@@ -67,7 +71,7 @@ class PathServiceTest {
     }
 
     private long notFoundStationId() {
-        return Stream.of(station1, station2, station3)
+        return Stream.of(station1, station2, station3, station4)
             .map(Station::getId)
             .max(Long::compareTo).get() + 1L;
     }
@@ -82,11 +86,11 @@ class PathServiceTest {
     @DisplayName("한 같옆에 있는 지하철역 경로 찾기")
     @Test
     void searchAdjacentPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station2.getId());
+        PathSummary pathResponse = pathService.searchPath(station1.getId(), station2.getId());
 
-        assertThat(pathResponse.getStations()).containsExactly(
-            new StationResponse(station1), new StationResponse(station2));
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getPath()).containsExactly(
+            station1, station2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
@@ -94,11 +98,22 @@ class PathServiceTest {
     @DisplayName("두 칸옆에 있는 지하철역 경로 찾기")
     @Test
     void searchTwoBlockPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station3.getId());
+        PathSummary pathResponse = pathService.searchPath(station1.getId(), station3.getId());
 
-        assertThat(pathResponse.getStations()).containsExactly(
-            new StationResponse(station1), new StationResponse(station2), new StationResponse(station3));
-        assertThat(pathResponse.getDistance()).isEqualTo(15);
+        assertThat(pathResponse.getPath()).containsExactly(
+            station1, station2, station3);
+        assertThat(pathResponse.getDistance()).isEqualTo(9);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
+    }
+
+    @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
+    @Test
+    void searchTransferLinePath() {
+        PathSummary pathResponse = pathService.searchPath(station1.getId(), station4.getId());
+
+        assertThat(pathResponse.getPath()).containsExactly(
+            station1, station2, station4);
+        assertThat(pathResponse.getDistance()).isEqualTo(8);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 }

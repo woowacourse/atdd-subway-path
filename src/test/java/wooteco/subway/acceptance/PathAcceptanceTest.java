@@ -74,6 +74,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualStationIds).containsExactly(station4, station1, station2);
         assertThat(distance).isEqualTo(20);
-        assertThat(fare).isEqualTo(1250);
+        assertThat(fare).isEqualTo(1450);
     }
 }

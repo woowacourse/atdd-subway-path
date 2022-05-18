@@ -34,7 +34,9 @@ Content-Length: 239
 }
 ```
 
-### 예외 케이스
+### 기능 명세
+* [x] 정상적인 경우 요청 값 반환 
+  
 * [x] source 지하철 역이 없는 경우, target 지하철 역이 없는 경우
     * 404 NOT FOUND
     
@@ -43,3 +45,7 @@ Content-Length: 239
   
 * [x] source와 target이 같은 경우 
   * 400 BAD REQUEST
+  
+
+### TODO
+* PathSearcher 추출 -> 못가는 경우 예외 발생 테스트 짜기
