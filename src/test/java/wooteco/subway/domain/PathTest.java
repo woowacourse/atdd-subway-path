@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 public class PathTest {
 
@@ -65,15 +63,5 @@ public class PathTest {
         assertThatThrownBy(() -> path.calculateShortestPath(1L, 4L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발지에서 도착지로 갈 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @CsvSource({"1,2,1250", "2,3,1350", "3,4,1450", "4,5,2150"})
-    @DisplayName("금액을 계산한다.")
-    void calculateFareTest(Long source, Long target, int fare) {
-        Path path = new Path(List.of(new Section(1L, 1L, 2L, 9), new Section(1L, 2L, 3L, 12),
-                new Section(1L, 3L, 4L, 16), new Section(1L, 4L, 5L, 58)));
-
-        assertThat(path.calculateFare(source, target)).isEqualTo(fare);
     }
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.PathResponse;
@@ -33,6 +34,6 @@ public class PathService {
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, shortestDistance, path.calculateFare(source, target));
+        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance));
     }
 }

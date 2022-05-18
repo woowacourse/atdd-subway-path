@@ -49,15 +49,4 @@ public class Path {
 
         return path;
     }
-
-    public int calculateFare(Long source, Long target) {
-        int distance = calculateShortestDistance(source, target);
-        if (distance > 50) {
-            return 1250 + 100 * 8 + (int) (((Math.ceil((distance - 50) / (double) 8))) * 100);
-        }
-        if (10 < distance && distance <= 50) {
-            return 1250 + (int) ((Math.ceil((distance - 10) / (double) 5)) * 100);
-        }
-        return 1250;
-    }
 }
