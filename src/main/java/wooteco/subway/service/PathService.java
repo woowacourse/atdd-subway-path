@@ -14,6 +14,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 
 import java.util.List;
+import java.util.Objects;
 
 @Transactional
 @Service
@@ -27,6 +28,7 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long upStationId, Long downStationId) {
+        validateNotSameStations(upStationId, downStationId);
         final GraphPath<Station, DefaultWeightedEdge> graphPath = findGraphPath(upStationId, downStationId);
         validatePathExist(graphPath);
 
@@ -34,6 +36,12 @@ public class PathService {
         final int shortestDistance = (int) graphPath.getWeight();
         final Fare fare = Fare.from(shortestDistance);
         return new PathResponse(stations, shortestDistance, fare.getValue());
+    }
+
+    private void validateNotSameStations(Long upStationId, Long downStationId) {
+        if (Objects.equals(upStationId, downStationId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+        }
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findGraphPath(Long upStationId, Long downStationId) {
