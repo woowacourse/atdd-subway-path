@@ -23,13 +23,13 @@ public class SectionSeries {
 
     private void validateHasId(List<Section> sections) {
         sections.stream()
-            .filter(section -> section.getId() == null)
-            .findAny()
-            .ifPresent(section -> {
-                throw new IdMissingException(
-                    String.format("상행 %s, 하행 %s 구간에 ID가 없습니다.", section.getUpStation().getName(),
-                        section.getDownStation().getName()));
-            });
+                .filter(section -> section.getId() == null)
+                .findAny()
+                .ifPresent(section -> {
+                    throw new IdMissingException(
+                            String.format("상행 %s, 하행 %s 구간에 ID가 없습니다.", section.getUpStation().getName(),
+                                    section.getDownStation().getName()));
+                });
     }
 
     public void add(Section section) {
@@ -71,13 +71,13 @@ public class SectionSeries {
 
     private Section findIntermediateSection(Section newSection) {
         return sections.stream()
-            .filter(section -> section.isDividable(newSection))
-            .collect(CollectorsUtils.findOneCertainly())
-            .orElseThrow(() -> new RowNotFoundException(
-                String.format("%s 혹은 %s와 같은 방향의 구간을 찾지 못했습니다.",
-                    newSection.getUpStation().getName(),
-                    newSection.getDownStation().getName())
-            ));
+                .filter(section -> section.isDividable(newSection))
+                .collect(CollectorsUtils.findOneCertainly())
+                .orElseThrow(() -> new RowNotFoundException(
+                        String.format("%s 혹은 %s와 같은 방향의 구간을 찾지 못했습니다.",
+                                newSection.getUpStation().getName(),
+                                newSection.getDownStation().getName())
+                ));
     }
 
     public void remove(Station deleteStation) {
@@ -115,9 +115,9 @@ public class SectionSeries {
 
     private int findIntermediateStation(Station station) {
         return IntStream.range(getFirstIndex(), sections.size())
-            .filter(it -> sections.get(it).isDownStationSame(station))
-            .findAny()
-            .orElseThrow(() -> new RowNotFoundException("삭제하려는 역이 구간에 등록되어 있지 않습니다."));
+                .filter(it -> sections.get(it).isDownStationSame(station))
+                .findAny()
+                .orElseThrow(() -> new RowNotFoundException("삭제하려는 역이 구간에 등록되어 있지 않습니다."));
     }
 
     public List<Section> getSections() {

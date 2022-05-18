@@ -21,8 +21,8 @@ public class PathResponse {
 
     public static PathResponse of(List<Station> paths, Distance distance, Fare calculatedFare) {
         final List<StationResponse> stations = paths.stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
         final int distanceValue = distance.getValue();
         final int fareAmount = calculatedFare.getAmount();
         return new PathResponse(stations, distanceValue, fareAmount);

@@ -31,9 +31,9 @@ public class StationService {
 
     public List<StationResponse> findAll() {
         return stationRepository.findAllStations()
-            .stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
     }
 
     Station findOne(Long id) {

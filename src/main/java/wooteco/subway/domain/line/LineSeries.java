@@ -17,11 +17,11 @@ public class LineSeries {
 
     private void validateHasId(List<Line> lines) {
         lines.stream()
-            .filter(line -> line.getId() == null)
-            .findAny()
-            .ifPresent(line -> {
-                throw new IdMissingException(line.getName() + " 노선에 ID가 없습니다.");
-            });
+                .filter(line -> line.getId() == null)
+                .findAny()
+                .ifPresent(line -> {
+                    throw new IdMissingException(line.getName() + " 노선에 ID가 없습니다.");
+                });
     }
 
     public void add(Line line) {
@@ -49,9 +49,9 @@ public class LineSeries {
 
     private Line findLine(Line updateLine) {
         return lines.stream()
-            .filter(line -> line.getId().equals(updateLine.getId()))
-            .findAny()
-            .orElseThrow(() -> new RowNotFoundException("해당하는 노선을 찾을 수 없습니다."));
+                .filter(line -> line.getId().equals(updateLine.getId()))
+                .findAny()
+                .orElseThrow(() -> new RowNotFoundException("해당하는 노선을 찾을 수 없습니다."));
     }
 
     public List<Line> getLines() {

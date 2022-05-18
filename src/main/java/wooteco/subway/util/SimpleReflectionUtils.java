@@ -19,8 +19,8 @@ public class SimpleReflectionUtils {
 
     private static Field findIdAnnotatedField(Class<?> clazz) {
         return Arrays.stream(clazz.getDeclaredFields())
-            .filter(field -> field.isAnnotationPresent(Id.class))
-            .findAny()
-            .orElseThrow(() -> new IdFieldNotFoundException("ID 필드가 존재하지 않습니다."));
+                .filter(field -> field.isAnnotationPresent(Id.class))
+                .findAny()
+                .orElseThrow(() -> new IdFieldNotFoundException("ID 필드가 존재하지 않습니다."));
     }
 }

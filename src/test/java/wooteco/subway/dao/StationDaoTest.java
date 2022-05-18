@@ -56,7 +56,7 @@ class StationDaoTest {
 
         // then
         assertThatExceptionOfType(DuplicateKeyException.class)
-            .isThrownBy(() -> dao.save(new StationEntity("청구역")));
+                .isThrownBy(() -> dao.save(new StationEntity("청구역")));
     }
 
     @Test

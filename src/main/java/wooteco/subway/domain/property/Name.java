@@ -29,7 +29,7 @@ public class Name {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Name name = (Name)o;
+        Name name = (Name) o;
         return Objects.equals(value, name.value);
     }
 
@@ -41,7 +41,7 @@ public class Name {
     @Override
     public String toString() {
         return "Name{" +
-            "value='" + value + '\'' +
-            '}';
+                "value='" + value + '\'' +
+                '}';
     }
 }

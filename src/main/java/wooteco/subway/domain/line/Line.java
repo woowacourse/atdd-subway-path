@@ -67,10 +67,10 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-            "id=" + id +
-            ", name=" + name +
-            ", color=" + color +
-            ", sectionSeries=" + sectionSeries +
-            '}';
+                "id=" + id +
+                ", name=" + name +
+                ", color=" + color +
+                ", sectionSeries=" + sectionSeries +
+                '}';
     }
 }

@@ -13,26 +13,26 @@ public class SimpleRestAssured {
 
     public static ExtractableResponse<Response> get(String path) {
         return thenExtract(given()
-            .when().get(path));
+                .when().get(path));
     }
 
     public static ExtractableResponse<Response> post(String path, Map<String, String> params) {
         return thenExtract(given()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(path));
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path));
     }
 
     public static ExtractableResponse<Response> put(String path, Map<String, String> params) {
         return thenExtract(given()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(path));
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(path));
     }
 
     public static ExtractableResponse<Response> delete(String path) {
         return thenExtract(given()
-            .when().delete(path));
+                .when().delete(path));
     }
 
     private static RequestSpecification given() {
@@ -41,8 +41,8 @@ public class SimpleRestAssured {
 
     private static ExtractableResponse<Response> thenExtract(Response response) {
         return response
-            .then().log().all()
-            .extract();
+                .then().log().all()
+                .extract();
     }
 
     public static <T> T toObject(ExtractableResponse<Response> response, Class<T> clazz) {

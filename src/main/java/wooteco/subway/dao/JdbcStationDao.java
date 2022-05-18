@@ -19,16 +19,16 @@ import wooteco.subway.entity.StationEntity;
 public class JdbcStationDao implements StationDao {
 
     public static final RowMapper<StationEntity> STATION_ROW_MAPPER = (resultSet, rowNum) -> new StationEntity(
-        resultSet.getLong("id"),
-        resultSet.getString("name")
+            resultSet.getLong("id"),
+            resultSet.getString("name")
     );
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcStationDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = jdbcTemplate;
     }
 

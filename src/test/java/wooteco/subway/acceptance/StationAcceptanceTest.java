@@ -30,8 +30,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.header("Location")).isNotBlank()
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank()
         );
     }
 
@@ -62,15 +62,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
         System.out.println();
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(resultLineIds).containsAll(expectedLineIds)
         );
     }
 

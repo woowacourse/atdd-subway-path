@@ -41,7 +41,7 @@ public class Distance {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Distance distance = (Distance)o;
+        Distance distance = (Distance) o;
         return value == distance.value;
     }
 

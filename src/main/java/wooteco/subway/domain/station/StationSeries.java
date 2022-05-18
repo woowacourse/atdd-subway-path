@@ -22,11 +22,11 @@ public class StationSeries {
 
     private void validateHasId(List<Station> stations) {
         stations.stream()
-            .filter(station -> station.getId() == null)
-            .findAny()
-            .ifPresent(station -> {
-                throw new IdMissingException(station.getName() + "역에 ID가 없습니다.");
-            });
+                .filter(station -> station.getId() == null)
+                .findAny()
+                .ifPresent(station -> {
+                    throw new IdMissingException(station.getName() + "역에 ID가 없습니다.");
+                });
     }
 
     public void add(Station station) {
@@ -49,19 +49,19 @@ public class StationSeries {
 
     public static StationSeries fromSectionsAsOrdered(List<Section> sections) {
         final Map<Station, Station> sectionMap = sections.stream()
-            .collect(Collectors.toMap(
-                Section::getUpStation,
-                Section::getDownStation));
+                .collect(Collectors.toMap(
+                        Section::getUpStation,
+                        Section::getDownStation));
         Station cursor = findUpTerminal(sectionMap);
         return new StationSeries(getOrderedStations(sectionMap, cursor));
     }
 
     private static Station findUpTerminal(Map<Station, Station> sectionMap) {
         return sectionMap.keySet()
-            .stream()
-            .filter(upStation -> !sectionMap.containsValue(upStation))
-            .findAny()
-            .orElseThrow(() -> new UnexpectedException("상행 종점을 찾을 수 없습니다."));
+                .stream()
+                .filter(upStation -> !sectionMap.containsValue(upStation))
+                .findAny()
+                .orElseThrow(() -> new UnexpectedException("상행 종점을 찾을 수 없습니다."));
     }
 
     private static List<Station> getOrderedStations(Map<Station, Station> sectionMap, Station cursor) {

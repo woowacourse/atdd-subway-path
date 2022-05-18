@@ -29,17 +29,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         SimpleRestAssured.post("/stations", Map.of("name", "선정릉역"));
         SimpleRestAssured.post("/stations", Map.of("name", "선릉역"));
         Map<String, String> params = Map.of(
-            "name", "신분당선",
-            "color", "bg-red-600",
-            "upStationId", "1",
-            "downStationId", "2",
-            "distance", "10");
+                "name", "신분당선",
+                "color", "bg-red-600",
+                "upStationId", "1",
+                "downStationId", "2",
+                "distance", "10");
         // when
         final ExtractableResponse<Response> response = SimpleRestAssured.post("/lines", params);
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.header("Location")).isNotBlank()
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank()
         );
     }
 
@@ -48,15 +48,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public void createLine_throwsExceptionWithBlankInput() {
         // given
         Map<String, String> params =
-            Map.of("name", "신분당선", "color", "");
+                Map.of("name", "신분당선", "color", "");
         // when
         final ExtractableResponse<Response> response = SimpleRestAssured.post("/lines", params);
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class)
-                .getMessage())
-                .contains("필수 입력")
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class)
+                        .getMessage())
+                        .contains("필수 입력")
         );
     }
 
@@ -67,13 +67,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         setLineAsSaved("장한평역", "군자역", "5호선");
         // when
         final ExtractableResponse<Response> response =
-            setLineAsSaved("다른역", "또다른역", "5호선");
+                setLineAsSaved("다른역", "또다른역", "5호선");
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class)
-                .getMessage())
-                .contains("이미 존재")
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class)
+                        .getMessage())
+                        .contains("이미 존재")
         );
     }
 
@@ -89,14 +89,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-            .map(LineResponse::getId)
-            .collect(Collectors.toList());
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(resultLineIds).containsAll(expectedLineIds)
         );
     }
 
@@ -114,8 +114,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final LineResponse foundLineResponse = SimpleRestAssured.toObject(foundResponse, LineResponse.class);
         // then
         Assertions.assertAll(
-            () -> assertThat(foundResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
+                () -> assertThat(foundResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
         );
     }
 
@@ -129,9 +129,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
-                .isEqualTo(RowNotFoundException.class)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
+                        .isEqualTo(RowNotFoundException.class)
         );
 
     }
@@ -141,11 +141,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public void modifyLine() {
         // given
         final ExtractableResponse<Response> createdResponse =
-            setLineAsSaved("선정릉역", "선릉역", "수인분당선");
+                setLineAsSaved("선정릉역", "선릉역", "수인분당선");
 
         // when
         final Map<String, String> modificationParam =
-            Map.of("name", "구분당선", "color", "bg-red-800");
+                Map.of("name", "구분당선", "color", "bg-red-800");
         final String uri = createdResponse.header("Location");
         final ExtractableResponse<Response> modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
 
@@ -160,13 +160,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         setLineAsSaved("장한평역", "마장역", "5호선");
         // when
         final Map<String, String> modificationParam =
-            Map.of("name", "구분당선", "color", "bg-red-800");
+                Map.of("name", "구분당선", "color", "bg-red-800");
         final ExtractableResponse<Response> response = SimpleRestAssured.put("/lines/99", modificationParam);
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
-                .isEqualTo(RowNotFoundException.class)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
+                        .isEqualTo(RowNotFoundException.class)
         );
 
     }
@@ -195,26 +195,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/99");
         // then
         Assertions.assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
-                .isEqualTo(RowNotFoundException.class)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(SimpleRestAssured.toObject(response, ExceptionResponse.class).getException())
+                        .isEqualTo(RowNotFoundException.class)
         );
 
     }
 
     private ExtractableResponse<Response> setLineAsSaved(String upStationName, String downStationName,
-        String lineName) {
+                                                         String lineName) {
         final Long upStationId = SimpleRestAssured.toObject(
-            SimpleRestAssured.post("/stations", Map.of("name", upStationName)), StationResponse.class).getId();
+                SimpleRestAssured.post("/stations", Map.of("name", upStationName)), StationResponse.class).getId();
 
         final Long downStationId = SimpleRestAssured.toObject(
-            SimpleRestAssured.post("/stations", Map.of("name", downStationName)), StationResponse.class).getId();
+                SimpleRestAssured.post("/stations", Map.of("name", downStationName)), StationResponse.class).getId();
         Map<String, String> params = Map.of(
-            "name", lineName,
-            "color", "bg-red-600",
-            "upStationId", upStationId + "",
-            "downStationId", downStationId + "",
-            "distance", "10");
+                "name", lineName,
+                "color", "bg-red-600",
+                "upStationId", upStationId + "",
+                "downStationId", downStationId + "",
+                "distance", "10");
         // when
         return SimpleRestAssured.post("/lines", params);
     }

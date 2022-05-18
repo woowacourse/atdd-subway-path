@@ -25,14 +25,14 @@ public class LineResponse {
 
     public static LineResponse from(Line line) {
         return new LineResponse(
-            line.getId(),
-            line.getName(),
-            line.getColor(),
-            StationSeries.fromSectionsAsOrdered(line.getSectionSeries().getSections())
-                .getStations()
-                .stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList())
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                StationSeries.fromSectionsAsOrdered(line.getSectionSeries().getSections())
+                        .getStations()
+                        .stream()
+                        .map(StationResponse::from)
+                        .collect(Collectors.toList())
         );
     }
 

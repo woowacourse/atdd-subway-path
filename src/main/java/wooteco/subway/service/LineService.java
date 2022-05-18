@@ -26,9 +26,9 @@ public class LineService {
         LineSeries lineSeries = new LineSeries(lineRepository.findAllLines());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor());
         line.addSection(sectionService.create(
-            lineRequest.getUpStationId(),
-            lineRequest.getDownStationId(),
-            lineRequest.getDistance()));
+                lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(),
+                lineRequest.getDistance()));
         lineSeries.add(line);
         lineRepository.persist(lineSeries);
         return LineResponse.from(line);
@@ -36,9 +36,9 @@ public class LineService {
 
     public List<LineResponse> findAll() {
         return lineRepository.findAllLines()
-            .stream()
-            .map(LineResponse::from)
-            .collect(Collectors.toList());
+                .stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
     }
 
     public LineResponse findOne(Long id) {

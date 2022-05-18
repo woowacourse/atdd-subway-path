@@ -8,13 +8,13 @@ public class CollectorsUtils {
 
     public static <T> Collector<T, ?, Optional<T>> findOneCertainly() {
         return Collectors.collectingAndThen(
-            Collectors.toList(),
-            list -> {
-                if (list.size() == 1) {
-                    return Optional.of(list.get(0));
+                Collectors.toList(),
+                list -> {
+                    if (list.size() == 1) {
+                        return Optional.of(list.get(0));
+                    }
+                    return Optional.empty();
                 }
-                return Optional.empty();
-            }
         );
     }
 }

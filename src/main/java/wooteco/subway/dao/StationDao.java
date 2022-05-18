@@ -10,4 +10,5 @@ public interface StationDao extends UpdateDao<StationEntity> {
     List<StationEntity> findAll();
 
     Optional<StationEntity> findById(Long id);
+
 }

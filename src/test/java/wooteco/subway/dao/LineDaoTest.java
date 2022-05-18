@@ -56,7 +56,7 @@ class LineDaoTest {
         dao.save(entity);
         // then
         assertThatExceptionOfType(DuplicateKeyException.class)
-            .isThrownBy(() -> dao.save(entity));
+                .isThrownBy(() -> dao.save(entity));
     }
 
     @Test

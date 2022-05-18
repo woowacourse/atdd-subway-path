@@ -78,10 +78,10 @@ public class Section {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Section section = (Section)o;
+        Section section = (Section) o;
         return Objects.equals(id, section.id) && Objects.equals(upStation, section.upStation)
-            && Objects.equals(downStation, section.downStation) && Objects.equals(distance,
-            section.distance);
+                && Objects.equals(downStation, section.downStation) && Objects.equals(distance,
+                section.distance);
     }
 
     @Override

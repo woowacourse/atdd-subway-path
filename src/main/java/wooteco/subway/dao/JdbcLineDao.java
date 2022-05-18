@@ -19,9 +19,9 @@ import wooteco.subway.entity.LineEntity;
 public class JdbcLineDao implements LineDao {
 
     private static final RowMapper<LineEntity> LINE_ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
-        resultSet.getLong("id"),
-        resultSet.getString("name"),
-        resultSet.getString("color")
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("color")
     );
 
     private final SimpleJdbcInsert jdbcInsert;
@@ -29,8 +29,8 @@ public class JdbcLineDao implements LineDao {
 
     public JdbcLineDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("line")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = jdbcTemplate;
     }
 

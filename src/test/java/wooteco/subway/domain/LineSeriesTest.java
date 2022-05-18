@@ -24,7 +24,7 @@ class LineSeriesTest {
         Line line = new Line("분당선", "color3");
         // then
         assertThatExceptionOfType(RowDuplicatedException.class)
-            .isThrownBy(() -> series.add(line));
+                .isThrownBy(() -> series.add(line));
     }
 
     @Test
@@ -60,7 +60,7 @@ class LineSeriesTest {
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-            .isThrownBy(() -> series.delete(3L));
+                .isThrownBy(() -> series.delete(3L));
     }
 
     @Test
@@ -83,6 +83,6 @@ class LineSeriesTest {
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-            .isThrownBy(() -> series.update(new Line(999L, "뉴네임", "뉴컬러")));
+                .isThrownBy(() -> series.update(new Line(999L, "뉴네임", "뉴컬러")));
     }
 }

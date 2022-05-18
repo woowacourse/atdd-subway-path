@@ -23,17 +23,6 @@ public class JdbcSectionDao implements SectionDao {
             resultSet.getLong("down_station_id"),
             resultSet.getInt("distance")
     );
-    /*
-    id              BIGINT AUTO_INCREMENT NOT NULL,
-    line_id         BIGINT                NOT NULL,
-    up_station_id   BIGINT                NOT NULL,
-    down_station_id BIGINT                NOT NULL,
-    distance        INT                   NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (line_id) REFERENCES line (id),
-    FOREIGN KEY (up_station_id) REFERENCES station (id),
-    FOREIGN KEY (down_station_id) REFERENCES station (id)
-     */
 
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;

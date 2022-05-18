@@ -26,7 +26,7 @@ class StationSeriesTest {
         final List<Station> stations = List.of(stationA, stationB);
         // then
         assertThatExceptionOfType(IdMissingException.class)
-            .isThrownBy(() -> new StationSeries(stations));
+                .isThrownBy(() -> new StationSeries(stations));
     }
 
     @Test
@@ -50,7 +50,7 @@ class StationSeriesTest {
         final Station addStation = new Station(3L, "B");
 
         assertThatExceptionOfType(RowDuplicatedException.class)
-            .isThrownBy(() -> series.add(addStation));
+                .isThrownBy(() -> series.add(addStation));
         // then
     }
 
@@ -78,7 +78,7 @@ class StationSeriesTest {
 
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-            .isThrownBy(() -> series.delete(deleteId));
+                .isThrownBy(() -> series.delete(deleteId));
     }
 
     @Test

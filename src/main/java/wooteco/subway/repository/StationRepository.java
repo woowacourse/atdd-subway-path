@@ -37,20 +37,20 @@ public class StationRepository {
 
     private List<Long> toIds(List<Station> stations) {
         return stations.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
     }
 
     public Station findById(Long id) {
         final StationEntity entity = stationDao.findById(id)
-            .orElseThrow(() -> new RowNotFoundException(String.format("%d의 id를 가진 역이 존재하지 않습니다.", id)));
+                .orElseThrow(() -> new RowNotFoundException(String.format("%d의 id를 가진 역이 존재하지 않습니다.", id)));
         return new Station(entity.getId(), entity.getName());
     }
 
     public List<Station> findAllStations() {
         return stationDao.findAll()
-            .stream()
-            .map(entity -> new Station(entity.getId(), entity.getName()))
-            .collect(Collectors.toList());
+                .stream()
+                .map(entity -> new Station(entity.getId(), entity.getName()))
+                .collect(Collectors.toList());
     }
 }

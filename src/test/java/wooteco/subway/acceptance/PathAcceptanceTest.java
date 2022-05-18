@@ -23,8 +23,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void findPath() {
         // given
         setUpSubway();
-        // when
 
+        // when
         final ExtractableResponse<Response> response = SimpleRestAssured.get("/paths?source=1&target=3&age=123");
         final PathResponse pathResponse = SimpleRestAssured.toObject(response, PathResponse.class);
 
@@ -41,10 +41,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void throwsExceptionWithAnyEmptyId() {
         // given
         setUpSubway();
+
         // when
         final ExtractableResponse<Response> response = SimpleRestAssured.get("/paths?source=1&target=5&age=123");
-        final ExceptionResponse exceptionResponse = SimpleRestAssured.toObject(response,
-            ExceptionResponse.class);
+        final ExceptionResponse exceptionResponse = SimpleRestAssured.toObject(response, ExceptionResponse.class);
+
         // then
         assertThat(exceptionResponse.getException()).isEqualTo(RowNotFoundException.class);
     }
@@ -55,9 +56,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         setUpSubway();
         SimpleRestAssured.post("/stations", Map.of("name", "D역"));
+
         // when
         final ExtractableResponse<Response> response = SimpleRestAssured.get("/paths?source=1&target=4&age=123");
         final ExceptionResponse exceptionResponse = SimpleRestAssured.toObject(response, ExceptionResponse.class);
+
         // then
         assertThat(exceptionResponse.getException()).isEqualTo(PathNotFoundException.class);
     }
@@ -67,6 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void throwsExceptionWithSameSourceAndTarget() {
         // given
         setUpSubway();
+
         // when
         final ExtractableResponse<Response> response = SimpleRestAssured.get("/paths?source=1&target=1&age=123");
         final ExceptionResponse exceptionResponse = SimpleRestAssured.toObject(response, ExceptionResponse.class);

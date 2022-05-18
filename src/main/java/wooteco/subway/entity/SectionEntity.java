@@ -24,11 +24,11 @@ public class SectionEntity implements Entity {
 
     public static SectionEntity from(Section section, Long lineId) {
         return new SectionEntity(
-            section.getId(),
-            lineId,
-            section.getUpStation().getId(),
-            section.getDownStation().getId(),
-            section.getDistance().getValue());
+                section.getId(),
+                lineId,
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance().getValue());
     }
 
     public static SectionEntity from(Section section) {

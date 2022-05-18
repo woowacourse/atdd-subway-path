@@ -17,7 +17,7 @@ class DistanceTest {
         int value = 0;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-            .isThrownBy(() -> new Distance(value));
+                .isThrownBy(() -> new Distance(value));
     }
 
     @Test

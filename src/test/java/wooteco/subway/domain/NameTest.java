@@ -17,7 +17,7 @@ class NameTest {
         String value = null;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-            .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Name(value));
     }
 
     @Test
@@ -27,6 +27,6 @@ class NameTest {
         String value = "";
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-            .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Name(value));
     }
 }

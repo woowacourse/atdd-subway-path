@@ -50,7 +50,7 @@ class SectionServiceTest {
         final SectionRequest sectionRequest = new SectionRequest(downStationId, newId, 10);
         // then
         assertThatCode(() -> sectionService.enroll(lineId, sectionRequest))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -64,7 +64,7 @@ class SectionServiceTest {
 
         // then
         assertThatCode(() -> sectionService.delete(lineId, downStationId))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     void setUpLineStation() {

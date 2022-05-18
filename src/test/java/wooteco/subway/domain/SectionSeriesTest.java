@@ -75,7 +75,7 @@ class SectionSeriesTest {
         final Section newSection = new Section(3L, getStationA(), getStationB(), new Distance(3));
         // then
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> sectionSeries.add(newSection));
+                .isThrownBy(() -> sectionSeries.add(newSection));
     }
 
     @Test
@@ -87,7 +87,7 @@ class SectionSeriesTest {
         final Section newSection = new Section(3L, getStationA(), getStationC(), new Distance(3));
         // then
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> sectionSeries.add(newSection));
+                .isThrownBy(() -> sectionSeries.add(newSection));
     }
 
     @Test
@@ -99,7 +99,7 @@ class SectionSeriesTest {
         final Section newSection = new Section(3L, getStationX(), getStationY(), new Distance(3));
         // then
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> sectionSeries.add(newSection));
+                .isThrownBy(() -> sectionSeries.add(newSection));
     }
 
     @Test
@@ -111,7 +111,7 @@ class SectionSeriesTest {
         final Section newSection = new Section(3L, getStationA(), getStationX(), new Distance(100));
         // then
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> sectionSeries.add(newSection));
+                .isThrownBy(() -> sectionSeries.add(newSection));
     }
 
     @Test
@@ -121,7 +121,7 @@ class SectionSeriesTest {
         final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb()));
         // then
         assertThatExceptionOfType(SectionNotEnoughException.class)
-            .isThrownBy(() -> sectionSeries.remove(getStationA()));
+                .isThrownBy(() -> sectionSeries.remove(getStationA()));
     }
 
     @Test
@@ -170,6 +170,6 @@ class SectionSeriesTest {
         final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-            .isThrownBy(() -> sectionSeries.remove(getStationX()));
+                .isThrownBy(() -> sectionSeries.remove(getStationX()));
     }
 }

@@ -16,7 +16,7 @@ class ColorTest {
         String value = null;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-            .isThrownBy(() -> new Color(value));
+                .isThrownBy(() -> new Color(value));
     }
 
     @Test
@@ -26,6 +26,6 @@ class ColorTest {
         String value = "";
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-            .isThrownBy(() -> new Color(value));
+                .isThrownBy(() -> new Color(value));
     }
 }
