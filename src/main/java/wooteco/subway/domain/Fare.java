@@ -28,7 +28,7 @@ public class Fare {
         return 800 + (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
     }
 
-    public int getFare() {
+    public int getValue() {
         return fare;
     }
 }

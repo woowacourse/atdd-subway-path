@@ -81,7 +81,7 @@ class PathTest {
         Path createdPath = new Path(sections, 강남역, 잠실역);
 
         // when
-        int actual = createdPath.getFare();
+        int actual = createdPath.getFare().getValue();
 
         // then
         int expected = 1650;

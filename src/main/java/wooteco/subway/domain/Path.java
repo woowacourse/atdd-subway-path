@@ -42,8 +42,8 @@ public class Path {
         return Collections.unmodifiableList(stations);
     }
 
-    public int getFare() {
-        return this.fare.getFare();
+    public Fare getFare() {
+        return this.fare;
     }
 
     public int getDistance() {

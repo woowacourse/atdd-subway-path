@@ -13,7 +13,7 @@ class FareTest {
     void calculate_fare_with_distance(int distance, int expectedFare) {
         // when
         Fare createdFare = Fare.from(distance);
-        int actual = createdFare.getFare();
+        int actual = createdFare.getValue();
 
         // then
         assertThat(actual).isEqualTo(expectedFare);
