@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Stations {
     private final List<Station> stations;
@@ -11,16 +11,14 @@ public class Stations {
     }
 
     public List<Station> sortedStationsById(List<Long> stationIds) {
-        List<Station> sortedStations = new ArrayList<>();
-        for (Long stationId : stationIds) {
-            sortedStations.add(findStation(stationId, stations));
-        }
-        return sortedStations;
+        return stationIds.stream()
+            .map(this::findStationById)
+            .collect(Collectors.toList());
     }
 
-    private Station findStation(Long stationId, List<Station> stations) {
+    private Station findStationById(Long stationId) {
         return stations.stream()
-            .filter(i -> i.getId().equals(stationId))
+            .filter(i -> i.matchId(stationId))
             .findAny()
             .orElseThrow(() ->new IllegalArgumentException("ID에 해당하는 Station이 존재하지 않습니다."));
     }

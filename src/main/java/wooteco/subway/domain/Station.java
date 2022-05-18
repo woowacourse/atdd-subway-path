@@ -40,4 +40,8 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public boolean matchId(Long stationId) {
+        return id.equals(stationId);
+    }
 }
