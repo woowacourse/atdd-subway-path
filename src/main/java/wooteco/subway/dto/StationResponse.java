@@ -1,6 +1,9 @@
 package wooteco.subway.dto;
 
+import java.util.List;
 import java.util.Objects;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Station;
 
 public class StationResponse {
 
@@ -13,6 +16,10 @@ public class StationResponse {
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static StationResponse of(Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {
