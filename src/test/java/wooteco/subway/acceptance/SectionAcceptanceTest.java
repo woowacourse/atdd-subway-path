@@ -17,32 +17,25 @@ import wooteco.subway.dto.StationRequest;
 @DisplayName("지하철 구간 관련 기능")
 class SectionAcceptanceTest extends AcceptanceTest {
 
-    private Long upStationId;
-    private Long downStationId;
-    private Long newDownStationId;
+    private Long stationId1;
+    private Long stationId2;
+    private Long stationId3;
     private Long lineId;
     private SectionRequest sectionRequest;
 
     @BeforeEach
     void setup() {
-        upStationId = createStation(new StationRequest("아차산역"));
-        downStationId = createStation(new StationRequest("군자역"));
-        newDownStationId = createStation(new StationRequest("마장역"));
-        lineId = createLine(new LineRequest("5호선", "bg-purple-600", upStationId, downStationId, 10));
-
-        sectionRequest = new SectionRequest(downStationId, newDownStationId, 5);
+        stationId1 = createStation(new StationRequest("아차산역"));
+        stationId2 = createStation(new StationRequest("군자역"));
+        stationId3 = createStation(new StationRequest("마장역"));
+        lineId = createLine(new LineRequest("5호선", "bg-purple-600", stationId1, stationId2, 10));
+        sectionRequest = new SectionRequest(stationId2, stationId3, 5);
     }
 
     @DisplayName("특정 노선의 구간을 추가한다.")
     @Test
     void createSection() {
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = post("/lines/" + lineId + "/sections", sectionRequest);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -50,45 +43,23 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 노선의 구간을 삭제한다.")
     @Test
     void deleteSection() {
-        // given
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
+        post("/lines/" + lineId + "/sections", sectionRequest);
 
-        // delete
-        final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-                .when()
-                .delete("/lines/" + lineId + "/sections?stationId=" + downStationId)
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> createResponse =
+                delete("/lines/" + lineId + "/sections?stationId=" + stationId2);
 
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private Long createStation(final StationRequest stationRequest) {
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = post("/stations", stationRequest);
 
         return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
     private Long createLine(final LineRequest lineRequest) {
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = post("/lines", lineRequest);
+
         return response.jsonPath().getLong("id");
     }
 }
