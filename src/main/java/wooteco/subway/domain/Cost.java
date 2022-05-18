@@ -1,7 +1,9 @@
 package wooteco.subway.domain;
 
 public class Cost {
-    public static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1250;
+    private static final int FIRST_OVER_FARE_DISTANCE_THRESHOLD = 10;
+    private static final int SECOND_OVER_FARE_DISTANCE_THRESHOLD = 50;
 
     private final int cost;
 
@@ -14,11 +16,11 @@ public class Cost {
     }
 
     private static int calculateOverFare(int distance) {
-        if (distance <= 10) {
+        if (distance <= FIRST_OVER_FARE_DISTANCE_THRESHOLD) {
             return 0;
         }
 
-        if (distance <= 50) {
+        if (distance <= SECOND_OVER_FARE_DISTANCE_THRESHOLD) {
             distance -= 10;
             return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
         }
