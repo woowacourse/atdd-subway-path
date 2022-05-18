@@ -5,10 +5,12 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.SectionCreateException;
 import wooteco.subway.exception.SectionDeleteException;
 import wooteco.subway.exception.SectionNotFoundException;
@@ -118,9 +120,9 @@ public class Sections {
     }
 
     private void updateStationAndDistance(final Section section,
-            final Station upStation,
-            final Station downStation,
-            final int distance) {
+                                          final Station upStation,
+                                          final Station downStation,
+                                          final int distance) {
         section.updateStations(upStation, downStation);
         section.subtractDistance(distance);
     }
@@ -190,8 +192,8 @@ public class Sections {
     public int calculateMinDistance(final Station startStation, final Station endStation) {
         validateExistStation(startStation, endStation);
         try {
-            return (int) createSectionDijkstraShortestPath().getPathWeight(startStation, endStation);
-        } catch (IllegalArgumentException e) {
+            return (int) createSectionDijkstraShortestPath().getPath(startStation, endStation).getWeight();
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }
     }
@@ -199,13 +201,19 @@ public class Sections {
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : sortSections()) {
+        for (Station station : getAllStations()) {
             graph.addVertex(station);
         }
         for (Section section : values) {
             assignWeight(graph, section);
         }
         return new DijkstraShortestPath<>(graph);
+    }
+
+    private Set<Station> getAllStations() {
+        return Stream.concat(getUpStations().stream(),
+                        getDownStations().stream())
+                .collect(Collectors.toSet());
     }
 
     private void assignWeight(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Section section) {
@@ -222,7 +230,7 @@ public class Sections {
         validateExistStation(startStation, endStation);
         try {
             return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }
     }
