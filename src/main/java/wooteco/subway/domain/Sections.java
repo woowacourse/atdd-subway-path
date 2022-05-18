@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.SectionCreateException;
 import wooteco.subway.exception.SectionDeleteException;
 import wooteco.subway.exception.SectionNotFoundException;
@@ -212,7 +213,7 @@ public class Sections {
     }
 
     private void validateExistStation(Station startStation, Station endStation) {
-        if (!isExistStation(startStation) || !isExistStation(endStation)) {
+        if (isNotExistStation(startStation) || isNotExistStation(endStation)) {
             throw new StationNotFoundException();
         }
     }
@@ -242,9 +243,9 @@ public class Sections {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
     }
 
-    private boolean isExistStation(final Station station) {
+    private boolean isNotExistStation(final Station station) {
         return values.stream()
-                .anyMatch(section -> section.have(station));
+                .noneMatch(section -> section.have(station));
     }
 
     public List<Section> getValues() {
