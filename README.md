@@ -48,7 +48,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 
 ### 경로
 
-- [ ] 경로를 조회한다.
+- [x] 경로를 조회한다.
     - [x] 출발역과 도착역 사이에 최단 거리 경로를 구한다.
     - [x] 여러 노선의 환승도 고려한다.
 - [x] 거리를 계산한다.
