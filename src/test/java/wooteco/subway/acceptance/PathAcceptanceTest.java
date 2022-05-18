@@ -3,18 +3,20 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
-import java.util.List;
 
 @DisplayName("지하철 경로 관련 기능")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -56,7 +58,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
-        final double distance = response.jsonPath().getDouble("distance");
+        final double distance = response.jsonPath().getInt("distance");
         final int fare = response.jsonPath().getInt("fare");
 
         assertAll(
