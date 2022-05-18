@@ -5,17 +5,13 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationServiceResponse;
 import wooteco.subway.ui.dto.StationRequest;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
 
     private final StationService stationService;
@@ -24,7 +20,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<StationServiceResponse> createStation(
         @Validated @RequestBody StationRequest stationRequest) {
         StationServiceResponse stationServiceResponse = stationService.save(
@@ -34,13 +30,13 @@ public class StationController {
                 stationServiceResponse);
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<StationServiceResponse>> showStations() {
         List<StationServiceResponse> stations = stationService.findAll();
         return ResponseEntity.ok().body(stations);
     }
 
-    @DeleteMapping("/stations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         if (stationService.deleteById(id)) {
             return ResponseEntity.ok().build();

@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -8,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class ShortestPath {
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(
-        DefaultWeightedEdge.class);
+            DefaultWeightedEdge.class);
 
     public ShortestPath(Sections sections) {
         initVertexes(sections);
@@ -18,7 +19,7 @@ public class ShortestPath {
     private void addEdgeWeights(Sections sections) {
         for (Section section : sections.getSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                section.getDistance());
+                    section.getDistance());
         }
     }
 
