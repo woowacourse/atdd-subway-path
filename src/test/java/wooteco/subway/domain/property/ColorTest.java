@@ -1,15 +1,14 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.property;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.property.Name;
+import wooteco.subway.domain.property.Color;
 import wooteco.subway.exception.InvalidRequestException;
 
-class NameTest {
-
+class ColorTest {
     @Test
     @DisplayName("null로 생성할 수 없다.")
     public void throwsExceptionWithNull() {
@@ -17,7 +16,7 @@ class NameTest {
         String value = null;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Color(value));
     }
 
     @Test
@@ -27,6 +26,6 @@ class NameTest {
         String value = "";
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Color(value));
     }
 }

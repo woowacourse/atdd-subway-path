@@ -190,8 +190,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public void deleteLine_throwExceptionWithInvalidId() {
         // given
         setLineAsSaved("선릉역", "선정릉역", "분당선");
-        // when
 
+        // when
         final ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/99");
         // then
         Assertions.assertAll(
@@ -202,8 +202,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> setLineAsSaved(String upStationName, String downStationName,
-                                                         String lineName) {
+    private ExtractableResponse<Response> setLineAsSaved(String upStationName, String downStationName, String lineName) {
+
         final Long upStationId = SimpleRestAssured.toObject(
                 SimpleRestAssured.post("/stations", Map.of("name", upStationName)), StationResponse.class).getId();
 
@@ -215,7 +215,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 "upStationId", upStationId + "",
                 "downStationId", downStationId + "",
                 "distance", "10");
-        // when
+
         return SimpleRestAssured.post("/lines", params);
     }
 

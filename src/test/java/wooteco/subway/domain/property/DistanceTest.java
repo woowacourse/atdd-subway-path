@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.property;
 
 import static org.assertj.core.api.Assertions.*;
 
