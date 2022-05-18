@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.duplicate.DuplicateSectionException;
+import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.invalidrequest.InvalidSectionCreateRequestException;
 import wooteco.subway.exception.notfound.DataNotFoundException;
 
@@ -167,4 +168,30 @@ class SectionsTest {
 
         assertThat(actual).hasSize(1).containsOnly(section1);
     }
+
+    @DisplayName("각 구간 리스트들을 통해서 최단 경로를 조회한다.")
+    @Test
+    void getDijkstraShortestPath() {
+        Section gangnam_yeoksam = new Section(gangnam, yeoksam, 1);
+        Section yeoksam_seolleung = new Section(yeoksam, seolleung, 1);
+        Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
+
+        List<Station> stations = sections.findShortestPath(gangnam, seolleung);
+
+        assertThat(stations).hasSize(3)
+                .containsExactly(gangnam, yeoksam, seolleung);
+    }
+
+    @Test
+    @DisplayName("경로의 시작역과 종점역이 같을 경우 예외가 발생한다.")
+    void sameSourceTarget() {
+        Section gangnam_yeoksam = new Section(gangnam, yeoksam, 1);
+        Section yeoksam_seolleung = new Section(yeoksam, seolleung, 1);
+        Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
+
+        assertThatThrownBy(() -> sections.findShortestPath(gangnam, gangnam))
+                .isInstanceOf(DuplicateStationException.class)
+                .hasMessage("경로의 시작과 끝은 같은 역일 수 없습니다.");
+    }
+
 }
