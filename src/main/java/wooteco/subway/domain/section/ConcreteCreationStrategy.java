@@ -3,7 +3,7 @@ package wooteco.subway.domain.section;
 import java.util.List;
 import java.util.Optional;
 
-public class ConcreteCreationStrategy implements CreationStrategy{
+public class ConcreteCreationStrategy implements CreationStrategy {
 
     public void save(List<Section> sections, Section section) {
         checkSavable(sections, section);

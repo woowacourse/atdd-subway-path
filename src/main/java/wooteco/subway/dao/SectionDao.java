@@ -1,53 +1,61 @@
 package wooteco.subway.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.section.Section;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class SectionDao {
+    private static final RowMapper<Section> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
+            new Section(resultSet.getLong("id"), resultSet.getLong("line_id"),
+                    resultSet.getLong("up_station_id"), resultSet.getLong("down_station_id"),
+                    resultSet.getInt("distance"));
 
-    private final JdbcTemplate jdbcTemplate;
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert insertActor;
+
+    public SectionDao(DataSource dataSource) {
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.insertActor = new SimpleJdbcInsert(dataSource)
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public void save(Section section){
-        String sql = "insert into SECTION (line_id, up_station_id, down_station_id, distance) values (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance());
+    public void insert(Section section){
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(section);
+        insertActor.execute(parameterSource);
     }
 
     public void update(Section section) {
-        String sql = "update SECTION set up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
-        jdbcTemplate.update(sql, section.getUpStationId(), section.getDownStationId(), section.getDistance(), section.getId());
+        String sql = "update SECTION set up_station_id = :upStationId, down_station_id = :downStationId, distance = :distance where id = :id";
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(section);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public void delete(Long lineId, Long stationId) {
-        String sql = "delete from SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?)";
-        jdbcTemplate.update(sql, lineId, stationId, stationId);
+        String sql = "delete from SECTION where line_id = :lineId and (up_station_id = :stationId or down_station_id = :stationId)";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(Map.of("lineId", lineId, "stationId", stationId));
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public List<Section> findByLineId(Long lineId) {
-        String sql = String.format("select * from SECTION where line_id = %d", lineId);
-        return jdbcTemplate.query(sql, new SectionMapper());
+        String sql = "select * from SECTION where line_id = :lineId";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", lineId);
+        return namedParameterJdbcTemplate.query(sql,sqlParameterSource, ACTOR_ROW_MAPPER);
     }
 
     public List<Section> findAll() {
         String sql = "select * from SECTION";
-        return jdbcTemplate.query(sql, new SectionMapper());
-    }
-
-    private static class SectionMapper implements RowMapper<Section> {
-        public Section mapRow(ResultSet rs, int rowCnt) throws SQLException {
-            return new Section(rs.getLong("id"), rs.getLong("line_id"),
-                    rs.getLong("up_station_id"), rs.getLong("down_station_id"),
-                    rs.getInt("distance"));
-        }
+        return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 }

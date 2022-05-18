@@ -19,7 +19,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse lineResponse = lineService.save(lineRequest);
 
@@ -28,7 +28,7 @@ public class LineController {
                 .body(lineResponse);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<LineResponse>> showLines() {
         List<LineResponse> lineResponses = lineService.findAll();
 

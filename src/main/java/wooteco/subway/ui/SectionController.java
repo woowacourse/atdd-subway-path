@@ -17,7 +17,7 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Void> createSection(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
         sectionService.save(lineId, sectionRequest);
 
@@ -26,7 +26,7 @@ public class SectionController {
                 .build();
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         sectionService.delete(lineId, stationId);
 

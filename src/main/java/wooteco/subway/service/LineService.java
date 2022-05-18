@@ -34,10 +34,10 @@ public class LineService {
 
         Line line = lineRequest.toLine();
         checkDuplication(line);
-        Line newLine = lineDao.save(line);
+        Line newLine = lineDao.insert(line);
 
         Section section = new Section(newLine.getId(), upStation.getId(), downStation.getId(), lineRequest.getDistance());
-        sectionDao.save(section);
+        sectionDao.insert(section);
 
         return new LineResponse(newLine.getId(), newLine.getName(), newLine.getColor(), createStationResponseOf(newLine));
     }
@@ -72,7 +72,7 @@ public class LineService {
     }
 
     public void edit(Long id, String name, String color) {
-        lineDao.edit(id, name, color);
+        lineDao.edit(new Line(id, name, color));
     }
 
     public void delete(Long id) {

@@ -20,14 +20,14 @@ public class Section {
         this(null, lineId, upStationId, downStationId, distance);
     }
 
-    public Section revisedBy(Section addedSection) {
-        int revisedDistance = distance - addedSection.getDistance();
+    public Section revisedBy(Section section) {
+        int revisedDistance = distance - section.getDistance();
 
-        if (Objects.equals(upStationId, addedSection.getUpStationId())) {
-            return new Section(id, lineId, addedSection.getDownStationId(), downStationId, revisedDistance);
+        if (Objects.equals(upStationId, section.getUpStationId())) {
+            return new Section(id, lineId, section.getDownStationId(), downStationId, revisedDistance);
         }
 
-        return new Section(id, lineId, upStationId, addedSection.getUpStationId(), revisedDistance);
+        return new Section(id, lineId, upStationId, section.getUpStationId(), revisedDistance);
     }
 
     public boolean isLongerThan(Section section) {
@@ -38,18 +38,18 @@ public class Section {
         return lineId.equals(section.getLineId());
     }
 
-    private boolean hasCommonStationWith(Section newSection) {
+    private boolean hasCommonStationWith(Section section) {
         return !Collections.disjoint(List.of(upStationId, downStationId),
-                List.of(newSection.getUpStationId(), newSection.getDownStationId()));
+                List.of(section.getUpStationId(), section.getDownStationId()));
     }
 
-    public boolean isConnectedTo(Section newSection) {
-        return isOnSameLine(newSection) && hasCommonStationWith(newSection);
+    public boolean isConnectedTo(Section section) {
+        return isOnSameLine(section) && hasCommonStationWith(section);
     }
 
-    public boolean isOverLappedWith(Section newSection) {
-        return isOnSameLine(newSection)
-                && (upStationId.equals(newSection.getUpStationId()) || downStationId.equals(newSection.getDownStationId()));
+    public boolean isOverLappedWith(Section section) {
+        return isOnSameLine(section)
+                && (upStationId.equals(section.getUpStationId()) || downStationId.equals(section.getDownStationId()));
     }
 
     public boolean hasStation(Long stationId) {

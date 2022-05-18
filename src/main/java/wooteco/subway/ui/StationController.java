@@ -18,7 +18,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse stationResponse = stationService.save(stationRequest);
 
@@ -27,7 +27,7 @@ public class StationController {
                 .body(stationResponse);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
         List<StationResponse> stationResponses = stationService.findAll();
 

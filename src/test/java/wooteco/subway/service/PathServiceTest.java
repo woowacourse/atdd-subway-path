@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -29,11 +28,11 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        stationDao.save(new Station("강남역"));
-        stationDao.save(new Station("선릉역"));
-        stationDao.save(new Station("잠실역"));
-        sectionDao.save(new Section(1L, 1L, 2L, 10));
-        sectionDao.save(new Section(1L, 2L, 3L, 15));
+        stationDao.insert(new Station("강남역"));
+        stationDao.insert(new Station("선릉역"));
+        stationDao.insert(new Station("잠실역"));
+        sectionDao.insert(new Section(1L, 1L, 2L, 10));
+        sectionDao.insert(new Section(1L, 2L, 3L, 15));
     }
 
     @Test

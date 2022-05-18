@@ -24,7 +24,7 @@ public class SectionService {
         sections.save(section);
         Optional<Section> revisedSection = sections.fixOverLappedSection(section);
 
-        sectionDao.save(section);
+        sectionDao.insert(section);
         revisedSection.ifPresent(sectionDao::update);
     }
 
@@ -35,6 +35,6 @@ public class SectionService {
         sections.delete(lineId, stationId);
 
         sectionDao.delete(lineId, stationId);
-        connectedSection.ifPresent(sectionDao::save);
+        connectedSection.ifPresent(sectionDao::insert);
     }
 }

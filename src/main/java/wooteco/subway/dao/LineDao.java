@@ -1,64 +1,64 @@
 package wooteco.subway.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.line.Line;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
 public class LineDao {
+    private static final RowMapper<Line> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
+            new Line(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("color"));
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert insertActor;
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public LineDao(DataSource dataSource) {
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.insertActor = new SimpleJdbcInsert(dataSource)
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public Line save(Line line) {
-        String sql = "insert into LINE (name, color) values (?, ?)";
-        jdbcTemplate.update(sql, line.getName(), line.getColor());
-
-        return createNewObject(line);
-    }
-
-    private Line createNewObject(Line line) {
-        String sql = "select max(id) from LINE";
-        Long id = jdbcTemplate.queryForObject(sql, Long.class);
+    public Line insert(Line line) {
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
+        Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
         return new Line(id, line.getName(), line.getColor());
     }
 
     public List<Line> findAll() {
         String sql = "select * from LINE";
-        return jdbcTemplate.query(sql, new LineMapper());
+        return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
     public void delete(Long id) {
-        String sql = "delete from LINE where id = ?";
-        jdbcTemplate.update(sql, id);
+        String sql = "delete from STATION where id = :id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public Line findById(Long id) {
-        String sql = String.format("select * from LINE where id = %d", id);
-        return jdbcTemplate.queryForObject(sql, new LineMapper());
+        String sql = "select * from LINE where id = :id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
     }
 
-    public void edit(Long id, String name, String color) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, name, color, id);
+    public void edit(Line line) {
+        String sql = "update LINE set name = :name, color = :color where id = :id";
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public boolean existByName(String name) {
-        String sql = "select EXISTS (select id from LINE where name = ?) as success";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, name));
-    }
-
-    private static class LineMapper implements RowMapper<Line> {
-        public Line mapRow(ResultSet rs, int rowCnt) throws SQLException {
-            return new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color"));
-        }
+        String sql = "select EXISTS (select id from LINE where name = :name) as success";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", name);
+        return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class));
     }
 }
