@@ -85,9 +85,9 @@ public class LineService {
     }
 
     private void checkFinalSectionAndAdd(Long lineId, Section section) {
-        final Optional<Section> upSection = sectionDao.findByDownStationId(lineId, section.getUpStationId());
-        final Optional<Section> downSection = sectionDao.findByUpStationId(lineId, section.getDownStationId());
-        if (upSection.isEmpty() && downSection.isEmpty()) {
+        final Optional<Section> sameUpStation = sectionDao.findByDownStationId(lineId, section.getDownStationId());
+        final Optional<Section> sameDownStation = sectionDao.findByUpStationId(lineId, section.getUpStationId());
+        if (sameUpStation.isPresent() || sameDownStation.isPresent()) {
             addNotFinalSection(lineId, section);
             return;
         }
