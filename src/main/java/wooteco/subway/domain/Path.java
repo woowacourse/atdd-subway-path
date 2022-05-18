@@ -13,28 +13,26 @@ public class Path {
 
     public Path(Sections sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        fillVertex(sections, graph);
-        fillEdge(sections, graph);
+        fillVertexes(sections.getStations(), graph);
+        fillEdge(sections.getValue(), graph);
 
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void fillEdge(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections.getValue()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    private void fillVertexes(List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Station station : stations) {
+            graph.addVertex(station);
         }
     }
 
-    private void fillVertex(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : sections.getStations()) {
-            graph.addVertex(station);
+    private void fillEdge(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
     }
 
     public List<Station> getStations(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
-
         validateExistPath(shortestPath);
 
         return shortestPath.getVertexList();
@@ -42,16 +40,9 @@ public class Path {
 
     public int getDistance(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
-
         validateExistPath(shortestPath);
 
         return (int) shortestPath.getWeight();
-    }
-
-    private void validateExistPath(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
-        if (Objects.isNull(shortestPath)) {
-            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
-        }
     }
 
     private GraphPath getPath(Station source, Station target, DijkstraShortestPath dijkstraShortestPath) {
@@ -59,6 +50,12 @@ public class Path {
             return dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("노선에 등록되지 않는 지하철역입니다.");
+        }
+    }
+
+    private void validateExistPath(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        if (Objects.isNull(shortestPath)) {
+            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
     }
 }
