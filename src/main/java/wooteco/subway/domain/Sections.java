@@ -5,13 +5,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.SectionCreateException;
 import wooteco.subway.exception.SectionDeleteException;
-import wooteco.subway.exception.SectionNotFoundException;
-import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.exception.SubwayException;
 
 public class Sections {
@@ -22,11 +17,6 @@ public class Sections {
     private static final String SECTION_NOT_CONNECT_MESSAGE = "구간이 연결되지 않습니다";
     private static final String SECTION_MUST_SHORTER_MESSAGE = "기존의 구간보다 긴 구간은 넣을 수 없습니다.";
     private static final int MIN_SIZE = 1;
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int DEFAULT_FARE = 1250;
-    private static final int OVER_FARE_DISTANCE = 50;
-    private static final int STANDARD_UNIT = 5;
-    private static final int MAX_UNIT = 8;
 
     private final List<Section> values;
 
@@ -58,13 +48,13 @@ public class Sections {
         return getUpStations().contains(upStation) && getDownStations().contains(downStation);
     }
 
-    private List<Station> getUpStations() {
+    public List<Station> getUpStations() {
         return values.stream()
                 .map(Section::getUpStation)
                 .collect(toList());
     }
 
-    private List<Station> getDownStations() {
+    public List<Station> getDownStations() {
         return values.stream()
                 .map(Section::getDownStation)
                 .collect(toList());
@@ -183,66 +173,6 @@ public class Sections {
                 .filter(value -> value.isSameUpStation(station))
                 .map(Section::getDownStation)
                 .findFirst();
-    }
-
-    public int calculateMinDistance(final Station startStation, final Station endStation) {
-        validateExistStation(startStation, endStation);
-        try {
-            return (int) createSectionDijkstraShortestPath().getPathWeight(startStation, endStation);
-        } catch (IllegalArgumentException e) {
-            throw new SectionNotFoundException();
-        }
-    }
-
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : sortSections()) {
-            graph.addVertex(station);
-        }
-        for (Section section : values) {
-            assignWeight(graph, section);
-        }
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    private void assignWeight(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-    }
-
-    private void validateExistStation(Station startStation, Station endStation) {
-        if (!isExistStation(startStation) || !isExistStation(endStation)) {
-            throw new StationNotFoundException();
-        }
-    }
-
-    private boolean isExistStation(final Station station) {
-        return values.stream()
-                .anyMatch(section -> section.haveStation(station));
-    }
-
-    public List<Station> findShortestStations(final Station startStation, final Station endStation) {
-        validateExistStation(startStation, endStation);
-        try {
-            return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
-        } catch (IllegalArgumentException e) {
-            throw new SectionNotFoundException();
-        }
-    }
-
-    public int calculateFare(final int distance) {
-        if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
-        }
-        if (distance <= OVER_FARE_DISTANCE) {
-            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
-        }
-        return DEFAULT_FARE
-                + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
-                + calculateOverFare(distance - OVER_FARE_DISTANCE, MAX_UNIT);
-    }
-
-    private int calculateOverFare(final int distance, final int unit) {
-        return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
     }
 
     public List<Section> getValues() {

@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.service.SectionService;
+import wooteco.subway.service.PathService;
 
 @RestController
 @RequestMapping("/paths")
 public class PathController {
 
-    private final SectionService sectionService;
+    private final PathService pathService;
 
-    public PathController(SectionService sectionService) {
-        this.sectionService = sectionService;
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
     }
 
     @GetMapping
     public ResponseEntity<PathResponse> findPaths(@ModelAttribute PathRequest pathRequest) {
-        PathResponse pathResponse = sectionService.calculateMinDistance(pathRequest);
+        PathResponse pathResponse = pathService.calculateMinDistance(pathRequest);
         return ResponseEntity.ok(pathResponse);
     }
 }
