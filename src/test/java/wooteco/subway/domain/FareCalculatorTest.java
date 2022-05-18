@@ -2,28 +2,18 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class FareCalculatorTest {
 
-    @Test
-    @DisplayName("거리를 입력하면 요금을 계산한다.")
-    void calculate() {
+    @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
+    @CsvSource({"9,1250", "12,1350", "16,1450", "58,2150"})
+    void calculate(int distance, int expected) {
         FareCalculator fareCalculator = new FareCalculator();
 
-        int fare = fareCalculator.excute(9);
+        int fare = fareCalculator.execute(distance);
 
-        assertThat(fare).isEqualTo(1250);
-    }
-
-    @Test
-    @DisplayName("거리가 12km이면 추가 운임이 적용되어 요금은 1350원이다.")
-    void calculate_12() {
-        FareCalculator fareCalculator = new FareCalculator();
-
-        int fare = fareCalculator.excute(12);
-
-        assertThat(fare).isEqualTo(1350);
+        assertThat(fare).isEqualTo(expected);
     }
 }
