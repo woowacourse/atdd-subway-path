@@ -210,7 +210,7 @@ public class Sections {
         return new DijkstraShortestPath<>(graph);
     }
 
-    private Set<Station> getAllStations() {
+    public Set<Station> getAllStations() {
         return Stream.concat(getUpStations().stream(),
                         getDownStations().stream())
                 .collect(Collectors.toSet());
