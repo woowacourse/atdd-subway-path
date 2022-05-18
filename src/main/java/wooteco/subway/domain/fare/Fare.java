@@ -1,12 +1,15 @@
 package wooteco.subway.domain.fare;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class Fare {
     private static final int BASE_FAIR = 1250;
+
     private final int distance;
     private final int age;
+
+    public Fare(int distance, int age) {
+        this.distance = distance;
+        this.age = age;
+    }
 
     public int calculateFare() {
         return BASE_FAIR
@@ -28,3 +31,5 @@ public class Fare {
         return ((distanceInSecondRange - 1) / 8 + 1) * 100;
     }
 }
+
+

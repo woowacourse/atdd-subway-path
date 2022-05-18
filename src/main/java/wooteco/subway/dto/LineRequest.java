@@ -1,17 +1,11 @@
 package wooteco.subway.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import wooteco.subway.domain.line.Line;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class LineRequest {
 
     @NotNull
@@ -30,7 +24,38 @@ public class LineRequest {
     @Min(0)
     private int distance;
 
+    public LineRequest() {
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
     public Line toLine(){
         return new Line(name, color);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

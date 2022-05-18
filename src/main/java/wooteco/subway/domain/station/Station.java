@@ -1,13 +1,13 @@
 package wooteco.subway.domain.station;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public class Station {
     private Long id;
     private final String name;
+
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Station(String name) {
         this(null, name);
@@ -15,5 +15,13 @@ public class Station {
 
     public boolean isSameId(Long id) {
         return id.equals(this.id);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -43,13 +43,13 @@ public class PathService {
                 .collect(Collectors.toList());
     }
 
-    private List<Station> arrangeStations(List<Long> stationIds) {
-        List<Station> stations = stationDao.findByIdIn(stationIds);
+    private List<Station> arrangeStations(List<Long> path) {
+        List<Station> stations = stationDao.findByIdIn(path);
 
         List<Station> sortedStations = new ArrayList<>();
-        for (Long stationId : stationIds) {
+        for (Long node : path) {
             stations.stream()
-                    .filter(station -> station.isSameId(stationId))
+                    .filter(station -> node.equals(station.getId()))
                     .findFirst()
                     .ifPresent(sortedStations::add);
         }

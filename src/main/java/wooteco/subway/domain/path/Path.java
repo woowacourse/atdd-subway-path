@@ -1,6 +1,5 @@
 package wooteco.subway.domain.path;
 
-import lombok.Getter;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;

@@ -1,16 +1,30 @@
 package wooteco.subway.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
     private int fare;
+
+    public PathResponse() {
+    }
+
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
+        return fare;
+    }
 }

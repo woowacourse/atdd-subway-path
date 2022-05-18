@@ -1,18 +1,21 @@
 package wooteco.subway.domain.section;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import wooteco.subway.domain.station.Station;
 
 import java.util.*;
 
-@Getter
-@AllArgsConstructor
 public class Sections {
     private final List<Section> sections;
     private final CreationStrategy creationStrategy;
     private final DeletionStrategy deletionStrategy;
     private final SortStrategy sortStrategy;
+
+    public Sections(List<Section> sections, CreationStrategy creationStrategy, DeletionStrategy deletionStrategy, SortStrategy sortStrategy) {
+        this.sections = sections;
+        this.creationStrategy = creationStrategy;
+        this.deletionStrategy = deletionStrategy;
+        this.sortStrategy = sortStrategy;
+    }
 
     public void save(Section section){
         creationStrategy.save(sections, section);
@@ -42,5 +45,9 @@ public class Sections {
         }
 
         return new ArrayList<>(stationIds);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
