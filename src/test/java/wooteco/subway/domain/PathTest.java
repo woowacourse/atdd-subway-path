@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,5 +87,18 @@ class PathTest {
         // then
         int expected = 1650;
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("출발역과 도착역을 동일하게 설정하면 예외가 발생한다.")
+    @Test
+    void throws_exception_if_departure_is_same_as_arrival() {
+        // given
+        Station departure = 강남역;
+        Station arrival = 강남역;
+
+        // when & then
+        assertThatThrownBy(() -> new Path(sections, departure, arrival))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("경로의 출발역과 도착역이 같을 수 없습니다.");
     }
 }

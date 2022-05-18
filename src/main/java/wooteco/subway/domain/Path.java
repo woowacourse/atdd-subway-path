@@ -14,10 +14,17 @@ public class Path {
     private final Fare fare;
 
     public Path(List<Section> sections, Station departure, Station arrival) {
+        validateDepartureAndArrivalAreDifferent(departure, arrival);
         final GraphPath<Station, DefaultWeightedEdge> path = generatePath(sections, departure, arrival);
         this.stations = path.getVertexList();
         this.distance = (int) path.getWeight();
         this.fare = Fare.from(distance);
+    }
+
+    private void validateDepartureAndArrivalAreDifferent(Station departure, Station arrival) {
+        if (departure.equals(arrival)) {
+            throw new IllegalArgumentException("경로의 출발역과 도착역이 같을 수 없습니다.");
+        }
     }
 
     private GraphPath<Station, DefaultWeightedEdge> generatePath(List<Section> sections, Station departure,
