@@ -1,13 +1,22 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class FareTest {
 
-    @DisplayName("길이가 10km 이내인 경우 기본운임 1,250을 반환한다.")
+    @DisplayName("거리가 0km 보다 작은 경우 오류가 발생한다.")
+    @Test
+    void validateDistance() {
+        assertThatThrownBy(() -> new Fare(-10))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 음수가 될 수 없습니다.");
+    }
+
+    @DisplayName("거리가 10km 이내인 경우 기본운임 1,250을 반환한다.")
     @Test
     void basicFare() {
         Fare fare = new Fare(9);

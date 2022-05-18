@@ -78,7 +78,7 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
-    
+
     @DisplayName("다른 노선의 갈 수 없는 경로를 조회하면 예외를 던진다.")
     @Test
     void findPathCanNotGo() {
@@ -95,7 +95,8 @@ class PathServiceTest {
         lineService.save(line1);
 
         assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 부천역.getId(), 24))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("경로가 존재하지 않습니다.");
     }
 
     @DisplayName("경로에 존재하지 않는 지하철역을 조회하면 예외를 던진다.")
@@ -110,6 +111,7 @@ class PathServiceTest {
         StationResponse 센트럴파트역 = stationService.save(new StationRequest("센트럴파트역"));
 
         assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 센트럴파트역.getId(), 24))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("노선에 등록되지 않은 지하철역입니다.");
     }
 }
