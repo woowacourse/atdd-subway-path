@@ -21,11 +21,12 @@ public class TestFixtures {
     public static final Line 사호선 = new Line(1L, "4호선", "blue");
 
     public static final Section 강남_삼성 = new Section(1L, 이호선, 강남, 삼성, 10);
-    public static final Section 삼성_건대 = new Section(2L, 이호선, 삼성, 건대, 10);
-    public static final Section 건대_성수 = new Section(3L, 이호선, 건대, 성수, 10);
+    public static final Section 삼성_건대 = new Section(2L, 이호선, 삼성, 건대, 12);
+    public static final Section 건대_성수 = new Section(3L, 이호선, 건대, 성수, 16);
 
     public static final Section 왕십리_합정 = new Section(1L, 분당선, 왕십리, 합정, 10);
     public static final Section 합정_성수 = new Section(2L, 분당선, 합정, 성수, 10);
     public static final Section 성수_강남 = new Section(3L, 분당선, 성수, 강남, 10);
-    public static final Section 창동_당고개 = new Section(4L, 사호선, 창동, 당고개, 10);
+
+    public static final Section 창동_당고개 = new Section(4L, 사호선, 창동, 당고개, 58);
 }

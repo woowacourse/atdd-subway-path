@@ -30,9 +30,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                long 잠실 = saveStationAndGetId("잠실");
-                long 강남 = saveStationAndGetId("강남");
-                노선_저장_파라미터 = lineParam("신분당선", "bg-red-600", 잠실, 강남);
+                long 잠실 = 역_저장("잠실");
+                long 강남 = 역_저장("강남");
+                노선_저장_파라미터 = 노선_요청_파라미터("신분당선", "bg-red-600", 잠실, 강남);
             }
 
             @Test
@@ -97,8 +97,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                long 잠실 = saveStationAndGetId("잠실");
-                long 강남 = saveStationAndGetId("강남");
+                long 잠실 = 역_저장("잠실");
+                long 강남 = 역_저장("강남");
                 lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
             }
 
@@ -153,8 +153,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                saveLineAndGetId("1호선", "blue", saveStationAndGetId("창동"), saveStationAndGetId("강남"));
-                saveLineAndGetId("2호선", "green", saveStationAndGetId("도봉"), saveStationAndGetId("의정부"));
+                saveLineAndGetId("1호선", "blue", 역_저장("창동"), 역_저장("강남"));
+                saveLineAndGetId("2호선", "green", 역_저장("도봉"), 역_저장("의정부"));
             }
 
             @Test
@@ -186,8 +186,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @BeforeEach
         void setUp() {
-            long 잠실 = saveStationAndGetId("잠실");
-            long 강남 = saveStationAndGetId("강남");
+            long 잠실 = 역_저장("잠실");
+            long 강남 = 역_저장("강남");
             lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
             노선_수정_파라미터 = lineUpdateParam("신분당선", "bg-red-600");
         }
@@ -290,8 +290,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                long 잠실 = saveStationAndGetId("잠실");
-                long 강남 = saveStationAndGetId("강남");
+                long 잠실 = 역_저장("잠실");
+                long 강남 = 역_저장("강남");
                 lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
             }
 
@@ -309,7 +309,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 id로 삭제한다.")
     void deleteById() {
         // given
-        long id = saveLineAndGetId("1호선", "blue", saveStationAndGetId("창동"), saveStationAndGetId("도봉"));
+        long id = saveLineAndGetId("1호선", "blue", 역_저장("창동"), 역_저장("도봉"));
 
         // when
         ExtractableResponse<Response> response = 노선_삭제(id);
@@ -322,23 +322,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 등록한다.")
     void saveSection() {
         // given
-        long upStationId = saveStationAndGetId("의정부");
-        long lineId = saveLineAndGetId("1호선", "blue", upStationId, saveStationAndGetId("인천"));
-        long downStationId = saveStationAndGetId("광운대");
+        long upStationId = 역_저장("의정부");
+        long lineId = saveLineAndGetId("1호선", "blue", upStationId, 역_저장("인천"));
+        long downStationId = 역_저장("광운대");
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", 5);
+        Map<String, Object> params = 구간_등록_파라미터(upStationId, downStationId, 5);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/{id}/sections", lineId)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = 구간_등록(lineId, params);
 
         // then
         assertThat(response.statusCode()).isEqualTo(200);
@@ -348,15 +339,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 삭제한다.")
     void deleteSection() {
         // given
-        long upStationId = saveStationAndGetId("의정부");
-        long downStationId = saveStationAndGetId("광운대");
-        long addStationId = saveStationAndGetId("인천");
+        long upStationId = 역_저장("의정부");
+        long downStationId = 역_저장("광운대");
+        long addStationId = 역_저장("인천");
         long lineId = saveLineAndGetId("1호선", "blue", upStationId, downStationId);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", addStationId);
-        params.put("distance", 3);
+        Map<String, Object> params = 구간_등록_파라미터(upStationId, addStationId, 3);
 
         RestAssured.given().log().all()
             .body(params)
@@ -425,12 +413,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private long saveLineAndGetId(String name, String color, Long upStation, Long downStation) {
-        Map<Object, Object> params = lineParam(name, color, upStation, downStation);
+        Map<Object, Object> params = 노선_요청_파라미터(name, color, upStation, downStation);
         ExtractableResponse<Response> savedResponse = 노선_저장(params);
         return savedResponse.body().jsonPath().getLong("id");
     }
 
-    private Map<Object, Object> lineParam(String name, String color, Long upStationId, Long downStationId) {
+    private Map<Object, Object> 노선_요청_파라미터(String name, String color, Long upStationId, Long downStationId) {
         Map<Object, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
@@ -447,7 +435,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private long saveStationAndGetId(String name) {
+    private long 역_저장(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
@@ -459,5 +447,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .extract();
         return savedResponse.body().jsonPath().getLong("id");
+    }
+
+    private Map<String, Object> 구간_등록_파라미터(long upStationId, long downStationId, int distance) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
+        return params;
+    }
+
+    private ExtractableResponse<Response> 구간_등록(long lineId, Map<String, Object> params) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/lines/{id}/sections", lineId)
+            .then().log().all()
+            .extract();
+        return response;
     }
 }

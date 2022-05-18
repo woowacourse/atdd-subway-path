@@ -133,3 +133,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
         - [ ] 10km~50km: 5km 까지 마다 100원 추가
         - [ ] 50km 초과: 8km 까지 마다 100원 추가
         - [ ] 지하철 운임은 거리비례제로 책정된다.
+  
+9km = 1250원
+12km = 10km + 2km = 1350원
+16km = 10km + 6km = 1450원
+58km = 10km + 40km + 8km = 2150원

@@ -9,6 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class SubwayGraph {
 
+    private static final int BASE_FEE = 1250;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
 
     public SubwayGraph(List<Section> sections) {
@@ -25,6 +26,10 @@ public class SubwayGraph {
         return (int) path.getPath(source, target).getWeight();
     }
 
+    public int getFare(Station source, Station target) {
+        return calculateOverFare(getShortestDistance(source, target));
+    }
+
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createPath(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Section section : sections) {
@@ -39,5 +44,15 @@ public class SubwayGraph {
         if (result == null) {
             throw new IllegalArgumentException("해당 경로가 존재하지 않습니다.");
         }
+    }
+
+    private int calculateOverFare(int distance) {
+        if (distance <= 10) {
+            return BASE_FEE;
+        }
+        if (distance <= 50) {
+            return (int) ((Math.ceil((distance - 10 - 1) / 5) + 1) * 100) + BASE_FEE;
+        }
+        return (int) ((Math.ceil((distance - 50 - 1) / 8) + 1) * 100) + 2050;
     }
 }

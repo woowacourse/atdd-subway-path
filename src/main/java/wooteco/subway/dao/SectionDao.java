@@ -45,6 +45,11 @@ public class SectionDao {
         jdbcTemplate.update(sql, upStationId, downStationId, distance, sectionId);
     }
 
+    public List<SectionEntity> findAll() {
+        String sql = "select * from section";
+        return jdbcTemplate.query(sql, mapper);
+    }
+
     public List<SectionEntity> findByLineId(Long lineId) {
         String sql = "select * from section where line_id = ?";
         return jdbcTemplate.query(sql, mapper, lineId);
@@ -72,9 +77,5 @@ public class SectionDao {
             .addValue("up_station_id", section.getUpStationId())
             .addValue("down_station_id", section.getDownStationId())
             .addValue("distance", section.getDistance());
-    }
-
-    public List<SectionEntity> findAll() {
-        return null;
     }
 }

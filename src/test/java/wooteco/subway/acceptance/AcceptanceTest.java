@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ public class AcceptanceTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+        jdbcTemplate.update("delete from section");
         jdbcTemplate.update("delete from line");
         jdbcTemplate.update("delete from station");
     }

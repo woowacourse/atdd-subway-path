@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.domain.fixtures.TestFixtures.강남;
 import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정;
@@ -29,6 +30,21 @@ public class SectionDaoTest {
         assertThat(entity.getUpStationId()).isEqualTo(성수.getId());
         assertThat(entity.getDownStationId()).isEqualTo(합정.getId());
         assertThat(entity.getDistance()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("구간 전체 조회")
+    void findAll() {
+        Line line = new Line(1L, "2호선", "green");
+        SectionEntity 성수_합정 = sectionDao.save(new SectionEntity(line.getId(), 성수.getId(), 합정.getId(), 10));
+        SectionEntity 합정_강남 = sectionDao.save(new SectionEntity(line.getId(), 합정.getId(), 강남.getId(), 10));
+
+        List<SectionEntity> entities = sectionDao.findAll();
+
+        assertThat(entities)
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(List.of(성수_합정, 합정_강남));
     }
 
     @Test

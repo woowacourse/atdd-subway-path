@@ -49,4 +49,16 @@ class SectionRepositoryTest {
         assertThat(section.get(0).getDownStation()).isEqualTo(건대입구);
     }
 
+    @Test
+    @DisplayName("구간 전체를 조회한다.")
+    void findAll() {
+        Station 성수역 = stationRepository.save(new Station("성수역"));
+        Station 건대입구 = stationRepository.save(new Station("건대입구"));
+        Line line = lineRepository.save(new Line("1호선", "blue"));
+
+        Section section = new Section(line, 성수역, 건대입구, 10);
+        sectionRepository.save(section);
+
+        assertThat(sectionRepository.findAll()).containsOnly(section);
+    }
 }
