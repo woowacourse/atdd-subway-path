@@ -23,7 +23,7 @@ public class Sections {
 
     public Section findSection(Long upStationId, Long downStationId) {
         return sections.stream()
-                .filter(section -> section.isSameUpStationId(upStationId) && section.isSameDownStationId(downStationId))
+                .filter(section -> section.hasStationId(upStationId) && section.hasStationId(downStationId))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("맞는 섹션 없음"));
     }

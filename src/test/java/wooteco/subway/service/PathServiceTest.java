@@ -65,4 +65,22 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
         );
     }
+
+    @Test
+    @DisplayName("출발지와 도착지가 반대로 주어질 때 경로와 요금을 계산한다.")
+    void findPathWithReverseStations() {
+        PathResponse pathResponse = pathService.findShortestPath(new PathRequest(7L, 1L, 10));
+
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting("id", "name")
+                        .containsExactly(
+                                tuple(7L, "상일동역"),
+                                tuple(2L, "왕십리역"),
+                                tuple(1L, "신도림역")
+                        ),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+        );
+    }
 }

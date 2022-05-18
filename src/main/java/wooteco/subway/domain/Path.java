@@ -2,7 +2,6 @@ package wooteco.subway.domain;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -42,7 +41,7 @@ public class Path {
             return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
         } catch (NullPointerException exception) {
             throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             throw new NotFoundStationException("해당 지하철역이 등록이 안되어 있습니다.");
         }
     }
@@ -55,7 +54,8 @@ public class Path {
 
         sections.getSections().forEach(
                 section -> graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                        section.getDistance()));
+                        section.getDistance())
+        );
         return graph;
     }
 
@@ -74,13 +74,13 @@ public class Path {
                 .sum();
     }
 
-    public List<Long> getStationIds() {
-        List<Long> stationIds = path.stream()
-                .map(Section::getUpStationId)
-                .collect(Collectors.toCollection(LinkedList::new));
-
-        stationIds.add(path.getLast().getDownStationId());
-
+    public List<Long> getStationIds(long sourceId, long targetId) {
+        List<Long> stationIds = new LinkedList<>();
+        for (Section section : path) {
+            stationIds.add(sourceId);
+            sourceId = section.getOppositeStation(sourceId);
+        }
+        stationIds.add(targetId);
         return stationIds;
     }
 }

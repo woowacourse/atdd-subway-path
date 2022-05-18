@@ -71,4 +71,15 @@ public class Section {
     public boolean isSameDownStationId(long stationId) {
         return downStationId == stationId;
     }
+
+    public boolean hasStationId(long stationId) {
+        return upStationId == stationId || downStationId == stationId;
+    }
+
+    public long getOppositeStation(long stationId) {
+        if(upStationId == stationId){
+            return downStationId;
+        }
+        return upStationId;
+    }
 }
