@@ -12,6 +12,7 @@ import wooteco.subway.dao.section.InmemorySectionDao;
 import wooteco.subway.dao.station.InmemoryStationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.strategy.AlwaysFindNoneExistPathStrategy;
 import wooteco.subway.domain.strategy.FindDijkstraShortestPathStrategy;
 import wooteco.subway.dto.path.PathFindRequest;
 import wooteco.subway.dto.path.PathFindResponse;
@@ -21,8 +22,7 @@ class PathServiceTest {
 
     private final InmemorySectionDao sectionDao = InmemorySectionDao.getInstance();
     private final InmemoryStationDao stationDao = InmemoryStationDao.getInstance();
-    private final PathService pathService = new PathService(sectionDao, stationDao,
-            new FindDijkstraShortestPathStrategy());
+    private PathService pathService = new PathService(sectionDao, stationDao, new FindDijkstraShortestPathStrategy());
 
     @AfterEach
     void afterEach() {
@@ -64,17 +64,16 @@ class PathServiceTest {
     @Test
     @DisplayName("찾을 수 없는 경로가 들어오는 경우 예외 발생")
     void findPathExceptionByNotFoundPath() {
+        // setup
+        pathService = new PathService(sectionDao, stationDao, new AlwaysFindNoneExistPathStrategy());
+
         // given
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
-        Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
-        Station station4 = stationDao.findById(stationDao.save(new Station("레넌")));
-
-        sectionDao.save(new Section(1L, station1, station3, 2));
-        sectionDao.save(new Section(2L, station2, station4, 3));
+        sectionDao.save(new Section(1L, station1, station2, 2));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findPath(new PathFindRequest(station1.getId(), station4.getId(), 15)))
+        assertThatThrownBy(() -> pathService.findPath(new PathFindRequest(station1.getId(), station2.getId(), 15)))
                 .isInstanceOf(NotFoundException.class);
     }
 }
