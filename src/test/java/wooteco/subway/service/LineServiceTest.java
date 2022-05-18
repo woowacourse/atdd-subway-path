@@ -24,8 +24,10 @@ class LineServiceTest {
 
     @Autowired
     private LineDao lineDao;
+
     @Autowired
     private StationDao stationDao;
+
     @Autowired
     private LineService lineService;
 
