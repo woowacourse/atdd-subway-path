@@ -20,9 +20,8 @@ class PathFinderTest {
     Section section1 = new Section(1L, station1, station2, 10);
     Section section2 = new Section(2L, station2, station3, 10);
     Section section3 = new Section(3L, station1, station3, 100);
-    Section section4 = new Section(4L, station3, station4, 100);
-
     List<Section> sections = List.of(section1, section2, section3);
+    Section section4 = new Section(4L, station3, station4, 100);
     List<Section> unconnectedSect = List.of(section1, section4);
 
     @Test

@@ -38,7 +38,7 @@ public class FareTest {
         // then
         assertThat(fare.getValue()).isEqualTo(2150L);
     }
-    
+
     @Test
     @DisplayName("거리가 0 이하인 경우 예외 발생")
     void fee_underMinimum() {

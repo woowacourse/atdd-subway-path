@@ -36,7 +36,7 @@ public class Fare {
     private static Fare calculateFee(int remainDistance, int unit, long baseFeeAmount) {
         int additionalFeeCount = remainDistance / unit;
         if (remainDistance % unit != MINIMUM_DISTANCE) {
-            additionalFeeCount ++;
+            additionalFeeCount++;
         }
         return new Fare(baseFeeAmount + additionalFeeCount * PER_UNIT_FEE_AMOUNT);
     }

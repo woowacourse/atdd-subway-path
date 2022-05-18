@@ -20,18 +20,6 @@ import wooteco.subway.repository.entity.StationEntity;
 @Transactional
 public class PathServiceTest {
 
-    @Autowired
-    private PathService pathService;
-
-    @Autowired
-    private StationDao stationDao;
-
-    @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
-    private LineDao lineDao;
-
     StationEntity one;
     StationEntity two;
     StationEntity three;
@@ -40,6 +28,14 @@ public class PathServiceTest {
     SectionEntity section1;
     SectionEntity section2;
     SectionEntity section3;
+    @Autowired
+    private PathService pathService;
+    @Autowired
+    private StationDao stationDao;
+    @Autowired
+    private SectionDao sectionDao;
+    @Autowired
+    private LineDao lineDao;
 
     @BeforeEach
     void setUp() {

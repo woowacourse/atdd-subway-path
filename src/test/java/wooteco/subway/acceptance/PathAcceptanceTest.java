@@ -16,9 +16,8 @@ import wooteco.subway.service.LineService;
 import wooteco.subway.service.SectionService;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
-import wooteco.subway.service.dto.SectionSaveRequest;
 
-public class PathAcceptanceTest extends AcceptanceTest{
+public class PathAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private StationDao stationDao;
@@ -45,7 +44,7 @@ public class PathAcceptanceTest extends AcceptanceTest{
         jamsil = stationDao.save(new StationEntity(null, "잠실"));
         line1 = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 46));
         line2 = lineService.save(new LineRequest("2호선", "green", nowon.getId(), jamsil.getId(), 2));
-        line2 = lineService.save(new LineRequest("3호선", "grey", gangnam.getId(), jamsil.getId(),100));
+        line2 = lineService.save(new LineRequest("3호선", "grey", gangnam.getId(), jamsil.getId(), 100));
     }
 
     @Test

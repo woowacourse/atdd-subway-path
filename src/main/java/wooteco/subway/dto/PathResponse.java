@@ -20,7 +20,7 @@ public class PathResponse {
         List<StationResponse> stationResponses = stations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponses,distance, fare.getValue());
+        return new PathResponse(stationResponses, distance, fare.getValue());
     }
 
     public List<StationResponse> getStations() {

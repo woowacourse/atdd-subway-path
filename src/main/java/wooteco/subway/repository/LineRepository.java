@@ -56,7 +56,7 @@ public class LineRepository {
 
     public void deleteById(Long id) {
         lineDao.findById(id)
-                        .orElseThrow(LineNotFoundException::new);
+                .orElseThrow(LineNotFoundException::new);
         sectionRepository.deleteByLineId(id);
         lineDao.deleteById(id);
     }
