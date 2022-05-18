@@ -49,13 +49,21 @@ public class LineSections {
 
     public SectionsToBeCreatedAndUpdated add(Section newSection) {
         validateExistStationInLine(newSection);
-        Long currentLastUpStationId = values.get(0).getUpStationId();
-        Long currentLastDownStationId = values.get(values.size() - 1).getDownStationId();
+        Long currentLastUpStationId = findLastUpSection().getUpStationId();
+        Long currentLastDownStationId = findLastDownSection().getDownStationId();
 
         if (newSection.isNewLastStation(currentLastUpStationId, currentLastDownStationId)) {
             return new SectionsToBeCreatedAndUpdated(newSection);
         }
         return addMiddleSection(newSection);
+    }
+
+    private Section findLastUpSection() {
+        return values.get(0);
+    }
+
+    private Section findLastDownSection() {
+        return values.get(values.size() - 1);
     }
 
     private void validateExistStationInLine(Section section) {
@@ -108,8 +116,8 @@ public class LineSections {
     public SectionsToBeDeletedAndUpdated delete(Long stationId) {
         validateExistStation(stationId);
         validateNotRemainOneSection();
-        Section currentLastUpSection = values.get(0);
-        Section currentLastDownSection = values.get(values.size() - 1);
+        Section currentLastUpSection = findLastUpSection();
+        Section currentLastDownSection = findLastDownSection();
         if (currentLastUpSection.isUpStation(stationId) ||
                 currentLastDownSection.isDownStation(stationId)) {
             return deleteLastSection(currentLastUpSection, currentLastDownSection, stationId);
@@ -162,7 +170,7 @@ public class LineSections {
 
     public List<Long> getSortedStationIds() {
         List<Long> sortedStationIds = new ArrayList<>();
-        sortedStationIds.add(values.get(0).getUpStationId());
+        sortedStationIds.add(findLastUpSection().getUpStationId());
         for (Section value : values) {
             sortedStationIds.add(value.getDownStationId());
         }
