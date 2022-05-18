@@ -78,7 +78,7 @@ public class PathManager2 {
     public Path toConnectedPath(Station endStation) {
         validatePathConnection(endStation);
         int totalDistance = distanceMap.get(endStation);
-        return new Path(toConnectedStations(endStation), totalDistance);
+        return Path.of(toConnectedStations(endStation), totalDistance);
     }
 
     private void validatePathConnection(Station endStation) {

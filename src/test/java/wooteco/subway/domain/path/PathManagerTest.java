@@ -37,7 +37,7 @@ class PathManagerTest {
             PathManager pathManager = PathManager.of(sections);
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
-            Path expected = new Path(1, List.of(STATION2, STATION3));
+            Path expected = Path.of(List.of(STATION2, STATION3), 1);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -55,7 +55,7 @@ class PathManagerTest {
             PathManager pathManager = PathManager.of(sections);
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
-            Path expected = new Path(10, List.of(STATION2, STATION4, STATION5, STATION3));
+            Path expected = Path.of(List.of(STATION2, STATION4, STATION5, STATION3), 10);
 
             assertThat(actual).isEqualTo(expected);
         }

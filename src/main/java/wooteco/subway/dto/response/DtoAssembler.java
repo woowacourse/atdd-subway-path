@@ -23,8 +23,8 @@ public class DtoAssembler {
 
     public static PathResponse assemble(Path path){
         List<StationResponse> stations = toStationResponse(path.getStations());
-        int distance = path.getTotalDistance();
-        int fare = path.calculateFare();
+        int distance = path.getDistance();
+        int fare = path.getFare();
         return new PathResponse(stations, distance, fare);
     }
 
