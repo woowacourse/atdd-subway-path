@@ -1,11 +1,13 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.station;
 
-import wooteco.subway.domain.Station;
+import javax.validation.constraints.NotBlank;
 
 public class StationRequest {
+
+    @NotBlank
     private String name;
 
-    public StationRequest() {
+    private StationRequest() {
     }
 
     public StationRequest(String name) {
@@ -14,9 +16,5 @@ public class StationRequest {
 
     public String getName() {
         return name;
-    }
-
-    public Station toStation() {
-        return new Station(name);
     }
 }
