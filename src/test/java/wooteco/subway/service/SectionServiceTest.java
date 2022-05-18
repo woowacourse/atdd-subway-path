@@ -26,6 +26,7 @@ class SectionServiceTest {
     StationEntity third;
     StationEntity fourth;
     StationEntity add;
+
     @Autowired
     private SectionService sectionService;
     @Autowired

@@ -10,8 +10,8 @@ import wooteco.subway.exception.domain.FeeException;
 public class FareTest {
 
     @Test
-    @DisplayName("10km 이내라면 기본 요금 1,250원이다.")
-    void defaultFee() {
+    @DisplayName("이동 거리가 10km 이내라면 기본 요금 1,250원이 부과된다.")
+    void defaultFare() {
         Fare fare = Fare.from(8);
         Long calFee = fare.getValue();
 
@@ -20,8 +20,8 @@ public class FareTest {
     }
 
     @Test
-    @DisplayName("10km ~ 50km 사이의 거리는 5km 마다 100원 추가")
-    void additionalFee() {
+    @DisplayName("이동 거리가 10km ~ 50km 사이라면 기본 요금에 5km 마다 100원 추가된 요금이 부과된다.")
+    void additionalFare() {
         // given
         Fare fare = Fare.from(12);
 
@@ -30,18 +30,18 @@ public class FareTest {
     }
 
     @Test
-    @DisplayName("50km를 넘는 거리는 8km 마다 100원 추가")
-    void additionalFee_over_fifth() {
+    @DisplayName("50km을 초과한 거리라면 50km까지 계산된 요금에 8km 마다 100원 추가된 요금이 부과된다.")
+    void extraAdditionalFare() {
         // given
         Fare fare = Fare.from(58);
 
         // then
         assertThat(fare.getValue()).isEqualTo(2150L);
     }
-    
+
     @Test
-    @DisplayName("거리가 0 이하인 경우 예외 발생")
-    void fee_underMinimum() {
+    @DisplayName("거리가 0 이하인 경우 예외가 발생한다.")
+    void fee_underMinimum_exception() {
         // given
         assertThatThrownBy(() -> Fare.from(0))
                 .isInstanceOf(FeeException.class);

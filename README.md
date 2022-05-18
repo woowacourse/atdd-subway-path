@@ -27,9 +27,9 @@
     - [x] 50 KM 초과는 8KM마다 100원 추가.능
 
 # API 요구사항
-- [ ] `GET /paths?source={sourseId}&target={targetId}&age={age}`
-  - [ ] 응답으로 200 OK 상태를 반환
-  - [ ] BODY에 지나온 경로와 거리, 요금을 반환한다.
+- [x] `GET /paths?source={sourseId}&target={targetId}&age={age}`
+  - [x] 응답으로 200 OK 상태를 반환
+  - [x] BODY에 지나온 경로와 거리, 요금을 반환한다.
 <br>
 
 ## 🚀 Getting Started

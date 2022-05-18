@@ -13,7 +13,7 @@ public class JGraphPathFinder implements PathFinder {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public JGraphPathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private JGraphPathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.graph = graph;
     }
 
@@ -21,7 +21,7 @@ public class JGraphPathFinder implements PathFinder {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         Set<Station> stations = getDistinctStations(sections);
         stations.forEach(graph::addVertex);
-        sections.forEach(section -> setWeightedEdgeFromSection(graph,  section));
+        sections.forEach(section -> setWeightedEdgeFromSection(graph, section));
         return new JGraphPathFinder(graph);
     }
 

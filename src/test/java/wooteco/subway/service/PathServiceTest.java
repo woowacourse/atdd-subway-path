@@ -32,32 +32,35 @@ public class PathServiceTest {
     @Autowired
     private LineDao lineDao;
 
-    StationEntity one;
-    StationEntity two;
-    StationEntity three;
+    StationEntity sinseolStationEntity;
+    StationEntity sungsuStationEntity;
+    StationEntity yongdapStationEntity;
     LineEntity line1;
     LineEntity line2;
-    SectionEntity section1;
-    SectionEntity section2;
-    SectionEntity section3;
+    SectionEntity firstSection;
+    SectionEntity secondSection;
+    SectionEntity thirdSection;
 
     @BeforeEach
     void setUp() {
-        one = stationDao.save(new StationEntity(null, "one"));
-        two = stationDao.save(new StationEntity(null, "two"));
-        three = stationDao.save(new StationEntity(null, "three"));
-        line1 = lineDao.save(new LineEntity(null, "oneLine", "red"));
-        line2 = lineDao.save(new LineEntity(null, "twoLine", "blue"));
-        section1 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), two.getId(), 46));
-        section2 = sectionDao.save(new SectionEntity(null, line2.getId(), two.getId(), three.getId(), 2));
-        section3 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), three.getId(), 1000));
+        sinseolStationEntity = stationDao.save(new StationEntity(null, "신설동역"));
+        sungsuStationEntity = stationDao.save(new StationEntity(null, "성수역"));
+        yongdapStationEntity = stationDao.save(new StationEntity(null, "용답역"));
+        line1 = lineDao.save(new LineEntity(null, "1호선", "red"));
+        line2 = lineDao.save(new LineEntity(null, "2호선", "blue"));
+        firstSection = sectionDao.save(
+                new SectionEntity(null, line1.getId(), sinseolStationEntity.getId(), sungsuStationEntity.getId(), 46));
+        secondSection = sectionDao.save(
+                new SectionEntity(null, line2.getId(), sungsuStationEntity.getId(), yongdapStationEntity.getId(), 2));
+        thirdSection = sectionDao.save(
+                new SectionEntity(null, line1.getId(), sinseolStationEntity.getId(), yongdapStationEntity.getId(),1000));
     }
 
     @Test
     @DisplayName("경로 조회한다")
     void getPath() {
         // given
-        PathResponse pathResponse = pathService.getPath(three.getId(), one.getId());
+        PathResponse pathResponse = pathService.getPath(yongdapStationEntity.getId(), sinseolStationEntity.getId());
 
         // then
         assertThat(pathResponse.getStations()).hasSize(3);
