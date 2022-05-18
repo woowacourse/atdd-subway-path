@@ -10,14 +10,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class Path {
     private final List<Station> stations;
     private final int distance;
-    private final Cost cost;
+    private final Fare fare;
 
 
     public Path(List<Section> sections, Station departure, Station arrival) {
         final GraphPath<Station, DefaultWeightedEdge> path = generatePath(sections, departure, arrival);
         this.stations = path.getVertexList();
         this.distance = (int) path.getWeight();
-        this.cost = Cost.from(distance);
+        this.fare = Fare.from(distance);
     }
 
     private GraphPath<Station, DefaultWeightedEdge> generatePath(List<Section> sections, Station departure,
@@ -42,8 +42,8 @@ public class Path {
         return Collections.unmodifiableList(stations);
     }
 
-    public int getCost() {
-        return this.cost.getCost();
+    public int getFare() {
+        return this.fare.getFare();
     }
 
     public int getDistance() {

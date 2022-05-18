@@ -24,5 +24,4 @@ public class PathController {
         final PathResponse pathResponse = pathService.getPath(sourceStationId, targetStationId);
         return ResponseEntity.ok().body(pathResponse);
     }
-
 }

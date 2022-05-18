@@ -34,7 +34,7 @@ class PathServiceTest {
     @DisplayName("거리가 10Km일 때 요금은 1250원 이다.")
     @ParameterizedTest
     @CsvSource(value = {"10,1250", "15,1350", "58,2150"})
-    void getPath(int distance, int expectedCost) {
+    void getPath(int distance, int expectedFare) {
         // given
         final Station 강남역 = new Station("강남역");
         final Station 역삼역 = new Station("역삼역");
@@ -48,7 +48,7 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.getPath(1L, 2L);
         // then
         assertAll(
-                () -> assertThat(pathResponse.getFare()).isEqualTo(expectedCost),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(expectedFare),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
         );
     }

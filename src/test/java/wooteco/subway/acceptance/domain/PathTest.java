@@ -79,12 +79,12 @@ class PathTest {
 
     @DisplayName("강남역에서 잠실역까지의 요금은 1650원이다.")
     @Test
-    void cost_of_shortest_path() {
+    void fare_of_shortest_path() {
         // given
         Path createdPath = new Path(sections, 강남역, 잠실역);
 
         // when
-        int actual = createdPath.getCost();
+        int actual = createdPath.getFare();
 
         // then
         int expected = 1650;

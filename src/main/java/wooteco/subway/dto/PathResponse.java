@@ -15,7 +15,7 @@ public class PathResponse {
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
         this.distance = path.getDistance();
-        this.fare = path.getCost();
+        this.fare = path.getFare();
     }
 
     public List<StationResponse> getStations() {
