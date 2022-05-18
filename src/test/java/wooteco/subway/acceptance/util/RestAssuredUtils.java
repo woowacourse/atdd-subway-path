@@ -15,7 +15,8 @@ import wooteco.subway.dto.response.LineResponse;
 
 public class RestAssuredUtils {
 
-    public static void checkProperResponseStatus(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+    public static void checkProperResponseStatus(ExtractableResponse<Response> response,
+            HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 
@@ -25,7 +26,8 @@ public class RestAssuredUtils {
                 .body("message", equalTo(message));
     }
 
-    public static void checkSameResponseIds(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> responses) {
+    public static void checkSameResponseIds(ExtractableResponse<Response> response,
+            List<ExtractableResponse<Response>> responses) {
         List<Long> expectedLineIds = responses.stream()
                 .map(it -> getLocationId(it))
                 .collect(Collectors.toList());

@@ -14,6 +14,7 @@ import wooteco.subway.domain.Station;
 
 @JdbcTest
 public class JdbcSectionDaoTest {
+
     private SectionDao sectionDao;
     private LineDao lineDao;
     private StationDao stationDao;
@@ -53,7 +54,8 @@ public class JdbcSectionDaoTest {
         final Line savedLine = lineDao.save(new Line("신분당선", "bg-blue-600"));
         final Station savedStation1 = stationDao.save(new Station("지하철역"));
         final Station savedStation2 = stationDao.save(new Station("새로운지하철역"));
-        final Section savedSection = sectionDao.save(new Section(savedLine, savedStation1, savedStation2, 10));
+        final Section savedSection = sectionDao.save(
+                new Section(savedLine, savedStation1, savedStation2, 10));
 
         // when
         sectionDao.deleteById(savedSection.getId());

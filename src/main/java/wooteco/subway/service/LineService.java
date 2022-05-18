@@ -19,6 +19,7 @@ import wooteco.subway.dto.response.LineResponse;
 @Transactional
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -39,7 +40,8 @@ public class LineService {
         checkDuplicateLine(lineRequest);
 
         final Line savedLine = lineDao.save(line);
-        final Section section = new Section(savedLine, upStation, downStation, lineRequest.getDistance());
+        final Section section = new Section(savedLine, upStation, downStation,
+                lineRequest.getDistance());
         sectionDao.save(section);
 
         return LineResponse.of(savedLine, Arrays.asList(upStation, downStation));
@@ -91,7 +93,8 @@ public class LineService {
         checkSectionHasAllStation(sections, upStation, downStation);
 
         if (sections.hasSameUpStation(upStation)) {
-            Section existSection = sectionDao.findByLineIdAndUpStationId(lineId, sectionRequest.getUpStationId());
+            Section existSection = sectionDao.findByLineIdAndUpStationId(lineId,
+                    sectionRequest.getUpStationId());
             int existDistance = existSection.getDistance();
             Section updateSection = new Section(existSection.getId(), line, downStation,
                     existSection.getDownStation(), existDistance - distance);
@@ -99,9 +102,11 @@ public class LineService {
         }
 
         if (sections.hasSameDownStation(downStation)) {
-            Section existSection = sectionDao.findByLineIdAndDownStationId(lineId, sectionRequest.getDownStationId());
+            Section existSection = sectionDao.findByLineIdAndDownStationId(lineId,
+                    sectionRequest.getDownStationId());
             int existDistance = existSection.getDistance();
-            Section updateSection = new Section(existSection.getId(), line, existSection.getUpStation(),
+            Section updateSection = new Section(existSection.getId(), line,
+                    existSection.getUpStation(),
                     upStation, existDistance - distance);
             sectionDao.update(updateSection);
         }
@@ -175,13 +180,15 @@ public class LineService {
         }
     }
 
-    private void checkSectionHasNotAnyStation(Sections sections, Station upStation, Station downStation) {
+    private void checkSectionHasNotAnyStation(Sections sections, Station upStation,
+            Station downStation) {
         if (!sections.hasStation(upStation) && !sections.hasStation(downStation)) {
             throw new IllegalArgumentException("등록하려는 구간 중 하나 이상의 역은 무조건 노선에 등록되어 있어야 합니다.");
         }
     }
 
-    private void checkSectionHasAllStation(Sections sections, Station upStation, Station downStation) {
+    private void checkSectionHasAllStation(Sections sections, Station upStation,
+            Station downStation) {
         if (sections.hasSameUpStation(upStation) && sections.hasSameDownStation(downStation)) {
             throw new IllegalArgumentException("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없습니다.");
         }

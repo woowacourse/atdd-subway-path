@@ -12,6 +12,7 @@ import wooteco.subway.domain.Station;
 
 @JdbcTest
 public class JdbcStationDaoTest {
+
     private JdbcStationDao stationDao;
 
     @Autowired

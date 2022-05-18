@@ -22,7 +22,7 @@ class PathTest {
         Line line = new Line("2호선", "bg-red-200");
         Station 강남역 = new Station(1L, "강남역");
         Station 선릉역 = new Station(3L, "선릉역");
-        sections.add(new Section(line, 강남역, new Station(2L,"역삼역"), 10));
+        sections.add(new Section(line, 강남역, new Station(2L, "역삼역"), 10));
         sections.add(new Section(line, new Station(2L, "역삼역"), 선릉역, 10));
         sections.add(new Section(line, 선릉역, new Station(4L, "삼성역"), 10));
 
@@ -58,12 +58,11 @@ class PathTest {
         Station 건대입구 = new Station(2L, "건대입구");
         Station 강남구청 = new Station(3L, "강남구청");
 
-
         sections.add(new Section(이호선, 성수역, 건대입구, 10));
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
 
         Path path = new Path(new Sections(sections));
-        List<Long> shortestPath = path.createShortestPath(성수역.getId(),강남구청.getId());
+        List<Long> shortestPath = path.createShortestPath(성수역.getId(), 강남구청.getId());
 
         assertThat(path.calculateDistance(성수역.getId(), 강남구청.getId())).isEqualTo(20);
 
@@ -82,14 +81,13 @@ class PathTest {
         Station 강남구청 = new Station(3L, "강남구청");
         Station 서울숲 = new Station(4L, "서울숲");
 
-
         sections.add(new Section(이호선, 성수역, 건대입구, 10));
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 성수역, 서울숲, 5));
         sections.add(new Section(삼호선, 서울숲, 강남구청, 10));
 
         Path path = new Path(new Sections(sections));
-        List<Long> shortestPath = path.createShortestPath(성수역.getId(),강남구청.getId());
+        List<Long> shortestPath = path.createShortestPath(성수역.getId(), 강남구청.getId());
 
         assertThat(path.calculateDistance(성수역.getId(), 강남구청.getId())).isEqualTo(15);
 
@@ -108,16 +106,16 @@ class PathTest {
         Station 강남구청 = new Station(3L, "강남구청");
         Station 홍대 = new Station(4L, "홍대");
 
-
         sections.add(new Section(이호선, 성수역, 건대입구, 10));
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
         Path path = new Path(new Sections(sections));
-        List<Long> shortestPath = path.createShortestPath(성수역.getId(),홍대.getId());
+        List<Long> shortestPath = path.createShortestPath(성수역.getId(), 홍대.getId());
 
         assertThat(path.calculateDistance(성수역.getId(), 홍대.getId())).isEqualTo(30);
 
-        assertThat(shortestPath).containsExactly(성수역.getId(), 건대입구.getId(), 강남구청.getId(),홍대.getId());
+        assertThat(shortestPath).containsExactly(성수역.getId(), 건대입구.getId(), 강남구청.getId(),
+                홍대.getId());
     }
 }

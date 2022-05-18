@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class StationTest {
+
     @Test
     @DisplayName("id와 이름이 같으면 역이 서로 같다고 판단한다.")
     void isSameStation() {

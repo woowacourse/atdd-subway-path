@@ -10,10 +10,11 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
 
 public class SectionDaoImpl implements SectionDao {
-    private static SectionDaoImpl sectionDao = new SectionDaoImpl();
+
+    private static final SectionDaoImpl sectionDao = new SectionDaoImpl();
 
     private static Long seq = 0L;
-    private static List<Section> sections = new ArrayList<>();
+    private static final List<Section> sections = new ArrayList<>();
 
     public static SectionDaoImpl getInstance() {
         return sectionDao;

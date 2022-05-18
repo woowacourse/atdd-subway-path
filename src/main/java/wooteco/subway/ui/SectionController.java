@@ -14,6 +14,7 @@ import wooteco.subway.service.LineService;
 @RestController
 @RequestMapping("/lines")
 public class SectionController {
+
     private final LineService lineService;
 
     public SectionController(LineService lineService) {
@@ -21,7 +22,8 @@ public class SectionController {
     }
 
     @PostMapping("/{id}/sections")
-    public ResponseEntity<Void> createSection(@PathVariable Long id, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> createSection(@PathVariable Long id,
+            @RequestBody SectionRequest sectionRequest) {
         lineService.saveSection(id, sectionRequest);
         return ResponseEntity.ok().build();
     }

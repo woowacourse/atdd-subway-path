@@ -26,7 +26,7 @@ public class Path {
 
     public int calculateDistance(Long upStationId, Long downStationId) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return (int)(dijkstraShortestPath.getPath(upStationId, downStationId).getWeight());
+        return (int) (dijkstraShortestPath.getPath(upStationId, downStationId).getWeight());
     }
 
     private void addVertex(Sections sections) {

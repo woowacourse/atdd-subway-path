@@ -22,7 +22,7 @@ import wooteco.subway.domain.Station;
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    private String stationName = "잠실역";
+    private final String stationName = "잠실역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -77,7 +77,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = createData("/stations", station);
 
         // when
-        ExtractableResponse<Response> deleteResponse = deleteData(createResponse.header("Location"));
+        ExtractableResponse<Response> deleteResponse = deleteData(
+                createResponse.header("Location"));
 
         // then
         checkProperResponseStatus(deleteResponse, HttpStatus.NO_CONTENT);

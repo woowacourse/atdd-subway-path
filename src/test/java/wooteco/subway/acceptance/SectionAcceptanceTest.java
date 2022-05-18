@@ -20,19 +20,22 @@ import wooteco.subway.dto.request.SectionRequest;
 @DisplayName("지하철구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    private String lineName = "신분당선";
-    private String lineColor = "bg-red-600";
-    private int distance = 10;
-    private int shortDistance = 9;
-    private int longDistance = 11;
+    private final String lineName = "신분당선";
+    private final String lineColor = "bg-red-600";
+    private final int distance = 10;
+    private final int shortDistance = 9;
+    private final int longDistance = 11;
 
     @DisplayName("상행 종점을 등록한다.")
     @Test
     void createLastUpStation() {
         // given
-        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("새로운상행종점"));
-        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("기존상행종점"));
-        ExtractableResponse<Response> createStation3 = createData("/stations", new Station("기존하행종점"));
+        ExtractableResponse<Response> createStation1 = createData("/stations",
+                new Station("새로운상행종점"));
+        ExtractableResponse<Response> createStation2 = createData("/stations",
+                new Station("기존상행종점"));
+        ExtractableResponse<Response> createStation3 = createData("/stations",
+                new Station("기존하행종점"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
                 getLocationId(createStation2), getLocationId(createStation3), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
@@ -56,9 +59,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLastDownStation() {
         // given
-        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("기존상행종점"));
-        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("기존하행종점"));
-        ExtractableResponse<Response> createStation3 = createData("/stations", new Station("새로운하행종점"));
+        ExtractableResponse<Response> createStation1 = createData("/stations",
+                new Station("기존상행종점"));
+        ExtractableResponse<Response> createStation2 = createData("/stations",
+                new Station("기존하행종점"));
+        ExtractableResponse<Response> createStation3 = createData("/stations",
+                new Station("새로운하행종점"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
                 getLocationId(createStation1), getLocationId(createStation2), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
@@ -82,9 +88,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createInterruptSameUpStation() {
         // given
-        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("기존상행종점"));
-        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("새로운하행"));
-        ExtractableResponse<Response> createStation3 = createData("/stations", new Station("기존하행종점"));
+        ExtractableResponse<Response> createStation1 = createData("/stations",
+                new Station("기존상행종점"));
+        ExtractableResponse<Response> createStation2 = createData("/stations",
+                new Station("새로운하행"));
+        ExtractableResponse<Response> createStation3 = createData("/stations",
+                new Station("기존하행종점"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
                 getLocationId(createStation1), getLocationId(createStation3), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
@@ -108,9 +117,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createInterruptSameDownStation() {
         // given
-        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("기존상행종점"));
-        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("새로운상행"));
-        ExtractableResponse<Response> createStation3 = createData("/stations", new Station("기존하행종점"));
+        ExtractableResponse<Response> createStation1 = createData("/stations",
+                new Station("기존상행종점"));
+        ExtractableResponse<Response> createStation2 = createData("/stations",
+                new Station("새로운상행"));
+        ExtractableResponse<Response> createStation3 = createData("/stations",
+                new Station("기존하행종점"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
                 getLocationId(createStation1), getLocationId(createStation3), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
@@ -134,17 +146,22 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLastUpSection() {
         // given
-        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("삭제될상행종점"));
+        ExtractableResponse<Response> createStation1 = createData("/stations",
+                new Station("삭제될상행종점"));
         ExtractableResponse<Response> createStation2 = createData("/stations", new Station("상행종점"));
         ExtractableResponse<Response> createStation3 = createData("/stations", new Station("하행종점"));
-        final LineRequest lineRequest = new LineRequest(lineName, lineColor, getLocationId(createStation2), getLocationId(createStation3), distance);
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor,
+                getLocationId(createStation2), getLocationId(createStation3), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation1), getLocationId(createStation2), distance);
+        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation1),
+                getLocationId(createStation2), distance);
         createData("/lines/" + getLocationId(lineResponse) + "/sections", sectionRequest);
 
         // when
         ExtractableResponse<Response> deleteResponse
-                = deleteData("/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(createStation1));
+                = deleteData(
+                "/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(
+                        createStation1));
 
         // then
         checkProperResponseStatus(deleteResponse, HttpStatus.OK);
@@ -160,15 +177,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // given
         ExtractableResponse<Response> createStation1 = createData("/stations", new Station("상행종점"));
         ExtractableResponse<Response> createStation2 = createData("/stations", new Station("하행종점"));
-        ExtractableResponse<Response> createStation3 = createData("/stations", new Station("삭제될하행종점"));
-        final LineRequest lineRequest = new LineRequest(lineName, lineColor, getLocationId(createStation1), getLocationId(createStation2), distance);
+        ExtractableResponse<Response> createStation3 = createData("/stations",
+                new Station("삭제될하행종점"));
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor,
+                getLocationId(createStation1), getLocationId(createStation2), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation2), getLocationId(createStation3), distance);
+        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation2),
+                getLocationId(createStation3), distance);
         createData("/lines/" + getLocationId(lineResponse) + "/sections", sectionRequest);
 
         // when
         ExtractableResponse<Response> deleteResponse
-                = deleteData("/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(createStation3));
+                = deleteData(
+                "/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(
+                        createStation3));
 
         // then
         checkProperResponseStatus(deleteResponse, HttpStatus.OK);
@@ -183,16 +205,21 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void deleteMiddleSection() {
         // given
         ExtractableResponse<Response> createStation1 = createData("/stations", new Station("상행종점"));
-        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("삭제될중간역"));
+        ExtractableResponse<Response> createStation2 = createData("/stations",
+                new Station("삭제될중간역"));
         ExtractableResponse<Response> createStation3 = createData("/stations", new Station("하행종점"));
-        final LineRequest lineRequest = new LineRequest(lineName, lineColor, getLocationId(createStation1), getLocationId(createStation2), distance);
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor,
+                getLocationId(createStation1), getLocationId(createStation2), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation2), getLocationId(createStation3), distance);
+        final SectionRequest sectionRequest = new SectionRequest(getLocationId(createStation2),
+                getLocationId(createStation3), distance);
         createData("/lines/" + getLocationId(lineResponse) + "/sections", sectionRequest);
 
         // when
         ExtractableResponse<Response> deleteResponse
-                = deleteData("/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(createStation2));
+                = deleteData(
+                "/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(
+                        createStation2));
 
         // then
         checkProperResponseStatus(deleteResponse, HttpStatus.OK);
@@ -208,21 +235,27 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // given
         ExtractableResponse<Response> createStation1 = createData("/stations", new Station("상행종점"));
         ExtractableResponse<Response> createStation2 = createData("/stations", new Station("하행종점"));
-        final LineRequest lineRequest = new LineRequest(lineName, lineColor, getLocationId(createStation1), getLocationId(createStation2), distance);
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor,
+                getLocationId(createStation1), getLocationId(createStation2), distance);
         ExtractableResponse<Response> lineResponse = createData("/lines", lineRequest);
 
         // when
         ExtractableResponse<Response> deleteResponse1
-                = deleteData("/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(createStation1));
+                = deleteData(
+                "/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(
+                        createStation1));
         ExtractableResponse<Response> deleteResponse2
-                = deleteData("/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(createStation2));
+                = deleteData(
+                "/lines/" + getLocationId(lineResponse) + "/sections?stationId=" + getLocationId(
+                        createStation2));
 
         // then
         checkProperResponseStatus(deleteResponse1, HttpStatus.BAD_REQUEST);
         checkProperResponseStatus(deleteResponse2, HttpStatus.BAD_REQUEST);
     }
 
-    private void checkProperData(String url, Line line, Station station1, Station station2, Station station3) {
+    private void checkProperData(String url, Line line, Station station1, Station station2,
+            Station station3) {
         get(url).then()
                 .log().all()
                 .assertThat()

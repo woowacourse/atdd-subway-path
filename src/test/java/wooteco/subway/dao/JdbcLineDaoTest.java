@@ -12,6 +12,7 @@ import wooteco.subway.domain.Line;
 
 @JdbcTest
 public class JdbcLineDaoTest {
+
     private JdbcLineDao lineDao;
 
     @Autowired

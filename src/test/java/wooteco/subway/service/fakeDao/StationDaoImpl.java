@@ -9,10 +9,11 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 
 public class StationDaoImpl implements StationDao {
-    private static StationDaoImpl stationDao = new StationDaoImpl();
+
+    private static final StationDaoImpl stationDao = new StationDaoImpl();
 
     private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
+    private static final List<Station> stations = new ArrayList<>();
 
     public static StationDaoImpl getInstance() {
         return stationDao;

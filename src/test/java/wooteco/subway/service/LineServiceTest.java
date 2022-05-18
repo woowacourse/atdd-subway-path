@@ -42,8 +42,10 @@ public class LineServiceTest {
     void save_duplicate_station() {
         final Station station1 = stationDao.save(new Station("지하철역이름"));
         final Station station2 = stationDao.save(new Station("또다른지하철역이름"));
-        final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
-        final LineRequest lineRequest2 = new LineRequest("신분당선", "bg-green-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
+        final LineRequest lineRequest2 = new LineRequest("신분당선", "bg-green-600", station1.getId(),
+                station2.getId(), 10);
         lineService.saveLine(lineRequest1);
 
         assertThatThrownBy(() -> lineService.saveLine(lineRequest2))
@@ -56,7 +58,8 @@ public class LineServiceTest {
     void not_exist_station() {
         final Station station1 = stationDao.save(new Station("지하철역이름"));
         final Station station2 = stationDao.save(new Station("또다른지하철역이름"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
 
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final Long invalidLineId = lineResponse.getId() + 1L;
@@ -73,9 +76,11 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("새로운상행종점"));
         final Station station2 = stationDao.save(new Station("기존상행종점"));
         final Station station3 = stationDao.save(new Station("기존하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station2.getId(), station3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station2.getId(),
+                station3.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
+        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(),
+                10);
 
         // when
         final Long expected = station1.getId();
@@ -94,9 +99,11 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("기존상행종점"));
         final Station station2 = stationDao.save(new Station("기존하행종점"));
         final Station station3 = stationDao.save(new Station("새로운하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(),
+                10);
 
         // when
         final Long expected = station3.getId();
@@ -114,9 +121,11 @@ public class LineServiceTest {
         // given
         final Station station1 = stationDao.save(new Station("기존상행종점"));
         final Station station2 = stationDao.save(new Station("기존하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
+        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(),
+                10);
 
         // when and then
         assertThatThrownBy(() -> lineService.saveSection(lineResponse.getId(), sectionRequest))
@@ -131,9 +140,11 @@ public class LineServiceTest {
         final Station station2 = stationDao.save(new Station("기존하행종점"));
         final Station station3 = stationDao.save(new Station("새로운상행역"));
         final Station station4 = stationDao.save(new Station("새로운하행역"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station3.getId(), station4.getId(), 10);
+        final SectionRequest sectionRequest = new SectionRequest(station3.getId(), station4.getId(),
+                10);
 
         // when and then
         assertThatThrownBy(() -> lineService.saveSection(lineResponse.getId(), sectionRequest))
@@ -147,9 +158,11 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("기존상행종점"));
         final Station station2 = stationDao.save(new Station("새로운하행"));
         final Station station3 = stationDao.save(new Station("기존하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station3.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 3);
+        final SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(),
+                3);
 
         // when
         lineService.saveSection(lineResponse.getId(), sectionRequest);
@@ -170,9 +183,11 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("기존상행종점"));
         final Station station2 = stationDao.save(new Station("새로운상행"));
         final Station station3 = stationDao.save(new Station("기존하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station3.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 3);
+        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(),
+                3);
 
         // when
         lineService.saveSection(lineResponse.getId(), sectionRequest);
@@ -193,15 +208,20 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("기존상행종점"));
         final Station station2 = stationDao.save(new Station("새로운상행"));
         final Station station3 = stationDao.save(new Station("기존하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station3.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest1 = new SectionRequest(station2.getId(), station3.getId(), 10);
-        final SectionRequest sectionRequest2 = new SectionRequest(station2.getId(), station3.getId(), 11);
+        final SectionRequest sectionRequest1 = new SectionRequest(station2.getId(),
+                station3.getId(), 10);
+        final SectionRequest sectionRequest2 = new SectionRequest(station2.getId(),
+                station3.getId(), 11);
 
         // when and then
-        assertAll(() -> assertThatThrownBy(() -> lineService.saveSection(lineResponse.getId(), sectionRequest1))
+        assertAll(() -> assertThatThrownBy(
+                        () -> lineService.saveSection(lineResponse.getId(), sectionRequest1))
                         .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> lineService.saveSection(lineResponse.getId(), sectionRequest2))
+                () -> assertThatThrownBy(
+                        () -> lineService.saveSection(lineResponse.getId(), sectionRequest2))
                         .isInstanceOf(IllegalArgumentException.class));
     }
 
@@ -211,13 +231,16 @@ public class LineServiceTest {
         // given
         final Station station1 = stationDao.save(new Station("상행종점"));
         final Station station2 = stationDao.save(new Station("하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
 
         // when and then
-        assertAll(() -> assertThatThrownBy(() -> lineService.deleteSection(lineResponse.getId(), station1.getId()))
+        assertAll(() -> assertThatThrownBy(
+                        () -> lineService.deleteSection(lineResponse.getId(), station1.getId()))
                         .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> lineService.deleteSection(lineResponse.getId(), station2.getId()))
+                () -> assertThatThrownBy(
+                        () -> lineService.deleteSection(lineResponse.getId(), station2.getId()))
                         .isInstanceOf(IllegalArgumentException.class));
     }
 
@@ -228,10 +251,12 @@ public class LineServiceTest {
         final Station station1 = stationDao.save(new Station("상행종점"));
         final Station station2 = stationDao.save(new Station("중간종점"));
         final Station station3 = stationDao.save(new Station("하행종점"));
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(),
+                station2.getId(), 10);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final Long lineId = lineResponse.getId();
-        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        final SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(),
+                10);
         lineService.saveSection(lineResponse.getId(), sectionRequest);
 
         // when
@@ -244,7 +269,9 @@ public class LineServiceTest {
 
         assertThat(upStationId).isEqualTo(station1.getId());
         assertThat(downStationId).isEqualTo(station3.getId());
-        assertThat(sectionDao.findByLineIdAndUpStationId(lineId, upStationId).getDistance()).isEqualTo(20);
+        assertThat(
+                sectionDao.findByLineIdAndUpStationId(lineId, upStationId).getDistance()).isEqualTo(
+                20);
     }
 
     private Sections getSections(Line line) {

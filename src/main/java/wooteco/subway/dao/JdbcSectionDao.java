@@ -14,7 +14,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.entity.SectionEntity;
 
 @Repository
-public class JdbcSectionDao implements SectionDao{
+public class JdbcSectionDao implements SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final LineDao lineDao;
@@ -49,7 +49,8 @@ public class JdbcSectionDao implements SectionDao{
 
         final Long newSectionId = keyHolder.getKey().longValue();
 
-        return new Section(newSectionId, section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new Section(newSectionId, section.getLine(), section.getUpStation(),
+                section.getDownStation(), section.getDistance());
     }
 
     @Override
@@ -108,7 +109,8 @@ public class JdbcSectionDao implements SectionDao{
     public Section findByLineIdAndUpStationId(Long lineId, Long upStationId) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = ? AND up_station_id = ?";
-            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, upStationId);
+            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId,
+                    upStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()),
                     stationDao.findById(sectionEntity.getUpStationId()),
@@ -123,7 +125,8 @@ public class JdbcSectionDao implements SectionDao{
     public Section findByLineIdAndDownStationId(Long lineId, Long downStationId) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = ? AND down_station_id = ?";
-            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, downStationId);
+            SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId,
+                    downStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()),
                     stationDao.findById(sectionEntity.getUpStationId()),
