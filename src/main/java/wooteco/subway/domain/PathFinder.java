@@ -11,26 +11,30 @@ public class PathFinder {
     final private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(final List<Station> stations, final List<Section> sections) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
-                DefaultWeightedEdge.class);
-        for (final Station station : stations) {
-            graph.addVertex(station);
-        }
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        addVertex(stations, graph);
+        addEdge(sections, graph);
+        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
+    }
+
+    private void addEdge(final List<Section> sections, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (final Section section : sections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
             graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()), section.getDistance());
         }
+    }
 
-        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private void addVertex(final List<Station> stations, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (final Station station : stations) {
+            graph.addVertex(station);
+        }
     }
 
     public Path findPath(final Station source, final Station target) {
         validateSameStation(source, target);
         final GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         validateGraphPath(graphPath);
-        final List<Station> route = graphPath.getVertexList();
-        final int distance = (int) graphPath.getWeight();
-        return new Path(route, distance);
+        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
