@@ -158,4 +158,19 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(actual).isEqualTo(expected)
         );
     }
+
+    @Test
+    @DisplayName("경로 조회시 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
+    void ShowPath_InvalidParameter_BadRequestReturned() {
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .queryParam("source", gangnam.getId())
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
