@@ -51,7 +51,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
            then: 에러 메시지를 응답한다.
      */
     @Test
-    @DisplayName("출발역과 도착역 사이의 경로를 조회한다.")
+    @DisplayName("출발역과 도착역이 같을 때 응답을 실패한다.")
     void find_sameStation() {
         // given
         final Long stationId1 = createStation(HYEHWA);
@@ -73,6 +73,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
            if: 출발역과 도착역 사이의 경로가 없다.
            then: 에러 메시지를 응답한다.
      */
+    @Test
+    @DisplayName("출발역과 도착역 사이의 경로가 없을 때 응답을 실패한다.")
+    void find_noPath() {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SINSA);
+        final Long stationId3 = createStation(GANGNAM);
+        createLine(LINE_2, RED, stationId1, stationId2, 10);
+
+        // when
+        final ExtractableResponse<Response> response = getPath(stationId1, stationId3, 29);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
     private ExtractableResponse<Response> getPath(Long source, Long target, int age) {
         final Map<String, Object> params = new HashMap<>();

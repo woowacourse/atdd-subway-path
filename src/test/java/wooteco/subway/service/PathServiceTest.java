@@ -17,7 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -28,7 +28,7 @@ import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
 @SpringBootTest
-@Sql("/truncate.sql")
+@Transactional
 public class PathServiceTest {
 
     @Autowired

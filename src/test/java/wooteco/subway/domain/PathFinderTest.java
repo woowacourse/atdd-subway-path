@@ -52,7 +52,7 @@ public class PathFinderTest {
 
     @Test
     @DisplayName("출발역과 도착역이 같으면 예외처리")
-    void findPath_SameSourceTarget() {
+    void findPath_SameStation() {
         // given
         final List<Station> stations = List.of(UP, LEFT, CENTER, RIGHT, DOWN);
         final List<Section> sections = List.of(new Section(UP, CENTER, 5), new Section(CENTER, DOWN, 6),
@@ -63,5 +63,19 @@ public class PathFinderTest {
         Assertions.assertThatThrownBy(() -> pathFinder.findPath(UP, UP))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역 사이에 경로가 없으면 예외처리")
+    void findPath_noPath() {
+        // given
+        final List<Station> stations = List.of(UP, LEFT, RIGHT, DOWN);
+        final List<Section> sections = List.of(new Section(UP, DOWN, 5), new Section(LEFT, RIGHT, 20));
+        final PathFinder pathFinder = new PathFinder(stations, sections);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> pathFinder.findPath(UP, LEFT))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("경로를 찾을 수 없습니다.");
     }
 }

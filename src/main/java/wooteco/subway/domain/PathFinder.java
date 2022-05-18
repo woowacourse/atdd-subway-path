@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -25,9 +26,17 @@ public class PathFinder {
 
     public Path findPath(final Station source, final Station target) {
         validateSameStation(source, target);
-        final List<Station> route = dijkstraShortestPath.getPath(source, target).getVertexList();
-        final int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
+        final GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        validateGraphPath(graphPath);
+        final List<Station> route = graphPath.getVertexList();
+        final int distance = (int) graphPath.getWeight();
         return new Path(route, distance);
+    }
+
+    private void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if (null == graphPath) {
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
+        }
     }
 
     private void validateSameStation(final Station source, final Station target) {
