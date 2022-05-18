@@ -40,14 +40,14 @@ class SubwayMapTest {
         final Line orangeLine = new Line("3호선", "orange");
 
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
-        final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(10));
-        final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(10));
+        final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
+        final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
 
-        final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(10));
-        final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(10));
+        final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
+        final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
 
-        final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(10));
-        final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(10));
+        final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
+        final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
 
         final Sections sections = new Sections(List.of(
                 greenSectionA,
@@ -90,6 +90,19 @@ class SubwayMapTest {
 
         // when
         final List<Station> actual = subwayMap.searchPath(gangnam, seoulForest);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("출발역에서 도착역의 최단 경로의 거리를 계산한다. (강남역 -> 서울숲역)")
+    void SearchDistance() {
+        // given
+        Distance expected = new Distance(20);
+
+        // when
+        Distance actual = subwayMap.searchDistance(gangnam, seoulForest);
 
         // then
         assertThat(actual).isEqualTo(expected);

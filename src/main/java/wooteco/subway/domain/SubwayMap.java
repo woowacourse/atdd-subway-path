@@ -28,6 +28,12 @@ public class SubwayMap {
     }
 
     public List<Station> searchPath(final Station sourceStation, final Station targetStation) {
+        final GraphPath<Station, DefaultWeightedEdge> shortestPath = searchShortestPath(sourceStation, targetStation);
+        return shortestPath.getVertexList();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> searchShortestPath(final Station sourceStation,
+                                                                       final Station targetStation) {
         validateStations(sourceStation, targetStation);
 
         final GraphPath<Station, DefaultWeightedEdge> shortestPath = shortestPathMap.getPath(sourceStation,
@@ -36,12 +42,17 @@ public class SubwayMap {
         if (shortestPath == null) {
             throw new NoSuchPathException();
         }
-        return shortestPath.getVertexList();
+        return shortestPath;
     }
 
     private void validateStations(final Station sourceStation, final Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new IllegalInputException("출발역과 도착역이 동일합니다.");
         }
+    }
+
+    public Distance searchDistance(final Station sourceStation, final Station targetStation) {
+        final GraphPath<Station, DefaultWeightedEdge> shortestPath = searchShortestPath(sourceStation, targetStation);
+        return new Distance((int) shortestPath.getWeight());
     }
 }
