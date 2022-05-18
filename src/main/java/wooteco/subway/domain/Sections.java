@@ -239,8 +239,24 @@ public class Sections {
         for (Section value : values) {
             graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
         }
-
         return graph;
+    }
+
+    public Section findSection(Station upStation, Station downStation) {
+        Section section = new Section(upStation, downStation, 1);
+        return values.stream()
+                .filter(value -> value.hasSameUpStation(section) && value.hasSameDownStation(section))
+                .findAny()
+                .orElseThrow(() -> new SectionNotFoundException("해당하는 구간이 없습니다."));
+    }
+
+    public int calculatePathDistance(List<Station> stations) {
+        int distance = 0;
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Section findSection = findSection(stations.get(i), stations.get(i + 1));
+            distance += findSection.getDistance();
+        }
+        return distance;
     }
 
     public List<Section> getValues() {

@@ -194,4 +194,17 @@ class SectionsTest {
                 .hasMessage("경로의 시작과 끝은 같은 역일 수 없습니다.");
     }
 
+    @Test
+    @DisplayName("각 구간 리스트들의 총 거리를 구할 수 있다.")
+    void calculatePathDistance() {
+        Section gangnam_yeoksam = new Section(gangnam, yeoksam, 1);
+        Section yeoksam_seolleung = new Section(yeoksam, seolleung, 1);
+        Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
+        List<Station> stations = sections.findShortestPath(gangnam, seolleung);
+
+        int pathDistance = sections.calculatePathDistance(stations);
+
+        assertThat(pathDistance).isEqualTo(2);
+    }
+
 }
