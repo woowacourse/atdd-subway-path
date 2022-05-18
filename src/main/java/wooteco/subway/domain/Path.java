@@ -2,11 +2,11 @@ package wooteco.subway.domain;
 
 import java.util.List;
 
-public class Route {
+public class Path {
 
     private final Sections sections;
 
-    public Route(final Sections sections) {
+    public Path(final Sections sections) {
         this.sections = sections;
     }
 

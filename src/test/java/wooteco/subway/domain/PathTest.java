@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class RouteTest {
+class PathTest {
 
     @DisplayName("최단 경로를 구한다.")
     @Test
@@ -17,8 +17,8 @@ class RouteTest {
         Section section4 = new Section(4L, 3L, new Station(4L, "건대역"), new Station(5L, "사가정역"), 5);
         Section section5 = new Section(5L, 4L, new Station(5L, "사가정역"), new Station(1L, "잠실역"), 7);
         Sections sections = new Sections(List.of(section1, section2, section3, section4, section5));
-        Route route = new Route(sections);
-        List<Station> stations = route.calculateShortestPath(new Station(1L, "잠실역"), new Station(4L, "건대역"));
+        Path path = new Path(sections);
+        List<Station> stations = path.calculateShortestPath(new Station(1L, "잠실역"), new Station(4L, "건대역"));
 
         assertThat(stations).isEqualTo(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역")
                 , new Station(3L, "강남역"), new Station(4L, "건대역")));
@@ -33,8 +33,8 @@ class RouteTest {
         Section section4 = new Section(4L, 3L, new Station(4L, "건대역"), new Station(5L, "사가정역"), 5);
         Section section5 = new Section(5L, 4L, new Station(5L, "사가정역"), new Station(1L, "잠실역"), 7);
         Sections sections = new Sections(List.of(section1, section2, section3, section4, section5));
-        Route route = new Route(sections);
-        double distance = route.calculateShortestDistance(new Station(1L, "잠실역"), new Station(4L, "건대역"));
+        Path path = new Path(sections);
+        double distance = path.calculateShortestDistance(new Station(1L, "잠실역"), new Station(4L, "건대역"));
 
         assertThat(distance).isEqualTo(10);
 

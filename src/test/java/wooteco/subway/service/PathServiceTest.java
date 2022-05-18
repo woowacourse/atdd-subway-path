@@ -7,16 +7,15 @@ import wooteco.subway.dao.FakeLineDao;
 import wooteco.subway.dao.FakeSectionDao;
 import wooteco.subway.dao.FakeStationDao;
 
-class RouteServiceTest {
+class PathServiceTest {
 
-    private RouteService routeService;
+    private PathService pathService;
 
     @BeforeEach
     void setUp() {
-        FakeLineDao.init();
         FakeSectionDao.init();
         FakeStationDao.init();
-        routeService = new RouteService(new FakeLineDao(), new FakeSectionDao(), new FakeStationDao());
+        pathService = new PathService(new FakeSectionDao(), new FakeStationDao());
     }
 
     @DisplayName("경로를 조회한다.")
@@ -25,6 +24,6 @@ class RouteServiceTest {
         Long sourceStationId = 1L;
         Long targetStationId = 5L;
         int age = 15;
-        routeService.createRoute(sourceStationId, targetStationId, age);
+        pathService.createPath(sourceStationId, targetStationId, age);
     }
 }

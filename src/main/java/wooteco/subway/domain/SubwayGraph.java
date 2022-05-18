@@ -15,17 +15,17 @@ public class SubwayGraph {
     }
 
     public void init(final Sections sections) {
-        addStations(sections);
-        addSections(sections);
+        addStationsToVertex(sections);
+        addSectionsToEdge(sections);
     }
 
-    private void addStations(Sections sections) {
+    private void addStationsToVertex(Sections sections) {
         for (Station station : sections.getStations()) {
             subwayGraph.addVertex(station);
         }
     }
 
-    private void addSections(Sections sections) {
+    private void addSectionsToEdge(Sections sections) {
         for (Section section : sections.getSections()) {
             subwayGraph.setEdgeWeight(subwayGraph.addEdge(section.getUpStation(), section.getDownStation()),
                     section.getDistance());
@@ -33,14 +33,14 @@ public class SubwayGraph {
     }
 
     public List<Station> findShortestPath(Station source, Station target) {
-        return getPath(source, target).getVertexList();
+        return graphResult(source, target).getVertexList();
     }
 
     public double findShortestDistance(Station source, Station target) {
-        return getPath(source, target).getWeight();
+        return graphResult(source, target).getWeight();
     }
 
-    private GraphPath getPath(Station source, Station target) {
+    private GraphPath graphResult(Station source, Station target) {
         DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
         return pathFinder.getPath(source, target);
     }
