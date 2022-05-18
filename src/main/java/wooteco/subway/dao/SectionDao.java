@@ -46,6 +46,12 @@ public class SectionDao {
         jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sections));
     }
 
+    public List<SectionEntity> findAll() {
+        final String sql = "SELECT * FROM SECTION";
+        return jdbcTemplate.query(sql, ROW_MAPPER);
+
+    }
+
     public List<SectionEntity> findAllByLineId(final Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = :id";

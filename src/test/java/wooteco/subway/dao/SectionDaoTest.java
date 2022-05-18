@@ -148,4 +148,24 @@ public class SectionDaoTest {
         // then
         assertThat(savedSections).hasSize(0);
     }
+
+    @Test
+    @DisplayName("전체 구간 목록을 조회한다.")
+    void findAll() {
+        //given
+        final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
+        final Long stationId2 = stationDao.save(new StationEntity(SINSA));
+        final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final SectionEntity section1 = new SectionEntity(lineId, stationId1, stationId2, 10);
+        final SectionEntity section2 = new SectionEntity(lineId, stationId2, stationId3, 10);
+        sectionDao.save(section1);
+        sectionDao.save(section2);
+
+        //when
+        List<SectionEntity> sections = sectionDao.findAll();
+
+        //then
+        assertThat(sections).hasSize(2);
+    }
 }

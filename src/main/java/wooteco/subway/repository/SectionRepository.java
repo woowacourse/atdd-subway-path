@@ -32,6 +32,16 @@ public class SectionRepository {
         sectionDao.batchSave(entities);
     }
 
+    public List<Section> findAll() {
+        final List<SectionEntity> entities = sectionDao.findAll();
+        return entities.stream()
+                .map(e -> {
+                    final Station upStation = stationRepository.findById(e.getUpStationId());
+                    final Station downStation = stationRepository.findById(e.getDownStationId());
+                    return new Section(e.getId(), upStation, downStation, e.getDistance());
+                }).collect(Collectors.toList());
+    }
+
     public Sections findAllByLineId(final Long id) {
         final List<SectionEntity> entities = sectionDao.findAllByLineId(id);
         return new Sections(entities.stream()
