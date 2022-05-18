@@ -19,7 +19,7 @@ class PathTest {
                 Section.createOf(2L, 1L, 2L, 3L, 5, 2L)
         );
 
-        Path path = Path.from(new Sections(sections), 1L, 3L);
+        Path path = Path.of(new Sections(sections), 1L, 3L);
 
         assertThat(path.getTotalDistance()).isEqualTo(10);
     }
@@ -33,7 +33,7 @@ class PathTest {
                 Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
         );
 
-        assertThatThrownBy(() -> Path.from(new Sections(sections), 1L, 4L))
+        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 4L))
                 .isInstanceOf(NotFoundPathException.class)
                 .hasMessageContaining("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
     }
@@ -47,7 +47,7 @@ class PathTest {
                 Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
         );
 
-        assertThatThrownBy(() -> Path.from(new Sections(sections), 1L, 6L))
+        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 6L))
                 .isInstanceOf(NotFoundStationException.class)
                 .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }

@@ -16,7 +16,7 @@ public class Path {
         this.path = path;
     }
 
-    public static Path from(Sections sections, long sourceId, long targetId) {
+    public static Path of(Sections sections, long sourceId, long targetId) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
