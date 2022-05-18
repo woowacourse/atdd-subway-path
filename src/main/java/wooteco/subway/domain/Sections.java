@@ -23,11 +23,19 @@ public class Sections {
 
     public void add(final Section section) {
         validateCanAdd(section);
-        validateSection(section);
-
-        findUpSection(section).ifPresent(it -> update(section, it));
-        findDownSection(section).ifPresent(it -> update(section, it));
+        addBetweenSection(section);
         value.add(section);
+    }
+
+    private void addBetweenSection(Section section) {
+        final Optional<Section> upSection = findUpSection(section);
+        final Optional<Section> downSection = findDownSection(section);
+
+        upSection.ifPresent(it -> validateDistance(it, section));
+        downSection.ifPresent(it -> validateDistance(it, section));
+
+        upSection.ifPresent(it -> update(section, it));
+        downSection.ifPresent(it -> update(section, it));
     }
 
     public List<Section> extract(final List<Section> sections) {
@@ -108,17 +116,6 @@ public class Sections {
         }
     }
 
-    private void validateSection(final Section other) {
-        validateUpSection(other);
-        validateDownSection(other);
-    }
-
-    private void validateDownSection(final Section other) {
-        final Optional<Section> downSection = findDownSection(other);
-
-        downSection.ifPresent(it -> validateDistance(it, other));
-    }
-
     private Optional<Section> findDownSection(final Section other) {
         return value.stream()
                 .filter(it -> it.getDownStation().equals(other.getDownStation()))
@@ -129,12 +126,6 @@ public class Sections {
         return value.stream()
                 .filter(it -> it.getUpStation().equals(other.getUpStation()))
                 .findAny();
-    }
-
-    private void validateUpSection(final Section other) {
-        final Optional<Section> upSection = findUpSection(other);
-
-        upSection.ifPresent(it -> validateDistance(it, other));
     }
 
     private void validateDistance(final Section section, final Section other) {

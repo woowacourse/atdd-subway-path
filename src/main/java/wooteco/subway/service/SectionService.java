@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
@@ -25,8 +26,7 @@ public class SectionService {
     @Transactional
     public Section create(long lineId, SectionRequest sectionRequest) {
         final Section section = sectionRequest.toEntity();
-        final Section newSection = new Section(findUpStation(section), findDownStation(section), section.getDistance(),
-                lineId);
+        final Section newSection = new Section(findUpStation(section), findDownStation(section), section.getDistance(), lineId);
 
         final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
         final Sections sections = new Sections(lineSections);
