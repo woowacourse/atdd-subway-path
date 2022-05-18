@@ -14,7 +14,7 @@ public class FareCalculator {
             return DEFAULT_FARE + SURCHARGE_PER_UNIT * 8 + (int) (
                     ((Math.ceil((distance - SECOND_STANDARD) / (double) SECOND_STANDARD_UNIT))) * SURCHARGE_PER_UNIT);
         }
-        if (FIRST_STANDARD < distance && distance <= SECOND_STANDARD) {
+        if (distance > FIRST_STANDARD) {
             return DEFAULT_FARE + (int) ((Math.ceil((distance - FIRST_STANDARD) / (double) FIRST_STANDARD_UNIT))
                     * SURCHARGE_PER_UNIT);
         }
