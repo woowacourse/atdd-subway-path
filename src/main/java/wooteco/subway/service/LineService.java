@@ -83,7 +83,8 @@ public class LineService {
     public void updateById(final Long id, final LineRequest request) {
         final Line line = lineDao.findById(id)
                 .orElseThrow(NoSuchLineException::new);
-        final Line updatedLine = new Line(line.getId(), new Name(request.getName()), request.getColor(), line.getSections());
+        final Line updatedLine = new Line(line.getId(), new Name(request.getName()), request.getColor(),
+                line.getSections());
         lineDao.updateById(id, updatedLine)
                 .orElseThrow(DuplicateLineException::new);
     }
