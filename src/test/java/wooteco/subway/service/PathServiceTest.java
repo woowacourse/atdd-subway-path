@@ -4,28 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.service.dto.PathRequestDto;
 import wooteco.subway.service.dto.PathResponseDto;
 import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
-import wooteco.subway.service.dto.station.StationResponseDto;
 
 @JdbcTest
+@Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PathServiceTest {
 
     private LineService lineService;
@@ -38,7 +33,9 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(new JdbcLineDao(jdbcTemplate), new StationService(new JdbcStationDao(jdbcTemplate)), new SectionService(new JdbcSectionDao(jdbcTemplate)));
+        lineService = new LineService(new JdbcLineDao(jdbcTemplate),
+                new StationService(new JdbcStationDao(jdbcTemplate)),
+                new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
         pathService = new PathService(stationService, sectionService);

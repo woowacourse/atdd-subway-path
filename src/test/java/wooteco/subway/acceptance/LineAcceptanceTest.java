@@ -1,29 +1,32 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
+import static wooteco.subway.acceptance.AcceptanceFixture.방배;
+import static wooteco.subway.acceptance.AcceptanceFixture.사당;
+import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
+import static wooteco.subway.acceptance.AcceptanceFixture.일호선;
+import static wooteco.subway.acceptance.ResponseCreator.createDeleteLineResponseById;
+import static wooteco.subway.acceptance.ResponseCreator.createGetLineResponseById;
+import static wooteco.subway.acceptance.ResponseCreator.createGetLinesResponse;
+import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
+import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
+import static wooteco.subway.acceptance.ResponseCreator.createPutLineResponse;
+import static wooteco.subway.acceptance.ResponseCreator.postIds;
+import static wooteco.subway.acceptance.ResponseCreator.responseIds;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.controller.dto.line.LineRequest;
 import wooteco.subway.controller.dto.line.LineResponse;
-import wooteco.subway.controller.dto.station.StationRequest;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
-
-    private final StationRequest 낙성대 = new StationRequest("낙성대");
-    private final StationRequest 사당 = new StationRequest("사당");
-    private final StationRequest 방배 = new StationRequest("방배");
-    private LineRequest 일호선 = new LineRequest("1호선", "bg-blue-200", 1L, 2L, 10);
-    private LineRequest 이호선 = new LineRequest("2호선", "bg-green-300", 1L, 2L, 10);
 
     @BeforeEach
     void init() {

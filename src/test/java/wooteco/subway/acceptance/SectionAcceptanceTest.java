@@ -1,52 +1,48 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
+import static wooteco.subway.acceptance.AcceptanceFixture.낙성대_사당;
+import static wooteco.subway.acceptance.AcceptanceFixture.방배;
+import static wooteco.subway.acceptance.AcceptanceFixture.방배_서초;
+import static wooteco.subway.acceptance.AcceptanceFixture.봉천;
+import static wooteco.subway.acceptance.AcceptanceFixture.봉천_낙성대;
+import static wooteco.subway.acceptance.AcceptanceFixture.봉천_사당;
+import static wooteco.subway.acceptance.AcceptanceFixture.사당;
+import static wooteco.subway.acceptance.AcceptanceFixture.사당_방배;
+import static wooteco.subway.acceptance.AcceptanceFixture.사당_서초;
+import static wooteco.subway.acceptance.AcceptanceFixture.서울대입구;
+import static wooteco.subway.acceptance.AcceptanceFixture.서초;
+import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
+import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
+import static wooteco.subway.acceptance.ResponseCreator.createPostSectionResponse;
+import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
+import static wooteco.subway.acceptance.ResponseCreator.deleteSectionResponse;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.controller.dto.line.LineRequest;
 import wooteco.subway.controller.dto.line.LineResponse;
-import wooteco.subway.controller.dto.section.SectionRequest;
-import wooteco.subway.controller.dto.station.StationRequest;
 import wooteco.subway.controller.dto.station.StationResponse;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("지하철 구간 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    private final LineRequest 이호선 = new LineRequest("2호선", "bg-green-300", 1L, 2L, 10);
-
-    private final StationRequest 낙성대 = new StationRequest("낙성대");
-    private final StationRequest 사당 = new StationRequest("사당");
-    private final StationRequest 방배 = new StationRequest("방배");
-    private final StationRequest 서초 = new StationRequest("서초");
-    private final StationRequest 서울대입구 = new StationRequest("서울대입구");
-    private final StationRequest 봉천 = new StationRequest("봉천");
-
-    private final SectionRequest 낙성대_사당 = new SectionRequest(1L, 2L, 10);
-    private final SectionRequest 사당_서초 = new SectionRequest(2L, 4L, 30);
-    private final SectionRequest 사당_방배 = new SectionRequest(2L, 3L, 20);
-    private final SectionRequest 방배_서초 = new SectionRequest(3L, 4L, 10);
-    private final SectionRequest 봉천_낙성대 = new SectionRequest(6L, 1L, 50);
-    private final SectionRequest 봉천_사당 = new SectionRequest(6L, 5L, 100);
-
     @BeforeEach
     void init() {
-        createPostLineResponse(이호선);
-
         createPostStationResponse(낙성대);
         createPostStationResponse(사당);
         createPostStationResponse(방배);
         createPostStationResponse(서초);
         createPostStationResponse(서울대입구);
         createPostStationResponse(봉천);
+
+        createPostLineResponse(이호선);
     }
 
     @Test

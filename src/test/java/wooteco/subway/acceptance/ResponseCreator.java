@@ -130,7 +130,10 @@ public class ResponseCreator {
     protected static ExtractableResponse<Response> createGetPathResponse(PathRequest pathRequest) {
         return RestAssured.given().log().all()
                 .when()
-                .get("/lines")
+                .param("source", pathRequest.getSource())
+                .param("target", pathRequest.getTarget())
+                .param("age", pathRequest.getAge())
+                .get("/paths")
                 .then().log().all()
                 .extract();
     }

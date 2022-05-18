@@ -22,7 +22,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createStation(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse lineResponse = ControllerDtoAssembler.lineResponseByDto(lineService.create(ControllerDtoAssembler.lineRequestDto(lineRequest)));
 
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);

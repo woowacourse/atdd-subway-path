@@ -11,15 +11,15 @@ import java.util.NoSuchElementException;
 public class ControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> IllegalHandle(Exception e){
+    public ResponseEntity<String> IllegalHandle(Exception e) {
         return new ResponseEntity<>(
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
     }
-    
+
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> NoSuchHandle(Exception e){
+    public ResponseEntity<String> NoSuchHandle(Exception e) {
         return new ResponseEntity<>(
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST

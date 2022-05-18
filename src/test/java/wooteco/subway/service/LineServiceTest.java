@@ -1,13 +1,19 @@
 package wooteco.subway.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
@@ -16,15 +22,6 @@ import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.line.LineResponseDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
 import wooteco.subway.service.dto.station.StationResponseDto;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 @Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -39,7 +36,9 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(new JdbcLineDao(jdbcTemplate), new StationService(new JdbcStationDao(jdbcTemplate)), new SectionService(new JdbcSectionDao(jdbcTemplate)));
+        lineService = new LineService(new JdbcLineDao(jdbcTemplate),
+                new StationService(new JdbcStationDao(jdbcTemplate)),
+                new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
 
@@ -57,8 +56,8 @@ class LineServiceTest {
         sectionService.create(new SectionRequestDto(1L, 2L, 3L, 20));
         List<StationResponseDto> expected = new ArrayList<>();
         expected.add(new StationResponseDto(1L, "낙성대"));
-        expected.add(new StationResponseDto(2L,"교대"));
-        expected.add(new StationResponseDto(3L,"선릉"));
+        expected.add(new StationResponseDto(2L, "교대"));
+        expected.add(new StationResponseDto(3L, "선릉"));
         //when
         LineResponseDto findLineResponseDto = lineService.findById(1L);
         List<StationResponseDto> actual = findLineResponseDto.getStations();
@@ -153,11 +152,14 @@ class LineServiceTest {
         LineResponseDto lineResponseDto = lineService.create(lineRequestDto2);
         //then
         assertAll(
-                () -> assertThatThrownBy(() -> lineService.updateById(-1L, new LineRequestDto("2호선", "bg-black-500", 1L, 2L, 10)))
+                () -> assertThatThrownBy(
+                        () -> lineService.updateById(-1L, new LineRequestDto("2호선", "bg-black-500", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(), new LineRequestDto("1호선", "bg-black-500", 1L, 2L, 10)))
+                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
+                        new LineRequestDto("1호선", "bg-black-500", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(), new LineRequestDto("3호선", "bg-blue-200", 1L, 2L, 10)))
+                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
+                        new LineRequestDto("3호선", "bg-blue-200", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class)
         );
     }
