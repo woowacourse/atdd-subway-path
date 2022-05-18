@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.*;
 import java.util.List;
+import java.util.Optional;
 
 class DijkstraStrategyTest {
 
@@ -19,6 +20,9 @@ class DijkstraStrategyTest {
         Sections sections = new Sections(List.of(section1));
         ShortestPathStrategy strategy = new DijkstraStrategy();
 
-        assertThat(strategy.findPath(station1, station2, sections)).isInstanceOf(Path.class);
+        final Optional<Path> path = strategy.findPath(station1, station2, sections);
+        assert (path.isPresent());
+
+        assertThat(path.get()).isInstanceOf(Path.class);
     }
 }

@@ -61,7 +61,9 @@ public class Sections {
     }
 
     private List<Section> findSectionsByStationId(final long stationId) {
-        return value.stream().filter(section -> section.getUpStation().getId() == stationId || section.getDownStation().getId() == stationId).collect(Collectors.toList());
+        return value.stream()
+                .filter(section -> section.getUpStation().getId() == stationId ||
+                        section.getDownStation().getId() == stationId).collect(Collectors.toList());
     }
 
     private void validateSectionNotFound(final List<Section> sections) {

@@ -4,24 +4,27 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import wooteco.subway.domain.*;
-import wooteco.subway.exception.PathNotExistsException;
 import java.util.Optional;
 
 public class DijkstraStrategy implements ShortestPathStrategy {
 
     @Override
-    public Path findPath(final Station source, final Station target, final Sections sections) {
+    public Optional<Path> findPath(final Station source, final Station target, final Sections sections) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph =
                 new WeightedMultigraph<>(DefaultWeightedEdge.class);
         final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
                 new DijkstraShortestPath<>(initializeGraph(graph, sections));
 
-        final GraphPath<Station, DefaultWeightedEdge> path =
-                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                        .orElseThrow(PathNotExistsException::new);
+        final Optional<GraphPath<Station, DefaultWeightedEdge>> path =
+                Optional.ofNullable(dijkstraShortestPath.getPath(source, target));
 
-        return new Path(path.getVertexList(), path.getWeight(), Fare.from(path.getWeight()));
+        if (path.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new Path(path.get().getVertexList(), path.get().getWeight(), Fare.from(path.get().getWeight())));
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> initializeGraph(

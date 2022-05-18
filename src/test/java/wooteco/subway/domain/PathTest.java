@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.strategy.DijkstraStrategy;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
 import java.util.List;
+import java.util.Optional;
 
 class PathTest {
 
@@ -31,26 +32,29 @@ class PathTest {
     @Test
     void createPath() {
         ShortestPathStrategy strategy = new DijkstraStrategy();
-        final Path path = strategy.findPath(station1, station3, sections);
+        final Optional<Path> path = strategy.findPath(station1, station3, sections);
+        assert (path.isPresent());
 
-        assertThat(path).isNotNull();
+        assertThat(path.get()).isNotNull();
     }
 
     @DisplayName("경로에 있는 정점들을 가져온다.")
     @Test
     void getVertexList() {
         ShortestPathStrategy strategy = new DijkstraStrategy();
-        final Path path = strategy.findPath(station1, station3, sections);
+        final Optional<Path> path = strategy.findPath(station1, station3, sections);
+        assert (path.isPresent());
 
-        assertThat(path.getStations()).containsAll(List.of(station1, station2, station3));
+        assertThat(path.get().getStations()).containsAll(List.of(station1, station2, station3));
     }
 
     @DisplayName("경로의 최단거리를 구한다.")
     @Test
     void getShortestDistance() {
         ShortestPathStrategy strategy = new DijkstraStrategy();
-        final Path path = strategy.findPath(station1, station3, sections);
+        final Optional<Path> path = strategy.findPath(station1, station3, sections);
+        assert (path.isPresent());
 
-        assertThat(path.getDistance()).isEqualTo(10);
+        assertThat(path.get().getDistance()).isEqualTo(10);
     }
 }
