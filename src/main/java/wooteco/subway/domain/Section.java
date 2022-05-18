@@ -27,6 +27,14 @@ public class Section {
         }
     }
 
+    public boolean isSameUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean isSameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,28 +43,28 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
     public void setLine(Line line) {
         this.line = line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
     }
 
     public void setUpStation(Station upStation) {
         this.upStation = upStation;
     }
 
+    public Station getDownStation() {
+        return downStation;
+    }
+
     public void setDownStation(Station downStation) {
         this.downStation = downStation;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public void setDistance(int distance) {
