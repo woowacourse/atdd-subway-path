@@ -23,4 +23,11 @@ public class Fixtures {
 
     public static final Section SECTION_1_2_SHORT = new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 5);
     public static final Section SECTION_2_3_SHORT = new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 5);
+
+    public static Station UP = new Station("U");
+    public static Station LEFT = new Station("L");
+    public static Station CENTER = new Station("C");
+    public static Station RIGHT = new Station("R");
+    public static Station DOWN = new Station("D");
+
 }
