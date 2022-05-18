@@ -1,4 +1,4 @@
-package wooteco.subway.dao.section;
+package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.line.JdbcLineDao;
 import wooteco.subway.dao.line.LineDao;
+import wooteco.subway.dao.section.JdbcSectionDao;
+import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Line;

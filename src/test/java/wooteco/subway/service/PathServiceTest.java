@@ -4,29 +4,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.dao.section.InmemorySectionDao;
-import wooteco.subway.dao.station.InmemoryStationDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dao.section.SectionDao;
+import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.FindDijkstraShortestPathStrategy;
 import wooteco.subway.dto.path.PathFindRequest;
 import wooteco.subway.dto.path.PathFindResponse;
 
+@SpringBootTest
+@Sql({"classpath:schema-truncate.sql", "classpath:init.sql"})
 class PathServiceTest {
 
-    private final InmemorySectionDao sectionDao = InmemorySectionDao.getInstance();
-    private final InmemoryStationDao stationDao = InmemoryStationDao.getInstance();
-    private final PathService pathService = new PathService(sectionDao, stationDao,
-            new FindDijkstraShortestPathStrategy());
+    @Autowired
+    SectionDao sectionDao;
 
-    @AfterEach
-    void afterEach() {
-        sectionDao.clear();
-        stationDao.clear();
-    }
+    @Autowired
+    StationDao stationDao;
+
+    @Autowired
+    PathService pathService;
 
     @Test
     @DisplayName("경로를 조회할 수 있다.")

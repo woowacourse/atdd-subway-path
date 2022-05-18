@@ -3,31 +3,31 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.dao.line.InmemoryLineDao;
-import wooteco.subway.dao.section.InmemorySectionDao;
-import wooteco.subway.dao.station.InmemoryStationDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dao.line.LineDao;
+import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.dto.line.LineUpdateRequest;
 import wooteco.subway.exception.NotFoundException;
 
+@SpringBootTest
+@Sql({"classpath:schema-truncate.sql", "classpath:init.sql"})
 class LineServiceTest {
 
-    private final InmemoryLineDao lineDao = InmemoryLineDao.getInstance();
-    private final InmemorySectionDao sectionDao = InmemorySectionDao.getInstance();
-    private final InmemoryStationDao stationDao = InmemoryStationDao.getInstance();
-    private final LineService lineService = new LineService(lineDao, stationDao, sectionDao);
+    @Autowired
+    private LineDao lineDao;
 
-    @AfterEach
-    void afterEach() {
-        lineDao.clear();
-        sectionDao.clear();
-        stationDao.clear();
-    }
+    @Autowired
+    private StationDao stationDao;
+
+    @Autowired
+    private LineService lineService;
 
     @Test
     @DisplayName("이미 존재하는 노선의 이름이 있을 때 예외가 발생한다.")

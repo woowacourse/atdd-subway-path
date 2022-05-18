@@ -3,31 +3,34 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.dao.line.InmemoryLineDao;
-import wooteco.subway.dao.section.InmemorySectionDao;
-import wooteco.subway.dao.station.InmemoryStationDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dao.line.LineDao;
+import wooteco.subway.dao.section.SectionDao;
+import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.section.SectionSaveRequest;
 
+@SpringBootTest
+@Sql({"classpath:schema-truncate.sql", "classpath:init.sql"})
 class SectionServiceTest {
 
-    private final InmemoryLineDao lineDao = InmemoryLineDao.getInstance();
-    private final InmemorySectionDao sectionDao = InmemorySectionDao.getInstance();
-    private final InmemoryStationDao stationDao = InmemoryStationDao.getInstance();
+    @Autowired
+    private LineDao lineDao;
 
-    private final SectionService sectionService = new SectionService(lineDao, sectionDao, stationDao);
+    @Autowired
+    private SectionDao sectionDao;
 
-    @AfterEach
-    void afterEach() {
-        lineDao.clear();
-        sectionDao.clear();
-        stationDao.clear();
-    }
+    @Autowired
+    private StationDao stationDao;
+
+    @Autowired
+    private SectionService sectionService;
 
     @Test
     @DisplayName("Section을 추가할 수 있다.")
