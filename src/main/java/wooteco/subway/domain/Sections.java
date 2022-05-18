@@ -48,6 +48,13 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
+    public boolean doesNotContain(final long stationId) {
+        return extractStations().stream()
+                .filter(station -> station.getId() == stationId)
+                .findAny()
+                .isEmpty();
+    }
+
     private void update(final Section source, final Section target) {
         value.remove(target);
         value.add(target.createSectionInBetween(source));

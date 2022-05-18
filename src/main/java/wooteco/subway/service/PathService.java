@@ -11,6 +11,7 @@ import wooteco.subway.domain.strategy.DijkstraStrategy;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
+import wooteco.subway.exception.SectionNotExistException;
 import java.util.List;
 
 @Service
@@ -32,14 +33,24 @@ public class PathService {
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
         final List<Section> rawSections = sectionDao.findAll();
         final Sections sections = new Sections(rawSections);
+
+        validateSectionExistByStationId(sections, sourceId);
+        validateSectionExistByStationId(sections, targetId);
+
         final ShortestPathStrategy strategy = new DijkstraStrategy();
 
         return strategy.findPath(source, target, sections);
     }
 
+    private void validateSectionExistByStationId(final Sections sections, final long stationId) {
+        if (sections.doesNotContain(stationId)) {
+            throw new SectionNotExistException("출발 또는 도착역에 해당하는 구간이 존재하지 않습니다.");
+        }
+    }
+
     private void validateDuplicatedSourceAndTarget(final long sourceId, final long targetId) {
         if (sourceId == targetId) {
-            throw new DuplicatedSourceAndTargetException("출발역과 도착역은 같을 수 없습니다.");
+            throw new DuplicatedSourceAndTargetException();
         }
     }
 }

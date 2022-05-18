@@ -14,6 +14,8 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
+import wooteco.subway.exception.PathNotExistsException;
+import wooteco.subway.exception.SectionNotExistException;
 import java.util.List;
 
 @SpringBootTest
@@ -60,5 +62,28 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.createPath(station1.getId(), station1.getId(), 15))
                 .isInstanceOf(DuplicatedSourceAndTargetException.class)
                 .hasMessage("출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    @DisplayName("출발역 또는 도착역이 구간에 존재하지 않을 경우 예외를 발생한다.")
+    @Test
+    void createPath_throwsExceptionIfStationNotExistsInSection() {
+        final Station station = stationDao.save(new Station("교대역"));
+
+        assertThatThrownBy(() -> pathService.createPath(station1.getId(), station.getId(), 15))
+                .isInstanceOf(SectionNotExistException.class)
+                .hasMessage("출발 또는 도착역에 해당하는 구간이 존재하지 않습니다.");
+    }
+
+    @DisplayName("출발역에서 도착역까지의 경로가 존재하지 않을 경우 예외를 발생한다.")
+    @Test
+    void createPath_throwsExceptionIfPathNotExists() {
+        final Station station4 = stationDao.save(new Station("교대역"));
+        final Station station5 = stationDao.save(new Station("양재역"));
+        final Line line = lineDao.save(new Line("3호선", "bg-orange-600"));
+        sectionDao.save(new Section(station4, station5, 10, line.getId()));
+
+        assertThatThrownBy(() -> pathService.createPath(station1.getId(), station5.getId(), 15))
+                .isInstanceOf(PathNotExistsException.class)
+                .hasMessage("출발역에서 도착역까지의 경로가 존재하지 않습니다.");
     }
 }
