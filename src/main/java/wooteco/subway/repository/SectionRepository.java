@@ -13,13 +13,10 @@ import wooteco.subway.repository.entity.SectionEntity;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
-    private final LineDao lineDao;
     private final StationRepository stations;
 
-    public SectionRepository(SectionDao sectionDao, LineDao lineDao,
-                             StationRepository stations) {
+    public SectionRepository(SectionDao sectionDao, StationRepository stations) {
         this.sectionDao = sectionDao;
-        this.lineDao = lineDao;
         this.stations = stations;
     }
 
@@ -31,13 +28,7 @@ public class SectionRepository {
     }
 
     public void deleteByLineId(Long lineId) {
-        checkLineExists(lineId);
         sectionDao.deleteByLineId(lineId);
-    }
-
-    private void checkLineExists(Long lineId) {
-        lineDao.findById(lineId)
-                .orElseThrow(LineNotFoundException::new);
     }
 
     public List<Section> findByLineId(Long lineId) {

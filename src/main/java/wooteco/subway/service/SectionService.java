@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.service.dto.SectionDeleteRequest;
 import wooteco.subway.service.dto.SectionSaveRequest;
@@ -16,10 +17,13 @@ public class SectionService {
 
     private final StationService stationService;
     private final SectionRepository sectionRepository;
+    private final LineRepository lineRepository;
 
-    public SectionService(StationService stationService, SectionRepository sectionRepository) {
+    public SectionService(StationService stationService, SectionRepository sectionRepository,
+                          LineRepository lineRepository) {
         this.stationService = stationService;
         this.sectionRepository = sectionRepository;
+        this.lineRepository = lineRepository;
     }
 
     public void save(SectionSaveRequest request) {
@@ -46,6 +50,7 @@ public class SectionService {
     }
 
     private void commitRepository(Long lineId, List<Section> sections) {
+        lineRepository.findById(lineId);
         sectionRepository.deleteByLineId(lineId);
         sectionRepository.saveAll(sections);
     }
