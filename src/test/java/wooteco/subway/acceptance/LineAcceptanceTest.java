@@ -5,234 +5,334 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.StationRequest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.Infrastructure.DbLineDao;
+import wooteco.subway.Infrastructure.DbSectionDao;
+import wooteco.subway.Infrastructure.DbStationDao;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.response.LineResponse;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.utils.FixtureUtils.*;
+import static wooteco.subway.utils.LineFixtureUtils.*;
 
+@DisplayName("지하철 노선 E2E")
+@Sql("/init.sql")
 @SuppressWarnings("NonAsciiCharacters")
-class LineAcceptanceTest extends AcceptanceTest {
+public class LineAcceptanceTest extends AcceptanceTest {
 
-    private Long 선릉역_id;
-    private Long 선정릉역_id;
+    @Autowired
+    private DbStationDao stationDao;
+    @Autowired
+    private DbLineDao lineDao;
 
-    private final String basicPath = "/lines";
+    @Autowired
+    private DbSectionDao sectionDao;
 
     @BeforeEach
-    void setUpStations() {
-        선릉역_id = RestAssuredConvenienceMethod.postLineAndGetId(new StationRequest("선릉역"), "/stations");
-        선정릉역_id = RestAssuredConvenienceMethod.postLineAndGetId(new StationRequest("선정릉역"), "/stations");
+    void beforeEach() {
+        stationDao.deleteAll();
+        lineDao.deleteAll();
     }
 
-    @DisplayName("지하철 노선을 등록한다.")
+    @DisplayName("지하철 노선 이름에 빈 문자열을 사용할 수 없다")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "     "})
+    void createLineWithEmptyName(String lineName) {
+        // given
+        LineRequest lineRequest = LineRequest.builder()
+                .name(lineName)
+                .color("red")
+                .build();
+
+        // when
+        ExtractableResponse<Response> response = post(LINE, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("지하철 노선 색깔에 빈 문자열을 사용할 수 없다")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "     "})
+    void createLineWithEmptyColor(String color) {
+        // given
+        LineRequest lineRequest = LineRequest.builder()
+                .name("신분당선")
+                .color(color)
+                .build();
+
+        // when
+        ExtractableResponse<Response> response = post(LINE, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선 정상 등록")
     @Test
     void createLine() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10);
+        ExtractableResponse<Response> 역_생성_응답_1 = post(STATION, 강남구청역);
+        long stationId1 = extractId(역_생성_응답_1);
+
+        ExtractableResponse<Response> 역_생성_응답_2 = post(STATION, 선릉역);
+        long stationId2 = extractId(역_생성_응답_2);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.postRequest(request, basicPath);
+        ExtractableResponse<Response> response = post(LINE, 신분당선);
+        LineResponse lineResponse = convertType(response, LineResponse.class);
+
+        List<Station> stations = lineResponse.getStations();
 
         // then
-        Long responseLineId = response.jsonPath().getObject(".", LineResponse.class).getId();
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(response.header("Location")).isEqualTo("/lines/" + responseLineId)
+                () -> assertThat(lineResponse.getId()).isNotNull(),
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("yellow"),
+                () -> assertThat(stations.get(0)).isEqualTo(new Station(stationId1, "강남구청역")),
+                () -> assertThat(stations.get(1)).isEqualTo(new Station(stationId2, "선릉역"))
         );
     }
 
-    @DisplayName("비어있는 이름으로 역을 생성하면 400번 코드를 반환한다.")
+    @DisplayName("지하철 노선 중복 등록을 허용하지 않는다")
     @Test
-    void createLineWithInvalidNameDateSize() {
+    void createStationWithDuplicateName() {
         // given
-        LineRequest request = new LineRequest("", "yellow", 선릉역_id, 선정릉역_id, 10);
+        post(LINE, 신분당선);
 
-        // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
-
-        // then
+        // when & then
+        ExtractableResponse<Response> response = post(LINE, 신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("비어있는 색으로 역을 생성하면 400번 코드를 반환한다.")
+    @DisplayName("존재하지 않는 노선 조회시 예외를 반환한다")
     @Test
-    void createLineWithInvalidColorDateSize() {
+    void showNotExistLine() {
         // given
-        LineRequest request = new LineRequest("분당선", "", 선릉역_id, 선정릉역_id, 10);
+        long 존재하지_않는_노선_ID = 50L;
 
         // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
+        ExtractableResponse<Response> response = get(lineById(존재하지_않는_노선_ID));
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("중복된 이름을 가진 지하철 노선을 등록할 때 400번 코드를 반환한다.")
+    @DisplayName("노선 목록 조회")
     @Test
-    void throwsExceptionWhenCreateDuplicatedName() {
+    void showLines() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10);
-        RestAssuredConvenienceMethod.postRequest(request, basicPath);
+        _7호선_및_역_생성요청();
+        분당선_및_역_생성요청();
 
         // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
+        ExtractableResponse<Response> response = get(LINE);
+        List<LineResponse> lineResponses = convertTypeList(response, LineResponse.class);
+
+        LineResponse lineResponse1 = lineResponses.get(0);
+        List<Station> stations1 = lineResponse1.getStations();
+
+        LineResponse lineResponse2 = lineResponses.get(1);
+        List<Station> stations2 = lineResponse2.getStations();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("상행, 역이 같은 가진 지하철 노선을 등록할 때 400번 코드를 반환한다.")
-    @Test
-    void throwsExceptionWhenCreateLineWithSameUpDownStation() {
-        // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선릉역_id, 10);
-
-        // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("존재하지 않는 역으로 지하철 노선을 등록할 때 400번 코드를 반환한다.")
-    @Test
-    void throwsExceptionWhenCreateLineWithNonExistStation() {
-        // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 100L, 10);
-
-        // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("0이하의 거리를 가진 구간으로 지하철 노선을 등록할 때 400번 코드를 반환한다.")
-    @Test
-    void throwsExceptionWhenCreateLineWithInvalidDistance() {
-        // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 0);
-
-        // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.postRequest(request, basicPath);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("지하철 노선 목록을 조회한다.")
-    @Test
-    void getLines() {
-        // given
-        LineResponse createResponse1 = RestAssuredConvenienceMethod.postRequest(
-                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
-                .jsonPath().getObject(".", LineResponse.class);
-        LineResponse createResponse2 = RestAssuredConvenienceMethod.postRequest(
-                new LineRequest("신분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
-                .jsonPath().getObject(".", LineResponse.class);
-
-         // when
-        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.getRequest(basicPath);
-
-        // then
-        List<LineResponse> actual = response.jsonPath().getList(".", LineResponse.class);
         assertAll(
-                () -> assertThat(actual.get(0).getId()).isEqualTo(createResponse1.getId()),
-                () -> assertThat(actual.get(0).getName()).isEqualTo(createResponse1.getName()),
-                () -> assertThat(actual.get(0).getColor()).isEqualTo(createResponse1.getColor()),
+                () -> assertThat(lineResponse1.getId()).isNotNull(),
+                () -> assertThat(lineResponse1.getName()).isEqualTo("7호선"),
+                () -> assertThat(lineResponse1.getColor()).isEqualTo("brown"),
+                () -> assertThat(stations1.get(0).getName()).isEqualTo("상도역"),
+                () -> assertThat(stations1.get(1).getName()).isEqualTo("이수역"),
 
-                () -> assertThat(actual.get(1).getId()).isEqualTo(createResponse2.getId()),
-                () -> assertThat(actual.get(1).getName()).isEqualTo(createResponse2.getName()),
-                () -> assertThat(actual.get(1).getColor()).isEqualTo(createResponse2.getColor())
+                () -> assertThat(lineResponse2.getId()).isNotNull(),
+                () -> assertThat(lineResponse2.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse2.getColor()).isEqualTo("yellow"),
+                () -> assertThat(stations2.get(0).getName()).isEqualTo("강남구청역"),
+                () -> assertThat(stations2.get(1).getName()).isEqualTo("선릉역")
         );
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
+    @DisplayName("이름이 공백인 지하철 노선을 수정할 수 없다")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "     "})
+    void canNotUpdateLineWithEmptyName(String lineName) {
         // given
-        LineResponse createResponse = RestAssuredConvenienceMethod.postRequest(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
-                .jsonPath().getObject(".", LineResponse.class);
+        ExtractableResponse<Response> response1 = post(LINE, 신분당선);
+        long createdId = extractId(response1);
+        LineRequest lineRequest = LineRequest.builder()
+                .name(lineName)
+                .color("blue")
+                .build();
 
-        // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.getRequest("/lines/" + createResponse.getId());
+        // when & then
+        ExtractableResponse<Response> response2 = put(lineById(createdId), lineRequest);
 
-        // then
-        LineResponse lineResponse = response.jsonPath().getObject(".", LineResponse.class);
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(lineResponse.getName()).isEqualTo(createResponse.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(createResponse.getColor())
-        );
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
+    @DisplayName("색깔이 공백인 지하철 노선을 수정할 수 없다")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "     "})
+    void canNotUpdateLineWithEmptyColor(String lineColor) {
+        // given
+        ExtractableResponse<Response> response = post(LINE, 신분당선);
+        long createdId = extractId(response);
+        LineRequest lineRequest = LineRequest.builder()
+                .name("신분당선")
+                .color(lineColor)
+                .build();
+
+        // when & then
+        ExtractableResponse<Response> response2 = put(lineById(createdId), lineRequest);
+
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("지하철 노선 수정")
     @Test
     void updateLine() {
         // given
-        Long createdLineId = RestAssuredConvenienceMethod.postLineAndGetId(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath);
-        Line requestBody = new Line("다른분당선", "blue");
+        ExtractableResponse<Response> 생성_응답 = post(LINE, 신분당선);
+        long createdId = extractId(생성_응답);
 
         // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.putRequest(requestBody, "/lines/" + createdLineId);
-
+        ExtractableResponse<Response> 수정_응답 = put(lineById(createdId), _7호선);
 
         // then
-        LineResponse findResponse =
-                RestAssuredConvenienceMethod.getRequest("/lines/" + createdLineId)
-                        .jsonPath().getObject(".", LineResponse.class);
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(findResponse.getName()).isEqualTo("다른분당선"),
-                () -> assertThat(findResponse.getColor()).isEqualTo("blue")
-        );
+        assertThat(수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        ExtractableResponse<Response> response = get(lineById(createdId));
+        LineResponse 생성된_노선 = convertType(response, LineResponse.class);
+
+        assertThat(extractId(생성_응답)).isEqualTo(createdId);
+        assertThat(생성된_노선.getName()).isEqualTo(_7호선.getName());
+        assertThat(생성된_노선.getColor()).isEqualTo(_7호선.getColor());
     }
 
-    @DisplayName("지하철 노선을 삭제한다.")
+    @DisplayName("중복된 노선 이름 수정을 허용하지 않는다")
+    @Test
+    void canNotUpdateByDuplicationName() {
+        // given
+        ExtractableResponse<Response> 노선_생성_응답 = post(LINE, 신분당선);
+
+        long createdId = extractId(노선_생성_응답);
+
+        post(LINE, _7호선);
+
+        // when
+        ExtractableResponse<Response> response = put(lineById(createdId), _7호선);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("존재하지 않는 노선 수정 시도")
+    @Test
+    void updateNotExistLine() {
+        // when & then
+        long 존재하지_않는_노선_ID = 50L;
+        ExtractableResponse<Response> response = put(lineById(존재하지_않는_노선_ID), _7호선);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제 시도시 404 반환")
+    @Test
+    void deleteNotExistLine() {
+        // given & when
+        long 존재하지_않는_노선_ID = 50L;
+        ExtractableResponse response = delete(lineById(존재하지_않는_노선_ID));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("지하철 노선을 삭제 시도")
     @Test
     void deleteLine() {
         // given
-        Long createdLineId = RestAssuredConvenienceMethod.postLineAndGetId(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath);
+        ExtractableResponse<Response> firstCreationRequest = post(LINE, 신분당선);
+        post(LINE, 신분당선);
+        long createdId = extractId(firstCreationRequest);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.deleteRequest("/lines/" + createdLineId);
+        ExtractableResponse response = delete("/lines/" + createdId);
 
         // then
-        List<LineResponse> lineResponses = RestAssuredConvenienceMethod.getRequest(basicPath)
-                .jsonPath().getList(".", LineResponse.class);
-        List<Long> lineIds = lineResponses.stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-                () -> assertThat(lineIds).doesNotContain(createdLineId)
-        );
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 데이터를 삭제하려고 한다면 400번 코드를 반환한다.")
+    @DisplayName("구간을 등록할 수 있다")
     @Test
-    void deleteLineWithNotExistData() {
+    void create_section() {
+        노선_및_역_생성요청();
+
+        // 구간 등록 요청
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("upStationId", "1");
+        requestBody.put("downStationId", "2");
+        requestBody.put("distance", "3");
+
+        ExtractableResponse<Response> response = post("/lines/1/sections", requestBody);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        Section firstSection = sectionDao.findById(1L).get();
+        Section secondSection = sectionDao.findById(2L).get();
+
+        // 1번역 - (거리 3) - 2번역 - (거리 4) - 3번역
+        assertThat(firstSection).isEqualTo(new Section(1L, 2L, 3L, 4, 1L));
+        assertThat(secondSection).isEqualTo(new Section(2L, 1L, 2L, 3, 1L));
+    }
+
+    @DisplayName("구간을 제거할 수 있다")
+    @Test
+    void delete_section() {
+        // given
+        // 최조 등록
+        노선_및_역_생성요청();
+
+        // 구간 등록
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("upStationId", "1");
+        requestBody.put("downStationId", "2");
+        requestBody.put("distance", "3");
+
+        post("/lines/1/sections", requestBody);
+
+        // when : 구간 삭제 요청
+        ExtractableResponse response = delete("/lines/1/sections?stationId=2");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Section deletedSection = sectionDao.findById(1L).get();
+
+        // then
+        /**
+         * 1번역 - (거리 3) - 2번역 - (거리 4) - 3번역
+         * --- 2번역 삭제 후 ---
+         * 1번역 - (거리 7) - 3번역
+         */
+        assertThat(deletedSection).isEqualTo(new Section(1L, 1L, 3L, 7, 1L));
+    }
+
+    @DisplayName("[예외] 구간이 하나인 노선에서 마지막 구간을 제거할 수 없음")
+    @Test
+    void can_not_delete_one_section() {
+        // given
+        노선_및_역_생성요청();
+
         // when
-        ExtractableResponse<Response> response =
-                RestAssuredConvenienceMethod.deleteRequest("/lines/" + 100L);
+        ExtractableResponse response = delete("/lines/1/sections?stationId=2");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

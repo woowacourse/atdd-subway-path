@@ -1,38 +1,37 @@
 package wooteco.subway.domain;
 
-import wooteco.subway.exception.DataLengthException;
+import lombok.Getter;
+import lombok.Setter;
+import wooteco.subway.exception.constant.BlankArgumentException;
 
 import java.util.Objects;
 
+import static wooteco.subway.utils.StringUtils.isBlank;
+
+@Getter
+@Setter
 public class Station {
 
-    private static final int NAME_LENGTH = 20;
+    private Long id;
+    private String name;
 
-    private final Long id;
-    private final String name;
+    private Station() {
+    }
 
-    public Station(Long id, String name) {
-        validateDataSize(name);
-        this.id = id;
-        this.name = name;
+    public Station(Long id) {
+        this(id, null);
     }
 
     public Station(String name) {
         this(null, name);
     }
 
-    private void validateDataSize(String name) {
-        if (name.isBlank() || name.length() > NAME_LENGTH) {
-            throw new DataLengthException("역 이름이 빈 값이거나 최대 범위(" + NAME_LENGTH + "를 초과했습니다.");
+    public Station(Long id, String name) {
+        if (isBlank(name)) {
+            throw new BlankArgumentException();
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+        this.id = id;
+        this.name = name;
     }
 
     @Override
@@ -40,12 +39,19 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(), station.getName());
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName());
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
-

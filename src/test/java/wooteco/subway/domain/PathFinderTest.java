@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,14 +18,14 @@ class PathFinderTest {
         Long 노선_2 = 1L;
         Long 노선_3 = 1L;
 
-        List<Section> sections = new ArrayList<>();
-        sections.add(new Section(노선_1, 1L, 2L, 50));
-        sections.add(new Section(노선_1, 2L, 3L, 8));
-        sections.add(new Section(노선_1, 3L, 6L, 20));
-        sections.add(new Section(노선_2, 5L, 4L, 10));
-        sections.add(new Section(노선_2, 4L, 6L, 5));
-        sections.add(new Section(노선_3, 2L, 4L, 6));
-
+        List<Section> sections = List.of(
+                new Section(1L, 2L, 50, 노선_1),
+                new Section(2L, 3L, 8, 노선_1),
+                new Section(3L, 6L, 20, 노선_1),
+                new Section(5L, 4L, 10, 노선_2),
+                new Section(4L, 6L, 5, 노선_2),
+                new Section(2L, 4L, 6, 노선_3)
+        );
         pathFinder = new PathFinder(sections);
     }
 
