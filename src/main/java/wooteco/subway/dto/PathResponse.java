@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 public class PathResponse {
 
     private final List<StationResponse> stations;
-    private final double distance;
+    private final int distance;
     private final int fare;
 
-    public PathResponse(final List<StationResponse> stations, final double distance, final int fare) {
+    public PathResponse(final List<StationResponse> stations, final int distance, final int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
@@ -20,7 +20,7 @@ public class PathResponse {
         final List<StationResponse> stationResponses = path.getStations().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        final double distance = path.getDistance();
+        final int distance = path.getDistance();
         final int price = path.getFare().getPrice();
 
         return new PathResponse(stationResponses, distance, price);
@@ -30,7 +30,7 @@ public class PathResponse {
         return stations;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 

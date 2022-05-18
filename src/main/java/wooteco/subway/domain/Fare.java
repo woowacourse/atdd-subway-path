@@ -16,7 +16,7 @@ public class Fare {
         this.price = price;
     }
 
-    public static Fare from(final double distance) {
+    public static Fare from(final int distance) {
         return new Fare(calculateFare(distance));
     }
 

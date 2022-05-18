@@ -63,7 +63,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stations).usingRecursiveComparison()
                         .ignoringFields("id")
                         .isEqualTo(List.of(stationRequest1, stationRequest2, stationRequest3)),
-                () -> assertThat(distance).isEqualTo(15.0),
+                () -> assertThat(distance).isEqualTo(15),
                 () -> assertThat(fare).isEqualTo(1350)
         );
     }
