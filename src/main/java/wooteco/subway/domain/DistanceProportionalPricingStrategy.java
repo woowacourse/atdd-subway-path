@@ -4,12 +4,12 @@ import java.util.List;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
-    public static final int BASIC_FEE = 1250;
-    public static final int SECOND_FEE_CONDITION = 50;
-    public static final int SECOND_FEE_UNIT = 8;
-    public static final int FIRST_FEE_CONDITION = 10;
-    public static final int FIRST_FEE_UNIT = 5;
-    public static final int UNIT_MONEY = 100;
+    private static final int BASIC_FEE = 1250;
+    private static final int SECOND_FEE_CONDITION = 50;
+    private static final int SECOND_FEE_UNIT = 8;
+    private static final int FIRST_FEE_CONDITION = 10;
+    private static final int FIRST_FEE_UNIT = 5;
+    private static final int UNIT_MONEY = 100;
 
     @Override
     public int calculateFee(List<Section> sections) {
