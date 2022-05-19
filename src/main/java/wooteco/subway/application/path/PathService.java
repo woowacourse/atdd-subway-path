@@ -2,6 +2,7 @@ package wooteco.subway.application.path;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.Section;
@@ -24,6 +25,7 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse searchPath(Long source, Long target) {
         validate(source, target);
 
