@@ -1,6 +1,6 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.fixture.SimpleResponse;
@@ -91,7 +90,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = Map.of("name", "강남역");
         SimpleResponse createResponse = SimpleRestAssured.post("/stations", params);
         // when
-        final SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");
+        SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");
         // then
         deleteResponse.assertStatus(HttpStatus.BAD_REQUEST);
     }

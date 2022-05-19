@@ -31,7 +31,7 @@ public class StationDao {
     public Station save(Station station) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
         try {
-            final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+            Long id = jdbcInsert.executeAndReturnKey(param).longValue();
             return createNewObject(station, id);
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 역 이름입니다.");
@@ -46,7 +46,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        final String sql = "SELECT * FROM station";
+        String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Station(
                 resultSet.getLong("id"),
                 resultSet.getString("name")
@@ -54,7 +54,7 @@ public class StationDao {
     }
 
     public Station findById(Long id) {
-        final String sql = "SELECT * FROM station WHERE id = ?";
+        String sql = "SELECT * FROM station WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
                 resultSet.getLong("id"),
                 resultSet.getString("name")
@@ -62,8 +62,8 @@ public class StationDao {
     }
 
     public int deleteById(Long id) {
-        final String sql = "DELETE FROM station WHERE id = ?";
-        final int deletedCount = jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM station WHERE id = ?";
+        int deletedCount = jdbcTemplate.update(sql, id);
         validateRemoved(deletedCount);
         return deletedCount;
     }

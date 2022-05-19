@@ -13,7 +13,7 @@ class StationTest {
         // given
         Station station = new Station("청구역");
         // when
-        final boolean hasSameName = station.hasSameNameWith(new Station("청구역"));
+        boolean hasSameName = station.hasSameNameWith(new Station("청구역"));
         // then
         assertThat(hasSameName).isTrue();
     }

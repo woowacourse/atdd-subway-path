@@ -109,7 +109,7 @@ class LineDaoTest {
     @DisplayName("노선 정보를 수정한다.")
     public void update() {
         // given & when
-        final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
+        Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
         assertThat(linDao.update(new Line(saved.getId(), "구분당선", LINE_COLOR))).isEqualTo(1);
     }

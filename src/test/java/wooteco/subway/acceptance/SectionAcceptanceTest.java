@@ -1,9 +1,11 @@
 package wooteco.subway.acceptance;
 
 import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 
@@ -34,7 +36,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                         "downStationId", "3",
                         "distance", "7");
         // when
-        final SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
         // then
         response.assertStatus(HttpStatus.OK);
     }
@@ -63,7 +65,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 Map.of("upStationId", "2",
                         "downStationId", "3",
                         "distance", "7");
-        final SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
         // when
         SimpleRestAssured.delete("/lines/1/sections?stationId=3");
         // then

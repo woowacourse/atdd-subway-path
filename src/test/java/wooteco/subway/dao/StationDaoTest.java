@@ -29,7 +29,7 @@ class StationDaoTest {
         // given
         Station station = new Station(STATION_NAME);
         // when
-        final Station saved = dao.save(station);
+        Station saved = dao.save(station);
         // then
         assertThat(saved.getId()).isNotNull();
     }
@@ -48,7 +48,7 @@ class StationDaoTest {
     @DisplayName("역 목록을 불러온다.")
     public void findAll() {
         // given & when
-        final List<Station> stations = dao.findAll();
+        List<Station> stations = dao.findAll();
         // then
         assertThat(stations).hasSize(0);
     }
@@ -59,7 +59,7 @@ class StationDaoTest {
         // given
         dao.save(new Station(STATION_NAME));
         // when
-        final List<Station> stations = dao.findAll();
+        List<Station> stations = dao.findAll();
         // then
         assertThat(stations).hasSize(1);
     }
@@ -68,9 +68,9 @@ class StationDaoTest {
     @DisplayName("ID값으로 역을 삭제한다.")
     public void deleteById() {
         // given
-        final Station saved = dao.save(new Station(STATION_NAME));
+        Station saved = dao.save(new Station(STATION_NAME));
         // when
-        final Long id = saved.getId();
+        Long id = saved.getId();
         // then
         assertThat(dao.deleteById(id)).isEqualTo(1);
     }

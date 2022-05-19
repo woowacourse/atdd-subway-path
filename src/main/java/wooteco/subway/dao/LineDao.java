@@ -35,7 +35,7 @@ public class LineDao {
     public Line save(Line line) {
         try {
             SqlParameterSource param = new BeanPropertySqlParameterSource(line);
-            final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+            Long id = jdbcInsert.executeAndReturnKey(param).longValue();
             return createNewObject(line, id);
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
@@ -43,19 +43,19 @@ public class LineDao {
     }
 
     private Line createNewObject(Line line, Long id) {
-        final Field field = ReflectionUtils.findField(Line.class, "id");
+        Field field = ReflectionUtils.findField(Line.class, "id");
         field.setAccessible(true);
         ReflectionUtils.setField(field, line, id);
         return line;
     }
 
     public List<Line> findAll() {
-        final String sql = "SELECT * FROM line";
+        String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, this::mapToLine);
     }
 
     public Line findById(Long id) {
-        final String sql = "SELECT * FROM line WHERE id = ?";
+        String sql = "SELECT * FROM line WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, this::mapToLine, id);
         } catch (EmptyResultDataAccessException e) {
@@ -100,8 +100,8 @@ public class LineDao {
     }
 
     public int update(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+        int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
         validateUpdated(updatedCount);
         return updatedCount;
     }
@@ -113,8 +113,8 @@ public class LineDao {
     }
 
     public int delete(Long id) {
-        final String sql = "DELETE FROM line WHERE id = ?";
-        final int deletedCount = jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM line WHERE id = ?";
+        int deletedCount = jdbcTemplate.update(sql, id);
         validateDeleted(deletedCount);
         return deletedCount;
     }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.LineDao;
@@ -45,19 +44,19 @@ public class LineService {
     }
 
     public List<LineResponse> findAll() {
-        final List<Line> lines = lineDao.findAll();
+        List<Line> lines = lineDao.findAll();
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
     public LineResponse findById(Long id) {
-        final Line line = lineDao.findById(id);
+        Line line = lineDao.findById(id);
         return LineResponse.from(line);
     }
 
     public void modify(Long id, LineRequest lineRequest) {
-        final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
         lineDao.update(line);
     }
 
