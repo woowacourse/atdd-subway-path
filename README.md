@@ -10,11 +10,6 @@
 
 <br>
 
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
 ## 🚀 Getting Started
 ### Usage
 #### application 구동
