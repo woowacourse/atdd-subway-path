@@ -1,4 +1,4 @@
-package wooteco.subway.repository.dao.entity.station;
+package wooteco.subway.repository.dao.entity;
 
 public class StationEntity {
 
@@ -8,6 +8,10 @@ public class StationEntity {
     public StationEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public StationEntity(String name) {
+        this(null, name);
     }
 
     public Long getId() {

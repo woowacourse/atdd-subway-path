@@ -3,85 +3,96 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.TestFixture.강남역;
+import static wooteco.subway.TestFixture.교대역;
+import static wooteco.subway.TestFixture.선릉역;
+import static wooteco.subway.TestFixture.역삼역;
 
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import wooteco.subway.domain.station.StationRepository;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.TestConstructor.AutowireMode;
 import wooteco.subway.exception.DuplicateStationNameException;
-import wooteco.subway.repository.SubwayRepository;
-import wooteco.subway.repository.dao.LineDao;
-import wooteco.subway.repository.dao.SectionDao;
+import wooteco.subway.repository.JdbcStationRepository;
 import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.ui.dto.response.StationResponse;
 
-@DisplayName("지하철역 Service")
+@TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class StationServiceTest {
 
-    @Autowired
-    private DataSource dataSource;
-    private StationService stationService;
+    private final StationService stationService;
 
-    @BeforeEach
-    void setUp() {
-        LineDao lineDao = new LineDao(dataSource);
-        SectionDao sectionDao = new SectionDao(dataSource);
-        StationDao stationDao = new StationDao(dataSource);
-        StationRepository stationRepository = new SubwayRepository(lineDao, sectionDao, stationDao);
-        this.stationService = new SpringStationService(stationRepository);
+    public StationServiceTest(DataSource dataSource) {
+        this.stationService = new SpringStationService(new JdbcStationRepository(new StationDao(dataSource)));
     }
 
-    @DisplayName("이름으로 지하철 역을 저장한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"강남역"})
-    void create(String name) {
-        StationResponse actual = stationService.create(name);
+    @DisplayName("이름으로 지하철 역을 저장한다")
+    @Test
+    void create() {
+        // given
+        final String name = "강남역";
+
+        // when
+        final StationResponse stationResponse = stationService.create(name);
+
+        // then
         assertAll(
-                () -> assertThat(actual.getId()).isGreaterThan(0),
-                () -> assertThat(actual.getName()).isEqualTo("강남역")
+                () -> assertThat(stationResponse.getId()).isGreaterThan(0L),
+                () -> assertThat(stationResponse.getName()).isEqualTo(name)
         );
     }
 
-    @DisplayName("이미 존재하는 이름으로 지하철 역을 생성할 수 없다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"강남역"})
-    void createWithDuplicatedName(String name) {
+    @DisplayName("이미 존재하는 이름으로 지하철역 생성 시도 시 예외가 발생한다")
+    @Test
+    void createStationWithDuplicatedNameShouldFail() {
+        // given
+        final String name = "강남역";
         stationService.create(name);
+
+        // when & then
         assertThatThrownBy(() -> stationService.create(name))
                 .isInstanceOf(DuplicateStationNameException.class)
                 .hasMessageContaining("해당 이름의 지하철역은 이미 존재합니다.");
     }
 
-    @DisplayName("지하철 역 목록을 조회한다.")
-    @ParameterizedTest
-    @ValueSource(ints = {5})
-    void findAll(int expected) {
-        IntStream.rangeClosed(1, expected)
-                .mapToObj(id -> "역" + id)
-                .forEach(stationService::create);
+    @DisplayName("지하철 역 목록을 조회한다")
+    @Test
+    void findAll() {
+        // given
+        stationService.create(강남역.getName());
+        stationService.create(교대역.getName());
+        stationService.create(역삼역.getName());
+        stationService.create(선릉역.getName());
 
-        List<StationResponse> actual = stationService.findAll();
-        assertThat(actual).hasSize(expected);
+        // when
+        final List<StationResponse> stations = stationService.findAll();
+
+        assertAll(
+                () -> assertThat(stations.size()).isEqualTo(4),
+                () -> assertThat(stations).extracting("name")
+                        .containsExactly(강남역.getName(), 교대역.getName(), 역삼역.getName(), 선릉역.getName())
+        );
     }
 
-    @DisplayName("지하철 역을 삭제한다.")
+    @DisplayName("ID로 지하철역을 삭제한다")
     @Test
-    void delete() {
-        Stream.of("강남역")
-                .map(stationService::create)
-                .map(StationResponse::getId)
-                .forEach(stationService::deleteById);
+    void deleteStationById() {
+        // given
+        final StationResponse saved = stationService.create(강남역.getName());
+        final List<StationResponse> beforeDelete = stationService.findAll();
 
-        List<StationResponse> actual = stationService.findAll();
-        assertThat(actual).isEmpty();
+        // when
+        stationService.deleteById(saved.getId());
+        final List<StationResponse> afterDelete = stationService.findAll();
+
+        // then
+        assertAll(
+                () -> assertThat(beforeDelete.size()).isOne(),
+                () -> assertThat(afterDelete.size()).isZero()
+        );
     }
 }

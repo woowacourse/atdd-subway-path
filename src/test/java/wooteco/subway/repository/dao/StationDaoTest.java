@@ -1,110 +1,140 @@
 package wooteco.subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.TestFixture.DAE_LIM_ENTITY;
+import static wooteco.subway.TestFixture.GANG_NAM_ENTITY;
+import static wooteco.subway.TestFixture.SAM_SUNG_ENTITY;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.BeforeEach;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.TestConstructor.AutowireMode;
+import wooteco.subway.repository.dao.entity.StationEntity;
 
-import javax.sql.DataSource;
-import wooteco.subway.repository.dao.entity.station.StationEntity;
-
-@DisplayName("지하철역 DB")
+@TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class StationDaoTest {
 
-    private static final StationEntity STATION_ENTITY = new StationEntity(1L, "강남역");
+    private final StationDao stationDao;
 
-    @Autowired
-    private DataSource dataSource;
-    private StationDao stationDao;
-
-    @BeforeEach
-    void setUp() {
+    public StationDaoTest(DataSource dataSource) {
         this.stationDao = new StationDao(dataSource);
     }
 
-    @DisplayName("역을 저장한다.")
+    @DisplayName("지하철역을 저장한다")
     @Test
     void save() {
-        Long actual = stationDao.save(new StationEntity(0L, "강남역"));
-        assertThat(actual).isGreaterThan(0);
+        // given
+        final StationEntity stationEntity = GANG_NAM_ENTITY;
+
+        // when
+        final Long generatedId = stationDao.save(stationEntity);
+
+        // then
+        assertThat(generatedId).isGreaterThan(0L);
     }
 
-    @DisplayName("역 목록을 조회한다.")
-    @ParameterizedTest
-    @ValueSource(ints = {3})
-    void findAll(int expected) {
-        LongStream.rangeClosed(1, expected)
-                .mapToObj(id -> new StationEntity(id, "역" + id))
-                .forEach(stationDao::save);
+    @DisplayName("지하철역 전체 목록을 조회한다")
+    @Test
+    void findAll() {
+        // given
+        final StationEntity gangNamEntity = GANG_NAM_ENTITY;
+        final StationEntity daeLimEntity = DAE_LIM_ENTITY;
+        final StationEntity samSungEntity = SAM_SUNG_ENTITY;
 
-        assertThat(stationDao.findAll()).hasSize(expected);
+        for (StationEntity stationEntity : List.of(gangNamEntity, daeLimEntity, samSungEntity)) {
+            stationDao.save(stationEntity);
+        }
+
+        // when
+        final List<StationEntity> stations = stationDao.findAll();
+
+        // then
+        assertAll(
+                () -> assertThat(stations.size()).isEqualTo(3),
+                () -> assertThat(stations).extracting("name")
+                        .containsExactly(GANG_NAM_ENTITY.getName(), DAE_LIM_ENTITY.getName(), SAM_SUNG_ENTITY.getName())
+        );
     }
 
-    @DisplayName("역을 조회한다.")
+    @DisplayName("ID로 지하철역 1개를 조회한다")
     @Test
     void findById() {
-        StationEntity expected = STATION_ENTITY;
-        Optional<StationEntity> actual = stationDao.findById(stationDao.save(expected));
+        // given
+        final StationEntity stationEntity = GANG_NAM_ENTITY;
+        final Long savedId = stationDao.save(stationEntity);
 
-        assertThat(actual).isPresent();
-        assertThat(actual.get()).usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(expected);
+        // when
+        final Optional<StationEntity> foundById = stationDao.findById(savedId);
+
+        // then
+        assertAll(
+                () -> assertThat(foundById).isPresent(),
+                () -> assertThat(foundById.get()).usingRecursiveComparison()
+                        .isEqualTo(new StationEntity(savedId, GANG_NAM_ENTITY.getName()))
+        );
     }
 
-    @DisplayName("존재하지 않는 역을 조회한다.")
+    @DisplayName("존재하지 않는 역 ID로 지하철역을 조회하면 비어있는 결과가 반환된다")
     @Test
     void findWithNonexistentId() {
-        Optional<StationEntity> actual = stationDao.findById(1L);
-        assertThat(actual).isEmpty();
+        // given & when
+        final Optional<StationEntity> notExistEntity = stationDao.findById(1L);
+
+        // then
+        assertThat(notExistEntity).isEmpty();
     }
 
-    @DisplayName("해당 식별자의 지하철역이 존재하는지 확인한다.")
-    @ParameterizedTest
-    @CsvSource(value = {"0,true", "1,false"})
-    void existsById(Long difference, boolean expected) {
-        Long stationId = stationDao.save(STATION_ENTITY);
-
-        boolean actual = stationDao.existsById(stationId + difference);
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @DisplayName("해당 이름의 역이 존재하는지 확인한다.")
-    @ParameterizedTest
-    @MethodSource("provideForExistsByName")
-    void existsByName(String stationName, boolean expected) {
-        stationDao.save(STATION_ENTITY);
-
-        boolean actual = stationDao.existsByName(stationName);
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    private static Stream<Arguments> provideForExistsByName() {
-        return Stream.of(
-                Arguments.of(STATION_ENTITY.getName(), true),
-                Arguments.of(STATION_ENTITY.getName() + "temp", false));
-    }
-
-    @DisplayName("역을 삭제한다.")
+    @DisplayName("ID로 지하철역을 삭제할 수 있다")
     @Test
-    void remove() {
-        Stream.of(STATION_ENTITY)
-                .map(stationDao::save)
-                .forEach(stationDao::remove);
+    void deleteById() {
+        // given
+        final Long generatedId = stationDao.save(GANG_NAM_ENTITY);
+        final Optional<StationEntity> beforeDelete = stationDao.findById(generatedId);
 
-        assertThat(stationDao.findAll()).isEmpty();
+        // when
+        stationDao.deleteById(generatedId);
+        final Optional<StationEntity> afterDelete = stationDao.findById(generatedId);
+
+        // then
+        assertAll(
+                () -> assertThat(beforeDelete).isPresent(),
+                () -> assertThat(afterDelete).isEmpty()
+        );
+    }
+
+    @DisplayName("역 이름으로 지하철역 존재 여부를 확인할 수 있다")
+    @Test
+    void existsByName() {
+        // given
+        final boolean beforeCreation = stationDao.existsByName(GANG_NAM_ENTITY.getName());
+
+        // when
+        stationDao.save(GANG_NAM_ENTITY);
+        final boolean afterCreation = stationDao.existsByName(GANG_NAM_ENTITY.getName());
+
+        // then
+        assertAll(
+                () -> assertThat(beforeCreation).isFalse(),
+                () -> assertThat(afterCreation).isTrue()
+        );
+    }
+
+    @DisplayName("ID로 지하철역 존재 여부를 확인할 수 있다")
+    @Test
+    void existsByID() {
+        // given
+        final Long generatedId = stationDao.save(GANG_NAM_ENTITY);
+
+        // when
+        final boolean afterCreation = stationDao.existsById(generatedId);
+
+        // then
+        assertThat(afterCreation).isTrue();
     }
 }
