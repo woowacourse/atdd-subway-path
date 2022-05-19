@@ -180,32 +180,6 @@ class SectionServiceTest {
 
     }
 
-    @DisplayName("구간 사이의 최소거리, 역, 비용을 반환한다")
-    @Test
-    void calculateMinDistance() {
-        Station saved_신당역 = createStation(신당역);
-        Station saved_동묘앞역 = createStation(동묘앞역);
-        Station saved_창신역 = createStation(창신역);
-
-        Line line = createLine(LINE_SIX, LINE_COLOR);
-
-        sectionRepository.save(new Section(line.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
-        sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
-
-        PathResponse pathResponse = sectionService.calculateMinDistance(new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 10));
-        List<StationResponse> stations = pathResponse.getStations();
-
-        assertAll(() -> {
-            assertThat(stations).hasSize(3);
-            assertThat(stations).containsExactly(new StationResponse(saved_신당역),
-                    new StationResponse(saved_동묘앞역),
-                    new StationResponse(saved_창신역));
-            assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
-            assertThat(pathResponse.getFare()).isEqualTo(1450);
-        });
-
-    }
-
     private Line createLine(String lineName, String lineColor) {
         Long id = lineRepository.save(new Line(lineName, lineColor));
         return new Line(id, lineName, lineColor);

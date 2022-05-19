@@ -95,10 +95,6 @@ public class Section {
         return equals(section) && isSameStations(section);
     }
 
-    public boolean have(final Station station) {
-        return isSameUpStation(station) || isSameDownStation(station);
-    }
-
     public Long getId() {
         return id;
     }

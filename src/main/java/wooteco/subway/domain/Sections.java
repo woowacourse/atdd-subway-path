@@ -25,11 +25,6 @@ public class Sections {
     private static final String SECTION_NOT_CONNECT_MESSAGE = "구간이 연결되지 않습니다";
     private static final String SECTION_MUST_SHORTER_MESSAGE = "기존의 구간보다 긴 구간은 넣을 수 없습니다.";
     private static final int MIN_SIZE = 1;
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int DEFAULT_FARE = 1250;
-    private static final int OVER_FARE_DISTANCE = 50;
-    private static final int STANDARD_UNIT = 5;
-    private static final int MAX_UNIT = 8;
 
     private final List<Section> values;
 
@@ -189,71 +184,10 @@ public class Sections {
                 .findFirst();
     }
 
-    public int calculateMinDistance(final Station startStation, final Station endStation) {
-        validateExistStation(startStation, endStation);
-        try {
-            return (int) createSectionDijkstraShortestPath().getPath(startStation, endStation).getWeight();
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new SectionNotFoundException();
-        }
-    }
-
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> createSectionDijkstraShortestPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : getAllStations()) {
-            graph.addVertex(station);
-        }
-        for (Section section : values) {
-            assignWeight(graph, section);
-        }
-        return new DijkstraShortestPath<>(graph);
-    }
-
     public Set<Station> getAllStations() {
         return Stream.concat(getUpStations().stream(),
                         getDownStations().stream())
                 .collect(Collectors.toSet());
-    }
-
-    private void assignWeight(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-    }
-
-    private void validateExistStation(Station startStation, Station endStation) {
-        if (isNotExistStation(startStation) || isNotExistStation(endStation)) {
-            throw new StationNotFoundException();
-        }
-    }
-
-    public List<Station> findShortestStations(final Station startStation, final Station endStation) {
-        validateExistStation(startStation, endStation);
-        try {
-            return createSectionDijkstraShortestPath().getPath(startStation, endStation).getVertexList();
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new SectionNotFoundException();
-        }
-    }
-
-    public int calculateFare(final int distance) {
-        if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
-        }
-        if (distance <= OVER_FARE_DISTANCE) {
-            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
-        }
-        return DEFAULT_FARE
-                + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
-                + calculateOverFare(distance - OVER_FARE_DISTANCE, MAX_UNIT);
-    }
-
-    private int calculateOverFare(final int distance, final int unit) {
-        return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
-    }
-
-    private boolean isNotExistStation(final Station station) {
-        return values.stream()
-                .noneMatch(section -> section.have(station));
     }
 
     public List<Section> getValues() {

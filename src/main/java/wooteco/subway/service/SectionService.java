@@ -53,22 +53,4 @@ public class SectionService {
             sectionRepository.save(mergedSection);
         }
     }
-
-    @Transactional(readOnly = true)
-    public PathResponse calculateMinDistance(final PathRequest pathRequest) {
-        Sections sections = new Sections(sectionRepository.findAll());
-        Station startStation = stationRepository.findById(pathRequest.getSource());
-        Station endStation = stationRepository.findById(pathRequest.getTarget());
-        List<StationResponse> stationResponses =
-                toStationResponses(sections.findShortestStations(startStation, endStation));
-        int distance = sections.calculateMinDistance(startStation, endStation);
-        int fare = sections.calculateFare(distance);
-        return new PathResponse(stationResponses, distance, fare);
-    }
-
-    private List<StationResponse> toStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::new)
-                .collect(Collectors.toList());
-    }
 }
