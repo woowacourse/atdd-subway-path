@@ -58,8 +58,8 @@ public class SectionService {
     private void insertBetween(final SectionCreationRequest request, final Section existingSection) {
         sectionDao.deleteById(existingSection.getId());
         final Section newSection = toSection(request);
-        existingSection.assign(newSection)
-                .forEach(sectionDao::insert);
+        final List<Section> sections = existingSection.assign(newSection);
+        sectionDao.insertAll(sections);
     }
 
     private Section toSection(final SectionCreationRequest request) {

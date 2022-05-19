@@ -9,6 +9,8 @@ public interface SectionDao {
 
     Long insert(Section section);
 
+    void insertAll(List<Section> sections);
+
     boolean existStation(long stationId);
 
     Sections findAll();
