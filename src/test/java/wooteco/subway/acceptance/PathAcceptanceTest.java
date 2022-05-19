@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,18 +10,12 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.service.dto.response.StationResponse;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 @DisplayName("경로 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
-
-    @Autowired
-    private SectionRepository sectionRepository;
 
     @Nested
     @DisplayName("경로 조회 API는")
@@ -38,10 +33,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
             void it_returns_path() {
                 setUp();
                 ExtractableResponse<Response> response = 경로_조회(출발역, 도착역);
-
-                List<StationResponse> stations = response.body().jsonPath().getList("stations", StationResponse.class);
-                int distance = response.body().jsonPath().getInt("distance");
-                int fare = response.body().jsonPath().getInt("fare");
 
                 assertThat(response.statusCode()).isEqualTo(200);
             }
@@ -74,8 +65,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 출발역 = 강남;
                 도착역 = 합정;
 
-                long 이호선 = 노선_저장(노선_요청_파라미터("2호선", "green", 강남, 성수, 30));
-                long 분당선 = 노선_저장(노선_요청_파라미터("분당선", "yellow", 왕십리, 강남, 30));
+                long 이호선 = 노선_저장(노선_저장_파라미터("2호선", "green", 강남, 성수, 30));
+                long 분당선 = 노선_저장(노선_저장_파라미터("분당선", "yellow", 왕십리, 강남, 30));
 
                 구간_등록(이호선, 구간_등록_파라미터(강남, 삼성, 10));
                 구간_등록(이호선, 구간_등록_파라미터(삼성, 건대, 10));
@@ -86,23 +77,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    private long 역_저장(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        ExtractableResponse<Response> savedResponse = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        return savedResponse.body().jsonPath().getLong("id");
-    }
-
-    private ExtractableResponse<Response> 경로_조회(long source, long target) {
+    private ExtractableResponse<Response> 경로_조회(long 출발역, long 도착역) {
         return RestAssured.given().log().all()
-            .queryParams(경로조회_파라미터(source, target))
+            .queryParams(경로조회_파라미터(출발역, 도착역))
             .when()
             .get("/paths")
             .then().log().all()
@@ -117,43 +94,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private long 노선_저장(Map<Object, Object> 노선_요청_파라미터) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(노선_요청_파라미터)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-        return response.body().jsonPath().getLong("id");
-    }
-
-    private Map<Object, Object> 노선_요청_파라미터(String name, String color, Long upStationId, Long downStationId, int distance) {
-        Map<Object, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-        return params;
-    }
-
-    private ExtractableResponse<Response> 구간_등록(long lineId, Map<String, Object> params) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/{id}/sections", lineId)
-            .then().log().all()
-            .extract();
-        return response;
-    }
-
-    private Map<String, Object> 구간_등록_파라미터(long upStationId, long downStationId, int distance) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-        return params;
-    }
 }

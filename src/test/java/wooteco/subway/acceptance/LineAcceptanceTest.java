@@ -32,13 +32,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                노선_저장_파라미터 = 노선_요청_파라미터("신분당선", "bg-red-600", 잠실, 강남);
+                노선_저장_파라미터 = 노선_저장_파라미터("신분당선", "bg-red-600", 잠실, 강남, 10);
             }
 
             @Test
             @DisplayName("201 응답을 한다.")
             void it_returns_200() {
-                ExtractableResponse<Response> response = 노선_저장(노선_저장_파라미터);
+                ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
 
                 assertThat(response.statusCode()).isEqualTo(201);
                 assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
@@ -47,7 +47,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("역 2개와 노선 정보로 노선을 저장한다.")
             void it_returns_save() {
-                ExtractableResponse<Response> response = 노선_저장(노선_저장_파라미터);
+                ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
 
                 assertThat(response.body().jsonPath().getString("name")).isEqualTo("신분당선");
                 assertThat(response.body().jsonPath().getString("color")).isEqualTo("bg-red-600");
@@ -70,7 +70,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("400응답을 한다.")
             void it_returns_400() {
-                ExtractableResponse<Response> response = 노선_저장(빈_파라미터);
+                ExtractableResponse<Response> response = 노선_저장_응답(빈_파라미터);
 
                 assertThat(response.statusCode()).isEqualTo(400);
             }
@@ -78,7 +78,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("에러 메시지를 응답한다.")
             void it_returns_message() {
-                ExtractableResponse<Response> response = 노선_저장(빈_파라미터);
+                ExtractableResponse<Response> response = 노선_저장_응답(빈_파라미터);
 
                 assertThat(response.body().jsonPath().getString("message")).isEqualTo("이름과 색깔은 공백일 수 없습니다.");
             }
@@ -99,7 +99,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
+                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
             }
 
             @Test
@@ -138,7 +138,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_조회(1);
 
-                assertThat(response.body().jsonPath().getString("message")).isEqualTo("조회하려는 id가 존재하지 않습니다. id : 1");
+                assertThat(response.body().jsonPath().getString("message")).isEqualTo("조회하려는 노선이 존재하지 않습니다. id : 1");
             }
         }
     }
@@ -153,8 +153,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                saveLineAndGetId("1호선", "blue", 역_저장("창동"), 역_저장("강남"));
-                saveLineAndGetId("2호선", "green", 역_저장("도봉"), 역_저장("의정부"));
+                노선_저장(노선_저장_파라미터("1호선", "blue", 역_저장("창동"), 역_저장("강남"), 10));
+                노선_저장(노선_저장_파라미터("2호선", "green", 역_저장("도봉"), 역_저장("의정부"), 10));
             }
 
             @Test
@@ -188,8 +188,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void setUp() {
             long 잠실 = 역_저장("잠실");
             long 강남 = 역_저장("강남");
-            lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
-            노선_수정_파라미터 = lineUpdateParam("신분당선", "bg-red-600");
+            lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
+            노선_수정_파라미터 = 노선_수정_파라미터("신분당선", "bg-red-600");
         }
 
         @Nested
@@ -222,7 +222,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId + 1L, 노선_수정_파라미터);
 
-                assertThat(response.body().jsonPath().getString("message")).contains("조회하려는 id가 존재하지 않습니다.");
+                assertThat(response.body().jsonPath().getString("message")).contains("조회하려는 노선이 존재하지 않습니다.");
             }
         }
 
@@ -258,7 +258,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("수정할 노선이 중복인 경우")
         class Context_Update_Lines_Duplicate {
 
-            private final Map<Object, Object> 노선_중복_파라미터 = lineUpdateParam("2호선", "green");
+            private final Map<Object, Object> 노선_중복_파라미터 = 노선_수정_파라미터("2호선", "green");
 
             @Test
             @DisplayName("400 응답을 한다.")
@@ -292,7 +292,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                lineId = saveLineAndGetId("2호선", "green", 잠실, 강남);
+                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
             }
 
             @Test
@@ -309,7 +309,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 id로 삭제한다.")
     void deleteById() {
         // given
-        long id = saveLineAndGetId("1호선", "blue", 역_저장("창동"), 역_저장("도봉"));
+        long id = 노선_저장(노선_저장_파라미터("1호선", "blue", 역_저장("창동"), 역_저장("도봉"), 10));
 
         // when
         ExtractableResponse<Response> response = 노선_삭제(id);
@@ -323,7 +323,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void saveSection() {
         // given
         long upStationId = 역_저장("의정부");
-        long lineId = saveLineAndGetId("1호선", "blue", upStationId, 역_저장("인천"));
+        long lineId = 노선_저장(노선_저장_파라미터("1호선", "blue", upStationId, 역_저장("인천"), 10));
         long downStationId = 역_저장("광운대");
 
         Map<String, Object> params = 구간_등록_파라미터(upStationId, downStationId, 5);
@@ -342,7 +342,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long upStationId = 역_저장("의정부");
         long downStationId = 역_저장("광운대");
         long addStationId = 역_저장("인천");
-        long lineId = saveLineAndGetId("1호선", "blue", upStationId, downStationId);
+        long lineId = 노선_저장(노선_저장_파라미터("1호선", "blue", upStationId, downStationId, 10));
 
         Map<String, Object> params = 구간_등록_파라미터(upStationId, addStationId, 3);
 
@@ -366,105 +366,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(200);
-    }
-
-    private ExtractableResponse<Response> 노선_저장(Map<Object, Object> 노선_요청_파라미터) {
-        return RestAssured.given().log().all()
-            .body(노선_요청_파라미터)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-    }
-
-    private ExtractableResponse<Response> 노선_조회(long id) {
-        return RestAssured.given().log().all()
-            .when()
-            .get("/lines/{id}", id)
-            .then()
-            .log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 노선_목록_조회() {
-        return RestAssured.given().log().all()
-            .when()
-            .get("/lines")
-            .then().log().all()
-            .extract();
-    }
-
-    private ExtractableResponse<Response> 노선_수정(Long lineId, Map<Object, Object> 노선_수정_파라미터) {
-        return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(노선_수정_파라미터)
-            .when()
-            .put("/lines/{id}", lineId)
-            .then()
-            .log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 노선_삭제(long id) {
-        return RestAssured.given().log().all()
-            .when()
-            .delete("/lines/{id}", id)
-            .then()
-            .log().all().extract();
-    }
-
-    private long saveLineAndGetId(String name, String color, Long upStation, Long downStation) {
-        Map<Object, Object> params = 노선_요청_파라미터(name, color, upStation, downStation);
-        ExtractableResponse<Response> savedResponse = 노선_저장(params);
-        return savedResponse.body().jsonPath().getLong("id");
-    }
-
-    private Map<Object, Object> 노선_요청_파라미터(String name, String color, Long upStationId, Long downStationId) {
-        Map<Object, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", 10);
-        return params;
-    }
-
-    private Map<Object, Object> lineUpdateParam(String name, String color) {
-        Map<Object, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        return params;
-    }
-
-    private long 역_저장(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        ExtractableResponse<Response> savedResponse = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
-        return savedResponse.body().jsonPath().getLong("id");
-    }
-
-    private Map<String, Object> 구간_등록_파라미터(long upStationId, long downStationId, int distance) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-        return params;
-    }
-
-    private ExtractableResponse<Response> 구간_등록(long lineId, Map<String, Object> params) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/{id}/sections", lineId)
-            .then().log().all()
-            .extract();
-        return response;
     }
 }
