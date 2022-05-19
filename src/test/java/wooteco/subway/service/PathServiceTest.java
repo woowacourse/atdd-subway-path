@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,13 +12,13 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
 public class PathServiceTest {
+
     @Autowired
     private StationDao stationDao;
 
@@ -38,7 +40,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("경로를 탐색한다.")
     void searchPath() {
-        PathResponse pathResponse = pathService.searchPath(1L, 3L, 25);
+        PathResponse pathResponse = pathService.searchPath(new PathRequest(1L, 3L, 25));
 
         assertThat(pathResponse.getDistance()).isEqualTo(25);
         assertThat(pathResponse.getFare()).isEqualTo(1550);
