@@ -36,7 +36,7 @@ public enum Distance {
     }
 
     private static boolean isBaseRange(int distance){
-        return distance < MIDDLE_RANGE_BOUND;
+        return distance <= MIDDLE_RANGE_BOUND;
     }
 
     private static boolean isMiddleRange(int distance){
