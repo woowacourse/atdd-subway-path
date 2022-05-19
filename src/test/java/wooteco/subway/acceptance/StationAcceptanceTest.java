@@ -1,18 +1,13 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.notNullValue;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.station.StationRequest;
-import wooteco.subway.dto.station.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest extends AcceptanceTest {
@@ -24,51 +19,39 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void CreateStation() {
         // when
-        final ExtractableResponse<Response> response = createStation(gangNamStationRequest);
+        final ValidatableResponse response = requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header(LOCATION)).isNotBlank();
+        response.statusCode(HttpStatus.CREATED.value())
+                .header(LOCATION, notNullValue());
     }
 
     @DisplayName("생성하려는 역의 이름이 중복되면 BadRequest 를 반환한다.")
     @Test
     void CreateStation_DuplicateName_BadRequest() {
         // given
-        createStation(gangNamStationRequest);
+        requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // when
-        final ExtractableResponse<Response> response = createStation(gangNamStationRequest);
+        final ValidatableResponse response = requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        response.statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("지하철역을 조회한다.")
     @Test
     void ShowStations() {
         /// given
-        final ExtractableResponse<Response> expected1 = createStation(gangNamStationRequest);
-        final ExtractableResponse<Response> expected2 = createStation(yeokSamStationRequest);
+        requestPost(gangNamStationRequest, STATION_URL_PREFIX);
+        requestPost(yeokSamStationRequest, STATION_URL_PREFIX);
 
         // when
-        final ExtractableResponse<Response> actual = RestAssured.given().log().all()
-                .when()
-                .get(STATION_URL_PREFIX)
-                .then().log().all()
-                .extract();
+        final ValidatableResponse response = requestGet(STATION_URL_PREFIX);
 
         // then
-        final List<Long> expectedLineIds = Stream.of(expected1, expected2)
-                .map(this::extractId)
-                .collect(Collectors.toList());
-
-        final List<Long> actualLineIds = actual.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(actual.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualLineIds).containsAll(expectedLineIds);
+        response.statusCode(HttpStatus.OK.value())
+                .body("name", contains(GANGNAM, YEOKSAM));
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -78,27 +61,19 @@ class StationAcceptanceTest extends AcceptanceTest {
         final long id = createAndGetId(gangNamStationRequest, STATION_URL_PREFIX);
 
         // when
-        final ExtractableResponse<Response> actual = RestAssured.given().log().all()
-                .when()
-                .delete(STATION_URL_PREFIX + "/" + id)
-                .then().log().all()
-                .extract();
+        final ValidatableResponse response = requestDelete(STATION_URL_PREFIX + "/" + id);
 
         // then
-        assertThat(actual.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        response.statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("존재하지 않는 역을 제거하면 404를 반환한다.")
     @Test
     void DeleteStation_NotExistId_BadRequest() {
         // when
-        final ExtractableResponse<Response> actual = RestAssured.given().log().all()
-                .when()
-                .delete(STATION_URL_PREFIX + "/999")
-                .then().log().all()
-                .extract();
+        final ValidatableResponse response = requestDelete(STATION_URL_PREFIX + "/999");
 
         // then
-        assertThat(actual.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        response.statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

@@ -1,8 +1,6 @@
 package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dto.station.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AcceptanceTest {
@@ -51,16 +48,6 @@ abstract class AcceptanceTest {
         jdbcTemplate.execute("DELETE FROM section");
         jdbcTemplate.execute("DELETE FROM station");
         jdbcTemplate.execute("DELETE FROM line");
-    }
-
-    protected ExtractableResponse<Response> createStation(final StationRequest request) {
-        return RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post(STATION_URL_PREFIX)
-                .then().log().all()
-                .extract();
     }
 
     protected ValidatableResponse requestGet(final String url) {
@@ -110,10 +97,6 @@ abstract class AcceptanceTest {
                 .when()
                 .delete(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
                 .then().log().all();
-    }
-
-    protected long extractId(final ExtractableResponse<Response> response) {
-        return Long.parseLong(response.header(LOCATION).split("/")[2]);
     }
 
     protected long findId(final ValidatableResponse response) {
