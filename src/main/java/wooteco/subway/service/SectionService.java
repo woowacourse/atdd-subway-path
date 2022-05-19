@@ -107,7 +107,7 @@ public class SectionService {
     }
 
     private void deleteAll(final Sections deletableSections) {
-        final List<Long> sectionIds = deletableSections.getValue()
+        final List<Long> sectionIds = deletableSections.getValues()
                 .stream()
                 .map(Section::getId)
                 .collect(Collectors.toList());

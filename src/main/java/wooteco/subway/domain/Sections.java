@@ -12,15 +12,15 @@ public class Sections {
     private static final int MIN_SECTION_SIZE = 1;
     private static final int MERGE_REQUIRED_SIZE = 2;
 
-    private final List<Section> value;
+    private final List<Section> values;
 
-    public Sections(final List<Section> value) {
-        this.value = value;
+    public Sections(final List<Section> values) {
+        this.values = values;
     }
 
     public Sections findDeletableSections(final Station stationToDelete) {
         validateMinSize();
-        final List<Section> deletableSections = value
+        final List<Section> deletableSections = values
                 .stream()
                 .filter(it -> it.contains(stationToDelete))
                 .collect(Collectors.toList());
@@ -31,18 +31,18 @@ public class Sections {
     }
 
     private void validateMinSize() {
-        if (value.size() == MIN_SECTION_SIZE) {
+        if (values.size() == MIN_SECTION_SIZE) {
             throw new IllegalInputException("구간을 삭제할 수 없습니다.");
         }
     }
 
     public boolean needMerge() {
-        return value.size() == MERGE_REQUIRED_SIZE;
+        return values.size() == MERGE_REQUIRED_SIZE;
     }
 
     public Section toMergedSection() {
-        final Section first = value.get(0);
-        final Section second = value.get(1);
+        final Section first = values.get(0);
+        final Section second = values.get(1);
         return first.merge(second);
     }
 
@@ -51,7 +51,7 @@ public class Sections {
 
         final List<Station> stations = new ArrayList<>();
         stations.add(upStation);
-        while (stations.size() != value.size() + 1) {
+        while (stations.size() != values.size() + 1) {
             final Section section = findSectionByUpStation(upStation);
             upStation = section.getDownStation();
             stations.add(upStation);
@@ -60,13 +60,13 @@ public class Sections {
     }
 
     private Station findEndUpStation() {
-        if (value.size() < MIN_SECTION_SIZE) {
+        if (values.size() < MIN_SECTION_SIZE) {
             throw new NoSuchSectionException();
         }
-        final List<Station> upStations = value.stream()
+        final List<Station> upStations = values.stream()
                 .map(Section::getUpStation)
                 .collect(Collectors.toList());
-        final List<Station> downStations = value.stream()
+        final List<Station> downStations = values.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
         upStations.removeAll(downStations);
@@ -74,15 +74,15 @@ public class Sections {
     }
 
     private Section findSectionByUpStation(final Station upStation) {
-        return value
+        return values
                 .stream()
                 .filter(it -> it.hasSameUpStation(upStation))
                 .findFirst()
                 .orElseThrow(NoSuchSectionException::new);
     }
 
-    public List<Section> getValue() {
-        return value;
+    public List<Section> getValues() {
+        return values;
     }
 
     @Override
@@ -94,18 +94,18 @@ public class Sections {
             return false;
         }
         final Sections that = (Sections) o;
-        return Objects.equals(value, that.value);
+        return Objects.equals(values, that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(values);
     }
 
     @Override
     public String toString() {
         return "SectionsDomain{" +
-                "value=" + value +
+                "values=" + values +
                 '}';
     }
 }

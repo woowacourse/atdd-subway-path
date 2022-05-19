@@ -57,7 +57,7 @@ public class SubwayMap {
     private List<Section> toSections() {
         return lines.stream()
                 .map(Line::getSections)
-                .map(Sections::getValue)
+                .map(Sections::getValues)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

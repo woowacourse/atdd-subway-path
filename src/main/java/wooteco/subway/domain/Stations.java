@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 
 public class Stations {
 
-    private final List<Station> value;
+    private final List<Station> values;
 
-    public Stations(final List<Station> value) {
-        this.value = value;
+    public Stations(final List<Station> values) {
+        this.values = values;
     }
 
     public int calculateMatchCount(final Long... ids) {
-        final List<Long> stationIds = value.stream()
+        final List<Long> stationIds = values.stream()
                 .map(Station::getId)
                 .collect(Collectors.toList());
 
