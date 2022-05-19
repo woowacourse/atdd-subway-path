@@ -61,9 +61,31 @@ class PathManagerTest {
         }
 
         @Test
+        void 출발점과_도착점이_반대가_되면_지하철역들의_순서만_반대로_반환() {
+            List<Section> sections = List.of(
+                    new Section(STATION1, STATION2, 1),
+                    new Section(STATION2, STATION3, 100),
+                    new Section(STATION2, STATION4, 2),
+                    new Section(STATION4, STATION5, 3),
+                    new Section(STATION2, STATION5, 100),
+                    new Section(STATION5, STATION3, 5),
+                    new Section(STATION3, STATION6, 6));
+            PathManager pathManager = PathManager.of(sections);
+
+            Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
+            Path actualReversed = pathManager.calculateOptimalPath(STATION3, STATION2);
+            Path expected = Path.of(List.of(STATION2, STATION4, STATION5, STATION3), 10);
+            Path expectedReversed = Path.of(List.of(STATION3, STATION5, STATION4, STATION2), 10);
+
+            assertThat(actual).isEqualTo(expected);
+            assertThat(actualReversed).isEqualTo(expectedReversed);
+        }
+
+        @Test
         void 노선에_구간으로_등록되지_않은_역에_대한_경로를_조회하려는_경우_예외_발생() {
             Station nonRegisteredStation = new Station(999L, "등록되지 않은 역");
-            List<Section> sections = List.of(new Section(STATION1, STATION2, 10),
+            List<Section> sections = List.of(
+                    new Section(STATION1, STATION2, 10),
                     new Section(STATION2, STATION3, 100),
                     new Section(STATION3, STATION4, 20));
             PathManager pathManager = PathManager.of(sections);
@@ -83,7 +105,8 @@ class PathManagerTest {
 
         @Test
         void 도달할_수_없는_경로를_조회하려는_경우_예외_발생() {
-            List<Section> sections = List.of(new Section(STATION1, STATION2, 10),
+            List<Section> sections = List.of(
+                    new Section(STATION1, STATION2, 10),
                     new Section(STATION3, STATION4, 20));
             PathManager pathManager = PathManager.of(sections);
 

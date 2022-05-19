@@ -1,6 +1,7 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
+import java.util.Objects;
 import wooteco.subway.domain.path.fare.Fare;
 import wooteco.subway.domain.station.Station;
 
@@ -31,6 +32,25 @@ public class Path {
 
     public int getFare() {
         return fare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Path path = (Path) o;
+        return distance == path.distance
+                && fare == path.fare
+                && Objects.equals(stations, path.stations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stations, distance, fare);
     }
 
     @Override
