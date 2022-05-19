@@ -25,7 +25,7 @@ public class PathCalculator {
             graph.addVertex(station);
         }
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            section.setEdgeWeightTo(graph);
         }
         return graph;
     }

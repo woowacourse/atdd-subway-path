@@ -1,5 +1,8 @@
 package wooteco.subway.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 public class Section {
     private final Long id;
     private final Station upStation;
@@ -47,7 +50,7 @@ public class Section {
         }
     }
 
-    public Section mergeWith(Section section) {
+    Section mergeWith(Section section) {
         int mergedDistance = this.distance + section.distance;
         return new Section(id, upStation, section.downStation, mergedDistance);
     }
@@ -66,6 +69,10 @@ public class Section {
 
     boolean hasDownStation(Station station) {
         return downStation.equals(station);
+    }
+
+    void setEdgeWeightTo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance);
     }
 
     public Long getId() {
