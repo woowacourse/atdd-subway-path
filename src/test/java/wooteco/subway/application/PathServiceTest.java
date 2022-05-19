@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathSummary;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.AddSectionRequest;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -95,10 +96,10 @@ class PathServiceTest {
     @DisplayName("한 같옆에 있는 지하철역 경로 찾기")
     @Test
     void searchAdjacentPath() {
-        PathSummary pathResponse = pathService.searchPath(station1.getId(), station2.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station2.getId());
 
-        assertThat(pathResponse.getPath()).containsExactly(
-            station1, station2);
+        assertThat(pathResponse.getStations()).containsExactly(
+            new StationResponse(station1), new StationResponse(station2));
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
@@ -107,10 +108,10 @@ class PathServiceTest {
     @DisplayName("두 칸옆에 있는 지하철역 경로 찾기")
     @Test
     void searchTwoBlockPath() {
-        PathSummary pathResponse = pathService.searchPath(station1.getId(), station3.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station3.getId());
 
-        assertThat(pathResponse.getPath()).containsExactly(
-            station1, station2, station3);
+        assertThat(pathResponse.getStations()).containsExactly(
+            new StationResponse(station1), new StationResponse(station2), new StationResponse(station3));
         assertThat(pathResponse.getDistance()).isEqualTo(9);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
@@ -118,10 +119,10 @@ class PathServiceTest {
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
     @Test
     void searchTransferLinePath() {
-        PathSummary pathResponse = pathService.searchPath(station1.getId(), station4.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station4.getId());
 
-        assertThat(pathResponse.getPath()).containsExactly(
-            station1, station2, station4);
+        assertThat(pathResponse.getStations()).containsExactly(
+            new StationResponse(station1), new StationResponse(station2), new StationResponse(station4));
         assertThat(pathResponse.getDistance()).isEqualTo(8);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }

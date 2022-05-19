@@ -2,10 +2,12 @@ package wooteco.subway.domain;
 
 public class FareCalculator {
 
-    public static final int BASE_FARE = 1250;
-    public static final int ADDITIONAL_FARE = 100;
+    private static final int BASE_FARE = 1250;
+    private static final int ADDITIONAL_FARE = 100;
+    private static final int PRIMARY_BASIC_DISTANCE = 10;
+    private static final int SECONDARY_BASIC_DISTANCE = 50;
 
-    public int findFare(int distance) {
+    public int calculateFare(int distance) {
         return BASE_FARE + additionalFare(distance);
     }
 
@@ -14,27 +16,27 @@ public class FareCalculator {
     }
 
     private int additionalFareCount(int distance) {
-        if (distance > 50) {
-            return additionalFareCountOver50km(distance);
+        if (distance > SECONDARY_BASIC_DISTANCE) {
+            return additionalFareCountOverSecondBasicDistance(distance);
         }
 
-        if (distance > 10) {
-            return additionalFareCountOver10km(distance);
+        if (distance > PRIMARY_BASIC_DISTANCE) {
+            return additionalFareCountOverFirstBasicDistance(distance);
         }
 
         return 0;
     }
 
-    private int additionalFareCountOver50km(int distance) {
+    private int additionalFareCountOverSecondBasicDistance(int distance) {
         int remain = distance - 50;
         int count = remain / 8;
         if (remain % 8 != 0) {
             count++;
         }
-        return count + additionalFareCountOver10km(distance - remain);
+        return count + 8;
     }
 
-    private int additionalFareCountOver10km(int distance) {
+    private int additionalFareCountOverFirstBasicDistance(int distance) {
         int remain = distance - 10;
         int count = remain / 5;
         if (remain % 5 != 0) {

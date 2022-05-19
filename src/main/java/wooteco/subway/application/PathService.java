@@ -6,9 +6,10 @@ import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Graph;
-import wooteco.subway.domain.PathSummary;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -24,37 +25,36 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public PathSummary searchPath(Long source, Long target) {
+    public PathResponse searchPath(Long source, Long target) {
         validate(source, target);
-
-        List<Station> stations = stationRepository.findAll();
-        List<Section> sections = sectionRepository.findAll();
-
-        Graph graph = new JGraphtAdapter(stations, sections);
-        FareCalculator fareCalculator = new FareCalculator();
-
-        List<Station> path = graph.findPath(source, target);
-
-        if (path.isEmpty()) {
-            throw new UnreachablePathException(source, target);
-        }
-
-        int distance = graph.findDistance(source, target);
-        int fare = fareCalculator.findFare(distance);
-        return new PathSummary(path, distance, fare);
+        Path path = searchPath(createGraph(), source, target);
+        int fare = new FareCalculator().calculateFare(path.getDistance());
+        return new PathResponse(path, fare);
     }
 
     private void validate(Long source, Long target) {
         if (source.equals(target)) {
             throw new UnreachablePathException(source, target);
         }
-
         if (!stationRepository.existById(source)) {
             throw new NotFoundStationException(source);
         }
-
         if (!stationRepository.existById(target)) {
             throw new NotFoundStationException(source);
         }
+    }
+
+    private Graph createGraph() {
+        List<Station> stations = stationRepository.findAll();
+        List<Section> sections = sectionRepository.findAll();
+        return new JGraphtAdapter(stations, sections);
+    }
+
+    private Path searchPath(Graph graph, Long source, Long target) {
+        Path path = graph.search(source, target);
+        if (path.isEmpty()) {
+            throw new UnreachablePathException(source, target);
+        }
+        return path;
     }
 }

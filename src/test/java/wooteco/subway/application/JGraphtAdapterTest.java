@@ -1,12 +1,12 @@
 package wooteco.subway.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;
@@ -16,7 +16,6 @@ public class JGraphtAdapterTest {
     private List<Station> stations;
     private List<Section> sections;
     private JGraphtAdapter graph;
-
 
     @BeforeEach
     void setUp() {
@@ -47,53 +46,48 @@ public class JGraphtAdapterTest {
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
     @Test
     void searchTransferLinePath() {
-        List<Station> path = graph.findPath(1L, 4L);
-        int distance = graph.findDistance(1L, 4L);
+        Path path = graph.search(1L, 4L);
 
-        assertThat(path)
-            .containsExactly(stations.get(0), stations.get(1), stations.get(3));
-        assertThat(distance).isEqualTo(8);
+        assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
+        assertThat(path.getDistance()).isEqualTo(8);
     }
 
     @DisplayName("10km이상일 경우 100원 추가 요금")
     @Test
     void searchOnceOverFarePath() {
-        List<Station> path = graph.findPath(1L, 5L);
-        int distance = graph.findDistance(1L, 5L);
+        Path path = graph.search(1L, 5L);
 
-        assertThat(path)
+        assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4));
-        assertThat(distance).isEqualTo(15);
+        assertThat(path.getDistance()).isEqualTo(15);
     }
 
     @DisplayName("21km일 경우 3번의 100원 추가 요금")
     @Test
     void searchMultiOverFarePath() {
-        List<Station> path = graph.findPath(1L, 6L);
-        int distance = graph.findDistance(1L, 6L);
+        Path path = graph.search(1L, 6L);
 
-        assertThat(path)
+        assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
                 stations.get(5));
-        assertThat(distance).isEqualTo(21);
+        assertThat(path.getDistance()).isEqualTo(21);
     }
 
     @DisplayName("58km일 경우 3번의 100원 추가 요금")
     @Test
     void searchSuperMultiOverFarePath() {
-        List<Station> path = graph.findPath(1L, 7L);
-        int distance = graph.findDistance(1L, 7L);
+        Path path = graph.search(1L, 7L);
 
-        assertThat(path)
+        assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
                 stations.get(5), stations.get(6));
-        assertThat(distance).isEqualTo(58);
+        assertThat(path.getDistance()).isEqualTo(58);
     }
 
     @DisplayName("경로를 찾을 수 없는 경우 빈 리스트 반환")
     @Test
     void searchNotReachablePath() {
-        assertThat(graph.findPath(1L, 8L)).isEmpty();
+        Path path = graph.search(1L, 8L);
+        assertThat(path.isEmpty()).isTrue();
     }
-
 }
