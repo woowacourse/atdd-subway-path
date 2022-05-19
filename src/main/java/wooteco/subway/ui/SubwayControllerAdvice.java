@@ -16,6 +16,6 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<String> handleException() {
-        return new ResponseEntity<>("내부 서버 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("서버 내부 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

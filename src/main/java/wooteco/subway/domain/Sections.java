@@ -2,8 +2,8 @@ package wooteco.subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.NotFoundSectionException;
 
 public class Sections {
 
@@ -25,7 +25,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.hasStationId(upStationId) && section.hasStationId(downStationId))
                 .findAny()
-                .orElseThrow(() -> new NoSuchElementException("맞는 섹션 없음"));
+                .orElseThrow(() -> new NotFoundSectionException("맞는 섹션 없음"));
     }
 
     public List<Section> getSections() {

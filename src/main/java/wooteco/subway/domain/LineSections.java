@@ -4,6 +4,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.AlreadyExistSectionException;
+import wooteco.subway.exception.IllegalDistanceException;
+import wooteco.subway.exception.NotFoundSectionException;
+import wooteco.subway.exception.NotFoundStationException;
 
 public class LineSections {
 
@@ -22,9 +26,8 @@ public class LineSections {
     }
 
     private void validateBothStationExist(long upStationId, long downStationId) {
-        if (existByStationId(upStationId)
-                && existByStationId(downStationId)) {
-            throw new IllegalArgumentException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
+        if (existByStationId(upStationId) && existByStationId(downStationId)) {
+            throw new AlreadyExistSectionException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
         }
     }
 
@@ -45,16 +48,15 @@ public class LineSections {
     }
 
     private void validateNoneStationExist(long upStationId, long downStationId) {
-        if (!existByStationId(upStationId)
-                && !existByStationId(downStationId)) {
-            throw new IllegalArgumentException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+        if (!existByStationId(upStationId) && !existByStationId(downStationId)) {
+            throw new NotFoundStationException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
         }
     }
 
     private void validateDistance(long upStationId, long downStationId, int distance) {
         if (isInvalidDistanceWithDownStationOverlap(downStationId, distance)
                 || isInvalidDistanceWithUpStationOverlap(upStationId, distance)) {
-            throw new IllegalArgumentException(
+            throw new IllegalDistanceException(
                     "역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
         }
     }
@@ -74,7 +76,7 @@ public class LineSections {
                 .filter(section -> section.isSameUpStationId(stationId))
                 .map(Section::getId)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
     private long findIdByDownStationId(long stationId) {
@@ -82,7 +84,7 @@ public class LineSections {
                 .filter(section -> section.isSameDownStationId(stationId))
                 .map(Section::getId)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
     private int findDistanceById(Long id) {
@@ -90,7 +92,7 @@ public class LineSections {
                 .filter(section -> section.isSameId(id))
                 .findAny()
                 .map(Section::getDistance)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
     public List<Section> findOverlapSection(long upStationId, long downStationId, int distance) {
@@ -134,7 +136,7 @@ public class LineSections {
         return sections.stream()
                 .filter(section -> section.isSameId(sectionId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
     public List<Long> getStationsId() {
