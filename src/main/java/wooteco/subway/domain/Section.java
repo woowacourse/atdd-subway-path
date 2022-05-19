@@ -4,7 +4,7 @@ import wooteco.subway.exception.AddSectionException;
 
 public class Section {
     private Long id;
-    private Long lineId;
+    private final Long lineId;
     private Station upStation;
     private Station downStation;
     private int distance;

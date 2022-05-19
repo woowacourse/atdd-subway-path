@@ -4,11 +4,11 @@ import java.util.List;
 import wooteco.subway.domain.Line;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
-    private List<StationResponse> stations;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final int extraFare;
+    private final List<StationResponse> stations;
 
     public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
