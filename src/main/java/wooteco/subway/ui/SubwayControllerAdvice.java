@@ -18,14 +18,14 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorMessage> handle(IllegalArgumentException exception) {
-        logger.error(exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         ErrorMessage message = new ErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(message);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorMessage> handleSqlException(DuplicateKeyException exception) {
-        logger.error(exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         ErrorMessage message = new ErrorMessage("이미 존재하는 데이터 입니다.");
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
@@ -35,7 +35,7 @@ public class SubwayControllerAdvice {
         MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getAllErrors().get(0)
             .getDefaultMessage();
-        logger.error(errorMessage);
+        logger.error(exception.getMessage(), exception);
         ErrorMessage message = new ErrorMessage(errorMessage);
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }

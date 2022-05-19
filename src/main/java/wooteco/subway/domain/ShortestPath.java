@@ -15,16 +15,16 @@ public class ShortestPath {
         addEdgeWeights(sections);
     }
 
+    private void initVertices(Sections sections) {
+        for (Long stationId : sections.sortedStationId()) {
+            graph.addVertex(stationId);
+        }
+    }
+
     private void addEdgeWeights(Sections sections) {
         for (Section section : sections.getSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
                 section.getDistance());
-        }
-    }
-
-    private void initVertices(Sections sections) {
-        for (Long stationId : sections.sortedStationId()) {
-            graph.addVertex(stationId);
         }
     }
 
