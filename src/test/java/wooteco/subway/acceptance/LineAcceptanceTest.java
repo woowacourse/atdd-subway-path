@@ -36,10 +36,10 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        seolleung = createStation(new StationRequest(SEOLLEUNG)).as(Station.class);
-        yeoksam = createStation(new StationRequest(YEOKSAM)).as(Station.class);
-        wangsimni = createStation(new StationRequest(WANGSIMNI)).as(Station.class);
-        dapsimni = createStation(new StationRequest(DAPSIMNI)).as(Station.class);
+        seolleung = requestPost(new StationRequest(SEOLLEUNG), STATION_URL_PREFIX).extract().as(Station.class);
+        yeoksam = requestPost(new StationRequest(YEOKSAM), STATION_URL_PREFIX).extract().as(Station.class);
+        wangsimni = requestPost(new StationRequest(WANGSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
+        dapsimni = requestPost(new StationRequest(DAPSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
 
         lineOneRequest = new LineRequest(
                 LINE_ONE_NAME,

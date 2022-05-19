@@ -41,52 +41,56 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        gangnam = createStation(new StationRequest(GANGNAM)).as(Station.class);
-        yeoksam = createStation(new StationRequest(YEOKSAM)).as(Station.class);
-        seolleung = createStation(new StationRequest(SEOLLEUNG)).as(Station.class);
-        samsung = createStation(new StationRequest(SAMSUNG)).as(Station.class);
+        gangnam = requestPost(new StationRequest(GANGNAM), STATION_URL_PREFIX).extract().as(Station.class);
+        yeoksam = requestPost(new StationRequest(YEOKSAM), STATION_URL_PREFIX).extract().as(Station.class);
+        seolleung = requestPost(new StationRequest(SEOLLEUNG), STATION_URL_PREFIX).extract().as(Station.class);
+        samsung = requestPost(new StationRequest(SAMSUNG), STATION_URL_PREFIX).extract().as(Station.class);
 
-        seoulForest = createStation(new StationRequest(SEOUL_FOREST)).as(Station.class);
-        wangsimni = createStation(new StationRequest(WANGSIMNI)).as(Station.class);
+        seoulForest = requestPost(new StationRequest(SEOUL_FOREST), STATION_URL_PREFIX).extract().as(Station.class);
+        wangsimni = requestPost(new StationRequest(WANGSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
 
-        heangdang = createStation(new StationRequest(HEANGDANG)).as(Station.class);
-        majang = createStation(new StationRequest(MAJANG)).as(Station.class);
-        dapsimni = createStation(new StationRequest(DAPSIMNI)).as(Station.class);
+        heangdang = requestPost(new StationRequest(HEANGDANG), STATION_URL_PREFIX).extract().as(Station.class);
+        majang = requestPost(new StationRequest(MAJANG), STATION_URL_PREFIX).extract().as(Station.class);
+        dapsimni = requestPost(new StationRequest(DAPSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
 
-        yacksu = createStation(new StationRequest(YACKSU)).as(Station.class);
-        geumho = createStation(new StationRequest(GEUMHO)).as(Station.class);
-        oksu = createStation(new StationRequest(OKSU)).as(Station.class);
+        yacksu = requestPost(new StationRequest(YACKSU), STATION_URL_PREFIX).extract().as(Station.class);
+        geumho = requestPost(new StationRequest(GEUMHO), STATION_URL_PREFIX).extract().as(Station.class);
+        oksu = requestPost(new StationRequest(OKSU), STATION_URL_PREFIX).extract().as(Station.class);
 
-        final long greenLineId = createAndGetLineId(
-                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10));
-        createSection(new SectionRequest(yeoksam.getId(), seolleung.getId(), 8), greenLineId);
-        createSection(new SectionRequest(seolleung.getId(), samsung.getId(), 5), greenLineId);
+        final long greenLineId = createAndGetId(
+                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10),
+                LINE_URL_PREFIX);
+        requestPostSection(new SectionRequest(yeoksam.getId(), seolleung.getId(), 8), greenLineId);
+        requestPostSection(new SectionRequest(seolleung.getId(), samsung.getId(), 5), greenLineId);
 
-        final long yellowLineId = createAndGetLineId(
-                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12));
-        createSection(new SectionRequest(seoulForest.getId(), wangsimni.getId(), 7), yellowLineId);
+        final long yellowLineId = createAndGetId(
+                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12),
+                LINE_URL_PREFIX);
+        requestPostSection(new SectionRequest(seoulForest.getId(), wangsimni.getId(), 7), yellowLineId);
 
-        final long purpleLineId = createAndGetLineId(
-                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11));
-        createSection(new SectionRequest(wangsimni.getId(), majang.getId(), 17), purpleLineId);
-        createSection(new SectionRequest(majang.getId(), dapsimni.getId(), 15), purpleLineId);
+        final long purpleLineId = createAndGetId(
+                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11),
+                LINE_URL_PREFIX);
+        requestPostSection(new SectionRequest(wangsimni.getId(), majang.getId(), 17), purpleLineId);
+        requestPostSection(new SectionRequest(majang.getId(), dapsimni.getId(), 15), purpleLineId);
 
-        final long orangeLineId = createAndGetLineId(
-                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7));
-        createSection(new SectionRequest(geumho.getId(), oksu.getId(), 12), orangeLineId);
+        final long orangeLineId = createAndGetId(
+                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7),
+                LINE_URL_PREFIX);
+        requestPostSection(new SectionRequest(geumho.getId(), oksu.getId(), 12), orangeLineId);
     }
 
     @Test
     @DisplayName("동일한 역의 경로를 조회할 경우 400 을 응답한다.")
     void ShowPath_SameStations_BadRequestReturned() {
         // when
-        final ValidatableResponse response = requestPath(gangnam.getId(), gangnam.getId());
+        final ValidatableResponse response = requestPostPath(gangnam.getId(), gangnam.getId());
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ValidatableResponse requestPath(final Long sourceStationId, final Long targetStationId) {
+    private ValidatableResponse requestPostPath(final Long sourceStationId, final Long targetStationId) {
         return RestAssured.given().log().all()
                 .queryParam(SOURCE_STATION_ID, sourceStationId)
                 .queryParam(TARGET_STATION_ID, targetStationId)
@@ -99,7 +103,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ValidatableResponse response = requestPath(gangnam.getId(), oksu.getId());
+        final ValidatableResponse response = requestPostPath(gangnam.getId(), oksu.getId());
 
         // then
         response.statusCode(HttpStatus.NOT_FOUND.value());
@@ -119,7 +123,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 1650;
 
         // when
-        final ValidatableResponse response = requestPath(gangnam.getId(), seoulForest.getId());
+        final ValidatableResponse response = requestPostPath(gangnam.getId(), seoulForest.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
@@ -144,7 +148,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 2250;
 
         // when
-        final ValidatableResponse response = requestPath(yeoksam.getId(), dapsimni.getId());
+        final ValidatableResponse response = requestPostPath(yeoksam.getId(), dapsimni.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
