@@ -108,13 +108,13 @@ public class JdbcSectionDao implements SectionDao {
 
     private int delete(String sql, Long id) {
         int deletedCount = jdbcTemplate.update(sql, id);
-        validateRemoved(deletedCount);
+        validateRemoved(deletedCount, id);
         return deletedCount;
     }
 
-    private void validateRemoved(int count) {
+    private void validateRemoved(int count, Long id) {
         if (count == 0) {
-            throw new IllegalStateException("삭제할 구간이 존재하지 않습니다.");
+            throw new IllegalStateException(id + "로 조회되는 구간이 존재하지 않습니다.");
         }
     }
 }
