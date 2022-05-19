@@ -56,7 +56,7 @@ public class PathService {
         }
 
         if (!stationRepository.existById(target)) {
-            throw new NotFoundStationException(source);
+            throw new NotFoundStationException(target);
         }
     }
 }
