@@ -1,30 +1,39 @@
 package wooteco.subway.dao;
 
-import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Station;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import wooteco.subway.dto.StationResponse;
 
+@Repository
 public class StationDao {
-    private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
 
-    public static Station save(Station station) {
-        Station persistStation = createNewObject(station);
-        stations.add(persistStation);
-        return persistStation;
+    public static final RowMapper<StationResponse> ROW_MAPPER = (rs, rn) -> {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        return new StationResponse(id, name);
+    };
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public StationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public static List<Station> findAll() {
-        return stations;
+    public Optional<StationResponse> queryById(long id) {
+        try {
+            StationResponse response = jdbcTemplate
+                .queryForObject("SELECT id, name FROM STATION WHERE id = ?", ROW_MAPPER, id);
+            return Optional.of(response);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    private static Station createNewObject(Station station) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, ++seq);
-        return station;
+    public List<StationResponse> queryAll() {
+        return jdbcTemplate.query("SELECT id, name FROM STATION", ROW_MAPPER);
     }
 }

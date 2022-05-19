@@ -1,14 +1,15 @@
 package wooteco.subway.dto;
 
-public class SectionRequest {
+public class AddSectionRequest {
+
     private Long upStationId;
     private Long downStationId;
-    private int distance;
+    private Integer distance;
 
-    public SectionRequest() {
+    public AddSectionRequest() {
     }
 
-    public SectionRequest(Long upStationId, Long downStationId, int distance) {
+    public AddSectionRequest(Long upStationId, Long downStationId, Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
@@ -22,7 +23,7 @@ public class SectionRequest {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }
