@@ -9,6 +9,9 @@ public class FareRule {
     private static final int LONG_DISTANCE_FARE_RATIO = 8;
 
     public static int calculateFare(int distance) {
+        if (distance == 0) {
+            return 0;
+        }
         return BASE_FARE + calculateAdditionalFare(distance);
     }
 

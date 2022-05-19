@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 예외 응답을 반환한다.
      * */
     @Test
-    @DisplayName("출발 역과 도착 역 사이의 경로를 조회한다.")
+    @DisplayName("이동할 수 없는 경로를 조회한다.")
     void findUnreachablePath() {
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
@@ -120,4 +121,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+
+    /*
+    * given
+    * 노선이 등록되어 있다.
+    *
+    * when
+    * 출발역과 도착역을 같은 역으로 지정하여 경로를 조회한다.
+    *
+    * then
+    * stations는 빈 리스트이고, distance와 fare가 0이다.
+    * */
+    @Test
+    @DisplayName("출발 역과 도착 역을 같은 역으로 경로를 조회한다.")
+    void findPathWithSameStation() {
+        StationResponse station1 = createStation("station1");
+        StationResponse station2 = createStation("station2");
+
+        LineResponse line = createLine("line1", "color1", station1.getId(),
+                station2.getId(), 1);
+
+        // when
+        ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .queryParam("source", station1.getId())
+                .queryParam("target", station1.getId())
+                .queryParam("age", 18)
+                .log().all()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        // then
+        PathResponse expected = new PathResponse(Collections.emptyList(), 0, 0);
+        PathResponse actual = pathResponse.as(PathResponse.class);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 }

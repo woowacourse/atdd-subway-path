@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.Collections;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,13 +16,24 @@ public class SubwayMap {
     }
 
     public Path calculatePath(final Station source, final Station target) {
-        checkRouteExist(source, target);
-        List<Station> stations = graph.getPath(source, target).getVertexList();
-        int distance = (int) graph.getPath(source, target).getWeight();
+        checkReachable(source, target);
+        List<Station> stations = calculatePassingStations(source, target);
+        int distance = calculateDistance(source, target);
         return new Path(stations, distance);
     }
 
-    private void checkRouteExist(final Station source, final Station target) {
+    private List<Station> calculatePassingStations(final Station source, final Station target) {
+        if (source.equals(target)) {
+            return Collections.emptyList();
+        }
+        return graph.getPath(source, target).getVertexList();
+    }
+
+    private int calculateDistance(final Station source, final Station target) {
+        return (int) graph.getPath(source, target).getWeight();
+    }
+
+    private void checkReachable(final Station source, final Station target) {
         GraphPath<Station, DefaultWeightedEdge> path = this.graph.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("이동 가능한 경로가 존재하지 않습니다");
