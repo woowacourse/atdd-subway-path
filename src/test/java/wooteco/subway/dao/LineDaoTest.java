@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DuplicateKeyException;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -57,7 +58,7 @@ class LineDaoTest {
         // given & when
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(DuplicateKeyException.class)
                 .isThrownBy(() -> linDao.save(new Line(LINE_NAME, LINE_COLOR, section)));
     }
 

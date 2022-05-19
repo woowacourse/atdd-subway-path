@@ -1,12 +1,9 @@
 package wooteco.subway.ui.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
@@ -39,7 +36,7 @@ public class LineService {
         Section section = new Section(upStation, downStation, lineRequest.getDistance());
 
         Line line = new Line(name, color, section);
-        Line createdLine = lineDao.save(line);
+        Line createdLine = saveLine(line);
         sectionDao.save(section, createdLine.getId());
 
         return LineResponse.from(createdLine);
@@ -48,6 +45,14 @@ public class LineService {
     private Station findStationById(Long id) {
         return stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 역을 찾을 수 없습니다."));
+    }
+
+    private Line saveLine(Line line) {
+        try {
+            return lineDao.save(line);
+        } catch (DuplicateKeyException e) {
+            throw new IllegalStateException(line.getName() + "은(는) 이미 존재하는 노선 이름입니다.");
+        }
     }
 
     public List<LineResponse> findAll() {

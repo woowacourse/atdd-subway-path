@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
-
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -14,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
-
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -33,13 +30,9 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public Line save(Line line) {
-        try {
-            SqlParameterSource param = new BeanPropertySqlParameterSource(line);
-            final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(line, id);
-        } catch (DuplicateKeyException ignored) {
-            throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
-        }
+        SqlParameterSource param = new BeanPropertySqlParameterSource(line);
+        final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+        return createNewObject(line, id);
     }
 
     private Line createNewObject(Line line, Long id) {
@@ -61,7 +54,7 @@ public class JdbcLineDao implements LineDao {
         try {
             return jdbcTemplate.queryForObject(sql, this::mapToLine, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
+            throw new IllegalStateException(id + "로 조회되는 노선이 존재하지 않습니다.");
         }
     }
 
@@ -105,13 +98,13 @@ public class JdbcLineDao implements LineDao {
     public int update(Line line) {
         final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
-        validateUpdated(updatedCount);
+        validateUpdated(updatedCount, line);
         return updatedCount;
     }
 
-    private void validateUpdated(int updatedCount) {
+    private void validateUpdated(int updatedCount, Line line) {
         if (updatedCount == 0) {
-            throw new IllegalStateException("수정하고자 하는 노선이 존재하지 않습니다.");
+            throw new IllegalStateException(line.getName() + " 노선이 존재하지 않습니다.");
         }
     }
 
@@ -119,13 +112,13 @@ public class JdbcLineDao implements LineDao {
     public int delete(Long id) {
         final String sql = "DELETE FROM line WHERE id = ?";
         final int deletedCount = jdbcTemplate.update(sql, id);
-        validateDeleted(deletedCount);
+        validateDeleted(deletedCount, id);
         return deletedCount;
     }
 
-    private void validateDeleted(int deletedCount) {
+    private void validateDeleted(int deletedCount, Long id) {
         if (deletedCount == 0) {
-            throw new IllegalStateException("삭제하고자 하는 노선이 존재하지 않습니다.");
+            throw new IllegalStateException(String.format("삭제하고자 하는 %d을(를) id로 갖는 노선이 존재하지 않습니다.", id));
         }
     }
 }
