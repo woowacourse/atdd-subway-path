@@ -1,10 +1,12 @@
 package wooteco.subway.domain;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Sections {
 
@@ -117,12 +119,12 @@ public class Sections {
         }
 
         if (getUpStation().equals(station)) {
-            value.remove(value.get(0));
+            value.removeFirst();
             return;
         }
 
         if (getDownStation().equals(station)) {
-            value.remove(value.get(value.size() - 1));
+            value.removeLast();
             return;
         }
 
@@ -130,12 +132,12 @@ public class Sections {
     }
 
     private Station getUpStation() {
-        Section frontSection = value.get(0);
+        Section frontSection = value.getFirst();
         return frontSection.getUpStation();
     }
 
     private Station getDownStation() {
-        Section backSection = value.get(value.size() - 1);
+        Section backSection = value.getLast();
         return backSection.getDownStation();
     }
 
@@ -175,10 +177,10 @@ public class Sections {
                 .map(Section::getUpStation)
                 .collect(toList());
 
-        Section lastSection = value.get(value.size() - 1);
-        stations.add(lastSection.getDownStation());
+        Section lastSection = value.getLast();
 
-        return stations;
+        return Stream.concat(stations.stream(), Stream.of(lastSection.getDownStation()))
+                .collect(toUnmodifiableList());
     }
 
     public List<Section> getValue() {
