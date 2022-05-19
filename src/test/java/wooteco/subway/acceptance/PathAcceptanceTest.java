@@ -36,6 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params4.put("upStationId", 1L);
         params4.put("downStationId", 3L);
         params4.put("distance", 10);
+        params4.put("extraFare", 500);
 
         createLineResponseOf(params4);
 
@@ -60,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().asString()).contains("20");
-        assertThat(response.body().asString()).contains("1450");
+        assertThat(response.body().asString()).contains("1950");
     }
 
     private void createStationResponseOf(Map<String, String> params) {

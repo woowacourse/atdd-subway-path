@@ -1,43 +1,42 @@
 package wooteco.subway.domain.path;
 
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.station.Station;
+import org.jgrapht.GraphPath;
+import wooteco.subway.domain.path.strategy.PathFindingStrategy;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class Path {
-    private final Graph<Long, DefaultWeightedEdge> graph;
-    private final PathFindingStrategy pathFindingStrategy;
+    private final GraphPath<Long, PathEdge> graphPath;
 
-    public Path(List<Station> stations, List<Section> sections, PathFindingStrategy pathFindingStrategy) {
-        this.graph = generateGraph(stations, sections);
-        this.pathFindingStrategy = pathFindingStrategy;
+    public Path(GraphPath<Long, PathEdge> graphPath) {
+        this.graphPath = graphPath;
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> generateGraph(List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-
-        for (Section section : sections) {
-            Long upStationId = section.getUpStationId();
-            Long downStationId = section.getDownStationId();
-            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
-        }
-
-        return graph;
+    public static Path of(Graph<Long, PathEdge> graph, Long source, Long target, PathFindingStrategy pathFindingStrategy) {
+        GraphPath<Long, PathEdge> shortestPath = pathFindingStrategy.findPathBetween(graph, source, target);
+        return new Path(shortestPath);
     }
 
-    public int calculateShortestDistance(Long source, Long target) {
-        return pathFindingStrategy.calculateShortestDistance(graph, source, target);
+    public List<Long> getNodes() {
+        return graphPath.getVertexList();
     }
 
-    public List<Long> getShortestPath(Long source, Long target) {
-        return pathFindingStrategy.getShortestPath(graph, source, target);
+    public int calculateDistance() {
+        return (int) graphPath.getEdgeList()
+                .stream()
+                .mapToDouble(PathEdge::getWeight)
+                .sum();
+    }
+
+    public int getHighestExtraFare(Map<Long, Integer> lineExtraFares) {
+        return graphPath.getEdgeList()
+                .stream()
+                .map(PathEdge::getLineId)
+                .mapToInt(lineExtraFares::get)
+                .max()
+                .orElseThrow(() -> new NoSuchElementException("경로가 존재하지 않습니다."));
     }
 }
