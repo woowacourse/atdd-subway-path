@@ -1,6 +1,7 @@
 package wooteco.subway.ui;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
@@ -39,7 +40,8 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLines() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<LineResponse> showLines() {
         List<Line> lines = lineService.findAll();
         List<LineResponse> lineResponses = new ArrayList<>();
 
@@ -50,27 +52,26 @@ public class LineController {
             lineResponses.add(lineResponse);
         }
 
-        return ResponseEntity.ok(lineResponses);
+        return lineResponses;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> showLine(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public LineResponse showLine(@PathVariable Long id) {
         Line line = lineService.findById(id);
-        LineResponse lineResponse = new LineResponse(line.getId(), line.getName(), line.getColor());
-        return ResponseEntity.ok(lineResponse);
+        return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LineResponse> updateLine(@PathVariable Long id,
-                                                   @RequestBody LineRequest lineRequest) {
+    @ResponseStatus(HttpStatus.OK)
+    public LineResponse updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
         Line line = lineService.update(id, lineRequest.getName(), lineRequest.getColor());
-        LineResponse lineResponse = new LineResponse(line.getId(), line.getName(), line.getColor());
-        return ResponseEntity.ok(lineResponse);
+        return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLine(@PathVariable Long id) {
         lineService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

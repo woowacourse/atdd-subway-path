@@ -1,6 +1,7 @@
 package wooteco.subway.ui;
 
-import org.springframework.http.MediaType;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.StationService;
@@ -12,15 +13,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
 @RequestMapping("/stations")
+@RestController
+@AllArgsConstructor
 public class StationController {
 
     private final StationService stationService;
-
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(
@@ -31,17 +29,16 @@ public class StationController {
                 .body(stationResponse);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations() {
-        List<StationResponse> stationResponses =
-                toStationResponses();
-        return ResponseEntity.ok().body(stationResponses);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<StationResponse> showStations() {
+        return toStationResponses();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStation(@PathVariable Long id) {
         stationService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     private List<StationResponse> toStationResponses() {
