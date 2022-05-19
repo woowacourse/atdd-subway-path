@@ -7,9 +7,6 @@ public class Line {
     private String color;
     private int extraFare;
 
-    public Line() {
-    }
-
     public Line(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;

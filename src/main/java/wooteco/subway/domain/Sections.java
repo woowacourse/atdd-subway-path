@@ -68,7 +68,7 @@ public class Sections {
     }
 
     private void validateDistance(Section section, Section currentSection) {
-        if (section.isMoreDistance(currentSection)) {
+        if (section.isLongerDistance(currentSection)) {
             throw new IllegalStateException("기존 구간보다 거리가 길거나 같은 구간을 입력할 수 없습니다.");
         }
     }

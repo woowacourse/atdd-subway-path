@@ -8,6 +8,7 @@ public class FareCalculator {
     private static final int SECOND_STANDARD = 50;
     private static final int FIRST_STANDARD_UNIT = 5;
     private static final int SECOND_STANDARD_UNIT = 8;
+    private static final int SURCHARGE_UNIT_COUNT = 8;
 
     public static int calculate(int distance) {
         if (distance == 0) {
@@ -15,7 +16,7 @@ public class FareCalculator {
         }
 
         if (distance > SECOND_STANDARD) {
-            return DEFAULT_FARE + SURCHARGE_PER_UNIT * 8 + (int) (
+            return DEFAULT_FARE + SURCHARGE_PER_UNIT * SURCHARGE_UNIT_COUNT + (int) (
                     ((Math.ceil((distance - SECOND_STANDARD) / (double) SECOND_STANDARD_UNIT))) * SURCHARGE_PER_UNIT);
         }
         if (distance > FIRST_STANDARD) {
