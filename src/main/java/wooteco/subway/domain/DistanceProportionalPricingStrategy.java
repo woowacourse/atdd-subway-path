@@ -24,8 +24,14 @@ public class DistanceProportionalPricingStrategy implements PricingStrategy {
         return BASIC_FEE;
     }
 
+    // distance에서 unit거리만큼 UNIT_MONEY가 계속 추가요금으로 붙는다.
+    // ex. distance: 1, unit: 5 -> 1*UNIT_MONEY가 추가요금
+    // ex. distance: 5, unit: 5 일때 1*UNIT_MONEY가 추가요금
+    // ex. distance: 6, unit: 5 일때 2*UNIT_MONEY가 추가요금
     private int calculateCost(int distance, int unit) {
-        return ((distance - 1) / unit + 1) * UNIT_MONEY;
+        int additionalCostCount = 1;
+        additionalCostCount += (distance - 1) / unit;
+        return additionalCostCount * UNIT_MONEY;
     }
 
     private int calculateDistance(List<Section> sections) {
