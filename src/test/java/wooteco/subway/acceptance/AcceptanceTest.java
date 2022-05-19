@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dto.line.LineRequest;
-import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -55,42 +53,12 @@ abstract class AcceptanceTest {
         jdbcTemplate.execute("DELETE FROM line");
     }
 
-    protected long createAndGetStationId(StationRequest request) {
-        final ExtractableResponse<Response> response = createStation(request);
-        return extractId(response);
-    }
-
-    protected long createAndGetLineId(LineRequest request) {
-        final ExtractableResponse<Response> response = createLine(request);
-        return extractId(response);
-    }
-
     protected ExtractableResponse<Response> createStation(final StationRequest request) {
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post(STATION_URL_PREFIX)
-                .then().log().all()
-                .extract();
-    }
-
-    protected ExtractableResponse<Response> createLine(final LineRequest request) {
-        return RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post(LINE_URL_PREFIX)
-                .then().log().all()
-                .extract();
-    }
-
-    protected ExtractableResponse<Response> createSection(final SectionRequest request, final long lineId) {
-        return RestAssured.given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
                 .then().log().all()
                 .extract();
     }
@@ -133,6 +101,14 @@ abstract class AcceptanceTest {
         return RestAssured.given().log().all()
                 .when()
                 .delete(url)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse requestDeleteSection(final Long lineId, final Long stationId) {
+        return RestAssured.given().log().all()
+                .queryParam("stationId", stationId)
+                .when()
+                .delete(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
                 .then().log().all();
     }
 

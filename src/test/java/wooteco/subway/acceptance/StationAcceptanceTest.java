@@ -75,7 +75,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void DeleteStation() {
         // given
-        final long id = createAndGetStationId(gangNamStationRequest);
+        final long id = createAndGetId(gangNamStationRequest, STATION_URL_PREFIX);
 
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
