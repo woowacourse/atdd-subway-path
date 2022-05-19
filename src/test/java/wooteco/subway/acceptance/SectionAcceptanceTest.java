@@ -79,6 +79,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        assertThat(sectionDeleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(sectionDeleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -132,6 +132,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

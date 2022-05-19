@@ -11,7 +11,7 @@ public class SubwayGraph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> subwayGraph;
 
     public SubwayGraph() {
-        subwayGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        subwayGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
     public void init(final Sections sections) {
@@ -40,8 +40,8 @@ public class SubwayGraph {
         return graphResult(source, target).getWeight();
     }
 
-    private GraphPath graphResult(final Station source, final Station target) {
-        DijkstraShortestPath pathFinder = new DijkstraShortestPath(subwayGraph);
+    private GraphPath<Station, DefaultWeightedEdge> graphResult(final Station source, final Station target) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
         return pathFinder.getPath(source, target);
     }
 }
