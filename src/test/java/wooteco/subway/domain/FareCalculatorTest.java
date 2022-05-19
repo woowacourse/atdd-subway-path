@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.domain.distanceUnit.Kilometer;
 
 public class FareCalculatorTest {
 
@@ -12,7 +13,7 @@ public class FareCalculatorTest {
     void calculate(double distance, int expected) {
         FareCalculator fareCalculator = new FareCalculator();
 
-        int fare = fareCalculator.execute(distance);
+        int fare = fareCalculator.calculate(new Kilometer(distance));
 
         assertThat(fare).isEqualTo(expected);
     }

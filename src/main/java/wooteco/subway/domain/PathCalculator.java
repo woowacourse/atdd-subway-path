@@ -11,8 +11,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class PathCalculator {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    private PathCalculator(
-            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
+    private PathCalculator(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
