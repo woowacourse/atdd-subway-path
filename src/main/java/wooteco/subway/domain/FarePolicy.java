@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-public class FareRule {
+public class FarePolicy {
     public static final int BASE_FARE = 1250;
     private static final int SHORT_DISTANCE_UPPER_BOUND = 10;
     private static final int MIDDLE_DISTANCE_UPPER_BOUND = 50;

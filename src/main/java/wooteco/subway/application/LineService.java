@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareRule;
+import wooteco.subway.domain.FarePolicy;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
@@ -108,6 +108,6 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
         Path path = subwayMap.calculatePath(sourceStation, targetStation);
-        return PathResponse.from(path.getStations(), path.getDistance(), FareRule.calculateFare(path.getDistance()));
+        return PathResponse.from(path.getStations(), path.getDistance(), FarePolicy.calculateFare(path.getDistance()));
     }
 }
