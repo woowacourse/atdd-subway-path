@@ -45,12 +45,11 @@ public class Path {
     }
 
     private int calculateFirstAdditionalFare() {
-        return calculateOverFare(distance - DISTANCE_OF_DEFAULT_FARE, DISTANCE_OF_FIRST_ADDITIONAL_UNIT
-        );
+        return calculateOverFare(distance - DISTANCE_OF_DEFAULT_FARE, DISTANCE_OF_FIRST_ADDITIONAL_UNIT);
     }
 
     private int calculateOverFare(int distance, int unitDistance) {
-        return (int) ((Math.ceil((distance - 1) / unitDistance) + 1) * UNIT_OF_ADDITIONAL_FARE);
+        return (((distance - 1) / unitDistance) * UNIT_OF_ADDITIONAL_FARE) + UNIT_OF_ADDITIONAL_FARE;
     }
 
     private int calculateFirstAdditionalMaxFare() {
