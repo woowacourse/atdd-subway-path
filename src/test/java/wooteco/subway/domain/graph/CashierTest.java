@@ -1,4 +1,4 @@
-package wooteco.subway.domain.route;
+package wooteco.subway.domain.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

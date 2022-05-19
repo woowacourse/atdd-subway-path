@@ -1,4 +1,4 @@
-package wooteco.subway.domain.route;
+package wooteco.subway.domain.graph;
 
 import java.util.ArrayList;
 import java.util.List;

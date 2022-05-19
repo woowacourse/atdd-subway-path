@@ -3,8 +3,8 @@ package wooteco.subway.service.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import wooteco.subway.domain.graph.Route;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.route.Route;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.dto.line.LineRequest;

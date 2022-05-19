@@ -1,4 +1,4 @@
-package wooteco.subway.domain.route;
+package wooteco.subway.domain.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,8 +12,6 @@ import static wooteco.subway.domain.TestFixture.선릉역;
 import static wooteco.subway.domain.TestFixture.역삼_선릉;
 import static wooteco.subway.domain.TestFixture.역삼역;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -24,33 +22,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
-class RouterTest {
+class SubwayGraphTest {
 
-    private Router router;
+    private SubwayGraph subwayGraph;
 
     @BeforeEach
     void setUp() {
-        this.router = new Router();
+        this.subwayGraph = new SubwayGraph(SECTIONS);
     }
 
     @DisplayName("구간 정보와 출발지 도착지를 이용해 최단 경로 및 거리를 계산한다")
     @Test
     void findShortestRoute() {
-        // given
-        List<Section> sections = new ArrayList<>(SECTIONS);
-        Collections.shuffle(sections);
+        Route shortestRoute = subwayGraph.findShortestRoute(교대역, 선릉역);
+        List<Station> actualRoute = shortestRoute.getRoute();
+        int actualDistance = shortestRoute.getDistance();
 
-        // when
-        Router router = new Router();
-        Route shortestRoute = router.findShortestRoute(sections, 교대역, 선릉역);
-
-        // then
         assertAll(
-                () -> assertThat(shortestRoute.getRoute()).containsExactly(교대역, 강남역, 역삼역, 선릉역),
-                () -> assertThat(shortestRoute.getDistance()).isEqualTo(18)
+                () -> assertThat(actualRoute).containsExactly(교대역, 강남역, 역삼역, 선릉역),
+                () -> assertThat(actualDistance).isEqualTo(18)
         );
     }
 
@@ -58,7 +50,7 @@ class RouterTest {
     @ParameterizedTest
     @MethodSource("provideForValidateSourceAndTargetExist")
     void validateSourceAndTargetExist(Station source, Station target) {
-        assertThatThrownBy(() -> router.findShortestRoute(SECTIONS, source, target))
+        assertThatThrownBy(() -> subwayGraph.findShortestRoute(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발지 또는 도착지에 대한 구간 정보가 없습니다");
     }
@@ -72,12 +64,8 @@ class RouterTest {
     @Test
     @DisplayName("출발지부터 도착지까지 연결된 경로가 없을 경우 반환값이 존재하지 않는다")
     void ifRouteDoesNotExistResultShouldBeNull() {
-        // given
-        final List<Section> SECTIONS = List.of(교대_강남, 역삼_선릉);
-        final Router router = new Router();
-
-        // when & then
-        assertThatThrownBy(() -> router.findShortestRoute(SECTIONS, 교대역, 선릉역))
+        final SubwayGraph subwayGraph = new SubwayGraph(List.of(교대_강남, 역삼_선릉));
+        assertThatThrownBy(() -> subwayGraph.findShortestRoute(교대역, 선릉역))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("출발지부터 도착지까지 구간이 연결되어 있지 않습니다.");
     }
