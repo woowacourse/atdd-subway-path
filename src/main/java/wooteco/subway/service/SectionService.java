@@ -19,7 +19,7 @@ public class SectionService {
 
     public void save(Long lineId, SectionRequest sectionRequest) {
         Section section = sectionRequest.toSection(lineId);
-        Sections sections = new Sections(sectionDao.findByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
+        Sections sections = new Sections(sectionDao.getByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
 
         sections.save(section);
         Optional<Section> revisedSection = sections.fixOverLappedSection(section);
@@ -29,7 +29,7 @@ public class SectionService {
     }
 
     public void delete(Long lineId, Long stationId) {
-        Sections sections = new Sections(sectionDao.findByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
+        Sections sections = new Sections(sectionDao.getByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
 
         Optional<Section> connectedSection = sections.fixDisconnectedSection(lineId, stationId);
         sections.delete(lineId, stationId);

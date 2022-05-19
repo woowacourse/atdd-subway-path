@@ -44,7 +44,7 @@ public class LineDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public Line findById(Long id) {
+    public Line getById(Long id) {
         String sql = "select * from LINE where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);

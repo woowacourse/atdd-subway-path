@@ -44,7 +44,7 @@ public class StationDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public Station findById(Long id) {
+    public Station getById(Long id) {
         String sql = "select * from STATION where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);

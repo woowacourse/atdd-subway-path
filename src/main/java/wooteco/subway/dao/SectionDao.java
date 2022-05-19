@@ -48,7 +48,7 @@ public class SectionDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public List<Section> findByLineId(Long lineId) {
+    public List<Section> getByLineId(Long lineId) {
         String sql = "select * from SECTION where line_id = :lineId";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", lineId);
         return namedParameterJdbcTemplate.query(sql,sqlParameterSource, ACTOR_ROW_MAPPER);

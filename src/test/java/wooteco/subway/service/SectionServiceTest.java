@@ -59,7 +59,7 @@ public class SectionServiceTest {
     void saveSection() {
         sectionService.save(1L, sectionRequest2);
 
-        assertThat(sectionDao.findByLineId(1L)).hasSize(2);
+        assertThat(sectionDao.getByLineId(1L)).hasSize(2);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SectionServiceTest {
 
         sectionService.delete(1L, 강남);
 
-        assertThat(sectionDao.findByLineId(1L)).hasSize(1);
+        assertThat(sectionDao.getByLineId(1L)).hasSize(1);
     }
 
 }

@@ -29,8 +29,8 @@ public class LineService {
 
     @Transactional
     public LineResponse save(LineRequest lineRequest) {
-        Station downStation = stationDao.findById(lineRequest.getDownStationId());
-        Station upStation = stationDao.findById(lineRequest.getUpStationId());
+        Station downStation = stationDao.getById(lineRequest.getDownStationId());
+        Station upStation = stationDao.getById(lineRequest.getUpStationId());
 
         Line line = lineRequest.toLine();
         checkDuplication(line);
@@ -56,12 +56,12 @@ public class LineService {
     }
 
     public LineResponse findById(Long id) {
-        Line line = lineDao.findById(id);
+        Line line = lineDao.getById(id);
         return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponseOf(line));
     }
 
     private List<StationResponse> createStationResponseOf(Line line) {
-        Sections sections = new Sections(sectionDao.findByLineId(line.getId()), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
+        Sections sections = new Sections(sectionDao.getByLineId(line.getId()), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
         List<Station> stations = stationDao.findByIdIn(sections.getStationIds());
 
         List<Station> sortedStations = sections.sort(stations);
