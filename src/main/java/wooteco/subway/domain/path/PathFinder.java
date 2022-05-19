@@ -18,8 +18,18 @@ public class PathFinder {
 
     public Path getShortestPath(Station source, Station target) {
         validateEmpty();
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return new Path(dijkstraShortestPath.getPath(source, target));
+        validateStations(source, target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        return new Path(shortestPath.getPath(source, target));
+    }
+
+    private void validateStations(Station source, Station target) {
+        if (!graph.containsVertex(source)) {
+            throw new IllegalArgumentException(String.format("%s 역이 구간으로 존재하지 않습니다.", source.getName()));
+        }
+        if (!graph.containsVertex(target)) {
+            throw new IllegalArgumentException(String.format("%s 역이 구간으로 존재하지 않습니다.", target.getName()));
+        }
     }
 
     private void validateEmpty() {
