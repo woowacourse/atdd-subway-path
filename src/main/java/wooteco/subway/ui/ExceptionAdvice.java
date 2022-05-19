@@ -11,4 +11,9 @@ public class ExceptionAdvice {
     public ResponseEntity<Void> duplicatedNameFound() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> unControlledExceptionFound() {
+        return ResponseEntity.internalServerError().build();
+    }
 }
