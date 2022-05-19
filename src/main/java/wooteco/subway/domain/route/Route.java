@@ -2,6 +2,7 @@ package wooteco.subway.domain.route;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import wooteco.subway.domain.station.Station;
 
 public class Route {
