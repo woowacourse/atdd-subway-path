@@ -3,6 +3,7 @@ package wooteco.subway.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import wooteco.subway.domain.Line;
 
 public class LineRequest {
 
@@ -34,6 +35,10 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static Line toLine(LineRequest lineRequest) {
+        return new Line(lineRequest.getName(), lineRequest.getColor());
     }
 
     public String getName() {

@@ -34,7 +34,7 @@ public class LineService {
     @Transactional
     public LineResponse save(LineRequest lineRequest) {
         validateDuplicatedName(lineRequest.getName());
-        Line line = lineDao.save(new Line(lineRequest.getName(), lineRequest.getColor()));
+        Line line = lineDao.save(LineRequest.toLine(lineRequest));
         Station upStation = stationService.findById(lineRequest.getUpStationId());
         Station downStation = stationService.findById(lineRequest.getDownStationId());
         Section section = new Section(line.getId(), upStation, downStation, lineRequest.getDistance());

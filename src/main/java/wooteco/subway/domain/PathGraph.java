@@ -8,10 +8,10 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathGraph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-        DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathGraph(List<Line> lines) {
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initGraph(lines);
     }
 

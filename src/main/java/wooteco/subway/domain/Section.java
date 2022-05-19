@@ -11,7 +11,7 @@ public class Section {
     private int distance;
 
     public Section(Long id, Long lineId, Station upStation, Station downStation,
-        Integer distance) {
+        int distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
@@ -19,7 +19,7 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, Integer distance) {
+    public Section(Long lineId, Station upStation, Station downStation, int distance) {
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
