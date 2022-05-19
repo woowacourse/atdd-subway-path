@@ -11,7 +11,7 @@ public class ShortestPath {
         DefaultWeightedEdge.class);
 
     public ShortestPath(Sections sections) {
-        initVertexes(sections);
+        initVertices(sections);
         addEdgeWeights(sections);
     }
 
@@ -22,7 +22,7 @@ public class ShortestPath {
         }
     }
 
-    private void initVertexes(Sections sections) {
+    private void initVertices(Sections sections) {
         for (Long stationId : sections.sortedStationId()) {
             graph.addVertex(stationId);
         }
