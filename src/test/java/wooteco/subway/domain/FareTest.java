@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class FareTest {
 
     @DisplayName("운임에 따른 요금을 반환한다.")
-    @ParameterizedTest(name = "{displayName} : {arguments}")
+    @ParameterizedTest(name = "{displayName} : {0} km, {1} 원")
     @CsvSource(value = {"1,1250", "10,1250", "11,1350", "50,2050", "51,2150", "59,2250"})
     void getBaseFare(String distance, String resultFare) {
         Fare fare = new Fare(new DistanceFareStrategy());

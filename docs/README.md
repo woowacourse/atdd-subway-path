@@ -33,7 +33,7 @@
   - `@DisplayName`과 메서드명 수정으로 어떤 테스트인지 나타내도록 수정했습니다.
 - [x] 어차피 테스트를 위한 메서드이기 때문에 ForTest는 지워도 될 것 같다
 - [x] 어떤 결과를 이용한느 것이 아니면 변수를 할당할 필요는 없을 것 같다
-- [ ] (@ParameterizedTest(name = "{displayName} : {arguments}")) 이름에서 숫자와 단위까지 함께 보여주면 더 좋을 것 같아요.
+- [x] (@ParameterizedTest(name = "{displayName} : {arguments}")) 이름에서 숫자와 단위까지 함께 보여주면 더 좋을 것 같아요.
 - [ ] CsvSource 에서 바로 int로 받을 수 있다.
 - [ ] Fare가 필요한 이유가 있을까요?
 - [ ] (PathService) 사용하지 않는 변수가 있다.
