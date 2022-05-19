@@ -34,7 +34,7 @@
 - [x] 어차피 테스트를 위한 메서드이기 때문에 ForTest는 지워도 될 것 같다
 - [x] 어떤 결과를 이용한느 것이 아니면 변수를 할당할 필요는 없을 것 같다
 - [x] (@ParameterizedTest(name = "{displayName} : {arguments}")) 이름에서 숫자와 단위까지 함께 보여주면 더 좋을 것 같아요.
-- [ ] CsvSource 에서 바로 int로 받을 수 있다.
+- [x] CsvSource 에서 Integer로 받을 수 있다.
 - [ ] Fare가 필요한 이유가 있을까요?
 - [ ] (PathService) 사용하지 않는 변수가 있다.
 - [ ] (validateNotExists) 이 메서드의 이름만 봐서는 존재하지 않음을 검증한다, 즉 비즈니스 로직상 "존재하지 않아야 한다"로 생각되네요.

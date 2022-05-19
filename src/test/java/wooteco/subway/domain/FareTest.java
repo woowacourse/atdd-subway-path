@@ -11,8 +11,8 @@ public class FareTest {
     @DisplayName("운임에 따른 요금을 반환한다.")
     @ParameterizedTest(name = "{displayName} : {0} km, {1} 원")
     @CsvSource(value = {"1,1250", "10,1250", "11,1350", "50,2050", "51,2150", "59,2250"})
-    void getBaseFare(String distance, String resultFare) {
+    void getBaseFare(Integer distance, Integer resultFare) {
         Fare fare = new Fare(new DistanceFareStrategy());
-        assertThat(fare.calculate(Integer.parseInt(distance))).isEqualTo(Integer.parseInt(resultFare));
+        assertThat(fare.calculate(distance)).isEqualTo(resultFare);
     }
 }
