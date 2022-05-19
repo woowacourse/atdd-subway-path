@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,6 @@ class PathTest {
         sections.add(new Section(6L, 2L, 3L, 4L, 1));
         sections.add(new Section(7L, 2L, 4L, 6L, 1));
 
-
         final Path path = new Path(new Sections(sections));
 
         // when
@@ -52,8 +53,10 @@ class PathTest {
         final int weight = path.getShortestPathWeight(1L, 7L);
 
         // then
-        assertThat(shortestPath).containsExactly(1L, 2L, 3L, 4L, 6L, 7L);
-        assertThat(weight).isEqualTo(5);
+        assertAll(
+                () -> assertThat(shortestPath).containsExactly(1L, 2L, 3L, 4L, 6L, 7L),
+                () -> assertEquals(weight, 5)
+        );
     }
 
     @DisplayName("여러 노선이 존재할 때 구간과 역 정보를 통해 최단 경로를 구할 수 있다.")
@@ -70,7 +73,6 @@ class PathTest {
         sections.add(new Section(6L, 2L, 4L, 3L, 1));
         sections.add(new Section(7L, 2L, 3L, 7L, 1));
 
-
         final Path path = new Path(new Sections(sections));
 
         // when
@@ -78,7 +80,9 @@ class PathTest {
         final int weight = path.getShortestPathWeight(1L, 6L);
 
         // then
-        assertThat(shortestPath).containsExactly(1L, 2L, 4L, 3L, 7L, 6L);
-        assertThat(weight).isEqualTo(5);
+        assertAll(
+                () -> assertThat(shortestPath).containsExactly(1L, 2L, 4L, 3L, 7L, 6L),
+                () -> assertEquals(weight, 5)
+        );
     }
 }
