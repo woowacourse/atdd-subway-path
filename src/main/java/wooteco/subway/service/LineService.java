@@ -14,7 +14,6 @@ import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.DuplicateLineException;
 
 @Service
-@Transactional
 public class LineService {
 
     private final LineDao lineDao;
@@ -28,6 +27,7 @@ public class LineService {
         this.sectionService = sectionService;
     }
 
+    @Transactional
     public LineResponse save(final LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateCreateRequest(newLine);
@@ -80,6 +80,7 @@ public class LineService {
         return createLineResponse(line, getStationsByStationIds(line.getId()));
     }
 
+    @Transactional
     public void update(Long lineId, LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
@@ -104,6 +105,7 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void delete(Long lineId) {
         lineDao.deleteById(lineId);
     }
