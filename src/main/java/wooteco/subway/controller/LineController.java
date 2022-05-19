@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.controller.request.LineRequest;
 import wooteco.subway.dto.controller.response.LineResponse;
+import wooteco.subway.dto.converter.LineConverter;
 import wooteco.subway.dto.service.LineServiceRequest;
 import wooteco.subway.dto.service.LineServiceResponse;
 import wooteco.subway.dto.service.LineUpdateRequest;
