@@ -40,8 +40,8 @@ public class PathCalculatorTest {
     @Test
     @DisplayName("주어진 구간으로 최단 경로의 거리를 구한다.")
     void calculateDistance() {
-        double distance = pathCalculator.calculateShortestDistance(선릉, 강남);
+        Distance distance = pathCalculator.calculateShortestDistance(선릉, 강남);
 
-        assertThat(distance).isEqualTo(0.02);
+        assertThat(distance.getValue()).isEqualTo(0.02);
     }
 }
