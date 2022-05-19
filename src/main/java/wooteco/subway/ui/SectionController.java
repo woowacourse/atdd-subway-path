@@ -25,19 +25,14 @@ public class SectionController {
     @PostMapping("/lines/{id}/sections")
     public ResponseEntity<LineResponse> createSection(
         @Validated @RequestBody SectionRequest sectionRequest, @PathVariable Long id) {
-        Long savedId = sectionService.save(sectionRequest.toServiceRequest(), id);
-        if (savedId != null) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.noContent().build();
+        sectionService.save(sectionRequest.toServiceRequest(), id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/lines/{id}/sections")
     public ResponseEntity<LineResponse> deleteSection(@PathVariable Long id,
         @RequestParam Long stationId) {
-        if (sectionService.removeSection(new SectionServiceDeleteRequest(id, stationId))) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.noContent().build();
+        sectionService.removeSection(new SectionServiceDeleteRequest(id, stationId));
+        return ResponseEntity.ok().build();
     }
 }
