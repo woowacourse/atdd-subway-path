@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.LineDaoImpl;
+import wooteco.subway.dao.JdbcLineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.SectionDaoImpl;
+import wooteco.subway.dao.JdbcSectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.StationDaoImpl;
+import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineServiceRequest;
@@ -36,9 +36,9 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDaoImpl(jdbcTemplate);
-        sectionDao = new SectionDaoImpl(jdbcTemplate);
-        stationDao = new StationDaoImpl(jdbcTemplate);
+        lineDao = new JdbcLineDao(jdbcTemplate);
+        sectionDao = new JdbcSectionDao(jdbcTemplate);
+        stationDao = new JdbcStationDao(jdbcTemplate);
         lineService = new LineService(lineDao, sectionDao, stationDao);
 
         List<Line> lines = lineDao.findAll();

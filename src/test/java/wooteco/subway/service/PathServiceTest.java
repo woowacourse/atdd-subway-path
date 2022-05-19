@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.LineDaoImpl;
+import wooteco.subway.dao.JdbcLineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.SectionDaoImpl;
+import wooteco.subway.dao.JdbcSectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.StationDaoImpl;
+import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -31,10 +31,10 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDaoImpl(jdbcTemplate);
-        stationDao = new StationDaoImpl(jdbcTemplate);
+        sectionDao = new JdbcSectionDao(jdbcTemplate);
+        stationDao = new JdbcStationDao(jdbcTemplate);
         pathService = new PathService(sectionDao, stationDao);
-        lineDao = new LineDaoImpl(jdbcTemplate);
+        lineDao = new JdbcLineDao(jdbcTemplate);
 
         Station station1 = new Station("교대역");
         Station station2 = new Station("강남역");

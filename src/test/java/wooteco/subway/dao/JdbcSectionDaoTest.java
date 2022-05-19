@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Section;
 
 @JdbcTest
-public class SectionDaoImplTest {
+public class JdbcSectionDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -20,7 +20,7 @@ public class SectionDaoImplTest {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDaoImpl(jdbcTemplate);
+        sectionDao = new JdbcSectionDao(jdbcTemplate);
     }
 
     @Test

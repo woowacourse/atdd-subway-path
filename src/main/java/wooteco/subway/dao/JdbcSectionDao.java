@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 
 @Repository
-public class SectionDaoImpl implements SectionDao {
+public class JdbcSectionDao implements SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SectionDaoImpl(JdbcTemplate jdbcTemplate) {
+    public JdbcSectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 
 @Repository
-public class LineDaoImpl implements LineDao {
+public class JdbcLineDao implements LineDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public LineDaoImpl(JdbcTemplate jdbcTemplate) {
+    public JdbcLineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

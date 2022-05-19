@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
 @Repository
-public class StationDaoImpl implements StationDao {
+public class JdbcStationDao implements StationDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public StationDaoImpl(JdbcTemplate jdbcTemplate) {
+    public JdbcStationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

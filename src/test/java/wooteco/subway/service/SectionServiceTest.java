@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.LineDaoImpl;
+import wooteco.subway.dao.JdbcLineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.SectionDaoImpl;
+import wooteco.subway.dao.JdbcSectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -33,9 +33,9 @@ public class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDaoImpl(jdbcTemplate);
+        sectionDao = new JdbcSectionDao(jdbcTemplate);
         sectionService = new SectionService(sectionDao);
-        lineDao = new LineDaoImpl(jdbcTemplate);
+        lineDao = new JdbcLineDao(jdbcTemplate);
     }
 
     @Test

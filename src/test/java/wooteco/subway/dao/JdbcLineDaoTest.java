@@ -14,24 +14,24 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
 
 @JdbcTest
-class LineDaoImplTest {
+class JdbcLineDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private LineDaoImpl lineDaoImpl;
+    private JdbcLineDao jdbcLineDao;
 
     @BeforeEach
     void setUp() {
-        lineDaoImpl = new LineDaoImpl(jdbcTemplate);
+        jdbcLineDao = new JdbcLineDao(jdbcTemplate);
 
-        List<Line> lineEntities = lineDaoImpl.findAll();
+        List<Line> lineEntities = jdbcLineDao.findAll();
         List<Long> lineIds = lineEntities.stream()
             .map(Line::getId)
             .collect(Collectors.toList());
 
         for (Long lineId : lineIds) {
-            lineDaoImpl.deleteById(lineId);
+            jdbcLineDao.deleteById(lineId);
         }
     }
 
@@ -41,8 +41,8 @@ class LineDaoImplTest {
         Line line = new Line("1호선", "bg-red-600");
 
         // when
-        Long savedId = lineDaoImpl.save(line);
-        Line line1 = lineDaoImpl.findById(savedId).get();
+        Long savedId = jdbcLineDao.save(line);
+        Line line1 = jdbcLineDao.findById(savedId).get();
 
         // then
         assertThat(line.getName()).isEqualTo(line1.getName());
@@ -55,10 +55,10 @@ class LineDaoImplTest {
         Line line2 = new Line("1호선", "bg-red-600");
 
         // when
-        lineDaoImpl.save(line1);
+        jdbcLineDao.save(line1);
 
         // then
-        assertThatThrownBy(() -> lineDaoImpl.save(line2))
+        assertThatThrownBy(() -> jdbcLineDao.save(line2))
             .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -69,11 +69,11 @@ class LineDaoImplTest {
         Line line2 = new Line("2호선", "bg-green-600");
 
         // when
-        lineDaoImpl.save(line1);
-        lineDaoImpl.save(line2);
+        jdbcLineDao.save(line1);
+        jdbcLineDao.save(line2);
 
         // then
-        List<String> names = lineDaoImpl.findAll()
+        List<String> names = jdbcLineDao.findAll()
             .stream()
             .map(Line::getName)
             .collect(Collectors.toList());
@@ -87,13 +87,13 @@ class LineDaoImplTest {
     void delete() {
         // given
         Line line = new Line("1호선", "bg-red-600");
-        Long savedId = lineDaoImpl.save(line);
+        Long savedId = jdbcLineDao.save(line);
 
         // when
-        lineDaoImpl.deleteById(savedId);
+        jdbcLineDao.deleteById(savedId);
 
         // then
-        List<Long> lineIds = lineDaoImpl.findAll()
+        List<Long> lineIds = jdbcLineDao.findAll()
             .stream()
             .map(Line::getId)
             .collect(Collectors.toList());
@@ -107,12 +107,12 @@ class LineDaoImplTest {
     void update() {
         // given
         Line originLine = new Line("1호선", "bg-red-600");
-        Long savedId = lineDaoImpl.save(originLine);
+        Long savedId = jdbcLineDao.save(originLine);
 
         // when
         Line newline = new Line("2호선", "bg-green-600");
-        lineDaoImpl.updateById(savedId, newline);
-        Line line = lineDaoImpl.findById(savedId).get();
+        jdbcLineDao.updateById(savedId, newline);
+        Line line = jdbcLineDao.findById(savedId).get();
 
         // then
         assertThat(line.getName()).isEqualTo(newline.getName());

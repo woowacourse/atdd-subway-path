@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.StationDaoImpl;
+import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationServiceRequest;
 import wooteco.subway.service.dto.StationServiceResponse;
@@ -26,7 +26,7 @@ class StationServiceTest {
 
     @BeforeEach
     void setUp() {
-        StationDao stationDao = new StationDaoImpl(jdbcTemplate);
+        StationDao stationDao = new JdbcStationDao(jdbcTemplate);
         stationService = new StationService(stationDao);
         List<Station> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
