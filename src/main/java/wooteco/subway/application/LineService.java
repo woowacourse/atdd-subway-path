@@ -94,19 +94,4 @@ public class LineService {
         line.addAllSections(sections);
         return line;
     }
-
-    @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        Path pathFinder = new Path(sectionService.findAll());
-
-        Station sourceStation = stationDao.findById(sourceId)
-                .orElseThrow(() -> new NoSuchStationException(sourceId));
-        Station targetStation = stationDao.findById(targetId)
-                .orElseThrow(() -> new NoSuchStationException(targetId));
-
-        List<Station> path = pathFinder.findRoute(sourceStation, targetStation);
-        int distance = pathFinder.calculateDistance(sourceStation, targetStation);
-        int fare = pathFinder.calculateFare(sourceStation, targetStation);
-        return PathResponse.from(path, distance, fare);
-    }
 }
