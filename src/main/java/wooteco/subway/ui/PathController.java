@@ -19,7 +19,8 @@ public class PathController {
     }
 
     @GetMapping(value = "/paths", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target, @RequestParam Long age) {
+    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target,
+        @RequestParam Long age) {
         return ResponseEntity.ok().body(pathService.findPath(source, target, age));
     }
 }

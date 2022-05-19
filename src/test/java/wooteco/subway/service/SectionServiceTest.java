@@ -72,14 +72,14 @@ class SectionServiceTest {
         final Station stationB = new Station("B역");
         final Station stationC = new Station("C역");
 
-
         upStationId = stationDao.save(StationEntity.from(stationA));
         downStationId = stationDao.save(StationEntity.from(stationB));
         newId = stationDao.save(StationEntity.from(stationC));
 
         lineId = lineDao.save(LineEntity.from(new Line("노선", "색깔")));
 
-        sectionDao.save(SectionEntity.from(new Section(new Station(upStationId, "A역"), new Station(downStationId, "B역"), new Distance(10)), lineId));
+        sectionDao.save(SectionEntity.from(
+            new Section(new Station(upStationId, "A역"), new Station(downStationId, "B역"), new Distance(10)), lineId));
     }
 
 }

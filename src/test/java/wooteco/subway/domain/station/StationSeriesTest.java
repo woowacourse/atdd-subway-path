@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.fixture.SectionFixture;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.SectionSeries;
 import wooteco.subway.exception.IdMissingException;
 import wooteco.subway.exception.RowDuplicatedException;
 import wooteco.subway.exception.RowNotFoundException;

@@ -4,22 +4,16 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.repository.LineRepository;
-import wooteco.subway.repository.SectionRepository;
 
 @SpringBootTest
 @Sql("classpath:schema.sql")
