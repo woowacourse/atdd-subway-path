@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class FareCalculatorTest {
 
     @ParameterizedTest
-    @CsvSource({"10,1250","15,1350","21,1550","58,2150"})
+    @CsvSource({"10,1250","15,1350","21,1550","58,2150", "59,2250"})
     void findFare (int distance, int fare) {
         FareCalculator fareCalculator = new FareCalculator();
         int actual = fareCalculator.calculateFare(distance);
