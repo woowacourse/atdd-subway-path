@@ -18,9 +18,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 생성한다.")
     @Test
     void saveSection() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
-        createStationForTest("잠실역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -38,9 +38,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 id의 자하철 노선에 등록 요청한다.(400 에러)")
     @Test
     void saveSection_withNotExistLineId() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
-        createStationForTest("잠실역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -58,9 +58,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("상행역, 하행역이 이미 노선에 있는 구간을 등록 요청한다.(400에러)")
     @Test
     void saveSection_withAlreadyExistSection() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
-        createStationForTest("잠실역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -83,8 +83,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("상행역, 하행역이 둘다 노선에 없는 구간을 등록 요청한다.(400에러)")
     @Test
     void saveSection_withNotExistUpAndDownStationBoth() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -107,9 +107,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존 구간의 내부에 더 긴 구간을 등록 요청한다.(400에러)")
     @Test
     void saveSection_withBiggerInnerSection() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
-        createStationForTest("잠실역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -127,9 +127,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 삭제한다.")
     @Test
     void deleteSection() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
-        createStationForTest("잠실역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -149,8 +149,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선에 구간이 한개인 경우 구간 삭제 요청한다.(400에러)")
     @Test
     void deleteSection_justOneSectionExistsInLine() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -166,8 +166,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선이 지나지 않는 역을 포함한 구간 삭제 요청한다.(400에러)")
     @Test
     void deleteSection_notExistStationInLine() {
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -180,7 +180,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void createStationForTest(String stationName) {
+    private void createStation(String stationName) {
         ExtractableResponse<Response> response = RequestFrame.post(
             BodyCreator.makeStationBodyForPost(stationName),
             "/stations"

@@ -23,8 +23,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         // when
         ExtractableResponse<Response> response = RequestFrame.post(
@@ -41,8 +41,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -62,8 +62,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         /// given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -93,8 +93,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         /// given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -130,8 +130,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         /// given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -162,8 +162,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithDuplicateName() {
         /// given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
@@ -187,8 +187,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        createStationForTest("강남역");
-        createStationForTest("선릉역");
+        createStation("강남역");
+        createStation("선릉역");
 
         ExtractableResponse<Response> createResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10", "900"),
@@ -223,7 +223,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return body;
     }
 
-    private void createStationForTest(String stationName) {
+    private void createStation(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
