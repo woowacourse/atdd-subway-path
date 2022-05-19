@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.request.SectionRequest;
 
 @Sql("/sectionInitSchema.sql")
 public class SectionAcceptanceTest extends AcceptanceTest {
