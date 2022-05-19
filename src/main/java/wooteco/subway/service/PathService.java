@@ -23,7 +23,7 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse findPath(Long source, Long target, int age) {
+    public PathResponse findPath(long source, long target, int age) {
         List<Section> sections = sectionDao.findAll();
         Path path = new Path(sections);
 

@@ -73,18 +73,18 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse getById(final Long id) {
+    public LineResponse getById(final long id) {
         final Line line = lineDao.findById(id);
         return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line), line.getExtraFare());
     }
 
     @Transactional
-    public void update(final Long id, final LineRequest lineRequest) {
+    public void update(final long id, final LineRequest lineRequest) {
         lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional
-    public void deleteById(final Long id) {
+    public void deleteById(final long id) {
         lineDao.deleteById(id);
     }
 }

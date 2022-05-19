@@ -6,10 +6,10 @@ public class Section {
 
     private static final long DEFAULT_SECTION_ID = 0L;
 
-    private Long id;
-    private Long lineId;
-    private Long upStationId;
-    private Long downStationId;
+    private long id;
+    private long lineId;
+    private long upStationId;
+    private long downStationId;
     private int distance;
 
     public Section(long id, Long lineId, Long upStationId, Long downStationId, int distance) {
@@ -44,16 +44,16 @@ public class Section {
         return distance;
     }
 
-    public boolean isSameUpStationId(Long stationId) {
-        return this.upStationId.equals(stationId);
+    public boolean isSameUpStationId(long stationId) {
+        return this.upStationId == stationId;
     }
 
-    public boolean isSameDownStationId(Long stationId) {
-        return this.downStationId.equals(stationId);
+    public boolean isSameDownStationId(long stationId) {
+        return this.downStationId == stationId;
     }
 
-    public boolean isContainStationId(Long stationId) {
-        return this.downStationId.equals(stationId) || this.upStationId.equals(stationId);
+    public boolean isContainStationId(long stationId) {
+        return this.downStationId == stationId || this.upStationId == stationId;
     }
 
     @Override

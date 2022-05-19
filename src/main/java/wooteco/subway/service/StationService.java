@@ -35,7 +35,7 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteById(final Long id) {
+    public void deleteById(final long id) {
         stationDao.deleteById(id);
     }
 }
