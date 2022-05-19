@@ -109,18 +109,15 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void ShowLine_5StationsOrderByUpStation_OK() {
         // given
-        final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
+        final long lineId = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
         final long samseongId = createAndGetId(new StationRequest(SAMSUNG), STATION_URL_PREFIX);
 
-        requestPost(new SectionRequest(dapsimni.getId(), yeoksam.getId(), 5),
-                LINE_URL_PREFIX + "/" + id + SECTION_URL_PREFIX);
-        requestPost(new SectionRequest(yeoksam.getId(), wangsimni.getId(), 5),
-                LINE_URL_PREFIX + "/" + id + SECTION_URL_PREFIX);
-        requestPost(new SectionRequest(samseongId, yeoksam.getId(), 3),
-                LINE_URL_PREFIX + "/" + id + SECTION_URL_PREFIX);
+        requestPostSection(new SectionRequest(dapsimni.getId(), yeoksam.getId(), 5), lineId);
+        requestPostSection(new SectionRequest(yeoksam.getId(), wangsimni.getId(), 5), lineId);
+        requestPostSection(new SectionRequest(samseongId, yeoksam.getId(), 3), lineId);
 
         // when
-        final ValidatableResponse response = requestGet(LINE_URL_PREFIX + "/" + id);
+        final ValidatableResponse response = requestGet(LINE_URL_PREFIX + "/" + lineId);
 
         // then
         // 선릉 - 답십리 - 삼성 - 역삼 - 왕십리

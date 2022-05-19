@@ -111,6 +111,15 @@ abstract class AcceptanceTest {
                 .then().log().all();
     }
 
+    protected ValidatableResponse requestPostSection(final Object request, final Long lineId) {
+        return RestAssured.given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
+                .then().log().all();
+    }
+
     protected ValidatableResponse requestPut(final Object request, final String url) {
         return RestAssured.given().log().all()
                 .body(request)
