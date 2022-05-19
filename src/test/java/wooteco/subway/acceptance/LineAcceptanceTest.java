@@ -20,7 +20,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("노선 생성 API는")
-    class Describe_Line_CREATE_API {
+    class Describe_Line_Create_API {
 
         @Nested
         @DisplayName("역 2개와 노선을 입력받는 경우")
@@ -87,7 +87,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("노선 조회 API는")
-    class Describe_Line_GET_API {
+    class Describe_Line_Get_API {
 
         @Nested
         @DisplayName("저장된 id로 노선을 조회하는 경우")
@@ -145,7 +145,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("노선 목록 조회 API는")
-    class Describe_Lines_GET_API {
+    class Describe_Lines_Get_API {
 
         @Nested
         @DisplayName("노선 목록 조회를 요청하면")
@@ -305,66 +305,65 @@ public class LineAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    @Test
-    @DisplayName("노선을 id로 삭제한다.")
-    void deleteById() {
-        // given
-        long id = 노선_저장(노선_저장_파라미터("1호선", "blue", 역_저장("창동"), 역_저장("도봉"), 10));
+    @Nested
+    @DisplayName("구간 등록 API는")
+    class Describe_Create_Section_API {
 
-        // when
-        ExtractableResponse<Response> response = 노선_삭제(id);
+        @Nested
+        @DisplayName("구간 추가 정보를 입력받는 경우")
+        class Context_Input_Save_Section {
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(204);
+            long 출발역;
+            long 도착역;
+            long 노선;
+
+            @BeforeEach
+            void setUp() {
+                출발역 = 역_저장("의정부");
+                도착역 = 역_저장("광운대");
+                노선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 역_저장("인천"), 10));
+            }
+
+            @Test
+            @DisplayName("200 응답을 한다.")
+            void it_returns_200() {
+                Map<String, Object> params = 구간_등록_파라미터(출발역, 도착역, 5);
+
+                ExtractableResponse<Response> response = 구간_등록(노선, params);
+
+                assertThat(response.statusCode()).isEqualTo(200);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("구간을 등록한다.")
-    void saveSection() {
-        // given
-        long upStationId = 역_저장("의정부");
-        long lineId = 노선_저장(노선_저장_파라미터("1호선", "blue", upStationId, 역_저장("인천"), 10));
-        long downStationId = 역_저장("광운대");
+    @Nested
+    @DisplayName("구간 삭제 API는")
+    class Describe_Delete_Section_API {
 
-        Map<String, Object> params = 구간_등록_파라미터(upStationId, downStationId, 5);
+        @Nested
+        @DisplayName("삭제할 역을 입력받는 경우")
+        class Context_Input_Station {
 
-        // when
-        ExtractableResponse<Response> response = 구간_등록(lineId, params);
+            long 일호선;
+            long 인천;
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(200);
-    }
+            @BeforeEach
+            void setUp() {
+                long 출발역 = 역_저장("의정부");
+                long 도착역 = 역_저장("광운대");
+                인천 = 역_저장("인천");
+                일호선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 인천, 10));
 
-    @Test
-    @DisplayName("구간을 삭제한다.")
-    void deleteSection() {
-        // given
-        long upStationId = 역_저장("의정부");
-        long downStationId = 역_저장("광운대");
-        long addStationId = 역_저장("인천");
-        long lineId = 노선_저장(노선_저장_파라미터("1호선", "blue", upStationId, downStationId, 10));
+                구간_등록(일호선, 구간_등록_파라미터(출발역, 도착역, 5));
+            }
 
-        Map<String, Object> params = 구간_등록_파라미터(upStationId, addStationId, 3);
+            @Test
+            @DisplayName("200 응답을 한다.")
+            void it_returns_200() {
+                ExtractableResponse<Response> response = 구간_삭제(일호선, 인천);
 
-        RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/{lineId}/sections", lineId)
-            .then().log().all()
-            .extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .queryParam("stationId", addStationId)
-            .delete("/lines/{id}/sections", lineId)
-            .then().log().all()
-            .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(200);
+                assertThat(response.statusCode()).isEqualTo(200);
+            }
+        }
     }
 }

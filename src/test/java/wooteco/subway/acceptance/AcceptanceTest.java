@@ -110,6 +110,16 @@ public class AcceptanceTest {
         return response;
     }
 
+    protected ExtractableResponse<Response> 구간_삭제(long lineId, long deleteStationId) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .queryParam("stationId", deleteStationId)
+            .delete("/lines/{id}/sections", lineId)
+            .then().log().all()
+            .extract();
+    }
+
     protected Map<Object, Object> 노선_저장_파라미터(String name, String color, Long upStationId, Long downStationId, int distance) {
         Map<Object, Object> params = new HashMap<>();
         params.put("name", name);
