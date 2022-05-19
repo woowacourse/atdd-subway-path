@@ -24,8 +24,8 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        FakeSectionDao sectionDao = new FakeSectionDao();
-        FakeStationDao stationDao = new FakeStationDao();
+        final FakeSectionDao sectionDao = new FakeSectionDao();
+        final FakeStationDao stationDao = new FakeStationDao();
         final FakeLineDao lineDao = new FakeLineDao();
 
         pathService = new PathService(stationDao, sectionDao);
@@ -55,7 +55,7 @@ class PathServiceTest {
         sectionService.save(lineId, request);
 
         // when
-        final PathResponse response = pathService.findPath(1L, 3L);
+        final PathResponse response = pathService.findPath(response1.getId(), response3.getId());
 
         // then
         assertThat(response).extracting("distance", "fare")
