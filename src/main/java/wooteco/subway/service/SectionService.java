@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.LineSections;
@@ -18,6 +19,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void firstSave(Long lineId, SectionRequest sectionRequest) {
         sectionDao.save(new Section(
                 null, lineId,
@@ -27,6 +29,7 @@ public class SectionService {
                 1L));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void save(Long lineId, SectionRequest sectionReq) {
         long upStationId = sectionReq.getUpStationId();
         long downStationId = sectionReq.getDownStationId();
@@ -55,11 +58,13 @@ public class SectionService {
         sectionDao.save(section);
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<Long> findAllStationByLineId(long lineId) {
         LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
         return lineSections.getStationsId();
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void deleteByLineIdAndStationId(long lineId, long stationId) {
         LineSections lineSections = new LineSections(sectionDao.findByLineIdAndStationId(lineId, stationId));
         if (lineSections.hasTwoSection()) {

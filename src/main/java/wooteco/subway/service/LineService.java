@@ -4,6 +4,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
@@ -28,6 +29,7 @@ public class LineService {
         this.sectionService = sectionService;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public LineResponse save(final LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateCreateRequest(newLine);
@@ -67,19 +69,20 @@ public class LineService {
                 sectionService.findAllStationByLineId(line));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<LineResponse> findAll() {
         return lineDao.findAll().stream()
                 .map(line -> createLineResponse(line, getStationsByStationIds(line.getId())))
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public LineResponse findById(Long lineId) {
         Line line = lineDao.findById(lineId);
         return createLineResponse(line, getStationsByStationIds(line.getId()));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void update(Long lineId, LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
@@ -104,6 +107,7 @@ public class LineService {
         }
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void delete(Long lineId) {
         lineDao.deleteById(lineId);
     }

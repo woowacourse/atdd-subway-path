@@ -4,6 +4,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
@@ -22,6 +23,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StationResponse save(StationRequest stationRequest) {
         Station newStation = new Station(stationRequest.getName());
         validateName(newStation);
@@ -40,14 +42,14 @@ public class StationService {
         return new StationResponse(newStation.getId(), newStation.getName());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<StationResponse> findByStationIds(List<Long> stationsId) {
         return stationsId.stream()
                 .map(id -> createStationResponse(stationDao.findById(id)))
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<StationResponse> findAll() {
         return stationDao.findAll().stream()
                 .map(this::createStationResponse)
@@ -58,7 +60,7 @@ public class StationService {
         stationDao.deleteById(stationId);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public void validateExistById(Long stationId) {
         if (!stationDao.existById(stationId)) {
             throw new NotFoundStationException("존재하지 않는 지하철 역입니다.");

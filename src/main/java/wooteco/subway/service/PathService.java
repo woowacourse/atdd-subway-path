@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Fare;
@@ -23,7 +24,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     public PathResponse findShortestPath(PathRequest pathRequest) {
         validateExistStations(pathRequest);
         List<Section> allSections = sectionDao.findAll();
