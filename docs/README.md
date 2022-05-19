@@ -29,7 +29,8 @@
 - [x] (Advice) IllegalArgumentException만 핸들링하면 될까?
   - Advice에서는 애플리케이션에서 내가 정할 수 있는 가능한 모든 에러를 핸들링합니다.
   - 하지만 예상하지 못하는 에러가 생길 수 있기 때문에 내가 처리하지 못한 에러도 핸들할 수 있도록 `Exception.class`도 추가했습니다.
-- [ ] (PathAcceptanceTest) test()는 무엇을 테스트 하고 있나요?
+- [x] (PathAcceptanceTest) test()는 무엇을 테스트 하고 있나요?
+  - `@DisplayName`과 메서드명 수정으로 어떤 테스트인지 나타내도록 수정했습니다.
 - [ ] 어차피 테스트를 위한 메서드이기 때문에 ForTest는 지워도 될 것 같다
 - [ ] 어떤 결과를 이용한느 것이 아니면 변수를 할당할 필요는 없을 것 같다
 - [ ] (@ParameterizedTest(name = "{displayName} : {arguments}")) 이름에서 숫자와 단위까지 함께 보여주면 더 좋을 것 같아요.

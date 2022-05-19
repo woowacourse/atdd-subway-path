@@ -40,8 +40,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("거리가 같은 경우 더 적은 역을 거치도록 응답한다.")
     @Test
-    void test() {
+    void getShortestPathSameDistance() {
         createStationForTest("교대역");    // id: 1
         createStationForTest("강남역");    // id: 2
         createStationForTest("역삼역");    // id: 3
