@@ -40,7 +40,7 @@ class JdbcSectionDaoTest {
     @DisplayName("Section 을 저장할 수 있다.")
     void save() {
         // given
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Station upStation = stationDao.findById(stationDao.save(new Station("오리")));
         Station downStation = stationDao.findById(stationDao.save(new Station("배카라")));
         Section section = new Section(null, id, upStation, downStation, 1);
@@ -55,7 +55,7 @@ class JdbcSectionDaoTest {
     @Test
     @DisplayName("Line Id에 해당하는 Section을 조회할 수 있다.")
     void findAllByLineId() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
@@ -69,7 +69,7 @@ class JdbcSectionDaoTest {
     @Test
     @DisplayName("모든 Section을 조회할 수 있다.")
     void findAll() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
@@ -83,7 +83,7 @@ class JdbcSectionDaoTest {
     @Test
     @DisplayName("Sections를 업데이트할 수 있다.")
     void updateSections() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
@@ -100,7 +100,7 @@ class JdbcSectionDaoTest {
     @Test
     @DisplayName("Section을 삭제할 수 있다.")
     void delete() {
-        long lineId = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long lineId = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         long sectionId = sectionDao.save(new Section(lineId, station1, station2, 10));

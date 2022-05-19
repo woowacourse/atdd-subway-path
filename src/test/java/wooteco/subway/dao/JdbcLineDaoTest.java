@@ -45,8 +45,8 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line 전체 조회할 수 있다.")
     void findAll() {
-        lineDao.save(new Line("신분당선", "bg-red-600"));
-        lineDao.save(new Line("분당선", "bg-green-600"));
+        lineDao.save(new Line("신분당선", "bg-red-600", 900));
+        lineDao.save(new Line("분당선", "bg-green-600", 900));
 
         assertThat(lineDao.findAll()).hasSize(2);
     }
@@ -54,7 +54,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line 이름이 존재하는지 확인할 수 있다.")
     void existByName() {
-        lineDao.save(new Line("신분당선", "bg-red-600"));
+        lineDao.save(new Line("신분당선", "bg-red-600", 900));
 
         assertThat(lineDao.existByName("신분당선")).isTrue();
     }
@@ -62,7 +62,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("id에 해당하는 Line이 존재하는지 확인할 수 있다.")
     void existById() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
 
         assertThat(lineDao.existById(id)).isNotNull();
     }
@@ -70,8 +70,8 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line을 수정할 수 있다.")
     void update() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
-        int result = lineDao.update(new Line(id, "분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
+        int result = lineDao.update(new Line(id, "분당선", "bg-red-600", 900));
 
         assertThat(result).isEqualTo(1);
     }
@@ -79,7 +79,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line을 삭제할 수 있다.")
     void delete() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         int result = lineDao.delete(id);
 
         assertThat(result).isEqualTo(1);
