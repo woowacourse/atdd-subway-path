@@ -2,9 +2,11 @@ package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -67,10 +69,10 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public List<Station> findById(List<Long> ids) {
-        final String inputIds = ids.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining(", "));
-        final String sql = String.format("SELECT * FROM station where id in (%s)", inputIds);
-        return jdbcTemplate.query(sql, stationMapper());
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
+        final String sql = "SELECT * FROM station where id in (:ids)";
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
+            jdbcTemplate);
+        return namedParameterJdbcTemplate.query(sql, parameters, stationMapper());
     }
 }
