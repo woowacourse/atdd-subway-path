@@ -31,8 +31,8 @@ public class PathService {
     }
 
     public PathServiceResponse getShortestPath(PathServiceRequest pathServiceRequest) {
-        validateNotExists(pathServiceRequest.getSource());
-        validateNotExists(pathServiceRequest.getTarget());
+        validateExists(pathServiceRequest.getSource());
+        validateExists(pathServiceRequest.getTarget());
 
         Station source = stationDao.getStation(pathServiceRequest.getSource());
         Station target = stationDao.getStation(pathServiceRequest.getTarget());
@@ -47,7 +47,7 @@ public class PathService {
         return new PathServiceResponse(stationDtos, distance, fare.calculate(distance));
     }
 
-    private void validateNotExists(Long id) {
+    private void validateExists(Long id) {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }

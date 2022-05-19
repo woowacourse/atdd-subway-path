@@ -37,7 +37,7 @@ public class DomainCreatorService {
     }
 
     Line createLine(Long lineId) {
-        validateNotExists(lineId);
+        validateExists(lineId);
         LineEntity lineEntity = lineDao.find(lineId);
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
             lineEntity.getExtraFare(), new Sections(findSections(lineEntity.getId())));
@@ -55,7 +55,7 @@ public class DomainCreatorService {
             , stationDao.getStation(sectionEntity.getDownStationId()), sectionEntity.getDistance());
     }
 
-    private void validateNotExists(Long id) {
+    private void validateExists(Long id) {
         if (!lineDao.existById(id)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }

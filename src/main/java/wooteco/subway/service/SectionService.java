@@ -57,9 +57,9 @@ public class SectionService {
     }
 
     private void validateBeforeSave(Long lineId, Long upStationId, Long downStationId) {
-        validateNotExistsLine(lineId);
-        validateNotExistStation(upStationId);
-        validateNotExistStation(downStationId);
+        validateExistsLine(lineId);
+        validateExistStation(upStationId);
+        validateExistStation(downStationId);
     }
 
     @Transactional
@@ -67,8 +67,8 @@ public class SectionService {
         Long lineId = sectionDeleteRequest.getLineId();
         Long stationId = sectionDeleteRequest.getStationId();
 
-        validateNotExistsLine(lineId);
-        validateNotExistStation(stationId);
+        validateExistsLine(lineId);
+        validateExistStation(stationId);
 
         Line line = domainCreatorService.createLine(lineId);
         Station station = stationDao.getStation(stationId);
@@ -78,13 +78,13 @@ public class SectionService {
         line.getSections().forEach(section -> sectionDao.update(lineId, section));
     }
 
-    private void validateNotExistsLine(Long id) {
+    private void validateExistsLine(Long id) {
         if (!lineDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }
     }
 
-    private void validateNotExistStation(Long id) {
+    private void validateExistStation(Long id) {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_STATION);
         }

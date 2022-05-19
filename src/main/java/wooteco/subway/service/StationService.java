@@ -49,12 +49,12 @@ public class StationService {
 
     @Transactional
     public void delete(Long id) {
-        validateNotExists(id);
+        validateExists(id);
         validateAlreadyUsedInSection(id);
         stationDao.delete(id);
     }
 
-    private void validateNotExists(Long id) {
+    private void validateExists(Long id) {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }

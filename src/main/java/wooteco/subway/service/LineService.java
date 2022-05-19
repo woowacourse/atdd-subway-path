@@ -62,8 +62,8 @@ public class LineService {
 
     private void validateBeforeSave(String lineName, Long upStationId, Long downStationId) {
         validateNameDuplication(lineName);
-        validateNotExistStation(upStationId);
-        validateNotExistStation(downStationId);
+        validateExistStation(upStationId);
+        validateExistStation(downStationId);
     }
 
     private void saveFirstSection(int distance, Long upStationId, Long downStationId,
@@ -89,7 +89,7 @@ public class LineService {
     }
 
     public LineServiceResponse find(Long id) {
-        validateNotExists(id);
+        validateExists(id);
         LineEntity lineEntity = lineDao.find(id);
         Line line = domainCreatorService.createLine(lineEntity.getId());
         return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
@@ -107,7 +107,7 @@ public class LineService {
         String name = lineUpdateRequest.getName();
         int extraFare = lineUpdateRequest.getExtraFare();
 
-        validateNotExists(id);
+        validateExists(id);
         validateNameDuplication(name);
         Line line = new Line(id, name, lineUpdateRequest.getColor(), extraFare);
         lineDao.update(line);
@@ -115,18 +115,18 @@ public class LineService {
 
     @Transactional
     public void delete(Long id) {
-        validateNotExists(id);
+        validateExists(id);
         sectionDao.deleteAll(id);
         lineDao.delete(id);
     }
 
-    private void validateNotExists(Long id) {
+    private void validateExists(Long id) {
         if (!lineDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }
     }
 
-    private void validateNotExistStation(Long stationId) {
+    private void validateExistStation(Long stationId) {
         if (!stationDao.existById(stationId)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_STATION);
         }
