@@ -85,12 +85,12 @@ public class SectionRepository {
 
     private Line toLine(Long id) {
         LineEntity entity = lineDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
+            .orElseThrow(() -> new NotFoundException("조회하려는 노선이 존재하지 않습니다. id : " + id));
         return new Line(entity.getId(), entity.getName(), entity.getColor());
     }
 
     private StationEntity getStationEntity(Long id) {
         return stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
+            .orElseThrow(() -> new NotFoundException("조회하려는 역이 존재하지 않습니다. id : " + id));
     }
 }

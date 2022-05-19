@@ -24,7 +24,7 @@ public class StationRepository {
 
     public Station findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
+            .orElseThrow(() -> new NotFoundException("조회하려는 역이 존재하지 않습니다. id : " + id));
         return toStation(stationEntity);
     }
 
