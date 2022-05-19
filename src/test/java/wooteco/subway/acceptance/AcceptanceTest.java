@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineSaveRequest;
+import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
@@ -71,6 +72,20 @@ class AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
+                .then()
+                .extract();
+    }
+
+    protected void addSection(final LineResponse createdLine, final StationResponse upStationResponse,
+                              final StationResponse downStationResponse, final int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStationResponse.getId(), downStationResponse.getId(),
+                distance);
+
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when()
+                .post("/lines/" + createdLine.getId() + "/sections")
                 .then()
                 .extract();
     }
