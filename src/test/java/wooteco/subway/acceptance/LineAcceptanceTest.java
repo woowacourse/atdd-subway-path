@@ -161,7 +161,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
 
         // when
-        final ValidatableResponse response = requestPut(lineOneRequest, LINE_URL_PREFIX + "/" + id);
+        final ValidatableResponse response = requestPut(lineTwoRequest, LINE_URL_PREFIX + "/" + id);
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value());
