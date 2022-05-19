@@ -60,32 +60,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void createSection(final Long lineId, final SectionRequest sectionRequest) {
-        ExtractableResponse<Response> sectionResponse = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
+                .then().log().all();
     }
 
     private void createLine(final LineRequest lineRequest) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
-                .then().log().all()
-                .extract();
+                .then().log().all();
     }
 
     private void createStation(final StationRequest stationRequest) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
-                .then().log().all()
-                .extract();
+                .then().log().all();
     }
 }
