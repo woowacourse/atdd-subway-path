@@ -1,7 +1,6 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -46,10 +45,8 @@ public class PathTest {
         List<Station> shortestPath = path.getShortestPath(station1, station3);
 
         // then
-        assertAll(
-            () -> assertThat(shortestPath).hasSize(2),
-            () -> assertThat(shortestPath.get(0)).isEqualTo(station1),
-            () -> assertThat(shortestPath.get(1)).isEqualTo(station3)
-        );
+        assertThat(shortestPath)
+                .hasSize(2)
+                .containsExactly(station1, station3);
     }
 }

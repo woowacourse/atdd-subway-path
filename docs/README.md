@@ -53,4 +53,4 @@
   - DijkstraShortestPath를 그대로 쓰면 로타입이기 때문입니다.
   - DijkstraShortestPath을 보면 DijkstraShortestPath<V, E>으로 되어있는 것을 확인할 수 있었습니다.
   - 인텔리제이에서는 해결 방법으로 var으로 타입추론을 하라고 했지만 var이 익숙하지 않아 로타입이 아닌 구체적으로 형식을 정해주었습니다.
-- [ ] containsExactly로 테스트 코드를 더 간결하게 작성할 수 있다.
+- [x] containsExactly로 테스트 코드를 더 간결하게 작성할 수 있다.
