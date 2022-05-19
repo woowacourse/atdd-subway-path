@@ -3,6 +3,7 @@ package wooteco.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,53 @@ abstract class AcceptanceTest {
                 .extract();
     }
 
+    protected ValidatableResponse requestGet(final String url) {
+        return RestAssured.given().log().all()
+                .when()
+                .get(url)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse requestPost(final Object request, final String url) {
+        return RestAssured.given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post(url)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse requestPut(final Object request, final String url) {
+        return RestAssured.given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put(url)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse requestDelete(final String url) {
+        return RestAssured.given().log().all()
+                .when()
+                .delete(url)
+                .then().log().all();
+    }
+
     protected long extractId(final ExtractableResponse<Response> response) {
         return Long.parseLong(response.header(LOCATION).split("/")[2]);
+    }
+
+    protected long findId(final ValidatableResponse response) {
+        return Long.parseLong(response.extract()
+                .header(LOCATION)
+                .split("/")[2]);
+    }
+
+    protected long createAndGetId(final Object request, final String url) {
+        return Long.parseLong(requestPost(request, url)
+                .extract()
+                .header(LOCATION)
+                .split("/")[2]
+        );
     }
 }
