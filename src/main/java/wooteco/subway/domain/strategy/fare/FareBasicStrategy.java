@@ -6,30 +6,27 @@ import org.springframework.stereotype.Component;
 public class FareBasicStrategy implements FareStrategy {
 
     private static final int BASIC_FARE = 1250;
-    private static final int ADDITIONAL_FARE = 100;
+    private static final int SURCHARGE = 100;
+
     private static final int BASIC_DISTANCE = 10;
-    private static final int STEP_ONE_DISTANCE = 50;
-    private static final double STEP_ONE_CHARGE_DISTANCE = 5.0;
-    private static final double STEP_TWO_CHARGE_DISTANCE = 8.0;
+    private static final int INTERVAL_ONE = 50;
+    private static final int NO_FARE_DISTANCE = 0;
+
+    private static final double INTERVAL_ONE_SURCHARGE_UNIT = 5.0;
+    private static final double INTERVAL_TWO_SURCHARGE_UNIT = 8.0;
 
     @Override
     public int calculateFare(int distance) {
-        if (distance < BASIC_DISTANCE) {
-            return BASIC_FARE;
-        }
-        if (distance < STEP_ONE_DISTANCE) {
-            return BASIC_FARE + calculateStepOne(distance);
-        }
-
-        return BASIC_FARE + calculateStepOne(distance) + calculateStepTwo(distance);
+        return BASIC_FARE + calculateIntervalOne(distance) + calculateIntervalTwo(distance);
     }
 
-    private int calculateStepOne(int distance) {
+    private int calculateIntervalOne(int distance) {
         return (int) Math.ceil(Math.min(
-                distance - BASIC_DISTANCE, STEP_ONE_DISTANCE - BASIC_DISTANCE) / STEP_ONE_CHARGE_DISTANCE) * ADDITIONAL_FARE;
+                Math.max(distance - BASIC_DISTANCE, NO_FARE_DISTANCE), INTERVAL_ONE - BASIC_DISTANCE) / INTERVAL_ONE_SURCHARGE_UNIT)
+                * SURCHARGE;
     }
 
-    private int calculateStepTwo(int distance) {
-        return (int) Math.ceil((distance - STEP_ONE_DISTANCE) / STEP_TWO_CHARGE_DISTANCE) * ADDITIONAL_FARE;
+    private int calculateIntervalTwo(int distance) {
+        return (int) Math.ceil(Math.max(distance - INTERVAL_ONE, NO_FARE_DISTANCE) / INTERVAL_TWO_SURCHARGE_UNIT) * SURCHARGE;
     }
 }
