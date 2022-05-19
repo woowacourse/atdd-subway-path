@@ -42,7 +42,7 @@ public class PathService {
             .map(station -> new StationDto(station.getId(), station.getName()))
             .collect(Collectors.toList());
         int distance = path.getShortestDistance(source, target);
-        Fare fare = new Fare(new DistanceFareStrategy());
+        FareStrategy fare = new DistanceFareStrategy();
 
         return new PathServiceResponse(stationDtos, distance, fare.calculate(distance));
     }
