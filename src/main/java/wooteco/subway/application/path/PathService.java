@@ -4,12 +4,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
-import wooteco.subway.application.path.JGraphtAdapter;
-import wooteco.subway.domain.path.FareCalculator;
-import wooteco.subway.domain.path.Graph;
-import wooteco.subway.domain.path.PathSummary;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.FareCalculator;
+import wooteco.subway.domain.path.Graph;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -25,7 +24,7 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public PathSummary searchPath(Long source, Long target) {
+    public PathResponse searchPath(Long source, Long target) {
         validate(source, target);
 
         List<Station> stations = stationRepository.findAll();
@@ -42,7 +41,7 @@ public class PathService {
 
         int distance = graph.findDistance(source, target);
         int fare = fareCalculator.findFare(distance);
-        return new PathSummary(path, distance, fare);
+        return new PathResponse(path, distance, fare);
     }
 
     private void validate(Long source, Long target) {

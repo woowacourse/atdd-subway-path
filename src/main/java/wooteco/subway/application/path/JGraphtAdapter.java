@@ -22,9 +22,9 @@ public class JGraphtAdapter implements Graph {
     }
 
     private DijkstraShortestPath<Long, DefaultWeightedEdge> createDijkstraShortestPath(
-        List<Station> stations, List<Section> sections) {
+            List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
-            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Station station : stations) {
             graph.addVertex(station.getId());
@@ -32,8 +32,8 @@ public class JGraphtAdapter implements Graph {
 
         for (Section section : sections) {
             graph.setEdgeWeight(
-                graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                section.getDistance());
+                    graph.addEdge(section.getUpStationId(), section.getDownStationId()),
+                    section.getDistance());
         }
 
         return new DijkstraShortestPath<>(graph);
@@ -41,7 +41,7 @@ public class JGraphtAdapter implements Graph {
 
     private Map<Long, Station> createVertexMap(List<Station> vertex) {
         return vertex.stream()
-            .collect(Collectors.toMap(Station::getId, value -> value));
+                .collect(Collectors.toMap(Station::getId, value -> value));
     }
 
     @Override
@@ -53,8 +53,8 @@ public class JGraphtAdapter implements Graph {
         }
 
         return graph.getVertexList().stream()
-            .map(vertex::get)
-            .collect(Collectors.toList());
+                .map(vertex::get)
+                .collect(Collectors.toList());
     }
 
     @Override
