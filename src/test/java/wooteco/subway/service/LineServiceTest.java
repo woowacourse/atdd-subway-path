@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundLineException;
 
 @SpringBootTest
 @Transactional
@@ -61,7 +61,7 @@ class LineServiceTest {
         lineService.delete(deleteId);
 
         assertThatThrownBy(() -> lineService.findById(deleteId))
-            .isInstanceOf(NoSuchElementException.class);
+            .isInstanceOf(NotFoundLineException.class);
     }
 
     @Test

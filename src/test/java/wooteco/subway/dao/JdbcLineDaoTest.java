@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
+import wooteco.subway.exception.NotFoundLineException;
 
 @JdbcTest
 @Sql("/lineInitSchema.sql")
@@ -56,7 +56,7 @@ class JdbcLineDaoTest {
         lineDao.deleteById(lineId);
 
         assertThatThrownBy(() -> lineDao.findById(lineId))
-            .isInstanceOf(NoSuchElementException.class);
+            .isInstanceOf(NotFoundLineException.class);
     }
 
     @Test

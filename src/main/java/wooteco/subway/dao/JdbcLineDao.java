@@ -1,7 +1,6 @@
 package wooteco.subway.dao;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
+import wooteco.subway.exception.NotFoundLineException;
 
 @Repository
 public class JdbcLineDao implements LineDao {
@@ -55,7 +55,7 @@ public class JdbcLineDao implements LineDao {
         try {
             return jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
         } catch (EmptyResultDataAccessException exception) {
-            throw new NoSuchElementException("존재하지 않는 노선입니다.");
+            throw new NotFoundLineException("존재하지 않는 노선입니다.");
         }
     }
 
