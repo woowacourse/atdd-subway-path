@@ -5,9 +5,6 @@ public class FareCalculator {
     public static final int BASE_FARE = 1250;
     public static final int ADDITIONAL_FARE = 100;
 
-    public FareCalculator() {
-    }
-
     public int findFare(int distance) {
         return BASE_FARE + additionalFare(distance);
     }

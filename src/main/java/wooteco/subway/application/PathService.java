@@ -3,10 +3,9 @@ package wooteco.subway.application;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.application.exception.NotFoundStationException;
-import wooteco.subway.application.exception.UnsearchablePathException;
+import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Graph;
-import wooteco.subway.domain.PathSearcher;
 import wooteco.subway.domain.PathSummary;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -30,14 +29,24 @@ public class PathService {
 
         List<Station> stations = stationRepository.findAll();
         List<Section> sections = sectionRepository.findAll();
-        Graph graph = new JGraphtAdapter(stations, sections);
 
-        return new PathSearcher(graph, new FareCalculator()).find(source, target);
+        Graph graph = new JGraphtAdapter(stations, sections);
+        FareCalculator fareCalculator = new FareCalculator();
+
+        List<Station> path = graph.findPath(source, target);
+
+        if (path.isEmpty()) {
+            throw new UnreachablePathException(source, target);
+        }
+
+        int distance = graph.findDistance(source, target);
+        int fare = fareCalculator.findFare(distance);
+        return new PathSummary(path, distance, fare);
     }
 
     private void validate(Long source, Long target) {
         if (source.equals(target)) {
-            throw new UnsearchablePathException();
+            throw new UnreachablePathException(source, target);
         }
 
         if (!stationRepository.existById(source)) {

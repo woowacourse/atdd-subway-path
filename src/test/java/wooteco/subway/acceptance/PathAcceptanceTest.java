@@ -1,6 +1,5 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -76,4 +75,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450);
     }
+
+    @DisplayName("source에서 target으로 가는 경로가 없는 경우 400 에러를 반환한다.")
+    @Test
+    void searchUnreachablePath() {
+        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
+        long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
+
+        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10);
+        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .param("source", station1)
+            .param("target", station4)
+            .when()
+            .get("/paths")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
 }

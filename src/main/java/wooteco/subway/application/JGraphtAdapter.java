@@ -3,6 +3,7 @@ package wooteco.subway.application;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -45,8 +46,13 @@ public class JGraphtAdapter implements Graph {
 
     @Override
     public List<Station> findPath(Long source, Long target) {
-        return shortestPath.getPath(source, target).getVertexList()
-            .stream()
+        GraphPath<Long, DefaultWeightedEdge> graph = shortestPath.getPath(source, target);
+
+        if (graph == null) {
+            return List.of();
+        }
+
+        return graph.getVertexList().stream()
             .map(vertex::get)
             .collect(Collectors.toList());
     }
