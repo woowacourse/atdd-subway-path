@@ -40,8 +40,10 @@ public class SectionService {
 
         validateBeforeSave(lineId, upStationId, downStationId);
 
-        Section section = new Section(stationDao.getStation(upStationId), stationDao.getStation(downStationId),
-            sectionCreateRequest.getDistance());
+        Section section = new Section(
+                stationDao.getStation(upStationId),
+                stationDao.getStation(downStationId),
+                sectionCreateRequest.getDistance());
         LineEntity lineEntity = lineDao.find(lineId);
         Line line = domainCreatorService.createLine(lineEntity.getId());
         line.updateToAdd(section);

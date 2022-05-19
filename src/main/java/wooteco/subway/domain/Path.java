@@ -29,8 +29,9 @@ public class Path {
         for (Station station : sections.getStations()) {
             graph.addVertex(station);
         }
-        sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-            section.getDistance()));
+        sections.forEach(section -> graph.setEdgeWeight(
+                graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
+        );
 
         return new DijkstraShortestPath<>(graph);
     }

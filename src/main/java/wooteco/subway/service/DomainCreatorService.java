@@ -37,8 +37,12 @@ public class DomainCreatorService {
     Line createLine(Long lineId) {
         validateExists(lineId);
         LineEntity lineEntity = lineDao.find(lineId);
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-            lineEntity.getExtraFare(), new Sections(findSections(lineEntity.getId())));
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                lineEntity.getExtraFare(),
+                new Sections(findSections(lineEntity.getId())));
     }
 
     private List<Section> findSections(Long lineId) {
@@ -49,8 +53,11 @@ public class DomainCreatorService {
     }
 
     private Section findSection(SectionEntity sectionEntity) {
-        return new Section(sectionEntity.getId(), stationDao.getStation(sectionEntity.getUpStationId())
-            , stationDao.getStation(sectionEntity.getDownStationId()), sectionEntity.getDistance());
+        return new Section(
+                sectionEntity.getId(),
+                stationDao.getStation(sectionEntity.getUpStationId()),
+                stationDao.getStation(sectionEntity.getDownStationId()),
+                sectionEntity.getDistance());
     }
 
     private void validateExists(Long id) {

@@ -64,10 +64,9 @@ public class LineService {
         validateExistStation(downStationId);
     }
 
-    private void saveFirstSection(int distance, Long upStationId, Long downStationId,
-        long lineId) {
-        Section section = new Section(stationDao.getStation(upStationId), stationDao.getStation(downStationId),
-            distance);
+    private void saveFirstSection(int distance, Long upStationId, Long downStationId, long lineId) {
+        Section section = new Section(
+                stationDao.getStation(upStationId), stationDao.getStation(downStationId), distance);
         sectionDao.save(lineId, section);
     }
 
@@ -80,8 +79,14 @@ public class LineService {
 
         List<LineServiceResponse> lineServiceResponses = new ArrayList<>();
         for (Line line : lines) {
-            lineServiceResponses.add(new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
-                line.getExtraFare(), convertStationToInfo(line.getStations())));
+            lineServiceResponses.add(
+                    new LineServiceResponse(
+                            line.getId(),
+                            line.getName(),
+                            line.getColor(),
+                            line.getExtraFare(),
+                            convertStationToInfo(line.getStations())
+                    ));
         }
         return lineServiceResponses;
     }
@@ -90,8 +95,12 @@ public class LineService {
         validateExists(id);
         LineEntity lineEntity = lineDao.find(id);
         Line line = domainCreatorService.createLine(lineEntity.getId());
-        return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
-            line.getExtraFare(), convertStationToInfo(line.getStations()));
+        return new LineServiceResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare(),
+                convertStationToInfo(line.getStations()));
     }
 
     private List<StationDto> convertStationToInfo(List<Station> stations) {

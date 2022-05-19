@@ -48,7 +48,7 @@
   - 찾는 값이 없는 경우 `NosuchElementException`를 발생시키고 예외를 핸들링하여 advice에서 상태 코드 404와 에러 메시지를 전송합니다.
   - 이 방식이 아니라면 찾는 값이 없으면 DAO에서 null 또는 Optional.empty() 값이 반환되게 구현할 수 있고 반환된 값이 이 값이라면 404 응답을 줄 수 있습니다.
   - 마지막으로 queryForObject를 통해 값을 찾아온다면 값이 0개일 때 `EmptyResultDataAccessException`, 값이 2개 이상인 경우 `IncorrectResultSizeDataAccessException`이 발생한다. 이 예외를 try/catch로 잡거나 `@ExceptionHandler`로 처리하여 404 응답을 줄 수도 있습니다.
-- [ ] 적절한 줄 바꿈으로 가독성을 개선해보자
+- [x] 적절한 줄 바꿈으로 가독성을 개선해보자
 - [x] 인텔리제이에서 DijkstraShortestPath에 경고를 주는 이유는 무엇일까?
   - DijkstraShortestPath를 그대로 쓰면 로타입이기 때문입니다.
   - DijkstraShortestPath을 보면 DijkstraShortestPath<V, E>으로 되어있는 것을 확인할 수 있었습니다.

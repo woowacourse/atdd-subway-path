@@ -75,7 +75,8 @@ public class StationServiceTest {
         StationDto stationDto2 = new StationDto("선릉역");
         stationService.save(stationDto1);
         stationService.save(stationDto2);
-        sectionDao.save(1L, new Section(new Station(1L, "강남역"), new Station(2L, "선릉역"), 10));
+        sectionDao.save(1L,
+                new Section(new Station(1L, "강남역"), new Station(2L, "선릉역"), 10));
 
         assertThatThrownBy(() -> stationService.delete(1L)).isInstanceOf(IllegalArgumentException.class)
             .hasMessage("해당 역을 지나는 노선이 있으므로 삭제가 불가합니다.");
