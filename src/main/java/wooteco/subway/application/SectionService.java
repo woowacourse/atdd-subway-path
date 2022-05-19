@@ -47,6 +47,7 @@ public class SectionService {
         sectionDao.deleteSectionsByLineId(lineId);
     }
 
+    @Transactional(readOnly = true)
     public List<Section> findAll() {
         return sectionDao.findAll();
     }

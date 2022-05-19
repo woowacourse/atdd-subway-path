@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class PathTest {
 
@@ -77,8 +79,9 @@ class PathTest {
     }
 
     @DisplayName("거리가 10km 미만이면 기본 요금으로 계산한다")
-    @Test
-    void calculateFare1() {
+    @ParameterizedTest
+    @CsvSource(value = {"1,1", "3,4", "5,4"})
+    void calculateFare1(int distance1, int distance2) {
         // given
         Station station1 = new Station(1L, "station1");
         Station station2 = new Station(2L, "station2");
@@ -86,8 +89,8 @@ class PathTest {
 
         Line line1 = new Line(1L, "line1", "color1");
 
-        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 4);
-        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 5);
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, distance1);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, distance2);
 
         line1.addSection(section1To2);
         line1.addSection(section2To3);
@@ -101,8 +104,9 @@ class PathTest {
     }
 
     @DisplayName("거리가 10km ~ 50km 사이인 경우 추가로 5km마다 100원을 추가한다")
-    @Test
-    void calculateFare() {
+    @ParameterizedTest
+    @CsvSource(value = {"5,5,1350", "10,5,1350", "10,6,1450", "44,1,1950", "45,1,2050", "49,1,2050"})
+    void calculateFare2(int distance1, int distance2, int expectedFare) {
         // given
         Station station1 = new Station(1L, "station1");
         Station station2 = new Station(2L, "station2");
@@ -110,8 +114,8 @@ class PathTest {
 
         Line line1 = new Line(1L, "line1", "color1");
 
-        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 10);
-        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 6);
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, distance1);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, distance2);
 
         line1.addSection(section1To2);
         line1.addSection(section2To3);
@@ -121,12 +125,13 @@ class PathTest {
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
-        assertThat(fare).isEqualTo(1450);
+        assertThat(fare).isEqualTo(expectedFare);
     }
 
     @DisplayName("거리가 50km가 넘어가는 경우 추가로 8km마다 100원을 추가한다")
-    @Test
-    void calculateFareOver50() {
+    @ParameterizedTest
+    @CsvSource(value = {"50,1,2150", "50,8,2150", "51,8,2250"})
+    void calculateFare3(int distance1, int distance2, int expectedFare) {
         // given
         Station station1 = new Station(1L, "station1");
         Station station2 = new Station(2L, "station2");
@@ -134,8 +139,8 @@ class PathTest {
 
         Line line1 = new Line(1L, "line1", "color1");
 
-        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 30);
-        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 28);
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, distance1);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, distance2);
 
         line1.addSection(section1To2);
         line1.addSection(section2To3);
@@ -145,6 +150,6 @@ class PathTest {
         int fare = pathFinder.calculateFare(station1, station3);
 
         // then
-        assertThat(fare).isEqualTo(2150);
+        assertThat(fare).isEqualTo(expectedFare);
     }
 }

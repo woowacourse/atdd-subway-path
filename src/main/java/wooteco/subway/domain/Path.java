@@ -67,7 +67,7 @@ public class Path {
             return 0;
         }
 
-        if (distance < MIDDLE_DISTANCE_UPPER_BOUND) {
+        if (distance <= MIDDLE_DISTANCE_UPPER_BOUND) {
             int distanceForPayingAdditionalAmount = distance - SHORT_DISTANCE_UPPER_BOUND;
             return middleDistanceUnit(distanceForPayingAdditionalAmount) * ADDITIONAL_FARE;
         }
