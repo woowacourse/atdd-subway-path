@@ -98,16 +98,15 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        Path pathFinder = new Path(sectionService.findAll());
+        Path path = new Path(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
-        List<Station> path = pathFinder.findRoute(sourceStation, targetStation);
-        int distance = pathFinder.calculateDistance(sourceStation, targetStation);
-        int fare = FareRule.calculateFare(distance);
-        return PathResponse.from(path, distance, fare);
+        List<Station> stations = path.calculatePassingStations(sourceStation, targetStation);
+        int distance = path.calculateDistance(sourceStation, targetStation);
+        return PathResponse.from(stations, distance, FareRule.calculateFare(distance));
     }
 }

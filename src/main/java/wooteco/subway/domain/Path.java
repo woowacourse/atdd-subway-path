@@ -8,34 +8,34 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
 
     public Path(final List<Section> sections) {
-        path = initPath(sections);
+        graph = initGraph(sections);
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> initPath(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        initGraph(graph, sections);
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    public List<Station> findRoute(final Station source, final Station target) {
+    public List<Station> calculatePassingStations(final Station source, final Station target) {
         checkRouteExist(source, target);
-        return path.getPath(source, target).getVertexList();
+        return graph.getPath(source, target).getVertexList();
     }
 
     public int calculateDistance(final Station source, final Station target) {
         checkRouteExist(source, target);
-        return (int) path.getPath(source, target).getWeight();
+        return (int) graph.getPath(source, target).getWeight();
     }
 
     private void checkRouteExist(final Station source, final Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = this.path.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = this.graph.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("이동 가능한 경로가 존재하지 않습니다");
         }
+    }
+
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+                = new WeightedMultigraph(DefaultWeightedEdge.class);
+        initGraph(graph, sections);
+        return new DijkstraShortestPath<>(graph);
     }
 
     private void initGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,

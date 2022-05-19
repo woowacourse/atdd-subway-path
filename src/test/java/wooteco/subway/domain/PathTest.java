@@ -37,13 +37,13 @@ class PathTest {
         line2.addSection(section4To5);
         line2.addSection(section2To4);
 
-        Path pathFinder = new Path(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
+        Path path = new Path(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
 
         // when
-        List<Station> path = pathFinder.findRoute(station1, station5);
+        List<Station> stations = path.calculatePassingStations(station1, station5);
 
         // then
-        assertThat(path).containsExactly(station1, station2, station4, station5);
+        assertThat(stations).containsExactly(station1, station2, station4, station5);
     }
 
     @DisplayName("이동할 수 있는 경로가 없는 경우 예외를 던진다.")
@@ -71,7 +71,7 @@ class PathTest {
 
         Path path = new Path(List.of(section1To2, section2To3, section4To5));
         // when && then
-        assertThatThrownBy(() -> path.findRoute(station1, station4))
+        assertThatThrownBy(() -> path.calculatePassingStations(station1, station4))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이동 가능한 경로가 존재하지 않습니다");
     }
