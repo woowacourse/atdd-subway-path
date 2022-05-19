@@ -17,8 +17,8 @@ import wooteco.subway.dto.station.StationResponse;
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest extends AcceptanceTest {
 
-    private final StationRequest gangNamStationRequest = new StationRequest("강남역");
-    private final StationRequest jamSilStationRequest = new StationRequest("잠실역");
+    private final StationRequest gangNamStationRequest = new StationRequest(GANGNAM);
+    private final StationRequest yeokSamStationRequest = new StationRequest(YEOKSAM);
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -49,12 +49,12 @@ class StationAcceptanceTest extends AcceptanceTest {
     void ShowStations() {
         /// given
         final ExtractableResponse<Response> expected1 = createStation(gangNamStationRequest);
-        final ExtractableResponse<Response> expected2 = createStation(jamSilStationRequest);
+        final ExtractableResponse<Response> expected2 = createStation(yeokSamStationRequest);
 
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .get(STATION_PATH_PREFIX)
+                .get(STATION_URL_PREFIX)
                 .then().log().all()
                 .extract();
 
@@ -80,7 +80,7 @@ class StationAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .delete(STATION_PATH_PREFIX + SLASH + id)
+                .delete(STATION_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
 
@@ -94,7 +94,7 @@ class StationAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .delete(STATION_PATH_PREFIX + SLASH + 999)
+                .delete(STATION_URL_PREFIX + "/999")
                 .then().log().all()
                 .extract();
 

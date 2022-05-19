@@ -23,19 +23,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static final String DISTANCE = "distance";
     private static final String FARE = "fare";
 
-    private static final String GANGNAM = "강남역";
-    private static final String YEOKSAM = "역삼역";
-    private static final String SEOLLEUNG = "선릉역";
-    private static final String SAMSUNG = "삼성역";
-    private static final String SEOUL_FOREST = "서울숲역";
-    private static final String WANGSIMNI = "왕십리역";
-    private static final String HEANGDANG = "행당역";
-    private static final String MAJANG = "마장역";
-    private static final String DAPSIMNI = "답십리역";
-    private static final String YACKSU = "약수역";
-    private static final String GEUMHO = "금호역";
-    private static final String OKSU = "옥수역";
-
     private Station gangnam;
     private Station yeoksam;
     private Station seolleung;
@@ -104,7 +91,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .queryParam(SOURCE_STATION_ID, sourceStationId)
                 .queryParam(TARGET_STATION_ID, targetStationId)
                 .when()
-                .get("/paths")
+                .get(PATH_URL_PREFIX)
                 .then().log().all();
     }
 
@@ -173,7 +160,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final ValidatableResponse response = RestAssured.given().log().all()
                 .queryParam("source", gangnam.getId())
                 .when()
-                .get("/paths")
+                .get(PATH_URL_PREFIX)
                 .then().log().all();
 
         // then

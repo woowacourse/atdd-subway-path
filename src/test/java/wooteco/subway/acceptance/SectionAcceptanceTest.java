@@ -32,9 +32,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        yeoksam = createStation(new StationRequest("역삼역")).as(Station.class);
-        seolleung = createStation(new StationRequest("선릉역")).as(Station.class);
-        samseong = createStation(new StationRequest("삼성역")).as(Station.class);
+        yeoksam = createStation(new StationRequest(YEOKSAM)).as(Station.class);
+        seolleung = createStation(new StationRequest(SEOLLEUNG)).as(Station.class);
+        samseong = createStation(new StationRequest(SAMSUNG)).as(Station.class);
     }
 
     @Test
@@ -66,7 +66,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse findLineById(final long lineId) {
         return RestAssured.given().log().all()
-                .get(LINE_PATH_PREFIX + SLASH + lineId)
+                .get(LINE_URL_PREFIX + "/" + lineId)
                 .then().log().all()
                 .extract()
                 .as(LineResponse.class);
@@ -147,8 +147,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록하려는 노선에 상행, 하행 역이 모두 포함되어 있지 않으면 400을 반환한다.")
     void CreateSection_BothStationNotIncluded_BadRequest() {
         // given
-        final long upStationId = createAndGetStationId(new StationRequest("답십리역"));
-        final long downStationId = createAndGetStationId(new StationRequest("왕십리역"));
+        final long upStationId = createAndGetStationId(new StationRequest(DAPSIMNI));
+        final long downStationId = createAndGetStationId(new StationRequest(WANGSIMNI));
         final SectionRequest request = new SectionRequest(upStationId, downStationId, 7);
         final long lineId = createAndGetLineId(new LineRequest(
                 LINE_NAME,
@@ -252,7 +252,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .queryParam("stationId", stationId)
                 .when()
-                .delete(LINE_PATH_PREFIX + SLASH + lineId + SECTION_PATH_PREFIX)
+                .delete(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
                 .then().log().all()
                 .extract();
     }

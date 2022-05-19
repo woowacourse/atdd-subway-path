@@ -36,10 +36,10 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        seolleung = createStation(new StationRequest("선릉역")).as(Station.class);
-        yeoksam = createStation(new StationRequest("역삼역")).as(Station.class);
-        wangsimni = createStation(new StationRequest("왕십리역")).as(Station.class);
-        dapsimni = createStation(new StationRequest("답십리역")).as(Station.class);
+        seolleung = createStation(new StationRequest(SEOLLEUNG)).as(Station.class);
+        yeoksam = createStation(new StationRequest(YEOKSAM)).as(Station.class);
+        wangsimni = createStation(new StationRequest(WANGSIMNI)).as(Station.class);
+        dapsimni = createStation(new StationRequest(DAPSIMNI)).as(Station.class);
 
         lineOneRequest = new LineRequest(
                 LINE_ONE_NAME,
@@ -71,7 +71,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(actual.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(actual.header(LOCATION)).isEqualTo(LINE_PATH_PREFIX + SLASH + lineId);
+        assertThat(actual.header(LOCATION)).isEqualTo(LINE_URL_PREFIX + "/" + lineId);
 
         final LineResponse actualResponse = actual.body().as(LineResponse.class);
         assertThat(actualResponse).isEqualTo(expected);
@@ -87,7 +87,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .get(LINE_PATH_PREFIX)
+                .get(LINE_URL_PREFIX)
                 .then().log().all()
                 .extract();
         final List<LineResponse> actualResponse = actual.jsonPath().getList(".", LineResponse.class);
@@ -111,7 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .get(LINE_PATH_PREFIX + SLASH + id)
+                .get(LINE_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
         final LineResponse actualResponse = actual.body().as(LineResponse.class);
@@ -127,7 +127,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         final long id = createAndGetLineId(lineOneRequest);
 
-        final long samseongId = createAndGetStationId(new StationRequest("삼성역"));
+        final long samseongId = createAndGetStationId(new StationRequest(SAMSUNG));
 
         createSection(new SectionRequest(dapsimni.getId(), yeoksam.getId(), 5), (int) id);
         createSection(new SectionRequest(yeoksam.getId(), wangsimni.getId(), 5), (int) id);
@@ -135,13 +135,13 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         final LineResponse expected = LineResponse.of(
                 new Line(id, LINE_ONE_NAME, LINE_ONE_COLOR),
-                List.of(seolleung, dapsimni, new Station(samseongId, "삼성역"), yeoksam, wangsimni)
+                List.of(seolleung, dapsimni, new Station(samseongId, SAMSUNG), yeoksam, wangsimni)
         );
 
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .get(LINE_PATH_PREFIX + SLASH + id)
+                .get(LINE_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
         final LineResponse actualResponse = actual.body().as(LineResponse.class);
@@ -158,7 +158,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> actual = RestAssured.given().log().all()
                 .when()
-                .get(LINE_PATH_PREFIX + SLASH + 999)
+                .get(LINE_URL_PREFIX + "/999")
                 .then().log().all()
                 .extract();
 
@@ -177,7 +177,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .body(lineTwoRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put(LINE_PATH_PREFIX + SLASH + id)
+                .put(LINE_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
 
@@ -197,7 +197,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .body(lineOneRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put(LINE_PATH_PREFIX + SLASH + id)
+                .put(LINE_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
 
@@ -213,7 +213,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .body(lineOneRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put(LINE_PATH_PREFIX + SLASH + 999)
+                .put(LINE_URL_PREFIX + "/999")
                 .then().log().all()
                 .extract();
 
@@ -231,7 +231,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete(LINE_PATH_PREFIX + SLASH + id)
+                .delete(LINE_URL_PREFIX + "/" + id)
                 .then().log().all()
                 .extract();
 
@@ -246,7 +246,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete(LINE_PATH_PREFIX + SLASH + 999)
+                .delete(LINE_URL_PREFIX + "/999")
                 .then().log().all()
                 .extract();
 

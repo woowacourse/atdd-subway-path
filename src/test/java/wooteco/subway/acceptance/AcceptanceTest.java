@@ -17,11 +17,24 @@ import wooteco.subway.dto.station.StationRequest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AcceptanceTest {
 
-    protected static final String STATION_PATH_PREFIX = "/stations";
-    protected static final String LINE_PATH_PREFIX = "/lines";
-    protected static final String SECTION_PATH_PREFIX = "/sections";
+    protected static final String STATION_URL_PREFIX = "/stations";
+    protected static final String LINE_URL_PREFIX = "/lines";
+    protected static final String SECTION_URL_PREFIX = "/sections";
+    protected static final String PATH_URL_PREFIX = "/paths";
     protected static final String LOCATION = "Location";
-    protected static final String SLASH = "/";
+
+    protected static final String GANGNAM = "강남역";
+    protected static final String YEOKSAM = "역삼역";
+    protected static final String SEOLLEUNG = "선릉역";
+    protected static final String SAMSUNG = "삼성역";
+    protected static final String SEOUL_FOREST = "서울숲역";
+    protected static final String WANGSIMNI = "왕십리역";
+    protected static final String HEANGDANG = "행당역";
+    protected static final String MAJANG = "마장역";
+    protected static final String DAPSIMNI = "답십리역";
+    protected static final String YACKSU = "약수역";
+    protected static final String GEUMHO = "금호역";
+    protected static final String OKSU = "옥수역";
 
     @LocalServerPort
     int port;
@@ -56,7 +69,7 @@ abstract class AcceptanceTest {
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post(STATION_PATH_PREFIX)
+                .post(STATION_URL_PREFIX)
                 .then().log().all()
                 .extract();
     }
@@ -66,7 +79,7 @@ abstract class AcceptanceTest {
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post(LINE_PATH_PREFIX)
+                .post(LINE_URL_PREFIX)
                 .then().log().all()
                 .extract();
     }
@@ -76,12 +89,12 @@ abstract class AcceptanceTest {
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post(LINE_PATH_PREFIX + SLASH + lineId + SECTION_PATH_PREFIX)
+                .post(LINE_URL_PREFIX + "/" + lineId + SECTION_URL_PREFIX)
                 .then().log().all()
                 .extract();
     }
 
     protected long extractId(final ExtractableResponse<Response> response) {
-        return Long.parseLong(response.header(LOCATION).split(SLASH)[2]);
+        return Long.parseLong(response.header(LOCATION).split("/")[2]);
     }
 }
