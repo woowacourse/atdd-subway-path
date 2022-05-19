@@ -23,8 +23,7 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService, SectionService sectionService,
-                          StationService stationService) {
+    public LineController(LineService lineService) {
         this.lineService = lineService;
     }
 
