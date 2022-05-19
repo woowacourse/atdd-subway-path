@@ -22,6 +22,13 @@ class PathServiceTest {
     private final LineDao lineDao;
     private final PathService pathService;
 
+    private long 선릉역_ID;
+    private long 선정릉역_ID;
+    private long 한티역_ID;
+    private long 모란역_ID;
+    private long 기흥역_ID;
+    private long 강남역_ID;
+
     public PathServiceTest() {
         stationDao = new MemoryStationDao();
         sectionDao = new MemorySectionDao();
@@ -32,34 +39,13 @@ class PathServiceTest {
         setUpSections();
     }
 
-    private Station 선릉역;
-    private Station 선정릉역;
-    private Station 한티역;
-    private Station 모란역;
-    private Station 기흥역;
-    private Station 강남역;
-
     void setUpStations() {
-        this.선릉역 = new Station("선릉역");
-        this.선정릉역 = new Station("선정릉역");
-        this.한티역 = new Station("한티역");
-        this.모란역 = new Station("모란역");
-        this.기흥역 = new Station("기흥역");
-        this.강남역 = new Station("강남역");
-
-        long 선릉역_ID = stationDao.save(선릉역);
-        long 선정릉역_ID = stationDao.save(선정릉역);
-        long 한티역_ID = stationDao.save(한티역);
-        long 모란역_ID = stationDao.save(모란역);
-        long 기흥역_ID = stationDao.save(기흥역);
-        long 강남역_ID = stationDao.save(강남역);
-
-        this.선릉역.setId(선릉역_ID);
-        this.선정릉역.setId(선정릉역_ID);
-        this.한티역.setId(한티역_ID);
-        this.모란역.setId(모란역_ID);
-        this.기흥역.setId(기흥역_ID);
-        this.강남역.setId(강남역_ID);
+        this.선릉역_ID = stationDao.save(new Station("선릉역"));
+        this.선정릉역_ID = stationDao.save(new Station("선정릉역"));
+        this.한티역_ID = stationDao.save(new Station("한티역"));
+        this.모란역_ID = stationDao.save(new Station("모란역"));
+        this.기흥역_ID = stationDao.save(new Station("기흥역"));
+        this.강남역_ID = stationDao.save(new Station("강남역"));
     }
 
     void setUpSections() {
@@ -68,12 +54,12 @@ class PathServiceTest {
         Line 노선_3 = new Line("노선_3", "green");
 
         List<Section> sections = List.of(
-                new Section(선릉역.getId(), 선정릉역.getId(), 50, 노선_1.getId()),
-                new Section(선정릉역.getId(), 한티역.getId(), 8, 노선_1.getId()),
-                new Section(한티역.getId(), 강남역.getId(), 20, 노선_1.getId()),
-                new Section(선정릉역.getId(), 모란역.getId(), 6, 노선_2.getId()),
-                new Section(기흥역.getId(), 모란역.getId(), 10, 노선_3.getId()),
-                new Section(모란역.getId(), 강남역.getId(), 5, 노선_3.getId())
+                new Section(선릉역_ID, 선정릉역_ID, 50, 노선_1.getId()),
+                new Section(선정릉역_ID, 한티역_ID, 8, 노선_1.getId()),
+                new Section(한티역_ID, 강남역_ID, 20, 노선_1.getId()),
+                new Section(선정릉역_ID, 모란역_ID, 6, 노선_2.getId()),
+                new Section(기흥역_ID, 모란역_ID, 10, 노선_3.getId()),
+                new Section(모란역_ID, 강남역_ID, 5, 노선_3.getId())
         );
 
         for (Section section : sections) {
@@ -84,12 +70,12 @@ class PathServiceTest {
     @DisplayName("경로를 조회한 결과가 순서에 맞게 출력되었는지 검증한다")
     @Test
     void findPath() {
-        PathResponse result = pathService.findPath(기흥역.getId(), 한티역.getId());
+        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID);
         assertAll(
-                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),
-                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역.getId()),
-                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역.getId()),
-                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역.getId()),
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역_ID),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역_ID),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역_ID),
+                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역_ID),
                 () -> assertThat(result.getDistance()).isEqualTo(24),
                 () -> assertThat(result.getFare()).isEqualTo(1550)
         );

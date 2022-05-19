@@ -124,7 +124,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long 존재하지_않는_노선_ID = 50L;
 
         // when
-        ExtractableResponse<Response> response = get(lineById(존재하지_않는_노선_ID));
+        ExtractableResponse<Response> response = get(LINE_BY_ID(존재하지_않는_노선_ID));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -176,7 +176,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .build();
 
         // when & then
-        ExtractableResponse<Response> response2 = put(lineById(createdId), lineRequest);
+        ExtractableResponse<Response> response2 = put(LINE_BY_ID(createdId), lineRequest);
 
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -194,7 +194,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .build();
 
         // when & then
-        ExtractableResponse<Response> response2 = put(lineById(createdId), lineRequest);
+        ExtractableResponse<Response> response2 = put(LINE_BY_ID(createdId), lineRequest);
 
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -207,12 +207,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long createdId = extractId(생성_응답);
 
         // when
-        ExtractableResponse<Response> 수정_응답 = put(lineById(createdId), _7호선);
+        ExtractableResponse<Response> 수정_응답 = put(LINE_BY_ID(createdId), _7호선);
 
         // then
         assertThat(수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        ExtractableResponse<Response> response = get(lineById(createdId));
+        ExtractableResponse<Response> response = get(LINE_BY_ID(createdId));
         LineResponse 생성된_노선 = convertType(response, LineResponse.class);
 
         assertThat(extractId(생성_응답)).isEqualTo(createdId);
@@ -231,7 +231,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         post(LINE, _7호선);
 
         // when
-        ExtractableResponse<Response> response = put(lineById(createdId), _7호선);
+        ExtractableResponse<Response> response = put(LINE_BY_ID(createdId), _7호선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -240,7 +240,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateNotExistLine() {
         // when & then
         long 존재하지_않는_노선_ID = 50L;
-        ExtractableResponse<Response> response = put(lineById(존재하지_않는_노선_ID), _7호선);
+        ExtractableResponse<Response> response = put(LINE_BY_ID(존재하지_않는_노선_ID), _7호선);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -250,7 +250,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteNotExistLine() {
         // given & when
         long 존재하지_않는_노선_ID = 50L;
-        ExtractableResponse response = delete(lineById(존재하지_않는_노선_ID));
+        ExtractableResponse response = delete(LINE_BY_ID(존재하지_않는_노선_ID));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -274,7 +274,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 등록할 수 있다")
     @Test
     void create_section() {
-        노선_및_역_생성요청();
+        ExtractableResponse<Response> 노선_및_역_생성응답 = 노선_및_역_생성요청();
+        long 노선_ID = extractId(노선_및_역_생성응답);
 
         // 구간 등록 요청
         Map<String, String> requestBody = new HashMap<>();
@@ -282,7 +283,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         requestBody.put("downStationId", "2");
         requestBody.put("distance", "3");
 
-        ExtractableResponse<Response> response = post("/lines/1/sections", requestBody);
+        ExtractableResponse<Response> response = post(SECTION_BY_LINE_ID(노선_ID), requestBody);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

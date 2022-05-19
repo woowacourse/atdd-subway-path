@@ -18,6 +18,24 @@ public class FixtureUtils {
 
     public static final String LINE = "/lines";
     public static final String STATION = "/stations";
+
+    public static final String LINE_BY_ID(Object id) {
+        return LINE + "/" + id;
+    }
+
+    // ex)  /lines/1/sections
+    public static final String SECTION_BY_LINE_ID(Object id) {
+        return LINE_BY_ID(id) + "/sections";
+    }
+
+    public static final String STATION_BY_ID(Object id) {
+        return STATION + "/" + id;
+    }
+
+    public static final String PATH_BY_LINE_ID(long sourceStationId, long targetStationId) {
+        return String.format("/paths?source=%d&target=%d", sourceStationId, targetStationId);
+    }
+
     public static final StationRequest 상도역 = StationRequest.builder()
             .name("상도역")
             .build();
@@ -91,14 +109,6 @@ public class FixtureUtils {
 
     public static List<Long> extractIds(ExtractableResponse<Response> response) {
         return response.jsonPath().getList("id", Long.class);
-    }
-
-    public static String lineById(Object id) {
-        return LINE + "/" + id;
-    }
-
-    public static String stationById(Object id) {
-        return STATION + "/" + id;
     }
 
     public static LineRequest 신분당선_생성() {

@@ -115,7 +115,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         int 존재하지_않는_역_ID = 50;
 
         // when
-        ExtractableResponse<Response> response = delete(stationById(존재하지_않는_역_ID));
+        ExtractableResponse<Response> response = delete(STATION_BY_ID(존재하지_않는_역_ID));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
