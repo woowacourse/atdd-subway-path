@@ -11,6 +11,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwayMap;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineSaveRequest;
 import wooteco.subway.dto.LineUpdateRequest;
@@ -39,7 +40,8 @@ public class LineService {
             throw new DuplicateLineException();
         }
         Line createdLine = lineDao.save(request.toLine());
-        Section createdSection = sectionService.createSection(createdLine.getId(), request.getUpStationId(), request.getDownStationId(), request.getDistance());
+        Section createdSection = sectionService.createSection(createdLine.getId(), request.getUpStationId(),
+                request.getDownStationId(), request.getDistance());
         createdLine.addSection(createdSection);
         return LineResponse.from(createdLine);
     }
@@ -97,16 +99,15 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        Path path = new Path(sectionService.findAll());
+    public PathResponse findPath(final Long sourceId, final Long targetId) {
+        SubwayMap subwayMap = new SubwayMap(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
-        List<Station> stations = path.calculatePassingStations(sourceStation, targetStation);
-        int distance = path.calculateDistance(sourceStation, targetStation);
-        return PathResponse.from(stations, distance, FareRule.calculateFare(distance));
+        Path path = subwayMap.calculatePath(sourceStation, targetStation);
+        return PathResponse.from(path.getStations(), path.getDistance(), FareRule.calculateFare(path.getDistance()));
     }
 }

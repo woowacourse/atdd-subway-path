@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class PathTest {
+class SubwayMapTest {
 
     @DisplayName("경로를 탐색한다.")
     @Test
@@ -37,10 +37,10 @@ class PathTest {
         line2.addSection(section4To5);
         line2.addSection(section2To4);
 
-        Path path = new Path(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
+        SubwayMap subwayMap = new SubwayMap(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
 
         // when
-        List<Station> stations = path.calculatePassingStations(station1, station5);
+        List<Station> stations = subwayMap.calculatePath(station1, station5).getStations();
 
         // then
         assertThat(stations).containsExactly(station1, station2, station4, station5);
@@ -69,9 +69,9 @@ class PathTest {
         Section section4To5 = new Section(3L, line2.getId(), station4, station5, 10);
         line2.addSection(section4To5);
 
-        Path path = new Path(List.of(section1To2, section2To3, section4To5));
+        SubwayMap subwayMap = new SubwayMap(List.of(section1To2, section2To3, section4To5));
         // when && then
-        assertThatThrownBy(() -> path.calculatePassingStations(station1, station4))
+        assertThatThrownBy(() -> subwayMap.calculatePath(station1, station4))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이동 가능한 경로가 존재하지 않습니다");
     }
