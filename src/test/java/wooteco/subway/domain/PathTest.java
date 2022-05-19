@@ -9,14 +9,6 @@ import org.junit.jupiter.api.Test;
 
 class PathTest {
 
-    /*
-    * 노선 2개 만들어서(1호선(~~~), 2호선(~~~))
-    *
-    * 객체 생성하고, 메서드 호출
-    *
-    * 최단 경로를 잘 반환하는지
-    * */
-
     @DisplayName("경로를 탐색한다.")
     @Test
     void calculateMinPath() {
