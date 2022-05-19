@@ -2,6 +2,8 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,8 +74,8 @@ public class LineServiceTest {
     @DisplayName("존재하지 않는 지하철 노선 조회 요청 시 예외를 던진다.")
     @Test
     void getLineNotExists() {
-        assertThatThrownBy(() -> lineService.find(1L)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재하지 않는 지하철 노선 id입니다.");
+        assertThatThrownBy(() -> lineService.find(1L)).isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -93,9 +95,9 @@ public class LineServiceTest {
     @Test
     void updateLineNotExists() {
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(1L, "2호선", "green", 900);
-        assertThatThrownBy(() -> lineService.update(lineUpdateRequest)).isInstanceOf(
-            IllegalArgumentException.class)
-            .hasMessage("존재하지 않는 지하철 노선 id입니다.");
+        assertThatThrownBy(() -> lineService.update(lineUpdateRequest))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("지하철 노선을 삭제한다.")
@@ -111,7 +113,8 @@ public class LineServiceTest {
     @DisplayName("존재하지 않는 지하철 노선 삭제 요청 시 예외를 던진다.")
     @Test
     void deleteLineNotExists() {
-        assertThatThrownBy(() -> lineService.delete(1L)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재하지 않는 지하철 노선 id입니다.");
+        assertThatThrownBy(() -> lineService.delete(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 지하철 노선 id입니다.");
     }
 }

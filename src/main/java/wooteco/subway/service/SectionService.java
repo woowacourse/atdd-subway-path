@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,13 +80,13 @@ public class SectionService {
 
     private void validateNotExistsLine(Long id) {
         if (!lineDao.existById(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_ID);
+            throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }
     }
 
     private void validateNotExistStation(Long id) {
         if (!stationDao.existById(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_STATION);
+            throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_STATION);
         }
     }
 }

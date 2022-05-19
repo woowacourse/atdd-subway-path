@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,7 @@ public class StationServiceTest {
     @DisplayName("존재하지 않는 id의 지하철역 삭제 요청 시 예외를 던진다.")
     @Test
     void deleteStationNotExists() {
-        assertThatThrownBy(() -> stationService.delete(1L)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> stationService.delete(1L)).isInstanceOf(NoSuchElementException.class)
             .hasMessage("존재하지 않는 지하철 역입니다.");
     }
 

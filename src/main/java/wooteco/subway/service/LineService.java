@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -121,13 +122,13 @@ public class LineService {
 
     private void validateNotExists(Long id) {
         if (!lineDao.existById(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_ID);
+            throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
         }
     }
 
     private void validateNotExistStation(Long stationId) {
         if (!stationDao.existById(stationId)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_STATION);
+            throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_STATION);
         }
     }
 
