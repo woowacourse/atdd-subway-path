@@ -9,7 +9,7 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.fare.FareStrategy;
-import wooteco.subway.domain.strategy.path.PathStrategy;
+import wooteco.subway.domain.strategy.path.PathFindStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -19,10 +19,10 @@ public class PathService {
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
-    private final PathStrategy pathStrategy;
+    private final PathFindStrategy pathStrategy;
     private final FareStrategy fareStrategy;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao, PathStrategy pathStrategy, FareStrategy fareStrategy) {
+    public PathService(StationDao stationDao, SectionDao sectionDao, PathFindStrategy pathStrategy, FareStrategy fareStrategy) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
         this.pathStrategy = pathStrategy;

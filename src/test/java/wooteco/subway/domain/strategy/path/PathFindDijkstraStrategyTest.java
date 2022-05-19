@@ -16,13 +16,13 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 
-class PathDijkstraStrategyTest {
+class PathFindDijkstraStrategyTest {
 
     @Test
     @DisplayName("각 구간 리스트들을 통해서 최단 경로를 조회할 수 있다.")
     void getDijkstraShortestPath() {
         // given
-        PathStrategy pathStrategy = new PathDijkstraStrategy();
+        PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // when
         Path path = pathStrategy.calculatePath(강남역, 삼전역, new Sections(전체_구간));
@@ -35,7 +35,7 @@ class PathDijkstraStrategyTest {
     @DisplayName("시작역과 종점역이 같을 경우 예외가 발생한다.")
     void sameSourceTarget() {
         // given
-        PathStrategy pathStrategy = new PathDijkstraStrategy();
+        PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // when & then
         assertThatThrownBy(() -> pathStrategy.calculatePath(강남역, 강남역, new Sections(전체_구간)))

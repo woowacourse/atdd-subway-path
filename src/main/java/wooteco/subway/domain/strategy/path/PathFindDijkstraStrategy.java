@@ -10,17 +10,17 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 @Component
-public class PathDijkstraStrategy implements PathStrategy {
+public class PathFindDijkstraStrategy implements PathFindStrategy {
 
     @Override
     public Path calculatePath(Station source, Station target, Sections sections) {
         validateSameStation(source, target);
 
-        WeightedMultigraph<Station , DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station , DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addVertex(sections, graph);
         addEdgeWeight(sections, graph);
 
-        DijkstraShortestPath shortPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortPath = new DijkstraShortestPath<>(graph);
 
         return new Path(
                 shortPath.getPath(source, target).getVertexList(),
