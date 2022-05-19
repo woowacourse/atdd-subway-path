@@ -1,24 +1,18 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import wooteco.subway.ui.dto.request.LineRequest;
-import wooteco.subway.ui.dto.request.LineUpdateRequest;
-import wooteco.subway.ui.dto.request.SectionRequest;
-import wooteco.subway.ui.dto.response.LineResponse;
+import wooteco.subway.domain.Line;
+import wooteco.subway.service.dto.LineServiceRequest;
 
 public interface LineService {
 
-    LineResponse create(LineRequest lineRequest);
+    Line save(LineServiceRequest lineServiceRequest);
 
-    List<LineResponse> findAll();
+    List<Line> findAll();
 
-    LineResponse findById(Long id);
+    Line findById(Long id);
 
-    void updateById(Long id, LineUpdateRequest lineUpdateRequest);
+    void update(Long id, LineServiceRequest lineServiceRequest);
 
     void deleteById(Long id);
-
-    void addSection(Long lineId, SectionRequest sectionRequest);
-
-    void removeSection(Long lineId, Long stationId);
 }

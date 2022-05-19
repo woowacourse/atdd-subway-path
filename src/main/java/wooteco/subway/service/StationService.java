@@ -1,13 +1,16 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import wooteco.subway.ui.dto.response.StationResponse;
+import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.StationServiceRequest;
 
 public interface StationService {
 
-    StationResponse create(String name);
+    Station save(StationServiceRequest stationServiceRequest);
 
-    List<StationResponse> findAll();
+    List<Station> findAll();
 
     void deleteById(Long id);
+
+    Station findById(Long stationId);
 }

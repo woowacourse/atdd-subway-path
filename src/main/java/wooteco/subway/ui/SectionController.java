@@ -1,5 +1,6 @@
 package wooteco.subway.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,28 +9,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.service.LineService;
-import wooteco.subway.ui.dto.request.SectionRequest;
+import wooteco.subway.service.SectionService;
+import wooteco.subway.ui.dto.SectionRequest;
 
 @RestController
-@RequestMapping("/lines/{id}/sections")
+@RequestMapping("/lines/{lineId}/sections")
 public class SectionController {
 
-    private final LineService lineService;
+    private final SectionService sectionService;
 
-    public SectionController(LineService lineService) {
-        this.lineService = lineService;
+    public SectionController(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> addSection(@PathVariable Long id, @RequestBody SectionRequest sectionRequest) {
-        lineService.addSection(id, sectionRequest);
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
+                                              @RequestBody @Valid SectionRequest sectionRequest) {
+        sectionService.save(lineId, sectionRequest.toServiceRequest());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> removeSection(@PathVariable Long id, @RequestParam Long stationId) {
-        lineService.removeSection(id, stationId);
+    public ResponseEntity<Void> deleteSectionByLineId(@PathVariable Long lineId, @RequestParam Long stationId) {
+        sectionService.deleteByLineIdAndStationId(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 }
