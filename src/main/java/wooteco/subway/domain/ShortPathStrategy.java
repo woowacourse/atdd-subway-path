@@ -23,8 +23,8 @@ public class ShortPathStrategy implements PathStrategy {
         return (int) buildSubwayMap(stations, sections).getPath(from, to).getWeight();
     }
 
-    private DijkstraShortestPath buildSubwayMap(List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Station, Section> graph = new WeightedMultigraph(Section.class);
+    private DijkstraShortestPath<Station, Section> buildSubwayMap(List<Station> stations, List<Section> sections) {
+        WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
         stations.forEach(graph::addVertex);
 
         Map<Long, Station> sectionMap = stations.stream()
@@ -36,6 +36,6 @@ public class ShortPathStrategy implements PathStrategy {
             graph.addEdge(downStation, upStation, section);
             graph.setEdgeWeight(section, section.getDistance());
         }
-        return new DijkstraShortestPath(graph);
+        return new DijkstraShortestPath<>(graph);
     }
 }
