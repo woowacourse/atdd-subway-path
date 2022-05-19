@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.service.StationService;
-import wooteco.subway.service.dto.StationServiceResponse;
+import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
 
 @RestController
@@ -25,18 +25,18 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationServiceResponse> createStation(
+    public ResponseEntity<StationResponse> createStation(
         @Validated @RequestBody StationRequest stationRequest) {
-        StationServiceResponse stationServiceResponse = stationService.save(
+        StationResponse stationResponse = stationService.save(
             stationRequest.toServiceRequest());
-        return ResponseEntity.created(URI.create("/stations/" + stationServiceResponse.getId()))
+        return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId()))
             .body(
-                stationServiceResponse);
+                stationResponse);
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationServiceResponse>> showStations() {
-        List<StationServiceResponse> stations = stationService.findAll();
+    public ResponseEntity<List<StationResponse>> showStations() {
+        List<StationResponse> stations = stationService.findAll();
         return ResponseEntity.ok().body(stations);
     }
 

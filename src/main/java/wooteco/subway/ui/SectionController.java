@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.service.SectionService;
-import wooteco.subway.service.dto.LineServiceResponse;
+import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.SectionServiceDeleteRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 
@@ -23,7 +23,7 @@ public class SectionController {
     }
 
     @PostMapping("/lines/{id}/sections")
-    public ResponseEntity<LineServiceResponse> createSection(
+    public ResponseEntity<LineResponse> createSection(
         @Validated @RequestBody SectionRequest sectionRequest, @PathVariable Long id) {
         Long savedId = sectionService.save(sectionRequest.toServiceRequest(), id);
         if (savedId != null) {
@@ -33,7 +33,7 @@ public class SectionController {
     }
 
     @DeleteMapping("/lines/{id}/sections")
-    public ResponseEntity<LineServiceResponse> deleteSection(@PathVariable Long id,
+    public ResponseEntity<LineResponse> deleteSection(@PathVariable Long id,
         @RequestParam Long stationId) {
         if (sectionService.removeSection(new SectionServiceDeleteRequest(id, stationId))) {
             return ResponseEntity.ok().build();

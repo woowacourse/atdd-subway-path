@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.service.ServiceTestFixture.deleteAllStation;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationServiceRequest;
-import wooteco.subway.service.dto.StationServiceResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @JdbcTest
 class StationServiceTest {
@@ -38,7 +37,7 @@ class StationServiceTest {
         StationServiceRequest station = new StationServiceRequest("범고래");
 
         // when
-        StationServiceResponse result = stationService.save(station);
+        StationResponse result = stationService.save(station);
 
         // then
         String stationName = station.getName();
@@ -65,11 +64,11 @@ class StationServiceTest {
     @Test
     void findAll() {
         // given
-        StationServiceResponse station1 = stationService.save(new StationServiceRequest("범고래"));
-        StationServiceResponse station2 = stationService.save(new StationServiceRequest("애쉬"));
+        StationResponse station1 = stationService.save(new StationServiceRequest("범고래"));
+        StationResponse station2 = stationService.save(new StationServiceRequest("애쉬"));
 
         // when
-        List<StationServiceResponse> stations = stationService.findAll();
+        List<StationResponse> stations = stationService.findAll();
 
         // then
         assertThat(stations).filteredOn((station) -> station.getName().equals(station1.getName()))
@@ -81,11 +80,11 @@ class StationServiceTest {
     @Test
     void deleteById() {
         // given
-        StationServiceResponse savedStation = stationService.save(new StationServiceRequest("범고래"));
+        StationResponse savedStation = stationService.save(new StationServiceRequest("범고래"));
 
         // when
         stationService.deleteById(savedStation.getId());
-        List<StationServiceResponse> stations = stationService.findAll();
+        List<StationResponse> stations = stationService.findAll();
 
         // then
         assertThat(stations).filteredOn(

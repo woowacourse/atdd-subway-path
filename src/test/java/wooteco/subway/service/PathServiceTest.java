@@ -19,7 +19,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathServiceRequest;
-import wooteco.subway.service.dto.PathServiceResponse;
+import wooteco.subway.service.dto.PathResponse;
 
 @JdbcTest
 class PathServiceTest {
@@ -60,7 +60,7 @@ class PathServiceTest {
         PathServiceRequest pathServiceRequest = new PathServiceRequest(savedId1, savedId3, 20);
 
         // when
-        PathServiceResponse result = pathService.findShortestPath(pathServiceRequest);
+        PathResponse result = pathService.findShortestPath(pathServiceRequest);
 
         // then
         assertThat(result.getStations().size()).isEqualTo(3);

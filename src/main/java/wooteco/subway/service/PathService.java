@@ -11,8 +11,8 @@ import wooteco.subway.domain.ShortestPath;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.Stations;
 import wooteco.subway.service.dto.PathServiceRequest;
-import wooteco.subway.service.dto.PathServiceResponse;
-import wooteco.subway.service.dto.StationServiceResponse;
+import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 public class PathService {
@@ -25,16 +25,16 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathServiceResponse findShortestPath(PathServiceRequest pathRequest) {
+    public PathResponse findShortestPath(PathServiceRequest pathRequest) {
         ShortestPath shortestPath = getShortestPath();
 
-        List<StationServiceResponse> stations = getShortestPathStations(pathRequest, shortestPath);
+        List<StationResponse> stations = getShortestPathStations(pathRequest, shortestPath);
         Fare fare = new Fare();
         int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
             pathRequest.getTarget());
         int fee = fare.calculate(shortestDistance);
 
-        return new PathServiceResponse(stations, shortestDistance, fee);
+        return new PathResponse(stations, shortestDistance, fee);
     }
 
     private ShortestPath getShortestPath() {
@@ -42,16 +42,16 @@ public class PathService {
         return new ShortestPath(sections);
     }
 
-    private List<StationServiceResponse> getShortestPathStations(PathServiceRequest pathRequest, ShortestPath shortestPath) {
+    private List<StationResponse> getShortestPathStations(PathServiceRequest pathRequest, ShortestPath shortestPath) {
         List<Long> stationIds = shortestPath.findShortestPath(pathRequest.getSource(),
             pathRequest.getTarget());
         Stations stations = new Stations(stationDao.findById(stationIds));
         return toStationServiceResponse(stations.sortedStationsById(stationIds));
     }
 
-    private List<StationServiceResponse> toStationServiceResponse(List<Station> stations) {
+    private List<StationResponse> toStationServiceResponse(List<Station> stations) {
         return stations.stream()
-            .map(i -> new StationServiceResponse(i.getId(), i.getName()))
+            .map(i -> new StationResponse(i.getId(), i.getName()))
             .collect(Collectors.toList());
     }
 }

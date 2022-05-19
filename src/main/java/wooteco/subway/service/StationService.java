@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationServiceRequest;
-import wooteco.subway.service.dto.StationServiceResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,10 +20,10 @@ public class StationService {
     }
 
     @Transactional
-    public StationServiceResponse save(StationServiceRequest stationServiceRequest) {
+    public StationResponse save(StationServiceRequest stationServiceRequest) {
         validateDuplicationName(stationServiceRequest.getName());
         Long savedId = stationDao.save(new Station(stationServiceRequest.getName()));
-        return new StationServiceResponse(savedId, stationServiceRequest.getName());
+        return new StationResponse(savedId, stationServiceRequest.getName());
     }
 
     private void validateDuplicationName(String name) {
@@ -32,10 +32,10 @@ public class StationService {
         }
     }
 
-    public List<StationServiceResponse> findAll() {
+    public List<StationResponse> findAll() {
         List<Station> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-            .map(i -> new StationServiceResponse(i.getId(), i.getName()))
+            .map(i -> new StationResponse(i.getId(), i.getName()))
             .collect(Collectors.toList());
     }
 

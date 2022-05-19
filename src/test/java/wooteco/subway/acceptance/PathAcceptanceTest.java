@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.service.dto.PathServiceResponse;
+import wooteco.subway.service.dto.PathResponse;
 
 class PathAcceptanceTest extends AcceptanceTest {
 
@@ -46,7 +46,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         JsonPath jsonPath = response.jsonPath();
-        PathServiceResponse result = jsonPath.getObject("", PathServiceResponse.class);
+        PathResponse result = jsonPath.getObject("", PathResponse.class);
         assertAll(
             () -> assertThat(result.getStations().size()).isEqualTo(4),
             () -> assertThat(result.getFare()).isEqualTo(1350),
