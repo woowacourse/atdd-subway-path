@@ -1,39 +1,70 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
-</p>
+# 지하철 경로 조회 🚈
 
-<br>
+## 기능 요구 사항
 
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
+### 경로 조회 기능 API
 
-<br>
+- [x] 최단 경로 조회 기능
+    - [x] 동일한 역의 경로일 경우 에러 응답
+    - [x] 이동할 수 없는 경로일 경우 에러 응답
 
-## 🚀 Getting Started
-### Usage
-#### application 구동
+#### 요금 계산 방법
+
+- 기본운임(10㎞ 이내): 기본운임 1,250원
+- 이용 거리 초과 시 추가운임 부과
+- 10km~50km: 5km 까지 마다 100원 추가
+- 50km 초과: 8km 까지 마다 100원 추가
+
 ```
-./gradlew bootRun
+9km = 1250원
+12km = 10km + 2km = 1350원
+16km = 10km + 6km = 1450원
+58km = 10km + 40km + 8km = 2150원
 ```
-<br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
+### 최단 경로 라이브러리 사용
 
-<br>
+- jgrapht 라이브러리를 활용하면 간편하게 최단거리를 조회할 수 있음
+- 정점(vertex)과 간선(edge), 그리고 가중치 개념을 이용
+- 정점: 지하철역(Station)
+- 간선: 지하철역 연결정보(Section)
+- 가중치: 거리
+- 최단 거리 기준 조회 시 가중치를 거리로 설정
 
-## 🐞 Bug Report
+---
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+## 필요 기능
 
-<br>
+- 모든 노선 정보를 가지고 맵을 만든다.
+- 출발역과 도착역의 경로와 거리를 얻어온다.
+- 해당 거리에 대한 비용을 계산한다.
+- 경로, 거리, 비용을 포함하는 결과를 응답한다.
 
-## 📝 License
+## 도메인 설계
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+#### 지하철 노선도 (SubwayMap)
+
+- 모든 노선 정보를 가지고 있다.
+- 출발역과 도착역이 주어지면 최단 경로와 거리를 계산한다.
+
+---
+
+## 🧑🏻‍💻 릭 & 라라 페어 컨벤션 👩🏻‍💻
+
+### 페어 프로그래밍
+
+- 50분 개발, 10분 휴식
+- 테스트 코드를 먼저 작성하고 프로덕션 코드 작성하기 !!
+
+### 소셜
+
+- 질문에 꼭 대답하기
+- 서로의 다른 의견에 존중하기
+- 다른 크루들의 코드에 흔들리지 않기
+- 우리 코드가 짱이다 ! 👍
+
+### 코드 컨벤션
+
+- 클래스 선언부 한 줄 띄기
+- 필요한 상황에만 공백을 넣기
+- final 키워드 사용

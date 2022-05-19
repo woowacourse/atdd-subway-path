@@ -1,135 +1,79 @@
 package wooteco.subway.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.notNullValue;
+
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
-    private static final String 강남역 = "강남역";
-    private static final String 역삼역 = "역삼역";
+class StationAcceptanceTest extends AcceptanceTest {
+
+    private final StationRequest gangNamStationRequest = new StationRequest(GANGNAM);
+    private final StationRequest yeokSamStationRequest = new StationRequest(YEOKSAM);
 
     @DisplayName("지하철역을 생성한다.")
     @Test
-    void createStation() {
+    void CreateStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        final ValidatableResponse response = requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // then
-        지하철역_생성됨(response);
+        response.statusCode(HttpStatus.CREATED.value())
+                .header(LOCATION, notNullValue());
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("생성하려는 역의 이름이 중복되면 BadRequest 를 반환한다.")
     @Test
-    void createStationWithDuplicateName() {
-        //given
-        지하철역_등록되어_있음(강남역);
+    void CreateStation_DuplicateName_BadRequest() {
+        // given
+        requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        final ValidatableResponse response = requestPost(gangNamStationRequest, STATION_URL_PREFIX);
 
         // then
-        지하철역_생성_실패됨(response);
+        response.statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("지하철역을 조회한다.")
     @Test
-    void getStations() {
-        // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+    void ShowStations() {
+        /// given
+        requestPost(gangNamStationRequest, STATION_URL_PREFIX);
+        requestPost(yeokSamStationRequest, STATION_URL_PREFIX);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        final ValidatableResponse response = requestGet(STATION_URL_PREFIX);
 
         // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+        response.statusCode(HttpStatus.OK.value())
+                .body("name", contains(GANGNAM, YEOKSAM));
     }
 
     @DisplayName("지하철역을 제거한다.")
     @Test
-    void deleteStation() {
+    void DeleteStation() {
         // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        final long id = createAndGetId(gangNamStationRequest, STATION_URL_PREFIX);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+        final ValidatableResponse response = requestDelete(STATION_URL_PREFIX + "/" + id);
 
         // then
-        지하철역_삭제됨(response);
+        response.statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
-    }
+    @DisplayName("존재하지 않는 역을 제거하면 404를 반환한다.")
+    @Test
+    void DeleteStation_NotExistId_BadRequest() {
+        // when
+        final ValidatableResponse response = requestDelete(STATION_URL_PREFIX + "/999");
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
-        return RestAssured
-                .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철역_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        // then
+        response.statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
