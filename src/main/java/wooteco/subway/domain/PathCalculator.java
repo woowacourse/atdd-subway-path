@@ -1,9 +1,6 @@
 package wooteco.subway.domain;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -16,24 +13,13 @@ public class PathCalculator {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
-    public static PathCalculator from(List<Section> sections) {
-        Set<Station> stations = extractStations(sections);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(
-                sections, stations);
+    public static PathCalculator from(List<Station> stations, List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(stations, sections);
         return new PathCalculator(new DijkstraShortestPath<>(graph));
     }
 
-    private static Set<Station> extractStations(List<Section> sections) {
-        Set<Station> stations = new HashSet<>();
-        for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-        return stations;
-    }
-
     private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(
-            List<Section> sections, Set<Station> stations) {
+            List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Station station : stations) {
             graph.addVertex(station);
