@@ -28,4 +28,16 @@ public class PathRequest {
     public int getAge() {
         return age;
     }
+
+    public void setSource(Long source) {
+        this.source = source;
+    }
+
+    public void setTarget(Long target) {
+        this.target = target;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }
