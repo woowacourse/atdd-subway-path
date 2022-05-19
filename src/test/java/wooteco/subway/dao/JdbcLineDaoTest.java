@@ -28,7 +28,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line을 등록할 수 있다.")
     void save() {
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선",  "bg-red-600", 900);
 
         assertThat(lineDao.save(line)).isNotNull();
     }
@@ -36,7 +36,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line을 id로 조회할 수 있다.")
     void findById() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Line findLine = lineDao.findById(id);
 
         assertThat(findLine.getId()).isEqualTo(id);

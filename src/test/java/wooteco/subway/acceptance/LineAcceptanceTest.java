@@ -73,7 +73,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900);
 
         //when
         ExtractableResponse<Response> response = postLines(lineSaveRequest);
@@ -95,7 +95,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900);
         postLines(lineSaveRequest);
 
         // when
@@ -115,8 +115,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3));
-        postLines(new LineSaveRequest("분당선", "bg-green-600", upStationId, downStationId, 3));
+        postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900));
+        postLines(new LineSaveRequest("분당선", "bg-green-600", upStationId, downStationId, 3, 900));
 
         // when
         ExtractableResponse<Response> response = getLines();
@@ -138,7 +138,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3))
+        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900))
                 .header("Location");
 
         // when
@@ -158,7 +158,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3))
+        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900))
                 .header("Location");
 
         // when
@@ -178,7 +178,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long downStationId = postStations(new StationSaveRequest("역삼역")).response()
                 .as(StationResponse.class)
                 .getId();
-        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3))
+        String location = postLines(new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 3, 900))
                 .header("Location");
 
         // when

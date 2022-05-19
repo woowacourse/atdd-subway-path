@@ -32,8 +32,8 @@ class LineServiceTest {
     @Test
     @DisplayName("이미 존재하는 노선의 이름이 있을 때 예외가 발생한다.")
     void saveExceptionByExistName() {
-        lineDao.save(new Line("신분당선", "bg-red-600"));
-        assertThatThrownBy(() -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 2)))
+        lineDao.save(new Line("신분당선", "bg-red-600", 900));
+        assertThatThrownBy(() -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 2, 900)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 존재하는 노선 이름입니다.");
     }
@@ -43,7 +43,7 @@ class LineServiceTest {
     void save() {
         Station upStation = stationDao.findById(stationDao.save(new Station("오리")));
         Station downStation = stationDao.findById(stationDao.save(new Station("배카라")));
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 1);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 1, 900);
 
         assertThat(lineService.save(lineSaveRequest)).isNotNull();
     }

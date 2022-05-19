@@ -7,20 +7,32 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private int extraFare;
 
-    public Line(final Long id, final String name, final String color) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(final String name, final String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
+    public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public Line(final String name, final String color) {
+    public Line(String name, String color) {
         this(null, name, color);
     }
 
-    public boolean isSameName(final String name) {
-        return this.name.equals(name);
-    }
+    //    public boolean isSameName(final String name) {
+//        return this.name.equals(name);
+//    }
 
     public Long getId() {
         return id;
@@ -32,6 +44,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override
@@ -49,5 +65,15 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                '}';
     }
 }

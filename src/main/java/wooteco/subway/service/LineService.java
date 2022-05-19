@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -31,12 +32,16 @@ public class LineService {
 
     @Transactional
     public LineResponse save(final LineSaveRequest lineSaveRequest) {
-        if (lineDao.existByName(lineSaveRequest.getName())) {
-            throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
-        }
+        validateDuplicateName(lineSaveRequest);
         long savedLineId = lineDao.save(lineSaveRequest.toLine());
         saveLineSection(savedLineId, lineSaveRequest);
         return findById(savedLineId);
+    }
+
+    private void validateDuplicateName(LineSaveRequest lineSaveRequest) {
+        if (lineDao.existByName(lineSaveRequest.getName())) {
+            throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
+        }
     }
 
     private void saveLineSection(final long lineId, final LineSaveRequest lineSaveRequest) {

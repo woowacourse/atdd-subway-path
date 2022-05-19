@@ -17,7 +17,8 @@ public class JdbcLineDao implements LineDao {
     private final RowMapper<Line> lineRowMapper = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extraFare")
     );
 
     public JdbcLineDao(final JdbcTemplate jdbcTemplate) {
@@ -26,13 +27,14 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public long save(final Line line) {
-        final String sql = "insert into LINE (name, color) values(?, ?)";
+        final String sql = "insert into LINE (name, color, extraFare) values(?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
