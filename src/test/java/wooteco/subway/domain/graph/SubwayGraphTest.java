@@ -35,8 +35,8 @@ class SubwayGraphTest {
 
     @DisplayName("구간 정보와 출발지 도착지를 이용해 최단 경로 및 거리를 계산한다")
     @Test
-    void findShortestRoute() {
-        Route shortestRoute = subwayGraph.findShortestRoute(교대역, 선릉역);
+    void calculateShortestRoute() {
+        Route shortestRoute = subwayGraph.calculateShortestRoute(교대역, 선릉역);
         List<Station> actualRoute = shortestRoute.getRoute();
         int actualDistance = shortestRoute.getDistance();
 
@@ -48,14 +48,14 @@ class SubwayGraphTest {
 
     @DisplayName("구간 정보 중 출발지 혹은 도착지가 존재하지 않습니다.")
     @ParameterizedTest
-    @MethodSource("provideForValidateSourceAndTargetExist")
-    void validateSourceAndTargetExist(Station source, Station target) {
-        assertThatThrownBy(() -> subwayGraph.findShortestRoute(source, target))
+    @MethodSource("provideForValidateSourceAndTargetBothExist")
+    void validateSourceAndTargetBothExist(Station source, Station target) {
+        assertThatThrownBy(() -> subwayGraph.calculateShortestRoute(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발지 또는 도착지에 대한 구간 정보가 없습니다");
     }
 
-    private static Stream<Arguments> provideForValidateSourceAndTargetExist() {
+    private static Stream<Arguments> provideForValidateSourceAndTargetBothExist() {
         return Stream.of(
                 Arguments.of(광교역, 강남역),
                 Arguments.of(강남역, 광교역));
@@ -65,7 +65,7 @@ class SubwayGraphTest {
     @DisplayName("출발지부터 도착지까지 연결된 경로가 없을 경우 반환값이 존재하지 않는다")
     void ifRouteDoesNotExistResultShouldBeNull() {
         final SubwayGraph subwayGraph = new SubwayGraph(List.of(교대_강남, 역삼_선릉));
-        assertThatThrownBy(() -> subwayGraph.findShortestRoute(교대역, 선릉역))
+        assertThatThrownBy(() -> subwayGraph.calculateShortestRoute(교대역, 선릉역))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("출발지부터 도착지까지 구간이 연결되어 있지 않습니다.");
     }

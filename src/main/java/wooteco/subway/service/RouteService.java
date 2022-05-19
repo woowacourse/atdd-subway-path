@@ -36,7 +36,7 @@ public class RouteService {
     private Route findShortestRoute(SubwayGraph subwayGraph, Long sourceStationId, Long targetStationId) {
         final Station sourceStation = sectionRepository.findStationById(sourceStationId);
         final Station targetStation = sectionRepository.findStationById(targetStationId);
-        return subwayGraph.findShortestRoute(sourceStation, targetStation);
+        return subwayGraph.calculateShortestRoute(sourceStation, targetStation);
     }
 }
 

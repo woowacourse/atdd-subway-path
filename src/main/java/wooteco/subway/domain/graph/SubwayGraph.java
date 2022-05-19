@@ -47,7 +47,7 @@ public class SubwayGraph {
         }
     }
 
-    public Route findShortestRoute(Station source, Station target) {
+    public Route calculateShortestRoute(Station source, Station target) {
         validateSourceAndTargetExist(source, target);
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
