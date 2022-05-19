@@ -2,7 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.List;
 
-public class DistanceProportionalStrategy implements FeeStrategy {
+public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
     public static final int BASIC_FEE = 1250;
     public static final int SECOND_FEE_CONDITION = 50;

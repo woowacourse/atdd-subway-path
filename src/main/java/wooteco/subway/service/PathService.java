@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FeeStrategy;
+import wooteco.subway.domain.PricingStrategy;
 import wooteco.subway.domain.PathStrategy;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -23,7 +23,7 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPaths(PathStrategy pathStrategy, FeeStrategy feeStrategy, Long sourceId, Long targetId) {
+    public PathResponse searchPaths(PathStrategy pathStrategy, PricingStrategy pricingStrategy, Long sourceId, Long targetId) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
         Station source = findById(stations, sourceId);
@@ -31,7 +31,7 @@ public class PathService {
 
         return new PathResponse(
                 pathStrategy.calculateDistance(stations, sections, source, target),
-                feeStrategy.calculateFee(pathStrategy.findSections(stations, sections, source, target)),
+                pricingStrategy.calculateFee(pathStrategy.findSections(stations, sections, source, target)),
                 generateStationResponses(pathStrategy.findPath(stations, sections, source, target))
         );
     }

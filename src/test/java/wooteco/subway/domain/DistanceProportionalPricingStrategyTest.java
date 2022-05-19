@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class DistanceProportionalStrategyTest {
+public class DistanceProportionalPricingStrategyTest {
 
     @DisplayName("요금 계산하기")
     @ParameterizedTest(name = "{0} km -> 요금 {1}원 예상")
@@ -15,7 +15,7 @@ public class DistanceProportionalStrategyTest {
     void calculateScore2(int distance, int expected) {
         // given
         List<Section> sections = List.of(new Section(1L, 1L, 1L, 2L, distance));
-        FeeStrategy strategy = new DistanceProportionalStrategy();
+        PricingStrategy strategy = new DistanceProportionalPricingStrategy();
 
         // when
         int result = strategy.calculateFee(sections);
