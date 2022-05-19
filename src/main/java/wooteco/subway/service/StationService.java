@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
 
+    private static final String STATION_DUPLICATION = "이미 등록된 지하철 역입니다.";
+    private static final String STATION_NOT_EXIST = "존재하지 않은 지하철역입니다.";
+    private static final int STATION_EXIST_VALUE = 1;
+    private static final int DELETE_SUCCESS = 1;
+
     private final StationDao stationDao;
 
     public StationService(final StationDao stationDao) {
@@ -22,8 +27,16 @@ public class StationService {
     @Transactional
     public StationResponse save(final StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
+        validateDuplication(station);
         final Station newStation = stationDao.save(station);
         return new StationResponse(newStation.getId(), newStation.getName());
+    }
+
+    private void validateDuplication(Station station) {
+        int existFlag = stationDao.isExistStation(station);
+        if (existFlag == STATION_EXIST_VALUE) {
+            throw new IllegalArgumentException(STATION_DUPLICATION);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -36,6 +49,8 @@ public class StationService {
 
     @Transactional
     public void deleteById(final Long id) {
-        stationDao.deleteById(id);
+        if (stationDao.deleteById(id) != DELETE_SUCCESS) {
+            throw new IllegalArgumentException(STATION_NOT_EXIST);
+        }
     }
 }

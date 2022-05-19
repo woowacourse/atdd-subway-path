@@ -1,16 +1,14 @@
 package wooteco.subway.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
-
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Repository
 public class StationDao {
@@ -27,10 +25,6 @@ public class StationDao {
     }
 
     public Station save(Station station) {
-        if (isExistName(station)) {
-            throw new IllegalStateException("중복된 지하철역을 저장할 수 없습니다.");
-        }
-
         final String sql = "insert into Station (name) values (?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -45,16 +39,9 @@ public class StationDao {
         );
     }
 
-    private boolean isExistName(Station station) {
-        final String sql = "select count(*) from Station where name = ?";
-        final int count = jdbcTemplate.queryForObject(sql, Integer.class, station.getName());
-        return count > 0;
-    }
-
-    private boolean isExistId(Long id) {
-        final String sql = "select count(*) from Station where id = ?";
-        final int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count > 0;
+    public int isExistStation(Station station) {
+        String sql = "select EXISTS (select name from station where name = ?) as success";
+        return jdbcTemplate.queryForObject(sql, Integer.class, station.getName());
     }
 
     public List<Station> findAll() {
@@ -62,12 +49,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         final String sql = "delete from Station where id = ?";
-        if (!isExistId(id)) {
-            throw new NoSuchElementException("해당하는 지하철이 존재하지 않습니다.");
-        }
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 
     public Station getById(Long stationId) {
