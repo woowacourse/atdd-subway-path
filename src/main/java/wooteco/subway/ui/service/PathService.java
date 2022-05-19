@@ -27,8 +27,8 @@ public class PathService {
         List<Section> sections = sectionDao.findAll();
         PathCalculator pathCalculator = PathCalculator.from(sections);
 
-        Station sourceStation = stationDao.findById((long)source);
-        Station targetStation = stationDao.findById((long)target);
+        Station sourceStation = findStationById((long)source);
+        Station targetStation = findStationById((long)target);
         List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
 
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
@@ -37,5 +37,10 @@ public class PathService {
         int fare = fareCalculator.execute(distance);
 
         return new PathResponse(StationResponse.of(path), distance, fare);
+    }
+
+    private Station findStationById(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 역을 찾을 수 없습니다."));
     }
 }

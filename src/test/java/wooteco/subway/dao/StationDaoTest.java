@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.Station;
@@ -65,6 +66,17 @@ class StationDaoTest {
         final List<Station> stations = dao.findAll();
         // then
         assertThat(stations).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("역을 하나 추가한 뒤, ID값으로 역을 조회한다.")
+    public void findById() {
+        // given
+        Station station = dao.save(new Station(STATION_NAME));
+        // when
+        final Station actual = dao.findById(station.getId()).get();
+        // then
+        assertThat(actual.getName()).isEqualTo(STATION_NAME);
     }
 
     @Test

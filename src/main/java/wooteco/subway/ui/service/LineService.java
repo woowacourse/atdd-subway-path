@@ -1,6 +1,7 @@
 package wooteco.subway.ui.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
@@ -33,8 +34,8 @@ public class LineService {
         String name = lineRequest.getName();
         String color = lineRequest.getColor();
 
-        Station upStation = stationDao.findById(lineRequest.getUpStationId());
-        Station downStation = stationDao.findById(lineRequest.getDownStationId());
+        Station upStation = findStationById(lineRequest.getUpStationId());
+        Station downStation = findStationById(lineRequest.getDownStationId());
         Section section = new Section(upStation, downStation, lineRequest.getDistance());
 
         Line line = new Line(name, color, section);
@@ -42,6 +43,11 @@ public class LineService {
         sectionDao.save(section, createdLine.getId());
 
         return LineResponse.from(createdLine);
+    }
+
+    private Station findStationById(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 역을 찾을 수 없습니다."));
     }
 
     public List<LineResponse> findAll() {

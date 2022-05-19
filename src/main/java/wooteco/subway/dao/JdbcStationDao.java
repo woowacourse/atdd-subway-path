@@ -2,8 +2,10 @@ package wooteco.subway.dao;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -55,12 +57,16 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        ), id);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name")
+            ), id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

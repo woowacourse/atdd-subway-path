@@ -24,8 +24,8 @@ public class SectionService {
 
     public void add(SectionRequest sectionRequest, Long lineId) {
         Line line = lineDao.findById(lineId);
-        Station upStation = stationDao.findById(sectionRequest.getUpStationId());
-        Station downStation = stationDao.findById(sectionRequest.getDownStationId());
+        Station upStation = findStationById(sectionRequest.getUpStationId());
+        Station downStation = findStationById(sectionRequest.getDownStationId());
         Section section = new Section(upStation, downStation, sectionRequest.getDistance());
 
         line.addSection(section);
@@ -35,12 +35,17 @@ public class SectionService {
     @Transactional
     public void delete(Long lineId, Long stationId) {
         Line line = lineDao.findById(lineId);
-        Station station = stationDao.findById(stationId);
+        Station station = findStationById(stationId);
         sectionDao.delete(line.delete(station));
         sectionDao.save(line.getSections(), line.getId());
     }
 
     public void deleteByLine(Long id) {
         sectionDao.deleteByLine(id);
+    }
+
+    private Station findStationById(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 역을 찾을 수 없습니다."));
     }
 }
