@@ -14,7 +14,7 @@ import wooteco.subway.dto.LineRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Sql("classpath:truncate.sql")
+@Sql("/truncate.sql")
 public class LineServiceTest {
     @Autowired
     private StationDao stationDao;

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.StationDao;
@@ -13,7 +14,7 @@ import wooteco.subway.dto.StationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Sql("classpath:truncate.sql")
+@Sql("/truncate.sql")
 public class StationServiceTest {
     @Autowired
     private StationDao stationDao;
