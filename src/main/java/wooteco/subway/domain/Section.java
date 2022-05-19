@@ -4,19 +4,12 @@ import java.util.List;
 
 public class Section {
 
-    private Long id;
-    private long lineId;
-    private long upStationId;
-    private long downStationId;
-    private int distance;
-    private Long lineOrder;
-
-    public Section() {
-    }
-
-    public Section(Long lineOrder) {
-        this.lineOrder = lineOrder;
-    }
+    private final Long id;
+    private final long lineId;
+    private final long upStationId;
+    private final long downStationId;
+    private final int distance;
+    private final Long lineOrder;
 
     public Section(Long id, long lineId, long upStationId, long downStationId, int distance, Long lineOrder) {
         this.id = id;
@@ -27,9 +20,27 @@ public class Section {
         this.lineOrder = lineOrder;
     }
 
-    public static Section createOf(Long id, long lineId, long upStationId, long downStationId,
-                                   int distance, Long lineOrder) {
-        return new Section(id, lineId, upStationId, downStationId, distance, lineOrder);
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean isSameUpStationId(long stationId) {
+        return upStationId == stationId;
+    }
+
+    public boolean isSameDownStationId(long stationId) {
+        return downStationId == stationId;
+    }
+
+    public boolean hasStationId(long stationId) {
+        return upStationId == stationId || downStationId == stationId;
+    }
+
+    public long getOppositeStation(long stationId) {
+        if(upStationId == stationId){
+            return downStationId;
+        }
+        return upStationId;
     }
 
     public Long getId() {
@@ -58,28 +69,5 @@ public class Section {
 
     public Long getLineOrder() {
         return lineOrder;
-    }
-
-    public boolean isSameId(Long id) {
-        return this.id.equals(id);
-    }
-
-    public boolean isSameUpStationId(long stationId) {
-        return upStationId == stationId;
-    }
-
-    public boolean isSameDownStationId(long stationId) {
-        return downStationId == stationId;
-    }
-
-    public boolean hasStationId(long stationId) {
-        return upStationId == stationId || downStationId == stationId;
-    }
-
-    public long getOppositeStation(long stationId) {
-        if(upStationId == stationId){
-            return downStationId;
-        }
-        return upStationId;
     }
 }

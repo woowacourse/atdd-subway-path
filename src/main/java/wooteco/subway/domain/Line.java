@@ -5,12 +5,9 @@ import java.util.Objects;
 public class Line {
 
     private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
-
-    public Line() {
-    }
+    private final String name;
+    private final String color;
+    private final int extraFare;
 
     public Line(String name, String color, int extraFare) {
         this.name = name;
@@ -50,11 +47,12 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(id, line.id);
+        return extraFare == line.extraFare && Objects.equals(id, line.id) && Objects.equals(name,
+                line.name) && Objects.equals(color, line.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name, color, extraFare);
     }
 }

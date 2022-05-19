@@ -12,7 +12,6 @@ public class Path {
 
     private final LinkedList<Section> path;
 
-
     private Path(LinkedList<Section> path) {
         this.path = path;
     }
