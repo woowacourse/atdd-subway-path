@@ -4,7 +4,7 @@ public class FareCalculator {
 
     private static final int PRIMARY_BASIC_DISTANCE = 10;
     private static final int SECONDARY_BASIC_DISTANCE = 50;
-    private static final int OVER_FARE_PER_COUNT = 100;
+    private static final int COUNT_PER_OVER_FARE = 100;
     private static final int BASIC_FARE = 1250;
 
     public int calculateFare(int distance) {
@@ -49,6 +49,6 @@ public class FareCalculator {
         if (distance % overDistancePerCount != 0) {
             count++;
         }
-        return OVER_FARE_PER_COUNT * count;
+        return COUNT_PER_OVER_FARE * count;
     }
 }
