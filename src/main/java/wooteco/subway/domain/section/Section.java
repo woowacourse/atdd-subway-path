@@ -1,8 +1,5 @@
 package wooteco.subway.domain.section;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +26,9 @@ public class Section {
     public Section revisedBy(Section section) {
         int revisedDistance = distance - section.getDistance();
 
+        if (!isConnectedTo(section)) {
+            throw new IllegalArgumentException("기존 노선과 연결된 구간이 아닙니다.");
+        }
         if (Objects.equals(upStationId, section.getUpStationId())) {
             return new Section(id, lineId, section.getDownStationId(), downStationId, revisedDistance);
         }
