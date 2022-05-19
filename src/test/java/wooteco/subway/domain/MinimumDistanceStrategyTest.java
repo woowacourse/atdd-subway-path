@@ -3,55 +3,111 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class MinimumDistanceStrategyTest {
 
-    private final List<Station> stations = List.of(
+    private static final List<Station> stations = List.of(
             new Station(1L, "v1"),
             new Station(2L, "v2"),
             new Station(3L, "v3"),
-            new Station(4L, "v4"));
+            new Station(4L, "v4"),
+            new Station(5L, "v5"));
 
-    private final List<Section> sections = List.of(
-            new Section(1L, 1L, 1L, 4L, 1),
-            new Section(2L, 2L, 1L, 4L, 2),
-            new Section(3L, 1L, 4L, 2L, 2),
-            new Section(4L, 1L, 2L, 3L, 2)
+    private static final Map<Long, Station> stationMap = Map.of(
+            1L, stations.get(0),
+            2L, stations.get(1),
+            3L, stations.get(2),
+            4L, stations.get(3),
+            5L, stations.get(4));
+
+    private static final List<Section> sections = List.of(
+            new Section(1L, 1L, 1L, 2L, 5),
+            new Section(2L, 1L, 2L, 3L, 5),
+            new Section(3L, 1L, 3L, 4L, 5),
+            new Section(4L, 2L, 2L, 5L, 2),
+            new Section(5L, 2L, 5L, 4L, 2)
     );
 
+    private static final Map<Long, Section> sectionMap = Map.of(
+            1L, sections.get(0),
+            2L, sections.get(1),
+            3L, sections.get(2),
+            4L, sections.get(3),
+            5L, sections.get(4));
 
-    @DisplayName("최단 경로 찾아주는 객체를 초기화한다.")
-    @Test
-    void create() {
+    @DisplayName("최단 거리 계산하기")
+    @ParameterizedTest(name = "{0}역 -> {1}역, 거리: {2}")
+    @CsvSource(value = {"1, 2, 5", "1, 3, 10", "1, 4, 9", "2, 4, 4", "3, 5, 7"})
+    void calculateMinimumDistance(Long fromId, Long toId, int distance) {
         // given
         PathStrategy strategy = new MinimumDistanceStrategy();
+        Station from = stationMap.get(fromId);
+        Station to = stationMap.get(toId);
 
         // when
-        Path path = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
-        List<Station> result = path.getStationsInPath();
+        Path path = strategy.findPath(stations, sections, from, to);
+        int result = path.getDistance();
 
         // then
-        List<Station> expected = List.of(
-                new Station(3L, "v3"),
-                new Station(2L, "v2"),
-                new Station(4L, "v4"),
-                new Station(1L, "v1")
-        );
-        assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(distance);
     }
 
-    @DisplayName("거리 계산하기")
-    @Test
-    void calculateDistance() {
+    @DisplayName("최단 거리에 포함된 station을 구한다")
+    @ParameterizedTest
+    @MethodSource("provideStationsInPath")
+    void getStationsInPath(Long fromId, Long toId, List<Station> expectedStations) {
         // given
         PathStrategy strategy = new MinimumDistanceStrategy();
+        Station from = stationMap.get(fromId);
+        Station to = stationMap.get(toId);
 
         // when
-        Path path = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
-        int result = path.getDistance();
+        Path path = strategy.findPath(stations, sections, from, to);
+        List<Station> stationsInPath = path.getStationsInPath();
+
         // then
-        assertThat(result).isEqualTo(5);
+        assertThat(stationsInPath).isEqualTo(expectedStations);
+    }
+
+    private static Stream<Arguments> provideStationsInPath() {
+        return Stream.of(
+                Arguments.of(1L, 2L, List.of(stationMap.get(1L), stationMap.get(2L))),
+                Arguments.of(1L, 3L, List.of(stationMap.get(1L), stationMap.get(2L), stationMap.get(3L))),
+                Arguments.of(1L, 4L, List.of(stationMap.get(1L), stationMap.get(2L), stationMap.get(5L), stationMap.get(4L))),
+                Arguments.of(2L, 4L, List.of(stationMap.get(2L), stationMap.get(5L), stationMap.get(4L)))
+        );
+    }
+
+    @DisplayName("최단 거리에 포함된 section을 구한다")
+    @ParameterizedTest
+    @MethodSource("provideSectionsInPath")
+    void getSectionsInPath(Long fromId, Long toId, List<Section> expectedSections) {
+        // given
+        PathStrategy strategy = new MinimumDistanceStrategy();
+        Station from = stationMap.get(fromId);
+        Station to = stationMap.get(toId);
+
+        // when
+        Path path = strategy.findPath(stations, sections, from, to);
+        List<Section> sectionsInPath = path.getSectionsInPath();
+
+        // then
+        assertThat(sectionsInPath).isEqualTo(expectedSections);
+    }
+
+    private static Stream<Arguments> provideSectionsInPath() {
+        return Stream.of(
+                Arguments.of(1L, 2L, List.of(sectionMap.get(1L))),
+                Arguments.of(1L, 3L, List.of(sectionMap.get(1L), sectionMap.get(2L))),
+                Arguments.of(1L, 4L, List.of(sectionMap.get(1L), sectionMap.get(4L), sectionMap.get(5L))),
+                Arguments.of(2L, 4L, List.of(sectionMap.get(4L), sectionMap.get(5L)))
+        );
     }
 }
