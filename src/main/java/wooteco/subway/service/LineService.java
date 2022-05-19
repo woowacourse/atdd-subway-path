@@ -1,5 +1,8 @@
 package wooteco.subway.service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -11,12 +14,14 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
+
+    private static final int LINE_EXIST_VALUE = 1;
+    private static final int DELETE_SUCCESS = 1;
+    private static final int UPDATE_SUCCESS = 1;
+    private static final String LINE_DUPLICATION = "이미 등록된 지하철 노선입니다.";
+    private static final String LINE_NOT_EXIST = "존재하지 않은 지하철 노선입니다.";
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
@@ -37,6 +42,7 @@ public class LineService {
         );
         final Line newLine = lineDao.save(line);
 
+        validateDuplication(line);
         sectionDao.save(
                 newLine.getId(),
                 lineRequest.getUpStationId(),
@@ -55,6 +61,13 @@ public class LineService {
         );
     }
 
+    private void validateDuplication(Line line) {
+        int existFlag = lineDao.isExistLine(line);
+        if (existFlag == LINE_EXIST_VALUE) {
+            throw new IllegalArgumentException(LINE_DUPLICATION);
+        }
+    }
+
     private List<StationResponse> getStationResponsesByLine(Line newLine) {
         Sections sections = new Sections(sectionDao.findAllByLineId(newLine.getId()));
         Set<Long> stationIds = sections.getStations();
@@ -68,23 +81,32 @@ public class LineService {
     public List<LineResponse> findAll() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), getStationResponsesByLine(it), it.getExtraFare()))
+                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), getStationResponsesByLine(it),
+                        it.getExtraFare()))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LineResponse getById(final Long id) {
         final Line line = lineDao.findById(id);
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line), line.getExtraFare());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line),
+                line.getExtraFare());
     }
 
     @Transactional
     public void update(final Long id, final LineRequest lineRequest) {
-        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
+        int updateFlag = lineDao.update(id,
+                new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
+
+        if (updateFlag != UPDATE_SUCCESS) {
+            throw new IllegalArgumentException(LINE_NOT_EXIST);
+        }
     }
 
     @Transactional
     public void deleteById(final Long id) {
-        lineDao.deleteById(id);
+        if (lineDao.deleteById(id) != DELETE_SUCCESS) {
+            throw new IllegalArgumentException(LINE_NOT_EXIST);
+        }
     }
 }

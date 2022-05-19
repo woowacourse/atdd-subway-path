@@ -30,9 +30,6 @@ public class LineDao {
 
     public Line save(Line line) {
         final String sql = "insert into Line(name, color, extra_fare) values (?, ?, ?)";
-        if (isContainsLine(line)) {
-            throw new IllegalStateException("노선 이름은 중복될 수 없습니다.");
-        }
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -56,39 +53,23 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    private boolean isContainsLine(Line line) {
-        final String sql = "select count(*) from Line where name = ? or color = ?";
-        final int count = jdbcTemplate.queryForObject(sql, Integer.class, line.getName(), line.getColor());
-        return count > 0;
-    }
-
     public Line findById(Long id) {
         final String sql = "select id, name, color, extra_fare from Line where id = ?";
-        if (!isExistById(id)) {
-            throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
-        }
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
-    private boolean isExistById(Long id) {
-        final String sql = "select count(*) from Line where id = ?";
-        final int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count > 0;
-    }
-
-    public void update(Long id, Line line) {
+    public int update(Long id, Line line) {
         final String sql = "update Line set name = ?, color = ?, extra_fare = ? where id = ?";
-        if (!isExistById(id)) {
-            throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
-        }
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
+        return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         final String sql = "delete from Line where id = ?";
-        if (!isExistById(id)) {
-            throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
-        }
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
+    }
+
+    public int isExistLine(Line line) {
+        String sql = "select EXISTS (select name from line where name = ?) as success";
+        return jdbcTemplate.queryForObject(sql, Integer.class, line.getName());
     }
 }
