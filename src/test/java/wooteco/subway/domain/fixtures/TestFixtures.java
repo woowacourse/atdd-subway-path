@@ -29,4 +29,5 @@ public class TestFixtures {
     public static final Section 성수_강남 = new Section(3L, 분당선, 성수, 강남, 10);
 
     public static final Section 창동_당고개 = new Section(4L, 사호선, 창동, 당고개, 58);
+    public static final Section 왕십리_당고개 = new Section(4L, 사호선, 왕십리, 당고개, 64);
 }

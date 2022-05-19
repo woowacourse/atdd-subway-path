@@ -32,7 +32,7 @@ public class PathService {
         Station target = stationRepository.findById(pathsRequest.getTarget());
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
-        int fare = subwayGraph.getFare(source, target);
+        int fare = subwayGraph.calculateFare(source, target);
         return new PathResponse(toStationResponse(route), distance, fare);
     }
 

@@ -9,7 +9,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class SubwayGraph {
 
-    private static final int BASE_FEE = 1250;
+    private static final int FIVE_KM = 5;
+    private static final int EIGHT_KM = 8;
+    private static final int OVER_FEE = 100;
+    private static final int FEE_BASE = 1250;
+    private static final int FEE_50KM = 2050;
+    private static final int BASE_FEE_DISTANCE = 10;
+    private static final int OVER_FEE_DISTANCE = 50;
+
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
 
     public SubwayGraph(List<Section> sections) {
@@ -26,7 +33,7 @@ public class SubwayGraph {
         return (int) path.getPath(source, target).getWeight();
     }
 
-    public int getFare(Station source, Station target) {
+    public int calculateFare(Station source, Station target) {
         return calculateOverFare(getShortestDistance(source, target));
     }
 
@@ -40,19 +47,19 @@ public class SubwayGraph {
         return new DijkstraShortestPath<>(graph);
     }
 
-    private void validateRoute(GraphPath<Station, DefaultWeightedEdge> result) {
-        if (result == null) {
+    private void validateRoute(GraphPath<Station, DefaultWeightedEdge> route) {
+        if (route == null) {
             throw new IllegalArgumentException("해당 경로가 존재하지 않습니다.");
         }
     }
 
     private int calculateOverFare(int distance) {
-        if (distance <= 10) {
-            return BASE_FEE;
+        if (distance <= BASE_FEE_DISTANCE) {
+            return FEE_BASE;
         }
-        if (distance <= 50) {
-            return (int) ((Math.ceil((distance - 10 - 1) / 5) + 1) * 100) + BASE_FEE;
+        if (distance <= OVER_FEE_DISTANCE) {
+            return (int) ((Math.ceil((distance - BASE_FEE_DISTANCE - 1) / FIVE_KM) + 1) * OVER_FEE) + FEE_BASE;
         }
-        return (int) ((Math.ceil((distance - 50 - 1) / 8) + 1) * 100) + 2050;
+        return (int) ((Math.ceil((distance - OVER_FEE_DISTANCE - 1) / EIGHT_KM) + 1) * OVER_FEE) + FEE_50KM;
     }
 }
