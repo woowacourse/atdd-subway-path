@@ -10,16 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.reopository.entity.SectionEntity;
-import wooteco.subway.reopository.LineRepository;
-import wooteco.subway.reopository.SectionRepository;
-import wooteco.subway.reopository.StationRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.reopository.LineRepository;
+import wooteco.subway.reopository.SectionRepository;
+import wooteco.subway.reopository.StationRepository;
 
 @SpringBootTest
 class LineServiceTest {
@@ -27,11 +26,11 @@ class LineServiceTest {
     @Autowired
     private LineService lineService;
     @Autowired
-    private LineRepository lineDao;
+    private LineRepository lineRepository;
     @Autowired
-    private StationRepository stationDao;
+    private StationRepository stationRepository;
     @Autowired
-    private SectionRepository sectionDao;
+    private SectionRepository sectionRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -46,9 +45,9 @@ class LineServiceTest {
     @Test
     void create_with_none_station_false() {
         // given
-        Long 미르역 = stationDao.save(new Station("미르역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
         Station 없는역 = new Station(100L, "없는역");
-        Long 우테코노선 = lineDao.save(new Line("우테코노선", "노랑"));
+        Long 우테코노선 = lineRepository.save(new Line("우테코노선", "노랑"));
 
         // when, then
         Assertions.assertThatIllegalArgumentException()
@@ -60,9 +59,9 @@ class LineServiceTest {
     @Test
     void create_front_add_section() {
         // given
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
 
         LineResponse lineResponse = lineService.create(
@@ -79,9 +78,9 @@ class LineServiceTest {
     @Test
     void create_back_add_section() {
         // given
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
 
         LineRequest request = new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100);
@@ -98,9 +97,9 @@ class LineServiceTest {
     @Test
     @DisplayName("구간 사이에 역을 추가한다.")
     void addSectionBetweenSection() {
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
 
         LineRequest request = new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100);
@@ -110,7 +109,7 @@ class LineServiceTest {
                 new SectionRequest(미르역, 호호역, 40));
 
         // then
-        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionRepository.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getDistance()).isEqualTo(40);
         assertThat(result.get(1).getDistance()).isEqualTo(60);
@@ -119,22 +118,23 @@ class LineServiceTest {
     @Test
     @DisplayName("구간 사이에 역을 추가한다. 강남-양재-광교 -> 강남-양재-판교-광교")
     void addSectionInSection() {
-        Long 강남 = stationDao.save(new Station("강남"));
-        Long 양재 = stationDao.save(new Station("양재"));
-        Long 광교 = stationDao.save(new Station("광교"));
-        Long 판교 = stationDao.save(new Station("판교"));
-        Long 신분당선 = lineDao.save(new Line("신분당선", "red"));
-        sectionDao.save(new Section(lineDao.findById(신분당선, "노선 못찾음"), stationDao.findById(강남, "역 못찾음"),
-                stationDao.findById(광교, "역 못찾음"), 10));
+        Long 강남 = stationRepository.save(new Station("강남"));
+        Long 양재 = stationRepository.save(new Station("양재"));
+        Long 광교 = stationRepository.save(new Station("광교"));
+        Long 판교 = stationRepository.save(new Station("판교"));
+        Long 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        sectionRepository.save(
+                new Section(lineRepository.findById(신분당선, "노선 못찾음"), stationRepository.findById(강남, "역 못찾음"),
+                        stationRepository.findById(광교, "역 못찾음"), 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남, 양재, 4);
         lineService.createSection(신분당선, sectionRequest1);
 
         SectionRequest sectionRequest2 = new SectionRequest(양재, 판교, 4);
         lineService.createSection(신분당선, sectionRequest2);
 
-        List<Section> sections = sectionDao.findByLineId(신분당선);
-        Section 구간2 = findSectionEntity(stationDao.findById(양재, "역 못찾음"), sections);
-        Section 구간3 = findSectionEntity(stationDao.findById(판교, "역 못찾음"), sections);
+        List<Section> sections = sectionRepository.findByLineId(신분당선);
+        Section 구간2 = findSectionEntity(stationRepository.findById(양재, "역 못찾음"), sections);
+        Section 구간3 = findSectionEntity(stationRepository.findById(판교, "역 못찾음"), sections);
         assertThat(구간2.getDownStation().getId()).isEqualTo(판교);
         assertThat(구간2.getDistance()).isEqualTo(4);
         assertThat(구간3.getDownStation().getId()).isEqualTo(광교);
@@ -151,9 +151,9 @@ class LineServiceTest {
     @Test
     @DisplayName("맨 앞 역을 삭제한다. ")
     void deleteFrontStation() {
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
@@ -161,16 +161,16 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 미르역);
 
         // then
-        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionRepository.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
     }
 
     @Test
     @DisplayName("맨 뒤 역을 삭제한다. ")
     void deleteBackStation() {
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
@@ -178,7 +178,7 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 호호역);
 
         // then
-        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionRepository.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getUpStation().getId()).isEqualTo(미르역);
         assertThat(result.get(0).getDownStation().getId()).isEqualTo(수달역);
@@ -187,9 +187,9 @@ class LineServiceTest {
     @Test
     @DisplayName("가운데 역을 삭제한다.")
     void deleteBetweenStation() {
-        Long 미르역 = stationDao.save(new Station("미르역"));
-        Long 수달역 = stationDao.save(new Station("수달역"));
-        Long 호호역 = stationDao.save(new Station("호호역"));
+        Long 미르역 = stationRepository.save(new Station("미르역"));
+        Long 수달역 = stationRepository.save(new Station("수달역"));
+        Long 호호역 = stationRepository.save(new Station("호호역"));
         Line 우테코노선 = new Line("우테코노선", "노랑");
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
@@ -197,7 +197,7 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 수달역);
 
         // then
-        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionRepository.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getUpStation().getId()).isEqualTo(미르역);
         assertThat(result.get(0).getDownStation().getId()).isEqualTo(호호역);

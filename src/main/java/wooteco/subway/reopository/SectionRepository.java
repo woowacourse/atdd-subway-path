@@ -53,8 +53,8 @@ public class SectionRepository {
 
     private Section toSection(SectionEntity entity) {
         Line line = lineRepository.findById(entity.getLineId(), "조회하려는 노선이 없습니다.");
-        Station upStation = stationRepository.findById(entity.getUpStationId(), "조회하려는 상행역이 없습니다.");
-        Station downStation = stationRepository.findById(entity.getDownStationId(), "조회하려는 하행역이 없습니다.");
+        Station upStation = stationRepository.findById(entity.getUpStationId(), "조회 하려는 상행역이 없습니다.");
+        Station downStation = stationRepository.findById(entity.getDownStationId(), "조회 하려는 하행역이 없습니다.");
         return new Section(entity.getId(), line, upStation, downStation, entity.getDistance());
     }
 }
