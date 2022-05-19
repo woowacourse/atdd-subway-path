@@ -79,7 +79,7 @@ public class LineDaoTest {
     @DisplayName("정상적으로 수정되는 경우를 테스트한다.")
     void updateTest() {
         final Line newLine = lineDao.save(new Line("짱구선", "bg-white-600", 0));
-        lineDao.update(newLine.getId(), new Line("38선", "bg-rainbow-600", 0));
+        lineDao.update(new Line(newLine.getId(),"38선", "bg-rainbow-600", 0));
         Line line = lineDao.findById(newLine.getId());
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo("38선"),

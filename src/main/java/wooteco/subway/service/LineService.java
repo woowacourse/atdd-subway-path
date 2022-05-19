@@ -80,7 +80,7 @@ public class LineService {
 
     @Transactional
     public void update(final Long id, final LineRequest lineRequest) {
-        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
+        lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional

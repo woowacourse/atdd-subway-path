@@ -76,12 +76,12 @@ public class LineDao {
         return count > 0;
     }
 
-    public void update(Long id, Line line) {
+    public void update(Line line) {
         final String sql = "update Line set name = ?, color = ?, extra_fare = ? where id = ?";
-        if (!isExistById(id)) {
+        if (!isExistById(line.getId())) {
             throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
         }
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
     public void deleteById(Long id) {
