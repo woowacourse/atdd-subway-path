@@ -2,6 +2,7 @@ package wooteco.subway.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.FareCalculator;
@@ -14,6 +15,7 @@ import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationRepository stationRepository;
@@ -40,7 +42,7 @@ public class PathService {
             throw new NotFoundStationException(source);
         }
         if (!stationRepository.existById(target)) {
-            throw new NotFoundStationException(source);
+            throw new NotFoundStationException(target);
         }
     }
 
