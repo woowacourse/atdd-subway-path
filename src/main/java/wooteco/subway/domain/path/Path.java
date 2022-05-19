@@ -1,15 +1,16 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.domain.Station;
 
-public class ShortestPath {
+public class Path {
 
     private final List<Station> vertexes;
     private final int distance;
 
-    public ShortestPath(GraphPath<Station, DefaultWeightedEdge> path) {
+    public Path(GraphPath<Station, DefaultWeightedEdge> path) {
         validatePathExist(path);
         this.vertexes = path.getVertexList();
         this.distance = (int) path.getWeight();

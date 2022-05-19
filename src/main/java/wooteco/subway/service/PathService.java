@@ -3,9 +3,9 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Graph;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.ShortestPath;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.util.FareCalculator;
@@ -22,11 +22,11 @@ public class PathService {
     }
 
     public PathResponse getPath(Long sourceId, Long targetId, int age) {
-        Graph graph = new Graph();
-        graph.addSections(new Sections(sectionDao.findAll()));
-        ShortestPath shortestPath = graph.getShortestPath(getStationById(sourceId), getStationById(targetId));
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.addSections(new Sections(sectionDao.findAll()));
+        Path path = pathFinder.getShortestPath(getStationById(sourceId), getStationById(targetId));
 
-        return PathResponse.from(shortestPath, FareCalculator.calculate(shortestPath.getDistance()));
+        return PathResponse.from(path, FareCalculator.calculate(path.getDistance()));
     }
 
     private Station getStationById(Long id) {

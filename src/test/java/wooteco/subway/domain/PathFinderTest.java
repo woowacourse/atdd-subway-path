@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 
-class GraphTest {
+class PathFinderTest {
 
     @DisplayName("두 정점에 대한 최단경로를 가져온다.")
     @Test
@@ -20,9 +22,9 @@ class GraphTest {
         Section section2 = new Section(봉천역, 서울대입구역, 20);
         Section section3 = new Section(신림역, 서울대입구역, 100);
 
-        Graph graph = new Graph();
-        graph.addSections(new Sections(List.of(section1, section2, section3)));
-        ShortestPath path = graph.getShortestPath(서울대입구역, 신림역);
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.addSections(new Sections(List.of(section1, section2, section3)));
+        Path path = pathFinder.getShortestPath(서울대입구역, 신림역);
 
         assertAll(
                 () -> assertThat(path.getVertexes()).containsExactly(서울대입구역, 봉천역, 신림역),

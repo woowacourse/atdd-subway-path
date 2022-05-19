@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
 
-public class GraphStudyTest {
+public class PathFinderStudyTest {
 
     @DisplayName("문자열을 가지는 정점을 이용한 최단경로를 구한다.")
     @Test
