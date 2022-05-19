@@ -1,85 +1,24 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import wooteco.subway.ui.dto.request.LineRequest;
+import wooteco.subway.ui.dto.request.LineUpdateRequest;
+import wooteco.subway.ui.dto.request.SectionRequest;
+import wooteco.subway.ui.dto.response.LineResponse;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+public interface LineService {
 
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.service.dto.DtoAssembler;
-import wooteco.subway.service.dto.line.LineRequest;
-import wooteco.subway.service.dto.line.LineResponse;
-import wooteco.subway.service.dto.line.LineUpdateRequest;
-import wooteco.subway.service.dto.section.SectionRequest;
+    LineResponse create(LineRequest lineRequest);
 
-@Service
-public class LineService {
+    List<LineResponse> findAll();
 
-    private final LineRepository lineRepository;
+    LineResponse findById(Long id);
 
-    public LineService(LineRepository lineRepository) {
-        this.lineRepository = lineRepository;
-    }
+    void updateById(Long id, LineUpdateRequest lineUpdateRequest);
 
-    @Transactional
-    public LineResponse create(LineRequest lineRequest) {
-        Section section = createSection(lineRequest);
-        Line line = lineRepository.saveLine(DtoAssembler.line(section, lineRequest));
-        return DtoAssembler.lineResponse(line);
-    }
+    void deleteById(Long id);
 
-    private Section createSection(LineRequest lineRequest) {
-        return new Section(
-                lineRepository.findStationById(lineRequest.getUpStationId()),
-                lineRepository.findStationById(lineRequest.getDownStationId()),
-                lineRequest.getDistance());
-    }
+    void addSection(Long lineId, SectionRequest sectionRequest);
 
-    public List<LineResponse> findAll() {
-        List<Line> lines = lineRepository.findLines();
-        return DtoAssembler.lineResponses(lines);
-    }
-
-    public LineResponse findOne(Long id) {
-        Line line = lineRepository.findLineById(id);
-        return DtoAssembler.lineResponse(line);
-    }
-
-    @Transactional
-    public void update(Long id, LineUpdateRequest lineUpdateRequest) {
-        Line line = lineRepository.findLineById(id);
-        line.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-        lineRepository.updateLine(line);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        lineRepository.removeLine(id);
-    }
-
-    @Transactional
-    public void appendSection(Long lineId, SectionRequest sectionRequest) {
-        Line line = lineRepository.findLineById(lineId);
-        Section section = createSection(sectionRequest);
-        line.appendSection(section);
-        lineRepository.updateSections(line);
-    }
-
-    private Section createSection(SectionRequest sectionRequest) {
-        return new Section(
-                lineRepository.findStationById(sectionRequest.getUpStationId()),
-                lineRepository.findStationById(sectionRequest.getDownStationId()),
-                sectionRequest.getDistance());
-    }
-
-    @Transactional
-    public void removeStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findLineById(lineId);
-        Station station = lineRepository.findStationById(stationId);
-        line.removeStation(station);
-        lineRepository.updateSections(line);
-    }
+    void removeSection(Long lineId, Long stationId);
 }

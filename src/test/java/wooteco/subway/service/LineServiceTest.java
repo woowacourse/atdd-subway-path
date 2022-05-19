@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,20 +16,18 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-
-import javax.sql.DataSource;
 import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.exception.DuplicateLineColorException;
+import wooteco.subway.exception.DuplicateLineNameException;
 import wooteco.subway.repository.SubwayRepository;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.exception.DuplicateLineColorException;
-import wooteco.subway.repository.exception.DuplicateLineNameException;
-import wooteco.subway.service.dto.line.LineRequest;
-import wooteco.subway.service.dto.line.LineResponse;
-import wooteco.subway.service.dto.line.LineUpdateRequest;
-import wooteco.subway.service.dto.section.SectionRequest;
-import wooteco.subway.service.dto.station.StationResponse;
+import wooteco.subway.ui.dto.request.LineRequest;
+import wooteco.subway.ui.dto.request.LineUpdateRequest;
+import wooteco.subway.ui.dto.request.SectionRequest;
+import wooteco.subway.ui.dto.response.LineResponse;
+import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철노선 Service")
 @JdbcTest
@@ -49,9 +47,10 @@ class LineServiceTest {
         StationDao stationDao = new StationDao(dataSource);
 
         LineRepository lineRepository = new SubwayRepository(lineDao, sectionDao, stationDao);
-        this.lineService = new LineService(lineRepository);
+        this.lineService = new SpringLineService(lineRepository);
 
-        StationService stationService = new StationService(new SubwayRepository(lineDao, sectionDao, stationDao));
+        StationService stationService = new SpringStationService(
+                new SubwayRepository(lineDao, sectionDao, stationDao));
         this.upStationId = stationService.create("강남역").getId();
         this.middleStationId = stationService.create("역삼역").getId();
         this.downStationId = stationService.create("선릉역").getId();
@@ -115,7 +114,7 @@ class LineServiceTest {
     @Test
     void findOne() {
         LineResponse expected = lineService.create(createLineRequest("1호선", "color1"));
-        LineResponse actual = lineService.findOne(expected.getId());
+        LineResponse actual = lineService.findById(expected.getId());
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(expected);
     }
@@ -125,9 +124,9 @@ class LineServiceTest {
     @CsvSource(value = {"2호선,red"})
     void update(String name, String color) {
         Long lineId = lineService.create(createLineRequest("1호선", "color1")).getId();
-        lineService.update(lineId, new LineUpdateRequest(name, color));
+        lineService.updateById(lineId, new LineUpdateRequest(name, color));
 
-        LineResponse actual = lineService.findOne(lineId);
+        LineResponse actual = lineService.findById(lineId);
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(lineId),
                 () -> assertThat(actual.getName()).isEqualTo(name),
@@ -139,7 +138,7 @@ class LineServiceTest {
     @Test
     void delete() {
         LineResponse lineResponse = lineService.create(createLineRequest("1호선", "color1"));
-        lineService.delete(lineResponse.getId());
+        lineService.deleteById(lineResponse.getId());
 
         List<LineResponse> actual = lineService.findAll();
         assertThat(actual).isEmpty();
@@ -149,9 +148,9 @@ class LineServiceTest {
     @Test
     void appendSection() {
         Long lineId = lineService.create(createLineRequest("1호선", "red")).getId();
-        lineService.appendSection(lineId, new SectionRequest(upStationId, middleStationId, 5));
+        lineService.addSection(lineId, new SectionRequest(upStationId, middleStationId, 5));
 
-        LineResponse lineResponse = lineService.findOne(lineId);
+        LineResponse lineResponse = lineService.findById(lineId);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         List<String> actual = stationResponses.stream()
@@ -167,10 +166,10 @@ class LineServiceTest {
         Long lineId = lineResponse.getId();
         List<StationResponse> expected = lineResponse.getStations();
 
-        lineService.appendSection(lineId, new SectionRequest(upStationId, middleStationId, 5));
-        lineService.removeStation(lineId, middleStationId);
+        lineService.addSection(lineId, new SectionRequest(upStationId, middleStationId, 5));
+        lineService.removeSection(lineId, middleStationId);
 
-        List<StationResponse> actual = lineService.findOne(lineId).getStations();
+        List<StationResponse> actual = lineService.findById(lineId).getStations();
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(expected);

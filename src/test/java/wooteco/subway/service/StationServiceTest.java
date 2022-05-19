@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,15 +15,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-
-import javax.sql.DataSource;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicateStationNameException;
 import wooteco.subway.repository.SubwayRepository;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.exception.DuplicateStationNameException;
-import wooteco.subway.service.dto.station.StationResponse;
+import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철역 Service")
 @JdbcTest
@@ -39,7 +37,7 @@ class StationServiceTest {
         SectionDao sectionDao = new SectionDao(dataSource);
         StationDao stationDao = new StationDao(dataSource);
         StationRepository stationRepository = new SubwayRepository(lineDao, sectionDao, stationDao);
-        this.stationService = new StationService(stationRepository);
+        this.stationService = new SpringStationService(stationRepository);
     }
 
     @DisplayName("이름으로 지하철 역을 저장한다.")
@@ -81,7 +79,7 @@ class StationServiceTest {
         Stream.of("강남역")
                 .map(stationService::create)
                 .map(StationResponse::getId)
-                .forEach(stationService::remove);
+                .forEach(stationService::deleteById);
 
         List<StationResponse> actual = stationService.findAll();
         assertThat(actual).isEmpty();

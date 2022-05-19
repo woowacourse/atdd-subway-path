@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface StationRepository {
 
-    Station saveStation(Station station);
+    Station save(Station station);
 
-    List<Station> findStations();
+    List<Station> findAll();
 
     Station findStationById(Long stationId);
 
-    void removeStation(Long stationId);
+    void deleteById(Long stationId);
 }
