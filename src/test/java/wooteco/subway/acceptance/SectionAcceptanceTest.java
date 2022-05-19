@@ -21,24 +21,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
         SectionRequest sectionRequest = new SectionRequest(1L, 3L, 5);
 
+        ExtractableResponse<Response> response = postLines(lineRequest);
+
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
-
         long resultLineId = response.jsonPath().getLong("id");
-
-        ExtractableResponse<Response> sectionResponse = RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + resultLineId + "/sections")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> sectionResponse = postSections(sectionRequest, resultLineId);
 
         // then
         assertThat(sectionResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -51,34 +38,45 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("분당선", "bg-red-600", 1L, 2L, 10, 900);
         SectionRequest sectionRequest = new SectionRequest(1L, 3L, 5);
 
+        ExtractableResponse<Response> response = postLines(lineRequest);
+        long resultLineId = response.jsonPath().getLong("id");
+        long stationId = 1L;
+
+        postSections(sectionRequest, resultLineId);
+
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> sectionDeleteResponse = deleteSections(resultLineId, stationId);
+
+        // then
+        assertThat(sectionDeleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> postLines(LineRequest lineRequest) {
+        return RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
                 .then().log().all()
                 .extract();
+    }
 
-        long resultLineId = response.jsonPath().getLong("id");
-        long stationId = 1L;
-
-        ExtractableResponse<Response> sectionResponse = RestAssured.given().log().all()
+    private ExtractableResponse<Response> postSections(SectionRequest sectionRequest, long resultLineId) {
+        return RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/" + resultLineId + "/sections")
                 .then().log().all()
                 .extract();
+    }
 
-        ExtractableResponse<Response> sectionDeleteResponse = RestAssured.given().log().all()
+    private ExtractableResponse<Response> deleteSections(long resultLineId, long stationId) {
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .delete("/lines/" + resultLineId + "/sections?stationId=" + stationId)
                 .then().log().all()
                 .extract();
-
-        // then
-        assertThat(sectionDeleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
