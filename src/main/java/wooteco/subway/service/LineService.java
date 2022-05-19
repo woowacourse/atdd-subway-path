@@ -100,10 +100,8 @@ public class LineService {
 
     public LineServiceResponse findById(Long id) {
         Optional<Line> maybeLine = lineDao.findById(id);
-        if (maybeLine.isEmpty()) {
-            throw new IllegalArgumentException("Id에 해당하는 노선이 존재하지 않습니다.");
-        }
-        Line line = maybeLine.get();
+        Line line = maybeLine.orElseThrow(
+            () -> new IllegalArgumentException("Id에 해당하는 노선이 존재하지 않습니다."));
         List<Station> stations = findSortedStationByLineId(line.getId());
         return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
             toStationResponse(stations));
