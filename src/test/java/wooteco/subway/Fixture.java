@@ -15,6 +15,7 @@ public class Fixture {
 
     // 수인선
     public static final Station 한티역 = new Station("한티역");
+    public static final Station 도곡역 = new Station("도곡역");
     public static final Station 선정릉역 = new Station("선정릉역");
     public static final Station 삼성중앙역 = new Station("삼성중앙역");
 

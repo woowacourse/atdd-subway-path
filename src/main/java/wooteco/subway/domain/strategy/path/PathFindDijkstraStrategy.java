@@ -1,5 +1,6 @@
 package wooteco.subway.domain.strategy.path;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -8,6 +9,7 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.PathNotFoundException;
 
 @Component
 public class PathFindDijkstraStrategy implements PathFindStrategy {
@@ -16,15 +18,23 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
     public Path calculatePath(Station source, Station target, Sections sections) {
         validateSameStation(source, target);
 
-        WeightedMultigraph<Station , DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addVertex(sections, graph);
         addEdgeWeight(sections, graph);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> shortPath = createShortestPath(source, target, graph);
 
-        return new Path(
-                shortPath.getPath(source, target).getVertexList(),
-                (int) shortPath.getPathWeight(source, target));
+        return new Path(shortPath.getVertexList(), (int) shortPath.getWeight());
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> createShortestPath(
+            Station source, Station target, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortPath = new DijkstraShortestPath<>(graph);
+        try {
+            return shortPath.getPath(source, target);
+        } catch (IllegalArgumentException e) {
+            throw new PathNotFoundException(source, target);
+        }
     }
 
     private void addEdgeWeight(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
