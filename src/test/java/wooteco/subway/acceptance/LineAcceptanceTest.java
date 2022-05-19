@@ -11,8 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.response.LineResponse;
 
 @Sql("/lineInitSchema.sql")
 public class LineAcceptanceTest extends AcceptanceTest {

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.request.SectionRequest;
 
 @SpringBootTest
 @Sql("/sectionInitSchema.sql")

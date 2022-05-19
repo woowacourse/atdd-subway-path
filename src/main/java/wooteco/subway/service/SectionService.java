@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Section;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.request.SectionRequest;
 
 @Service
 public class SectionService {

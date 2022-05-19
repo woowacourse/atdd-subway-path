@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.request.PathRequest;
+import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.service.PathService;
 
 @RestController

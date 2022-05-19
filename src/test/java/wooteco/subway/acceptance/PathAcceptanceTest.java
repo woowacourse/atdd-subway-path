@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 @Sql("/pathInitSchema.sql")
 class PathAcceptanceTest extends AcceptanceTest{
