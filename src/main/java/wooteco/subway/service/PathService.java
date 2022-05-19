@@ -21,13 +21,11 @@ public class PathService {
 
     private static final String ERROR_MESSAGE_NOT_EXISTS_ID = "존재하지 않는 지하철 역입니다.";
 
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final DomainCreatorService domainCreatorService;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao,
+    public PathService(StationDao stationDao,
         DomainCreatorService domainCreatorService) {
-        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.domainCreatorService = domainCreatorService;
     }

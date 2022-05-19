@@ -36,7 +36,7 @@
 - [x] (@ParameterizedTest(name = "{displayName} : {arguments}")) 이름에서 숫자와 단위까지 함께 보여주면 더 좋을 것 같아요.
 - [x] CsvSource 에서 Integer로 받을 수 있다.
 - [ ] Fare가 필요한 이유가 있을까요?
-- [ ] (PathService) 사용하지 않는 변수가 있다.
+- [x] (PathService) 사용하지 않는 변수가 있다.
 - [ ] (validateNotExists) 이 메서드의 이름만 봐서는 존재하지 않음을 검증한다, 즉 비즈니스 로직상 "존재하지 않아야 한다"로 생각되네요.
 - [ ] 조회하기 전 존재 여부를 확인하는 이유
 - [ ] 적절한 줄 바꿈으로 가독성을 개선해보자
