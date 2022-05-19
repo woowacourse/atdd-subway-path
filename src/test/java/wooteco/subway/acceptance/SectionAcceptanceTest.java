@@ -3,7 +3,6 @@ package wooteco.subway.acceptance;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
-import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
@@ -23,10 +21,10 @@ class SectionAcceptanceTest extends AcceptanceTest {
     private static final String NAME = "name";
     private static final String COLOR = "color";
     private static final String STATION_NAMES = "stations.name";
+    private static final String MESSAGE = "message";
 
     private static final String LINE_NAME = "2호선";
     private static final String LINE_COLOR = "bg-green-600";
-    private static final String MESSAGE = "message";
 
     private Station yeoksam;
     private Station seolleung;
@@ -61,14 +59,6 @@ class SectionAcceptanceTest extends AcceptanceTest {
         actualResponse.body(NAME, equalTo(LINE_NAME))
                 .body(COLOR, equalTo(LINE_COLOR))
                 .body(STATION_NAMES, contains(YEOKSAM, SEOLLEUNG, SAMSUNG));
-    }
-
-    private LineResponse findLineById(final long lineId) {
-        return RestAssured.given().log().all()
-                .get(LINE_URL_PREFIX + "/" + lineId)
-                .then().log().all()
-                .extract()
-                .as(LineResponse.class);
     }
 
     @Test

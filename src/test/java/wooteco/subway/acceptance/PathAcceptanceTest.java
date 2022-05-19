@@ -22,6 +22,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static final String STATION_NAMES = "stations.name";
     private static final String DISTANCE = "distance";
     private static final String FARE = "fare";
+    private static final String MESSAGE = "message";
 
     private Station gangnam;
     private Station yeoksam;
@@ -84,13 +85,13 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("동일한 역의 경로를 조회할 경우 400 을 응답한다.")
     void ShowPath_SameStations_BadRequestReturned() {
         // when
-        final ValidatableResponse response = requestPostPath(gangnam.getId(), gangnam.getId());
+        final ValidatableResponse response = requestGetPath(gangnam.getId(), gangnam.getId());
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ValidatableResponse requestPostPath(final Long sourceStationId, final Long targetStationId) {
+    private ValidatableResponse requestGetPath(final Long sourceStationId, final Long targetStationId) {
         return RestAssured.given().log().all()
                 .queryParam(SOURCE_STATION_ID, sourceStationId)
                 .queryParam(TARGET_STATION_ID, targetStationId)
@@ -103,7 +104,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ValidatableResponse response = requestPostPath(gangnam.getId(), oksu.getId());
+        final ValidatableResponse response = requestGetPath(gangnam.getId(), oksu.getId());
 
         // then
         response.statusCode(HttpStatus.NOT_FOUND.value());
@@ -123,7 +124,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 1650;
 
         // when
-        final ValidatableResponse response = requestPostPath(gangnam.getId(), seoulForest.getId());
+        final ValidatableResponse response = requestGetPath(gangnam.getId(), seoulForest.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
@@ -148,7 +149,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 2250;
 
         // when
-        final ValidatableResponse response = requestPostPath(yeoksam.getId(), dapsimni.getId());
+        final ValidatableResponse response = requestGetPath(yeoksam.getId(), dapsimni.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
@@ -169,6 +170,6 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo("요청 값 형식이 올바르지 않습니다."));
+                .body(MESSAGE, equalTo("요청 값 형식이 올바르지 않습니다."));
     }
 }

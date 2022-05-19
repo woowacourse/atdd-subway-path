@@ -21,18 +21,19 @@ class LineAcceptanceTest extends AcceptanceTest {
     private static final String COLOR = "color";
     private static final String STATION_NAMES = "stations.name";
 
-    private static final String LINE_ONE_NAME = "1호선";
-    private static final String LINE_ONE_COLOR = "bg-red-600";
-    private static final String LINE_TWO_NAME = "2호선";
-    private static final String LINE_TWO_COLOR = "bg-green-600";
+    private static final String RED_LINE_NAME = "1호선";
+    private static final String RED_LINE_COLOR = "bg-red-600";
+    private static final String GREEN_LINE_NAME = "2호선";
+    private static final String GREEN_LINE_COLOR = "bg-green-600";
 
     private Station seolleung;
     private Station yeoksam;
     private Station wangsimni;
     private Station dapsimni;
+    private Station samsung;
 
-    private LineRequest lineOneRequest;
-    private LineRequest lineTwoRequest;
+    private LineRequest redLineRequest;
+    private LineRequest greenLineRequest;
 
     @BeforeEach
     void setUpData() {
@@ -40,17 +41,18 @@ class LineAcceptanceTest extends AcceptanceTest {
         yeoksam = requestPost(new StationRequest(YEOKSAM), STATION_URL_PREFIX).extract().as(Station.class);
         wangsimni = requestPost(new StationRequest(WANGSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
         dapsimni = requestPost(new StationRequest(DAPSIMNI), STATION_URL_PREFIX).extract().as(Station.class);
+        samsung = requestPost(new StationRequest(SAMSUNG), STATION_URL_PREFIX).extract().as(Station.class);
 
-        lineOneRequest = new LineRequest(
-                LINE_ONE_NAME,
-                LINE_ONE_COLOR,
+        redLineRequest = new LineRequest(
+                RED_LINE_NAME,
+                RED_LINE_COLOR,
                 seolleung.getId(),
                 yeoksam.getId(),
                 10
         );
-        lineTwoRequest = new LineRequest(
-                LINE_TWO_NAME,
-                LINE_TWO_COLOR,
+        greenLineRequest = new LineRequest(
+                GREEN_LINE_NAME,
+                GREEN_LINE_COLOR,
                 wangsimni.getId(),
                 dapsimni.getId(),
                 7
@@ -61,14 +63,14 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선과 구간을 생성한다.")
     void CreateLine_WithSection_Success() {
         // when
-        final ValidatableResponse response = requestPost(lineOneRequest, LINE_URL_PREFIX);
+        final ValidatableResponse response = requestPost(redLineRequest, LINE_URL_PREFIX);
         final long lineId = findId(response);
 
         // then
         response.statusCode(HttpStatus.CREATED.value())
                 .header(LOCATION, equalTo(LINE_URL_PREFIX + "/" + lineId))
-                .body(NAME, equalTo(LINE_ONE_NAME))
-                .body(COLOR, equalTo(LINE_ONE_COLOR))
+                .body(NAME, equalTo(RED_LINE_NAME))
+                .body(COLOR, equalTo(RED_LINE_COLOR))
                 .body(STATION_NAMES, contains(SEOLLEUNG, YEOKSAM));
     }
 
@@ -76,8 +78,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void Show_Lines() {
         // given
-        requestPost(lineOneRequest, LINE_URL_PREFIX);
-        requestPost(lineTwoRequest, LINE_URL_PREFIX);
+        requestPost(redLineRequest, LINE_URL_PREFIX);
+        requestPost(greenLineRequest, LINE_URL_PREFIX);
 
         // when
         final ValidatableResponse response = requestGet(LINE_URL_PREFIX);
@@ -85,23 +87,23 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         response.statusCode(HttpStatus.OK.value())
                 .body(STATION_NAMES, hasItems(contains(SEOLLEUNG, YEOKSAM), contains(WANGSIMNI, DAPSIMNI)))
-                .body(NAME, contains(LINE_ONE_NAME, LINE_TWO_NAME))
-                .body(COLOR, contains(LINE_ONE_COLOR, LINE_TWO_COLOR));
+                .body(NAME, contains(RED_LINE_NAME, GREEN_LINE_NAME))
+                .body(COLOR, contains(RED_LINE_COLOR, GREEN_LINE_COLOR));
     }
 
     @DisplayName("id로 노선을 조회한다.")
     @Test
     void ShowLine() {
         // given
-        final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
+        final long id = createAndGetId(redLineRequest, LINE_URL_PREFIX);
 
         // when
         final ValidatableResponse response = requestGet(LINE_URL_PREFIX + "/" + id);
 
         // then
         response.statusCode(HttpStatus.OK.value())
-                .body(NAME, equalTo(LINE_ONE_NAME))
-                .body(COLOR, equalTo(LINE_ONE_COLOR))
+                .body(NAME, equalTo(RED_LINE_NAME))
+                .body(COLOR, equalTo(RED_LINE_COLOR))
                 .body(STATION_NAMES, contains(SEOLLEUNG, YEOKSAM));
     }
 
@@ -109,12 +111,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void ShowLine_5StationsOrderByUpStation_OK() {
         // given
-        final long lineId = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
-        final long samseongId = createAndGetId(new StationRequest(SAMSUNG), STATION_URL_PREFIX);
+        final long lineId = createAndGetId(redLineRequest, LINE_URL_PREFIX);
 
         requestPostSection(new SectionRequest(dapsimni.getId(), yeoksam.getId(), 5), lineId);
         requestPostSection(new SectionRequest(yeoksam.getId(), wangsimni.getId(), 5), lineId);
-        requestPostSection(new SectionRequest(samseongId, yeoksam.getId(), 3), lineId);
+        requestPostSection(new SectionRequest(samsung.getId(), yeoksam.getId(), 3), lineId);
 
         // when
         final ValidatableResponse response = requestGet(LINE_URL_PREFIX + "/" + lineId);
@@ -122,8 +123,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         // 선릉 - 답십리 - 삼성 - 역삼 - 왕십리
         response.statusCode(HttpStatus.OK.value())
-                .body(NAME, equalTo(LINE_ONE_NAME))
-                .body(COLOR, equalTo(LINE_ONE_COLOR))
+                .body(NAME, equalTo(RED_LINE_NAME))
+                .body(COLOR, equalTo(RED_LINE_COLOR))
                 .body(STATION_NAMES, contains(SEOLLEUNG, DAPSIMNI, SAMSUNG, YEOKSAM, WANGSIMNI));
     }
 
@@ -141,10 +142,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 정보를 수정한다.")
     void UpdateLine() {
         // given
-        final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
+        final long id = createAndGetId(redLineRequest, LINE_URL_PREFIX);
 
         // when
-        final ValidatableResponse response = requestPut(lineTwoRequest, LINE_URL_PREFIX + "/" + id);
+        final ValidatableResponse response = requestPut(greenLineRequest, LINE_URL_PREFIX + "/" + id);
 
         // then
         response.statusCode(HttpStatus.NO_CONTENT.value());
@@ -154,11 +155,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("수정하려는 노선 이름이 중복되면 BAD_REQUEST를 반환한다.")
     void UpdateLine_DuplicateName_BadRequest() {
         // given
-        requestPost(lineTwoRequest, LINE_URL_PREFIX);
-        final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
+        requestPost(greenLineRequest, LINE_URL_PREFIX);
+        final long id = createAndGetId(redLineRequest, LINE_URL_PREFIX);
 
         // when
-        final ValidatableResponse response = requestPut(lineTwoRequest, LINE_URL_PREFIX + "/" + id);
+        final ValidatableResponse response = requestPut(greenLineRequest, LINE_URL_PREFIX + "/" + id);
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value());
@@ -168,7 +169,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("수정하려는 노선 id가 존재하지 않으면 404를 반환한다.")
     void UpdateLine_NotExistId_BadRequest() {
         // when
-        final ValidatableResponse response = requestPut(lineOneRequest, LINE_URL_PREFIX + "/999");
+        final ValidatableResponse response = requestPut(redLineRequest, LINE_URL_PREFIX + "/999");
 
         // then
         response.statusCode(HttpStatus.NOT_FOUND.value());
@@ -178,7 +179,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 정보를 삭제한다.")
     void DeleteLine() {
         // given
-        final long id = createAndGetId(lineOneRequest, LINE_URL_PREFIX);
+        final long id = createAndGetId(redLineRequest, LINE_URL_PREFIX);
 
         // when
         final ValidatableResponse response = requestDelete(LINE_URL_PREFIX + "/" + id);
