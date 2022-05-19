@@ -12,9 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("지하철역 테스트")
-@JdbcTest
-class DbStationDaoTest {
+class DbStationDaoTest extends DbDaoTest {
 
     private DbStationDao stationDao;
 

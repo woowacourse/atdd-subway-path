@@ -13,9 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
-@Sql("/init.sql")
-class DbSectionDaoTest {
+class DbSectionDaoTest extends DbDaoTest{
 
     @Autowired
     private DataSource dataSource;

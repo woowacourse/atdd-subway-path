@@ -28,8 +28,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathWithNotExistStation() {
         PathFixtureUtils pathFixtureUtils = new PathFixtureUtils();
-        long 존재하지_않는_ID = 100L;
-        ExtractableResponse<Response> 경로_조회_응답 = get(PATH_BY_LINE_ID(pathFixtureUtils.기흥역_ID, 존재하지_않는_ID));
+        long 존재하지_않는_역_ID = 100L;
+        ExtractableResponse<Response> 경로_조회_응답 = get(PATH_BY_LINE_ID(pathFixtureUtils.기흥역_ID, 존재하지_않는_역_ID));
 
         assertThat(경로_조회_응답.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
