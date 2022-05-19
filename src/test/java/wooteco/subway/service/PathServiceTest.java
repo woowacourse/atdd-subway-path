@@ -1,0 +1,48 @@
+package wooteco.subway.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.dto.PathRequest;
+import wooteco.subway.dto.PathResponse;
+
+@SpringBootTest
+@Sql("classpath:truncate.sql")
+public class PathServiceTest {
+
+    @Autowired
+    private StationDao stationDao;
+
+    @Autowired
+    private SectionDao sectionDao;
+
+    @Autowired
+    private PathService pathService;
+
+    @BeforeEach
+    void setUp() {
+        stationDao.insert(new Station("강남역"));
+        stationDao.insert(new Station("선릉역"));
+        stationDao.insert(new Station("잠실역"));
+        sectionDao.insert(new Section(1L, 1L, 2L, 10));
+        sectionDao.insert(new Section(1L, 2L, 3L, 15));
+    }
+
+    @Test
+    @DisplayName("경로를 탐색한다.")
+    void searchPath() {
+        PathResponse pathResponse = pathService.searchPath(new PathRequest(1L, 3L, 25));
+
+        assertThat(pathResponse.getDistance()).isEqualTo(25);
+        assertThat(pathResponse.getFare()).isEqualTo(1550);
+    }
+}
