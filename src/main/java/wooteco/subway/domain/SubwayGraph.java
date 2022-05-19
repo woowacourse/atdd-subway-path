@@ -9,8 +9,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class SubwayGraph {
 
-    private static final int FIVE_KM = 5;
-    private static final int EIGHT_KM = 8;
+    private static final double FIVE_KM = 5.0;
+    private static final double EIGHT_KM = 8.0;
     private static final int OVER_FEE = 100;
     private static final int FEE_BASE = 1250;
     private static final int FEE_50KM = 2050;
@@ -58,8 +58,8 @@ public class SubwayGraph {
             return FEE_BASE;
         }
         if (distance <= OVER_FEE_DISTANCE) {
-            return (int) ((Math.ceil((distance - BASE_FEE_DISTANCE - 1) / FIVE_KM) + 1) * OVER_FEE) + FEE_BASE;
+            return (int) ((Math.ceil((distance - BASE_FEE_DISTANCE ) / FIVE_KM)) * OVER_FEE) + FEE_BASE;
         }
-        return (int) ((Math.ceil((distance - OVER_FEE_DISTANCE - 1) / EIGHT_KM) + 1) * OVER_FEE) + FEE_50KM;
+        return (int) ((Math.ceil((distance - OVER_FEE_DISTANCE) / EIGHT_KM)) * OVER_FEE) + FEE_50KM;
     }
 }
