@@ -1,11 +1,13 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,29 +20,34 @@ class MinimumDistanceStrategyTest {
             new Station(2L, "v2"),
             new Station(3L, "v3"),
             new Station(4L, "v4"),
-            new Station(5L, "v5"));
+            new Station(5L, "v5"),
+            new Station(6L, "v6"),
+            new Station(7L, "v7"));
 
     private static final Map<Long, Station> stationMap = Map.of(
             1L, stations.get(0),
             2L, stations.get(1),
             3L, stations.get(2),
             4L, stations.get(3),
-            5L, stations.get(4));
+            5L, stations.get(4),
+            6L, stations.get(5),
+            7L, stations.get(6));
 
     private static final List<Section> sections = List.of(
             new Section(1L, 1L, 1L, 2L, 5),
             new Section(2L, 1L, 2L, 3L, 5),
             new Section(3L, 1L, 3L, 4L, 5),
             new Section(4L, 2L, 2L, 5L, 2),
-            new Section(5L, 2L, 5L, 4L, 2)
-    );
+            new Section(5L, 2L, 5L, 4L, 2),
+            new Section(6L, 3L, 6L, 7L, 2));
 
     private static final Map<Long, Section> sectionMap = Map.of(
             1L, sections.get(0),
             2L, sections.get(1),
             3L, sections.get(2),
             4L, sections.get(3),
-            5L, sections.get(4));
+            5L, sections.get(4),
+            6L, sections.get(5));
 
     @DisplayName("최단 거리 계산하기")
     @ParameterizedTest(name = "{0}역 -> {1}역, 거리: {2}")
@@ -109,5 +116,19 @@ class MinimumDistanceStrategyTest {
                 Arguments.of(1L, 4L, List.of(sectionMap.get(1L), sectionMap.get(4L), sectionMap.get(5L))),
                 Arguments.of(2L, 4L, List.of(sectionMap.get(4L), sectionMap.get(5L)))
         );
+    }
+
+    @DisplayName("갈 수 없는 두 역 사이에 대한 요청이 오면")
+    @Test
+    void getPath_Fail() {
+        // given
+        PathStrategy strategy = new MinimumDistanceStrategy();
+        Station from = stationMap.get(1L);
+        Station to = stationMap.get(7L);
+
+        // when
+        assertThatThrownBy(() -> strategy.findPath(stations, sections, from, to))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("연결되지 않은 두 역입니다.");
     }
 }
