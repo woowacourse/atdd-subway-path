@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.FareRule;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
@@ -106,7 +107,7 @@ public class LineService {
 
         List<Station> path = pathFinder.findRoute(sourceStation, targetStation);
         int distance = pathFinder.calculateDistance(sourceStation, targetStation);
-        int fare = pathFinder.calculateFare(sourceStation, targetStation);
+        int fare = FareRule.calculateFare(distance);
         return PathResponse.from(path, distance, fare);
     }
 }
