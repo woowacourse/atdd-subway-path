@@ -25,13 +25,13 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPath(PathRequest pathRequest) {
+    public PathResponse searchPath(Long source, Long target, int age) {
         Path path = new Path(stationDao.findAll(), sectionDao.findAll(), new DijkstraStrategy());
 
-        List<Long> shortestPath = path.getShortestPath(pathRequest.getSource(), pathRequest.getTarget());
-        int distance = path.calculateShortestDistance(pathRequest.getSource(), pathRequest.getTarget());
+        List<Long> shortestPath = path.getShortestPath(source, target);
+        int distance = path.calculateShortestDistance(source, target);
 
-        Fare fare = new Fare(distance, pathRequest.getAge());
+        Fare fare = new Fare(distance, age);
 
         return new PathResponse(createStationResponseOf(shortestPath), distance, fare.calculateFare());
     }

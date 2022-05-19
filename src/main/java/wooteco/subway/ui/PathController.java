@@ -3,8 +3,8 @@ package wooteco.subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
 
@@ -19,8 +19,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> searchPath(PathRequest pathRequest) {
-        PathResponse pathResponse = pathService.searchPath(pathRequest);
+    public ResponseEntity<PathResponse> searchPath(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
+        PathResponse pathResponse = pathService.searchPath(source, target, age);
 
         return ResponseEntity
                 .ok()

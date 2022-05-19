@@ -39,7 +39,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("경로를 탐색한다.")
     void searchPath() {
-        PathResponse pathResponse = pathService.searchPath(new PathRequest(1L, 3L, 25));
+        PathResponse pathResponse = pathService.searchPath(1L, 3L, 25);
 
         assertThat(pathResponse.getDistance()).isEqualTo(25);
         assertThat(pathResponse.getFare()).isEqualTo(1550);
