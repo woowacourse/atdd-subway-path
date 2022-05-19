@@ -12,6 +12,10 @@ public class Fare {
     }
 
     public int calculateFare() {
+        return Age.discountByAge(age, calculateFareByDistance());
+    }
+
+    private int calculateFareByDistance() {
         return BASE_FAIR
                 + calculateFirstExtraFare(distance - 10)
                 + calculateSecondExtraFare(distance - 50);

@@ -83,8 +83,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> createSectionResponseOf(Map<String, Object> params) {
-        return RestAssured.given().log().all()
+    private void createSectionResponseOf(Map<String, Object> params) {
+        RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

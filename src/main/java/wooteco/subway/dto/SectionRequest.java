@@ -1,9 +1,9 @@
 package wooteco.subway.dto;
 
-import org.jetbrains.annotations.NotNull;
 import wooteco.subway.domain.section.Section;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 public class SectionRequest {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Section {
-    private Long id;
+    private final Long id;
     private final Long lineId;
     private final Long upStationId;
     private final Long downStationId;

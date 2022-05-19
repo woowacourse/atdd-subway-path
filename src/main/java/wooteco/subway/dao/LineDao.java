@@ -15,7 +15,8 @@ import java.util.List;
 @Repository
 public class LineDao {
     private static final RowMapper<Line> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
-            new Line(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("color"));
+            new Line(resultSet.getLong("id"), resultSet.getString("name"),
+                    resultSet.getString("color"), resultSet.getInt("extraFare"));
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertActor;
@@ -30,7 +31,7 @@ public class LineDao {
     public Line insert(Line line) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
         Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public List<Line> findAll() {
@@ -51,7 +52,7 @@ public class LineDao {
     }
 
     public void edit(Line line) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
+        String sql = "update LINE set name = :name, color = :color, extraFare = :extraFare where id = :id";
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }

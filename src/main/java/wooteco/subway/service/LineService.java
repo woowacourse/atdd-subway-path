@@ -39,7 +39,7 @@ public class LineService {
         Section section = new Section(newLine.getId(), upStation.getId(), downStation.getId(), lineRequest.getDistance());
         sectionDao.insert(section);
 
-        return new LineResponse(newLine.getId(), newLine.getName(), newLine.getColor(), createStationResponseOf(newLine));
+        return new LineResponse(newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(), createStationResponseOf(newLine));
     }
 
     private void checkDuplication(Line line) {
@@ -51,13 +51,13 @@ public class LineService {
     public List<LineResponse> findAll() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponseOf(line)))
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), createStationResponseOf(line)))
                 .collect(Collectors.toList());
     }
 
     public LineResponse findById(Long id) {
         Line line = lineDao.findById(id);
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponseOf(line));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), createStationResponseOf(line));
     }
 
     private List<StationResponse> createStationResponseOf(Line line) {
@@ -71,8 +71,8 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public void edit(Long id, String name, String color) {
-        lineDao.edit(new Line(id, name, color));
+    public void edit(Long id, String name, String color, int extraFare) {
+        lineDao.edit(new Line(id, name, color, extraFare));
     }
 
     public void delete(Long id) {

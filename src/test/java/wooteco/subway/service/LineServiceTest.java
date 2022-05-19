@@ -64,7 +64,7 @@ public class LineServiceTest {
     @Test
     @DisplayName("노선을 수정한다.")
     void editLine() {
-        lineService.edit(1L, "4호선", "green");
+        lineService.edit(1L, "4호선", "green", 0);
         assertThat(lineService.findById(1L).getName()).isEqualTo("4호선");
     }
 }
