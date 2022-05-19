@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ShortPathStrategyTest {
+class MinimumDistanceStrategyTest {
 
     private final List<Station> stations = List.of(
             new Station(1L, "v1"),
@@ -26,7 +26,7 @@ class ShortPathStrategyTest {
     @Test
     void create() {
         // given
-        PathStrategy strategy = new ShortPathStrategy();
+        PathStrategy strategy = new MinimumDistanceStrategy();
 
         // when
         List<Station> result = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
@@ -45,7 +45,7 @@ class ShortPathStrategyTest {
     @Test
     void calculateDistance() {
         // given
-        PathStrategy strategy = new ShortPathStrategy();
+        PathStrategy strategy = new MinimumDistanceStrategy();
 
         // when
         int result = strategy.calculateDistance(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));

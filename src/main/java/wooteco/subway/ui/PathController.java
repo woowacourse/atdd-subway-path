@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.DistanceProportionalStrategy;
-import wooteco.subway.domain.ShortPathStrategy;
+import wooteco.subway.domain.MinimumDistanceStrategy;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.PathResponse;
 
@@ -21,7 +21,7 @@ public class PathController {
 
     @GetMapping
     public PathResponse searchPaths(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
-        return pathService.searchPaths(new ShortPathStrategy(), new DistanceProportionalStrategy(), source, target);
+        return pathService.searchPaths(new MinimumDistanceStrategy(), new DistanceProportionalStrategy(), source, target);
     }
 
 }

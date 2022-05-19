@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class ShortPathStrategy implements PathStrategy {
+public class MinimumDistanceStrategy implements PathStrategy {
 
     @Override
     public List<Station> findPath(List<Station> stations, List<Section> sections, Station from, Station to) {
