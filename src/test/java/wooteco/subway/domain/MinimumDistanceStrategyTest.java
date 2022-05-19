@@ -29,7 +29,8 @@ class MinimumDistanceStrategyTest {
         PathStrategy strategy = new MinimumDistanceStrategy();
 
         // when
-        List<Station> result = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
+        Path path = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
+        List<Station> result = path.getStationsInPath();
 
         // then
         List<Station> expected = List.of(
@@ -48,8 +49,8 @@ class MinimumDistanceStrategyTest {
         PathStrategy strategy = new MinimumDistanceStrategy();
 
         // when
-        int result = strategy.calculateDistance(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
-
+        Path path = strategy.findPath(stations, sections, new Station(3L, "v3"), new Station(1L, "v1"));
+        int result = path.getDistance();
         // then
         assertThat(result).isEqualTo(5);
     }
