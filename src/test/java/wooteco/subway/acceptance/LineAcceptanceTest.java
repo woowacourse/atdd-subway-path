@@ -171,7 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
         String uri = createResponse1.header("Location");
 
-        ExtractableResponse<Response> createResponse2 = RequestFrame.post(
+        RequestFrame.post(
             BodyCreator.makeLineBodyForPost("다른분당선", "blue", "1", "2", "10", "900"),
             "/lines"
         );
@@ -227,6 +227,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
-        ExtractableResponse<Response> response = RequestFrame.post(params, "/stations");
+        RequestFrame.post(params, "/stations");
     }
 }

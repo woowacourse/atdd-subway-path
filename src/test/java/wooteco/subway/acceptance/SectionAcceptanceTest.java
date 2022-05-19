@@ -42,7 +42,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("선릉역");
         createStation("잠실역");
 
-        ExtractableResponse<Response> createLineResponse = RequestFrame.post(
+        RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
@@ -67,7 +67,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "/lines"
         );
 
-        ExtractableResponse<Response> createSectionResponse = RequestFrame.post(
+        RequestFrame.post(
             makeBodyForPost("2", "3", "10"),
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
@@ -136,7 +136,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "/lines"
         );
 
-        ExtractableResponse<Response> createdResponse = RequestFrame.post(
+        RequestFrame.post(
             makeBodyForPost("2", "3", "10"),
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
@@ -181,7 +181,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     private void createStation(String stationName) {
-        ExtractableResponse<Response> response = RequestFrame.post(
+        RequestFrame.post(
             BodyCreator.makeStationBodyForPost(stationName),
             "/stations"
         );

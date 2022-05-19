@@ -76,14 +76,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
-        ExtractableResponse<Response> response = RequestFrame.post(params, "/stations");
+        RequestFrame.post(params, "/stations");
     }
 
     private void createLine(String name, String color, String upStationId, String downStationId, String distance,
                             String extraFare) {
         Map<String, String> body = BodyCreator.makeLineBodyForPost(name, color, upStationId, downStationId,
             distance, extraFare);
-        ExtractableResponse<Response> response = RequestFrame.post(body, "/lines");
+        RequestFrame.post(body, "/lines");
     }
 
     private void createSection(int id, String upStationId, String downStationId, String distance) {
@@ -92,6 +92,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         body.put("downStationId", downStationId);
         body.put("distance", distance);
 
-        ExtractableResponse<Response> response = RequestFrame.post(body, "/lines/" + id + "/sections");
+        RequestFrame.post(body, "/lines/" + id + "/sections");
     }
 }
