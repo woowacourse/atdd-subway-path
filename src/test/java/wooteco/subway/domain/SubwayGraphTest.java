@@ -54,9 +54,8 @@ public class SubwayGraphTest {
         assertThat(distance).isEqualTo(20);
     }
 
-
     @Test
-    @DisplayName("거리가 존재하지 않는 경우 예외가 발생한다.")
+    @DisplayName("경로가 존재하지 않는 경우 예외가 발생한다.")
     void notFoundRoute() {
         List<Section> 구간들 = List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개);
         SubwayGraph subwayGraph = new SubwayGraph(구간들);
