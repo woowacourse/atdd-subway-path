@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.TestFixtures.동묘앞역;
+import static wooteco.subway.TestFixtures.보문역;
 import static wooteco.subway.TestFixtures.신당역;
 import static wooteco.subway.TestFixtures.창신역;
 
@@ -47,6 +48,65 @@ class PathTest {
                 .isInstanceOf(SubwayException.class);
     }
 
+
+    @DisplayName("10km 이하의 요금을 계산한다.")
+    @Test
+    void calculateDefaultFare() {
+        ShortestPathCalculator shortestPathCalculator = getShortestPathCalculator();
+        shortestPathCalculator.initializeGraph(createSections());
+
+        Path path = new Path(shortestPathCalculator, 신당역, 동묘앞역);
+        assertThat(path.calculateFare()).isEqualTo(1250);
+    }
+
+    @DisplayName("10km 1회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverDefaultDistanceSingle() {
+        Sections sections = createSections();
+        sections.add(new Section(3L, 1L, 창신역, 보문역, 1));
+        ShortestPathCalculator shortestPathCalculator = getShortestPathCalculator();
+        shortestPathCalculator.initializeGraph(sections);
+
+        Path path = new Path(shortestPathCalculator, 동묘앞역, 보문역);
+        assertThat(path.calculateFare()).isEqualTo(1350);
+    }
+
+    @DisplayName("10km 2회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverDefaultDistanceDouble() {
+        Sections sections = createSections();
+        sections.add(new Section(3L, 1L, 창신역, 보문역, 6));
+        ShortestPathCalculator shortestPathCalculator = getShortestPathCalculator();
+        shortestPathCalculator.initializeGraph(sections);
+
+        Path path = new Path(shortestPathCalculator, 동묘앞역, 보문역);
+        assertThat(path.calculateFare()).isEqualTo(1450);
+    }
+
+    @DisplayName("50km 1회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverMaxDistanceSingle() {
+        Sections sections = createSections();
+        sections.add(new Section(3L, 1L, 창신역, 보문역, 41));
+        ShortestPathCalculator shortestPathCalculator = getShortestPathCalculator();
+        shortestPathCalculator.initializeGraph(sections);
+
+        Path path = new Path(shortestPathCalculator, 동묘앞역, 보문역);
+        assertThat(path.calculateFare()).isEqualTo(2150);
+    }
+
+    @DisplayName("50km 2회 초과 요금을 계산한다.")
+    @Test
+    void calculateFareOverMaxDistanceDouble() {
+        Sections sections = createSections();
+        sections.add(new Section(3L, 1L, 창신역, 보문역, 49));
+        ShortestPathCalculator shortestPathCalculator = getShortestPathCalculator();
+        shortestPathCalculator.initializeGraph(sections);
+
+        Path path = new Path(shortestPathCalculator, 동묘앞역, 보문역);
+        assertThat(path.calculateFare()).isEqualTo(2250);
+    }
+
     private ShortestPathCalculator getShortestPathCalculator() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -58,5 +118,4 @@ class PathTest {
         Section section1 = new Section(2L, 1L, 동묘앞역, 창신역, STANDARD_DISTANCE);
         return new Sections(List.of(section, section1));
     }
-
 }
