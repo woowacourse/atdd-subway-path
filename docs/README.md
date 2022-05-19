@@ -38,7 +38,11 @@
 - [ ] Fare가 필요한 이유가 있을까요?
 - [x] (PathService) 사용하지 않는 변수가 있다.
 - [ ] (validateNotExists) 이 메서드의 이름만 봐서는 존재하지 않음을 검증한다, 즉 비즈니스 로직상 "존재하지 않아야 한다"로 생각되네요.
-- [ ] 조회하기 전 존재 여부를 확인하는 이유
+- [x] 조회하기 전 존재 여부를 확인하는 이유
+  - 값을 단일 조회했을 때 값이 없으면 그에 맞는 처리를 해주어야합니다.
+  - 찾는 값이 없는 경우 `NosuchElementException`를 발생시키고 예외를 핸들링하여 advice에서 상태 코드 404와 에러 메시지를 전송합니다.
+  - 이 방식이 아니라면 찾는 값이 없으면 DAO에서 null 또는 Optional.empty() 값이 반환되게 구현할 수 있고 반환된 값이 이 값이라면 404 응답을 줄 수 있습니다.
+  - 마지막으로 queryForObject를 통해 값을 찾아온다면 값이 0개일 때 `EmptyResultDataAccessException`, 값이 2개 이상인 경우 `IncorrectResultSizeDataAccessException`이 발생한다. 이 예외를 try/catch로 잡거나 `@ExceptionHandler`로 처리하여 404 응답을 줄 수도 있습니다.
 - [ ] 적절한 줄 바꿈으로 가독성을 개선해보자
 - [ ] 인텔리제이에서 DijkstraShortestPath에 경고를 주는 이유는 무엇일까?
 - [ ] containsExactly로 테스트 코드를 더 간결하게 작성할 수 있다.
