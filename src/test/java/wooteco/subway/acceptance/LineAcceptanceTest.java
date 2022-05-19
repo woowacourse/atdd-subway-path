@@ -112,7 +112,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse1.jsonPath().getString("color")).isEqualTo(response.jsonPath().getString("color"));
     }
 
-    @DisplayName("존재하지 않는 지하철 노선을 조회한다.(400에러)")
+    @DisplayName("존재하지 않는 지하철 노선을 조회한다.(404에러)")
     @Test
     void getLineNotExists() {
         // given
@@ -121,7 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RequestFrame.get("/lines/1");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -144,7 +144,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("존재하지 않는 지하철 노선을 수정한다.(400에러)")
+    @DisplayName("존재하지 않는 지하철 노선을 수정한다.(404에러)")
     @Test
     void updateLineNotExists() {
         // given
@@ -153,7 +153,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), "/lines/1");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 수정한다.(400에러)")
@@ -201,7 +201,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 지하철 노선을 제거한다.(400에러)")
+    @DisplayName("존재하지 않는 지하철 노선을 제거한다.(404에러)")
     @Test
     void deleteLineNotExists() {
         // given
@@ -210,7 +210,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RequestFrame.delete("/lines/1");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private Map<String, String> makeBodyForPut(String name, String color, String extraFare) {

@@ -33,7 +33,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("등록되지 않은 id의 자하철 노선에 등록 요청한다.(400 에러)")
+    @DisplayName("등록되지 않은 id의 자하철 노선에 등록 요청한다.(404에러)")
     @Test
     void saveSection_withNotExistLineId() {
         createStation("강남역");
@@ -50,7 +50,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "/lines/" + 2 + "/sections"
         );
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("상행역, 하행역이 이미 노선에 있는 구간을 등록 요청한다.(400에러)")
@@ -78,7 +78,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("상행역, 하행역이 둘다 노선에 없는 구간을 등록 요청한다.(400에러)")
+    @DisplayName("상행역, 하행역이 둘다 노선에 없는 구간을 등록 요청한다.(404에러)")
     @Test
     void saveSection_withNotExistUpAndDownStationBoth() {
         createStation("강남역");
@@ -99,7 +99,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("기존 구간의 내부에 더 긴 구간을 등록 요청한다.(400에러)")
@@ -161,7 +161,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("노선이 지나지 않는 역을 포함한 구간 삭제 요청한다.(400에러)")
+    @DisplayName("노선이 지나지 않는 역을 포함한 구간 삭제 요청한다.(404에러)")
     @Test
     void deleteSection_notExistStationInLine() {
         createStation("강남역");
@@ -175,7 +175,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RequestFrame.delete(
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void createStation(String stationName) {

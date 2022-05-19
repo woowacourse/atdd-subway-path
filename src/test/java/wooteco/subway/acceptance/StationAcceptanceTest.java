@@ -84,7 +84,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 지하철역을 제거한다.(400에러)")
+    @DisplayName("존재하지 않는 지하철역을 제거한다.(404에러)")
     @Test
     void deleteStationNotExists() {
         // given
@@ -92,6 +92,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RequestFrame.delete("/stations/1");
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
