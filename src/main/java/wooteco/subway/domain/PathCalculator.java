@@ -18,8 +18,7 @@ public class PathCalculator {
 
     public static PathCalculator from(List<Section> sections) {
         Set<Station> stations = extractStations(sections);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(
-                sections, stations);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(stations, sections);
         return new PathCalculator(new DijkstraShortestPath<>(graph));
     }
 
@@ -32,16 +31,24 @@ public class PathCalculator {
         return stations;
     }
 
-    private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(
-            List<Section> sections, Set<Station> stations) {
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(Set<Station> stations,
+            List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        addVertex(stations, graph);
+        addEdge(sections, graph);
+        return graph;
+    }
+
+    private static void addVertex(Set<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
+    }
+
+    private static void addEdge(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
-        return graph;
     }
 
     public List<Station> calculateShortestPath(Station source, Station target) {

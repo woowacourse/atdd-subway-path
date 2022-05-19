@@ -11,6 +11,9 @@ import java.util.Objects;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -22,12 +25,14 @@ import wooteco.subway.domain.Station;
 public class SectionDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public SectionDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public void save(Section section, Long lineId) {
@@ -58,11 +63,15 @@ public class SectionDao {
             return;
         }
         String sql = "UPDATE section "
-                + "SET up_station_id = ?, down_station_id = ?, distance = ?, index_num = ? "
-                + "WHERE id = ?";
-        jdbcTemplate.update(sql,
-                section.getUpStationId(), section.getDownStationId(), section.getDistance(), index,
-                section.getId());
+                + "SET up_station_id = :upStationId, down_station_id = :downStationId, distance = :distance, index_num = :indexNum "
+                + "WHERE id = :id";
+
+        SqlParameterSource paramSource = new MapSqlParameterSource("upStationId", section.getUpStationId())
+                .addValue("downStationId", section.getDownStationId())
+                .addValue("distance", section.getDistance())
+                .addValue("indexNum", index)
+                .addValue("id", section.getId());
+        namedParameterJdbcTemplate.update(sql, paramSource);
     }
 
     public int delete(Section section) {

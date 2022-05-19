@@ -7,9 +7,9 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -22,7 +22,6 @@ import wooteco.subway.domain.Station;
 public class StationDao {
 
     private final SimpleJdbcInsert jdbcInsert;
-    private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
             new Station(
@@ -33,7 +32,6 @@ public class StationDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -52,21 +50,23 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
-        return jdbcTemplate.query(sql, stationRowMapper);
+        return namedParameterJdbcTemplate.query(sql, stationRowMapper);
     }
 
     public Optional<Station> findById(Long id) {
-        String sql = "SELECT * FROM station WHERE id = ?";
+        String sql = "SELECT * FROM station WHERE id = :id";
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationRowMapper, id));
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, paramSource, stationRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     public int deleteById(Long id) {
-        String sql = "DELETE FROM station WHERE id = ?";
-        int deletedCount = jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM station WHERE id = :id";
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
+        int deletedCount = namedParameterJdbcTemplate.update(sql, paramSource);
         validateRemoved(deletedCount);
         return deletedCount;
     }
