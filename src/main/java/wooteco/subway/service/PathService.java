@@ -26,10 +26,10 @@ public class PathService {
 
     public PathResponse showPaths(PathsRequest pathsRequest) {
         List<Section> sections = sectionRepository.findAll();
-        SubwayGraph subwayGraph = new SubwayGraph(sections);
-
         Station source = stationRepository.findById(pathsRequest.getSource());
         Station target = stationRepository.findById(pathsRequest.getTarget());
+
+        SubwayGraph subwayGraph = new SubwayGraph(sections);
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
         int fare = subwayGraph.calculateFare(source, target);
