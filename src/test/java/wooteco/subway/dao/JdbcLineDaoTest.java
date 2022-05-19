@@ -48,7 +48,7 @@ public class JdbcLineDaoTest {
     @Test
     void findAll() {
         Line line = new Line("2호선", "green", 900);
-        Line line2 = new Line("3호선", "green", 900);
+        Line line2 = new Line("3호선", "red", 900);
         lineDao.save(line);
         lineDao.save(line2);
 

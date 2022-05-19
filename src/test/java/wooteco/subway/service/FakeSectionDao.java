@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.util.ReflectionUtils;
@@ -24,9 +25,15 @@ public class FakeSectionDao implements SectionDao {
     }
 
     @Override
-    public void save(Long lineId, Section section) {
+    public SectionEntity save(Long lineId, Section section) {
         Section newSection = createNewObject(section);
         sections.put(newSection, lineId);
+        return new SectionEntity(
+                newSection.getId(),
+                lineId,
+                newSection.getUpStationId(),
+                newSection.getDownStationId(),
+                newSection.getDistance());
     }
 
     @Override
@@ -39,6 +46,22 @@ public class FakeSectionDao implements SectionDao {
             .map(section -> new SectionEntity(section.getId(), lineId, section.getUpStationId(),
                 section.getDownStationId(), section.getDistance()))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public SectionEntity findById(long id) {
+        Section section = sections.keySet().stream()
+                .filter(it -> it.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("노선이 없습니다."));
+        Long lineId = sections.get(section);
+
+        return new SectionEntity(
+                section.getId(),
+                lineId,
+                section.getUpStationId(),
+                section.getDownStationId(),
+                section.getDistance());
     }
 
     @Override
