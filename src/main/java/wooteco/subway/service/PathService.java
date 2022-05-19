@@ -34,7 +34,7 @@ public class PathService {
 
         int shortestDistance = shortestPath.getDistance(source, target);
         Fare fare = new Fare(shortestDistance);
-        return new PathResponse(stationResponses, shortestDistance, fare.calculate());
+        return new PathResponse(stationResponses, shortestDistance, fare.calculateFare());
     }
 
     private List<StationResponse> convertToStationResponse(Station source, Station target, Path shortestPath) {

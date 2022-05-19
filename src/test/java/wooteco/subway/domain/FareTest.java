@@ -12,7 +12,7 @@ public class FareTest {
     void basicFare() {
         Fare fare = new Fare(9);
 
-        assertThat(fare.calculate()).isEqualTo(1250);
+        assertThat(fare.calculateFare()).isEqualTo(1250);
     }
 
 
@@ -21,7 +21,7 @@ public class FareTest {
     void additionalFareBetween10To50() {
         Fare fare = new Fare(12);
 
-        assertThat(fare.calculate()).isEqualTo(1350);
+        assertThat(fare.calculateFare()).isEqualTo(1350);
     }
 
     @DisplayName("50km 초과인 경우 8km 까지 마다 100원씩 추가된다.")
@@ -29,6 +29,6 @@ public class FareTest {
     void additionalFareOver50() {
         Fare fare = new Fare(58);
 
-        assertThat(fare.calculate()).isEqualTo(2150);
+        assertThat(fare.calculateFare()).isEqualTo(2150);
     }
 }
