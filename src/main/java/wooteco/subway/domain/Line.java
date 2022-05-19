@@ -1,20 +1,22 @@
-package wooteco.subway.dto;
+package wooteco.subway.domain;
 
-import java.util.List;
+public class Line {
 
-public class LineResponse {
-
-    private Long id;
+    private long id;
     private String name;
     private String color;
-    private List<StationResponse> stations;
     private int extraFare;
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, int extraFare) {
+    public Line(String name, String color, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
         this.extraFare = extraFare;
     }
 
@@ -30,7 +32,7 @@ public class LineResponse {
         return color;
     }
 
-    public List<StationResponse> getStations() {
-        return stations;
+    public int getExtraFare() {
+        return extraFare;
     }
 }
