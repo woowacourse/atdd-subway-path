@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -102,7 +103,7 @@ public class JdbcSectionDao implements SectionDao {
                 resultSet.getLong("id"),
                 new Station(upStationId, upStationName),
                 new Station(downStationId, downStationName),
-                resultSet.getInt("distance")
+                Distance.fromKilometer(resultSet.getDouble("distance"))
         );
     }
 

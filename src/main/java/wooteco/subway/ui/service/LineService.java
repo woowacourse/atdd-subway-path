@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -35,7 +36,8 @@ public class LineService {
 
         Station upStation = stationDao.findById(lineRequest.getUpStationId());
         Station downStation = stationDao.findById(lineRequest.getDownStationId());
-        Section section = new Section(upStation, downStation, lineRequest.getDistance());
+        Distance distance = Distance.fromMeter(lineRequest.getDistance());
+        Section section = new Section(upStation, downStation, distance);
 
         Line line = new Line(name, color, section);
         Line createdLine = lineDao.save(line);

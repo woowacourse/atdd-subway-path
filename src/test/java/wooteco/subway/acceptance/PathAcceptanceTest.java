@@ -42,7 +42,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, String> sectionParams =
                 Map.of("upStationId", "2",
                         "downStationId", "3",
-                        "distance", "7");
+                        "distance", "5");
         SimpleRestAssured.post("/lines/1/sections", sectionParams);
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
@@ -58,9 +58,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
 
         assertAll(
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(17),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(0.015),
                 () -> assertThat(pathResponse.getStationResponses()).hasSize(3),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
 

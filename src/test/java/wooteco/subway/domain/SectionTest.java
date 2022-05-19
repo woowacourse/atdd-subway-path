@@ -14,20 +14,20 @@ public class SectionTest {
 
     @BeforeEach
     void setUp() {
-        originalSection = new Section(upTermination, downTermination, 10);
+        originalSection = new Section(upTermination, downTermination, Distance.fromMeter(10));
     }
 
     @DisplayName("하행 종점이 같은 구간을 검사한다.")
     @Test
     void hasSameDownStationWith_true() {
-        Section section = new Section(upTermination, downTermination, 3);
+        Section section = new Section(upTermination, downTermination, Distance.fromMeter(3));
         assertThat(originalSection.hasSameDownStationWith(section)).isTrue();
     }
 
     @DisplayName("추가하는 구간과 양 방향 종점이 같은 구간이 노선에 존재하면 예외가 발생한다.")
     @Test
     void add_same_section() {
-        Section section = new Section(upTermination, downTermination, 3);
+        Section section = new Section(upTermination, downTermination, Distance.fromMeter(3));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> originalSection.splitRightBy(section))
@@ -38,7 +38,7 @@ public class SectionTest {
     @Test
     void add_longer() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(upTermination, station, 11);
+        Section section = new Section(upTermination, station, Distance.fromMeter(11));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> originalSection.splitRightBy(section))

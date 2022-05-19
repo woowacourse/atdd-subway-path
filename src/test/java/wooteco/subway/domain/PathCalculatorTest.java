@@ -21,9 +21,9 @@ public class PathCalculatorTest {
         선릉 = new Station(3L, "선릉");
         List<Station> stations = List.of(강남, 역삼, 선릉);
         List<Section> sections = List.of(
-                new Section(강남, 역삼, 10),
-                new Section(역삼, 선릉, 10),
-                new Section(선릉, 강남, 300)
+                new Section(강남, 역삼, Distance.fromMeter(10)),
+                new Section(역삼, 선릉, Distance.fromMeter(10)),
+                new Section(선릉, 강남, Distance.fromMeter(300))
         );
 
         pathCalculator = PathCalculator.from(stations, sections);
@@ -42,6 +42,6 @@ public class PathCalculatorTest {
     void calculateDistance() {
         double distance = pathCalculator.calculateShortestDistance(선릉, 강남);
 
-        assertThat(distance).isEqualTo(20);
+        assertThat(distance).isEqualTo(0.02);
     }
 }

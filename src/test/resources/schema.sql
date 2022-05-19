@@ -24,7 +24,7 @@ CREATE TABLE section
     line_id         BIGINT NOT NULL,
     up_station_id   BIGINT NOT NULL,
     down_station_id BIGINT NOT NULL,
-    distance        INT,
+    distance        double,
     index_num       BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES line (id),

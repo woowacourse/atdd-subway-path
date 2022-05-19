@@ -33,7 +33,6 @@ public class PathService {
         List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
 
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
-
         int fare = ExtraFare.calculateTotalFare(distance);
 
         return new PathResponse(StationResponse.of(path), distance, fare);

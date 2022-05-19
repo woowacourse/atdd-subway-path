@@ -17,7 +17,7 @@ public class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        Section section = new Section(upTermination, downTermination, 10);
+        Section section = new Section(upTermination, downTermination, Distance.fromMeter(10));
         sections = new Sections(List.of(section));
     }
 
@@ -25,7 +25,7 @@ public class SectionsTest {
     @Test
     void add_first() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(station, upTermination, 5);
+        Section section = new Section(station, upTermination, Distance.fromMeter(5));
         sections.add(section);
 
         assertThat(sections.getAllStations().get(0)).isEqualTo(station);
@@ -35,7 +35,7 @@ public class SectionsTest {
     @Test
     void add_last() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(downTermination, station, 5);
+        Section section = new Section(downTermination, station, Distance.fromMeter(5));
         sections.add(section);
 
         List<Station> allStations = sections.getAllStations();
@@ -47,7 +47,7 @@ public class SectionsTest {
     void add_no_station() {
         Station station1 = new Station(3L, "새로운역");
         Station station2 = new Station(4L, "또다른역");
-        Section section = new Section(station1, station2, 3);
+        Section section = new Section(station1, station2, Distance.fromMeter(3));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> sections.add(section))
@@ -58,12 +58,12 @@ public class SectionsTest {
     @Test
     void add_split_left() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(station, downTermination, 3);
+        Section section = new Section(station, downTermination, Distance.fromMeter(3));
         sections.add(section);
         LinkedList<Section> sectionValues = this.sections.getSections();
 
         assertAll(
-                () -> assertThat(sectionValues.get(0).getDistance()).isEqualTo(7),
+                () -> assertThat(sectionValues.get(0).getDistance()).isEqualTo(0.007),
                 () -> assertThat(sectionValues.get(1)).isEqualTo(section)
         );
     }
@@ -72,12 +72,12 @@ public class SectionsTest {
     @Test
     void add_split_right() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(upTermination, station, 3);
+        Section section = new Section(upTermination, station, Distance.fromMeter(3));
         sections.add(section);
         LinkedList<Section> sectionValues = sections.getSections();
 
         assertAll(
-                () -> assertThat(sectionValues.get(1).getDistance()).isEqualTo(7),
+                () -> assertThat(sectionValues.get(1).getDistance()).isEqualTo(0.007),
                 () -> assertThat(sectionValues.get(0)).isEqualTo(section)
         );
     }
@@ -86,7 +86,7 @@ public class SectionsTest {
     @Test
     void delete_upTermination() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(upTermination, station, 3);
+        Section section = new Section(upTermination, station, Distance.fromMeter(3));
         sections.add(section);
         sections.delete(upTermination);
 
@@ -98,7 +98,7 @@ public class SectionsTest {
     @Test
     void delete_downTermination() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(station, downTermination, 3);
+        Section section = new Section(station, downTermination, Distance.fromMeter(3));
         sections.add(section);
         sections.delete(downTermination);
 
@@ -110,7 +110,7 @@ public class SectionsTest {
     @Test
     void delete_middle() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(station, downTermination, 3);
+        Section section = new Section(station, downTermination, Distance.fromMeter(3));
         sections.add(section);
         sections.delete(station);
 
@@ -119,7 +119,7 @@ public class SectionsTest {
 
         assertAll(
                 () -> assertThat(resultSections).hasSize(1),
-                () -> assertThat(resultSections.get(0).getDistance()).isEqualTo(10),
+                () -> assertThat(resultSections.get(0).getDistance()).isEqualTo(0.01),
                 () -> assertThat(allStations).containsExactly(upTermination, downTermination)
         );
     }
@@ -136,7 +136,7 @@ public class SectionsTest {
     @Test
     void delete_no_such_station() {
         Station station = new Station(3L, "새로운역");
-        Section section = new Section(station, downTermination, 3);
+        Section section = new Section(station, downTermination, Distance.fromMeter(3));
         sections.add(section);
 
         Station otherStation = new Station(4L, "또다른역");

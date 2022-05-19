@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -97,7 +98,7 @@ public class JdbcLineDao implements LineDao {
                 resultSet.getLong("id"),
                 new Station(upStationId, upStationName),
                 new Station(downStationId, downStationName),
-                resultSet.getInt("distance")
+                Distance.fromKilometer(resultSet.getDouble("distance"))
         );
     }
 

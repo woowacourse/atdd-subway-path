@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import org.springframework.context.annotation.Import;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -37,7 +38,7 @@ class LineDaoTest {
         Station downTermination = new Station(2L, "하행종점역");
         stationDao.save(upTermination);
         stationDao.save(downTermination);
-        section = new Section(upTermination, downTermination, 10);
+        section = new Section(upTermination, downTermination, Distance.fromMeter(10));
     }
 
     @Test
