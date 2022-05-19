@@ -24,7 +24,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(Long source, Long target, Long age) {
+    public PathResponse findPath(Long source, Long target, Long ignored) {
         LineSeries lineSeries = new LineSeries(lineRepository.findAllLines());
         PathFinder finder = PathFinder.from(lineSeries);
 
@@ -34,9 +34,7 @@ public class PathService {
         final List<Station> paths = finder.findShortestPath(sourceStation, targetStation);
         final Distance distance = new Distance(finder.getDistance(sourceStation, targetStation));
 
-        Fare fare = new Fare();
-        final Fare calculatedFare = fare.calculate(distance);
-
+        final Fare calculatedFare = Fare.from(distance);
         return PathResponse.of(paths, distance, calculatedFare);
     }
 }

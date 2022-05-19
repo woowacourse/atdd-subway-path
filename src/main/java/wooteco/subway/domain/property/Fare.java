@@ -6,6 +6,7 @@ public class Fare {
 
     private static final int BASIC_FARE = 1250;
     private static final int EXTRA_FARE = 100;
+    private static final Fare DEFAULT_CACHE = new Fare(BASIC_FARE);
 
     private static final int BASE_DISTANCE_THRESHOLD = 10;
     private static final int EXTRA_FARE_DISTANCE_THRESHOLD = 50;
@@ -15,13 +16,17 @@ public class Fare {
 
     private final int amount;
 
-    public Fare() {
-        this(BASIC_FARE);
-    }
-
     public Fare(int amount) {
         validateNotPositive(amount);
         this.amount = amount;
+    }
+
+    public static Fare from(Distance distance) {
+        return ofDefault().calculate(distance);
+    }
+
+    public static Fare ofDefault() {
+        return DEFAULT_CACHE;
     }
 
     private void validateNotPositive(int amount) {

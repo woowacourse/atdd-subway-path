@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import wooteco.subway.exception.NegativeFareException;
 
@@ -27,7 +26,7 @@ class FareTest {
     @DisplayName("기본 요금은 1250원이다.")
     public void defaultConstructor() {
         // given & when
-        Fare fare = new Fare();
+        Fare fare = Fare.ofDefault();
 
         // then
         assertThat(fare.getAmount()).isEqualTo(1250);
@@ -37,7 +36,7 @@ class FareTest {
     @CsvSource({"9,1250", "12,1350", "16,1450", "58,2150"})
     public void calculateFareByDistance(int distance, int expectedFare) {
         // given
-        Fare fare = new Fare();
+        Fare fare = Fare.ofDefault();
 
         // when
         Fare calculated = fare.calculate(new Distance(distance));
