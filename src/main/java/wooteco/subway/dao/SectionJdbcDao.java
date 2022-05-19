@@ -13,11 +13,11 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @Repository
-public class SectionDaoImpl implements SectionDao {
+public class SectionJdbcDao implements SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SectionDaoImpl(JdbcTemplate jdbcTemplate) {
+    public SectionJdbcDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
