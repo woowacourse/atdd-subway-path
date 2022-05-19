@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Section;
 import wooteco.subway.reopository.entity.SectionEntity;
 
 @Repository
@@ -58,5 +59,10 @@ public class SectionDao {
     public void deleteById(Long id) {
         String sql = "delete from section where id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public List<SectionEntity> findAll() {
+        String sql = "select * from section";
+        return jdbcTemplate.query(sql, mapper);
     }
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import wooteco.subway.reopository.dao.LineDao;
+import wooteco.subway.reopository.dao.StationDao;
 import wooteco.subway.reopository.entity.SectionEntity;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
@@ -15,11 +17,18 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.reopository.dao.SectionDao;
 
 @JdbcTest
-@Import({SectionRepository.class, SectionDao.class})
+@Import({SectionRepository.class, SectionDao.class, StationRepository.class, StationDao.class, LineRepository.class,
+        LineDao.class})
 public class SectionDaoTest {
 
     @Autowired
     private SectionRepository sectionRepository;
+    @Autowired
+    private StationRepository stationRepository;
+    @Autowired
+    private LineRepository lineRepository;
+
+    //:todo 여기 레포지토리 써서 데이터 변경하는 걸로 바꾸기s
 
     @DisplayName("구간을 생성한다")
     @Test
@@ -43,13 +52,17 @@ public class SectionDaoTest {
         Line 일호선 = new Line(1L, "1호선", "green");
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
-        Station 수달역 = new Station(2L, "수달역");
+        Station 수달역 = new Station(3L, "수달역");
 
+        stationRepository.save(그린론역);
+        stationRepository.save(토미역);
+        stationRepository.save(수달역);
+        lineRepository.save(일호선);
         // when
         sectionRepository.save(new Section(일호선, 그린론역, 토미역, 10));
         sectionRepository.save(new Section(일호선, 토미역, 수달역, 10));
 
-        List<SectionEntity> sections = sectionRepository.findByLineId(1L);
+        List<Section> sections = sectionRepository.findByLineId(일호선.getId());
         // then
 
         assertThat(sections).hasSize(2);
@@ -61,15 +74,20 @@ public class SectionDaoTest {
         Line 일호선 = new Line(1L, "1호선", "green");
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
-        Station 수달역 = new Station(2L, "수달역");
+        Station 수달역 = new Station(3L, "수달역");
+
+        stationRepository.save(그린론역);
+        stationRepository.save(토미역);
+        stationRepository.save(수달역);
+        lineRepository.save(일호선);
 
         // when
         sectionRepository.save(new Section(일호선, 그린론역, 토미역, 10));
         sectionRepository.update(new Section(일호선, 그린론역, 수달역, 10));
 
-        List<SectionEntity> sections = sectionRepository.findByLineId(1L);
+        List<Section> sections = sectionRepository.findByLineId(일호선.getId());
         // then
-        assertThat(sections.get(0).getDownStationId()).isEqualTo(수달역.getId());
+        assertThat(sections.get(0).getDownStation()).isEqualTo(수달역);
     }
 
     @DisplayName("구간을 삭제한다.")
@@ -78,16 +96,20 @@ public class SectionDaoTest {
         Line 일호선 = new Line(1L, "1호선", "green");
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
-        Station 수달역 = new Station(2L, "수달역");
+        Station 수달역 = new Station(3L, "수달역");
 
+        stationRepository.save(그린론역);
+        stationRepository.save(토미역);
+        stationRepository.save(수달역);
+        lineRepository.save(일호선);
         // when
         sectionRepository.save(new Section(일호선, 그린론역, 토미역, 10));
         sectionRepository.save(new Section(일호선, 토미역, 수달역, 10));
 
-        sectionRepository.deleteById(1L);
+        sectionRepository.deleteById(그린론역.getId());
 
-        List<SectionEntity> sections = sectionRepository.findByLineId(1L);
+        List<Section> sections = sectionRepository.findByLineId(일호선.getId());
         // then
-        assertThat(sections.get(0).getDownStationId()).isEqualTo(수달역.getId());
+        assertThat(sections.get(0).getDownStation()).isEqualTo(수달역);
     }
 }

@@ -110,7 +110,7 @@ class LineServiceTest {
                 new SectionRequest(미르역, 호호역, 40));
 
         // then
-        List<SectionEntity> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getDistance()).isEqualTo(40);
         assertThat(result.get(1).getDistance()).isEqualTo(60);
@@ -132,18 +132,18 @@ class LineServiceTest {
         SectionRequest sectionRequest2 = new SectionRequest(양재, 판교, 4);
         lineService.createSection(신분당선, sectionRequest2);
 
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(신분당선);
-        SectionEntity 구간2 = findSectionEntity(stationDao.findById(양재, "역 못찾음"), sectionEntities);
-        SectionEntity 구간3 = findSectionEntity(stationDao.findById(판교, "역 못찾음"), sectionEntities);
-        assertThat(구간2.getDownStationId()).isEqualTo(판교);
+        List<Section> sections = sectionDao.findByLineId(신분당선);
+        Section 구간2 = findSectionEntity(stationDao.findById(양재, "역 못찾음"), sections);
+        Section 구간3 = findSectionEntity(stationDao.findById(판교, "역 못찾음"), sections);
+        assertThat(구간2.getDownStation().getId()).isEqualTo(판교);
         assertThat(구간2.getDistance()).isEqualTo(4);
-        assertThat(구간3.getDownStationId()).isEqualTo(광교);
+        assertThat(구간3.getDownStation().getId()).isEqualTo(광교);
         assertThat(구간3.getDistance()).isEqualTo(2);
     }
 
-    private SectionEntity findSectionEntity(Station startStation, List<SectionEntity> sectionEntities) {
-        return sectionEntities.stream()
-                .filter(entity -> entity.getUpStationId().equals(startStation.getId()))
+    private Section findSectionEntity(Station startStation, List<Section> sections) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(startStation))
                 .findFirst()
                 .get();
     }
@@ -161,7 +161,7 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 미르역);
 
         // then
-        List<SectionEntity> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
     }
 
@@ -178,10 +178,10 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 호호역);
 
         // then
-        List<SectionEntity> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUpStationId()).isEqualTo(미르역);
-        assertThat(result.get(0).getDownStationId()).isEqualTo(수달역);
+        assertThat(result.get(0).getUpStation().getId()).isEqualTo(미르역);
+        assertThat(result.get(0).getDownStation().getId()).isEqualTo(수달역);
     }
 
     @Test
@@ -197,10 +197,10 @@ class LineServiceTest {
         lineService.delete(lineResponse.getId(), 수달역);
 
         // then
-        List<SectionEntity> result = sectionDao.findByLineId(lineResponse.getId());
+        List<Section> result = sectionDao.findByLineId(lineResponse.getId());
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUpStationId()).isEqualTo(미르역);
-        assertThat(result.get(0).getDownStationId()).isEqualTo(호호역);
+        assertThat(result.get(0).getUpStation().getId()).isEqualTo(미르역);
+        assertThat(result.get(0).getDownStation().getId()).isEqualTo(호호역);
     }
 
     private LineResponse createTwoSection(Long 미르역, Long 수달역, Long 호호역, Line 우테코노선) {
@@ -210,5 +210,4 @@ class LineServiceTest {
                 new SectionRequest(미르역, 호호역, 40));
         return lineResponse;
     }
-
 }

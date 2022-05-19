@@ -16,7 +16,7 @@ class FareTest {
 
     @DisplayName("1Km 이상 10Km 미만이면 1250원 기본 요금이다.")
     @ParameterizedTest
-    @ValueSource(ints = {1,7,8,9})
+    @ValueSource(ints = {1, 7, 8, 9})
     void baseUnderDistanceFare(int distance) {
         assertThat(fare.calculateFare(distance, new BasicFareStrategy())).isEqualTo(1250);
     }
@@ -24,7 +24,7 @@ class FareTest {
     @DisplayName("10Km 초과 50Km 이하이면 1250원 기본 요금 + 5km 초과당 100원씩 추가요금")
     @ParameterizedTest
     @CsvSource({"10,1350", "15,1350", "16,1450",
-            "25,1550","50,2050"})
+            "25,1550", "50,2050"})
     void baseOverFirstRoleUnderDistanceFare(int distance, int actualFare) {
         assertThat(fare.calculateFare(distance, new BasicFareStrategy())).isEqualTo(actualFare);
     }

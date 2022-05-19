@@ -74,7 +74,7 @@ public class LineService {
 
     public void createSection(Long lineId, SectionRequest request) {
         Line line = findLine(lineId);
-        Sections sections = new Sections(toSections(sectionRepository.findByLineId(lineId)));
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId));
         Station upStation = findStation(request.getUpStationId(), "출발지로 요청한 역이 없습니다.");
         Station downStation = findStation(request.getDownStationId(), "도착지로 요청한 역이 없습니다.");
         int distance = request.getDistance();
@@ -89,7 +89,7 @@ public class LineService {
     public void delete(Long lineId, Long stationId) {
         Station station = findStation(stationId, "삭제 요청한 역이 없습니다.");
 
-        Sections sections = new Sections(toSections(sectionRepository.findByLineId(lineId)));
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId));
         List<Section> result = sections.margeSection(station, findLine(lineId));
 
         mergeAndDelete(result);
@@ -114,15 +114,6 @@ public class LineService {
         sectionRepository.deleteById(result.get(DELETE_SECTION_DOWN_SECTION_INDEX).getId());
     }
 
-    private List<Section> toSections(List<SectionEntity> entities) {
-        return entities.stream()
-                .map(entity -> new Section(entity.getId(), findLine(entity.getLineId()),
-                        findStation(entity.getUpStationId(), "출발지로 요청한 역이 없습니다."),
-                        findStation(entity.getDownStationId(), "도착지로 요청한 역이 없습니다."),
-                        entity.getDistance()))
-                .collect(Collectors.toList());
-    }
-
     private void validate(Sections sections, Station upStation, Station downStation) {
         sections.validateHasSameSection(upStation, downStation);
         sections.hasStationFrontOrBack(upStation, downStation);
@@ -144,7 +135,7 @@ public class LineService {
     }
 
     private List<Station> getStations(Long lineId) {
-        Sections sections = new Sections(toSections(sectionRepository.findByLineId(lineId)));
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId));
         return sections.getStations();
     }
 }
