@@ -1,4 +1,4 @@
-package wooteco.subway.application;
+package wooteco.subway.application.path;
 
 import java.util.List;
 import java.util.Map;
@@ -7,7 +7,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.Graph;
+import wooteco.subway.domain.path.Graph;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 

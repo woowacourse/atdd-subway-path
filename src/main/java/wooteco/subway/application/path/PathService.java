@@ -1,12 +1,13 @@
-package wooteco.subway.application;
+package wooteco.subway.application.path;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.application.exception.UnreachablePathException;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Graph;
-import wooteco.subway.domain.PathSummary;
+import wooteco.subway.application.path.JGraphtAdapter;
+import wooteco.subway.domain.path.FareCalculator;
+import wooteco.subway.domain.path.Graph;
+import wooteco.subway.domain.path.PathSummary;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.repository.SectionRepository;

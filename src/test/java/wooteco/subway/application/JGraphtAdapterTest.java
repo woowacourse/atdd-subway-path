@@ -1,12 +1,12 @@
 package wooteco.subway.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.application.path.JGraphtAdapter;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;

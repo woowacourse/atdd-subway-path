@@ -1,6 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
+import wooteco.subway.domain.Station;
 
 public interface Graph {
 
