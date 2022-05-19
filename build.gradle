@@ -10,12 +10,14 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'com.github.jinyoungchoi95:spring-boot-acceptance-test:1.0.0'
 
 	// log
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
@@ -25,8 +27,7 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 
-	// jgrapht
-    implementation 'org.jgrapht:jgrapht-core:1.0.1'
+	implementation 'org.jgrapht:jgrapht-core:1.0.1'
 }
 
 test {
