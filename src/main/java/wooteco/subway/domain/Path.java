@@ -9,15 +9,21 @@ import wooteco.subway.exception.SubwayException;
 
 public class Path {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
+    private static final int DEFAULT_DISTANCE = 10;
+    private static final int DEFAULT_FARE = 1250;
+    private static final int OVER_FARE_DISTANCE = 50;
+    private static final int STANDARD_UNIT = 5;
+    private static final int MAX_UNIT = 8;
+
+    private final ShortestPathCalculator shortestPathCalculator;
     private final Station startStation;
     private final Station endStation;
 
-    public Path(final DijkstraShortestPath<Station, DefaultWeightedEdge> graph,
+    public Path(final ShortestPathCalculator shortestPathCalculator,
                 final Station startStation,
                 final Station endStation) {
         validateDifferentStation(startStation, endStation);
-        this.graph = Objects.requireNonNull(graph, "[ERROR] 경로 탐색용 경로가 존재하지 않습니다.");
+        this.shortestPathCalculator = shortestPathCalculator;
         this.startStation = startStation;
         this.endStation = endStation;
     }
@@ -29,18 +35,30 @@ public class Path {
     }
 
     public int calculateMinDistance() {
-        try {
-            return (int) graph.getPath(startStation, endStation).getWeight();
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new SectionNotFoundException();
-        }
+       return shortestPathCalculator.calculateShortestDistance(startStation, endStation);
     }
 
     public List<Station> findShortestStations() {
-        try {
-            return graph.getPath(startStation, endStation).getVertexList();
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new SectionNotFoundException();
-        }
+        return shortestPathCalculator.calculateShortestStations(startStation, endStation);
     }
+
+    public int calculateFare() {
+        int distance = calculateMinDistance();
+        if (distance <= DEFAULT_DISTANCE) {
+            return DEFAULT_FARE;
+        }
+        if (distance <= OVER_FARE_DISTANCE) {
+            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
+        }
+        return DEFAULT_FARE
+                + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
+                + calculateOverFare(distance - OVER_FARE_DISTANCE, MAX_UNIT);
+    }
+
+    private int calculateOverFare(final int distance, final int unit) {
+        return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
+    }
+
+
+
 }
