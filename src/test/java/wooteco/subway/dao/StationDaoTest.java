@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.Station;
@@ -44,7 +45,7 @@ class StationDaoTest {
         // given & when
         dao.save(new Station(STATION_NAME));
         // then
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(DuplicateKeyException.class)
                 .isThrownBy(() -> dao.save(new Station(STATION_NAME)));
     }
 
@@ -95,6 +96,6 @@ class StationDaoTest {
     public void deleteById_doesNotExist() {
         assertThatThrownBy(() -> dao.deleteById(1L))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("삭제하고자 하는 역이 존재하지 않습니다.");
+                .hasMessage("삭제하고자 하는 1을(를) id로 가지는 역이 존재하지 않습니다.");
     }
 }

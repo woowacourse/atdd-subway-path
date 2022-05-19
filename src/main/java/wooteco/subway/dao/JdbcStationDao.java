@@ -32,12 +32,8 @@ public class JdbcStationDao implements StationDao {
     @Override
     public Station save(Station station) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
-        try {
-            final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(station, id);
-        } catch (DuplicateKeyException ignored) {
-            throw new IllegalStateException("이미 존재하는 역 이름입니다.");
-        }
+        final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+        return createNewObject(station, id);
     }
 
     private Station createNewObject(Station station, Long id) {
@@ -73,13 +69,13 @@ public class JdbcStationDao implements StationDao {
     public int deleteById(Long id) {
         final String sql = "DELETE FROM station WHERE id = ?";
         final int deletedCount = jdbcTemplate.update(sql, id);
-        validateRemoved(deletedCount);
+        validateRemoved(deletedCount, id);
         return deletedCount;
     }
 
-    private void validateRemoved(int deletedCount) {
+    private void validateRemoved(int deletedCount, Long id) {
         if (deletedCount == 0) {
-            throw new IllegalStateException("삭제하고자 하는 역이 존재하지 않습니다.");
+            throw new IllegalStateException(String.format("삭제하고자 하는 %d을(를) id로 가지는 역이 존재하지 않습니다.", id));
         }
     }
 }
