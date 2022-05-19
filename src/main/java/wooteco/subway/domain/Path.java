@@ -15,7 +15,7 @@ public class Path {
     public int getShortestDistance(Station source, Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
 
-        return (int)dijkstraShortestPath.getPath(source, target).getWeight();
+        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public List<Station> getShortestPath(Station source, Station target) {

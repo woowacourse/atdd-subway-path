@@ -16,14 +16,14 @@ public class LineConverter {
 
     public static LineServiceRequest toServiceRequest(LineRequest lineRequest) {
         return new LineServiceRequest(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
-            lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }
 
     public static LineResponse toResponse(LineServiceResponse lineServiceResponse) {
         List<StationResponse> stationResponses = lineServiceResponse.getStationInfos().stream()
-            .map(StationConverter::toResponse)
-            .collect(Collectors.toList());
+                .map(StationConverter::toResponse)
+                .collect(Collectors.toList());
         return new LineResponse(lineServiceResponse.getId(), lineServiceResponse.getName(),
-            lineServiceResponse.getColor(), lineServiceResponse.getExtraFare(), stationResponses);
+                lineServiceResponse.getColor(), lineServiceResponse.getExtraFare(), stationResponses);
     }
 }

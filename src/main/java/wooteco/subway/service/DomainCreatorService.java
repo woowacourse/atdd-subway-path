@@ -29,8 +29,8 @@ public class DomainCreatorService {
 
     Path createPath() {
         List<Section> sections = sectionDao.findAll().stream()
-            .map(this::findSection)
-            .collect(Collectors.toList());
+                .map(this::findSection)
+                .collect(Collectors.toList());
         return new Path(new Sections(sections));
     }
 
@@ -48,8 +48,8 @@ public class DomainCreatorService {
     private List<Section> findSections(Long lineId) {
         List<SectionEntity> sectionEntities = sectionDao.findByLine(lineId);
         return sectionEntities.stream()
-            .map(this::findSection)
-            .collect(Collectors.toList());
+                .map(this::findSection)
+                .collect(Collectors.toList());
     }
 
     private Section findSection(SectionEntity sectionEntity) {

@@ -21,13 +21,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            makeBodyForPost("2", "3", "10"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("2", "3", "10"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -41,13 +41,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("잠실역");
 
         RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            makeBodyForPost("2", "3", "10"),
-            "/lines/" + 2 + "/sections"
+                makeBodyForPost("2", "3", "10"),
+                "/lines/" + 2 + "/sections"
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -61,18 +61,18 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         RequestFrame.post(
-            makeBodyForPost("2", "3", "10"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("2", "3", "10"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            makeBodyForPost("1", "3", "20"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("1", "3", "20"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -85,8 +85,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         Map<String, String> params = new HashMap<>();
@@ -95,8 +95,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         params.put("distance", "10");
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            makeBodyForPost("3", "4", "10"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("3", "4", "10"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -110,13 +110,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.post(
-            makeBodyForPost("1", "3", "10"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("1", "3", "10"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -130,17 +130,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         RequestFrame.post(
-            makeBodyForPost("2", "3", "10"),
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+                makeBodyForPost("2", "3", "10"),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
 
         ExtractableResponse<Response> response = RequestFrame.delete(
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=2");
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=2");
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -151,12 +151,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.delete(
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=2");
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=2");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -168,20 +168,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createStation("선릉역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
-            BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
-            "/lines"
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
         );
 
         ExtractableResponse<Response> response = RequestFrame.delete(
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void createStation(String stationName) {
         RequestFrame.post(
-            BodyCreator.makeStationBodyForPost(stationName),
-            "/stations"
+                BodyCreator.makeStationBodyForPost(stationName),
+                "/stations"
         );
     }
 

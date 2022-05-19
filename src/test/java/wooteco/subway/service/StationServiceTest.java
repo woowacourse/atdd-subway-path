@@ -37,7 +37,7 @@ public class StationServiceTest {
         stationService.save(stationDto);
 
         assertThatThrownBy(() -> stationService.save(stationDto)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("중복된 지하철 역 이름입니다.");
+                .hasMessage("중복된 지하철 역 이름입니다.");
     }
 
     @DisplayName("모든 지하철역을 조회한다.")
@@ -65,7 +65,7 @@ public class StationServiceTest {
     @Test
     void deleteStationNotExists() {
         assertThatThrownBy(() -> stationService.delete(1L)).isInstanceOf(NoSuchElementException.class)
-            .hasMessage("존재하지 않는 지하철 역입니다.");
+                .hasMessage("존재하지 않는 지하철 역입니다.");
     }
 
     @DisplayName("이미 Section에서 사용 중인 지하철역 삭제 요청 시 예외를 던진다.")
@@ -79,6 +79,6 @@ public class StationServiceTest {
                 new Section(new Station(1L, "강남역"), new Station(2L, "선릉역"), 10));
 
         assertThatThrownBy(() -> stationService.delete(1L)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("해당 역을 지나는 노선이 있으므로 삭제가 불가합니다.");
+                .hasMessage("해당 역을 지나는 노선이 있으므로 삭제가 불가합니다.");
     }
 }

@@ -14,7 +14,7 @@ public class LineTest {
         String color = "green";
         int extraFare = 900;
         assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 
     @DisplayName("Line의 name은 없으면 안된다.")
@@ -24,7 +24,7 @@ public class LineTest {
         String color = "green";
         int extraFare = 900;
         assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 
     @DisplayName("Line의 name은 크기가 255보다 클 수 없다.")
@@ -41,7 +41,7 @@ public class LineTest {
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(finalName, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 
     @DisplayName("Line의 color는 null이면 안된다.")
@@ -52,7 +52,7 @@ public class LineTest {
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 색상입니다.");
+                .hasMessage("존재할 수 없는 색상입니다.");
     }
 
     @DisplayName("Line의 color는 없으면 안된다.")
@@ -63,7 +63,7 @@ public class LineTest {
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(name, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 색상입니다.");
+                .hasMessage("존재할 수 없는 색상입니다.");
     }
 
     @DisplayName("Line의 color는 크기가 20보다 클 수 없다.")
@@ -80,6 +80,6 @@ public class LineTest {
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(name, finalColor, extraFare)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 색상입니다.");
+                .hasMessage("존재할 수 없는 색상입니다.");
     }
 }

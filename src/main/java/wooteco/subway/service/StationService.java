@@ -41,8 +41,8 @@ public class StationService {
     public List<StationDto> findAll() {
         List<Station> stations = stationDao.findAll();
         return stations.stream()
-            .map(it -> new StationDto(it.getId(), it.getName()))
-            .collect(Collectors.toList());
+                .map(it -> new StationDto(it.getId(), it.getName()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

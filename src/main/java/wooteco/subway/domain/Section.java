@@ -40,9 +40,9 @@ public class Section {
 
     public boolean canConnect(Section section) {
         return section.downStation.equals(this.upStation)
-            || section.upStation.equals(this.downStation)
-            || isSameUpStation(section)
-            || isSameDownStation(section);
+                || section.upStation.equals(this.downStation)
+                || isSameUpStation(section)
+                || isSameDownStation(section);
     }
 
     public boolean isSameUpStation(Section section) {
@@ -119,14 +119,16 @@ public class Section {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Section))
+        }
+        if (!(o instanceof Section)) {
             return false;
-        Section section = (Section)o;
+        }
+        Section section = (Section) o;
         return Objects.equals(getId(), section.getId()) && Objects.equals(getUpStation(),
-            section.getUpStation()) && Objects.equals(getDownStation(), section.getDownStation())
-            && getDistance() == section.getDistance();
+                section.getUpStation()) && Objects.equals(getDownStation(), section.getDownStation())
+                && getDistance() == section.getDistance();
     }
 
     @Override

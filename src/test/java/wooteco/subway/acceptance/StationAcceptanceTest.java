@@ -25,7 +25,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RequestFrame.post(BodyCreator.makeStationBodyForPost("강남역"),
-            "/stations");
+                "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -40,7 +40,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RequestFrame.post(BodyCreator.makeStationBodyForPost("강남역"),
-            "/stations");
+                "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -51,10 +51,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void getStations() {
         /// given
         ExtractableResponse<Response> createResponse1 = RequestFrame.post(BodyCreator.makeStationBodyForPost("강남역"),
-            "/stations");
+                "/stations");
 
         ExtractableResponse<Response> createResponse2 = RequestFrame.post(BodyCreator.makeStationBodyForPost("역삼역"),
-            "/stations");
+                "/stations");
 
         // when
         ExtractableResponse<Response> response = RequestFrame.get("/stations");
@@ -62,11 +62,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> expectedStationIds = Arrays.asList(createResponse1, createResponse2).stream()
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
         List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
@@ -75,7 +75,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteStation() {
         // given
         ExtractableResponse<Response> createResponse = RequestFrame.post(BodyCreator.makeStationBodyForPost("강남역"),
-            "/stations");
+                "/stations");
         // when
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response = RequestFrame.delete(uri);

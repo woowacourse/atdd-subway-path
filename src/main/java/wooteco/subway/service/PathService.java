@@ -22,7 +22,7 @@ public class PathService {
     private final DomainCreatorService domainCreatorService;
 
     public PathService(StationDao stationDao,
-        DomainCreatorService domainCreatorService) {
+                       DomainCreatorService domainCreatorService) {
         this.stationDao = stationDao;
         this.domainCreatorService = domainCreatorService;
     }
@@ -36,8 +36,8 @@ public class PathService {
 
         Path path = domainCreatorService.createPath();
         List<StationDto> stationDtos = path.getShortestPath(source, target).stream()
-            .map(station -> new StationDto(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+                .map(station -> new StationDto(station.getId(), station.getName()))
+                .collect(Collectors.toList());
         int distance = path.getShortestDistance(source, target);
         FareStrategy fare = new DistanceFareStrategy();
 

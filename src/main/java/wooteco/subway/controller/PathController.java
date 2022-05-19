@@ -22,7 +22,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> getShortestPath(@RequestParam Long source, @RequestParam Long target,
-        @RequestParam Integer age) {
+                                                        @RequestParam Integer age) {
         PathServiceRequest pathServiceRequest = PathConverter.toServiceRequest(source, target, age);
         PathResponse pathResponse = PathConverter.toResponse(pathService.getShortestPath(pathServiceRequest));
         return ResponseEntity.ok(pathResponse);

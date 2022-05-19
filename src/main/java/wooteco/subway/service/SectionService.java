@@ -25,7 +25,7 @@ public class SectionService {
     private final DomainCreatorService domainCreatorService;
 
     public SectionService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
-        DomainCreatorService domainCreatorService) {
+                          DomainCreatorService domainCreatorService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;

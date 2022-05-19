@@ -38,7 +38,7 @@ public class Sections implements Iterable<Section> {
 
     private void validateCanConnect(Section section) {
         boolean canConnect = sections.stream()
-            .anyMatch(section::canConnect);
+                .anyMatch(section::canConnect);
 
         if (!canConnect) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NO_CONNECTION);
@@ -47,9 +47,9 @@ public class Sections implements Iterable<Section> {
 
     private void validateAlreadyConnected(Section section) {
         boolean isExistUpStation = sections.stream()
-            .anyMatch(section::isSameUpStation);
+                .anyMatch(section::isSameUpStation);
         boolean isExistDownStation = sections.stream()
-            .anyMatch(section::isSameDownStation);
+                .anyMatch(section::isSameDownStation);
 
         if (isExistUpStation && isExistDownStation) {
             throw new IllegalArgumentException(ERROR_MESSAGE_ALREADY_CONNECT);
@@ -58,9 +58,9 @@ public class Sections implements Iterable<Section> {
 
     private void updateIfCanDivide(Section section) {
         Section sectionHavingSameStation = sections.stream()
-            .filter(section1 -> section1.isSameUpStation(section) || section1.isSameDownStation(section))
-            .findFirst()
-            .orElse(null);
+                .filter(section1 -> section1.isSameUpStation(section) || section1.isSameDownStation(section))
+                .findFirst()
+                .orElse(null);
 
         if (sectionHavingSameStation == null) {
             return;
@@ -82,9 +82,9 @@ public class Sections implements Iterable<Section> {
 
     public Section findById(long id) {
         return sections.stream()
-            .filter(section -> section.isSameId(id))
-            .findFirst()
-            .orElse(null);
+                .filter(section -> section.isSameId(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Station> getStations() {
@@ -100,8 +100,8 @@ public class Sections implements Iterable<Section> {
 
     public Section removeSection(Station station) {
         long count = sections.stream()
-            .filter(section -> section.isSameDownStation(station) || section.isSameUpStation(station))
-            .count();
+                .filter(section -> section.isSameDownStation(station) || section.isSameUpStation(station))
+                .count();
 
         if (count == 0) {
             throw new IllegalArgumentException(ERROR_MESSAGE_CANT_GO_STATION);
@@ -116,20 +116,20 @@ public class Sections implements Iterable<Section> {
 
     private Section removeSectionWhenIsTerminal(Station station) {
         Section deletedSection = sections.stream()
-            .filter(section -> section.isSameDownStation(station) || section.isSameUpStation(station))
-            .findFirst().orElseThrow();
+                .filter(section -> section.isSameDownStation(station) || section.isSameUpStation(station))
+                .findFirst().orElseThrow();
         sections.remove(deletedSection);
         return deletedSection;
     }
 
     private Section removeSectionNotTerminal(Station station) {
         Section sectionWithSameUpStation = sections.stream()
-            .filter(section -> section.isSameUpStation(station))
-            .findFirst().orElseThrow();
+                .filter(section -> section.isSameUpStation(station))
+                .findFirst().orElseThrow();
 
         Section sectionWithSameDownStation = sections.stream()
-            .filter(section -> section.isSameDownStation(station))
-            .findFirst().orElseThrow();
+                .filter(section -> section.isSameDownStation(station))
+                .findFirst().orElseThrow();
 
         sectionWithSameDownStation.concatenate(sectionWithSameUpStation);
         sections.remove(sectionWithSameUpStation);

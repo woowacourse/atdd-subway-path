@@ -14,9 +14,9 @@ public class PathConverter {
 
     public static PathResponse toResponse(PathServiceResponse pathServiceResponse) {
         List<StationResponse> stationResponses = pathServiceResponse.getStations()
-            .stream()
-            .map(stationDto -> new StationResponse(stationDto.getId(), stationDto.getName()))
-            .collect(Collectors.toList());
+                .stream()
+                .map(stationDto -> new StationResponse(stationDto.getId(), stationDto.getName()))
+                .collect(Collectors.toList());
         return new PathResponse(stationResponses, pathServiceResponse.getDistance(), pathServiceResponse.getFare());
     }
 }

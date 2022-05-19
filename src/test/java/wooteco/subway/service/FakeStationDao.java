@@ -35,8 +35,8 @@ public class FakeStationDao implements StationDao {
     @Override
     public boolean existByName(String name) {
         return stations.values()
-            .stream()
-            .anyMatch(station -> station.getName().equals(name));
+                .stream()
+                .anyMatch(station -> station.getName().equals(name));
     }
 
     @Override

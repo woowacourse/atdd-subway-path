@@ -4,8 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BodyCreator {
-    static Map<String, String> makeLineBodyForPost(String name, String color, String upStationId, String downStationId,
-        String distance, String extraFare) {
+    static Map<String, String> makeLineBodyForPost(
+            String name,
+            String color,
+            String upStationId,
+            String downStationId,
+            String distance,
+            String extraFare
+    ) {
         Map<String, String> body = new HashMap<>();
         body.put("name", name);
         body.put("color", color);

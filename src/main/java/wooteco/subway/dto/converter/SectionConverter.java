@@ -8,7 +8,7 @@ public class SectionConverter {
 
     public static SectionCreateRequest toServiceRequest(Long lineId, SectionRequest sectionRequest) {
         return new SectionCreateRequest(lineId, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(),
-            sectionRequest.getDistance());
+                sectionRequest.getDistance());
     }
 
     public static SectionDeleteRequest toServiceRequest(Long lineId, Long stationId) {

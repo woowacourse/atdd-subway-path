@@ -14,8 +14,8 @@ import wooteco.subway.domain.Station;
 public class JdbcStationDao implements StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
-        resultSet.getLong("id"),
-        resultSet.getString("name")
+            resultSet.getLong("id"),
+            resultSet.getString("name")
     );
 
     public JdbcStationDao(JdbcTemplate jdbcTemplate) {
@@ -27,7 +27,7 @@ public class JdbcStationDao implements StationDao {
         String sql = "INSERT INTO STATION(name) VALUES(?)";
 
         jdbcTemplate.update((Connection conn) -> {
-            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement pstmt = conn.prepareStatement(sql, new String[]{"id"});
             pstmt.setString(1, station.getName());
             return pstmt;
         }, keyHolder);

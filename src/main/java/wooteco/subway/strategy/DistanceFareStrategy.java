@@ -15,13 +15,13 @@ public class DistanceFareStrategy implements FareStrategy {
 
         if (distance > SECOND_STANDARD_DISTANCE_FOR_EXTRA_FARE) {
             fee += getFare(distance - SECOND_STANDARD_DISTANCE_FOR_EXTRA_FARE,
-                SECOND_UNIT_DISTANCE_FOR_EXTRA_FARE);
+                    SECOND_UNIT_DISTANCE_FOR_EXTRA_FARE);
             distance = SECOND_STANDARD_DISTANCE_FOR_EXTRA_FARE;
         }
 
         if (distance > FIRST_STANDARD_DISTANCE_FOR_EXTRA_FARE) {
             fee += getFare(distance - FIRST_STANDARD_DISTANCE_FOR_EXTRA_FARE,
-                FIRST_UNIT_DISTANCE_FOR_EXTRA_FARE);
+                    FIRST_UNIT_DISTANCE_FOR_EXTRA_FARE);
             distance = FIRST_STANDARD_DISTANCE_FOR_EXTRA_FARE;
         }
 

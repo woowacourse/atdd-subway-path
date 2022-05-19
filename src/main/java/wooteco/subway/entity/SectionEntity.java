@@ -38,11 +38,11 @@ public class SectionEntity {
     @Override
     public String toString() {
         return "SectionEntity{" +
-            "id=" + id +
-            ", lineId=" + lineId +
-            ", upStationId=" + upStationId +
-            ", downStationId=" + downStationId +
-            ", distance=" + distance +
-            '}';
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

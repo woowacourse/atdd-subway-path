@@ -31,10 +31,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(pathResponse.getStations()).hasSize(3),
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations()).hasSize(3),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
 
@@ -63,10 +63,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(pathResponse.getStations()).hasSize(4),
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(3),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations()).hasSize(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(3),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
 
@@ -80,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void createLine(String name, String color, String upStationId, String downStationId, String distance,
                             String extraFare) {
         Map<String, String> body = BodyCreator.makeLineBodyForPost(name, color, upStationId, downStationId,
-            distance, extraFare);
+                distance, extraFare);
         RequestFrame.post(body, "/lines");
     }
 

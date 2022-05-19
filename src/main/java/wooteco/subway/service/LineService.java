@@ -30,7 +30,7 @@ public class LineService {
     private final DomainCreatorService domainCreatorService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
-        DomainCreatorService domainCreatorService) {
+                       DomainCreatorService domainCreatorService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
@@ -55,7 +55,7 @@ public class LineService {
         Line resultLine = domainCreatorService.createLine(lineEntity.getId());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
-            resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
+                resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
     }
 
     private void validateBeforeSave(String lineName, Long upStationId, Long downStationId) {
@@ -105,8 +105,8 @@ public class LineService {
 
     private List<StationDto> convertStationToInfo(List<Station> stations) {
         return stations.stream()
-            .map(station -> new StationDto(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+                .map(station -> new StationDto(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 
     public void update(LineUpdateRequest lineUpdateRequest) {

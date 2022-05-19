@@ -35,11 +35,13 @@ public class Station {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Station))
+        }
+        if (!(o instanceof Station)) {
             return false;
-        Station station = (Station)o;
+        }
+        Station station = (Station) o;
         return Objects.equals(this.id, station.id) && Objects.equals(this.name, station.name);
     }
 
@@ -51,9 +53,9 @@ public class Station {
     @Override
     public String toString() {
         return "Station{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
 

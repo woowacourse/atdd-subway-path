@@ -10,7 +10,7 @@ public class LineResponse {
     private final List<StationResponse> stations;
 
     public LineResponse(long id, String name, String color,
-        int extraFare, List<StationResponse> stations) {
+                        int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;

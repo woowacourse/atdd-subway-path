@@ -37,13 +37,13 @@ public class FakeSectionDao implements SectionDao {
     @Override
     public List<SectionEntity> findByLine(Long lineId) {
         List<Section> sectionList = sections.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(lineId))
-            .map(entry -> entry.getKey())
-            .collect(Collectors.toList());
+                .filter(entry -> entry.getValue().equals(lineId))
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toList());
         return sectionList.stream()
-            .map(section -> new SectionEntity(section.getId(), lineId, section.getUpStationId(),
-                section.getDownStationId(), section.getDistance()))
-            .collect(Collectors.toList());
+                .map(section -> new SectionEntity(section.getId(), lineId, section.getUpStationId(),
+                        section.getDownStationId(), section.getDistance()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -65,20 +65,21 @@ public class FakeSectionDao implements SectionDao {
     @Override
     public List<SectionEntity> findAll() {
         return sections.entrySet().stream()
-            .map(entry -> {
-                Section section = entry.getKey();
-                Long lineId = entry.getValue();
-                return new SectionEntity(section.getId(), lineId, section.getUpStationId(), section.getDownStationId(),
-                    section.getDistance());
-            }).collect(Collectors.toList());
+                .map(entry -> {
+                    Section section = entry.getKey();
+                    Long lineId = entry.getValue();
+                    return new SectionEntity(section.getId(), lineId, section.getUpStationId(),
+                            section.getDownStationId(),
+                            section.getDistance());
+                }).collect(Collectors.toList());
     }
 
     @Override
     public void update(Long lineId, Section section) {
         Section section1 = sections.keySet().stream()
-            .filter(section2 -> section2.isSameId(section.getId()))
-            .findFirst()
-            .orElse(null);
+                .filter(section2 -> section2.isSameId(section.getId()))
+                .findFirst()
+                .orElse(null);
         sections.remove(section1);
         sections.put(section, lineId);
     }
@@ -86,9 +87,9 @@ public class FakeSectionDao implements SectionDao {
     @Override
     public void deleteAll(Long lineId) {
         List<Section> sectionInDeleteLine = sections.entrySet().stream()
-            .filter(section2 -> section2.getValue().equals(lineId))
-            .map(section2 -> section2.getKey())
-            .collect(Collectors.toList());
+                .filter(section2 -> section2.getValue().equals(lineId))
+                .map(section2 -> section2.getKey())
+                .collect(Collectors.toList());
 
         for (Section section : sectionInDeleteLine) {
             sections.remove(section);
@@ -103,6 +104,6 @@ public class FakeSectionDao implements SectionDao {
     @Override
     public boolean existSectionUsingStation(Long stationId) {
         return sections.keySet().stream()
-            .anyMatch(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId);
+                .anyMatch(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId);
     }
 }

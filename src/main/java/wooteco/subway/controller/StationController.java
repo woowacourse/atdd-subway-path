@@ -38,8 +38,8 @@ public class StationController {
     public ResponseEntity<List<StationResponse>> showStations() {
         List<StationDto> stationDtos = stationService.findAll();
         List<StationResponse> stationResponses = stationDtos.stream()
-            .map(StationConverter::toResponse)
-            .collect(Collectors.toList());
+                .map(StationConverter::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok().body(stationResponses);
     }
 

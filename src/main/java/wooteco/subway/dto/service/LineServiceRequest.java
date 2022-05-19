@@ -9,7 +9,7 @@ public class LineServiceRequest {
     private final int extraFare;
 
     public LineServiceRequest(String name, String color, long upStationId, long downStationId, int distance,
-        int extraFare) {
+                              int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;

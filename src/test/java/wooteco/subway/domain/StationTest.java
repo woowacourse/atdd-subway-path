@@ -12,7 +12,7 @@ public class StationTest {
     void validateNameNull() {
         String name = null;
         assertThatThrownBy(() -> new Station(name)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 
     @DisplayName("Station의 name은 없으면 안된다.")
@@ -20,7 +20,7 @@ public class StationTest {
     void validateNameBlank() {
         String name = "";
         assertThatThrownBy(() -> new Station(name)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 
     @DisplayName("Station의 name은 크기가 255보다 클 수 없다.")
@@ -34,6 +34,6 @@ public class StationTest {
 
         String finalName = name;
         assertThatThrownBy(() -> new Station(finalName)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재할 수 없는 이름입니다.");
+                .hasMessage("존재할 수 없는 이름입니다.");
     }
 }

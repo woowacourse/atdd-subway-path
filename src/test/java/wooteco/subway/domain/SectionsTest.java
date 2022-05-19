@@ -27,7 +27,7 @@ public class SectionsTest {
         Section section2 = new Section(new Station(3L, "역삼역"), new Station(4L, "잠실역"), 10);
 
         assertThatThrownBy(() -> sections.updateToAdd(section2)).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("해당 구간은 연결 지점이 없습니다");
+                .hasMessage("해당 구간은 연결 지점이 없습니다");
     }
 
     @DisplayName("기존에 있던 노선에서 갈 수 있는 구간 추가 시 에러를 응답한다.")
@@ -40,8 +40,8 @@ public class SectionsTest {
         Section sectionToAdd = new Section(new Station(1L, "강남역"), new Station(3L, "잠실역"), 10);
 
         assertThatThrownBy(() -> sections.updateToAdd(sectionToAdd)).isInstanceOf(
-            IllegalArgumentException.class)
-            .hasMessage("해당 구간은 이미 이동 가능합니다.");
+                        IllegalArgumentException.class)
+                .hasMessage("해당 구간은 이미 이동 가능합니다.");
     }
 
     @DisplayName("기존에 있던 구간 내부에 구간 추가 시 추가하려는 distance가 더 크면 에러를 응답한다.")
@@ -52,8 +52,8 @@ public class SectionsTest {
 
         Section sectionToAdd = new Section(new Station(1L, "강남역"), new Station(3L, "역삼역"), 11);
         assertThatThrownBy(() -> sections.updateToAdd(sectionToAdd)).isInstanceOf(
-            IllegalArgumentException.class)
-            .hasMessage("해당 구간은 추가될 수 없습니다.");
+                        IllegalArgumentException.class)
+                .hasMessage("해당 구간은 추가될 수 없습니다.");
     }
 
     @DisplayName("기존에 있던 구간 내부에 구간 추가 시 기존 구간이 정상적으로 업데이트 되는지 테스트 한다.")

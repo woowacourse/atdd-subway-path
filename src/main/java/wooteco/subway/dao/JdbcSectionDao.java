@@ -14,11 +14,11 @@ import wooteco.subway.entity.SectionEntity;
 public class JdbcSectionDao implements SectionDao {
 
     private final RowMapper<SectionEntity> sectionRowMapper = (resultSet, rowMapper) -> new SectionEntity(
-        resultSet.getLong("id"),
-        resultSet.getLong("line_id"),
-        resultSet.getLong("up_station_id"),
-        resultSet.getLong("down_station_id"),
-        resultSet.getInt("distance")
+            resultSet.getLong("id"),
+            resultSet.getLong("line_id"),
+            resultSet.getLong("up_station_id"),
+            resultSet.getLong("down_station_id"),
+            resultSet.getInt("distance")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -68,7 +68,7 @@ public class JdbcSectionDao implements SectionDao {
     public void update(Long lineId, Section section) {
         String sql = "UPDATE SECTION SET up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ? AND line_id = ?";
         jdbcTemplate.update(sql, section.getUpStationId(), section.getDownStationId(), section.getDistance(),
-            section.getId(), lineId);
+                section.getId(), lineId);
     }
 
     @Override

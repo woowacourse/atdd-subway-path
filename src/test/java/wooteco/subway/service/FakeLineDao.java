@@ -19,14 +19,14 @@ public class FakeLineDao implements LineDao {
         Line persistLine = createNewObject(line);
         lines.put(persistLine.getId(), persistLine);
         return new LineEntity(persistLine.getId(), persistLine.getName(), persistLine.getColor(),
-            persistLine.getExtraFare());
+                persistLine.getExtraFare());
     }
 
     @Override
     public boolean existByName(String name) {
         return lines.values()
-            .stream()
-            .anyMatch(line -> line.getName().equals(name));
+                .stream()
+                .anyMatch(line -> line.getName().equals(name));
     }
 
     private Line createNewObject(Line line) {
@@ -39,9 +39,9 @@ public class FakeLineDao implements LineDao {
     @Override
     public List<LineEntity> findAll() {
         return lines.values()
-            .stream()
-            .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()))
-            .collect(Collectors.toList());
+                .stream()
+                .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()))
+                .collect(Collectors.toList());
     }
 
     @Override
