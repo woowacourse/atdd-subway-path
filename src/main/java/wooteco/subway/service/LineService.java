@@ -94,8 +94,8 @@ public class LineService {
     }
 
     public boolean updateById(Long id, LineServiceRequest lineServiceRequest) {
-        Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor());
-        return lineDao.updateById(id, line);
+        Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor());
+        return lineDao.updateById(line);
     }
 
     public LineServiceResponse findById(Long id) {

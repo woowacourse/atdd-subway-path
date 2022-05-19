@@ -3,6 +3,8 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllLine;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllStation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,25 +32,18 @@ class LineServiceTest {
     private JdbcTemplate jdbcTemplate;
 
     private LineDao lineDao;
-    private SectionDao sectionDao;
     private StationDao stationDao;
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
         lineDao = new JdbcLineDao(jdbcTemplate);
-        sectionDao = new JdbcSectionDao(jdbcTemplate);
+        SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
         stationDao = new JdbcStationDao(jdbcTemplate);
         lineService = new LineService(lineDao, sectionDao, stationDao);
 
-        List<Line> lines = lineDao.findAll();
-        List<Long> lineIds = lines.stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
-
-        for (Long lineId : lineIds) {
-            lineDao.deleteById(lineId);
-        }
+        deleteAllLine(lineDao);
+        deleteAllStation(stationDao);
     }
 
     @Test

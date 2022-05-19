@@ -110,8 +110,8 @@ class JdbcLineDaoTest {
         Long savedId = jdbcLineDao.save(originLine);
 
         // when
-        Line newline = new Line("2호선", "bg-green-600");
-        jdbcLineDao.updateById(savedId, newline);
+        Line newline = new Line(savedId, "2호선", "bg-green-600");
+        jdbcLineDao.updateById(newline);
         Line line = jdbcLineDao.findById(savedId).get();
 
         // then

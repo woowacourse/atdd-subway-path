@@ -1,6 +1,8 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllLine;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllStation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,13 +38,16 @@ class PathServiceTest {
         pathService = new PathService(sectionDao, stationDao);
         lineDao = new JdbcLineDao(jdbcTemplate);
 
-        Station station1 = new Station("교대역");
-        Station station2 = new Station("강남역");
-        Station station3 = new Station("역삼역");
+        deleteAllLine(lineDao);
+        deleteAllStation(stationDao);
+    }
 
-        Long savedId1 = stationDao.save(station1);
-        Long savedId2 = stationDao.save(station2);
-        Long savedId3 = stationDao.save(station3);
+    @Test
+    void findShortestPath() {
+        // given
+        Long savedId1 = stationDao.save(new Station("교대역"));
+        Long savedId2 = stationDao.save(new Station("강남역"));
+        Long savedId3 = stationDao.save(new Station("역삼역"));
 
         Line line = new Line("2호선", "green");
         Long savedLineId = lineDao.save(line);
@@ -52,12 +57,7 @@ class PathServiceTest {
 
         sectionDao.save(section1);
         sectionDao.save(section2);
-    }
-
-    @Test
-    void findShortestPath() {
-        // given
-        PathServiceRequest pathServiceRequest = new PathServiceRequest(1L, 3L, 20);
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(savedId1, savedId3, 20);
 
         // when
         PathServiceResponse result = pathService.findShortestPath(pathServiceRequest);

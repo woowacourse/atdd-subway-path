@@ -3,6 +3,8 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllLine;
+import static wooteco.subway.service.ServiceTestFixture.deleteAllSection;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +38,9 @@ public class SectionServiceTest {
         sectionDao = new JdbcSectionDao(jdbcTemplate);
         sectionService = new SectionService(sectionDao);
         lineDao = new JdbcLineDao(jdbcTemplate);
+
+        deleteAllLine(lineDao);
+        deleteAllSection(sectionDao);
     }
 
     @Test
