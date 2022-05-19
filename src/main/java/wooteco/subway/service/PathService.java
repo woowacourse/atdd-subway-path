@@ -9,7 +9,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -26,7 +26,7 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        final List<Section> sections = sectionDao.findAll();
+        final Sections sections = new Sections(sectionDao.findAll());
         final Path path = new Path(sections);
 
         final List<Long> shortestPath = path.getShortestPath(sourceId, targetId);

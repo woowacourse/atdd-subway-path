@@ -199,7 +199,7 @@ class SectionsTest {
         final Sections sections = new Sections(sectionList);
 
         //when
-        final List<Section> sortedSections = sections.getSections();
+        final List<Section> sortedSections = sections.getSortedSections();
 
         //then
         assertThat(sortedSections).hasSize(4)

@@ -19,7 +19,7 @@ class PathTest {
         sections.add(new Section(3L, 1L, 3L, 4L, 4));
         sections.add(new Section(4L, 1L, 2L, 3L, 4));
 
-        final Path path = new Path(sections);
+        final Path path = new Path(new Sections(sections));
 
         // when
         List<Long> shortestPath = path.getShortestPath(1L, 5L);
@@ -45,7 +45,7 @@ class PathTest {
         sections.add(new Section(7L, 2L, 4L, 6L, 1));
 
 
-        final Path path = new Path(sections);
+        final Path path = new Path(new Sections(sections));
 
         // when
         List<Long> shortestPath = path.getShortestPath(1L, 7L);
@@ -71,7 +71,7 @@ class PathTest {
         sections.add(new Section(7L, 2L, 3L, 7L, 1));
 
 
-        final Path path = new Path(sections);
+        final Path path = new Path(new Sections(sections));
 
         // when
         List<Long> shortestPath = path.getShortestPath(1L, 6L);

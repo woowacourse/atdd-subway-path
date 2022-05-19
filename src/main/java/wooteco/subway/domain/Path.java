@@ -13,11 +13,11 @@ public class Path {
     private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
 
-    public Path(List<Section> sections) {
-        final List<Long> stationIds = getStationIds(sections);
+    public Path(Sections sections) {
+        final List<Long> stationIds = sections.getStationIds();
 
         addVertexes(stationIds);
-        addEdges(sections);
+        addEdges(sections.getSections());
     }
 
     private List<Long> getStationIds(List<Section> sections) {

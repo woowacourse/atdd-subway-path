@@ -1,8 +1,10 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import wooteco.subway.exception.IllegalSectionException;
 
 public class Sections {
@@ -12,7 +14,7 @@ public class Sections {
     private List<Section> sections;
 
     public Sections(List<Section> sections) {
-        this.sections = sortSections(sections);
+        this.sections = sections;
     }
 
     public List<Section> add(Section section) {
@@ -143,6 +145,10 @@ public class Sections {
         return List.copyOf(sections);
     }
 
+    public List<Section> getSortedSections() {
+        return sortSections(List.copyOf(sections));
+    }
+
     private List<Section> sortSections(List<Section> sections) {
         final List<Section> copySections = new ArrayList<>(List.copyOf(sections));
 
@@ -187,5 +193,14 @@ public class Sections {
         if (section.getUpStationId().equals(lastDownStationId)) {
             sortedSections.add(section);
         }
+    }
+
+    public List<Long> getStationIds() {
+        Set<Long> stationIds = new LinkedHashSet<>();
+        for (Section section : sections) {
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
+        }
+        return new ArrayList<>(stationIds);
     }
 }
