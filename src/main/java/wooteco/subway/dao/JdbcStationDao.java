@@ -17,6 +17,11 @@ public class JdbcStationDao implements StationDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> new Station(
+        resultSet.getLong("id"),
+        resultSet.getString("name")
+    );
+
     public JdbcStationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -38,15 +43,9 @@ public class JdbcStationDao implements StationDao {
     @Override
     public List<Station> findAll() {
         final String sql = "SELECT * FROM station";
-        return jdbcTemplate.query(sql, stationMapper());
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
-    private static RowMapper<Station> stationMapper() {
-        return (resultSet, rowNum) -> new Station(
-            resultSet.getLong("id"),
-            resultSet.getString("name")
-        );
-    }
 
     @Override
     public boolean deleteById(Long id) {
@@ -64,7 +63,7 @@ public class JdbcStationDao implements StationDao {
     @Override
     public Station findById(Long id) {
         final String sql = "SELECT * FROM station where id = ?";
-        return jdbcTemplate.queryForObject(sql, stationMapper(), id);
+        return jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
     }
 
     @Override
@@ -73,6 +72,6 @@ public class JdbcStationDao implements StationDao {
         final String sql = "SELECT * FROM station where id in (:ids)";
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
             jdbcTemplate);
-        return namedParameterJdbcTemplate.query(sql, parameters, stationMapper());
+        return namedParameterJdbcTemplate.query(sql, parameters, STATION_ROW_MAPPER);
     }
 }

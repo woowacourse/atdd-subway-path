@@ -14,6 +14,12 @@ import wooteco.subway.domain.Line;
 @Repository
 public class JdbcLineDao implements LineDao {
 
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
+        resultSet.getLong("id"),
+        resultSet.getString("name"),
+        resultSet.getString("color")
+    );
+
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
@@ -38,16 +44,10 @@ public class JdbcLineDao implements LineDao {
     @Override
     public List<Line> findAll() {
         final String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, lineMapper());
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
-    private static RowMapper<Line> lineMapper() {
-        return (resultSet, rowNum) -> new Line(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getString("color")
-        );
-    }
+
 
     @Override
     public boolean deleteById(Long id) {
@@ -61,7 +61,7 @@ public class JdbcLineDao implements LineDao {
         final String sql = "SELECT * FROM line where id = ?";
 
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineMapper(), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

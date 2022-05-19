@@ -12,6 +12,14 @@ import wooteco.subway.domain.Section;
 @Repository
 public class JdbcSectionDao implements SectionDao {
 
+    private static final RowMapper<Section> SECTION_ROW_MAPPER =  (resultSet, rowNum) -> new Section(
+        resultSet.getLong("id"),
+        resultSet.getLong("line_id"),
+        resultSet.getLong("up_station_id"),
+        resultSet.getLong("down_station_id"),
+        resultSet.getInt("distance")
+    );
+
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcSectionDao(JdbcTemplate jdbcTemplate) {
@@ -38,18 +46,10 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<Section> findByLineId(Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, sectionMapper(), lineId);
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
 
-    private static RowMapper<Section> sectionMapper() {
-        return (resultSet, rowNum) -> new Section(
-            resultSet.getLong("id"),
-            resultSet.getLong("line_id"),
-            resultSet.getLong("up_station_id"),
-            resultSet.getLong("down_station_id"),
-            resultSet.getInt("distance")
-        );
-    }
+
 
     @Override
     public boolean update(Long sectionId, Long downStationId, int distance) {
@@ -68,6 +68,6 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<Section> findAll() {
         final String sql = "SELECT * FROM section";
-        return jdbcTemplate.query(sql, sectionMapper());
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 }
