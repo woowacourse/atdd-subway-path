@@ -1,7 +1,7 @@
 package wooteco.subway.acceptance;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -80,13 +80,13 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("동일한 역의 경로를 조회할 경우 400 을 응답한다.")
     void ShowPath_SameStations_BadRequestReturned() {
         // when
-        final ValidatableResponse response = getResponse(gangnam.getId(), gangnam.getId());
+        final ValidatableResponse response = requestPath(gangnam.getId(), gangnam.getId());
 
         // then
         response.statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ValidatableResponse getResponse(final Long sourceStationId, final Long targetStationId) {
+    private ValidatableResponse requestPath(final Long sourceStationId, final Long targetStationId) {
         return RestAssured.given().log().all()
                 .queryParam(SOURCE_STATION_ID, sourceStationId)
                 .queryParam(TARGET_STATION_ID, targetStationId)
@@ -99,7 +99,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ValidatableResponse response = getResponse(gangnam.getId(), oksu.getId());
+        final ValidatableResponse response = requestPath(gangnam.getId(), oksu.getId());
 
         // then
         response.statusCode(HttpStatus.NOT_FOUND.value());
@@ -119,11 +119,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 1650;
 
         // when
-        final ValidatableResponse response = getResponse(gangnam.getId(), seoulForest.getId());
+        final ValidatableResponse response = requestPath(gangnam.getId(), seoulForest.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
-                .body(STATION_NAMES, hasItems(expectedStationNames))
+                .body(STATION_NAMES, contains(expectedStationNames))
                 .body(DISTANCE, equalTo(expectedDistance))
                 .body(FARE, equalTo(expectedFare));
     }
@@ -144,11 +144,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         final int expectedFare = 2250;
 
         // when
-        final ValidatableResponse response = getResponse(yeoksam.getId(), dapsimni.getId());
+        final ValidatableResponse response = requestPath(yeoksam.getId(), dapsimni.getId());
 
         // then
         response.statusCode(HttpStatus.OK.value())
-                .body(STATION_NAMES, hasItems(expectedStationNames))
+                .body(STATION_NAMES, contains(expectedStationNames))
                 .body(DISTANCE, equalTo(expectedDistance))
                 .body(FARE, equalTo(expectedFare));
     }
