@@ -3,7 +3,6 @@ package wooteco.subway.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
-import wooteco.subway.dto.request.LineRequest;
-import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.dto.controller.request.LineRequest;
+import wooteco.subway.dto.controller.response.LineResponse;
+import wooteco.subway.dto.service.LineServiceRequest;
+import wooteco.subway.dto.service.LineServiceResponse;
+import wooteco.subway.dto.service.LineUpdateRequest;
 import wooteco.subway.service.LineService;
 
 @RestController
@@ -32,7 +30,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineServiceRequest lineInfo = LineConverter.toInfo(lineRequest);
+        LineServiceRequest lineInfo = LineConverter.toServiceRequest(lineRequest);
         LineResponse lineResponse = LineConverter.toResponse(lineService.save(lineInfo));
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
@@ -54,7 +52,7 @@ public class LineController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
-        LineUpdateRequest lineUpdateRequest = LineConverter.toInfo(id, lineRequest);
+        LineUpdateRequest lineUpdateRequest = LineConverter.toServiceRequest(id, lineRequest);
         lineService.update(lineUpdateRequest);
         return ResponseEntity.ok().build();
     }

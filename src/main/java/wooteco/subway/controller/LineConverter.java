@@ -2,20 +2,19 @@ package wooteco.subway.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
-import wooteco.subway.dto.request.LineRequest;
-import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.dto.controller.request.LineRequest;
+import wooteco.subway.dto.controller.response.LineResponse;
+import wooteco.subway.dto.controller.response.StationResponse;
+import wooteco.subway.dto.service.LineServiceRequest;
+import wooteco.subway.dto.service.LineServiceResponse;
+import wooteco.subway.dto.service.LineUpdateRequest;
 
 public class LineConverter {
-    static LineUpdateRequest toInfo(Long id, LineRequest lineRequest) {
+    static LineUpdateRequest toServiceRequest(Long id, LineRequest lineRequest) {
         return new LineUpdateRequest(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
     }
 
-    static LineServiceRequest toInfo(LineRequest lineRequest) {
+    static LineServiceRequest toServiceRequest(LineRequest lineRequest) {
         return new LineServiceRequest(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
             lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }

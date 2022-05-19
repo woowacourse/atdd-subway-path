@@ -1,12 +1,10 @@
 package wooteco.subway.acceptance;
 
-import java.util.Map;
-
-import org.springframework.http.MediaType;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Map;
+import org.springframework.http.MediaType;
 
 public class RequestFrame {
     static ExtractableResponse<Response> post(Map<String, String> body, String path) {

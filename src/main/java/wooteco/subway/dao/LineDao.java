@@ -1,9 +1,8 @@
 package wooteco.subway.dao;
 
 import java.util.List;
-
 import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineEntity;
+import wooteco.subway.entity.LineEntity;
 
 public interface LineDao {
     LineEntity save(Line line);

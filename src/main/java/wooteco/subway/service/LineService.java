@@ -4,21 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.dto.service.LineServiceRequest;
+import wooteco.subway.dto.service.LineServiceResponse;
+import wooteco.subway.dto.service.LineUpdateRequest;
+import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.entity.LineEntity;
 
 @Service
 public class LineService {

@@ -2,9 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -12,8 +10,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.SectionEntity;
+import wooteco.subway.entity.LineEntity;
+import wooteco.subway.entity.SectionEntity;
 
 @Service
 public class DomainCreatorService {

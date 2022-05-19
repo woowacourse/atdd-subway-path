@@ -1,4 +1,4 @@
-package wooteco.subway.dto.info;
+package wooteco.subway.dto.service;
 
 import java.util.List;
 

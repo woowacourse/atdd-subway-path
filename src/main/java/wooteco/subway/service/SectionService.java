@@ -3,7 +3,6 @@ package wooteco.subway.service;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -11,9 +10,9 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.info.SectionCreateRequest;
-import wooteco.subway.dto.info.SectionDeleteRequest;
+import wooteco.subway.dto.service.SectionCreateRequest;
+import wooteco.subway.dto.service.SectionDeleteRequest;
+import wooteco.subway.entity.LineEntity;
 
 @Service
 public class SectionService {

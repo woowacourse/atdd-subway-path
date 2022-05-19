@@ -3,18 +3,15 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.DistanceFareStrategy;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.info.PathServiceRequest;
-import wooteco.subway.dto.info.PathServiceResponse;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.dto.service.PathServiceRequest;
+import wooteco.subway.dto.service.PathServiceResponse;
+import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.strategy.DistanceFareStrategy;
+import wooteco.subway.strategy.FareStrategy;
 
 @Service
 public class PathService {

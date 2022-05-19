@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import org.springframework.util.ReflectionUtils;
-
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
-import wooteco.subway.dto.SectionEntity;
+import wooteco.subway.entity.SectionEntity;
 
 public class FakeSectionDao implements SectionDao {
     private Map<Section, Long> sections = new HashMap<>();

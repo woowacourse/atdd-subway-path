@@ -1,4 +1,4 @@
-package wooteco.subway.dto.request;
+package wooteco.subway.dto.controller.request;
 
 public class LineRequest {
     private String name;

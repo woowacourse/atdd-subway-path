@@ -3,14 +3,12 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.dto.service.StationDto;
 
 @Service
 public class StationService {

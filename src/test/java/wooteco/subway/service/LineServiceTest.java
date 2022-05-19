@@ -1,17 +1,17 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
+import wooteco.subway.dto.service.LineServiceRequest;
+import wooteco.subway.dto.service.LineServiceResponse;
+import wooteco.subway.dto.service.LineUpdateRequest;
 
 public class LineServiceTest {
 
