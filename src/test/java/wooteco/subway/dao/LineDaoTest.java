@@ -19,7 +19,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @JdbcTest
-@Import({JdbcLineDao.class, JdbcStationDao.class})
+@Import({LineDao.class, StationDao.class})
 class LineDaoTest {
     private static final String LINE_NAME = "신분당선";
     private static final String LINE_COLOR = "bg-red-600";
