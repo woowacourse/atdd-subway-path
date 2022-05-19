@@ -87,22 +87,13 @@ class LineDaoTest {
         // given
         final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when
-        final Line found = linDao.findById(saved.getId());
+        final Line found = linDao.findById(saved.getId()).get();
         // then
         Assertions.assertAll(
                 () -> assertThat(found.getId()).isEqualTo(saved.getId()),
                 () -> assertThat(found.getName()).isEqualTo(saved.getName()),
                 () -> assertThat(found.getColor()).isEqualTo(saved.getColor())
         );
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 ID 값으로 노선을 조회하면 예외를 던진다")
-    public void findById_invalidID() {
-        // given & when
-        linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
-        // then
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> linDao.findById(2L));
     }
 
     @Test

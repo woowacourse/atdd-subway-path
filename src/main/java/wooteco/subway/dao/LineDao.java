@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -24,6 +26,12 @@ import wooteco.subway.domain.Station;
 public class LineDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) ->
+            new Line(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("color"),
+                    findSectionsById(resultSet.getLong("id")));
 
     public LineDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -51,25 +59,16 @@ public class LineDao {
 
     public List<Line> findAll() {
         String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, this::mapToLine);
+        return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public Line findById(Long id) {
+    public Optional<Line> findById(Long id) {
         String sql = "SELECT * FROM line WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, this::mapToLine, id);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
-            throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
+            return Optional.empty();
         }
-    }
-
-    private Line mapToLine(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Line(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("color"),
-                findSectionsById(resultSet.getLong("id"))
-        );
     }
 
     private List<Section> findSectionsById(Long id) {

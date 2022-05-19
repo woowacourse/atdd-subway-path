@@ -24,9 +24,11 @@ public class SectionService {
     }
 
     public void add(SectionRequest sectionRequest, Long lineId) {
-        Line line = lineDao.findById(lineId);
-        Station upStation = stationDao.findById(sectionRequest.getUpStationId());
-        Station downStation = stationDao.findById(sectionRequest.getDownStationId());
+        Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
+        Station upStation = stationDao.findById(sectionRequest.getUpStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+        Station downStation = stationDao.findById(sectionRequest.getDownStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         Section section = new Section(upStation, downStation, sectionRequest.getDistance());
 
         line.addSection(section);
@@ -35,8 +37,9 @@ public class SectionService {
 
     @Transactional
     public void delete(Long lineId, Long stationId) {
-        Line line = lineDao.findById(lineId);
-        Station station = stationDao.findById(stationId);
+        Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
+        Station station = stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         sectionDao.delete(line.delete(station));
         sectionDao.save(line.getSections(), line.getId());
     }

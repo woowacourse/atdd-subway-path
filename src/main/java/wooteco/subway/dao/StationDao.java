@@ -2,17 +2,22 @@ package wooteco.subway.dao;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -20,6 +25,10 @@ public class StationDao {
 
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
+            new Station(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"));
 
     public StationDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -47,18 +56,16 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        ));
+        return jdbcTemplate.query(sql, stationRowMapper);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        ), id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationRowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public int deleteById(Long id) {

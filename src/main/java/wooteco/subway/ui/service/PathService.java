@@ -27,8 +27,10 @@ public class PathService {
         List<Section> sections = sectionDao.findAll();
         PathCalculator pathCalculator = PathCalculator.from(sections);
 
-        Station sourceStation = stationDao.findById((long)source);
-        Station targetStation = stationDao.findById((long)target);
+        Station sourceStation = stationDao.findById((long)source)
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+        Station targetStation = stationDao.findById((long)target)
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
 
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);

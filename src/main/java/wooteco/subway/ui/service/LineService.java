@@ -32,8 +32,10 @@ public class LineService {
         String name = lineRequest.getName();
         String color = lineRequest.getColor();
 
-        Station upStation = stationDao.findById(lineRequest.getUpStationId());
-        Station downStation = stationDao.findById(lineRequest.getDownStationId());
+        Station upStation = stationDao.findById(lineRequest.getUpStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+        Station downStation = stationDao.findById(lineRequest.getDownStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         Section section = new Section(upStation, downStation, lineRequest.getDistance());
 
         Line line = new Line(name, color, section);
@@ -51,7 +53,7 @@ public class LineService {
     }
 
     public LineResponse findById(Long id) {
-        Line line = lineDao.findById(id);
+        Line line = lineDao.findById(id).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
         return LineResponse.from(line);
     }
 

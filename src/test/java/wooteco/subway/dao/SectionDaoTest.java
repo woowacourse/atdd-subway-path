@@ -54,7 +54,7 @@ public class SectionDaoTest {
         line.addSection(section);
         sectionDao.save(line.getSections(), line.getId());
 
-        Line updatedLine = lineDao.findById(line.getId());
+        Line updatedLine = lineDao.findById(line.getId()).get();
         Section deletedSection = updatedLine.delete(station);
         assertThat(sectionDao.delete(deletedSection)).isEqualTo(1);
     }
