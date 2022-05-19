@@ -3,17 +3,14 @@ package wooteco.subway.domain;
 import wooteco.subway.exception.AddSectionException;
 
 public class Section {
-    private Long id;
+    private final Long id;
     private final Long lineId;
     private Station upStation;
     private Station downStation;
     private int distance;
 
     public Section(Long lineId, Station upStation, Station downStation, int distance) {
-        this.lineId = lineId;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(0L, lineId, upStation, downStation, distance);
     }
 
     public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
