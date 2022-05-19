@@ -39,7 +39,6 @@ class PathServiceTest {
     @BeforeEach
     void setUp() {
         pathService = new PathService(
-                new FareCalculator(),
                 new SectionDao(jdbcTemplate, dataSource),
                 new StationDao(jdbcTemplate, dataSource));
     }

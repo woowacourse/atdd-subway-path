@@ -15,12 +15,10 @@ import java.util.List;
 @Service
 public class PathService {
 
-    private final FareCalculator fareCalculator;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public PathService(FareCalculator fareCalculator, SectionDao sectionDao, StationDao stationDao) {
-        this.fareCalculator = fareCalculator;
+    public PathService(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
@@ -31,7 +29,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(sections);
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
-        int fare = fareCalculator.calculateFare(distance);
+        int fare = FareCalculator.calculateFare(distance);
         List<Station> stations = stationDao.findByIdIn(path);
 
         return PathFindResponse.of(stations, distance, fare);

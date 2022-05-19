@@ -1,8 +1,5 @@
 package wooteco.subway.domain;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class FareCalculator {
 
     private static final int BASIS_FARE = 1_250;
@@ -13,7 +10,7 @@ public class FareCalculator {
     private static final int LAST_FARE_INCREASE_STANDARD_UNIT = 8;
     private static final int INCREASE_RATE = 100;
 
-    public int calculateFare(int distance) {
+    public static int calculateFare(int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException();
         }
