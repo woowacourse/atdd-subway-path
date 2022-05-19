@@ -11,7 +11,7 @@ public class Sections {
 
     private static final int MINIMUM_SECTION_COUNT = 1;
 
-    private List<Section> sections;
+    private final List<Section> sections;
 
     public Sections(List<Section> sections) {
         this.sections = sections;
@@ -23,8 +23,7 @@ public class Sections {
         validateRegistration(section);
 
         sections.add(section);
-        sections = sortSections(sections);
-        return List.copyOf(sections);
+        return List.copyOf(sortSections(sections));
     }
 
     private void checkContainsSameSection(Section newSection) {
@@ -93,8 +92,7 @@ public class Sections {
         removeFirstOrLastSection(previousSection);
         removeMiddleSection(previousSection, laterSection);
 
-        sections = sortSections(sections);
-        return List.copyOf(sections);
+        return List.copyOf(sortSections(sections));
     }
 
     private void validateDeletableSize() {

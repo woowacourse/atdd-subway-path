@@ -36,10 +36,10 @@ class SectionsTest {
 
         // when
         final Section section = new Section(1L, 1L, 2L, 4);
-        sections.add(section);
+        final List<Section> addSections = sections.add(section);
 
         // then
-        assertThat(sections.getSections())
+        assertThat(addSections)
                 .hasSize(2)
                 .extracting("distance")
                 .containsExactly(4, 3);
@@ -55,10 +55,10 @@ class SectionsTest {
 
         // when
         final Section section = new Section(1L, 2L, 3L, 4);
-        sections.add(section);
+        final List<Section> addSections = sections.add(section);
 
         // then
-        assertThat(sections.getSections())
+        assertThat(addSections)
                 .hasSize(2)
                 .extracting("distance")
                 .containsExactly(3, 4);
