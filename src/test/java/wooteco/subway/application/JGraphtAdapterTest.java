@@ -46,7 +46,7 @@ public class JGraphtAdapterTest {
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
     @Test
     void searchTransferLinePath() {
-        Path path = graph.search(1L, 4L);
+        Path path = graph.search(stations.get(0), stations.get(3));
 
         assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
         assertThat(path.getDistance()).isEqualTo(8);
@@ -55,7 +55,7 @@ public class JGraphtAdapterTest {
     @DisplayName("10km이상일 경우 100원 추가 요금")
     @Test
     void searchOnceOverFarePath() {
-        Path path = graph.search(1L, 5L);
+        Path path = graph.search(stations.get(0), stations.get(4));
 
         assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4));
@@ -65,7 +65,7 @@ public class JGraphtAdapterTest {
     @DisplayName("21km일 경우 3번의 100원 추가 요금")
     @Test
     void searchMultiOverFarePath() {
-        Path path = graph.search(1L, 6L);
+        Path path = graph.search(stations.get(0), stations.get(5));
 
         assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
@@ -76,7 +76,7 @@ public class JGraphtAdapterTest {
     @DisplayName("58km일 경우 3번의 100원 추가 요금")
     @Test
     void searchSuperMultiOverFarePath() {
-        Path path = graph.search(1L, 7L);
+        Path path = graph.search(stations.get(0), stations.get(6));
 
         assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
@@ -87,7 +87,7 @@ public class JGraphtAdapterTest {
     @DisplayName("경로를 찾을 수 없는 경우 빈 리스트 반환")
     @Test
     void searchNotReachablePath() {
-        Path path = graph.search(1L, 8L);
+        Path path = graph.search(stations.get(0), stations.get(7));
         assertThat(path.isEmpty()).isTrue();
     }
 }

@@ -14,53 +14,43 @@ import wooteco.subway.domain.Station;
 
 public class JGraphtAdapter implements Graph {
 
-    private final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath;
-    private final Map<Long, Station> stations;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
     public JGraphtAdapter(List<Station> stations, List<Section> sections) {
-        this.shortestPath = createShortestPath(stations, sections);
-        this.stations = createVertexMap(stations);
+        this.shortestPath = createShortestPath(createStationsMap(stations), sections);
     }
 
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> createShortestPath(
-        List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
+    private Map<Long, Station> createStationsMap(List<Station> stations) {
+        return stations.stream()
+            .collect(Collectors.toMap(Station::getId, value -> value));
+    }
+
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> createShortestPath(
+        Map<Long, Station> stations, List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
+        for (Station station : stations.values()) {
+            graph.addVertex(station);
         }
 
         for (Section section : sections) {
-            DefaultWeightedEdge edge = graph.addEdge(
-                section.getUpStationId(), section.getDownStationId());
+            Station upStation = stations.get(section.getUpStationId());
+            Station downStation = stations.get(section.getDownStationId());
+            DefaultWeightedEdge edge = graph.addEdge(upStation, downStation);
             graph.setEdgeWeight(edge, section.getDistance());
         }
 
         return new DijkstraShortestPath<>(graph);
     }
 
-    private Map<Long, Station> createVertexMap(List<Station> vertex) {
-        return vertex.stream()
-            .collect(Collectors.toMap(Station::getId, value -> value));
-    }
-
     @Override
-    public Path search(Long source, Long target) {
-        GraphPath<Long, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
-        if (isUnreachablePath(path)) {
+    public Path search(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+        if (path == null) {
             return new Path(List.of(), 0);
         }
-        return new Path(createStations(path), (int) path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight());
     }
 
-    private boolean isUnreachablePath(GraphPath<Long, DefaultWeightedEdge> path) {
-        return path == null;
-    }
-
-    private List<Station> createStations(GraphPath<Long, DefaultWeightedEdge> path) {
-        return path.getVertexList().stream()
-            .map(stations::get)
-            .collect(Collectors.toList());
-    }
 }

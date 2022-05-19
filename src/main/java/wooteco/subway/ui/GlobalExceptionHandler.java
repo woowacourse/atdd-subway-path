@@ -7,7 +7,7 @@ import wooteco.subway.application.exception.DuplicateException;
 import wooteco.subway.application.exception.NotFoundException;
 import wooteco.subway.application.exception.UnaddableSectionException;
 import wooteco.subway.application.exception.UndeletableSectionException;
-import wooteco.subway.application.exception.UnreachablePathException;
+import wooteco.subway.domain.exception.UnreachablePathException;
 import wooteco.subway.domain.exception.BlankArgumentException;
 import wooteco.subway.domain.exception.UnmergeableException;
 import wooteco.subway.domain.exception.UnsplittableException;
