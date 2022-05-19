@@ -1,7 +1,6 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +45,28 @@ class StationJdbcDaoTest extends DaoImplTest {
         Station station = new Station("역삼역");
         Station newStation = stationJdbcDao.save(station);
 
-        assertThat(stationJdbcDao.deleteStation(newStation.getId())).isEqualTo(1);
+        assertThat(stationJdbcDao.deleteById(newStation.getId())).isEqualTo(1);
+    }
+
+    @DisplayName("저장된 이름이 있는지 확인한다.")
+    @Test
+    void existSavedName() {
+        String name = "교대역";
+        stationJdbcDao.save(new Station(name));
+
+        boolean existByName = stationJdbcDao.existByName(name);
+
+        assertThat(existByName).isTrue();
+    }
+
+    @DisplayName("이름을 이용하여 삭제한 후, 다시 저장되는지 확인한다.")
+    @Test
+    void saveDeletedName() {
+        String name = "교대역";
+        stationJdbcDao.save(new Station(name));
+
+        stationJdbcDao.deleteByExistName(name);
+
+        assertThat(stationJdbcDao.save(new Station(name)).getName()).isEqualTo(name);
     }
 }

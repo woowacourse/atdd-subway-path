@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,7 +36,13 @@ public class StationJdbcDao implements StationDao {
             ps.setBoolean(2, false);
             return ps;
         }, keyHolder);
-        return new Station(keyHolder.getKey().longValue(), station.getName());
+        return new Station(Objects.requireNonNull(keyHolder.getKey()).longValue(), station.getName());
+    }
+
+    @Override
+    public boolean existByName(String name) {
+        final String sql = "SELECT EXISTS (SELECT * FROM station WHERE name = (?) AND deleted = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name, false));
     }
 
     @Override
@@ -45,7 +52,7 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public Station findById(long id) {
+    public Station findById(Long id) {
         try {
             final String sql = "SELECT * FROM station WHERE id = (?) AND deleted = (?)";
             return jdbcTemplate.queryForObject(sql, stationRowMapper(), id, false);
@@ -55,8 +62,14 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public int deleteStation(long id) {
+    public int deleteById(Long id) {
         final String sql = "UPDATE station SET deleted = (?) WHERE id = (?)";
         return jdbcTemplate.update(sql, true, id);
+    }
+
+    @Override
+    public void deleteByExistName(String name) {
+        final String sql = "DELETE FROM station WHERE EXISTS(SELECT * FROM station WHERE name = (?))";
+        jdbcTemplate.update(sql, name);
     }
 }

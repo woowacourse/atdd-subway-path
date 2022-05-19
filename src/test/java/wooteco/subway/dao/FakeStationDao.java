@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.datanotfound.DataNotFoundException;
 import wooteco.subway.exception.datanotfound.StationNotFoundException;
+import wooteco.subway.exception.duplicatename.StationDuplicateException;
 
 public class FakeStationDao implements StationDao {
 
@@ -24,9 +24,23 @@ public class FakeStationDao implements StationDao {
 
     @Override
     public Station save(Station station) {
+        if (existByName(station.getName())) {
+            throw new StationDuplicateException("이미 등록된 지하철역 이름입니다.");
+        }
         Station persistStation = createNewObject(station);
         stations.add(persistStation);
         return persistStation;
+    }
+
+    @Override
+    public boolean existByName(String name) {
+        return stations.stream()
+                .anyMatch(station -> station.getName().equals(name));
+    }
+
+    @Override
+    public void deleteByExistName(String name) {
+        stations.removeIf(station -> station.getName().equals(name));
     }
 
     @Override
@@ -35,7 +49,7 @@ public class FakeStationDao implements StationDao {
     }
 
     @Override
-    public Station findById(long id) {
+    public Station findById(Long id) {
         return stations.stream()
                 .filter(station -> station.getId() == id)
                 .findAny()
@@ -50,7 +64,7 @@ public class FakeStationDao implements StationDao {
     }
 
     @Override
-    public int deleteStation(long id) {
+    public int deleteById(Long id) {
         int beforeSize = stations.size();
         stations = stations.stream()
                 .filter(station -> station.getId() != id)

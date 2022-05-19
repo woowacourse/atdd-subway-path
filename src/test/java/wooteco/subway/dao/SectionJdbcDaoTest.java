@@ -13,7 +13,6 @@ import wooteco.subway.domain.Station;
 
 public class SectionJdbcDaoTest extends DaoImplTest {
 
-    private LineJdbcDao lineJdbcDao;
     private SectionJdbcDao sectionJdbcDao;
     private StationJdbcDao stationJdbcDao;
 
@@ -22,7 +21,6 @@ public class SectionJdbcDaoTest extends DaoImplTest {
 
     @BeforeEach
     void setUp() {
-        lineJdbcDao = new LineJdbcDao(jdbcTemplate);
         sectionJdbcDao = new SectionJdbcDao(jdbcTemplate);
         stationJdbcDao = new StationJdbcDao(jdbcTemplate);
     }

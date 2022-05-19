@@ -82,7 +82,7 @@ class StationServiceTest {
     @Test
     @DisplayName("존재하지 않는 역 정보 삭제시 예외를 발생한다.")
     void deleteNotExistStation() {
-        assertThatThrownBy(() -> stationService.deleteStation(12))
+        assertThatThrownBy(() -> stationService.deleteStation(12L))
                 .isInstanceOf(StationNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 역입니다.");
     }

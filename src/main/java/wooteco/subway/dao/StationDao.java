@@ -9,7 +9,11 @@ public interface StationDao {
 
     List<Station> findAll();
 
-    Station findById(long id);
+    Station findById(Long id);
 
-    int deleteStation(long id);
+    int deleteById(Long id);
+
+    boolean existByName(String name);
+
+    void deleteByExistName(String name);
 }
