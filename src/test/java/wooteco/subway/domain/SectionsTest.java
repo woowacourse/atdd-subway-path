@@ -1,18 +1,21 @@
 package wooteco.subway.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.section.*;
-import wooteco.subway.domain.station.Station;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.ConcreteCreationStrategy;
+import wooteco.subway.domain.section.ConcreteDeletionStrategy;
+import wooteco.subway.domain.section.ConcreteSortStrategy;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 
 public class SectionsTest {
 
@@ -120,8 +123,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("역 정렬")
-    void SortStations(){
-
+    void sortStations(){
         List<Station> stations = new ArrayList<>(List.of(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "선릉역")));
         Section section = new Section(2L, 1L, 3L, 1L, 5);
 
