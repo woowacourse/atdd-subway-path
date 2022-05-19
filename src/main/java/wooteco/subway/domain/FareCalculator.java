@@ -2,46 +2,53 @@ package wooteco.subway.domain;
 
 public class FareCalculator {
 
-    private static final int BASE_FARE = 1250;
-    private static final int ADDITIONAL_FARE = 100;
     private static final int PRIMARY_BASIC_DISTANCE = 10;
     private static final int SECONDARY_BASIC_DISTANCE = 50;
+    private static final int OVER_FARE_PER_COUNT = 100;
+    private static final int BASIC_FARE = 1250;
 
     public int calculateFare(int distance) {
-        return BASE_FARE + additionalFare(distance);
+        return BASIC_FARE + overDistanceFare(distance);
     }
 
-    private int additionalFare(int distance) {
-        return ADDITIONAL_FARE * additionalFareCount(distance);
-    }
-
-    private int additionalFareCount(int distance) {
-        if (distance > SECONDARY_BASIC_DISTANCE) {
-            return additionalFareCountOverSecondBasicDistance(distance);
+    private int overDistanceFare(int distance) {
+        if (isOverSecondaryBasicDistance(distance)) {
+            return overSecondaryBasicDistanceFare(distance) +
+                overPrimaryBasicDistanceFare(SECONDARY_BASIC_DISTANCE);
         }
 
-        if (distance > PRIMARY_BASIC_DISTANCE) {
-            return additionalFareCountOverFirstBasicDistance(distance);
+        if (isOverPrimaryBasicDistance(distance)) {
+            return overPrimaryBasicDistanceFare(distance);
         }
 
         return 0;
     }
 
-    private int additionalFareCountOverSecondBasicDistance(int distance) {
-        int remain = distance - 50;
-        int count = remain / 8;
-        if (remain % 8 != 0) {
-            count++;
-        }
-        return count + 8;
+    private boolean isOverSecondaryBasicDistance(int distance) {
+        return distance > SECONDARY_BASIC_DISTANCE;
     }
 
-    private int additionalFareCountOverFirstBasicDistance(int distance) {
-        int remain = distance - 10;
-        int count = remain / 5;
-        if (remain % 5 != 0) {
+    private boolean isOverPrimaryBasicDistance(int distance) {
+        return distance > PRIMARY_BASIC_DISTANCE;
+    }
+
+    private int overSecondaryBasicDistanceFare(int distance) {
+        int remainDistance = distance - SECONDARY_BASIC_DISTANCE;
+        int overDistancePerCount = 8;
+        return overDistanceFare(remainDistance, overDistancePerCount);
+    }
+
+    private int overPrimaryBasicDistanceFare(int distance) {
+        int remainDistance = distance - PRIMARY_BASIC_DISTANCE;
+        int overDistancePerCount = 5;
+        return overDistanceFare(remainDistance, overDistancePerCount);
+    }
+
+    private int overDistanceFare(int distance, int overDistancePerCount) {
+        int count = distance / overDistancePerCount;
+        if (distance % overDistancePerCount != 0) {
             count++;
         }
-        return count;
+        return OVER_FARE_PER_COUNT * count;
     }
 }
