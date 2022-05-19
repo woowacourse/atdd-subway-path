@@ -29,14 +29,12 @@ public class GlobalExceptionHandler {
         return new ErrorResult(BAD_REQUEST, exception.getMessage());
     }
 
-/*
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     private ErrorResult handleExceptionToInternalServerError(Exception exception) {
         logError(exception);
         return new ErrorResult(INTERNAL_SERVER_ERROR);
     }
-*/
 
     private void logError(Exception exception) {
         log.error("error: {}", exception);
