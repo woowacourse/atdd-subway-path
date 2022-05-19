@@ -17,27 +17,24 @@ class LineTest {
         assertThat(new Line("2호선", "bg-red-600")).isNotNull();
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "이름과 색깔이 값이 없을 경우 예외를 발생한다. 입력값 : {0}")
     @EmptySource
-    @DisplayName("이름과 색깔이 값이 없을 경우 예외를 발생한다.")
     void empty(String value) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> new Line(value, value))
             .withMessage("이름과 색깔은 공백일 수 없습니다.");
     }
 
-    @ParameterizedTest(name = "이름 : {0}, 메시지 : {1}")
+    @ParameterizedTest(name = "노선 이름이 3글자 미만 10글자 초과일 경우 예외를 발생한다. 이름 : {0}, 메시지 : {1}")
     @CsvSource({"12345678910, 노선 이름은 10글자를 초과할 수 없습니다.", "노선, 노선 이름은 3글자 이상이어야 합니다."})
-    @DisplayName("노선 이름이 3글자 미만 10글자 초과일 경우 예외를 발생한다.")
     void invalidName(String value, String message) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> new Line(value, "blue"))
             .withMessage(message);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "노선 이름은 한글과 숫자가 아닌 경우 예외를 발생한다. 노선 이름 : {0}")
     @ValueSource(strings = {"1line", "line", "1호sun"})
-    @DisplayName("노선 이름은 한글과 숫자가 아닌 경우 예외를 발생한다.")
     void invalidName(String name) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> new Line(name, "blue"))
@@ -52,9 +49,8 @@ class LineTest {
         assertThat(line.getName()).isEqualTo("3호선");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "수정시 이름과 색깔이 값이 없을 경우 예외를 발생한다. 입력값 : {0}")
     @EmptySource
-    @DisplayName("수정시 이름과 색깔이 값이 없을 경우 예외를 발생한다.")
     void modifyEmpty(String value) {
         Line line = new Line("2호선", "red");
         assertThatIllegalArgumentException()
@@ -62,9 +58,8 @@ class LineTest {
             .withMessage("이름과 색깔은 공백일 수 없습니다.");
     }
 
-    @ParameterizedTest(name = "이름 : {0}, 메시지 : {1}")
+    @ParameterizedTest(name = "노선 이름이 3글자 미만 10글자 초과일 경우 예외를 발생한다. 이름 : {0}, 메시지 : {1}")
     @CsvSource({"12345678910, 노선 이름은 10글자를 초과할 수 없습니다.", "노선, 노선 이름은 3글자 이상이어야 합니다."})
-    @DisplayName("노선 이름이 3글자 미만 10글자 초과일 경우 예외를 발생한다.")
     void invalidUpdateName(String value, String message) {
         Line line = new Line("2호선", "blue");
         assertThatIllegalArgumentException()
@@ -72,9 +67,8 @@ class LineTest {
             .withMessage(message);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "노선 이름은 한글과 숫자가 아닌 경우 예외를 발생한다. 입력값 : {0}")
     @ValueSource(strings = {"1line", "line", "1호sun"})
-    @DisplayName("노선 이름은 한글과 숫자가 아닌 경우 예외를 발생한다.")
     void invalidUpdateName(String name) {
         Line line = new Line("2호선", "blue");
         assertThatIllegalArgumentException()
