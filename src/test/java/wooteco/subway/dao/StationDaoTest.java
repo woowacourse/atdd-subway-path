@@ -35,16 +35,6 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("중복된 이름을 저장하는 경우 예외를 던진다.")
-    public void save_throwsExceptionWithDuplicatedName() {
-        // given & when
-        dao.save(new Station(STATION_NAME));
-        // then
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> dao.save(new Station(STATION_NAME)));
-    }
-
-    @Test
     @DisplayName("역 목록을 불러온다.")
     public void findAll() {
         // given & when

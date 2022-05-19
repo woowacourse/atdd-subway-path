@@ -52,16 +52,6 @@ class LineDaoTest {
     }
 
     @Test
-    @DisplayName("중복된 이름을 저장하는 경우 예외를 던진다.")
-    public void save_throwsExceptionWithDuplicatedName() {
-        // given & when
-        linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
-        // then
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> linDao.save(new Line(LINE_NAME, LINE_COLOR, section)));
-    }
-
-    @Test
     @DisplayName("전체 노선을 조회한다.")
     public void findAll() {
         // given & when

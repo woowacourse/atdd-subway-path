@@ -6,18 +6,16 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -25,26 +23,24 @@ public class StationDao {
 
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
             new Station(
                     resultSet.getLong("id"),
                     resultSet.getString("name"));
 
-    public StationDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
+    public StationDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Station save(Station station) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
-        try {
-            Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(station, id);
-        } catch (DuplicateKeyException ignored) {
-            throw new IllegalStateException("이미 존재하는 역 이름입니다.");
-        }
+        Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+        return createNewObject(station, id);
     }
 
     private Station createNewObject(Station station, Long id) {

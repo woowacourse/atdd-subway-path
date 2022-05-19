@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,21 +32,17 @@ public class LineDao {
                     resultSet.getString("color"),
                     findSectionsById(resultSet.getLong("id")));
 
-    public LineDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
+    public LineDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public Line save(Line line) {
-        try {
-            SqlParameterSource param = new BeanPropertySqlParameterSource(line);
-            Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(line, id);
-        } catch (DuplicateKeyException ignored) {
-            throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
-        }
+        SqlParameterSource param = new BeanPropertySqlParameterSource(line);
+        Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+        return createNewObject(line, id);
     }
 
     private Line createNewObject(Line line, Long id) {

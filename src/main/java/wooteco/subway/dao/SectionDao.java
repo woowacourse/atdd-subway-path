@@ -23,11 +23,11 @@ public class SectionDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
-    public SectionDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
+    public SectionDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void save(Section section, Long lineId) {
