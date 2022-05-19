@@ -1,4 +1,4 @@
-package wooteco.subway.service.dto;
+package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,9 +6,10 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.route.Route;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.service.dto.line.LineRequest;
-import wooteco.subway.service.dto.line.LineResponse;
-import wooteco.subway.service.dto.station.StationResponse;
+import wooteco.subway.ui.dto.request.LineRequest;
+import wooteco.subway.ui.dto.response.LineResponse;
+import wooteco.subway.ui.dto.response.RouteResponse;
+import wooteco.subway.ui.dto.response.StationResponse;
 
 public class DtoAssembler {
 

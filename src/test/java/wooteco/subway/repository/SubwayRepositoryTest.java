@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,19 +17,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-
-import javax.sql.DataSource;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicateLineColorException;
+import wooteco.subway.exception.DuplicateLineNameException;
+import wooteco.subway.exception.DuplicateStationNameException;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.exception.DuplicateLineColorException;
-import wooteco.subway.repository.exception.DuplicateLineNameException;
-import wooteco.subway.repository.exception.DuplicateStationNameException;
 
 @DisplayName("지하철 Repository")
 @JdbcTest
@@ -66,7 +64,7 @@ class SubwayRepositoryTest {
         @DisplayName("역을 생성한다.")
         @Test
         void saveStation() {
-            Long actual = (stationRepository.saveStation(강남역)).getId();
+            Long actual = (stationRepository.save(강남역)).getId();
             assertThat(actual).isGreaterThan(0L);
         }
 
@@ -74,9 +72,9 @@ class SubwayRepositoryTest {
         @ParameterizedTest
         @ValueSource(strings = {"강남역"})
         void saveStationWithDuplicatedName(String name) {
-            stationRepository.saveStation(new Station(name));
+            stationRepository.save(new Station(name));
 
-            assertThatThrownBy(() -> stationRepository.saveStation(new Station(name)))
+            assertThatThrownBy(() -> stationRepository.save(new Station(name)))
                     .isInstanceOf(DuplicateStationNameException.class)
                     .hasMessageContaining("해당 이름의 지하철역은 이미 존재합니다.");
         }
@@ -85,9 +83,9 @@ class SubwayRepositoryTest {
         @Test
         void findStations() {
             List<Station> expected = List.of(강남역, 역삼역, 선릉역);
-            expected.forEach(stationRepository::saveStation);
+            expected.forEach(stationRepository::save);
 
-            List<Station> actual = stationRepository.findStations();
+            List<Station> actual = stationRepository.findAll();
             assertThat(actual).usingRecursiveComparison()
                     .ignoringFields("id")
                     .isEqualTo(expected);
@@ -96,7 +94,7 @@ class SubwayRepositoryTest {
         @DisplayName("역을 조회한다.")
         @Test
         void findStationById() {
-            Station station = stationRepository.saveStation(강남역);
+            Station station = stationRepository.save(강남역);
             Station actual = stationRepository.findStationById(station.getId());
 
             assertAll(
@@ -111,18 +109,18 @@ class SubwayRepositoryTest {
         @Test
         void removeStation() {
             Stream.of(강남역)
-                    .map(stationRepository::saveStation)
+                    .map(stationRepository::save)
                     .map(Station::getId)
-                    .forEach(stationRepository::removeStation);
+                    .forEach(stationRepository::deleteById);
 
-            List<Station> actual = stationRepository.findStations();
+            List<Station> actual = stationRepository.findAll();
             assertThat(actual).isEmpty();
         }
 
         @DisplayName("존재하지 않는 역을 삭제한다.")
         @Test
         void removeNonExistentStation() {
-            assertThatThrownBy(() -> stationRepository.removeStation(1L))
+            assertThatThrownBy(() -> stationRepository.deleteById(1L))
                     .isInstanceOf(NoSuchElementException.class)
                     .hasMessageContaining("지하철역을 찾을 수 없습니다.");
         }
@@ -139,8 +137,8 @@ class SubwayRepositoryTest {
         void setUp() {
             lineRepository = subwayRepository;
 
-            Station station1 = subwayRepository.saveStation(강남역);
-            Station station2 = subwayRepository.saveStation(역삼역);
+            Station station1 = subwayRepository.save(강남역);
+            Station station2 = subwayRepository.save(역삼역);
             this.sections = List.of(new Section(station1, station2, 3));
         }
 
@@ -233,9 +231,9 @@ class SubwayRepositoryTest {
         @DisplayName("구간 목록을 수정한다.")
         @Test
         void updateSections() {
-            Station upStation = subwayRepository.saveStation(new Station("광교역"));
-            Station middleStation = subwayRepository.saveStation(new Station("광교중앙역"));
-            Station downStation = subwayRepository.saveStation(new Station("상현역"));
+            Station upStation = subwayRepository.save(new Station("광교역"));
+            Station middleStation = subwayRepository.save(new Station("광교중앙역"));
+            Station downStation = subwayRepository.save(new Station("상현역"));
 
             Line line = subwayRepository.saveLine(new Line(
                     List.of(new Section(upStation, downStation, 10)), "신분당선", "red"));

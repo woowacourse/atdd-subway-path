@@ -10,6 +10,12 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.SectionRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicateLineColorException;
+import wooteco.subway.exception.DuplicateLineNameException;
+import wooteco.subway.exception.DuplicateStationNameException;
+import wooteco.subway.exception.NoSuchLineException;
+import wooteco.subway.exception.NoSuchSectionException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.dao.StationDao;
@@ -17,12 +23,6 @@ import wooteco.subway.repository.dao.entity.EntityAssembler;
 import wooteco.subway.repository.dao.entity.line.LineEntity;
 import wooteco.subway.repository.dao.entity.section.SectionEntity;
 import wooteco.subway.repository.dao.entity.station.StationEntity;
-import wooteco.subway.repository.exception.DuplicateLineColorException;
-import wooteco.subway.repository.exception.DuplicateLineNameException;
-import wooteco.subway.repository.exception.DuplicateStationNameException;
-import wooteco.subway.repository.exception.NoSuchLineException;
-import wooteco.subway.repository.exception.NoSuchSectionException;
-import wooteco.subway.repository.exception.NoSuchStationException;
 
 @Repository
 public class SubwayRepository implements LineRepository, StationRepository, SectionRepository {
@@ -196,7 +196,7 @@ public class SubwayRepository implements LineRepository, StationRepository, Sect
     }
 
     @Override
-    public Station saveStation(Station station) {
+    public Station save(Station station) {
         Long stationId = saveStation(EntityAssembler.stationEntity(station));
         return findStationById(stationId);
     }
@@ -217,7 +217,7 @@ public class SubwayRepository implements LineRepository, StationRepository, Sect
     }
 
     @Override
-    public List<Station> findStations() {
+    public List<Station> findAll() {
         return stationDao.findAll()
                 .stream()
                 .map(EntityAssembler::station)
@@ -225,7 +225,7 @@ public class SubwayRepository implements LineRepository, StationRepository, Sect
     }
 
     @Override
-    public void removeStation(Long stationId) {
+    public void deleteById(Long stationId) {
         Station station = findStationById(stationId);
         validateSectionsNotExistByStationId(station);
         stationDao.remove(station.getId());

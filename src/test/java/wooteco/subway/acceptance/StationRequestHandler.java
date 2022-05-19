@@ -1,12 +1,11 @@
 package wooteco.subway.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import wooteco.subway.service.dto.station.StationResponse;
+import wooteco.subway.ui.dto.response.StationResponse;
 
 public class StationRequestHandler {
 
