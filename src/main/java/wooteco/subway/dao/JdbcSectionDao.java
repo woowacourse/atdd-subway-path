@@ -41,7 +41,7 @@ public class JdbcSectionDao implements SectionDao {
         return jdbcTemplate.query(sql, sectionMapper(), lineId);
     }
 
-    private RowMapper<Section> sectionMapper() {
+    private static RowMapper<Section> sectionMapper() {
         return (resultSet, rowNum) -> new Section(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),

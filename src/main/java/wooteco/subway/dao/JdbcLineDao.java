@@ -41,7 +41,7 @@ public class JdbcLineDao implements LineDao {
         return jdbcTemplate.query(sql, lineMapper());
     }
 
-    private RowMapper<Line> lineMapper() {
+    private static RowMapper<Line> lineMapper() {
         return (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),

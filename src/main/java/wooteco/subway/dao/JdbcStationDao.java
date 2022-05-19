@@ -39,7 +39,7 @@ public class JdbcStationDao implements StationDao {
         return jdbcTemplate.query(sql, stationMapper());
     }
 
-    private RowMapper<Station> stationMapper() {
+    private static RowMapper<Station> stationMapper() {
         return (resultSet, rowNum) -> new Station(
             resultSet.getLong("id"),
             resultSet.getString("name")
