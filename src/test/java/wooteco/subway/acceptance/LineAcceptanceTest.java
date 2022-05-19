@@ -30,10 +30,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         createLine("5호선", "bg-purple-600", 1L, 2L, 10);
     }
 
-
     @DisplayName("라인을 등록한다.")
     @Test
-    void createLine() {
+    void create() {
         // when
         LineRequest newLineRequest = new LineRequest("6호선", "bg-yellow-600", 2L, 3L, 20);
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines", newLineRequest);

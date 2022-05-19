@@ -22,7 +22,7 @@ public class StationService {
         if (checkExistByName(stationRequest.getName())) {
             throw new IllegalArgumentException("이미 같은 이름의 지하철역이 존재합니다.");
         }
-        return StationResponse.from(stationDao.save(stationRequest.toEntity()));
+        return new StationResponse(stationDao.save(stationRequest.toEntity()));
     }
 
     private boolean checkExistByName(final String name) {

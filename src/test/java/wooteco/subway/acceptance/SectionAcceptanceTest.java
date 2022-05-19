@@ -18,14 +18,12 @@ import wooteco.subway.dto.SectionRequest;
 @DisplayName("지하철 구간 관련 기능")
 class SectionAcceptanceTest extends AcceptanceTest {
 
-
     @BeforeEach
     void setup() {
         createStation("아차산역");
         createStation("군자역");
         createStation("마장역");
         createLine("5호선", "bg-purple-600", 1L, 2L, 10);
-
     }
 
     @DisplayName("특정 노선의 구간을 추가한다.")

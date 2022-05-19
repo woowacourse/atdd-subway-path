@@ -69,9 +69,9 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
                 () -> assertThat(pathResponse.getStations()).usingRecursiveComparison()
-                        .isEqualTo(List.of(StationResponse.from(서울대입구역),
-                                StationResponse.from(봉천역),
-                                StationResponse.from(신림역)))
+                        .isEqualTo(List.of(new StationResponse(서울대입구역),
+                                new StationResponse(봉천역),
+                                new StationResponse(신림역)))
         );
     }
 

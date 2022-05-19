@@ -4,19 +4,19 @@ import wooteco.subway.domain.Station;
 
 public class StationResponse {
 
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
+
+    private StationResponse() {
+    }
+
+    public StationResponse(final Station station) {
+        this(station.getId(), station.getName());
+    }
 
     public StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public static StationResponse from(final Station station) {
-        final Long id = station.getId();
-        final String name = station.getName();
-
-        return new StationResponse(id, name);
     }
 
     public Long getId() {

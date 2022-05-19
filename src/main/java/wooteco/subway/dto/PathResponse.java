@@ -6,12 +6,11 @@ import wooteco.subway.domain.ShortestPath;
 
 public class PathResponse {
 
-    private final List<StationResponse> stations;
-    private final int distance;
-    private final int fare;
+    private List<StationResponse> stations;
+    private int distance;
+    private int fare;
 
     private PathResponse() {
-        this(null, 0, 0);
     }
 
     public PathResponse(List<StationResponse> stations, int distance, int fare) {
@@ -22,7 +21,7 @@ public class PathResponse {
 
     public static PathResponse from(ShortestPath shortestPath, int fare) {
         List<StationResponse> stations = shortestPath.getVertexes()
-                .stream().map(StationResponse::from)
+                .stream().map(StationResponse::new)
                 .collect(Collectors.toUnmodifiableList());
         return new PathResponse(stations, shortestPath.getDistance(), fare);
     }

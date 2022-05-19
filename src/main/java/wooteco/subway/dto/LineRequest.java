@@ -8,29 +8,23 @@ import wooteco.subway.domain.Station;
 public class LineRequest {
 
     @NotBlank(message = "노선 이름은 공백일 수 없습니다.")
-    private final String name;
+    private String name;
 
     @NotBlank(message = "노선 색상은 공백일 수 없습니다.")
-    private final String color;
+    private String color;
 
-    private final Long upStationId;
+    private Long upStationId;
+    private Long downStationId;
+    private int distance;
 
-    private final Long downStationId;
-
-    private final int distance;
-
-    public LineRequest() {
-        this(null, null, null, null, 0);
+    private LineRequest() {
     }
 
     public LineRequest(final String name, final String color) {
         this(name, color, null, null, 0);
     }
 
-    public LineRequest(final String name,
-                       final String color,
-                       final Long upStationId,
-                       final Long downStationId,
+    public LineRequest(final String name, final String color, final Long upStationId, final Long downStationId,
                        final int distance) {
         this.name = name;
         this.color = color;

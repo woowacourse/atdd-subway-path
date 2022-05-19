@@ -8,16 +8,15 @@ import wooteco.subway.domain.Station;
 public class SectionRequest {
 
     @NotNull(message = "상행역은 비어있을 수 없습니다.")
-    private final Long upStationId;
+    private Long upStationId;
 
     @NotNull(message = "하행역은 비어있을 수 없습니다.")
-    private final Long downStationId;
+    private Long downStationId;
 
     @Min(value = 1, message = "거리는 양수이어야 합니다.")
-    private final int distance;
+    private int distance;
 
-    public SectionRequest() {
-        this(null, null, 0);
+    private SectionRequest() {
     }
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {

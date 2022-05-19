@@ -41,5 +41,4 @@ abstract public class AcceptanceTest {
         AcceptanceTestFixture.post("/lines/" + lineId + "/sections",
                 new SectionRequest(upStationId, downStationId, distance));
     }
-
 }
