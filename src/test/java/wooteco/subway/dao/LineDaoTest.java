@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Import;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.LineNotFoundException;
+import wooteco.subway.exception.StationNotFoundException;
 
 @Import({
         LineDao.class,
@@ -39,7 +41,8 @@ class LineDaoTest {
         final Long savedId = lineDao.save(line);
 
         // then
-        final Line findLine = lineDao.findById(savedId);
+        final Line findLine = lineDao.findById(savedId)
+                .orElseThrow(() -> new LineNotFoundException(savedId));
         assertThat(findLine).extracting("name", "color")
                 .contains("신분당선", "bg-red-600");
     }
@@ -50,8 +53,8 @@ class LineDaoTest {
         // given
         Long 강남역_id = stationDao.save(new Station("강남역"));
         Long 역삼역_id = stationDao.save(new Station("역삼역"));
-        Station 강남역 = stationDao.findById(강남역_id);
-        Station 역삼역 = stationDao.findById(역삼역_id);
+        Station 강남역 = stationDao.findById(강남역_id).get();
+        Station 역삼역 = stationDao.findById(역삼역_id).get();
 
         Line 신분당선 = new Line("신분당선", "bg-red-600");
         Line 분당선 = new Line("분당선", "bg-green-600");
@@ -80,15 +83,16 @@ class LineDaoTest {
         // given
         Long 강남역_id = stationDao.save(new Station("강남역"));
         Long 역삼역_id = stationDao.save(new Station("역삼역"));
-        Station 강남역 = stationDao.findById(강남역_id);
-        Station 역삼역 = stationDao.findById(역삼역_id);
+        Station 강남역 = stationDao.findById(강남역_id).get();
+        Station 역삼역 = stationDao.findById(역삼역_id).get();
 
         Line 신분당선 = new Line("신분당선", "bg-red-600");
         Long 신분당선_id = lineDao.save(신분당선);
         sectionDao.save(new Section(신분당선_id, 강남역, 역삼역, 10));
 
         // when
-        Line findLine = lineDao.findById(신분당선_id);
+        Line findLine = lineDao.findById(신분당선_id).get();
+
 
         // then
         assertThat(findLine).extracting("name", "color")
@@ -107,7 +111,7 @@ class LineDaoTest {
         lineDao.updateByLine(updateLine);
 
         // then
-        final Line findLine = lineDao.findById(신분당선_id);
+        final Line findLine = lineDao.findById(신분당선_id).get();
         assertThat(findLine).extracting("name", "color")
                 .contains("다른분당선", "bg-red-600");
     }

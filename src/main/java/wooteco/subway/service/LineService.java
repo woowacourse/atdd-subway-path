@@ -16,6 +16,7 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.LineNotFoundException;
+import wooteco.subway.exception.StationNotFoundException;
 
 @Service
 public class LineService {
@@ -39,8 +40,10 @@ public class LineService {
         final Line line = new Line(request.getName(), request.getColor());
         final Long lineId = lineDao.save(line);
 
-        final Station upStation = stationDao.findById(request.getUpStationId());
-        final Station downStation = stationDao.findById(request.getDownStationId());
+        final Station upStation = stationDao.findById(request.getUpStationId())
+                .orElseThrow(() -> new StationNotFoundException(request.getUpStationId()));
+        final Station downStation = stationDao.findById(request.getDownStationId())
+                .orElseThrow(() -> new StationNotFoundException(request.getDownStationId()));
 
         final Section section = new Section(lineId, upStation, downStation, request.getDistance());
         sectionDao.save(section);

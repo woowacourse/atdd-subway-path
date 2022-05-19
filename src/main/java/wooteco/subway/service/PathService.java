@@ -13,6 +13,7 @@ import wooteco.subway.domain.strategy.path.PathFindStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.StationNotFoundException;
 
 @Service
 public class PathService {
@@ -30,8 +31,10 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
-        Station source = stationDao.findById(pathRequest.getSource());
-        Station target = stationDao.findById(pathRequest.getTarget());
+        Station source = stationDao.findById(pathRequest.getSource())
+                .orElseThrow(() -> new StationNotFoundException(pathRequest.getSource()));
+        Station target = stationDao.findById(pathRequest.getTarget())
+                .orElseThrow(() -> new StationNotFoundException(pathRequest.getTarget()));
 
         Sections sections = new Sections(sectionDao.findAll());
 

@@ -9,6 +9,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.exception.StationNotFoundException;
 
 @Service
 @Transactional
@@ -29,8 +30,11 @@ public class SectionService {
     public void add(Long lineId, SectionRequest sectionRequest) {
         final Sections sections = new Sections(sectionDao.findByLineId(lineId));
 
-        final Station upStation = stationDao.findById(sectionRequest.getUpStationId());
-        final Station downStation = stationDao.findById(sectionRequest.getDownStationId());
+        final Station upStation = stationDao.findById(sectionRequest.getUpStationId())
+                .orElseThrow(() -> new StationNotFoundException(sectionRequest.getUpStationId()));
+        final Station downStation = stationDao.findById(sectionRequest.getDownStationId())
+                .orElseThrow(() -> new StationNotFoundException(sectionRequest.getDownStationId()));
+
         final Section section = new Section(lineId, upStation, downStation, sectionRequest.getDistance());
         sections.add(section);
 
@@ -41,7 +45,8 @@ public class SectionService {
 
     public void delete(Long lineId, Long stationId) {
         final Sections sections = new Sections(sectionDao.findByLineId(lineId));
-        final Station station = stationDao.findById(stationId);
+        final Station station = stationDao.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException(stationId));
 
         final List<Section> deletedSections = sections.delete(station);
         sectionDao.deleteSections(deletedSections);

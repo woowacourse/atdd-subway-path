@@ -34,7 +34,7 @@ class StationDaoTest {
         final Long savedId = stationDao.save(station);
 
         // then
-        final Station saveStation = stationDao.findById(savedId);
+        final Station saveStation = stationDao.findById(savedId).get();
         assertThat(savedId).isEqualTo(saveStation.getId());
     }
 
