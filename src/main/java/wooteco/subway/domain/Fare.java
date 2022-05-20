@@ -8,6 +8,7 @@ public class Fare {
     private static final double FIRST_RESTRICTION_DIVIDE = 5.0;
     private static final double SECOND_RESTRICTION_DIVIDE = 8.0;
     private static final int ADDITIONAL_FARE = 100;
+
     private final int fare;
 
     public Fare() {
