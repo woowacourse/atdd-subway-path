@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
 
 @DisplayName("Station Dao를 통해서")
@@ -31,7 +30,7 @@ class StationDaoTest {
     @Autowired
     private DataSource dataSource;
 
-    private CommonStationDao stationDao;
+    private StationDao stationDao;
 
     @BeforeEach
     void setup() {

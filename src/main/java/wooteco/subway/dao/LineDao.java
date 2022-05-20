@@ -13,7 +13,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.service.dto.LineDto;
 
 @Component
-public class LineDao implements CommonLineDao {
+public class LineDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleInsert;
@@ -25,7 +25,6 @@ public class LineDao implements CommonLineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    @Override
     public Line save(final LineDto lineDto) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", lineDto.getName());
@@ -35,7 +34,6 @@ public class LineDao implements CommonLineDao {
         return new Line(id, lineDto.getName(), lineDto.getColor(), lineDto.getUpStationId());
     }
 
-    @Override
     public List<Line> findAll() {
         final String sql = "select id, name, color, up_station_id, from LINE";
         return namedParameterJdbcTemplate.query(sql, (resultSet, rowNum) -> {
@@ -44,7 +42,6 @@ public class LineDao implements CommonLineDao {
         });
     }
 
-    @Override
     public Line findById(final Long id) {
         final String sql = "select id, name, color, up_station_id from LINE where id = :id";
         final SqlParameterSource parameter = new MapSqlParameterSource(Map.of("id", id));
@@ -54,7 +51,6 @@ public class LineDao implements CommonLineDao {
         });
     }
 
-    @Override
     public int update(final Long id, final Line line) {
         final String sql = "update LINE set name = :name, color = :color where id = :id";
         final Map<String, Object> params = new HashMap<>();
@@ -65,10 +61,8 @@ public class LineDao implements CommonLineDao {
         return namedParameterJdbcTemplate.update(sql, parameter);
     }
 
-    @Override
     public int deleteById(final Long id) {
         final String sql = "delete from LINE where id = :id";
         return namedParameterJdbcTemplate.update(sql, Map.of("id", id));
     }
-
 }

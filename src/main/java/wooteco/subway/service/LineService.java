@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.dao.CommonLineDao;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.request.LineSaveRequest;
 import wooteco.subway.dto.request.LineUpdateRequest;
@@ -16,10 +16,10 @@ public class LineService {
     private static final int NO_ROW_AFFECTED = 0;
     private static final String LINE_NOT_FOUND = "요청한 노선이 존재하지 않습니다. ";
 
-    private final CommonLineDao lineDao;
+    private final LineDao lineDao;
     private final LineRepository lineRepository;
 
-    public LineService(final CommonLineDao lineDao, final LineRepository lineRepository) {
+    public LineService(final LineDao lineDao, final LineRepository lineRepository) {
         this.lineDao = lineDao;
         this.lineRepository = lineRepository;
     }

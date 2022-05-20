@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Station;
 
 @Component
-public class StationDao implements CommonStationDao {
+public class StationDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleInsert;
@@ -24,7 +24,6 @@ public class StationDao implements CommonStationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    @Override
     public Station save(final Station station) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", station.getName());
@@ -33,7 +32,6 @@ public class StationDao implements CommonStationDao {
 
     }
 
-    @Override
     public List<Station> findAll() {
         final String sql = "select id, name from STATION";
         return namedParameterJdbcTemplate.query(sql, (resultSet, rowNum) -> {
@@ -41,7 +39,6 @@ public class StationDao implements CommonStationDao {
         });
     }
 
-    @Override
     public Station findById(final Long id) {
         final String sql = "select id, name from STATION WHERE id=:id";
         final SqlParameterSource parameter = new MapSqlParameterSource(Map.of("id", id));
@@ -50,7 +47,6 @@ public class StationDao implements CommonStationDao {
         });
     }
 
-    @Override
     public int deleteById(final Long id) {
         final String sql = "delete from STATION where id = :id";
         return namedParameterJdbcTemplate.update(sql, Map.of("id", id));

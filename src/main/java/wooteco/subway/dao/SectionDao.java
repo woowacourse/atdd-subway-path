@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.service.dto.SectionDto;
 
 @Component
-public class SectionDao implements CommonSectionDao {
+public class SectionDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleInsert;
@@ -24,7 +24,6 @@ public class SectionDao implements CommonSectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    @Override
     public long save(final Long lineId, final SectionDto section) {
         final Map<String, Object> params = new HashMap<>();
         params.put("line_id", lineId);
@@ -34,7 +33,6 @@ public class SectionDao implements CommonSectionDao {
         return simpleInsert.executeAndReturnKey(params).longValue();
     }
 
-    @Override
     public List<SectionDto> findAllByLineId(final Long lineId) {
         final String sql = "select line_id, up_station_id, down_station_id, distance from SECTION where line_id=:lineId";
         final SqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("lineId", lineId));
@@ -46,7 +44,6 @@ public class SectionDao implements CommonSectionDao {
         });
     }
 
-    @Override
     public int deleteById(final Long lineId, final Long stationId) {
         final String sql = "delete from SECTION where line_id=:lineId and up_station_id=:stationId or down_station_id=:stationId";
         return jdbcTemplate.update(sql, Map.of("lineId", lineId, "stationId", stationId));

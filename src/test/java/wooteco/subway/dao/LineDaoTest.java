@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.service.dto.LineDto;
 
@@ -33,7 +32,7 @@ class LineDaoTest {
     @Autowired
     private DataSource dataSource;
 
-    private CommonLineDao lineDao;
+    private LineDao lineDao;
 
     @BeforeEach
     void setup() {
