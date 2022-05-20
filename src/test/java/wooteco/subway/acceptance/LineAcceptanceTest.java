@@ -91,12 +91,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
             .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
             .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = SimpleRestAssured.toObjectList(response, LineResponse.class).stream()
             .map(LineResponse::getId)
             .collect(Collectors.toList());
         Assertions.assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+            () -> assertThat(resultLineIds).containsExactly(expectedLineIds.toArray(Long[]::new))
         );
     }
 

@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance.fixture;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
@@ -47,6 +48,10 @@ public class SimpleRestAssured {
 
     public static <T> T toObject(ExtractableResponse<Response> response, Class<T> clazz) {
         return response.body().jsonPath().getObject(".", clazz);
+    }
+
+    public static <T> List<T> toObjectList(ExtractableResponse<Response> response, Class<T> clazz) {
+        return response.body().jsonPath().getList(".", clazz);
     }
 
 }
