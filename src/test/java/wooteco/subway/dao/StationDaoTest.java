@@ -1,57 +1,67 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Station;
 
 @JdbcTest
-@Sql({"/schema.sql", "/test-data.sql"})
 class StationDaoTest {
 
-    private final StationDao stationDao;
-
     @Autowired
-    public StationDaoTest(JdbcTemplate jdbcTemplate) {
-        this.stationDao = new StationDao(jdbcTemplate);
+    private JdbcTemplate jdbcTemplate;
+
+    private StationDao stationDao;
+
+    @BeforeEach
+    void setUp() {
+        stationDao = new StationDao(jdbcTemplate);
     }
 
     @Test
+    @DisplayName("새로운 지하철 역을 등록할 수 있다.")
     void save() {
-        final Station newStation = stationDao.save(new Station("석촌고분역"));
-        assertThat(newStation.getId()).isEqualTo(4L);
+        Station station = new Station("선릉역");
+        Station savedStation = stationDao.save(station);
+
+        assertThat(savedStation).isNotNull();
     }
 
     @Test
+    @DisplayName("등록된 지하철 역들을 반환한다.")
     void findAll() {
-        final List<Station> stations = stationDao.findAll();
-        assertThat(stations.size()).isEqualTo(3);
+        Station station1 = new Station("강남역");
+        Station station2 = new Station("역삼역");
+        Station station3 = new Station("선릉역");
+
+        stationDao.save(station1);
+        stationDao.save(station2);
+        stationDao.save(station3);
+
+        List<String> actual = stationDao.findAll().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+        List<String> expected = List.of("강남역", "역삼역", "선릉역");
+
+        assertThat(actual).containsAll(expected);
     }
 
     @Test
-    void existsByName() {
-        final boolean result = stationDao.existsByName("삼전역");
-        assertThat(result).isTrue();
-    }
-
-    @Test
+    @DisplayName("등록된 지하철을 삭제한다.")
     void deleteById() {
-        stationDao.deleteById(1L);
+        Station station = new Station("선릉역");
+        Station savedStation = stationDao.save(station);
+        Long id = savedStation.getId();
 
-        final List<Station> stations = stationDao.findAll();
-        assertThat(stations.size()).isEqualTo(2);
-    }
+        stationDao.deleteById(id);
 
-    @Test
-    @DisplayName("존재하지 않는 id값을 삭제할 때 예외 발생")
-    void deleteNonExistentId() {
-        assertThatThrownBy(() -> stationDao.deleteById(4L)).isInstanceOf(IllegalArgumentException.class);
+        assertThat(stationDao.findAll()).hasSize(0);
     }
 }

@@ -1,21 +1,16 @@
 package wooteco.subway.dto;
 
-import javax.validation.constraints.NotEmpty;
-
 public class LineRequest {
-
-    @NotEmpty(message = "이름을 입력해주세요!")
     private String name;
-    @NotEmpty(message = "색을 선택해야합니다!")
     private String color;
     private Long upStationId;
     private Long downStationId;
-    private int distance;
+    private Integer distance;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, Integer distance) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
@@ -39,7 +34,18 @@ public class LineRequest {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "LineRequest{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

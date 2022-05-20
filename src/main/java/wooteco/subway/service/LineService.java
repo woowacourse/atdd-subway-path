@@ -2,102 +2,98 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NotFoundLineException;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
+@Transactional
 public class LineService {
 
-    private static final String DUPLICATE_LINE_NAME_EXCEPTION = "중복된 노선 이름입니다.";
-
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
-    @Transactional
-    public LineResponse save(String name, String color, Long upStationId, Long downStationId, int distance) {
-        validateName(name);
+    public LineResponse createLine(LineRequest line) {
+        Station upStation = stationDao.findById(line.getUpStationId()).orElseThrow(NotFoundStationException::new);
+        Station downStation = stationDao.findById(line.getDownStationId()).orElseThrow(NotFoundStationException::new);
+        Section newSection = new Section(upStation, downStation, new Distance(line.getDistance()));
+        Line newLine = new Line(line.getName(), line.getColor(), newSection);
+        validateDuplicateName(newLine);
 
-        final Station upStation = stationDao.findById(upStationId);
-        final Station downStation = stationDao.findById(downStationId);
-
-        final Line line = Line.initialCreateWithoutId(name, color, upStation, downStation, distance);
-        final Line savedLine = lineDao.save(line);
-        sectionDao.save(line.getSections(), savedLine.getId());
-        return new LineResponse(savedLine, List.of(new StationResponse(upStation), new StationResponse(downStation)));
+        Line createdLine = lineDao.save(newLine);
+        sectionDao.save(createdLine.getId(), newSection);
+        return LineResponse.from(createdLine, getStationResponsesByLineId(createdLine.getId()));
     }
 
-    private void validateName(String name) {
-        if (lineDao.existsByName(name)) {
-            throw new IllegalArgumentException(DUPLICATE_LINE_NAME_EXCEPTION);
+    private void validateDuplicateName(Line line) {
+        boolean isExisting = lineDao.findByName(line.getName()).isPresent();
+
+        if (isExisting) {
+            throw new DuplicateNameException();
         }
     }
 
-
-    @Transactional(readOnly = true)
-    public LineResponse showLine(Long id) {
-        final Line line = lineDao.findById(id);
-        return new LineResponse(line);
-    }
-
-    @Transactional
-    public void updateLine(Long id, String name, String color) {
-        validateName(name);
-
-        lineDao.updateLineById(id, name, color);
-    }
-
-    @Transactional(readOnly = true)
-    public List<LineResponse> showLines() {
-        final List<Line> savedLines = lineDao.findAll();
-        return savedLines.stream()
-                .map(LineResponse::new)
+    public List<LineResponse> getAllLines() {
+        return lineDao.findAll()
+                .stream()
+                .map(line -> LineResponse.from(line, getStationResponsesByLineId(line.getId())))
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteLine(Long id) {
+    public LineResponse getLineById(Long id) {
+        return lineDao.findById(id)
+                .map(line -> LineResponse.from(line, getStationResponsesByLineId(id)))
+                .orElseThrow(NotFoundLineException::new);
+    }
+
+    public void update(Long id, LineUpdateRequest line) {
+        Line foundLine = lineDao.findById(id).orElseThrow(NotFoundLineException::new);
+        Line newLine = new Line(id, line.getName(), line.getColor(), foundLine.getSections());
+        validateExistById(id);
+        lineDao.update(id, newLine);
+    }
+
+    public void delete(Long id) {
+        validateExistById(id);
         lineDao.deleteById(id);
     }
 
-    @Transactional
-    public void addSection(Long lineId, Long upStationId, Long downStationId, int distance) {
-        final Line savedLine = lineDao.findById(lineId);
+    private void validateExistById(Long id) {
+        boolean isExisting = lineDao.findById(id).isPresent();
 
-        final Station upStation = stationDao.findById(upStationId);
-        final Station downStation = stationDao.findById(downStationId);
-        savedLine.addSection(Section.createWithoutId(upStation, downStation, distance));
-
-        updateSection(lineId, savedLine);
+        if (!isExisting) {
+            throw new NotFoundLineException();
+        }
     }
 
-    @Transactional
-    public void deleteSection(Long lineId, Long stationId) {
-        final Line savedLine = lineDao.findById(lineId);
+    private List<StationResponse> getStationResponsesByLineId(Long lineId) {
+        Line foundLine = lineDao.findById(lineId).orElseThrow(NotFoundLineException::new);
+        List<Section> sections = foundLine.getSections().getValue();
 
-        final Station station = stationDao.findById(stationId);
-
-        savedLine.deleteSection(station);
-
-        updateSection(lineId, savedLine);
-    }
-
-    private void updateSection(Long lineId, Line line) {
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.save(line.getSections(), lineId);
+        return Stream.concat(
+                sections.stream().map(Section::getDownStation),
+                sections.stream().map(Section::getUpStation)
+        ).distinct().map(StationResponse::from).collect(Collectors.toList());
     }
 }

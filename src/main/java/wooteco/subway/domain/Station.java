@@ -1,19 +1,26 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.dto.StationRequest;
 
 public class Station {
-
-    private final Name name;
     private Long id;
+    private String name;
+
+    private Station() {
+    }
 
     public Station(Long id, String name) {
         this.id = id;
-        this.name = new Name(name);
+        this.name = name;
     }
 
     public Station(String name) {
-        this.name = new Name(name);
+        this(null, name);
+    }
+
+    public static Station from(StationRequest stationRequest) {
+        return new Station(null, stationRequest.getName());
     }
 
     public Long getId() {
@@ -21,7 +28,7 @@ public class Station {
     }
 
     public String getName() {
-        return name.getName();
+        return name;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class Station {
     public String toString() {
         return "Station{" +
                 "id=" + id +
-                ", name=" + name +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

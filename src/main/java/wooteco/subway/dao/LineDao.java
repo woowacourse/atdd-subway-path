@@ -1,91 +1,76 @@
 package wooteco.subway.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
 
 @Repository
 public class LineDao {
 
-    private static final String NON_EXISTENT_ID_EXCEPTION = "존재하지 않는 id입니다.";
-
     private final JdbcTemplate jdbcTemplate;
+    private final SectionDao sectionDao; // TODO: DAO가 DAO를 참조하는 구조 개선
+    private final RowMapper<Line> lineRowMapper;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
+        this.sectionDao = new SectionDao(jdbcTemplate);
 
-    public Line save(Line line) {
-        final SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("line").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", line.getName());
-        parameters.put("color", line.getColor());
-
-        final Number number = simpleJdbcInsert.executeAndReturnKey(parameters);
-        return Line.createWithoutSection(number.longValue(), line.getName(), line.getColor());
-    }
-
-    public boolean existsByName(String name) {
-        final String sql = "SELECT COUNT(*) FROM line WHERE name = ?";
-        final Integer numOfLine = jdbcTemplate.queryForObject(sql, Integer.class, name);
-        return !numOfLine.equals(0);
-    }
-
-    public List<Line> findAll() {
-        final String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, this::lineMapper);
-    }
-
-    public Line findById(Long id) {
-        final String sql = "SELECT * FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, this::lineMapper, id);
-    }
-
-    private Line lineMapper(ResultSet rs, int rowNum) throws SQLException {
-        return Line.createWithId(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("color"),
-                findSectionsByLineId(rs.getLong("id"))
+        // TODO: lineRowMapper 를 생성자에서 초기화하는 구조 개선
+        this.lineRowMapper = (resultSet, rowNum) -> new Line(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("color"),
+                sectionDao.findSectionsByLineId(resultSet.getLong("id"))
         );
     }
 
-    private List<Section> findSectionsByLineId(Long lineId) {
-        final String sql =
-                "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
-                        "from sections s " +
-                        "join station us on s.up_station_id = us.id " +
-                        "join station ds on s.down_station_id = ds.id " +
-                        "where line_id = ?";
-        return jdbcTemplate.query(sql, ((rs, rowNum) -> {
-            return Section.createWithId(rs.getLong("sid"), new Station(rs.getLong("usid"), rs.getString("usname")),
-                    new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
-        }), lineId);
+    public Line save(Line line) {
+        String sql = "INSERT INTO LINE (name, color) VALUES (?, ?)";
+
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, line.getName());
+            ps.setString(2, line.getColor());
+            return ps;
+        }, keyHolder);
+
+        long lineId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return new Line(lineId, line.getName(), line.getColor(), line.getSections());
     }
 
-    public void updateLineById(Long id, String name, String color) {
-        final String sql = "UPDATE line SET name=?, color=? WHERE id=?";
-        validateResult(jdbcTemplate.update(sql, name, color, id));
+    // TODO: Entity 및 Repository 도입하고 개선해보기
+    public Optional<Line> findById(Long id) {
+        String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
+        List<Line> lines = jdbcTemplate.query(sql, lineRowMapper, id);
+        return Optional.ofNullable(DataAccessUtils.singleResult(lines));
+    }
+
+    public Optional<Line> findByName(String name) {
+        String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+        List<Line> lines = jdbcTemplate.query(sql, lineRowMapper, name);
+        return Optional.ofNullable(DataAccessUtils.singleResult(lines));
+    }
+
+    public List<Line> findAll() {
+        String sql = "SELECT id, name, color FROM LINE";
+        return jdbcTemplate.query(sql, lineRowMapper);
+    }
+
+    public void update(Long id, Line line) {
+        String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
     }
 
     public void deleteById(Long id) {
-        final String sql = "DELETE FROM line WHERE id = ?";
-        validateResult(jdbcTemplate.update(sql, id));
-    }
-
-    private void validateResult(int result) {
-        if (result == 0) {
-            throw new IllegalArgumentException(NON_EXISTENT_ID_EXCEPTION);
-        }
+        String sql = "DELETE FROM LINE WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

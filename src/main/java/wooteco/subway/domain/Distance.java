@@ -1,8 +1,7 @@
 package wooteco.subway.domain;
 
-import java.util.Objects;
-
 public class Distance {
+    public static final int MINIMUM_DISTANCE = 1;
 
     private final int value;
 
@@ -16,8 +15,8 @@ public class Distance {
     }
 
     private void validatePositive(int value) {
-        if (value <= 0) {
-            throw new IllegalArgumentException("거리는 0이하가 될 수 없습니다.");
+        if (value < MINIMUM_DISTANCE) {
+            throw new IllegalArgumentException("거리는 0이하일 수 없습니다.");
         }
     }
 
@@ -45,13 +44,15 @@ public class Distance {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         Distance distance = (Distance) o;
+
         return value == distance.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return value;
     }
 
     @Override

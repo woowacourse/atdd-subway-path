@@ -8,23 +8,24 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
 public class PathService {
 
-    private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao) {
-        this.stationDao = stationDao;
+    public PathService(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
     public PathResponse getPath(Long sourceStationId, Long targetStationId) {
         List<Section> sections = sectionDao.findAll();
 
-        Station departure = stationDao.findById(sourceStationId);
-        Station arrival = stationDao.findById(targetStationId);
+        Station departure = stationDao.findById(sourceStationId).orElseThrow(NotFoundStationException::new);
+        Station arrival = stationDao.findById(targetStationId).orElseThrow(NotFoundStationException::new);
 
         return new PathResponse(new Path(sections, departure, arrival));
     }

@@ -1,15 +1,19 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
+@Transactional
 public class StationService {
-
-    private static final String DUPLICATE_STATION_NAME_EXCEPTION = "중복된 역 이름입니다.";
 
     private final StationDao stationDao;
 
@@ -17,26 +21,36 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    @Transactional
-    public Station createStation(String name) {
-        if (stationDao.existsByName(name)) {
-            throw new IllegalArgumentException(DUPLICATE_STATION_NAME_EXCEPTION);
-        }
-        return stationDao.save(new Station(name));
+    public StationResponse createStation(StationRequest station) {
+        Station newStation = Station.from(station);
+        validateDuplicateName(newStation);
+        return StationResponse.from(stationDao.save(newStation));
     }
 
-    @Transactional(readOnly = true)
-    public Station findStationById(Long id) {
-        return stationDao.findById(id);
+    public List<StationResponse> getAllStations() {
+        return stationDao.findAll().stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<Station> showStations() {
-        return stationDao.findAll();
-    }
-
-    @Transactional
-    public void deleteStation(Long id) {
+    public void delete(Long id) {
+        validateExist(id);
         stationDao.deleteById(id);
+    }
+
+    private void validateDuplicateName(Station station) {
+        boolean isExisting = stationDao.findByName(station.getName()).isPresent();
+
+        if (isExisting) {
+            throw new DuplicateNameException();
+        }
+    }
+
+    private void validateExist(Long id) {
+        boolean isExisting = stationDao.findById(id).isPresent();
+
+        if (!isExisting) {
+            throw new NotFoundStationException();
+        }
     }
 }

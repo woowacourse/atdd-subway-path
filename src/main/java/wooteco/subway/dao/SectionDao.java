@@ -1,16 +1,26 @@
 package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 @Repository
 public class SectionDao {
+
+    private static final RowMapper<Section> SECTION_ROW_MAPPER = (rs, rowNum) -> new Section(
+            rs.getLong("id"),
+            new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
+            new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
+            new Distance(rs.getInt("distance"))
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,44 +28,47 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void save(List<Section> sections, Long lineId) {
-        batchInsert(sections, lineId);
+    public Sections findSectionsByLineId(Long lineId) {
+        String sql =
+                "SELECT SECTION.id, UP_STATION.id AS up_station_id, UP_STATION.name AS up_station_name, "
+                        + "DOWN_STATION.id AS down_station_id, DOWN_STATION.name AS down_station_name, distance FROM SECTION "
+                        + "INNER JOIN STATION AS UP_STATION ON SECTION.up_station_id = UP_STATION.id "
+                        + "INNER JOIN STATION AS DOWN_STATION ON SECTION.down_station_id = DOWN_STATION.id "
+                        + "WHERE line_id = ?";
+
+        List<Section> sections = jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
+        return new Sections(sections);
     }
 
     public List<Section> findAll() {
-        final String sql =
-                "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
-                        "from sections s " +
-                        "join station us on s.up_station_id = us.id " +
-                        "join station ds on s.down_station_id = ds.id";
-        return jdbcTemplate.query(sql, ((rs, rowNum) -> {
-            return Section.createWithId(rs.getLong("sid"), new Station(rs.getLong("usid"), rs.getString("usname")),
-                    new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
-        }));
+        String sql =
+                "SELECT SECTION.id, UP_STATION.id AS up_station_id, UP_STATION.name AS up_station_name, "
+                        + "DOWN_STATION.id AS down_station_id, DOWN_STATION.name AS down_station_name, distance FROM SECTION "
+                        + "INNER JOIN STATION AS UP_STATION ON SECTION.up_station_id = UP_STATION.id "
+                        + "INNER JOIN STATION AS DOWN_STATION ON SECTION.down_station_id = DOWN_STATION.id";
+
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 
-    private int[] batchInsert(List<Section> sections, Long lineId) {
-        return this.jdbcTemplate.batchUpdate(
-                "insert into sections (line_id, up_station_id, down_station_id, distance) values (?, ?, ?, ?)",
-                new BatchPreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setLong(1, lineId);
-                        ps.setLong(2, sections.get(i).getUpStation().getId());
-                        ps.setLong(3, sections.get(i).getDownStation().getId());
-                        ps.setInt(4, sections.get(i).getDistance().getValue());
-                    }
+    public Section save(Long lineId, Section section) {
+        String sql = "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) VALUES(?, ?, ?, ?)";
 
-                    @Override
-                    public int getBatchSize() {
-                        return sections.size();
-                    }
-                }
-        );
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setLong(1, lineId);
+            ps.setLong(2, section.getUpStation().getId());
+            ps.setLong(3, section.getDownStation().getId());
+            ps.setInt(4, section.getDistance().getValue());
+            return ps;
+        }, keyHolder);
+
+        Long createdId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return new Section(createdId, section);
     }
 
-    public void deleteByLineId(Long lineId) {
-        final String sql = "delete from sections where line_id = ?";
+    public void removeAllSectionsByLineId(Long lineId) {
+        String sql = "DELETE FROM SECTION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
 }

@@ -2,92 +2,214 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static wooteco.subway.Fixture.강남역;
-import static wooteco.subway.Fixture.청계산입구역;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
+import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NotFoundLineException;
 
-@ExtendWith(MockitoExtension.class)
+@Transactional
+@JdbcTest
 class LineServiceTest {
 
-    @InjectMocks
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private LineService lineService;
 
-    @Mock
-    private LineDao lineDao;
-    @Mock
-    private SectionDao sectionDao;
-    @Mock
-    private StationDao stationDao;
-    @Mock
-    private StationService stationService;
+    private StationResponse createdStation1;
+    private StationResponse createdStation2;
 
-    @Test
-    @DisplayName("중복되지 않은 이름의 노선을 저장")
-    void save() {
-        //given
-        final String name = "신분당선";
-        final String color = "빨강이";
-        final Line line = Line.initialCreateWithoutId(name, color, 강남역, 청계산입구역, 1);
-        given(lineDao.existsByName(name)).willReturn(false);
-        given(lineDao.save(any())).willReturn(line);
-        doReturn(강남역).when(stationDao).findById(1L);
-        doReturn(청계산입구역).when(stationDao).findById(2L);
+    @BeforeEach
+    void setUp() {
+        lineService = new LineService(new LineDao(jdbcTemplate), new StationDao(jdbcTemplate),
+                new SectionDao(jdbcTemplate));
+        StationService stationService = new StationService(new StationDao(jdbcTemplate));
 
-        //when
-        final LineResponse lineResponse = lineService.save(name, color, 1L, 2L, 1);
-
-        //then
-        assertThat(lineResponse.getName()).isEqualTo(name);
+        createdStation1 = stationService.createStation(new StationRequest("선릉역"));
+        createdStation2 = stationService.createStation(new StationRequest("잠실역"));
     }
 
+    // TODO: stations 도 함께 LineResponse에 포함해야함
+    @DisplayName("이름, 색상, 상행선, 하행선, 길이를 전달받아 새로운 노선을 등록한다.")
     @Test
-    @DisplayName("중복된 이름의 노선을 저장 요청을 하면 예외 발생")
-    void saveExistNameLine() {
-        //given
-        final String name = "신분당선";
-        final String color = "빨강이";
-        given(lineDao.existsByName(name)).willReturn(true);
-        //then
-        assertThatThrownBy(() -> lineService.save(name, color, 1L, 2L, 1))
-                .isInstanceOf(IllegalArgumentException.class);
+    void createLine() {
+        // given
+        String name = "2호선";
+        String color = "bg-green-600";
+        Long upStationId = createdStation1.getId();
+        Long downStationId = createdStation2.getId();
+        Integer distance = 10;
+
+        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+
+        // when
+        LineResponse actual = lineService.createLine(lineRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(actual.getName()).isEqualTo(name),
+                () -> assertThat(actual.getColor()).isEqualTo(color)
+        );
     }
 
+    @DisplayName("중복된 이름의 노선을 등록할 경우 예외를 발생한다.")
     @Test
-    void showLines() {
-        //given
-        final List<Line> lines = List.of(Line.initialCreateWithoutId("신분당선", "빨강이", 강남역, 청계산입구역, 1),
-                Line.initialCreateWithoutId("2호선", "초록이", 강남역, 청계산입구역, 2));
-        given(lineDao.findAll()).willReturn(lines);
-        //when
-        final List<LineResponse> lineResponses = lineService.showLines();
-        //then
-        assertThat(lineResponses.size()).isEqualTo(2);
+    void createLine_throwsExceptionWithDuplicateName() {
+        // given
+        String name = "2호선";
+        String color = "bg-green-600";
+        Long upStationId = createdStation1.getId();
+        Long downStationId = createdStation2.getId();
+        Integer distance = 10;
+
+        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+        lineService.createLine(lineRequest);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.createLine(lineRequest))
+                .isInstanceOf(DuplicateNameException.class);
     }
 
+    @DisplayName("등록된 모든 노선을 반환한다.")
     @Test
-    void showLine() {
-        //given
-        final Line line = Line.createWithId(1L, "신분당선", "color", List.of(Section.createWithId(1L, 강남역, 청계산입구역, 5)));
-        given(lineDao.findById(1L)).willReturn(line);
-        //when
-        final LineResponse lineResponse = lineService.showLine(1L);
-        //then
-        assertThat(lineResponse.getId()).isEqualTo(1L);
+    void getAllLines() {
+        // given
+        String lineName1 = "1호선";
+        String lineColor1 = "bg-blue-600";
+        String lineName2 = "2호선";
+        String lineColor2 = "bg-green-600";
+        LineRequest lineRequest1 = new LineRequest(lineName1, lineColor1, createdStation1.getId(),
+                createdStation2.getId(), 10);
+        LineRequest lineRequest2 = new LineRequest(lineName2, lineColor2, createdStation1.getId(),
+                createdStation2.getId(), 10);
+
+        lineService.createLine(lineRequest1);
+        lineService.createLine(lineRequest2);
+
+        // when
+        List<String> actualNames = lineService.getAllLines()
+                .stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
+
+        List<String> actualColors = lineService.getAllLines()
+                .stream()
+                .map(LineResponse::getColor)
+                .collect(Collectors.toList());
+
+        List<String> expectedNames = List.of("1호선", "2호선");
+        List<String> expectedColors = List.of("bg-blue-600", "bg-green-600");
+
+        // then
+        assertAll(
+                () -> assertThat(actualNames).containsAll(expectedNames),
+                () -> assertThat(actualColors).containsAll(expectedColors)
+        );
+    }
+
+    @DisplayName("노선 ID로 개별 노선을 찾아 반환한다.")
+    @Test
+    void getLineById() {
+        // given
+        String lineName = "1호선";
+        String lineColor = "bg-blue-600";
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(),
+                createdStation2.getId(), 10);
+
+        LineResponse createdLine = lineService.createLine(lineRequest);
+
+        // when
+        LineResponse actual = lineService.getLineById(createdLine.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(actual.getId()).isEqualTo(createdLine.getId()),
+                () -> assertThat(actual.getName()).isEqualTo(createdLine.getName()),
+                () -> assertThat(actual.getColor()).isEqualTo(createdLine.getColor())
+        );
+    }
+
+    @DisplayName("노선 ID로 노선을 업데이트 한다.")
+    @Test
+    void updateLine() {
+        // given
+        String lineName = "1호선";
+        String lineColor = "bg-blue-600";
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(), createdStation2.getId(),
+                10);
+        LineResponse createdLine = lineService.createLine(lineRequest);
+
+        // when
+        String newLineName = "2호선";
+        String newLineColor = "bg-red-600";
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(newLineName, newLineColor);
+        lineService.update(createdLine.getId(), lineUpdateRequest);
+
+        // then
+        LineResponse actual = lineService.getLineById(createdLine.getId());
+        assertAll(
+                () -> assertThat(actual.getName()).isEqualTo(lineUpdateRequest.getName()),
+                () -> assertThat(actual.getColor()).isEqualTo(lineUpdateRequest.getColor())
+        );
+    }
+
+    @DisplayName("수정하려는 노선 ID가 존재하지 않을 경우 예외를 발생한다.")
+    @Test
+    void update_throwsExceptionIfLineIdIsNotExisting() {
+        // given
+        String newLineName = "2호선";
+        String newLineColor = "bg-red-600";
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(newLineName, newLineColor);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.update(10L, lineUpdateRequest))
+                .isInstanceOf(NotFoundLineException.class);
+    }
+
+    @DisplayName("등록된 노선을 삭제한다.")
+    @Test
+    void delete() {
+        // given
+        String lineName = "1호선";
+        String lineColor = "bg-blue-600";
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(), createdStation2.getId(),
+                10);
+        LineResponse createdLine = lineService.createLine(lineRequest);
+
+        // when
+        lineService.delete(createdLine.getId());
+
+        // then
+        boolean isNotExistLine = lineService.getAllLines()
+                .stream()
+                .filter(lineResponse -> lineResponse.getId().equals(createdLine.getId()))
+                .findAny()
+                .isEmpty();
+
+        assertThat(isNotExistLine).isTrue();
+    }
+
+    @DisplayName("삭제하려는 노선 ID가 존재하지 않을 경우 예외를 발생한다.")
+    @Test
+    void delete_throwsExceptionIfLineIdIsNotExisting() {
+        assertThatThrownBy(() -> lineService.delete(1L))
+                .isInstanceOf(NotFoundLineException.class);
     }
 }
