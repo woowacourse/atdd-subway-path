@@ -38,6 +38,14 @@ public class Section {
         return downStationId;
     }
 
+    public boolean isSameUpStation(Long upStationId) {
+        return this.upStationId.equals(upStationId);
+    }
+
+    public boolean isSameDownStation(Long downStationId) {
+        return this.downStationId.equals(downStationId);
+    }
+
     public int getDistance() {
         return distance;
     }
