@@ -18,7 +18,7 @@ class BasicFareStrategyTest {
     }
 
     @Test
-    @DisplayName("거리가 50미만일 경우 5km 마다 100원이 추가되어 계산할 수 있다.")
+    @DisplayName("거리가 50이하일 경우 5km 마다 100원이 추가되어 계산할 수 있다.")
     void calculate50UnderDistance() {
         FareStrategy farePolicy = new BasicFareStrategy();
 
@@ -28,7 +28,7 @@ class BasicFareStrategyTest {
     }
 
     @Test
-    @DisplayName("거리가 50이상일 경우 8km 마다 100원이 추가되어 계산할 수 있다.")
+    @DisplayName("거리가 50초과일 경우 8km 마다 100원이 추가되어 계산할 수 있다.")
     void calculate50OverDistance() {
         FareStrategy farePolicy = new BasicFareStrategy();
 

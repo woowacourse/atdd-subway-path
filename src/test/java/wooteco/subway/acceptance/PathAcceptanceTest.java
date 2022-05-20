@@ -65,4 +65,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).isEqualTo("경로의 시작과 끝은 같은 역일 수 없습니다.");
     }
 
+    @DisplayName("거리가 10km 이내인 경우 기본 요금이 발생한다.")
+    @Test
+    void showBasicFare() {
+        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
+        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
+        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
+
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
+
+        assertThat(response.jsonPath().getList("stations")).extracting("name")
+                .containsExactly("선릉역", "종합운동장역", "삼전역");
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
+    }
+
+    @DisplayName("총 거리가 10km 초과 50km 이하인 경우 5km마다 100원씩 추가되어 계산된다.")
+    @Test
+    void showFareUnder50km() {
+        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
+        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
+        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
+
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 40));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 10));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
+
+        assertThat(response.jsonPath().getList("stations")).extracting("name")
+                .containsExactly("선릉역", "종합운동장역", "삼전역");
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(50);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(2050);
+    }
+
+    @DisplayName("총 거리가 50km 초과인 경우 8km마다 100원씩 추가되어 계산된다.")
+    @Test
+    void showFareOver50km() {
+        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
+        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
+        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
+
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 50));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 9));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
+
+        assertThat(response.jsonPath().getList("stations")).extracting("name")
+                .containsExactly("선릉역", "종합운동장역", "삼전역");
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(59);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(2250);
+    }
+
 }
