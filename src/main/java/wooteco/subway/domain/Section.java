@@ -62,17 +62,18 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void updateStations(final Station upStation, final Station downStation) {
+    public void updateSection(final Station upStation, final Station downStation, final int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
+        this.distance = subtractDistance(distance);
     }
 
     public boolean isLongerThan(final int distance) {
         return this.distance > distance;
     }
 
-    public void subtractDistance(final int distance) {
-        this.distance -= distance;
+    private int subtractDistance(final int distance) {
+        return this.distance -= distance;
     }
 
     public boolean isUpdate(final Section section) {
