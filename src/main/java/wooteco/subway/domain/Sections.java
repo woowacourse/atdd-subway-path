@@ -136,13 +136,14 @@ public class Sections {
         return sections.size() == NEED_MERGE_SIZE;
     }
 
-    public List<Station> sortSections() {
+    public List<Station> findStationsByLine() {
         List<Station> stationResponses = new ArrayList<>();
-        Station firstStation = findFirstStation();
-        stationResponses.add(firstStation);
-        while (nextStation(firstStation).isPresent()) {
-            firstStation = nextStation(firstStation).get();
-            stationResponses.add(firstStation);
+        Station currentStation = findFirstStation();
+        stationResponses.add(currentStation);
+        while (nextStation(currentStation).isPresent()) {
+            Station nextStation = nextStation(currentStation).get();
+            stationResponses.add(nextStation);
+            currentStation = nextStation;
         }
         return stationResponses;
     }

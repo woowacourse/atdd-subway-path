@@ -132,7 +132,7 @@ public class SectionsTest {
         Sections sections = createInitialSections(신당역, 창신역);
         sections.add(createSection(2L, 동묘앞역, 창신역, 2));
 
-        assertThat(sections.sortSections()).containsExactly(신당역, 동묘앞역, 창신역);
+        assertThat(sections.findStationsByLine()).containsExactly(신당역, 동묘앞역, 창신역);
     }
 
     private List<Section> getSections() {

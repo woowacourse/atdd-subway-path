@@ -62,7 +62,7 @@ public class LineService {
                 .map(line -> new LineResponse(line.getId(),
                         line.getName(),
                         line.getColor(),
-                        toStationResponses(line.getSections().sortSections())))
+                        toStationResponses(line.getSections().findStationsByLine())))
                 .collect(Collectors.toList());
     }
 
@@ -73,7 +73,7 @@ public class LineService {
                 line.getName(),
                 line.getColor(),
                 toStationResponses(new Sections(sectionRepository.findByLineId(id))
-                        .sortSections()));
+                        .findStationsByLine()));
     }
 
     private List<StationResponse> toStationResponses(List<Station> stations) {
