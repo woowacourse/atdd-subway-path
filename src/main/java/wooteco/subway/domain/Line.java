@@ -7,6 +7,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private Integer extraFare;
     private Sections sections;
 
     public Line(String name, String color) {

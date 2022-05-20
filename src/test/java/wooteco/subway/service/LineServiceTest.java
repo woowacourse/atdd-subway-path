@@ -32,7 +32,7 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 900);
 
         // when
         Long savedId = lineService.save(request);
@@ -51,8 +51,8 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
-        LineRequest request2 = new LineRequest("분당선", "bg-green-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 900);
+        LineRequest request2 = new LineRequest("분당선", "bg-green-600", stationSaveId1, stationSaveId2, 10, 900);
         lineService.save(request1);
         lineService.save(request2);
 
@@ -76,7 +76,7 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 900);
         Long saveId = lineService.save(request);
 
         // when
@@ -97,7 +97,7 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 900);
         Long saveId = lineService.save(request);
 
         // when & then
