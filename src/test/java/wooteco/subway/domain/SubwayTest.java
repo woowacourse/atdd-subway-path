@@ -88,7 +88,6 @@ public class SubwayTest {
 
     @Test
     @DisplayName("0 -> 8의 경로는 0 1 2 7 8, 거리는 58이 반환되어야 한다.")
-    // @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로, 거리, 요금은 2150원 이 반환되어야 한다.")
     void findShortestPath3() {
         Path path = subway.findShortestPath(stations.get(0), stations.get(8));
 
