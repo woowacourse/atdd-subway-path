@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 
@@ -13,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
+@Component
 public class JdbcSectionDao implements SectionDao {
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
+    private static final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
             resultSet.getLong("up_station_id"),
