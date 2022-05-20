@@ -144,7 +144,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             .when()
             .delete("lines/1")
             .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -162,9 +162,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .extract();
 
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "bg-green-600");
+        LineRequest lineRequest2 = new LineRequest("2호선", "bg-green-600", station1, station2, 4);
 
         // when
         String uri = createResponse.header("Location");
@@ -172,7 +170,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
+            .body(lineRequest2)
             .when()
             .put(uri)
             .then().log().all()
@@ -191,7 +189,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             .when()
             .put("/lines/1")
             .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -206,7 +204,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             .when()
             .put("/lines/1")
             .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @Test

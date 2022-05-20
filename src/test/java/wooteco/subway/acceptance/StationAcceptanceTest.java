@@ -143,6 +143,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .when()
             .delete("stations/1")
             .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+            .statusCode(HttpStatus.OK.value());
     }
 }
