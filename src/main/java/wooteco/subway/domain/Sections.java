@@ -1,11 +1,15 @@
 package wooteco.subway.domain;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.DomainException;
@@ -66,52 +70,41 @@ public class Sections {
     }
 
     public List<Station> getSortedStation() {
-        LinkedList<Section> unsorted = new LinkedList<>(sections);
-        LinkedList<Section> sorted = new LinkedList<>();
-        Section first = findFirst();
-
-        sorted.offerLast(first);
-        unsorted.remove(first);
-        while (!unsorted.isEmpty()) {
-            Section last = sorted.peekLast();
-            Section next = findNext(last, unsorted);
-            sorted.offerLast(next);
-            unsorted.remove(next);
+        Map<Station, Section> sectionWithUpStation = getSectionWithUpStation();
+        Station firstStation = getFirstStation();
+        List<Station> sorted = new ArrayList<>();
+        sorted.add(firstStation);
+        while (!sectionWithUpStation.isEmpty()) {
+            Section section = sectionWithUpStation.get(firstStation);
+            sorted.add(section.getDownStation());
+            sectionWithUpStation.remove(firstStation);
+            firstStation = section.getDownStation();
         }
-        return getSortedStation(sorted);
+        return sorted;
     }
 
-    private Section findFirst() {
+    private Map<Station, Section> getSectionWithUpStation() {
         return sections.stream()
-                .filter(this::isFirstSection)
-                .findFirst()
-                .orElseThrow(() -> new DomainException(ExceptionMessage.SECTIONS_ROTATE.getContent()));
+                .collect(toMap(Section::getUpStation, Function.identity()));
     }
 
-    private boolean isFirstSection(Section section) {
-        return getUpperCount(section) == NO_UPPER_SECTION_EXISTS;
+    private List<Station> getDownStations() {
+        return sections.stream().map(Section::getDownStation).collect(Collectors.toList());
     }
 
-    private long getUpperCount(Section section) {
-        return sections.stream()
-                .filter(it -> it.isUpperThan(section))
-                .count();
+    private List<Station> getUpStations() {
+        return sections.stream().map(Section::getUpStation).collect(Collectors.toList());
     }
 
-    private Section findNext(Section section, List<Section> sections) {
-        return sections.stream()
-                .filter(it -> it.isDownerThan(section))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND_SECTION.getContent()));
-    }
-
-    private List<Station> getSortedStation(List<Section> sections) {
-        Set<Station> distinctStations = new LinkedHashSet<>();
-        for (Section section : sections) {
-            distinctStations.add(section.getUpStation());
-            distinctStations.add(section.getDownStation());
-        }
-        return new ArrayList<>(distinctStations);
+    private Station getFirstStation() {
+        List<Station> upStations = getUpStations();
+        List<Station> downStations = getDownStations();
+        return upStations.stream()
+                .filter(upStation -> !downStations.contains(upStation))
+                .reduce((one, another) -> {
+                    throw new DomainException(ExceptionMessage.NOT_CONNECTED_SECTIONS.getContent());
+                })
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.SECTIONS_ROTATE.getContent()));
     }
 
     public void deleteNearBy(Station station) {
