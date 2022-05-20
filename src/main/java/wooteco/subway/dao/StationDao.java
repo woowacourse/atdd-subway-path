@@ -1,30 +1,14 @@
 package wooteco.subway.dao;
 
-import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Station;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class StationDao {
-    private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
+import wooteco.subway.entity.StationEntity;
 
-    public static Station save(Station station) {
-        Station persistStation = createNewObject(station);
-        stations.add(persistStation);
-        return persistStation;
-    }
+public interface StationDao extends UpdateDao<StationEntity> {
 
-    public static List<Station> findAll() {
-        return stations;
-    }
+    List<StationEntity> findAll();
 
-    private static Station createNewObject(Station station) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, ++seq);
-        return station;
-    }
+    Optional<StationEntity> findById(Long id);
+
 }
