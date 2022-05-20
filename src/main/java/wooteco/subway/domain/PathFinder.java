@@ -10,11 +10,9 @@ import java.util.Set;
 
 public class PathFinder {
 
-    private final List<Section> values;
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Section> values) {
-        this.values = values;
         this.dijkstraShortestPath = initDijkstraShortestPath(values);
     }
 
@@ -25,7 +23,6 @@ public class PathFinder {
     public int findDistance(Long from, Long to) {
         return (int) dijkstraShortestPath.getPathWeight(from, to);
     }
-
 
     private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath(List<Section> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
