@@ -12,7 +12,6 @@ public enum AgeDiscountPolicy {
     NONE(age -> !isChildren(age) && !isTeenAger(age), fare -> fare);
 
     private final Predicate<Integer> predicate;
-
     private final Function<Integer, Integer> function;
 
     AgeDiscountPolicy(Predicate<Integer> predicate,
@@ -29,11 +28,11 @@ public enum AgeDiscountPolicy {
         return (int) ((fare - 350) * 0.8);
     }
 
-    private static boolean isChildren(Integer age) {
+    private static boolean isChildren(final Integer age) {
         return age >= 6 && age < 13;
     }
 
-    private static int calculateChildrenDiscount(Integer fare) {
+    private static int calculateChildrenDiscount(final Integer fare) {
         return (int) ((fare - 350) * 0.5);
     }
 

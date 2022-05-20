@@ -1,21 +1,15 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-import wooteco.subway.domain.path.PathCalculator;
-import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {
 
-    private final PathCalculator pathCalculator;
     private final Station startStation;
     private final Station endStation;
 
-    public Path(final PathCalculator pathCalculator,
-                final Station startStation,
+    public Path(final Station startStation,
                 final Station endStation) {
         validateDifferentStation(startStation, endStation);
-        this.pathCalculator = pathCalculator;
         this.startStation = startStation;
         this.endStation = endStation;
     }
@@ -26,15 +20,11 @@ public class Path {
         }
     }
 
-    public int calculateMinDistance(final Sections sections) {
-        return pathCalculator.calculateShortestDistance(sections, startStation, endStation);
+    public Station getStartStation() {
+        return startStation;
     }
 
-    public List<Station> findShortestStations(final Sections sections) {
-        return pathCalculator.calculateShortestStations(sections, startStation, endStation);
-    }
-
-    public List<ShortestPathEdge> findPassedEdges(final Sections sections) {
-        return pathCalculator.findPassedEdges(sections, startStation, endStation);
+    public Station getEndStation() {
+        return endStation;
     }
 }

@@ -155,7 +155,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
 
-    private SectionRequest createSectionRequest(Station up, Station down, int distance) {
-        return new SectionRequest(up.getId(), down.getId(), distance);
+    private SectionRequest createSectionRequest(Station upStation, Station downStation, int distance) {
+        return new SectionRequest(upStation.getId(), downStation.getId(), distance);
     }
 }

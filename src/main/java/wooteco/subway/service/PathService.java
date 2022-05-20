@@ -40,15 +40,16 @@ public class PathService {
         Station startStation = stationRepository.findById(pathRequest.getSource());
         Station endStation = stationRepository.findById(pathRequest.getTarget());
 
-        Path path = new Path(pathCalculator, startStation, endStation);
-        List<StationResponse> stationResponses = toStationResponses(path.findShortestStations(sections));
-        int distance = path.calculateMinDistance(sections);
+        Path path = new Path(startStation, endStation);
+        List<StationResponse> stationResponses =
+                toStationResponses(pathCalculator.calculateShortestStations(sections, path));
+        int distance = pathCalculator.calculateShortestDistance(sections, path);
 
         int fare = FareStrategyFactory.get(distance)
                 .calculateFare(new FareCondition(
                         distance,
                         pathRequest.getAge(),
-                        findMaxExtraFare(path.findPassedEdges(sections)))
+                        findMaxExtraFare(pathCalculator.findPassedEdges(sections, path)))
                 );
         return new PathResponse(stationResponses, distance, fare);
     }

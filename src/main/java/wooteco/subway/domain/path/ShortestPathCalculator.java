@@ -5,6 +5,7 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -14,36 +15,30 @@ import wooteco.subway.exception.SectionNotFoundException;
 public class ShortestPathCalculator implements PathCalculator {
 
     @Override
-    public int calculateShortestDistance(final Sections sections,
-                                         final Station startStation,
-                                         final Station endStation) {
+    public int calculateShortestDistance(final Sections sections, final Path path) {
         ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
-            return (int) algorithm.getPath(startStation, endStation).getWeight();
+            return (int) algorithm.getPath(path.getStartStation(), path.getEndStation()).getWeight();
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }
     }
 
     @Override
-    public List<Station> calculateShortestStations(final Sections sections,
-                                                   final Station startStation,
-                                                   final Station endStation) {
+    public List<Station> calculateShortestStations(final Sections sections, final Path path) {
         ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
-            return algorithm.getPath(startStation, endStation).getVertexList();
+            return algorithm.getPath(path.getStartStation(), path.getEndStation()).getVertexList();
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }
     }
 
     @Override
-    public List<ShortestPathEdge> findPassedEdges(final Sections sections,
-                                                  final Station startStation,
-                                                  final Station endStation) {
+    public List<ShortestPathEdge> findPassedEdges(final Sections sections, final Path path) {
         ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
-            return algorithm.getPath(startStation, endStation).getEdgeList();
+            return algorithm.getPath(path.getStartStation(), path.getEndStation()).getEdgeList();
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }

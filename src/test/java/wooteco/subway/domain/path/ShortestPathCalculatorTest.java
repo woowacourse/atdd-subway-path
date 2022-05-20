@@ -11,6 +11,7 @@ import static wooteco.subway.common.TestFixtures.창신역;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -22,7 +23,8 @@ public class ShortestPathCalculatorTest {
     @Test
     void findShortestStations() {
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
-        List<Station> shortestStations = shortestPathCalculator.calculateShortestStations(createSections(), 신당역, 창신역);
+        List<Station> shortestStations = shortestPathCalculator.calculateShortestStations(createSections(),
+                new Path(신당역, 창신역));
         assertThat(shortestStations).hasSize(3);
     }
 
@@ -30,7 +32,7 @@ public class ShortestPathCalculatorTest {
     @Test
     void calculateShortestDistance() {
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
-        int distance = shortestPathCalculator.calculateShortestDistance(createSections(), 신당역, 창신역);
+        int distance = shortestPathCalculator.calculateShortestDistance(createSections(), new Path(신당역, 창신역));
         assertThat(distance).isEqualTo(20);
     }
 
@@ -41,7 +43,7 @@ public class ShortestPathCalculatorTest {
         Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
         Sections sections = new Sections(List.of(section, section1));
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
-        assertThatThrownBy(() -> shortestPathCalculator.calculateShortestDistance(sections, 신당역, 보문역))
+        assertThatThrownBy(() -> shortestPathCalculator.calculateShortestDistance(sections, new Path(신당역, 보문역)))
                 .isInstanceOf(SectionNotFoundException.class);
     }
 
@@ -52,7 +54,7 @@ public class ShortestPathCalculatorTest {
         Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
         Sections sections = new Sections(List.of(section, section1));
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
-        assertThatThrownBy(() -> shortestPathCalculator.calculateShortestDistance(sections, 신당역, 보문역))
+        assertThatThrownBy(() -> shortestPathCalculator.calculateShortestDistance(sections, new Path(신당역, 보문역)))
                 .isInstanceOf(SectionNotFoundException.class);
     }
 
@@ -63,7 +65,7 @@ public class ShortestPathCalculatorTest {
         sections.add(new Section(3L, 2L, 창신역, 보문역, STANDARD_DISTANCE));
 
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
-        List<ShortestPathEdge> edges = shortestPathCalculator.findPassedEdges(sections, 신당역, 보문역);
+        List<ShortestPathEdge> edges = shortestPathCalculator.findPassedEdges(sections, new Path(신당역, 보문역));
 
         assertThat(edges).hasSize(3);
     }
