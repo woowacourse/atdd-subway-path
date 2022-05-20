@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -86,6 +86,36 @@ class AcceptanceTest {
                 .body(sectionRequest)
                 .when()
                 .post("/lines/" + createdLine.getId() + "/sections")
+                .then()
+                .extract();
+    }
+
+    protected LineResponse createLine(final String name, final String color, final Long upStationId,
+                                    final Long downStationId, final int distance, final int extraFare) {
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, extraFare);
+        return RestAssured
+                .given()
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().extract()
+                .as(LineResponse.class);
+    }
+
+    protected ExtractableResponse<Response> createLineAndReturnResponse(final String name, final String color,
+                                                                        final Long upStationId,
+                                                                        final Long downStationId,
+                                                                        final int distance,
+                                                                        final int extraFare) {
+
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, extraFare);
+        return RestAssured
+                .given()
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
                 .then()
                 .extract();
     }
