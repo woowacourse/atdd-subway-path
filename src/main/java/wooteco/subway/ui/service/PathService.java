@@ -35,8 +35,8 @@ public class PathService {
 
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
 
-        FareCalculator fareCalculator = new FareCalculator();
-        int fare = fareCalculator.execute(distance);
+        FareCalculator fareCalculator = new FareCalculator(distance);
+        int fare = fareCalculator.execute();
 
         return new PathResponse(StationResponse.of(path), distance, fare);
     }

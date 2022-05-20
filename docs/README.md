@@ -65,7 +65,7 @@
     - [X] 이름 중복 처리 로직을 Service 로 이동
     - [X] JdbcTemplate -> NamedParam 수정
     - [ ] Dto 만들어 필드 수정시 생기는 변경 범위 격리
-    - [ ] 정적 팩터리 메서드 대신 부생성자 이용 고려해보기
+    - [X] 정적 팩터리 메서드 대신 부생성자 이용 고려해보기
 - Domain
     - [ ] Sections 의 구간들이 같은 Line 이라는 사실 나타내기
     - [ ] 불필요한 getter 사용 제거
@@ -84,7 +84,7 @@
 - [ ] RowMapper를 메서드 또는 상수로 관리하기
 - [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [X] NamedParameterJdbcTemplate 으로 수정
-- [ ] FareCalculator 가 필드로 distance 를 갖도록 수정
+- [X] FareCalculator 가 필드로 distance 를 갖도록 수정
 - [ ] 매직넘버 상수로 관리하기
 - [ ] @RequestParam @ModelAttribute 로 묶어보기
 - [ ] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
