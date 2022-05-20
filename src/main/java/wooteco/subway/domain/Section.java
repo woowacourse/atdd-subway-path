@@ -45,7 +45,7 @@ public class Section {
     }
 
     private void checkDistance(Section section) {
-        if (distance.isSmallerThen(section.distance)) {
+        if (distance.isSmallerThan(section.distance)) {
             throw new IllegalArgumentException("기존 구간보다 거리가 길어 추가할 수 없습니다.");
         }
     }

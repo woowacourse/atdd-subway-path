@@ -22,10 +22,13 @@ public class Distance {
     }
 
     public Distance subtract(Distance distance) {
+        if (this.value < distance.value) {
+            throw new IllegalStateException("빼려는 거리가 더 커서 뺄 수 없습니다.");
+        }
         return new Distance(this.value - distance.value);
     }
 
-    public boolean isSmallerThen(Distance distance) {
+    public boolean isSmallerThan(Distance distance) {
         return this.value < distance.value;
     }
 
