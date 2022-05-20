@@ -24,6 +24,10 @@ public class Path {
     }
 
     public int calculateFare() {
+        return calcculateDefaultFare() + mostExpensiveLineFare();
+    }
+
+    private int calcculateDefaultFare() {
         if (distance <= DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE;
         }
@@ -48,6 +52,13 @@ public class Path {
 
     private int calculateOverAdditionalFare() {
         return calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, OVER_ADDITIONAL_UNIT_DISTANCE);
+    }
+
+    private int mostExpensiveLineFare() {
+        return usedLines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElseThrow(() -> new IllegalStateException("최대 추가요금을 찾을 수 없습니다."));
     }
 
     public List<Station> getStations() {
