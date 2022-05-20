@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,18 +15,22 @@ public class Path {
     private static final int FIRST_ADDITIONAL_FARE_DISTANCE = 50;
 
     private final List<Station> stations;
-    private final Set<Line> usedLines;
+    private final Lines usedLines;
     private final int distance;
 
-    public Path(final List<Station> stations, final Set<Line> usedLines, final int distance) {
-        this.stations = stations;
+    public Path(final List<Station> stations, final Lines usedLines, final int distance) {
+        this.stations = new ArrayList<>(stations);
         this.usedLines = usedLines;
         this.distance = distance;
     }
 
+    public Path(final List<Station> stations, final Set<Line> usedLines, final int distance) {
+        this(stations, new Lines(usedLines), distance);
+    }
+
     public int calculateFare(final int age) {
         AgeDisCountPolicy disCountPolicy = AgeDisCountPolicy.from(age);
-        return disCountPolicy.discountedMoney(calcculateDefaultFare() + mostExpensiveLineFare());
+        return disCountPolicy.discountedMoney(calcculateDefaultFare() + usedLines.mostExpensiveLineFare());
     }
 
     private int calcculateDefaultFare() {
@@ -53,13 +58,6 @@ public class Path {
 
     private int calculateOverAdditionalFare() {
         return calculateOverFare(distance - FIRST_ADDITIONAL_FARE_DISTANCE, OVER_ADDITIONAL_UNIT_DISTANCE);
-    }
-
-    private int mostExpensiveLineFare() {
-        return usedLines.stream()
-                .mapToInt(Line::getExtraFare)
-                .max()
-                .orElseThrow(() -> new IllegalStateException("최대 추가요금을 찾을 수 없습니다."));
     }
 
     public List<Station> getStations() {
