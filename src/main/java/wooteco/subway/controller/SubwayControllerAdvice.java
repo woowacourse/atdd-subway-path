@@ -11,6 +11,7 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<String> subwayException(SubwayException exception) {
+        exception.printStackTrace();
         return ResponseEntity.status(exception.getHttpStatus()).body(exception.getMessage());
     }
 

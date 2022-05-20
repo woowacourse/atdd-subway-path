@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.InvalidSectionInsertException;
 
 public class LineSections {
 
@@ -24,7 +25,7 @@ public class LineSections {
     private void validateBothStationExist(long upStationId, long downStationId) {
         if (existByStationId(upStationId)
                 && existByStationId(downStationId)) {
-            throw new IllegalArgumentException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
+            throw new InvalidSectionInsertException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
         }
     }
 
@@ -47,14 +48,14 @@ public class LineSections {
     private void validateNoneStationExist(long upStationId, long downStationId) {
         if (!existByStationId(upStationId)
                 && !existByStationId(downStationId)) {
-            throw new IllegalArgumentException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+            throw new InvalidSectionInsertException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
         }
     }
 
     private void validateDistance(long upStationId, long downStationId, int distance) {
         if (isInvalidDistanceWithDownStationOverlap(downStationId, distance)
                 || isInvalidDistanceWithUpStationOverlap(upStationId, distance)) {
-            throw new IllegalArgumentException(
+            throw new InvalidSectionInsertException(
                     "역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
         }
     }
@@ -138,7 +139,7 @@ public class LineSections {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 Section이 존재하지 않습니다."));
     }
 
-    public List<Long> getStationsId() {
+    public List<Long> getStationIds() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }

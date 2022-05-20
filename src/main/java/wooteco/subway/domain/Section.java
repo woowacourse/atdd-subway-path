@@ -4,19 +4,12 @@ import java.util.List;
 
 public class Section {
 
-    private Long id;
-    private long lineId;
-    private long upStationId;
-    private long downStationId;
-    private int distance;
-    private Long lineOrder;
-
-    public Section() {
-    }
-
-    public Section(Long lineOrder) {
-        this.lineOrder = lineOrder;
-    }
+    private final Long id;
+    private final long lineId;
+    private final long upStationId;
+    private final long downStationId;
+    private final int distance;
+    private final Long lineOrder;
 
     public Section(Long id, long lineId, long upStationId, long downStationId, int distance, Long lineOrder) {
         this.id = id;

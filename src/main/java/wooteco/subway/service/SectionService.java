@@ -61,7 +61,7 @@ public class SectionService {
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<Long> findAllStationByLineId(long lineId) {
         LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
-        return lineSections.getStationsId();
+        return lineSections.getStationIds();
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
