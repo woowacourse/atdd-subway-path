@@ -10,9 +10,22 @@ class FareTest {
 
     @DisplayName("기본 운임(10km 이내) 요금을 확인한다.")
     @Test
-    public void chargeDefaultFare() {
+    public void chargeDefaultFare9() {
         // given
         final Fare fare = new Fare(9);
+
+        // when
+        final int result = fare.calculate();
+
+        // then
+        assertThat(result).isEqualTo(1250);
+    }
+
+    @DisplayName("10km는 기본운임을 부과한다.")
+    @Test
+    public void chargeDefaultFare10() {
+        // given
+        final Fare fare = new Fare(10);
 
         // when
         final int result = fare.calculate();
@@ -58,6 +71,19 @@ class FareTest {
 
         // then
         assertThat(result).isEqualTo(2150);
+    }
+
+    @DisplayName("50km는 800원 추가운임을 부과한다.")
+    @Test
+    public void chargeAdditionalFare50() {
+        // given
+        final Fare fare = new Fare(50);
+
+        // when
+        final int result = fare.calculate();
+
+        // then
+        assertThat(result).isEqualTo(2050);
     }
 
     @Test

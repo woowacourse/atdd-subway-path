@@ -8,7 +8,6 @@ public class Fare {
     public static final int MAXIMUM_DISTANCE_BOUNDARY = 50;
     public static final int BELOW_FIFTY_KM_POLICY = 5;
     public static final int ABOVE_FIFTY_KM_POLICY = 8;
-    public static final int ADDITIONAL_FARE_50_KM = 800;
 
     private final int distance;
 
@@ -30,13 +29,16 @@ public class Fare {
         }
 
         if (distance <= MAXIMUM_DISTANCE_BOUNDARY) {
-            return BASIC_FARE
-                    + (int) (Math.ceil((double) (distance - MINIMUM_DISTANCE_BOUNDARY) / BELOW_FIFTY_KM_POLICY))
-                    * ADDITIONAL_FARE;
+            return BASIC_FARE + calculateBoundaryFare(distance, MINIMUM_DISTANCE_BOUNDARY, BELOW_FIFTY_KM_POLICY);
         }
 
-        return BASIC_FARE + ADDITIONAL_FARE_50_KM
-                + (int) Math.ceil(((double) (distance - MAXIMUM_DISTANCE_BOUNDARY) / ABOVE_FIFTY_KM_POLICY))
+        return BASIC_FARE
+                + calculateBoundaryFare(MAXIMUM_DISTANCE_BOUNDARY, MINIMUM_DISTANCE_BOUNDARY, BELOW_FIFTY_KM_POLICY)
+                + calculateBoundaryFare(distance, MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
+    }
+
+    private int calculateBoundaryFare(int distance, int distanceBoundary, int distancePolicy) {
+        return (int) Math.ceil(((double) (distance - distanceBoundary) / distancePolicy))
                 * ADDITIONAL_FARE;
     }
 }
