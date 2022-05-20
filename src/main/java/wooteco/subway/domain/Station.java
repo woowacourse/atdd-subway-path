@@ -9,18 +9,18 @@ public class Station {
     private Station() {
     }
 
-    public Station(Long id) {
+    public Station(Long id, String name) {
         this.id = id;
-        this.name = "";
-    }
-
-    public Station(String name) {
         this.name = name;
     }
 
-    public Station(Long id, String name) {
-        this(name);
-        this.id = id;
+    public Station(Long id) {
+        this(id, "");
+    }
+
+    public Station(String name) {
+        this(0L, name);
+
     }
 
     public boolean isSameStation(Long stationId) {
@@ -37,8 +37,12 @@ public class Station {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Station station = (Station) o;
         return Objects.equals(name, station.name);
     }

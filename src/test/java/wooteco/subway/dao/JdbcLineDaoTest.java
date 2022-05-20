@@ -51,7 +51,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 특정 노선을 조회한다.")
     void findLine() {
-        final Line expected = new Line("다른분당선", "bg-blue-600");
+        final Line expected = new Line(0L , "다른분당선", "bg-blue-600", 900);
         final long lineId = lineDao.save(
                 new LineRequest("다른분당선", "bg-blue-600", 2L, 3L, 40)
         );
@@ -75,7 +75,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 노선을 수정한다.")
     void update() {
-        final Line line3 = new Line("다른분당선", "bg-blue-600");
+        final Line line3 = new Line(0L, "다른분당선", "bg-blue-600", 900);
         final long lineId = lineDao.save(
                 new LineRequest("다른분당선", "bg-blue-600", 3L, 4L, 10)
         );

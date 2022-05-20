@@ -1,14 +1,13 @@
 package wooteco.subway.service.fakeDao;
 
-import org.springframework.util.ReflectionUtils;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineRequest;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.util.ReflectionUtils;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.domain.Line;
+import wooteco.subway.dto.LineRequest;
 
 public class LineDaoImpl implements LineDao {
     private static final LineDaoImpl lineDao = new LineDaoImpl();
@@ -21,7 +20,7 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Long save(LineRequest lineRequest) {
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(0L, lineRequest.getName(), lineRequest.getColor(), 900);
         Line persistLine = createNewObject(line);
         if (hasLine(persistLine.getName())) {
             throw new IllegalArgumentException("같은 이름의 노선이 존재합니다.");
@@ -52,9 +51,8 @@ public class LineDaoImpl implements LineDao {
     public void updateById(Long id, String name, String color, int extraFare) {
         Line line = findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
-        line.setName(name);
-        line.setColor(color);
-        line.setExtraFare(extraFare);
+        lines.remove(line);
+        lines.add(new Line(id, name, color, extraFare));
     }
 
     @Override
