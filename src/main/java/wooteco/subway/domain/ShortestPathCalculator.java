@@ -10,28 +10,6 @@ import wooteco.subway.exception.SectionNotFoundException;
 @Component
 public class ShortestPathCalculator implements PathCalculator {
 
-    private DijkstraShortestPath<Station, ShortestPathEdge> initializePath(final Sections sections) {
-        WeightedMultigraph<Station, ShortestPathEdge> graph
-                = new WeightedMultigraph<>(ShortestPathEdge.class);
-
-        for (Station station : sections.getAllStations()) {
-            graph.addVertex(station);
-        }
-        for (Section section : sections.getValues()) {
-            assignWeight(graph, section);
-        }
-
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    private void assignWeight(final WeightedMultigraph<Station, ShortestPathEdge> graph,
-                              final Section section) {
-        graph.addEdge(section.getUpStation(),
-                section.getDownStation(),
-                new ShortestPathEdge(section.getLineId(),
-                        section.getDistance()));
-    }
-
     @Override
     public int calculateShortestDistance(final Sections sections,
                                          final Station startStation,
@@ -54,5 +32,27 @@ public class ShortestPathCalculator implements PathCalculator {
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }
+    }
+
+    private DijkstraShortestPath<Station, ShortestPathEdge> initializePath(final Sections sections) {
+        WeightedMultigraph<Station, ShortestPathEdge> graph
+                = new WeightedMultigraph<>(ShortestPathEdge.class);
+
+        for (Station station : sections.getAllStations()) {
+            graph.addVertex(station);
+        }
+        for (Section section : sections.getValues()) {
+            assignWeight(graph, section);
+        }
+
+        return new DijkstraShortestPath<>(graph);
+    }
+
+    private void assignWeight(final WeightedMultigraph<Station, ShortestPathEdge> graph,
+                              final Section section) {
+        graph.addEdge(section.getUpStation(),
+                section.getDownStation(),
+                new ShortestPathEdge(section.getLineId(),
+                        section.getDistance()));
     }
 }
