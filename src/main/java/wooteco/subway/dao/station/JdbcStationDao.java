@@ -42,13 +42,13 @@ public class JdbcStationDao implements StationDao {
     @Override
     public boolean existStationById(Long id) {
         final String sql = "select exists (select * from STATION where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
     @Override
     public boolean existStationByName(String name) {
         final String sql = "select exists (select * from STATION where name = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name));
     }
 
     @Override

@@ -74,6 +74,6 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public boolean existSectionById(Long id) {
         final String sql = "select exists (select * from SECTION where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 }
