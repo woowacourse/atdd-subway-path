@@ -24,7 +24,8 @@ public class Path {
     }
 
     public int calculateFare(final int age) {
-        return calcculateDefaultFare() + mostExpensiveLineFare();
+        AgeDisCountPolicy disCountPolicy = AgeDisCountPolicy.from(age);
+        return disCountPolicy.discountedMoney(calcculateDefaultFare() + mostExpensiveLineFare());
     }
 
     private int calcculateDefaultFare() {
