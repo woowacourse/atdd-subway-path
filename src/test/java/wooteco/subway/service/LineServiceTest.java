@@ -37,7 +37,7 @@ class LineServiceTest {
     @DisplayName("노선을 생성한다.")
     void createLine() {
         // given
-        final LineRequest request = new LineRequest("7호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10);
+        final LineRequest request = new LineRequest("7호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10, 0);
 
         // when
         final LineResponse response = lineService.save(request);
@@ -50,8 +50,8 @@ class LineServiceTest {
     @DisplayName("모든 노선을 조회한다.")
     void showLines() {
         // given
-        lineService.save(new LineRequest("1호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10));
-        lineService.save(new LineRequest("2호선", "bg-blue-600", nowon.getId(), gangnam.getId(), 10));
+        lineService.save(new LineRequest("1호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10, 0));
+        lineService.save(new LineRequest("2호선", "bg-blue-600", nowon.getId(), gangnam.getId(), 10, 0));
 
         // when
         List<LineResponse> responses = lineService.findAll();
@@ -67,7 +67,7 @@ class LineServiceTest {
         String color = "bg-red-600";
         String name = "7호선";
 
-        LineResponse savedLine = lineService.save(new LineRequest(name, color, gangnam.getId(), nowon.getId(), 10));
+        LineResponse savedLine = lineService.save(new LineRequest(name, color, gangnam.getId(), nowon.getId(), 10, 0));
 
         // when
         LineResponse response = lineService.findById(savedLine.getId());
@@ -82,11 +82,11 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 노선 정보를 수정한다.")
     void updateById() {
         // given
-        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10));
+        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10, 0));
 
         final String name = "7호선";
         final String color = "bg-blue-600";
-        final LineRequest request = new LineRequest(name, color, nowon.getId(), gangnam.getId(), 20);
+        final LineRequest request = new LineRequest(name, color, nowon.getId(), gangnam.getId(), 20, 0);
 
         // when
         lineService.updateById(saved.getId(), request);
@@ -101,7 +101,7 @@ class LineServiceTest {
     @DisplayName("id에 해당하는 노선을 삭제한다.")
     void deleteById() {
         // given
-        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10));
+        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10, 0));
 
         // when
         lineService.deleteById(saved.getId());

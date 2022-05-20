@@ -46,8 +46,8 @@ public class PathServiceTest {
         sinseolStationEntity = stationDao.save(new StationEntity(null, "신설동역"));
         sungsuStationEntity = stationDao.save(new StationEntity(null, "성수역"));
         yongdapStationEntity = stationDao.save(new StationEntity(null, "용답역"));
-        line1 = lineDao.save(new LineEntity(null, "1호선", "red"));
-        line2 = lineDao.save(new LineEntity(null, "2호선", "blue"));
+        line1 = lineDao.save(new LineEntity(null, "1호선", "red", 0));
+        line2 = lineDao.save(new LineEntity(null, "2호선", "blue", 0));
         firstSection = sectionDao.save(
                 new SectionEntity(null, line1.getId(), sinseolStationEntity.getId(), sungsuStationEntity.getId(), 46));
         secondSection = sectionDao.save(

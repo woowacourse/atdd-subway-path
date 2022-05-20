@@ -33,14 +33,14 @@ class LineTest {
         Section section1 = new Section(1L, four, two, 10);
         Section section2 = new Section(1L, two, three, 10);
         Section section3 = new Section(1L, three, one, 10);
-        line = new Line("1호선", "red", List.of(section1, section2, section3));
+        line = new Line("1호선", "red", List.of(section1, section2, section3), 0);
     }
 
     @ParameterizedTest
     @DisplayName("노선 이름이 공백이면 예외가 발생한다")
     @ValueSource(strings = {"", " ", "    "})
     void newLine_blankName(String name) {
-        assertThatThrownBy(() -> new Line(name, "bg-red-600", new ArrayList<>()))
+        assertThatThrownBy(() -> new Line(name, "bg-red-600", new ArrayList<>(), 0))
                 .isInstanceOf(LineException.class)
                 .hasMessage("노선의 이름이 공백이 되어서는 안됩니다.");
     }
@@ -49,7 +49,7 @@ class LineTest {
     @DisplayName("노선 객체 생성에 성공한다.")
     void newLine() {
         // when
-        Line line = new Line("7호선", "bg-red-600", new ArrayList<>());
+        Line line = new Line("7호선", "bg-red-600", new ArrayList<>(), 0);
 
         // then
         assertThat(line).isNotNull();
@@ -81,7 +81,7 @@ class LineTest {
     @DisplayName("구간이 하나일 때 특정역에 따라 삭제할 구간 찾으려 하면 예외")
     void findNearByStationId_invalid() {
         // when
-        Line onlyOneLine = new Line("onlyOne", "red", List.of(new Section(1L, one, two, 10)));
+        Line onlyOneLine = new Line("onlyOne", "red", List.of(new Section(1L, one, two, 10)), 0);
 
         // then
         assertThatThrownBy(() -> onlyOneLine.deleteSectionNearBy(one))

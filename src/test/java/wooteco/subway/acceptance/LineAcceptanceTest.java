@@ -47,7 +47,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String lineColor = "bg-red-600";
 
         // when
-        LineRequest requestBody = new LineRequest(lineName, lineColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest requestBody = new LineRequest(lineName, lineColor, 노원역.getId(), 강남역.getId(), 10, 800);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         // then
@@ -71,7 +71,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("잘못된 값 입력해서 노선 생성 시도")
     void createLine_invalid() {
         // given
-        LineRequest lineRequest = new LineRequest(null, null, null, null, null);
+        LineRequest lineRequest = new LineRequest(null, null, null, null, null, null);
 
         // when
         ExtractableResponse<Response> response = postWithBody("/lines", lineRequest);
@@ -88,11 +88,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String redColor = "bg-red-600";
         String blueColor = "bg-blue-600";
 
-        LineRequest lineRequest = new LineRequest(lineName, redColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest lineRequest = new LineRequest(lineName, redColor, 노원역.getId(), 강남역.getId(), 10, 0);
         postWithBody("/lines", lineRequest);
 
         // when
-        LineRequest duplicatedNameRequest = new LineRequest(lineName, blueColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest duplicatedNameRequest = new LineRequest(lineName, blueColor, 노원역.getId(), 강남역.getId(), 10, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", duplicatedNameRequest);
 
         // then
@@ -107,10 +107,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void getLines() {
         /// given
 
-        LineRequest requestBody1 = new LineRequest("7호선", "bg-green-600", 강남역.getId(), 노원역.getId(), 10);
+        LineRequest requestBody1 = new LineRequest("7호선", "bg-green-600", 강남역.getId(), 노원역.getId(), 10, 0);
         ExtractableResponse<Response> createResponse1 = postWithBody("/lines", requestBody1);
 
-        LineRequest requestBody2 = new LineRequest("5호선", "bg-red-600", 노원역.getId(), 강남역.getId(), 10);
+        LineRequest requestBody2 = new LineRequest("5호선", "bg-red-600", 노원역.getId(), 강남역.getId(), 10, 0);
         ExtractableResponse<Response> createResponse2 = postWithBody("/lines", requestBody2);
 
         // when
@@ -144,7 +144,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String lineName = "7호선";
         String lineColor = "bg-green-600";
 
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, 강남역.getId(), 노원역.getId(), 5);
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, 강남역.getId(), 노원역.getId(), 5, 0);
 
         ExtractableResponse<Response> createResponse = postWithBody("/lines", lineRequest);
         long id = getIdFromLocation(createResponse);
@@ -182,13 +182,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
 
-        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 10);
+        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 10, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         long id = getIdFromLocation(response);
 
         // when
-        LineRequest updateBody = new LineRequest("5호선", "bg-green-600", 노원역.getId(), 강남역.getId(), 10);
+        LineRequest updateBody = new LineRequest("5호선", "bg-green-600", 노원역.getId(), 강남역.getId(), 10, 0);
 
         ExtractableResponse<Response> updateResponse = putWithBody("/lines/" + id, updateBody);
 
@@ -201,7 +201,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteLine() {
         // given
 
-        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 0);
+        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 0, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         long id = getIdFromLocation(response);

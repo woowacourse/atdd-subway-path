@@ -29,7 +29,7 @@ public class LineRepository {
 
     private Line toLine(LineEntity entity) {
         return new Line(entity.getId(), entity.getName(), entity.getColor(),
-                sectionRepository.findByLineId(entity.getId()));
+                sectionRepository.findByLineId(entity.getId()), entity.getExtraFare());
     }
 
     public List<Line> findAll() {
@@ -51,12 +51,12 @@ public class LineRepository {
                         section.getDistance()))
                 .collect(Collectors.toList());
         sectionRepository.saveAll(sections);
-        return new Line(saved.getId(), saved.getName(), saved.getColor(), sections);
+        return new Line(saved.getId(), saved.getName(), saved.getColor(), sections, saved.getExtraFare());
     }
 
     public void deleteById(Long id) {
         lineDao.findById(id)
-                        .orElseThrow(LineNotFoundException::new);
+                .orElseThrow(LineNotFoundException::new);
         sectionRepository.deleteByLineId(id);
         lineDao.deleteById(id);
     }

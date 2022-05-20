@@ -6,9 +6,13 @@ import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Station;
 
 public class PathResponse {
-    private final List<StationResponse> stations;
-    private final Integer distance;
-    private final Long fare;
+
+    private List<StationResponse> stations;
+    private Integer distance;
+    private Long fare;
+
+    public PathResponse() {
+    }
 
     public PathResponse(List<StationResponse> stations, Integer distance, Long fare) {
         this.stations = stations;
@@ -20,7 +24,7 @@ public class PathResponse {
         List<StationResponse> stationResponses = stations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponses,distance, fare.getValue());
+        return new PathResponse(stationResponses, distance, fare.getValue());
     }
 
     public List<StationResponse> getStations() {

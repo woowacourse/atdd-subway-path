@@ -44,7 +44,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         gangnam = stationDao.save(new StationEntity(null, "강남"));
         nowon = stationDao.save(new StationEntity(null, "노원"));
         jamsil = stationDao.save(new StationEntity(null, "잠실"));
-        line1 = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10));
+        line1 = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10, 0));
     }
 
     @Test
