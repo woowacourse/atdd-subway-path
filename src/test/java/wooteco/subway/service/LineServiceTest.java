@@ -32,7 +32,7 @@ class LineServiceTest {
     @Test
     @DisplayName("이미 존재하는 노선의 이름이 있을 때 예외가 발생한다.")
     void saveExceptionByExistName() {
-        lineDao.save(new Line("신분당선", "bg-red-600"));
+        lineDao.save(new Line("신분당선", "bg-red-600", 100));
         assertThatThrownBy(() -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 2, 100)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 존재하는 노선 이름입니다.");
@@ -51,7 +51,7 @@ class LineServiceTest {
     @Test
     @DisplayName("존재하지 않는 id로 update하려할 경우 예외가 발생한다.")
     void updateExceptionByNotFoundLine() {
-        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("신분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("신분당선", "bg-green-600", 100)))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("존재하지 않는 Line입니다.");
     }

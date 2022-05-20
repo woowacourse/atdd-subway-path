@@ -55,7 +55,7 @@ class InmemorySectionDaoTest {
     @Test
     @DisplayName("모든 Section을 조회할 수 있다.")
     void findAll() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 100));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
@@ -69,7 +69,7 @@ class InmemorySectionDaoTest {
     @Test
     @DisplayName("Section을 삭제할 수 있다.")
     void delete() {
-        long lineId = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long lineId = lineDao.save(new Line("신분당선", "bg-red-600", 100));
         long stationId1 = stationDao.save(new Station("오리"));
         long stationId2 = stationDao.save(new Station("배카라"));
         long sectionId = sectionDao

@@ -17,7 +17,8 @@ public class JdbcLineDao implements LineDao {
     private final RowMapper<Line> lineRowMapper = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extraFare")
     );
 
     public JdbcLineDao(final JdbcTemplate jdbcTemplate) {

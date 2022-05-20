@@ -39,7 +39,7 @@ public class LineSaveRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, extraFare);
     }
 
     public String getName() {

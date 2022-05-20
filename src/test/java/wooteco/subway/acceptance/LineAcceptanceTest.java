@@ -162,7 +162,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .header("Location");
 
         // when
-        ExtractableResponse<Response> response = putLine(location, new LineUpdateRequest("분당선", "bg-green-600"));
+        ExtractableResponse<Response> response = putLine(location, new LineUpdateRequest("분당선", "bg-green-600", 100));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
