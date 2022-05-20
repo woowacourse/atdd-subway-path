@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
+import wooteco.subway.dto.response.ExceptionResponse;
+import wooteco.subway.exception.RowNotFoundException;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 
@@ -30,12 +32,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "downStationId", "2",
             "distance", "10");
         SimpleRestAssured.post("/lines", lineParams);
-
-        Map<String, String> sectionParams = Map.of(
-            "upStationId", "2",
-            "downStationId", "3",
-            "distance", "6"
-        );
     }
 
     @Test
@@ -74,10 +70,35 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 삭제한다.")
     public void deleteSection() {
         // given
-        final ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=");
+        Map<String, String> sectionParams = Map.of(
+            "upStationId", "2",
+            "downStationId", "3",
+            "distance", "6"
+        );
+        SimpleRestAssured.post("/lines/1/sections", sectionParams);
 
         // when
+        final ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=2");
 
         // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("잘못된 구간을 삭제하면 예외를 던진다.")
+    public void throwsExceptionWithInvalidStationId() {
+        // given
+        Map<String, String> sectionParams = Map.of(
+            "upStationId", "2",
+            "downStationId", "3",
+            "distance", "6"
+        );
+        SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        // when
+        final ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1/sections?stationId=999");
+        final ExceptionResponse exceptionResponse = SimpleRestAssured.toObject(response, ExceptionResponse.class);
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getException()).isEqualTo(RowNotFoundException.class);
     }
 }
