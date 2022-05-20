@@ -137,7 +137,6 @@ class SectionServiceTest {
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
             .containsExactly(1L, 2L, 3L);
-
     }
 
     @Test
