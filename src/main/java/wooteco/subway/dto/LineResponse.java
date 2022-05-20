@@ -2,6 +2,7 @@ package wooteco.subway.dto;
 
 import java.util.List;
 import java.util.Objects;
+import wooteco.subway.domain.Line;
 
 public class LineResponse {
     private Long id;
@@ -13,16 +14,12 @@ public class LineResponse {
     private LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+    public LineResponse(Line line, List<StationResponse> stations) {
+        this.id = line.getId();
+        this.name = line.getName();
+        this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
         this.stations = stations;
-    }
-
-    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
-        this(id, name, color, stations);
-        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -47,8 +44,12 @@ public class LineResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         LineResponse that = (LineResponse) o;
         return Objects.equals(name, that.name);
     }

@@ -26,7 +26,7 @@ public class StationService {
         checkExistStationByName(stationRequest);
         final Station station = new Station(stationRequest.getName());
         final Long newStationId = stationDao.save(station);
-        return new StationResponse(newStationId, station.getName());
+        return new StationResponse(new Station(newStationId, station.getName()));
     }
 
     private void checkExistStationByName(StationRequest stationRequest) {
@@ -39,7 +39,7 @@ public class StationService {
     public List<StationResponse> findAllStations() {
         final List<Station> stations = stationDao.findAll();
         return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 

@@ -152,7 +152,7 @@ public class LineService {
 
     private List<StationResponse> makeStationResponseByStation(List<Station> stations) {
         return stations.stream()
-                .map(it -> new StationResponse(it.getId(), it.getName()))
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -204,8 +204,6 @@ public class LineService {
     }
 
     private Consumer<Section> deleteFinalSection() {
-        return section -> {
-            sectionDao.delete(List.of(section));
-        };
+        return section -> sectionDao.delete(List.of(section));
     }
 }
