@@ -8,11 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class PathCalculatorTest {
+public class PathSearcherTest {
     private Station 강남;
     private Station 역삼;
     private Station 선릉;
-    private PathCalculator pathCalculator;
+    private PathSearcher pathSearcher;
 
     @BeforeEach
     void setUp() {
@@ -26,13 +26,13 @@ public class PathCalculatorTest {
                 new Section(선릉, 강남, Distance.fromMeter(300))
         );
 
-        pathCalculator = PathCalculator.from(stations, sections);
+        pathSearcher = PathSearcher.from(stations, sections);
     }
 
     @Test
     @DisplayName("주어진 구간으로 최단 경로를 구한다.")
     void calculatePath() {
-        List<Station> path = pathCalculator.calculateShortestPath(선릉, 강남);
+        List<Station> path = pathSearcher.searchShortestPath(선릉, 강남);
 
         assertThat(path).hasSize(3);
     }
@@ -40,7 +40,7 @@ public class PathCalculatorTest {
     @Test
     @DisplayName("주어진 구간으로 최단 경로의 거리를 구한다.")
     void calculateDistance() {
-        Distance distance = pathCalculator.calculateShortestDistance(선릉, 강남);
+        Distance distance = pathSearcher.calculateShortestDistance(선릉, 강남);
 
         assertThat(distance.getValue()).isEqualTo(0.02);
     }

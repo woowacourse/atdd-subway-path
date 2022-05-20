@@ -5,17 +5,17 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class PathCalculator {
+public class PathSearcher {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    private PathCalculator(
+    private PathSearcher(
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
-    public static PathCalculator from(List<Station> stations, List<Section> sections) {
+    public static PathSearcher from(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(stations, sections);
-        return new PathCalculator(new DijkstraShortestPath<>(graph));
+        return new PathSearcher(new DijkstraShortestPath<>(graph));
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(
@@ -30,7 +30,7 @@ public class PathCalculator {
         return graph;
     }
 
-    public List<Station> calculateShortestPath(Station source, Station target) {
+    public List<Station> searchShortestPath(Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
