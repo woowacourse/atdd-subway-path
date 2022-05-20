@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
@@ -26,18 +25,26 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest pathRequest) {
         validateExistStations(pathRequest);
-        List<Section> allSections = sectionDao.findAll();
-        Path shortestPath = Path.of(new Sections(allSections), pathRequest.getSource(),
-            pathRequest.getTarget());
+
+        Path shortestPath = Path.of(
+            new Sections(sectionDao.findAll()), pathRequest.getSource(), pathRequest.getTarget());
         Fare fare = Fare.from(shortestPath.getTotalDistance());
-        List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(),
-            pathRequest.getTarget());
-        List<StationResponse> stations = stationService.findByStationIds(stationIds);
-        return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
+
+        return new PathResponse(
+            getStationResponses(pathRequest, shortestPath),
+            shortestPath.getTotalDistance(),
+            fare.getValue());
     }
 
     private void validateExistStations(PathRequest pathRequest) {
         stationService.validateExistById(pathRequest.getSource());
         stationService.validateExistById(pathRequest.getTarget());
+    }
+
+    private List<StationResponse> getStationResponses(PathRequest pathRequest, Path shortestPath) {
+        List<Long> stationIds =
+            shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
+
+        return stationService.findByStationIds(stationIds);
     }
 }
