@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,6 +11,9 @@ import static wooteco.subway.common.TestFixtures.창신역;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.SectionNotFoundException;
 
 public class ShortestPathCalculatorTest {
@@ -51,6 +54,18 @@ public class ShortestPathCalculatorTest {
         ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
         assertThatThrownBy(() -> shortestPathCalculator.calculateShortestDistance(sections, 신당역, 보문역))
                 .isInstanceOf(SectionNotFoundException.class);
+    }
+
+    @DisplayName("지나온 모든 가중치를 조회한다.")
+    @Test
+    void findPassedEdges() {
+        Sections sections = createSections();
+        sections.add(new Section(3L, 2L, 창신역, 보문역, STANDARD_DISTANCE));
+
+        ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
+        List<ShortestPathEdge> edges = shortestPathCalculator.findPassedEdges(sections, 신당역, 보문역);
+
+        assertThat(edges).hasSize(3);
     }
 
     private Sections createSections() {

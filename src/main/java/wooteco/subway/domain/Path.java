@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {
@@ -31,7 +32,7 @@ public class Path {
     }
 
     public int calculateMinDistance(final Sections sections) {
-       return pathCalculator.calculateShortestDistance(sections, startStation, endStation);
+        return pathCalculator.calculateShortestDistance(sections, startStation, endStation);
     }
 
     public List<Station> findShortestStations(final Sections sections) {
@@ -54,7 +55,6 @@ public class Path {
     private int calculateOverFare(final int distance, final int unit) {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
     }
-
 
 
 }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.common.TestFixtures.LINE_COLOR;
-import static wooteco.subway.common.TestFixtures.LINE_SIX;
+import static wooteco.subway.common.TestFixtures.LINE_SIX_NAME;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.common.TestFixtures.동묘앞역;
 import static wooteco.subway.common.TestFixtures.신당역;
@@ -53,7 +53,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -74,7 +74,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -91,7 +91,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.create(lineSix.getId(),
@@ -104,7 +104,7 @@ class SectionServiceTest {
     void createDuplicateException() {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.create(lineSix.getId(),
@@ -118,7 +118,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -134,7 +134,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -152,7 +152,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -169,7 +169,7 @@ class SectionServiceTest {
     void deleteOneSectionException() {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.delete(lineSix.getId(), saved_동묘앞역.getId()))

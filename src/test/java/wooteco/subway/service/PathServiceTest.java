@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.common.TestFixtures.LINE_COLOR;
-import static wooteco.subway.common.TestFixtures.LINE_SIX;
+import static wooteco.subway.common.TestFixtures.LINE_SIX_NAME;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.common.TestFixtures.동묘앞역;
 import static wooteco.subway.common.TestFixtures.신당역;
@@ -48,7 +48,7 @@ public class PathServiceTest {
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
 
-        Line line = createLine(LINE_SIX, LINE_COLOR);
+        Line line = createLine(LINE_SIX_NAME, LINE_COLOR, 0);
 
         sectionRepository.save(new Section(line.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
@@ -67,8 +67,8 @@ public class PathServiceTest {
 
     }
 
-    private Line createLine(String lineName, String lineColor) {
-        Long id = lineRepository.save(new Line(lineName, lineColor));
+    private Line createLine(String lineName, String lineColor, int extraFare) {
+        Long id = lineRepository.save(new Line(lineName, lineColor, extraFare));
         return new Line(id, lineName, lineColor);
     }
 

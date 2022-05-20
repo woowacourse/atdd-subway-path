@@ -1,10 +1,13 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.SectionNotFoundException;
 
 @Component
@@ -29,6 +32,18 @@ public class ShortestPathCalculator implements PathCalculator {
         ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
             return algorithm.getPath(startStation, endStation).getVertexList();
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new SectionNotFoundException();
+        }
+    }
+
+    @Override
+    public List<ShortestPathEdge> findPassedEdges(final Sections sections,
+                                                  final Station startStation,
+                                                  final Station endStation) {
+        ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
+        try {
+            return algorithm.getPath(startStation, endStation).getEdgeList();
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new SectionNotFoundException();
         }

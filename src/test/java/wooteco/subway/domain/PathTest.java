@@ -11,6 +11,7 @@ import static wooteco.subway.common.TestFixtures.창신역;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.ShortestPathCalculator;
 import wooteco.subway.exception.SubwayException;
 
 class PathTest {
