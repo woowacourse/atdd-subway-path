@@ -1,29 +1,34 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class PathRequest {
 
-    private long source;
-    private long target;
-    private int age;
+    @NotNull
+    private Long source;
+    @NotNull
+    private Long target;
+    @NotNull
+    private Integer age;
 
     private PathRequest() {
     }
 
-    public PathRequest(long source, long target, int age) {
+    public PathRequest(Long source, Long target, Integer age) {
         this.source = source;
         this.target = target;
         this.age = age;
     }
 
-    public long getSource() {
+    public Long getSource() {
         return source;
     }
 
-    public long getTarget() {
+    public Long getTarget() {
         return target;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 }

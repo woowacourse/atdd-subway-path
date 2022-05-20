@@ -16,12 +16,20 @@ public class Section {
 
     public Section(Long id, long lineId, long upStationId, long downStationId, int distance,
                    Long lineOrder) {
+        validateDistance(distance);
+
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
         this.lineOrder = lineOrder;
+    }
+
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("두 역 사이의 거리는 음수일 수 없습니다.");
+        }
     }
 
     public Long getId() {

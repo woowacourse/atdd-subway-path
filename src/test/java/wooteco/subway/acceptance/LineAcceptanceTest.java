@@ -35,6 +35,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @DisplayName("null 값을 포함한 요청에 에러가 발생한다.")
+    @Test
+    void createLineWithNullValueTest() {
+        // given
+        LineRequest lineRequest = new LineRequest(
+            "신분당선", "red", 1L, 2L, null, 0);
+
+        // when
+        ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 정보로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateInfoTest() {
