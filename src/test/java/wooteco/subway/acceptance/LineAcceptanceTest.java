@@ -74,9 +74,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithNonExistLine() {
         // given
         long idWillBeDeleted = createStation("station1").getId();
-        RestAssured.when()
-                .delete("/stations/" + idWillBeDeleted);
-
+        deleteStation(idWillBeDeleted);
         long downStationId = createStation("station2").getId();
 
         // when
@@ -87,6 +85,11 @@ class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
                 () -> assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE)
         );
+    }
+
+    private Response deleteStation(final long idWillBeDeleted) {
+        return RestAssured.when()
+                .delete("/stations/" + idWillBeDeleted);
     }
 
     /*
