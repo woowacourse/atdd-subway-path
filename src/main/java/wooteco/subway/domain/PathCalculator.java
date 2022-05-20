@@ -36,8 +36,7 @@ public class PathCalculator {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public int findShortestDistance(final Station source, final Station target) {
-        final double shortestDistance = dijkstraShortestPath.getPath(source, target).getWeight();
-        return (int) shortestDistance;
+    public double findShortestDistance(final Station source, final Station target) {
+        return dijkstraShortestPath.getPath(source, target).getWeight();
     }
 }
