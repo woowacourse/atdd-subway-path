@@ -62,7 +62,7 @@ public class LineDao {
         return count > 0;
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         final String sql = "select id, name, color, extra_fare from Line where id = ?";
         if (!isExistById(id)) {
             throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
@@ -70,7 +70,7 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
-    private boolean isExistById(Long id) {
+    private boolean isExistById(long id) {
         final String sql = "select count(*) from Line where id = ?";
         final int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count > 0;
@@ -84,7 +84,7 @@ public class LineDao {
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         final String sql = "delete from Line where id = ?";
         if (!isExistById(id)) {
             throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");

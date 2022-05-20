@@ -13,8 +13,7 @@ public class Path {
     private static final String NOT_EXIST_STATION = "출발지, 도착지 모두 존재해야 됩니다.";
     private static final String NO_REACHABLE = "출발지에서 도착지로 갈 수 없습니다.";
 
-    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<Long, DefaultWeightedEdge>(
-            DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     public Path(List<Section> sections) {
         for (Section section : sections) {

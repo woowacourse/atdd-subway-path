@@ -4,10 +4,10 @@ import wooteco.subway.domain.Station;
 
 public class StationResponse {
 
-    private Long id;
+    private long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
+    public StationResponse(long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -19,7 +19,7 @@ public class StationResponse {
         );
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

@@ -51,7 +51,7 @@ public class StationDao {
         return count > 0;
     }
 
-    private boolean isExistId(Long id) {
+    private boolean isExistId(long id) {
         final String sql = "select count(*) from Station where id = ?";
         final int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count > 0;
@@ -62,7 +62,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         final String sql = "delete from Station where id = ?";
         if (!isExistId(id)) {
             throw new NoSuchElementException("해당하는 지하철이 존재하지 않습니다.");
@@ -70,7 +70,7 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station getById(Long stationId) {
+    public Station getById(long stationId) {
         final String sql = "select id, name from station where id=?";
         return jdbcTemplate.queryForObject(
                 sql,
