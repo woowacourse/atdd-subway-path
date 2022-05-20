@@ -43,23 +43,4 @@ public class Path {
     public List<ShortestPathEdge> findPassedEdges(final Sections sections) {
         return pathCalculator.findPassedEdges(sections, startStation, endStation);
     }
-
-    public int calculateFare(final Sections sections) {
-        int distance = calculateMinDistance(sections);
-        if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
-        }
-        if (distance <= OVER_FARE_DISTANCE) {
-            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
-        }
-        return DEFAULT_FARE
-                + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
-                + calculateOverFare(distance - OVER_FARE_DISTANCE, MAX_UNIT);
-    }
-
-    private int calculateOverFare(final int distance, final int unit) {
-        return (int) ((Math.ceil((distance - 1) / unit) + 1) * 100);
-    }
-
-
 }
