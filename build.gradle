@@ -18,8 +18,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    compile group: 'org.jgrapht', name: 'jgrapht-core', version: '1.2.0'
-
+    implementation 'org.jgrapht:jgrapht-core:1.5.1'
 
     // log
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
@@ -33,7 +32,7 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 	// jgrapht
-    implementation 'org.jgrapht:jgrapht-core:1.0.1'
+    implementation 'org.jgrapht:jgrapht-core:1.5.1'
 }
 
 test {
