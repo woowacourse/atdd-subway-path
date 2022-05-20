@@ -5,11 +5,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
-import wooteco.subway.exception.DataNotExistException;
-import wooteco.subway.exception.SubwayException;
 
 @Service
 public class PathService {
@@ -23,31 +22,10 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
+        List<Section> sections = sectionService.findAll();
         Stations stations = stationService.findAll();
-        validateStation(stations, source, target);
-
-        Path path = Path.of(sectionService.findAll(), stations.getStationIds());
-        List<Long> shortestPath = path.findPath(source, target);
-        int distance = path.findDistance(source, target);
-        return getPathResponse(stations, shortestPath, distance);
-    }
-
-    private void validateStation(Stations stations, Long source, Long target) {
-        validateStationExist(stations, source);
-        validateStationExist(stations, target);
-        validateStationSame(source, target);
-    }
-
-    private void validateStationExist(Stations stations, Long stationId) {
-        if (!stations.contains(stationId)) {
-            throw new DataNotExistException("존재하지 않는 역입니다.");
-        }
-    }
-
-    private void validateStationSame(Long source, Long target) {
-        if (source.equals(target)) {
-            throw new SubwayException("출발역과 도착역이 같을 수 없습니다.");
-        }
+        Path path = Path.of(source, target, sections, stations);
+        return getPathResponse(stations, path.getPath(), path.getDistance());
     }
 
     private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, int distance) {
