@@ -115,7 +115,7 @@ public class Sections {
     }
 
     public List<Section> delete(final Station station) {
-        validateDelete();
+        checkDeletable();
         List<Section> sections = values.stream()
                 .filter(value -> value.haveStation(station))
                 .collect(toList());
@@ -126,14 +126,14 @@ public class Sections {
         return sections;
     }
 
-    private boolean isSectionNeedMerge(final List<Section> sections) {
-        return sections.size() == NEED_MERGE_SIZE;
-    }
-
-    private void validateDelete() {
+    private void checkDeletable() {
         if (values.size() <= MIN_SIZE) {
             throw new SectionDeleteException();
         }
+    }
+
+    private boolean isSectionNeedMerge(final List<Section> sections) {
+        return sections.size() == NEED_MERGE_SIZE;
     }
 
     public List<Station> sortSections() {
