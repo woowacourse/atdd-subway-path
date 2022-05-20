@@ -35,7 +35,7 @@ public class LineService {
     public LineResponse create(final LineRequest lineRequest) {
         String name = lineRequest.getName();
         validateDuplicateName(lineRepository.isNameExists(name), name);
-        Long id = lineRepository.save(new Line(name, lineRequest.getColor()));
+        Long id = lineRepository.save(new Line(name, lineRequest.getColor(), lineRequest.getExtraFare()));
         Station upStation = stationRepository.findById(lineRequest.getUpStationId());
         Station downStation = stationRepository.findById(lineRequest.getDownStationId());
 
