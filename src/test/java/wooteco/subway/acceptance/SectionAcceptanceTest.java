@@ -1,28 +1,36 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createLineResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createSectionResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createStationResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.deleteSectionResponse;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.dto.*;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
+import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
-    private final StationRequest 건대입구 = new StationRequest("건대입구역");
-    private final StationRequest 잠실 = new StationRequest("잠실역");
-    private final StationRequest 선릉 = new StationRequest("선릉역");
-    private final StationRequest 강남 = new StationRequest("강남역");
-    private final StationRequest 노원 = new StationRequest("노원역");
-    private final StationRequest 서울대입구 = new StationRequest("서울대입구역");
-    private final StationRequest 성수 = new StationRequest("성수역");
+    private final Station 건대입구 = new Station(1L, "건대입구역");
+    private final Station 잠실 = new Station(2L, "잠실역");
+    private final Station 선릉 = new Station(3L, "선릉역");
+    private final Station 강남 = new Station(4L, "강남역");
+    private final Station 노원 = new Station(5L, "노원역");
+    private final Station 서울대입구 = new Station(6L, "서울대입구역");
+    private final Station 성수 = new Station(7L, "성수역");
 
     private final LineRequest 이호선 =
             new LineRequest("2호선", "bg-green-600",
@@ -48,13 +56,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void init() {
-        createStationResponse(건대입구);
-        createStationResponse(잠실);
-        createStationResponse(선릉);
-        createStationResponse(강남);
-        createStationResponse(노원);
-        createStationResponse(서울대입구);
-        createStationResponse(성수);
+        createStationResponse(new StationRequest(건대입구.getName()));
+        createStationResponse(new StationRequest(잠실.getName()));
+        createStationResponse(new StationRequest(선릉.getName()));
+        createStationResponse(new StationRequest(강남.getName()));
+        createStationResponse(new StationRequest(노원.getName()));
+        createStationResponse(new StationRequest(서울대입구.getName()));
+        createStationResponse(new StationRequest(성수.getName()));
 
         createLineResponse(이호선);
     }
@@ -69,9 +77,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         findSectionsByCreateLine(1L,
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(2L, 잠실.getName()),
-                new StationResponse(4L, 강남.getName())
+                new StationResponse(건대입구),
+                new StationResponse(잠실),
+                new StationResponse(강남)
         );
     }
 
@@ -85,9 +93,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         findSectionsByCreateLine(1L,
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(2L, 잠실.getName()),
-                new StationResponse(4L, 강남.getName())
+                new StationResponse(건대입구),
+                new StationResponse(잠실),
+                new StationResponse(강남)
         );
     }
 
@@ -101,9 +109,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         findSectionsByCreateLine(1L,
-                new StationResponse(7L, 성수.getName()),
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(4L, 강남.getName())
+                new StationResponse(성수),
+                new StationResponse(건대입구),
+                new StationResponse(강남)
         );
     }
 
@@ -117,9 +125,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         findSectionsByCreateLine(1L,
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(4L, 강남.getName()),
-                new StationResponse(6L, 서울대입구.getName())
+                new StationResponse(건대입구),
+                new StationResponse(강남),
+                new StationResponse(서울대입구)
         );
     }
 
@@ -132,17 +140,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
-        checkByCreateValidSections(lineId, response, stationResponse1, stationResponse2, stationResponse3);
-    }
 
-    private void checkByCreateValidSections(Long lineId, ExtractableResponse<Response> response,
-                                            StationResponse stationResponse1,
-                                            StationResponse stationResponse2,
-                                            StationResponse stationResponse3) {
-        final List<StationResponse> stationResponses =
-                List.of(stationResponse1, stationResponse2, stationResponse3);
-        final LineResponse expected =
-                new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare(), stationResponses);
+        Line line = new Line(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare());
+
+        final LineResponse expected = new LineResponse(line,
+                List.of(stationResponse1, stationResponse2, stationResponse3));
         final LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
 
         assertThat(actual)
@@ -191,9 +193,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         findSectionsByDeleteLine(1L,
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(3L, 선릉.getName()),
-                new StationResponse(4L, 강남.getName())
+                new StationResponse(건대입구),
+                new StationResponse(선릉),
+                new StationResponse(강남)
         );
     }
 
@@ -208,9 +210,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         findSectionsByDeleteLine(1L,
-                new StationResponse(2L, 잠실.getName()),
-                new StationResponse(3L, 선릉.getName()),
-                new StationResponse(4L, 강남.getName())
+                new StationResponse(잠실),
+                new StationResponse(선릉),
+                new StationResponse(강남)
         );
     }
 
@@ -225,9 +227,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         findSectionsByDeleteLine(1L,
-                new StationResponse(1L, 건대입구.getName()),
-                new StationResponse(2L, 잠실.getName()),
-                new StationResponse(3L, 선릉.getName())
+                new StationResponse(건대입구),
+                new StationResponse(잠실),
+                new StationResponse(선릉)
         );
     }
 
@@ -269,52 +271,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                                             StationResponse stationResponse3) {
         final List<StationResponse> stationResponses =
                 List.of(stationResponse1, stationResponse2, stationResponse3);
-        final LineResponse expected =
-                new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare(), stationResponses);
+
+        Line line = new Line(lineId, 이호선.getName(), 이호선.getColor(), 이호선.getExtraFare());
+
+        final LineResponse expected = new LineResponse(line, stationResponses);
         final LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
 
         assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
-    }
-
-    private ExtractableResponse<Response> createSectionResponse(Long lineId, SectionRequest sectionRequest) {
-        return RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> deleteSectionResponse(Long lineId, Long stationId) {
-        return RestAssured.given().log().all()
-                .when()
-                .queryParam("stationId", stationId)
-                .delete("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> createLineResponse(LineRequest lineRequest) {
-        return RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
-    }
-
-
-    private ExtractableResponse<Response> createStationResponse(StationRequest stationRequest) {
-        return RestAssured.given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
     }
 }

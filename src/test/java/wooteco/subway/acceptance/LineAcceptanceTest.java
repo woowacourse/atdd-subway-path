@@ -1,8 +1,18 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createLineResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.createStationResponse;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -10,14 +20,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationRequest;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
 
 @DisplayName("지하철노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -30,6 +32,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private final LineRequest lineRequest2 =
             new LineRequest("분당선", "bg-green-600",
                     1L, 3L, 15, 900);
+
+    @BeforeEach
+    void init(){
+        createStationResponse(stationRequest1);
+        createStationResponse(stationRequest2);
+    }
 
     @DisplayName("지하철노선을 생성한다.")
     @Test
@@ -209,28 +217,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private ExtractableResponse<Response> createLineResponse(LineRequest lineRequest) {
-        createStationResponse(stationRequest1);
-        createStationResponse(stationRequest2);
-
-        return RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> createStationResponse(StationRequest stationRequest) {
-        return RestAssured.given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
     }
 }
