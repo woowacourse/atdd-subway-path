@@ -5,13 +5,13 @@ import javax.validation.constraints.Positive;
 
 public class PathRequest {
 
-    @NotNull
+    @NotNull(message = "출발역을 선택해주세요.")
     private Long source;
 
-    @NotNull
+    @NotNull(message = "도착역을 선택해주세요.")
     private Long target;
 
-    @Positive
+    @Positive(message = "나이는 1 이상이어야 합니다.")
     private int age;
 
     private PathRequest() {

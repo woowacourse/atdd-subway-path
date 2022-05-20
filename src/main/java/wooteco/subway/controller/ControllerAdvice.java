@@ -21,7 +21,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         ErrorResponse errorResponse = ErrorResponse.from(exception);
         return ResponseEntity.badRequest().body(errorResponse);
     }
