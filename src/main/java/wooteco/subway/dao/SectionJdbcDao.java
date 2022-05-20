@@ -3,6 +3,7 @@ package wooteco.subway.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,8 +46,8 @@ public class SectionJdbcDao implements SectionDao {
             ps.setBoolean(5, false);
             return ps;
         }, keyHolder);
-        return new Section(keyHolder.getKey().longValue(), section.getLineId(), section.getUpStation(),
-                section.getDownStation(), section.getDistance());
+        return new Section(Objects.requireNonNull(keyHolder.getKey()).longValue(), section.getLineId(),
+                section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     @Override

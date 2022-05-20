@@ -26,6 +26,12 @@ public class FakeLineDao implements LineDao {
         return persistLine;
     }
 
+    @Override
+    public boolean existByName(String name) {
+        return lines.stream()
+                .anyMatch(station -> station.getName().equals(name));
+    }
+
     private Line createNewObject(Line line) {
         Field field = ReflectionUtils.findField(Line.class, "id");
         field.setAccessible(true);
@@ -70,5 +76,10 @@ public class FakeLineDao implements LineDao {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public void deleteByExistName(String name) {
+        lines.removeIf(line -> line.getName().equals(name));
     }
 }

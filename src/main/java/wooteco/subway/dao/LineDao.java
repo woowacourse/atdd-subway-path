@@ -7,6 +7,8 @@ public interface LineDao {
 
     Line save(Line line);
 
+    boolean existByName(String name);
+
     List<Line> findAll();
 
     Line findById(Long id);
@@ -14,4 +16,6 @@ public interface LineDao {
     int update(Line line);
 
     int delete(Long id);
+
+    void deleteByExistName(String name);
 }

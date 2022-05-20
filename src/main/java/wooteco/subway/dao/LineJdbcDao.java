@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,7 +39,14 @@ public class LineJdbcDao implements LineDao {
             ps.setBoolean(4, false);
             return ps;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
+        return new Line(Objects.requireNonNull(keyHolder.getKey()).longValue(),
+                line.getName(), line.getColor(), line.getExtraFare());
+    }
+
+    @Override
+    public boolean existByName(String name) {
+        final String sql = "SELECT EXISTS (SELECT * FROM line WHERE name = (?) AND deleted = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name, false));
     }
 
     @Override
@@ -67,5 +75,11 @@ public class LineJdbcDao implements LineDao {
     public int delete(Long id) {
         final String sql = "UPDATE line SET deleted = (?) WHERE id = (?)";
         return jdbcTemplate.update(sql, true, id);
+    }
+
+    @Override
+    public void deleteByExistName(String name) {
+        final String sql = "DELETE FROM line WHERE  name = (?)";
+        jdbcTemplate.update(sql, name);
     }
 }

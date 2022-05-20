@@ -69,7 +69,7 @@ public class StationJdbcDao implements StationDao {
 
     @Override
     public void deleteByExistName(String name) {
-        final String sql = "DELETE FROM station WHERE EXISTS(SELECT * FROM station WHERE name = (?))";
+        final String sql = "DELETE FROM station WHERE name = (?)";
         jdbcTemplate.update(sql, name);
     }
 }

@@ -7,13 +7,13 @@ public interface StationDao {
 
     Station save(Station station);
 
+    boolean existByName(String name);
+
     List<Station> findAll();
 
     Station findById(Long id);
 
     int deleteById(Long id);
-
-    boolean existByName(String name);
 
     void deleteByExistName(String name);
 }

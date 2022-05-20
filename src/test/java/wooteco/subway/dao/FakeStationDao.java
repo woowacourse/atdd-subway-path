@@ -39,11 +39,6 @@ public class FakeStationDao implements StationDao {
     }
 
     @Override
-    public void deleteByExistName(String name) {
-        stations.removeIf(station -> station.getName().equals(name));
-    }
-
-    @Override
     public List<Station> findAll() {
         return stations;
     }
@@ -74,5 +69,10 @@ public class FakeStationDao implements StationDao {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public void deleteByExistName(String name) {
+        stations.removeIf(station -> station.getName().equals(name));
     }
 }
