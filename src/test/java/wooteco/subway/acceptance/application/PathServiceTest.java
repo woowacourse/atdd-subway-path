@@ -1,12 +1,14 @@
 package wooteco.subway.acceptance.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -51,5 +53,23 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(expectedCost),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
         );
+    }
+
+    @DisplayName("존재하지 않는 경로를 조회하면 예외 발생")
+    @Test
+    void getNonExistentPath() {
+        //given
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Station 삼성역 = new Station("삼성역");
+
+        final List<Section> sections = List.of(Section.createWithoutId(강남역, 역삼역, 10));
+
+        given(sectionDao.findAll()).willReturn(sections);
+        doReturn(강남역).when(stationService).findStationById(1L);
+        doReturn(삼성역).when(stationService).findStationById(3L);
+        //then
+        assertThatThrownBy(() -> pathService.getPath(1L, 3L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
