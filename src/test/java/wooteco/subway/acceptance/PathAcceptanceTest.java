@@ -14,7 +14,7 @@ import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
 @Sql("/pathInitSchema.sql")
-class PathAcceptanceTest extends AcceptanceTest{
+class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("최단 경로와 요금을 조회한다.")

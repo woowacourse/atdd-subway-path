@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -12,6 +13,6 @@ class FareTest {
     void calculateFare(int distance, int expectedFare) {
         Fare fare = Fare.from(distance);
 
-        Assertions.assertThat(fare.getValue()).isEqualTo(expectedFare);
+        assertThat(fare.getValue()).isEqualTo(expectedFare);
     }
 }
