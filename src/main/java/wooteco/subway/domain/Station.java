@@ -18,10 +18,6 @@ public class Station {
         this.name = name;
     }
 
-    public boolean isName(String name) {
-        return this.name.equals(name);
-    }
-
     public Long getId() {
         return id;
     }
