@@ -76,6 +76,20 @@ class AcceptanceTest {
                 .extract();
     }
 
+    protected ExtractableResponse<Response> createLineAndReturnResponse(
+            final String name, final String color, final long upStationId, final long downStationId, final int distance, final int extraFare
+    ) {
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, extraFare);
+        return RestAssured
+                .given()
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then()
+                .extract();
+    }
+
     protected void addSection(final LineResponse createdLine, final StationResponse upStationResponse,
                               final StationResponse downStationResponse, final int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStationResponse.getId(), downStationResponse.getId(),

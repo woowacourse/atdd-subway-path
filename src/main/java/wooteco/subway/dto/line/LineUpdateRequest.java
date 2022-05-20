@@ -1,10 +1,12 @@
 package wooteco.subway.dto.line;
 
 public class LineUpdateRequest {
-    private final String name;
-    private final String color;
-    private final int extraFare;
+    private String name;
+    private String color;
+    private int extraFare;
 
+    public LineUpdateRequest() {
+    }
 
     public LineUpdateRequest(final String name, final String color, final int extraFare) {
         this.name = name;

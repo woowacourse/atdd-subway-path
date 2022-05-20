@@ -28,6 +28,10 @@ public class Line {
         this(null, name, color);
     }
 
+    public Line(final String name, final String color, final int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
     public void update(final String name, final String color) {
         validateNullOrBlank(name);
         validateNullOrBlank(color);
@@ -73,6 +77,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

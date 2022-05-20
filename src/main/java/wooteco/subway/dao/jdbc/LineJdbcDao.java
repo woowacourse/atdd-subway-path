@@ -40,12 +40,13 @@ public class LineJdbcDao implements LineDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO LINE (name, color) VALUES (?, ?)", new String[]{"id"});
+                    "INSERT INTO LINE (name, color, extra_fare) VALUES (?, ?, ?)", new String[]{"id"});
             preparedStatement.setString(1, line.getName());
             preparedStatement.setString(2, line.getColor());
+            preparedStatement.setInt(3, line.getExtraFare());
             return preparedStatement;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override

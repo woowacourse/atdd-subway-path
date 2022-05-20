@@ -11,11 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
-import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.line.LineSaveRequest;
+import wooteco.subway.dto.line.LineUpdateRequest;
 
 class LineAcceptanceTest extends AcceptanceTest {
 
@@ -42,17 +42,19 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         String lineName = "line1";
         String lineColor = "color1";
+        int distance = 10;
+        int extraFare = 100;
         ExtractableResponse<Response> response = createLineAndReturnResponse(lineName, lineColor, station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), distance, extraFare);
 
         // then
-        List<StationResponse> stations = response.body().jsonPath().getList("stations", StationResponse.class);
+        LineResponse expected = new LineResponse(null, lineName, lineColor, extraFare, List.of(station1, station2));
+        LineResponse actual = response.as(LineResponse.class);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(lineName),
-                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(lineColor),
-                () -> assertThat(stations).usingRecursiveComparison().isEqualTo(List.of(station1, station2))
+                () -> assertThat(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected)
         );
     }
 
