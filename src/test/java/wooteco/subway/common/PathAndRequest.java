@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
 
-public class PathAndRequest extends Request{
+public class PathAndRequest extends Request {
 
     private final TStation source;
     private final TStation target;
@@ -16,15 +16,18 @@ public class PathAndRequest extends Request{
         this.target = target;
     }
 
-    public ExtractableResponse<Response> 의최단거리를계산한다(int age) {
-        ExtractableResponse<Response> response = get(
+    public ExtractableResponse<Response> 의최단거리를계산한다(int age, int status) {
+        ExtractableResponse<Response> response = 최단거리를계산한다(age);
+        assertThat(response.statusCode()).isEqualTo(status);
+        return response;
+    }
+
+    public ExtractableResponse<Response> 최단거리를계산한다(int age) {
+        return get(
                 String.format("/paths?source=%d&target=%d&age=%s",
                         source.getId(),
                         target.getId(),
                         age)
         );
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response;
     }
 }

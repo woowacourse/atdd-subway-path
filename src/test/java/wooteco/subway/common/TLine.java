@@ -9,7 +9,8 @@ import wooteco.subway.dto.SectionRequest;
 public enum TLine {
 
     LINE_SIX("6호선", 200),
-    LINE_TWO("2호선", 100);
+    LINE_TWO("2호선", 100),
+    LINE_NO_EXTRA("후니선", 0);
 
     private final String name;
     private final String color;

@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.common.TLine.LINE_NO_EXTRA;
 import static wooteco.subway.common.TLine.LINE_SIX;
 import static wooteco.subway.common.TLine.LINE_TWO;
 import static wooteco.subway.common.TStation.BOMUN;
@@ -11,8 +12,6 @@ import static wooteco.subway.common.TStation.SANGWANGSIMNI;
 import static wooteco.subway.common.TStation.SINDANG;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ import wooteco.subway.dto.StationResponse;
 
 class PathAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("경로 조회를 요청하면, 200 OK 와 관련 지하철역 정보, 거리, 요금을 반환한다.")
+    @DisplayName("경로 조회 시, 200 OK 와 관련 지하철역 정보, 거리, 요금을 반환한다.")
     @Test
     void getPaths() {
         Station 신당역 = SINDANG.역을등록한다();
@@ -32,15 +31,18 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
         SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
-        LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
-        PathResponse pathResponse = SINDANG.에서(CHANGSIN).의최단거리를계산한다(20)
+
+        LINE_NO_EXTRA.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+
+        PathResponse pathResponse = SINDANG.부터(CHANGSIN).의최단거리를계산한다(20, HttpStatus.OK.value())
                 .as(PathResponse.class);
+
         assertAll(() -> {
             assertThat(pathResponse.getStations()).containsExactly(new StationResponse(신당역),
                     new StationResponse(동묘앞역),
                     new StationResponse(창신역));
             assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
-            assertThat(pathResponse.getFare()).isEqualTo(1650);
+            assertThat(pathResponse.getFare()).isEqualTo(1450);
         });
     }
 
@@ -54,9 +56,9 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
         SectionRequest 보문_창신 = createSectionRequest(보문역, 창신역, STANDARD_DISTANCE);
+
         LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(보문_창신);
-        ExtractableResponse<Response> response = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        SINDANG.부터(CHANGSIN).의최단거리를계산한다(15, HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("경로 조회시, 환승이 발생하면 최대 추가비용이 추가되고 200 OK를 반환한다.")
@@ -72,10 +74,28 @@ class PathAcceptanceTest extends AcceptanceTest {
         LINE_SIX.노선을등록한다(신당_동묘);
         LINE_TWO.노선을등록한다(신당_상왕십리);
 
-        PathResponse response = DONGMYO.에서(SANGWANGSIMNI).의최단거리를계산한다(20)
+        PathResponse response = DONGMYO.부터(SANGWANGSIMNI).의최단거리를계산한다(20, HttpStatus.OK.value())
                 .as(PathResponse.class);
 
         assertThat(response.getFare()).isEqualTo(1650);
+    }
+
+    @DisplayName("경로 조회 시, 청소년 요금을 할인하고 200 OK를 반환한다.")
+    @Test
+    void getPathsTeenAgerDiscount() {
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
+
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, 5);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, 5);
+
+        LINE_NO_EXTRA.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+
+        PathResponse pathResponse = SINDANG.부터(CHANGSIN).의최단거리를계산한다(15, HttpStatus.OK.value())
+                .as(PathResponse.class);
+
+        assertThat(pathResponse.getFare()).isEqualTo(720);
     }
 
     private SectionRequest createSectionRequest(Station up, Station down, int distance) {

@@ -28,7 +28,7 @@ public enum TStation {
         return new Station(id, stationResponse.getName());
     }
 
-    public PathAndRequest 에서(TStation target) {
+    public PathAndRequest 부터(TStation target) {
         return new PathAndRequest(this, target);
     }
 
