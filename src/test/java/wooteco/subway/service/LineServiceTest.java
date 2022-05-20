@@ -53,7 +53,7 @@ class LineServiceTest {
                 선정릉역.getId(), 10, 0));
     }
 
-    @DisplayName("새로운 노선 셍성 정보를 이용해 노선을 생성한다.")
+    @DisplayName("새로운 노선 생성 정보를 이용해 노선을 생성한다.")
     @Test
     void create() {
         LineRequest request =
