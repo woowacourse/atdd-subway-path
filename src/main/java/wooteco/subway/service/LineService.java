@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
 public class LineService {
     private final LineDao lineDao;
@@ -33,6 +32,7 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest lineRequest) {
         checkExistLineByName(lineRequest);
         final Line line = createLine(lineRequest);
@@ -41,7 +41,7 @@ public class LineService {
         final Station downStation = findByStationId(lineRequest.getDownStationId());
         final List<StationResponse> stationResponses = makeStationResponseByStation(List.of(upStation, downStation));
 
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses);
+        return new LineResponse(line, stationResponses);
     }
 
     private void checkExistLineByName(LineRequest lineRequest) {
@@ -68,6 +68,7 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchElementException("구간 내 존재하는 역 조회에 오류가 발생했습니다."));
     }
 
+    @Transactional
     public void addSection(Long lineId, SectionRequest sectionRequest) {
         final Line line = loadLine(lineId);
         validateLine(sectionDao.findByLineId(lineId));
@@ -129,7 +130,7 @@ public class LineService {
         final List<Station> stations = sortStations(line.getId(), sections);
 
         final List<StationResponse> stationResponses = makeStationResponseByStation(stations);
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses);
+        return new LineResponse(line, stationResponses);
     }
 
     private List<Station> sortStations(Long lineId, List<Section> sections) {
@@ -155,11 +156,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void updateLine(Long id, String name, String color, int extraFare) {
         checkExistLineById(id);
         lineDao.updateById(id, name, color, extraFare);
     }
 
+    @Transactional
     public void deleteLine(Long id) {
         checkExistLineById(id);
         final List<Section> sections = sectionDao.findByLineId(id);
@@ -172,6 +175,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException(id + "번에 해당하는 노선이 존재하지 않습니다."));
     }
 
+    @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         final Station station = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException(stationId + "번에 해당하는 지하철역이 존재하지 않습니다."));

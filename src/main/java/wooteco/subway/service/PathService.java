@@ -16,7 +16,6 @@ import wooteco.subway.dto.PathResponse;
 import java.util.List;
 import java.util.Objects;
 
-@Transactional
 @Service
 public class PathService {
     private final StationDao stationDao;
@@ -27,6 +26,7 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public PathResponse findShortestPath(Long upStationId, Long downStationId) {
         validateNotSameStations(upStationId, downStationId);
         final GraphPath<Station, DefaultWeightedEdge> graphPath = findGraphPath(upStationId, downStationId);

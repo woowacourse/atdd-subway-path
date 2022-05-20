@@ -11,7 +11,6 @@ import wooteco.subway.dto.StationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
 public class StationService {
     private final StationDao stationDao;
@@ -22,6 +21,7 @@ public class StationService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         checkExistStationByName(stationRequest);
         final Station station = new Station(stationRequest.getName());
@@ -43,6 +43,7 @@ public class StationService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional
     public void deleteStation(Long id) {
         checkExistStationById(id);
         stationDao.deleteById(id);
