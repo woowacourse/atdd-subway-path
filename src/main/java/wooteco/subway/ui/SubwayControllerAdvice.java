@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.DuplicateLineException;
 import wooteco.subway.exception.DuplicateStationException;
+import wooteco.subway.exception.SubwayException;
 
 @ControllerAdvice
 public class SubwayControllerAdvice {
@@ -16,8 +17,8 @@ public class SubwayControllerAdvice {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({DuplicateStationException.class, DuplicateLineException.class})
-    public ResponseEntity<String> handleBadRequest(Exception exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<String> handleBadRequest(SubwayException exception) {
+        return new ResponseEntity<>(exception.getMessage(), exception.getHttpStatus());
     }
 }
