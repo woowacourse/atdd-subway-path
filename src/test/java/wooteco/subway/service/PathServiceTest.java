@@ -24,13 +24,13 @@ import wooteco.subway.domain.Station;
 @Transactional
 class PathServiceTest {
 
+    private final Map<String, Station> stations = new HashMap<>();
     @Autowired
     private StationService stationService;
     @Autowired
     private LineService lineService;
     @Autowired
     private PathService pathService;
-    private final Map<String, Station> stations = new HashMap<>();
 
     //            신사 (3호선)
     //            |10|
@@ -81,11 +81,11 @@ class PathServiceTest {
     @Test
     void findPath() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        Path path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
         assertThat(path.getStations())
@@ -97,11 +97,11 @@ class PathServiceTest {
     @Test
     void findPathReverse() {
         // given
-        Station source = stations.get("논현역");
-        Station target = stations.get("내방역");
+        Long sourceStationId = stations.get("논현역").getId();
+        Long targetStationId = stations.get("내방역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
             .getStations();
 
         // then
@@ -114,11 +114,11 @@ class PathServiceTest {
     @Test
     void doubleLine() {
         // given
-        Station source = stations.get("신사역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("신사역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
             .getStations();
 
         // then
@@ -131,11 +131,11 @@ class PathServiceTest {
     @Test
     void shortestPath() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("사평역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("사평역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
             .getStations();
 
         // then
@@ -148,11 +148,11 @@ class PathServiceTest {
     @Test
     void pathDistance() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        Path path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
         assertThat(path.getDistance()).isEqualTo(30);
@@ -162,11 +162,11 @@ class PathServiceTest {
     @Test
     void fare() {
         // given
-        Station source = stations.get("신사역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("신사역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        Path path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
         assertThat(path.calculateFare()).isEqualTo(1950);

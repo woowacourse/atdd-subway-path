@@ -13,12 +13,16 @@ import wooteco.subway.domain.Station;
 public class PathService {
 
     private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    public PathService(LineRepository lineRepository) {
+    public PathService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
+        this.stationService = stationService;
     }
 
-    public Path findPath(Station source, Station target) {
+    public Path findPath(Long sourceStationId, Long targetStationId) {
+        Station source = stationService.findOne(sourceStationId);
+        Station target = stationService.findOne(targetStationId);
         Lines lines = new Lines(lineRepository.findAll());
         return lines.findPath(source, target);
     }
