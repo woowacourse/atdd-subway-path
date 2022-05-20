@@ -10,6 +10,7 @@ import static wooteco.subway.common.TStation.CHANGSIN;
 import static wooteco.subway.common.TStation.DONGMYO;
 import static wooteco.subway.common.TStation.SANGWANGSIMNI;
 import static wooteco.subway.common.TStation.SINDANG;
+import static wooteco.subway.common.TStation.WANGSIMNI;
 import static wooteco.subway.common.TestFixtures.CHILD_DEFAULT_FARE;
 import static wooteco.subway.common.TestFixtures.CHILD_MAX_AGE;
 import static wooteco.subway.common.TestFixtures.DEFAULT_AGE;
@@ -123,6 +124,35 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .as(PathResponse.class);
 
         assertThat(pathResponse.getFare()).isEqualTo(CHILD_DEFAULT_FARE);
+    }
+
+    @DisplayName("경로 조회 시, 50km 이상의 요금 정책에 따라 계산하고 200 OK를 반환한다.")
+    @Test
+    void getPathsMaxFareStrategy() {
+        Station 왕십리 = WANGSIMNI.역을등록한다();
+        Station 상왕십리 = SANGWANGSIMNI.역을등록한다();
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
+        Station 보문역 = BOMUN.역을등록한다();
+
+        SectionRequest 왕십리_상왕십리 = createSectionRequest(왕십리, 상왕십리, STANDARD_DISTANCE);
+        SectionRequest 상왕십리_신당 = createSectionRequest(상왕십리, 신당역, STANDARD_DISTANCE);
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
+        SectionRequest 창신_보문 = createSectionRequest(창신역, 보문역, STANDARD_DISTANCE + 1);
+
+        LINE_NO_EXTRA_FARE.노선을등록하고(왕십리_상왕십리)
+                .구간을등록한다(
+                        상왕십리_신당,
+                        신당_동묘,
+                        동묘_창신,
+                        창신_보문);
+
+        PathResponse pathResponse = WANGSIMNI.부터(BOMUN).의최단거리를계산한다(DEFAULT_AGE, HttpStatus.OK.value())
+                .as(PathResponse.class);
+
+        assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
 
     private SectionRequest createSectionRequest(Station up, Station down, int distance) {

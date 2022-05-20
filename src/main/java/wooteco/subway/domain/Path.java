@@ -7,12 +7,6 @@ import wooteco.subway.exception.SubwayException;
 
 public class Path {
 
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int DEFAULT_FARE = 1250;
-    private static final int OVER_FARE_DISTANCE = 50;
-    private static final int STANDARD_UNIT = 5;
-    private static final int MAX_UNIT = 8;
-
     private final PathCalculator pathCalculator;
     private final Station startStation;
     private final Station endStation;
