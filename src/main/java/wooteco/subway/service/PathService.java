@@ -30,8 +30,8 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
-        Station source = stationService.findById(pathRequest.getSourceId());
-        Station target = stationService.findById(pathRequest.getTargetId());
+        Station source = stationService.findById(pathRequest.getSource());
+        Station target = stationService.findById(pathRequest.getTarget());
 
         Sections sections = new Sections(sectionDao.findAll());
 
