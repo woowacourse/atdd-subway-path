@@ -21,7 +21,7 @@ public class PathResponse {
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
         final int distance = path.getDistance();
-        final int fare = path.getCost();
+        final int fare = path.getFare();
         return new PathResponse(stationResponses, distance, fare);
     }
 
