@@ -4,9 +4,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.reopository.entity.LineEntity;
 import wooteco.subway.domain.Line;
 import wooteco.subway.reopository.dao.LineDao;
+import wooteco.subway.reopository.entity.LineEntity;
 
 @Repository
 public class LineRepository {

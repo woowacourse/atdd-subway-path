@@ -9,11 +9,11 @@ public class Section {
     public static final String DISTANCE_OVER_ERROR_MESSAGE = "추가하려는 구간의 거리가 현재 구간의 거리리보다 큽니다.";
     private static final int MIN_DISTANCE = 1;
 
-    private Long id;
-    private Line line;
-    private Station upStation;
-    private Station downStation;
-    private int distance;
+    private final Long id;
+    private final Line line;
+    private final Station upStation;
+    private final Station downStation;
+    private final int distance;
 
     public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
         validate(distance);

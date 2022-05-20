@@ -3,10 +3,6 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.reopository.entity.SectionEntity;
-import wooteco.subway.reopository.LineRepository;
-import wooteco.subway.reopository.SectionRepository;
-import wooteco.subway.reopository.StationRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -16,6 +12,9 @@ import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.exception.BadRequestException;
+import wooteco.subway.reopository.LineRepository;
+import wooteco.subway.reopository.SectionRepository;
+import wooteco.subway.reopository.StationRepository;
 
 @Service
 public class LineService {

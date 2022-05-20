@@ -17,7 +17,6 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> badRequestExceptionHandler(BadRequestException e) {
-        log.debug(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 

@@ -12,8 +12,6 @@ import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
-import wooteco.subway.reopository.dao.SectionDao;
-import wooteco.subway.reopository.dao.StationDao;
 
 @Service
 public class PathService {
@@ -38,7 +36,7 @@ public class PathService {
         List<Long> shortestPath = path.createShortestPath(source, target);
 
         List<Station> stations = shortestPath.stream()
-                .map(station -> stationRepository.findById(station,"해당 역을 찾을 수 없음"))
+                .map(station -> stationRepository.findById(station, "해당 역을 찾을 수 없음"))
                 .collect(Collectors.toList());
 
         int distance = path.calculateDistance(source, target);

@@ -1,10 +1,8 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,7 +12,7 @@ class FareTest {
 
     private final Fare fare = new Fare(1250);
 
-    @DisplayName("1Km 이상 10Km 미만이면 1250원 기본 요금이다.")
+    @DisplayName("1Km 이상 10Km 이하이면 1250원 기본 요금이다.")
     @ParameterizedTest
     @ValueSource(ints = {1, 7, 8, 9})
     void baseUnderDistanceFare(int distance) {
@@ -23,7 +21,7 @@ class FareTest {
 
     @DisplayName("10Km 초과 50Km 이하이면 1250원 기본 요금 + 5km 초과당 100원씩 추가요금")
     @ParameterizedTest
-    @CsvSource({"10,1350", "15,1350", "16,1450",
+    @CsvSource({"10,1250", "15,1350", "16,1450",
             "25,1550", "50,2050"})
     void baseOverFirstRoleUnderDistanceFare(int distance, int actualFare) {
         assertThat(fare.calculateFare(distance, new BasicFareStrategy())).isEqualTo(actualFare);

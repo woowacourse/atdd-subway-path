@@ -9,8 +9,8 @@ public class Station {
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 2;
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
         validateNameRange(name);

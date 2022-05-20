@@ -1,17 +1,14 @@
 package wooteco.subway.reopository;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
-import wooteco.subway.reopository.dao.LineDao;
-import wooteco.subway.reopository.dao.StationDao;
-import wooteco.subway.reopository.entity.SectionEntity;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.reopository.dao.SectionDao;
+import wooteco.subway.reopository.entity.SectionEntity;
 
 @Repository
 public class SectionRepository {
