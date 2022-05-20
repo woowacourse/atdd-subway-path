@@ -2,15 +2,15 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCondition;
+import wooteco.subway.domain.fare.FareStrategyFactory;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.path.ShortestPathEdge;
-import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
@@ -43,7 +43,13 @@ public class PathService {
         Path path = new Path(pathCalculator, startStation, endStation);
         List<StationResponse> stationResponses = toStationResponses(path.findShortestStations(sections));
         int distance = path.calculateMinDistance(sections);
-        int fare = path.calculateFare(sections);
+
+        int fare = FareStrategyFactory.get(distance)
+                .calculateFare(new FareCondition(
+                        distance,
+                        pathRequest.getAge(),
+                        findMaxExtraFare(path.findPassedEdges(sections)))
+                );
         return new PathResponse(stationResponses, distance, fare);
     }
 
@@ -52,7 +58,7 @@ public class PathService {
                 .map(ShortestPathEdge::getLineId)
                 .distinct()
                 .collect(Collectors.toList());
-        return 1;
+        return lineRepository.findMaxExtraFare(lineIds);
     }
 
     private List<StationResponse> toStationResponses(final List<Station> stations) {

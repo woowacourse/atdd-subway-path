@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import wooteco.subway.domain.path.PathCalculator;
+import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {
@@ -37,6 +38,10 @@ public class Path {
 
     public List<Station> findShortestStations(final Sections sections) {
         return pathCalculator.calculateShortestStations(sections, startStation, endStation);
+    }
+
+    public List<ShortestPathEdge> findPassedEdges(final Sections sections) {
+        return pathCalculator.findPassedEdges(sections, startStation, endStation);
     }
 
     public int calculateFare(final Sections sections) {

@@ -48,7 +48,7 @@ public class PathServiceTest {
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
 
-        Line line = createLine(LINE_SIX_NAME, LINE_COLOR, 0);
+        Line line = createLine(LINE_SIX_NAME, LINE_COLOR, 100);
 
         sectionRepository.save(new Section(line.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
@@ -62,7 +62,7 @@ public class PathServiceTest {
                     new StationResponse(saved_동묘앞역),
                     new StationResponse(saved_창신역));
             assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
-            assertThat(pathResponse.getFare()).isEqualTo(1450);
+            assertThat(pathResponse.getFare()).isEqualTo(1550);
         });
 
     }
