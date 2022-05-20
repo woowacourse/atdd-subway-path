@@ -1,10 +1,12 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathServiceRequest;
 import wooteco.subway.service.dto.PathServiceResponse;
@@ -20,17 +22,18 @@ public class PathService {
         this.sectionService = sectionService;
     }
 
-    public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest) {
-        Sections sections = sectionService.findAll();
+    public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest,
+                                                Function<List<Section>, Path> pathStrategy) {
+        Path path = pathStrategy.apply(sectionService.findAll().getSections());
         Long departureId = pathServiceRequest.getDepartureId();
         Long arrivalId = pathServiceRequest.getArrivalId();
-        List<Long> shortestPathStationIds = sections.getShortestPathStationIds(departureId, arrivalId);
+        List<Long> shortestPathStationIds = path.getShortestPathStationIds(departureId, arrivalId);
         List<Station> stations = shortestPathStationIds.stream()
                 .map(stationService::findById)
                 .collect(Collectors.toList());
 
-        int distance = sections.getShortestPathDistance(departureId, arrivalId);
-        int fare = FareCalculator.getInstance().calculate(distance);
-        return new PathServiceResponse(stations, distance, fare);
+        int distance = path.getShortestPathDistance(departureId, arrivalId);
+        Fare fare = new Fare(distance);
+        return new PathServiceResponse(stations, distance, fare.value());
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.DijkstraPath;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineServiceRequest;
@@ -48,7 +49,7 @@ class PathServiceTest extends ServiceTest {
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
 
-        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest, DijkstraPath::new);
 
         assertAll(
                 () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
@@ -72,7 +73,7 @@ class PathServiceTest extends ServiceTest {
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간에 등록 되지 않은 역입니다.");
     }
@@ -92,7 +93,7 @@ class PathServiceTest extends ServiceTest {
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 구간입니다.");
     }

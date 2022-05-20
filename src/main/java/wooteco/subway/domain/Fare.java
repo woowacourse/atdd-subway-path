@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-public class FareCalculator {
+public class Fare {
 
     private static final int BASIC_FARE = 1250;
     private static final double BASIC_THRESHOLD_DISTANCE = 10.0;
@@ -9,15 +9,10 @@ public class FareCalculator {
     private static final int LONG_RANGE_DISTANCE_RATE = 8;
     private static final int OVER_FARE = 100;
 
-    private FareCalculator() {
-    }
+    private final int value;
 
-    private static class Holder {
-        private static final FareCalculator instance = new FareCalculator();
-    }
-
-    public static FareCalculator getInstance() {
-        return Holder.instance;
+    public Fare(int distance) {
+        value = calculate(distance);
     }
 
     public int calculate(int distance) {
@@ -36,5 +31,9 @@ public class FareCalculator {
         fare += (int) (Math.min(Math.ceil((distance - BASIC_THRESHOLD_DISTANCE) / BASIC_DISTANCE_RATE),
                 LONG_RANGE_DISTANCE_RATE) * OVER_FARE);
         return fare;
+    }
+
+    public int value() {
+        return value;
     }
 }

@@ -12,9 +12,10 @@ class FareTest {
     @ParameterizedTest
     @CsvSource({"10, 1250", "11, 1350", "16, 1450", "51, 2150"})
     void calculateFare(int distance, int expected) {
-        FareCalculator fareCalculator = FareCalculator.getInstance();
-        int fare = fareCalculator.calculate(distance);
+        Fare fare = new Fare(distance);
 
-        assertThat(fare).isEqualTo(expected);
+        int actual = fare.value();
+
+        assertThat(actual).isEqualTo(expected);
     }
 }
