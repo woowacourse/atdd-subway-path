@@ -4,9 +4,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PathFinder {
 
@@ -26,31 +24,17 @@ public class PathFinder {
 
     private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath(List<Section> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        Set<Long> stationIds = findNonDuplicateStationIds(sections);
-        fillVertexes(graph, stationIds);
-        fillEdges(sections, graph);
+        fillVertexesAndEdges(graph, sections);
         return new DijkstraShortestPath<>(graph);
     }
 
-    private Set<Long> findNonDuplicateStationIds(List<Section> sections) {
-        Set<Long> stationIds = new HashSet<>();
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-        return stationIds;
-    }
-
-    private void fillVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Set<Long> stationIds) {
-        for (Long stationId : stationIds) {
-            graph.addVertex(stationId);
-        }
-    }
-
-    private void fillEdges(List<Section> sections, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    private void fillVertexesAndEdges(WeightedMultigraph<Long, DefaultWeightedEdge> graph, List<Section> sections) {
         for (Section section : sections) {
             Long upStationId = section.getUpStationId();
             Long downStationId = section.getDownStationId();
+
+            graph.addVertex(upStationId);
+            graph.addVertex(downStationId);
 
             DefaultWeightedEdge edge = graph.addEdge(upStationId, downStationId);
             graph.setEdgeWeight(edge, section.getDistance());
