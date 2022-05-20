@@ -15,9 +15,7 @@ import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -157,7 +155,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.add(input);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -172,7 +170,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.add(input);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -187,7 +185,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.add(input);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -202,7 +200,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.add(input);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -218,7 +216,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.remove(lineId, id);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -234,7 +232,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.remove(lineId, id);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -250,7 +248,7 @@ class SectionsTest {
 
                     // when
                     final SectionResult result = sections.remove(lineId, id);
-                    final List<Station> sortedStations = getSortedStations(sections);
+                    final List<Station> sortedStations = sections.getStations();
 
                     // then
                     assertAll(
@@ -259,19 +257,5 @@ class SectionsTest {
                     );
                 })
         );
-    }
-
-    private List<Station> getSortedStations(Sections sections) {
-        final List<Section> sortedSections = sections.getSections();
-
-        final Section first = sortedSections.get(0);
-        final List<Section> newgo = new ArrayList<>(sortedSections);
-        newgo.remove(first);
-        newgo.add(0, first);
-
-        return newgo.stream()
-                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
-                .distinct()
-                .collect(Collectors.toList());
     }
 }

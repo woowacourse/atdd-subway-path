@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
 import wooteco.subway.exception.validation.SectionDuplicateException;
@@ -105,7 +106,6 @@ public class Sections {
 
         sections.removeAll(List.of(upSection, downSection));
         sections.add(merged);
-        Collections.sort(sections);
 
         return SectionResult.MIDDLE_REMOVED;
     }
@@ -178,5 +178,12 @@ public class Sections {
                 )
                 .findAny()
                 .orElseThrow(() -> new SubwayUnknownException("상행 종점을 탐색하는데 실패했습니다"));
+    }
+
+    public List<Station> getStations() {
+        return getSections().stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
