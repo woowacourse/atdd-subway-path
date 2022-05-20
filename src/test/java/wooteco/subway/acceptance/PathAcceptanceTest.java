@@ -31,14 +31,14 @@ class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
         SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
         LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
-        PathResponse pathResponse = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15)
+        PathResponse pathResponse = SINDANG.에서(CHANGSIN).의최단거리를계산한다(20)
                 .as(PathResponse.class);
         assertAll(() -> {
             assertThat(pathResponse.getStations()).containsExactly(new StationResponse(신당역),
                     new StationResponse(동묘앞역),
                     new StationResponse(창신역));
             assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
-            assertThat(pathResponse.getFare()).isEqualTo(1450);
+            assertThat(pathResponse.getFare()).isEqualTo(1650);
         });
     }
 
