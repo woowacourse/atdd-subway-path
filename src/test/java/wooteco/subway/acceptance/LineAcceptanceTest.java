@@ -133,6 +133,20 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("추가 요금이 음수로 지하철 노선을 등록할 때 400번 코드를 반환한다.")
+    @Test
+    void throwsExceptionWhenCreateLineWithNegativeExtraFare() {
+        // given
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 0, -500);
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssuredConvenienceMethod.postRequest(request, basicPath);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
