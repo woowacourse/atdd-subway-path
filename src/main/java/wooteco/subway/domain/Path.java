@@ -10,23 +10,21 @@ import wooteco.subway.exception.NotFoundStationException;
 
 public class Path {
 
-    private final LinkedList<Section> path;
+    private final List<Section> path;
 
-    private Path(LinkedList<Section> path) {
+    private Path(List<Section> path) {
         this.path = path;
     }
 
     public static Path of(Sections sections, long sourceId, long targetId) {
         validateMovement(sourceId, targetId);
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath =
             new DijkstraShortestPath<>(graph);
-
         List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
-        LinkedList<Section> path = toSections(sections, shortestPath);
-        return new Path(path);
+        return new Path(mappingSectionsWithVertex(sections, shortestPath));
     }
 
     private static void validateMovement(long sourceId, long targetId) {
@@ -61,12 +59,13 @@ public class Path {
         }
     }
 
-    private static LinkedList<Section> toSections(Sections sections, List<Long> shortestPath) {
-        LinkedList<Section> path = new LinkedList<>();
-
+    private static List<Section> mappingSectionsWithVertex(Sections sections,
+                                                           List<Long> shortestPath) {
+        List<Section> path = new LinkedList<>();
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
         }
+
         return path;
     }
 
