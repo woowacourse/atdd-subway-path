@@ -11,7 +11,8 @@ public class PathFinder {
     final private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(final List<Station> stations, final List<Section> sections) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph =
+                new WeightedMultigraph(DefaultWeightedEdge.class);
         addVertex(stations, graph);
         addEdge(sections, graph);
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);

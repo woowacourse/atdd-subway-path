@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.CreateStationRequest;
 import wooteco.subway.dto.response.StationResponse;
@@ -12,6 +13,7 @@ import wooteco.subway.exception.notfound.NotFoundStationException;
 import wooteco.subway.repository.StationRepository;
 
 @Service
+@Transactional
 public class StationService {
 
     private final StationRepository repository;
@@ -31,6 +33,7 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> showStations() {
         final List<Station> stations = repository.findAll();
         return stations.stream()
@@ -38,6 +41,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Station show(final Long id) {
         return repository.findById(id);
     }

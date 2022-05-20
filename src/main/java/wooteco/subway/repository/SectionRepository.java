@@ -52,13 +52,6 @@ public class SectionRepository {
                 }).collect(Collectors.toList()));
     }
 
-    public Section findById(final Long id) {
-        final SectionEntity entity = sectionDao.findById(id);
-        final Station upStation = stationRepository.findById(entity.getUpStationId());
-        final Station downStation = stationRepository.findById(entity.getDownStationId());
-        return new Section(entity.getId(), upStation, downStation, entity.getDistance());
-    }
-
     public void deleteById(final Long id) {
         sectionDao.deleteById(id);
     }
