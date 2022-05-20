@@ -2,11 +2,9 @@ package wooteco.subway.acceptance.fixture;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-
+import io.restassured.response.ResponseBody;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
-
 import wooteco.subway.dto.response.ExceptionResponse;
 
 public class SimpleResponse {
@@ -14,6 +12,10 @@ public class SimpleResponse {
 
     public SimpleResponse(Response response) {
         this.response = response;
+    }
+
+    public ResponseBody body() {
+        return response.body();
     }
 
     public boolean containsExceptionMessage(String message) {
@@ -44,8 +46,12 @@ public class SimpleResponse {
                 .statusCode(status.value());
     }
 
-    public Long getIdFromLocation() {
-        return Long.parseLong(getHeader("Location").split("/")[2]);
+    public <T> List<T> getList(String path, Class<T> clazz) {
+        return response.body().jsonPath().getList(path, clazz);
+    }
+
+    public <T> T getObject(String path, Class<T> clazz) {
+        return response.body().jsonPath().getObject(path, clazz);
     }
 
     public String getHeader(String name) {
