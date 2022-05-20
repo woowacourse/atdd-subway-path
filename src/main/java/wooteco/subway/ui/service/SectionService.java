@@ -32,7 +32,7 @@ public class SectionService {
         Section section = new Section(upStation, downStation, sectionRequest.getDistance());
 
         line.addSection(section);
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.saveAll(line.getSections(), line.getId());
     }
 
     @Transactional
@@ -40,8 +40,8 @@ public class SectionService {
         Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
         Station station = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
-        sectionDao.delete(line.delete(station));
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.deleteById(line.delete(station));
+        sectionDao.saveAll(line.getSections(), line.getId());
     }
 
     public void deleteByLine(Long id) {

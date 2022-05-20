@@ -9,9 +9,10 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,7 @@ import wooteco.subway.domain.Station;
 @Repository
 public class LineDao {
     private final SimpleJdbcInsert jdbcInsert;
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) ->
             new Line(
                     resultSet.getLong("id"),
@@ -36,7 +37,7 @@ public class LineDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Line save(Line line) {
@@ -58,9 +59,10 @@ public class LineDao {
     }
 
     public Optional<Line> findById(Long id) {
-        String sql = "SELECT * FROM line WHERE id = ?";
+        String sql = "SELECT * FROM line WHERE id = :id";
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, paramSource, lineRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -74,8 +76,10 @@ public class LineDao {
                 + "FROM section AS sec "
                 + "JOIN station AS us ON sec.up_station_id = us.id "
                 + "JOIN station AS ds ON sec.down_station_id = ds.id "
-                + "WHERE line_id = ? ORDER BY index_num";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToSection(resultSet), id);
+                + "WHERE line_id = :id ORDER BY index_num";
+
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
+        return jdbcTemplate.query(sql, paramSource, (resultSet, rowNum) -> mapToSection(resultSet));
     }
 
     private Section mapToSection(ResultSet resultSet) throws SQLException {
@@ -94,8 +98,13 @@ public class LineDao {
     }
 
     public int update(Line line) {
-        String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+
+        SqlParameterSource paramSource = new MapSqlParameterSource("name", line.getName())
+                .addValue("color", line.getColor())
+                .addValue("id", line.getId());
+
+        int updatedCount = jdbcTemplate.update(sql, paramSource);
         validateUpdated(updatedCount);
         return updatedCount;
     }
@@ -107,8 +116,10 @@ public class LineDao {
     }
 
     public int delete(Long id) {
-        String sql = "DELETE FROM line WHERE id = ?";
-        int deletedCount = jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM line WHERE id = :id";
+
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
+        int deletedCount = jdbcTemplate.update(sql, paramSource);
         validateDeleted(deletedCount);
         return deletedCount;
     }

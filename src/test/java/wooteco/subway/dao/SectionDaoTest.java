@@ -44,7 +44,7 @@ public class SectionDaoTest {
     void save_sections() {
         Section section = new Section(downTermination, station, 5);
         line.addSection(section);
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.saveAll(line.getSections(), line.getId());
     }
 
     @DisplayName("특정 구간을 삭제할 수 있다")
@@ -52,11 +52,11 @@ public class SectionDaoTest {
     void delete() {
         Section section = new Section(downTermination, station, 5);
         line.addSection(section);
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.saveAll(line.getSections(), line.getId());
 
         Line updatedLine = lineDao.findById(line.getId()).get();
         Section deletedSection = updatedLine.delete(station);
-        assertThat(sectionDao.delete(deletedSection)).isEqualTo(1);
+        assertThat(sectionDao.deleteById(deletedSection)).isEqualTo(1);
     }
 
     @DisplayName("특정 노선의 구간을 모두 삭제할 수 있다")
@@ -64,7 +64,7 @@ public class SectionDaoTest {
     void deleteByLine() {
         Section section = new Section(downTermination, station, 5);
         line.addSection(section);
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.saveAll(line.getSections(), line.getId());
         assertThat(sectionDao.deleteByLine(line.getId())).isEqualTo(2);
     }
 
@@ -73,7 +73,7 @@ public class SectionDaoTest {
     void delete_no_data() {
         Section section = new Section(1L, upTermination, downTermination, 10);
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> sectionDao.delete(section))
+                .isThrownBy(() -> sectionDao.deleteById(section))
                 .withMessageContaining("존재하지 않습니다");
     }
 
@@ -84,7 +84,7 @@ public class SectionDaoTest {
 
         line.addSection(section);
 
-        sectionDao.save(line.getSections(), line.getId());
+        sectionDao.saveAll(line.getSections(), line.getId());
         assertThat(sectionDao.findAll()).hasSize(2);
     }
 }

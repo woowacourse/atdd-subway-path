@@ -22,7 +22,7 @@ import wooteco.subway.domain.Station;
 public class StationDao {
 
     private final SimpleJdbcInsert jdbcInsert;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
             new Station(
                     resultSet.getLong("id"),
@@ -32,7 +32,7 @@ public class StationDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Station save(Station station) {
@@ -50,14 +50,14 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
-        return namedParameterJdbcTemplate.query(sql, stationRowMapper);
+        return jdbcTemplate.query(sql, stationRowMapper);
     }
 
     public Optional<Station> findById(Long id) {
         String sql = "SELECT * FROM station WHERE id = :id";
         SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, paramSource, stationRowMapper));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, paramSource, stationRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -66,7 +66,7 @@ public class StationDao {
     public int deleteById(Long id) {
         String sql = "DELETE FROM station WHERE id = :id";
         SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
-        int deletedCount = namedParameterJdbcTemplate.update(sql, paramSource);
+        int deletedCount = jdbcTemplate.update(sql, paramSource);
         validateRemoved(deletedCount);
         return deletedCount;
     }
