@@ -11,19 +11,29 @@
 <br>
 
 # 지하철 노선도 미션
+
 스프링 과정 실습을 위한 지하철 노선도 애플리케이션
+
+### 기능구현 목록
+
+- [ ] 경로 조회 API 구현하기
 
 <br>
 
 ## 🚀 Getting Started
+
 ### Usage
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
