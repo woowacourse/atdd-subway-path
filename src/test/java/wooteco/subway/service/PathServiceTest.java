@@ -18,6 +18,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -87,7 +88,8 @@ class PathServiceTest {
     @Test
     @DisplayName("최단거리 경로를 반환한다.")
     void findShortestPath(){
-        PathResponse pathResponse = pathService.findShortestPath(stations.get(0).getId(), stations.get(8).getId());
+        PathRequest pathRequest = new PathRequest(stations.get(0).getId(), stations.get(8).getId(), 0);
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         assertThat(pathResponse.getStations()).containsExactly(
             StationResponse.from(stations.get(0)),
             StationResponse.from(stations.get(1)),
@@ -102,7 +104,8 @@ class PathServiceTest {
     @Test
     @DisplayName("출발역과 도착역이 같으면 예외를 던져야 한다.")
     void findSameStationsPath() {
-        assertThatThrownBy(() -> pathService.findShortestPath(stations.get(0).getId(), stations.get(0).getId()))
+        PathRequest pathRequest = new PathRequest(stations.get(0).getId(), stations.get(0).getId(), 0);
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
             .hasMessage("출발역과 도착역이 동일합니다.")
             .isInstanceOf(IllegalArgumentException.class);
     }

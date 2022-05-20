@@ -12,6 +12,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayMap;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.EmptyResultException;
 
@@ -26,7 +27,10 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(PathRequest pathRequest) {
+        Long sourceStationId = pathRequest.getSource();
+        Long targetStationId = pathRequest.getTarget();
+
         validateSameStation(sourceStationId, targetStationId);
 
         List<Line> lines = lineDao.findAll();

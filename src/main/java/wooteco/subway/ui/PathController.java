@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
 
@@ -19,10 +20,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source,
-        @RequestParam Long target,
-        @RequestParam int age) {
-        PathResponse pathResponse = pathService.findShortestPath(source, target);
+    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok(pathResponse);
     }
 }
