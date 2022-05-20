@@ -1,6 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,26 +25,16 @@ public class PathService {
     }
 
     public PathServiceResponse findShortestPath(PathServiceRequest pathRequest) {
-        ShortestPath shortestPath = getShortestPath();
-
-        List<StationServiceResponse> stations = getShortestPathStations(pathRequest, shortestPath);
+        Path path = Path.of(new Dijkstra(new Sections(sectionDao.findAll())), pathRequest.getSource(), pathRequest.getTarget());
         Fare fare = new Fare();
-        int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
-                pathRequest.getTarget());
-        int fee = fare.calculateFare(shortestDistance);
+        int fee = fare.calculateFare(path.getShortestDistance());
 
-        return new PathServiceResponse(stations, shortestDistance, fee);
+        return new PathServiceResponse(getShortestPathStations(path.getShortestPath()), path.getShortestDistance(), fee);
     }
 
-    private ShortestPath getShortestPath() {
-        Sections sections = new Sections(sectionDao.findAll());
-        return new ShortestPath(sections);
-    }
-
-    private List<StationServiceResponse> getShortestPathStations(PathServiceRequest pathRequest, ShortestPath shortestPath) {
-        List<Long> stationIds = shortestPath.findShortestPath(pathRequest.getSource(), pathRequest.getTarget());
-        Stations stations = new Stations(stationDao.findById(stationIds));
-        return toStationServiceResponse(stations.arrangeStationsByIds(stationIds));
+    private List<StationServiceResponse> getShortestPathStations(List<Long> shortestPath) {
+        Stations stations = new Stations(stationDao.findById(shortestPath));
+        return toStationServiceResponse(stations.arrangeStationsByIds(shortestPath));
     }
 
     private List<StationServiceResponse> toStationServiceResponse(List<Station> stations) {

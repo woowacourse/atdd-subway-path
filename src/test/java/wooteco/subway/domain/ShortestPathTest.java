@@ -14,7 +14,7 @@ public class ShortestPathTest {
         Section section2 = new Section(1L, 2L, 3L, 4);
         Section section3 = new Section(1L, 3L, 4L, 5);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        ShortestPath shortestPath = new ShortestPath(sections);
+        Dijkstra shortestPath = new Dijkstra(sections);
 
         // when
         int distance = shortestPath.findShortestDistance(1L, 4L);
@@ -30,7 +30,7 @@ public class ShortestPathTest {
         Section section2 = new Section(1L, 2L, 3L, 4);
         Section section3 = new Section(1L, 3L, 4L, 5);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        ShortestPath shortestPath = new ShortestPath(sections);
+        Dijkstra shortestPath = new Dijkstra(sections);
 
         // when
         List<Long> stationIds = shortestPath.findShortestPath(1L, 4L);

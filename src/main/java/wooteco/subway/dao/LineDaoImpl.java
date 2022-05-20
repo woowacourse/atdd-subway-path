@@ -68,9 +68,9 @@ public class LineDaoImpl implements LineDao {
     }
 
     @Override
-    public boolean updateById(Long id, Line line) {
+    public boolean updateById(Line line) {
         final String sql = "UPDATE line SET name = ?, color = ? where id = ?";
-        int updateSize = jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        int updateSize = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
         return updateSize != 0;
     }
 
