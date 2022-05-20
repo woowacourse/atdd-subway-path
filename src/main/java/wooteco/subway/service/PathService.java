@@ -36,9 +36,13 @@ public class PathService {
         Sections sections = new Sections(sectionDao.findAll());
 
         Path path = pathStrategy.calculatePath(source, target, sections);
+        int distance = path.getDistance();
 
-        return new PathResponse(toResponses(path.getStations()), path.getDistance(),
-                fareStrategy.calculateFare(path.getDistance()));
+        return new PathResponse(
+                toResponses(path.getStations()),
+                distance,
+                fareStrategy.calculateFare(distance)
+        );
     }
 
     private List<StationResponse> toResponses(List<Station> stations) {
