@@ -1,6 +1,5 @@
-package wooteco.subway.ui;
+package wooteco.subway.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
