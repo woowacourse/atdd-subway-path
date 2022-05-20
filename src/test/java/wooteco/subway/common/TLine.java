@@ -49,4 +49,8 @@ public enum TLine {
                 .extract()
                 .as(LineResponse.class);
     }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
 }
