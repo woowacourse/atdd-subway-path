@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.Set;
 
 public class Path {
 
@@ -13,10 +14,12 @@ public class Path {
     private static final int FIRST_ADDITIONAL_FARE_DISTANCE = 50;
 
     private final List<Station> stations;
+    private final Set<Line> usedLines;
     private final int distance;
 
-    public Path(final List<Station> stations, final int distance) {
+    public Path(final List<Station> stations, final Set<Line> usedLines, final int distance) {
         this.stations = stations;
+        this.usedLines = usedLines;
         this.distance = distance;
     }
 

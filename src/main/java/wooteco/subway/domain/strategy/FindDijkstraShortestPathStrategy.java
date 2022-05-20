@@ -2,9 +2,12 @@ package wooteco.subway.domain.strategy;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -20,7 +23,14 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addEdgeWeightStation(sections, graph);
 
         GraphPath<Station, SubwayPathEdge> shortestPath = calculateShortestPath(source, target, graph);
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        return new Path(shortestPath.getVertexList(), pathUsedLines(shortestPath), (int) shortestPath.getWeight());
+    }
+
+    private Set<Line> pathUsedLines(final GraphPath<Station, SubwayPathEdge> shortestPath) {
+        return shortestPath.getEdgeList()
+                .stream()
+                .map(SubwayPathEdge::getLine)
+                .collect(Collectors.toSet());
     }
 
     private void addVertexStation(final Sections sections,

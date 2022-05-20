@@ -18,6 +18,10 @@ public class SubwayPathEdge extends DefaultWeightedEdge {
         return new SubwayPathEdge(section.getLine(), section.getDistance());
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     @Override
     protected double getWeight() {
         return distance;
