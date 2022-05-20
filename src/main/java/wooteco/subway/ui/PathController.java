@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.domain.DistanceProportionalPricingStrategy;
-import wooteco.subway.domain.MinimumDistanceStrategy;
+import wooteco.subway.domain.pricing.implement.DistanceProportionalPricingStrategy;
+import wooteco.subway.domain.path.implement.MinimumDistanceStrategy;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.PathResponse;
 

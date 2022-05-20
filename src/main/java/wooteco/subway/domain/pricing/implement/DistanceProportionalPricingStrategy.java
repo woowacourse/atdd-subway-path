@@ -1,6 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.pricing.implement;
 
 import java.util.List;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.pricing.PricingStrategy;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 

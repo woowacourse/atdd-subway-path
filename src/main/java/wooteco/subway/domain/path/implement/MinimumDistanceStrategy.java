@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path.implement;
 
 import java.util.List;
 import java.util.Map;
@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathStrategy;
 
 public class MinimumDistanceStrategy implements PathStrategy {
 
