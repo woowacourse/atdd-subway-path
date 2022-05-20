@@ -9,7 +9,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.BasicFareStrategy;
 import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.respones.PathResponse;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
 

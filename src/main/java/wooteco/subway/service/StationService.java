@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.respones.StationResponse;
 import wooteco.subway.exception.BadRequestException;
 import wooteco.subway.reopository.StationRepository;
 

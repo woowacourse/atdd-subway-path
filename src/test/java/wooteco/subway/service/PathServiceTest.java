@@ -13,7 +13,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.respones.PathResponse;
 import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
