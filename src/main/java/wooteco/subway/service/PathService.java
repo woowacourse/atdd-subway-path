@@ -9,9 +9,12 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.ShortestPathEdge;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -21,12 +24,14 @@ public class PathService {
 
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
+    private final LineRepository lineRepository;
     private final PathCalculator pathCalculator;
 
     public PathService(StationRepository stationRepository, SectionRepository sectionRepository,
-                       PathCalculator pathCalculator) {
+                       LineRepository lineRepository, PathCalculator pathCalculator) {
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
+        this.lineRepository = lineRepository;
         this.pathCalculator = pathCalculator;
     }
 
@@ -40,6 +45,14 @@ public class PathService {
         int distance = path.calculateMinDistance(sections);
         int fare = path.calculateFare(sections);
         return new PathResponse(stationResponses, distance, fare);
+    }
+
+    private int findMaxExtraFare(final List<ShortestPathEdge> edges) {
+        List<Long> lineIds = edges.stream()
+                .map(ShortestPathEdge::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
+        return 1;
     }
 
     private List<StationResponse> toStationResponses(final List<Station> stations) {

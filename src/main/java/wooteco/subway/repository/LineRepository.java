@@ -1,5 +1,6 @@
 package wooteco.subway.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,9 +38,9 @@ public class LineRepository {
     }
 
     public Long save(final Line line) {
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+        SqlParameterSource parameters = new MapSqlParameterSource("name", line.getName())
+                .addValue("color", line.getColor())
+                .addValue("extra_fare", line.getExtraFare());
 
         try {
             return simpleJdbcInsert.executeAndReturnKey(parameters)
@@ -80,6 +81,17 @@ public class LineRepository {
         } catch (EmptyResultDataAccessException e) {
             throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
         }
+    }
+
+    public int findMaxExtraFare(final List<Long> ids) {
+        String sql = "SELECT MAX(extra_fare) FROM line WHERE id IN (:ids)";
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, parameters, Integer.class);
+        } catch (NullPointerException e) {
+            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE);
+        }
+
     }
 
     private Sections toSections(List<LineSection> lineSections) {

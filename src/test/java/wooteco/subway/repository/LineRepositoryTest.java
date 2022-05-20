@@ -67,6 +67,14 @@ public class LineRepositoryTest extends RepositoryTest {
         assertThat(line.isSameName("분당선"));
     }
 
+    @DisplayName("노선 중 최대 추가요금을 조회한다.")
+    @Test
+    void findMaxExtraFare() {
+        Long id = lineRepository.save(new Line("분당선", LINE_COLOR, 100));
+        Long id2 = lineRepository.save(new Line("6호선", LINE_COLOR, 200));
+        assertThat(lineRepository.findMaxExtraFare(List.of(id, id2))).isEqualTo(200);
+    }
+
     @DisplayName("이름이 존재하는지 확인한다. 있다면 true를 반환한다.")
     @Test
     void isNameExistsTrue() {
