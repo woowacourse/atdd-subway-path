@@ -21,8 +21,8 @@ public class PathService {
     private final PathStrategy pathStrategy;
     private final FareStrategy fareStrategy;
 
-    public PathService(StationService stationService, SectionDao sectionDao,
-                       PathStrategy pathStrategy, FareStrategy fareStrategy) {
+    public PathService(StationService stationService, SectionDao sectionDao, PathStrategy pathStrategy,
+                       FareStrategy fareStrategy) {
         this.stationService = stationService;
         this.sectionDao = sectionDao;
         this.pathStrategy = pathStrategy;
