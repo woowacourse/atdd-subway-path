@@ -21,6 +21,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -96,7 +97,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = httpGetTest("/lines/" + id);
         JsonPath lineResponsePath = getResponse.jsonPath();
         long responseId = lineResponsePath.getLong("id");
-        List<Station> stations = lineResponsePath.getList("stations", Station.class);
+        List<StationResponse> stations = lineResponsePath.getList("stations", StationResponse.class);
         assertAll(
                 () -> assertThat(id).isEqualTo(responseId),
                 () -> assertThat(stations).extracting("id", "name").containsExactly(

@@ -6,7 +6,7 @@ public class FareCondition {
     private final int age;
     private final int extraFare;
 
-    public FareCondition(int distance, int age, int extraFare) {
+    public FareCondition(final int distance, final int age, final int extraFare) {
         this.distance = distance;
         this.age = age;
         this.extraFare = extraFare;
