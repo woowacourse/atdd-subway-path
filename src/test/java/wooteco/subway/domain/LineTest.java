@@ -9,7 +9,7 @@ class LineTest {
 
     @Test
     @DisplayName("이름이 같은지 확인한다.")
-    public void hasSameNameWith() {
+    void hasSameNameWith() {
         // given
         Station upTermination = new Station(1L, "상행종점역");
         Station downTermination = new Station(2L, "하행종점역");

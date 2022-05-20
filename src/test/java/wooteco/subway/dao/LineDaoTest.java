@@ -43,7 +43,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("노선을 저장한다.")
-    public void save() {
+    void save() {
         // given
         Line Line = new Line(LINE_NAME, LINE_COLOR, section);
         // when
@@ -54,7 +54,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("중복된 이름을 저장하는 경우 예외를 던진다.")
-    public void save_throwsExceptionWithDuplicatedName() {
+    void save_throwsExceptionWithDuplicatedName() {
         // given & when
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
@@ -64,7 +64,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("전체 노선을 조회한다.")
-    public void findAll() {
+    void findAll() {
         // given & when
         List<Line> lines = linDao.findAll();
         // then
@@ -73,7 +73,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("노선을 하나 추가한 뒤, 전체 노선을 조회한다")
-    public void findAll_afterSaveOneLine() {
+    void findAll_afterSaveOneLine() {
         // given
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when
@@ -84,7 +84,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("ID 값으로 노선을 조회한다")
-    public void findById() {
+    void findById() {
         // given
         final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when
@@ -99,7 +99,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("존재하지 않는 ID 값으로 노선을 조회하면 예외를 던진다")
-    public void findById_invalidID() {
+    void findById_invalidID() {
         // given & when
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
@@ -108,7 +108,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("노선 정보를 수정한다.")
-    public void update() {
+    void update() {
         // given & when
         final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
@@ -117,7 +117,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("존재하지 않는 ID값을 수정하는 경우 예외를 던진다.")
-    public void update_throwsExceptionWithInvalidId() {
+    void update_throwsExceptionWithInvalidId() {
         // given
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when
@@ -129,7 +129,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("ID값으로 노선을 삭제한다.")
-    public void delete() {
+    void delete() {
         // given & when
         Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
@@ -138,7 +138,7 @@ class LineDaoTest {
 
     @Test
     @DisplayName("존재하지않는 ID값을 삭제하는 경우 예외를 던진다.")
-    public void delete_throwsExceptionWithInvalidId() {
+    void delete_throwsExceptionWithInvalidId() {
         // given
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when

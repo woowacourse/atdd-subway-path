@@ -11,7 +11,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("구간을 생성한다.")
-    public void createSection() {
+    void createSection() {
         // given
         Map<String, String> stationParams1 = Map.of("name", "강남역");
         Map<String, String> stationParams2 = Map.of("name", "역삼역");
@@ -41,7 +41,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("구간을 삭제한다.")
-    public void deleteSection() {
+    void deleteSection() {
         // given
         Map<String, String> stationParams1 = Map.of("name", "강남역");
         Map<String, String> stationParams2 = Map.of("name", "역삼역");

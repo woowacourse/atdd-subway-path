@@ -9,7 +9,7 @@ class StationTest {
 
     @Test
     @DisplayName("이름이 같은지 확인한다.")
-    public void hasSameNameWith() {
+    void hasSameNameWith() {
         // given
         Station station = new Station("청구역");
         // when

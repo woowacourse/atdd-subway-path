@@ -15,7 +15,7 @@ public class JgraphtTest {
 
     @Test
     @DisplayName("최단 경로에 포함된 노드 개수를 구할 수 있다.")
-    public void getDijkstraShortestPath() {
+    void getDijkstraShortestPath() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
@@ -35,7 +35,7 @@ public class JgraphtTest {
 
     @Test
     @DisplayName("선형일 때도 역방향 최단 거리를 구할 수 있다.")
-    public void getDijkstraShortestPath_linear() {
+    void getDijkstraShortestPath_linear() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
@@ -54,7 +54,7 @@ public class JgraphtTest {
 
     @Test
     @DisplayName("최단 경로의 총 거리를 구할 수 있다.")
-    public void getDijkstraShortestPath_distance() {
+    void getDijkstraShortestPath_distance() {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");

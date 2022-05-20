@@ -20,7 +20,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
-    public void getPath() {
+    void getPath() {
         // given
         Map<String, String> stationParams1 = Map.of("name", "강남역");
         Map<String, String> stationParams2 = Map.of("name", "역삼역");
