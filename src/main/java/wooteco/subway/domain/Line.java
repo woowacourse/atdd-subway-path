@@ -10,10 +10,17 @@ public class Line {
     private final int extraFare;
 
     public Line(final Long id, final String name, final String color, final int extraFare) {
+        validateNegativeExtraFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    private void validateNegativeExtraFare(final int extraFare) {
+        if (extraFare < 0) {
+            throw new IllegalArgumentException("추가요금은 음수가 들어올 수 없습니다.");
+        }
     }
 
     public Line(final String name, final String color, final int extraFare) {
