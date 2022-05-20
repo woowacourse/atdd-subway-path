@@ -4,10 +4,10 @@ import javax.validation.constraints.NotBlank;
 
 public class LineUpdateRequest {
 
-    @NotBlank
+    @NotBlank(message = "지하철 노선의 이름을 입력해주세요.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "지하철 노선의 색상을 선택해주세요.")
     private String color;
 
     private LineUpdateRequest() {

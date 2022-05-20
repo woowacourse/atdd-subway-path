@@ -6,19 +6,19 @@ import javax.validation.constraints.Positive;
 
 public class LineSaveRequest {
 
-    @NotBlank
+    @NotBlank(message = "지하철 노선의 이름을 입력해주세요.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "지하철 노선의 색상을 선택해주세요.")
     private String color;
 
-    @NotNull
+    @NotNull(message = "상행역을 선택해주세요.")
     private Long upStationId;
 
-    @NotNull
+    @NotNull(message = "하행역을 선택해주세요.")
     private Long downStationId;
 
-    @Positive
+    @Positive(message = "구간 거리는 1 이상이어야 합니다.")
     private int distance;
 
     private LineSaveRequest() {
