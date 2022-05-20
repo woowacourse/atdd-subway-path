@@ -19,7 +19,7 @@ public class SectionController {
 
     private final SectionService sectionService;
 
-    public SectionController(SectionService sectionService) {
+    public SectionController(final SectionService sectionService) {
         this.sectionService = sectionService;
     }
 
