@@ -42,10 +42,10 @@ class PathServiceTest {
         Station seonjeongneung = stationDao.save(new Station("선정릉역"));
         Station samjeon = stationDao.save(new Station("삼전역"));
 
-        sectionDao.save(line2, new Section(seolleung, sportscomplex, 2));
-        sectionDao.save(line9, new Section(sportscomplex, samjeon, 1));
-        sectionDao.save(bundangLine, new Section(seolleung, seonjeongneung, 1));
-        sectionDao.save(line9, new Section(seonjeongneung, sportscomplex, 3));
+        sectionDao.save(new Section(line2, seolleung, sportscomplex, 2));
+        sectionDao.save(new Section(line9, sportscomplex, samjeon, 1));
+        sectionDao.save(new Section(bundangLine, seolleung, seonjeongneung, 1));
+        sectionDao.save(new Section(line9, seonjeongneung, sportscomplex, 3));
 
         PathResponse pathResponse = pathService.findShortestPath(
                 new PathRequest(seolleung.getId(), samjeon.getId(), 20));
@@ -57,5 +57,5 @@ class PathServiceTest {
                 .extracting("name")
                 .containsExactly(seolleung.getName(), sportscomplex.getName(), samjeon.getName());
     }
-    
+
 }

@@ -6,17 +6,19 @@ import wooteco.subway.exception.invalidrequest.InvalidSectionCreateRequestExcept
 public class Section {
 
     private final Long id;
+    private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    public Section(Station upStation, Station downStation, int distance) {
-        this(null, upStation, downStation, distance);
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(null, line, upStation, downStation, distance);
     }
 
-    public Section(Long id, Station upStation, Station downStation, int distance) {
+    public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
         validateEndpoints(upStation, downStation);
         this.id = id;
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -60,6 +62,10 @@ public class Section {
         return id;
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     public Station getUpStation() {
         return upStation;
     }
@@ -81,13 +87,14 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(
-                upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(line,
+                section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(
+                downStation, section.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance);
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 
 }

@@ -58,11 +58,12 @@ public class LineService {
 
     private Section saveSectionByLineRequest(LineCreateRequest lineCreateRequest, Line line) {
         Section section = new Section(
+                line,
                 stationService.findById(lineCreateRequest.getUpStationId()),
                 stationService.findById(lineCreateRequest.getDownStationId()),
                 lineCreateRequest.getDistance()
         );
-        return sectionDao.save(line, section);
+        return sectionDao.save(section);
     }
 
     @Transactional
@@ -72,7 +73,7 @@ public class LineService {
         Station upStation = stationService.findById(sectionRequest.getUpStationId());
         Station downStation = stationService.findById(sectionRequest.getDownStationId());
         int distance = sectionRequest.getDistance();
-        Section newSection = new Section(upStation, downStation, distance);
+        Section newSection = new Section(line, upStation, downStation, distance);
 
         addNewSection(line, newSection);
     }
@@ -100,7 +101,7 @@ public class LineService {
 
     private void saveAddedLine(Line line, List<Section> insertSections) {
         for (Section section : insertSections) {
-            sectionDao.save(line, section);
+            sectionDao.save(section);
         }
     }
 

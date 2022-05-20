@@ -128,13 +128,15 @@ public class Sections {
     }
 
     private void cutUpSection(Section includingSection, Section newSection) {
-        Section anotherNewSection = new Section(newSection.getDownStation(), includingSection.getDownStation(),
+        Line line = includingSection.getLine();
+        Section anotherNewSection = new Section(line, newSection.getDownStation(), includingSection.getDownStation(),
                 includingSection.getDistance() - newSection.getDistance());
         cutSection(includingSection, newSection, anotherNewSection);
     }
 
     private void cutDownSection(Section includingSection, Section newSection) {
-        Section anotherNewSection = new Section(includingSection.getUpStation(), newSection.getUpStation(),
+        Line line = includingSection.getLine();
+        Section anotherNewSection = new Section(line, includingSection.getUpStation(), newSection.getUpStation(),
                 includingSection.getDistance() - newSection.getDistance());
         cutSection(includingSection, newSection, anotherNewSection);
     }
@@ -178,7 +180,8 @@ public class Sections {
     private void removeMiddleSection(Station station) {
         Section upSection = findUpSection(station);
         Section downSection = findDownSection(station);
-        Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(),
+        Line line = upSection.getLine();
+        Section newSection = new Section(line, upSection.getUpStation(), downSection.getDownStation(),
                 upSection.getDistance() + downSection.getDistance());
         values.remove(upSection);
         values.remove(downSection);
