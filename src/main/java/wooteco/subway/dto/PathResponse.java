@@ -7,12 +7,9 @@ import wooteco.subway.domain.vo.Path;
 import wooteco.subway.domain.Station;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private int distance;
-    private int fare;
-
-    public PathResponse() {
-    }
+    private final List<StationResponse> stations;
+    private final int distance;
+    private final int fare;
 
     public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
