@@ -36,13 +36,4 @@ public class PathResponse {
     public int getFare() {
         return fare;
     }
-
-    @Override
-    public String toString() {
-        return "PathResponse{" +
-                "stations=" + stations +
-                ", distance=" + distance +
-                ", fare=" + fare +
-                '}';
-    }
 }
