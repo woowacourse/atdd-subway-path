@@ -1,5 +1,6 @@
 package wooteco.subway.ui;
 
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,32 +18,32 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> badRequestExceptionHandler(BadRequestException e) {
-        log.debug(e.getMessage());
+        log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFoundExceptionHandler(NotFoundException e) {
-        log.debug(e.getMessage());
+        log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> IllegalArgumentExceptionHandler(
             IllegalArgumentException e) {
-        log.debug(e.getMessage());
+        log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> runtimeExceptionHandler(RuntimeException e) {
-        log.warn(e.getMessage());
+        log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.badRequest().body(new ErrorResponse("서버 에러가 발생했습니다."));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        log.error(e.getMessage());
+        log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.internalServerError().body(new ErrorResponse("서버 에러가 발생했습니다."));
     }
 }
