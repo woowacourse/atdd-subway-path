@@ -2,43 +2,24 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.common.TLine.*;
-import static wooteco.subway.common.TStation.*;
-import static wooteco.subway.common.TestFixtures.LINE_COLOR;
+import static wooteco.subway.common.TLine.LINE_SIX;
+import static wooteco.subway.common.TStation.BOMUN;
+import static wooteco.subway.common.TStation.CHANGSIN;
+import static wooteco.subway.common.TStation.DONGMYO;
+import static wooteco.subway.common.TStation.SINDANG;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.common.TestFixtures.동묘앞역;
-import static wooteco.subway.common.TestFixtures.보문역;
-import static wooteco.subway.common.TestFixtures.신당역;
-import static wooteco.subway.common.TestFixtures.창신역;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.common.TLine;
-import wooteco.subway.common.TStation;
-import wooteco.subway.common.TestFixtures;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
-import wooteco.subway.repository.LineRepository;
-import wooteco.subway.repository.SectionRepository;
-import wooteco.subway.repository.StationRepository;
 
 class PathAcceptanceTest extends AcceptanceTest {
-
-    @Autowired
-    private LineRepository lineRepository;
-    @Autowired
-    private SectionRepository sectionRepository;
-    @Autowired
-    private StationRepository stationRepository;
 
     @DisplayName("경로 조회를 요청하면, 200 OK 와 관련 지하철역 정보, 거리, 요금을 반환한다.")
     @Test
@@ -61,10 +42,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    private SectionRequest createSectionRequest(Station up, Station down, int distance) {
-        return new SectionRequest(up.getId(), down.getId(), distance);
-    }
-
     @DisplayName("경로 조회 시, 연결된 구간을 찾을 수 없으면 404 Not Found 에러를 발생한다.")
     @Test
     void getPathsException() {
@@ -78,5 +55,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(보문_창신);
         ExtractableResponse<Response> response = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    private SectionRequest createSectionRequest(Station up, Station down, int distance) {
+        return new SectionRequest(up.getId(), down.getId(), distance);
     }
 }
