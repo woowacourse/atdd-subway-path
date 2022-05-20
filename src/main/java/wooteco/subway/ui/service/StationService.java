@@ -20,9 +20,8 @@ public class StationService {
 
     public StationResponse create(StationRequest stationRequest) {
         Station station = new Station(stationRequest.getName());
-        Station newStation;
         try {
-            newStation = stationDao.save(station);
+            Station newStation = stationDao.save(station);
             return StationResponse.from(newStation);
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 역 이름입니다.");

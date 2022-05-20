@@ -88,4 +88,4 @@
 - [ ] 매직넘버 상수로 관리하기
 - [ ] @RequestParam @ModelAttribute 로 묶어보기
 - [ ] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
-- [ ] StationService 의 try-catch 수정해보기
+- [X] StationService 의 try-catch 수정해보기
