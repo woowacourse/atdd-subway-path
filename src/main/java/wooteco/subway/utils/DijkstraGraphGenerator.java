@@ -25,8 +25,8 @@ public class DijkstraGraphGenerator {
 
     private static Set<Station> findAllStationByDistinct(final Sections sections) {
         Set<Station> stations = new HashSet<>();
-        stations.addAll(sections.getUpStations());
-        stations.addAll(sections.getDownStations());
+        stations.addAll(sections.findUpStations());
+        stations.addAll(sections.findDownStations());
         return stations;
     }
 
