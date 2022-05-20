@@ -11,6 +11,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.SectionDto;
 
 @Repository
+@Transactional(readOnly = true)
 public class SectionRepository {
 
     private final StationDao stationDao;
@@ -24,12 +25,10 @@ public class SectionRepository {
         this.lineRepository = lineRepository;
     }
 
-    @Transactional(readOnly = true)
     public Line findLineById(final Long lineId) {
         return lineRepository.findById(lineId);
     }
 
-    @Transactional(readOnly = true)
     public Station findStationById(final Long stationId) {
         return stationDao.findById(stationId);
     }

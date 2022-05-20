@@ -8,6 +8,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 
 @Repository
+@Transactional(readOnly = true)
 public class StationRepository {
 
     private static final int NO_ROW_AFFECTED = 0;
@@ -30,12 +31,10 @@ public class StationRepository {
         }
     }
 
-    @Transactional(readOnly = true)
     public Station findById(final Long id) {
         return stationDao.findById(id);
     }
 
-    @Transactional(readOnly = true)
     public List<Station> findAll() {
         return stationDao.findAll();
     }

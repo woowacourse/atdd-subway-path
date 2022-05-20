@@ -17,6 +17,7 @@ import wooteco.subway.service.dto.LineDto;
 import wooteco.subway.service.dto.SectionDto;
 
 @Repository
+@Transactional(readOnly = true)
 public class LineRepository {
 
     private static final String LINE_DUPLICATED = "이미 존재하는 노선입니다. ";
@@ -62,7 +63,6 @@ public class LineRepository {
         }
     }
 
-    @Transactional(readOnly = true)
     public Line findById(final Long id) {
         final List<SectionDto> sectionDtos = sectionDao.findAllByLineId(id);
         final Line line = lineDao.findById(id);
@@ -95,7 +95,6 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<Line> findAll() {
         final List<Line> lines = lineDao.findAll();
         final List<Line> linesWithSections = new ArrayList<>();
@@ -115,5 +114,4 @@ public class LineRepository {
         }
         return line;
     }
-
 }
