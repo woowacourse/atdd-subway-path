@@ -7,6 +7,9 @@ public class Fare {
     private static final int DEFAULT_FARE_SECOND = 2050;
     private static final int FARE_DISTANCE_LIMIT_FIRST = 10;
     private static final int FARE_DISTANCE_LIMIT_SECOND = 50;
+    private static final int FARE_DISTANCE_UNIT_FIRST = 5;
+    private static final int FARE_DISTANCE_UNIT_SECOND = 8;
+    private static final int EXTRA_FARE = 100;
 
     private final int value;
 
@@ -23,9 +26,9 @@ public class Fare {
             return DEFAULT_FARE;
         }
         if (distance <= FARE_DISTANCE_LIMIT_SECOND) {
-            return DEFAULT_FARE + (int) ((Math.ceil((distance - 11) / 5) + 1) * 100);
+            return DEFAULT_FARE + (int) ((Math.ceil((distance - 11) / FARE_DISTANCE_UNIT_FIRST) + 1) * EXTRA_FARE);
         }
-        return DEFAULT_FARE_SECOND + (int) ((Math.ceil((distance - 51) / 8) + 1) * 100);
+        return DEFAULT_FARE_SECOND + (int) ((Math.ceil((distance - 51) / FARE_DISTANCE_UNIT_SECOND) + 1) * EXTRA_FARE);
     }
 
     public int getValue() {
