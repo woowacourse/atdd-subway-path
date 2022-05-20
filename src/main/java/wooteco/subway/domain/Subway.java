@@ -13,22 +13,22 @@ import wooteco.subway.exception.EmptyResultException;
 public class Subway {
     private static final int BASE_FARE = 1250;
 
-    private final DijkstraShortestPath pathFinder;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder;
     private final Fare fare;
 
-    public Subway(DijkstraShortestPath pathFinder, Fare fare) {
+    public Subway(DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder, Fare fare) {
         this.pathFinder = pathFinder;
         this.fare = fare;
     }
 
     public static Subway of(List<Line> lines) {
-        WeightedMultigraph graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         initGraph(lines, graph);
 
         return new Subway(new DijkstraShortestPath(graph), new Fare(BASE_FARE));
     }
 
-    private static void initGraph(List<Line> lines, WeightedMultigraph graph) {
+    private static void initGraph(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
@@ -52,13 +52,13 @@ public class Subway {
     }
 
     public Path findShortestPath(Station source, Station target) {
-        GraphPath path = pathFinder.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
 
         validateEmptyPath(path);
         return Path.of(path.getVertexList(), path.getWeight());
     }
 
-    private void validateEmptyPath(GraphPath path) {
+    private void validateEmptyPath(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
