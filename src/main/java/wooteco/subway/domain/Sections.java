@@ -26,7 +26,7 @@ public class Sections {
             .filter(
                 section -> section.hasStationId(upStationId) && section.hasStationId(downStationId))
             .findAny()
-            .orElseThrow(() -> new NoSuchElementException("맞는 섹션 없음"));
+            .orElseThrow(() -> new NoSuchElementException("일치하는 Section이 존재하지 않습니다."));
     }
 
     public List<Section> getSections() {
