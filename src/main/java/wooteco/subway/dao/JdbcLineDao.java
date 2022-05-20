@@ -16,14 +16,14 @@ import java.util.Optional;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
+    private static final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getString("color"),
             resultSet.getInt("extraFare")
     );
+
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

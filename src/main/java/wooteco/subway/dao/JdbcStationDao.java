@@ -12,15 +12,16 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 public class JdbcStationDao implements StationDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
+    private static final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
             resultSet.getLong("id"),
             resultSet.getString("name")
     );
+
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcStationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

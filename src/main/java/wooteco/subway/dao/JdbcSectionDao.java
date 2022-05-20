@@ -15,15 +15,16 @@ import java.util.stream.Collectors;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
-    private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
+    private static final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
             resultSet.getLong("up_station_id"),
             resultSet.getLong("down_station_id"),
             resultSet.getInt("distance")
     );
+
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcSectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
