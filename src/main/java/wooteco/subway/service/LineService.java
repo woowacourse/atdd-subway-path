@@ -1,7 +1,10 @@
 package wooteco.subway.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -10,7 +13,6 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
-import java.util.List;
 
 @Service
 public class LineService {
@@ -41,19 +43,19 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<Line> getAllLines() {
+    public List<Line> findAllLines() {
         return lineDao.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Line getLineById(final Long id) {
+    public Line findLineById(final Long id) {
         return lineDao.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
     }
 
     @Transactional
     public void update(final Long id, final Line line) {
-        final Line result = getLineById(id);
+        final Line result = findLineById(id);
         validateUpdatedName(line, result);
         result.update(line);
 

@@ -1,4 +1,4 @@
-package wooteco.subway.ui;
+package wooteco.subway.controller;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;

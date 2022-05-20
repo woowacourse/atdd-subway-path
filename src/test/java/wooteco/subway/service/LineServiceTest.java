@@ -84,7 +84,7 @@ class LineServiceTest {
         final List<Line> expected = List.of(line1, line2);
         given(lineDao.findAll()).willReturn(expected);
 
-        final List<Line> actual = lineService.getAllLines();
+        final List<Line> actual = lineService.findAllLines();
 
         assertThat(actual).containsAll(expected);
     }
@@ -95,7 +95,7 @@ class LineServiceTest {
         final Line expected = new Line("신분당선", "bg-red-600");
         given(lineDao.findById(1L)).willReturn(Optional.of(expected));
 
-        final Line actual = lineService.getLineById(1L);
+        final Line actual = lineService.findLineById(1L);
 
         assertThat(actual).isEqualTo(expected);
     }

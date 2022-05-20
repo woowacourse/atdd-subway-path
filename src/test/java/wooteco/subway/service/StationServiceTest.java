@@ -63,7 +63,7 @@ class StationServiceTest {
         final List<Station> expected = List.of(station1, station2, station3);
         given(stationDao.findAll()).willReturn(expected);
 
-        final List<Station> actual = stationService.getAllStations();
+        final List<Station> actual = stationService.findAllStations();
 
         assertThat(actual).containsAll(expected);
     }
