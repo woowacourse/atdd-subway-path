@@ -54,22 +54,6 @@ class ShortestPathTest {
         assertThat(result).isEqualTo(5);
     }
 
-    @DisplayName("거리 계산하기")
-    @ParameterizedTest(name = "{0} km -> 요금 {1}원 예상")
-    @CsvSource(value = {"5,1250", "44,1950", "60,2250"})
-    void calculateScore2(int distance, int expected) {
-        // given
-        List<Station> stations = List.of(station1, station2);
-        List<Section> sections = List.of(new Section(1L, 1L, station1.getId(), station2.getId(), distance));
-        ShortestPath shortestPath = new ShortestPath(stations, sections);
-
-        // when
-        int result = shortestPath.calculateScore(station1, station2);
-
-        // then
-        assertThat(result).isEqualTo(expected);
-    }
-
     @DisplayName("순회하는 노선 목록 찾기")
     @Test
     void findLines() {
