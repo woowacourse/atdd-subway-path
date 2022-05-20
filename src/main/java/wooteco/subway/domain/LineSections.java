@@ -114,9 +114,9 @@ public class LineSections {
     private List<Section> separateSectionInExistUpMatchCase(
         long upStationId, long downStationId, int distance, Section section) {
         return List.of(
-            Section.createOf(section.getId(), section.getLineId(), upStationId, downStationId,
+            new Section(section.getId(), section.getLineId(), upStationId, downStationId,
                 section.getDistance() - distance, section.getLineOrder()),
-            Section.createOf(section.getId(), section.getLineId(), downStationId,
+            new Section(section.getId(), section.getLineId(), downStationId,
                 section.getDownStationId(),
                 section.getDistance() - distance, section.getLineOrder() + 1));
     }
@@ -124,10 +124,10 @@ public class LineSections {
     private List<Section> separateSectionInExistDownMatchCase(
         long upStationId, long downStationId, int distance, Section section) {
         return List.of(
-            Section.createOf(section.getId(), section.getLineId(), section.getUpStationId(),
+            new Section(section.getId(), section.getLineId(), section.getUpStationId(),
                 upStationId,
                 section.getDistance() - distance, section.getLineOrder()),
-            Section.createOf(section.getId(), section.getLineId(), upStationId, downStationId,
+            new Section(section.getId(), section.getLineId(), upStationId, downStationId,
                 section.getDistance() - distance, section.getLineOrder() + 1));
     }
 

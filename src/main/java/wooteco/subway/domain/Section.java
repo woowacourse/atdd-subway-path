@@ -14,10 +14,6 @@ public class Section {
     public Section() {
     }
 
-    public Section(Long lineOrder) {
-        this.lineOrder = lineOrder;
-    }
-
     public Section(Long id, long lineId, long upStationId, long downStationId, int distance,
                    Long lineOrder) {
         this.id = id;
@@ -26,11 +22,6 @@ public class Section {
         this.downStationId = downStationId;
         this.distance = distance;
         this.lineOrder = lineOrder;
-    }
-
-    public static Section createOf(Long id, long lineId, long upStationId, long downStationId,
-                                   int distance, Long lineOrder) {
-        return new Section(id, lineId, upStationId, downStationId, distance, lineOrder);
     }
 
     public Long getId() {

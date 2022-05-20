@@ -15,8 +15,8 @@ class PathTest {
     @DisplayName("모든 구간을 파라미터로 받아서 최단 경로 생성")
     void create() {
         List<Section> sections = List.of(
-            Section.createOf(1L, 1L, 1L, 2L, 5, 1L),
-            Section.createOf(2L, 1L, 2L, 3L, 5, 2L)
+            new Section(1L, 1L, 1L, 2L, 5, 1L),
+            new Section(2L, 1L, 2L, 3L, 5, 2L)
         );
 
         Path path = Path.of(new Sections(sections), 1L, 3L);
@@ -28,9 +28,9 @@ class PathTest {
     @DisplayName("주어진 출발지와 도착지를 현재 구간으로 가지 못할 때 예외 발생")
     void createWithCanNotMakePath() {
         List<Section> sections = List.of(
-            Section.createOf(1L, 1L, 1L, 2L, 5, 1L),
-            Section.createOf(2L, 1L, 2L, 3L, 5, 2L),
-            Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
+            new Section(1L, 1L, 1L, 2L, 5, 1L),
+            new Section(2L, 1L, 2L, 3L, 5, 2L),
+            new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
         assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 4L))
@@ -42,9 +42,9 @@ class PathTest {
     @DisplayName("주어진 출발지와 도착지 중에 해당 지하철역이 없을 때 예외 발생")
     void createWithWrongStation() {
         List<Section> sections = List.of(
-            Section.createOf(1L, 1L, 1L, 2L, 5, 1L),
-            Section.createOf(2L, 1L, 2L, 3L, 5, 2L),
-            Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
+            new Section(1L, 1L, 1L, 2L, 5, 1L),
+            new Section(2L, 1L, 2L, 3L, 5, 2L),
+            new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
         assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 6L))
@@ -56,9 +56,9 @@ class PathTest {
     @DisplayName("주어진 출발지와 도착지가 같은 경우 예외 발생")
     void createWithSameStations() {
         List<Section> sections = List.of(
-            Section.createOf(1L, 1L, 1L, 2L, 5, 1L),
-            Section.createOf(2L, 1L, 2L, 3L, 5, 2L),
-            Section.createOf(3L, 2L, 4L, 5L, 5, 1L)
+            new Section(1L, 1L, 1L, 2L, 5, 1L),
+            new Section(2L, 1L, 2L, 3L, 5, 2L),
+            new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
         assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 1L))
