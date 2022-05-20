@@ -79,18 +79,22 @@ public class SectionDaoImpl implements SectionDao {
 
     @Override
     public void updateDownStation(Long id, Long downStationId, int newDistance) {
-        Section section = findById(id)
+        Section findSection = findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "번에 해당하는 구간이 존재하지 않습니다."));
-        section.setDownStationId(downStationId);
-        section.setDistance(newDistance);
+        sections.remove(findSection);
+        Section updateSection =
+                new Section(id, findSection.getLineId(), findSection.getUpStationId(), downStationId, newDistance);
+        sections.add(updateSection);
     }
 
     @Override
     public void updateUpStation(Long id, Long upStationId, int newDistance) {
-        Section section = findById(id)
+        Section findSection = findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + "번에 해당하는 구간이 존재하지 않습니다."));
-        section.setUpStationId(upStationId);
-        section.setDistance(newDistance);
+        sections.remove(findSection);
+        Section updateSection =
+                new Section(id, findSection.getLineId(), upStationId, findSection.getDownStationId(), newDistance);
+        sections.add(updateSection);
     }
 
     @Override

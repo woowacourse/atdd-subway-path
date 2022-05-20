@@ -12,21 +12,22 @@ public class Section {
     private Section() {
     }
 
-    public Section(Long upStationId, Long downStationId, int distance) {
+    public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
         validateSection(upStationId, downStationId, distance);
+        this.id = id;
+        this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
+    public Section(Long upStationId, Long downStationId, int distance) {
+        this(0L, 0L, upStationId, downStationId, distance);
+    }
+
     public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
         this(upStationId, downStationId, distance);
         this.lineId = lineId;
-    }
-
-    public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
-        this(lineId, upStationId, downStationId, distance);
-        this.id = id;
     }
 
     private void validateSection(Long upStationId, Long downStationId, int distance) {
@@ -106,14 +107,6 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void setUpStationId(Long upStationId) {
-        this.upStationId = upStationId;
-    }
-
-    public void setDownStationId(Long downStationId) {
-        this.downStationId = downStationId;
     }
 
     public void setDistance(int distance) {

@@ -8,6 +8,7 @@ import wooteco.subway.dto.LineRequest;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class LineDaoImpl implements LineDao {
@@ -33,7 +34,7 @@ public class LineDaoImpl implements LineDao {
     @Override
     public Optional<Line> findById(Long id) {
         return lines.stream()
-                .filter(line -> line.getId() == id)
+                .filter(line -> Objects.equals(line.getId(), id))
                 .findFirst();
     }
 
@@ -50,16 +51,13 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public void updateById(Long id, String name, String color, int extraFare) {
-        Line line = findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
-        line.setName(name);
-        line.setColor(color);
-        line.setExtraFare(extraFare);
+        deleteById(id);
+        lines.add(new Line(id, name, color, extraFare));
     }
 
     @Override
     public void deleteById(Long id) {
-        boolean result = lines.removeIf(line -> line.getId() == id);
+        boolean result = lines.removeIf(line -> Objects.equals(line.getId(), id));
         if (!result) {
             throw new IllegalArgumentException("해당하는 노선이 존재하지 않습니다.");
         }
