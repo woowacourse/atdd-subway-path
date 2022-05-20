@@ -12,7 +12,6 @@ public class Path {
 
     private final LinkedList<Section> path;
 
-
     private Path(LinkedList<Section> path) {
         this.path = path;
     }
@@ -21,8 +20,8 @@ public class Path {
         validateMovement(sourceId, targetId);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-            graph);
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath =
+            new DijkstraShortestPath<>(graph);
 
         List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
@@ -33,17 +32,6 @@ public class Path {
     private static void validateMovement(long sourceId, long targetId) {
         if (sourceId == targetId) {
             throw new NotFoundPathException("같은 위치로는 경로를 찾을 수 없습니다.");
-        }
-    }
-
-    private static List<Long> findShortestPath(long sourceId, long targetId,
-                                               DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
-        try {
-            return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
-        } catch (NullPointerException exception) {
-            throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
-        } catch (IllegalArgumentException exception) {
-            throw new NotFoundStationException("해당 지하철역이 등록이 안되어 있습니다.");
         }
     }
 
@@ -62,6 +50,17 @@ public class Path {
         return graph;
     }
 
+    private static List<Long> findShortestPath(long sourceId, long targetId,
+                                               DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
+        try {
+            return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+        } catch (NullPointerException exception) {
+            throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
+        } catch (IllegalArgumentException exception) {
+            throw new NotFoundStationException("해당 지하철역이 등록이 안되어 있습니다.");
+        }
+    }
+
     private static LinkedList<Section> toSections(Sections sections, List<Long> shortestPath) {
         LinkedList<Section> path = new LinkedList<>();
 
@@ -69,12 +68,6 @@ public class Path {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
         }
         return path;
-    }
-
-    public int getTotalDistance() {
-        return path.stream()
-            .mapToInt(Section::getDistance)
-            .sum();
     }
 
     public List<Long> getStationIds(long sourceId, long targetId) {
@@ -85,5 +78,11 @@ public class Path {
         }
         stationIds.add(targetId);
         return stationIds;
+    }
+
+    public int getTotalDistance() {
+        return path.stream()
+            .mapToInt(Section::getDistance)
+            .sum();
     }
 }
