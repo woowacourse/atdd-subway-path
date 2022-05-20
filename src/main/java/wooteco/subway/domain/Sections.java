@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.SectionException;
-import wooteco.subway.exception.notfound.SectionNotFoundException;
+import wooteco.subway.exception.DomainException;
+import wooteco.subway.exception.NotFoundException;
 
 public class Sections {
 
@@ -47,10 +47,10 @@ public class Sections {
 
     private void checkInsertSectionsStations(Section section) {
         if (!sections.isEmpty() && isAlreadyConnected(section)) {
-            throw new SectionException(ExceptionMessage.INSERT_DUPLICATED_SECTION.getContent());
+            throw new DomainException(ExceptionMessage.INSERT_DUPLICATED_SECTION.getContent());
         }
         if (!sections.isEmpty() && unableConnect(section)) {
-            throw new SectionException(ExceptionMessage.INSERT_SECTION_NOT_MATCH.getContent());
+            throw new DomainException(ExceptionMessage.INSERT_SECTION_NOT_MATCH.getContent());
         }
     }
 
@@ -85,7 +85,7 @@ public class Sections {
         return sections.stream()
                 .filter(this::isFirstSection)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간이 순환되고 있습니다."));
+                .orElseThrow(() -> new DomainException(ExceptionMessage.SECTIONS_ROTATE.getContent()));
     }
 
     private boolean isFirstSection(Section section) {
@@ -102,7 +102,7 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.isDownerThan(section))
                 .findFirst()
-                .orElseThrow(SectionNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND_SECTION.getContent()));
     }
 
     private List<Station> getSortedStation(List<Section> sections) {
@@ -116,7 +116,7 @@ public class Sections {
 
     public void deleteNearBy(Station station) {
         if (sections.size() < MINIMUM_SECTIONS_FOR_DELETE) {
-            throw new SectionException(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
+            throw new DomainException(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
         }
 
         List<Section> nearSections = findNearSections(station);

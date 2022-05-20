@@ -3,7 +3,7 @@ package wooteco.subway.domain;
 import java.util.List;
 import java.util.Objects;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.LineException;
+import wooteco.subway.exception.DomainException;
 
 public class Line {
 
@@ -14,7 +14,7 @@ public class Line {
 
     public Line(Long id, String name, String color, List<Section> sections) {
         if (name.isBlank()) {
-            throw new LineException(ExceptionMessage.BLANK_LINE_NAME.getContent());
+            throw new DomainException(ExceptionMessage.BLANK_LINE_NAME.getContent());
         }
         this.id = id;
         this.name = name;

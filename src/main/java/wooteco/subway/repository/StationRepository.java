@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.notfound.StationNotFoundException;
+import wooteco.subway.exception.ExceptionMessage;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.repository.entity.StationEntity;
 
@@ -20,7 +21,7 @@ public class StationRepository {
     public Station findById(Long id) {
         return stationDao.findById(id)
                 .map(this::entityToStation)
-                .orElseThrow(StationNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND_STATION.getContent()));
     }
 
     public List<Station> findAll() {

@@ -2,7 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.Objects;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.SectionException;
+import wooteco.subway.exception.DomainException;
 
 public class Section {
 
@@ -15,7 +15,7 @@ public class Section {
 
     public Section(Long id, Long lineId, Station upStation, Station downStation, Integer distance) {
         if (upStation.equals(downStation)) {
-            throw new SectionException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
+            throw new DomainException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
         }
         this.id = id;
         this.lineId = lineId;
@@ -50,18 +50,18 @@ public class Section {
         if (isDownDivide(other)) {
             return new Section(id, lineId, upStation, other.upStation, distanceGap);
         }
-        throw new SectionException(ExceptionMessage.INVALID_DIVIDE_SECTION.getContent());
+        throw new DomainException(ExceptionMessage.INVALID_DIVIDE_SECTION.getContent());
     }
 
     private void checkStationsNotSame(Section other) {
         if (upStation.equals(other.upStation) && downStation.equals(other.downStation)) {
-            throw new SectionException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
+            throw new DomainException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
         }
     }
 
     private void checkDistance(Section other) {
         if (distance <= other.distance) {
-            throw new SectionException(ExceptionMessage.INVALID_INSERT_SECTION_DISTANCE.getContent());
+            throw new DomainException(ExceptionMessage.INVALID_INSERT_SECTION_DISTANCE.getContent());
         }
     }
 
@@ -79,7 +79,7 @@ public class Section {
         if (downStation.equals(other.upStation)) {
             return new Section(id, lineId, upStation, other.downStation, mergedDistance);
         }
-        throw new SectionException(ExceptionMessage.NOT_CONNECTED_SECTIONS.getContent());
+        throw new DomainException(ExceptionMessage.NOT_CONNECTED_SECTIONS.getContent());
     }
 
     public boolean isUpperThan(Section other) {

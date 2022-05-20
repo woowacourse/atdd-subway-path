@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.exception.notfound.LineNotFoundException;
-import wooteco.subway.exception.notfound.NotFoundException;
+import wooteco.subway.exception.ExceptionMessage;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.entity.LineEntity;
 
@@ -24,7 +24,11 @@ public class LineRepository {
     public Line findById(Long id) {
         return lineDao.findById(id)
                 .map(this::toLine)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(this::throwNotFoundException);
+    }
+
+    private NotFoundException throwNotFoundException() {
+        return new NotFoundException(ExceptionMessage.NOT_FOUND_LINE.getContent());
     }
 
     private Line toLine(LineEntity entity) {
@@ -56,7 +60,7 @@ public class LineRepository {
 
     public void deleteById(Long id) {
         lineDao.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+                        .orElseThrow(this::throwNotFoundException);
         sectionRepository.deleteByLineId(id);
         lineDao.deleteById(id);
     }

@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.LineException;
-import wooteco.subway.exception.domain.SectionException;
+import wooteco.subway.exception.DomainException;
 
 class LineTest {
 
@@ -41,7 +40,7 @@ class LineTest {
     @ValueSource(strings = {"", " ", "    "})
     void newLine_blankName(String name) {
         assertThatThrownBy(() -> new Line(name, "bg-red-600", new ArrayList<>()))
-                .isInstanceOf(LineException.class)
+                .isInstanceOf(DomainException.class)
                 .hasMessage("노선의 이름이 공백이 되어서는 안됩니다.");
     }
 
@@ -85,7 +84,7 @@ class LineTest {
 
         // then
         assertThatThrownBy(() -> onlyOneLine.deleteSectionNearBy(one))
-                .isInstanceOf(SectionException.class)
+                .isInstanceOf(DomainException.class)
                 .hasMessage(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
     }
 

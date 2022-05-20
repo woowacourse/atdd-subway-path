@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.StationException;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.StationRequest;
 import wooteco.subway.service.dto.StationResponse;
@@ -29,7 +29,7 @@ public class StationService {
             Station savedLine = stationRepository.save(station);
             return StationResponse.of(savedLine);
         } catch (DuplicateKeyException e) {
-            throw new StationException(ExceptionMessage.DUPLICATED_STATION_NAME.getContent());
+            throw new DomainException(ExceptionMessage.DUPLICATED_STATION_NAME.getContent());
         }
     }
 

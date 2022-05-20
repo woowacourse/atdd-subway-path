@@ -1,4 +1,4 @@
-package wooteco.subway.exception.domain;
+package wooteco.subway.exception;
 
 public class DomainException extends RuntimeException {
 

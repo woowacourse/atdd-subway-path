@@ -9,7 +9,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.LineException;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
@@ -35,7 +35,7 @@ public class LineService {
             Line saved = lineRepository.save(line);
             return createResponseFrom(saved);
         } catch (DuplicateKeyException e) {
-            throw new LineException(ExceptionMessage.DUPLICATED_LINE_NAME.getContent());
+            throw new DomainException(ExceptionMessage.DUPLICATED_LINE_NAME.getContent());
         }
     }
 

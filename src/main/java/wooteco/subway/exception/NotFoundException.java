@@ -1,4 +1,4 @@
-package wooteco.subway.exception.notfound;
+package wooteco.subway.exception;
 
 public class NotFoundException extends RuntimeException {
 
