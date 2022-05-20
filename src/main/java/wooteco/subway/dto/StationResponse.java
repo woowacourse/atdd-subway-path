@@ -2,19 +2,21 @@ package wooteco.subway.dto;
 
 import wooteco.subway.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class StationResponse {
-    private Long id;
-    private String name;
 
-    public StationResponse() {
-    }
+    private final Long id;
+    private final String name;
 
-    public StationResponse(Long id, String name) {
+    public StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static StationResponse from(final Station station) {
+        final Long id = station.getId();
+        final String name = station.getName();
+
+        return new StationResponse(id, name);
     }
 
     public Long getId() {
