@@ -48,19 +48,19 @@ public class LineService {
         }
         sectionDao.save(section, createdLine.getId());
 
-        return LineResponse.from(createdLine);
+        return new LineResponse(createdLine);
     }
 
     public List<LineResponse> findAll() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(LineResponse::from)
+                .map(LineResponse::new)
                 .collect(Collectors.toList());
     }
 
     public LineResponse findById(Long id) {
         Line line = lineDao.findById(id).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
-        return LineResponse.from(line);
+        return new LineResponse(line);
     }
 
     public void modify(Long id, LineRequest lineRequest) {
