@@ -55,6 +55,7 @@ public class StationService {
     }
 
     public void delete(Long stationId) {
+        validateExistById(stationId);
         stationDao.deleteById(stationId);
     }
 

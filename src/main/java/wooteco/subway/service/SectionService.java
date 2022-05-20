@@ -7,6 +7,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
 @Transactional
@@ -63,14 +64,21 @@ public class SectionService {
     public void deleteByLineIdAndStationId(long lineId, long stationId) {
         LineSections lineSections = new LineSections(
             sectionDao.findByLineIdAndStationId(lineId, stationId));
-        if (lineSections.hasTwoSection()) {
-            Section upsideSection = lineSections.getUpsideSection();
-            Section downsideSection = lineSections.getDownsideSection();
 
-            deleteAndUnionTwoSection(lineId, upsideSection, downsideSection);
+        validateExistStation(lineSections);
+
+        if (lineSections.hasTwoSection()) {
+            deleteAndUnionTwoSection(
+                lineId, lineSections.getUpsideSection(), lineSections.getDownsideSection());
             return;
         }
         deleteSingleSection(lineId, lineSections);
+    }
+
+    private void validateExistStation(LineSections lineSections) {
+        if (lineSections.isEmpty()) {
+            throw new NotFoundStationException("지하철 역이 존재하지 않습니다.");
+        }
     }
 
     private void deleteAndUnionTwoSection(long lineId, Section upsideSection,

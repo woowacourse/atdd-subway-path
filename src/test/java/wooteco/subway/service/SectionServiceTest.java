@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.exception.NotFoundStationException;
 
 @SpringBootTest
 @Sql("/sectionInitSchema.sql")
@@ -195,5 +197,18 @@ class SectionServiceTest {
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
             .containsExactly(1L, 3L);
+    }
+
+    @Test
+    @DisplayName("노선에 존재하지 않는 지하철 역을 삭제할 경우 예외가 발생한다.")
+    void deleteNotExistStation() {
+        // given
+        sectionService.firstSave(1L, new SectionRequest(1L, 3L, 6));
+        sectionService.save(1L, new SectionRequest(1L, 2L, 3));
+
+        // when, then
+        assertThatThrownBy(() -> sectionService.deleteByLineIdAndStationId(1L, 4L))
+            .isInstanceOf(NotFoundStationException.class)
+            .hasMessageContaining("지하철 역이 존재하지 않습니다.");
     }
 }

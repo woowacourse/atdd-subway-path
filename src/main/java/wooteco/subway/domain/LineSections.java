@@ -179,7 +179,7 @@ public class LineSections {
         return sortedSections.get(sortedSections.size() - 1);
     }
 
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }
