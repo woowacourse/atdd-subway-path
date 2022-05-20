@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.PathCalculator;
-import wooteco.subway.domain.distance.FarePolicy;
+import wooteco.subway.domain.Fare.FarePolicy;
 import wooteco.subway.domain.distance.Kilometer;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.distance;
+package wooteco.subway.domain.Fare;
 
 import java.util.Objects;
 
