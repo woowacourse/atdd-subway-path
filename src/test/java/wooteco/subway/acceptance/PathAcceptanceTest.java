@@ -48,5 +48,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
+
+        @Test
+        void 출발역과_도착역이_같은_경우_400_BAD_REQUEST() {
+            postStation(makeStationJson("강남역"));
+
+            ExtractableResponse<Response> response = get("/paths?source=1&target=1&age=15");
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @Test
+        void 등록되지_않은_구간을_경로조회를_할_경우_400_BAD_REQUEST() {
+            postStation(makeStationJson("강남역"));
+            postStation(makeStationJson("양재역"));
+            postStation(makeStationJson("양재시민의숲역"));
+            postLine(makeLineJson("1호선", "파란색", 1L, 3L, 8));
+
+            ExtractableResponse<Response> response = get("/paths?source=2&target=3&age=15");
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        }
     }
 }

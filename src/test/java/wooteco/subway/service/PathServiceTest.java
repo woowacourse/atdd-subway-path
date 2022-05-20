@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.PathNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,6 +48,18 @@ class PathServiceTest {
         void 존재하지_않는_역_id를_입력받은_경우_예외발생() {
             assertThatThrownBy(() -> pathService.findShortestPath(9999L, 3L))
                 .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 출발역과_도착역이_같은_경우_예외발생() {
+            assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+                .isInstanceOf(PathNotFoundException.class);
+        }
+
+        @Test
+        void 등록되지_않은_구간일_경우_예외발생() {
+                assertThatThrownBy(() -> pathService.findShortestPath(3L, 4L))
+                    .isInstanceOf(PathNotFoundException.class);
         }
     }
 }

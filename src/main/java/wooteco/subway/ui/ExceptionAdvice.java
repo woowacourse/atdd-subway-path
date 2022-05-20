@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.exception.PathNotFoundException;
 
 @ControllerAdvice
 public class ExceptionAdvice {
@@ -26,6 +27,11 @@ public class ExceptionAdvice {
     @ExceptionHandler
     public ResponseEntity<String> handleException(NotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleException(PathNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
