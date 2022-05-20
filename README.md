@@ -2,16 +2,24 @@
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
 <p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
+  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacourse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-map">
 </p>
 
 <br>
 
 # 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
+스프링 과정 실습을 위한 지하철 노선도 애플리케이션  
+
+## 3단계 도메인 기능 요구사항  
+- [x] 최단 경로 찾기
+- [x] 요금 계산하기
+
+
+## api 요구사항  
+- [x] 경로 조회
 
 <br>
 
@@ -30,10 +38,10 @@
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-map/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/woowacourse/atdd-subway-map/blob/master/LICENSE) licensed.
