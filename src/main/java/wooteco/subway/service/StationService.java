@@ -9,6 +9,8 @@ import wooteco.subway.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.NotExistStationException;
+import wooteco.subway.exception.StationDuplicationException;
 
 @Service
 public class StationService {
@@ -35,7 +37,7 @@ public class StationService {
     private void validateDuplication(Station station) {
         int existFlag = stationDao.isExistStation(station);
         if (existFlag == STATION_EXIST_VALUE) {
-            throw new IllegalArgumentException(STATION_DUPLICATION);
+            throw new StationDuplicationException(STATION_DUPLICATION);
         }
     }
 
@@ -50,7 +52,7 @@ public class StationService {
     @Transactional
     public void deleteById(final Long id) {
         if (stationDao.deleteById(id) != DELETE_SUCCESS) {
-            throw new IllegalArgumentException(STATION_NOT_EXIST);
+            throw new NotExistStationException(STATION_NOT_EXIST);
         }
     }
 }

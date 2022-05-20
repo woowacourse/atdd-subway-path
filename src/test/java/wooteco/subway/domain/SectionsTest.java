@@ -4,6 +4,9 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import java.util.stream.Stream;
+import wooteco.subway.exception.AllStationsNotInSectionException;
+import wooteco.subway.exception.DistanceExceedException;
+import wooteco.subway.exception.NonRemovableSectionException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -61,25 +64,25 @@ public class SectionsTest {
                     Sections sections = new Sections(new Section(0, 1L, 1L, 2L, 7));
                     assertThatThrownBy(
                             () -> sections.add(new Section(0, 1L, 1L, 3L, 10))
-                    ).isInstanceOf(IllegalStateException.class);
+                    ).isInstanceOf(DistanceExceedException.class);
                 }),
                 DynamicTest.dynamicTest("하행이 같은 길이면서 기존 길보다 길이보다 긴 길이 들어오는 경우 예외 처리를 한다.", () -> {
                     Sections sections = new Sections(new Section(0, 1L, 1L, 2L, 7));
                     assertThatThrownBy(
                             () -> sections.add(new Section(0, 1L, 3L, 2L, 10))
-                    ).isInstanceOf(IllegalStateException.class);
+                    ).isInstanceOf(DistanceExceedException.class);
                 }),
                 DynamicTest.dynamicTest("구간을 추가할 때 상행과 하행 모두 기존 노선에 존재하지 않는 경우 예외를 발생시킨다", () -> {
                     Sections sections = new Sections(new Section(0, 1L, 1L, 2L, 7));
                     assertThatThrownBy(
                             () -> sections.add(new Section(0, 1L, 10L, 11L, 10))
-                    ).isInstanceOf(IllegalStateException.class);
+                    ).isInstanceOf(AllStationsNotInSectionException.class);
                 }),
                 DynamicTest.dynamicTest("구간이 1개만 있는 경우 삭제할 수 없다.", () -> {
                     Sections sections = new Sections(new Section(0, 1L, 1L, 2L, 7));
                     assertThatThrownBy(
                             () -> sections.remove(1L)
-                    ).isInstanceOf(IllegalStateException.class);
+                    ).isInstanceOf(NonRemovableSectionException.class);
                 })
         );
     }

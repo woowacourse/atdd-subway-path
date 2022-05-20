@@ -6,6 +6,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.NoReachableStationException;
+import wooteco.subway.exception.NotExistStationException;
 
 public class Path {
 
@@ -27,13 +29,13 @@ public class Path {
     public List<Long> calculateShortestPath(Long source, Long target) {
         Optional<GraphPath> path = makeGraphPath(source, target);
 
-        return path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE)).getVertexList();
+        return path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getVertexList();
     }
 
     public int calculateShortestDistance(Long source, Long target) {
         Optional<GraphPath> path = makeGraphPath(source, target);
 
-        return (int) path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE)).getWeight();
+        return (int) path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getWeight();
     }
 
     private Optional<GraphPath> makeGraphPath(Long source, Long target) {
@@ -44,7 +46,7 @@ public class Path {
             path = Optional.ofNullable(
                     dijkstraShortestPath.getPath(source, target));
         } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException(NOT_EXIST_STATION);
+            throw new NotExistStationException(NOT_EXIST_STATION);
         }
 
         return path;

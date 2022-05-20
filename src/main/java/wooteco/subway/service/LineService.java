@@ -13,6 +13,8 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.LineDuplicationException;
+import wooteco.subway.exception.NotExistLineException;
 
 @Service
 public class LineService {
@@ -65,7 +67,7 @@ public class LineService {
     private void validateDuplication(Line line) {
         int existFlag = lineDao.isExistLine(line);
         if (existFlag == LINE_EXIST_VALUE) {
-            throw new IllegalArgumentException(LINE_DUPLICATION);
+            throw new LineDuplicationException(LINE_DUPLICATION);
         }
     }
 
@@ -90,7 +92,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse getById(final Long id) {
         Line line = lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(LINE_NOT_EXIST));
+                .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line),
                 line.getExtraFare());
@@ -102,14 +104,14 @@ public class LineService {
                 new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
 
         if (updateFlag != UPDATE_SUCCESS) {
-            throw new IllegalArgumentException(LINE_NOT_EXIST);
+            throw new NotExistLineException(LINE_NOT_EXIST);
         }
     }
 
     @Transactional
     public void deleteById(final Long id) {
         if (lineDao.deleteById(id) != DELETE_SUCCESS) {
-            throw new IllegalArgumentException(LINE_NOT_EXIST);
+            throw new NotExistLineException(LINE_NOT_EXIST);
         }
     }
 }

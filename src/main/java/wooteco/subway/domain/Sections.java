@@ -2,6 +2,11 @@ package wooteco.subway.domain;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.AllStationsInSectionException;
+import wooteco.subway.exception.AllStationsNotInSectionException;
+import wooteco.subway.exception.DistanceExceedException;
+import wooteco.subway.exception.NonRemovableSectionException;
+import wooteco.subway.exception.StationNotInSectionException;
 
 public class Sections {
 
@@ -26,14 +31,14 @@ public class Sections {
     private void validateDuplicate(Long upStationId, Long downStationId) {
         Set<Long> stationIds = getStations();
         if (stationIds.contains(upStationId) && stationIds.contains(downStationId)) {
-            throw new IllegalStateException("상행과 하행 모두 이미 저장된 지하철역인 경우는 저장할 수 없습니다.");
+            throw new AllStationsInSectionException("상행과 하행 모두 이미 저장된 지하철역인 경우는 저장할 수 없습니다.");
         }
     }
 
     private void validateNoExist(Long upStationId, Long downStationId) {
         Set<Long> stationIds = getStations();
         if (!stationIds.contains(upStationId) && !stationIds.contains(downStationId)) {
-            throw new IllegalStateException("상행과 하행 모두 저장되지 않은 지하철역인 경우 저장할 수 없습니다.");
+            throw new AllStationsNotInSectionException("상행과 하행 모두 저장되지 않은 지하철역인 경우 저장할 수 없습니다.");
         }
     }
 
@@ -66,7 +71,7 @@ public class Sections {
 
     private void validateDistance(Section section, Section currentSection) {
         if (section.isMoreDistance(currentSection)) {
-            throw new IllegalStateException("기존 구간보다 거리가 길거나 같은 구간을 입력할 수 없습니다.");
+            throw new DistanceExceedException("기존 구간보다 거리가 길거나 같은 구간을 입력할 수 없습니다.");
         }
     }
 
@@ -158,13 +163,13 @@ public class Sections {
     private void validateNoExistStationId(Long stationId) {
         Set<Long> stationIds = getStations();
         if (!stationIds.contains(stationId)) {
-            throw new IllegalStateException("저장되지 않은 지하철역을 제거할 수 없습니다.");
+            throw new StationNotInSectionException("저장되지 않은 지하철역을 제거할 수 없습니다.");
         }
     }
 
     private void validateOneSection() {
         if (sections.size() == 1) {
-            throw new IllegalStateException("구간이 1개 남아있다면 삭제할 수 없습니다.");
+            throw new NonRemovableSectionException("구간이 1개 남아있다면 삭제할 수 없습니다.");
         }
     }
 
@@ -200,7 +205,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.getUpStationId().equals(upStationId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("해당하는 구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 구간을 찾을 수 없습니다."));
     }
 
     private boolean isSectionByUpStationId(Long upStationId) {
