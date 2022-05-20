@@ -51,4 +51,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).isEqualTo("목적지까지 도달할 수 없습니다.");
     }
 
+    @DisplayName("출발역과 도착역이 같을 경우 경로 조회에 실패한다.")
+    @Test
+    void showSameSourceAndTarget() {
+        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
+        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
+
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 10));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, seolleungId, 20);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("경로의 시작과 끝은 같은 역일 수 없습니다.");
+    }
+
 }
