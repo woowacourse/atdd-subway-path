@@ -37,8 +37,8 @@ public class LineService {
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor());
-        Station upStation = findStation(lineRequest.getUpStationId());
-        Station downStation = findStation(lineRequest.getDownStationId());
+        Station upStation = getStation(lineRequest.getUpStationId());
+        Station downStation = getStation(lineRequest.getDownStationId());
 
         Line savedLine = lineRepository.save(line);
         sectionRepository
@@ -48,7 +48,7 @@ public class LineService {
     }
 
     public LineResponse showById(Long lineId) {
-        return toLineResponse(findLine(lineId), getStations(lineId));
+        return toLineResponse(getLine(lineId), getStations(lineId));
     }
 
     public List<LineResponse> showAll() {
@@ -60,7 +60,7 @@ public class LineService {
 
     public void updateById(Long id, LineUpdateRequest request) {
         validateDuplicateNameAndColor(request.getName(), request.getColor());
-        Line line = findLine(id);
+        Line line = getLine(id);
         line.update(request.getName(), request.getColor());
         lineRepository.save(line);
     }
@@ -70,31 +70,26 @@ public class LineService {
     }
 
     public void createSection(Long lineId, SectionRequest request) {
-        Line line = findLine(lineId);
-        Station upStation = findStation(request.getUpStationId());
-        Station downStation = findStation(request.getDownStationId());
+        Line line = getLine(lineId);
+        Station upStation = getStation(request.getUpStationId());
+        Station downStation = getStation(request.getDownStationId());
         int distance = request.getDistance();
+
         Sections sections = new Sections(sectionRepository.findSectionByLine(line));
         Section newSection = new Section(line, upStation, downStation, distance);
-
         for (Section updateSection : sections.findUpdateSections(newSection)) {
             sectionRepository.save(updateSection);
         }
     }
 
     public void deleteSection(Long lineId, Long stationId) {
-        Line line = findLine(lineId);
-        Station station = findStation(stationId);
+        Line line = getLine(lineId);
+        Station station = getStation(stationId);
+
         Sections sections = new Sections(sectionRepository.findSectionByLine(line));
-
-        List<Section> removedSections = sections.findDeleteSections(line, station);
+        List<Section> removedSections = sections.getDeleteSections(line, station);
         for (Section removedSection : removedSections) {
-            sectionRepository.deleteById(removedSection.getId());
-        }
-
-        if (removedSections.size() == Sections.COMBINE_SIZE) {
-            Section combineSection = sections.combine(line, removedSections);
-            sectionRepository.save(combineSection);
+            isDeleteOrSave(removedSection);
         }
     }
 
@@ -104,11 +99,19 @@ public class LineService {
         }
     }
 
-    private Station findStation(Long stationId) {
+    private void isDeleteOrSave(Section removedSection) {
+        if (removedSection.getId() == null) {
+            sectionRepository.save(removedSection);
+        } else {
+            sectionRepository.deleteById(removedSection.getId());
+        }
+    }
+
+    private Station getStation(Long stationId) {
         return stationRepository.findById(stationId);
     }
 
-    private Line findLine(Long lineId) {
+    private Line getLine(Long lineId) {
         return lineRepository.findById(lineId);
     }
 

@@ -120,7 +120,7 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
 
-        List<Section> sections = 기존_구간.findDeleteSections(line, 잠실);
+        List<Section> sections = 기존_구간.getDeleteSections(line, 잠실);
 
         assertThat(sections.get(0).getId()).isNotNull();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("강남");
@@ -137,7 +137,7 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
 
-        List<Section> sections = 기존_구간.findDeleteSections(line, 강남);
+        List<Section> sections = 기존_구간.getDeleteSections(line, 강남);
 
         assertThat(sections.get(0).getId()).isNotNull();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("강남");
@@ -151,7 +151,7 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
 
-        List<Section> sections = 기존_구간.findDeleteSections(line, 왕십리);
+        List<Section> sections = 기존_구간.getDeleteSections(line, 왕십리);
 
         assertThat(sections.get(0).getId()).isNotNull();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("성수");

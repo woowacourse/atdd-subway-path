@@ -23,11 +23,23 @@ public class Sections {
         return findAddedSection(section).split(section);
     }
 
-    public List<Section> findDeleteSections(Line line, Station station) {
+    public List<Section> getDeleteSections(Line line, Station station) {
+        List<Section> removedSections = findDeleteSections(line, station);
+        isExistNewSections(line, removedSections);
+        return removedSections;
+    }
+
+    private List<Section> findDeleteSections(Line line, Station station) {
         return sections.stream()
-                .filter(value -> value.isEqualToLine(line) && value
-                        .isEqualToUpOrDownStation(station))
+                .filter(section -> isDeleteSection(line, station, section))
                 .collect(Collectors.toList());
+    }
+
+    private void isExistNewSections(Line line, List<Section> removedSections) {
+        if (removedSections.size() == Sections.COMBINE_SIZE) {
+            Section combineSection = combine(line, removedSections);
+            removedSections.add(combineSection);
+        }
     }
 
     public Section combine(Line line, List<Section> sections) {
@@ -103,6 +115,10 @@ public class Sections {
                 downSection.getDownStation(),
                 upSection.getDistance() + downSection.getDistance()
         );
+    }
+
+    private boolean isDeleteSection(Line line, Station station, Section value) {
+        return value.isEqualToLine(line) && value.isEqualToUpOrDownStation(station);
     }
 
     private void validateCombineSize(List<Section> sections) {
