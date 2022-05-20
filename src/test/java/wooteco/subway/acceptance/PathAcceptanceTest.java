@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,7 +11,6 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.StationResponse;
 
 @SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
@@ -43,13 +43,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 setUp();
                 ExtractableResponse<Response> response = 경로_조회(출발역, 도착역);
 
-                List<StationResponse> stations = response.body().jsonPath().getList("stations", StationResponse.class);
+                List<StationResponse> stations = response.body().jsonPath()
+                        .getList("stations", StationResponse.class);
                 int distance = response.body().jsonPath().getInt("distance");
                 int fare = response.body().jsonPath().getInt("fare");
 
                 assertThat(stations)
-                    .extracting("name")
-                    .containsExactly("강남", "성수", "합정");
+                        .extracting("name")
+                        .containsExactly("강남", "성수", "합정");
                 assertThat(distance).isEqualTo(20);
                 assertThat(fare).isEqualTo(1450);
             }
@@ -79,11 +80,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 경로_조회(long 출발역, long 도착역) {
         return RestAssured.given().log().all()
-            .queryParams(경로조회_파라미터(출발역, 도착역))
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+                .queryParams(경로조회_파라미터(출발역, 도착역))
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
     }
 
     private Map<String, Object> 경로조회_파라미터(long 출발역, long 도착역) {

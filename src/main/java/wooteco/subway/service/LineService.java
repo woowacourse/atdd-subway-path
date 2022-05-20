@@ -25,9 +25,9 @@ public class LineService {
     private final SectionRepository sectionRepository;
 
     public LineService(
-        LineRepository lineRepository,
-        StationRepository stationRepository,
-        SectionRepository sectionRepository
+            LineRepository lineRepository,
+            StationRepository stationRepository,
+            SectionRepository sectionRepository
     ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
@@ -41,7 +41,8 @@ public class LineService {
         Station downStation = findStation(lineRequest.getDownStationId());
 
         Line savedLine = lineRepository.save(line);
-        sectionRepository.save(new Section(savedLine, upStation, downStation, lineRequest.getDistance()));
+        sectionRepository
+                .save(new Section(savedLine, upStation, downStation, lineRequest.getDistance()));
 
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
@@ -53,8 +54,8 @@ public class LineService {
     public List<LineResponse> showAll() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
-            .map(line -> toLineResponse(line, getStations(line.getId())))
-            .collect(Collectors.toList());
+                .map(line -> toLineResponse(line, getStations(line.getId())))
+                .collect(Collectors.toList());
     }
 
     public void updateById(Long id, LineUpdateRequest request) {
@@ -112,13 +113,14 @@ public class LineService {
     }
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(),
+                toResponse(stations));
     }
 
     private static List<StationResponse> toResponse(List<Station> stations) {
         return stations.stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 
     private List<Station> getStations(Long lineId) {

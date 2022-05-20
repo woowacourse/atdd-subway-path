@@ -30,11 +30,13 @@ public class Section {
         validateShortDistance(other.distance);
         if (upStation.equals(other.upStation)) {
             Section start = new Section(id, line, upStation, other.downStation, other.distance);
-            Section end = new Section(line, other.downStation, downStation, distance - other.distance);
+            Section end = new Section(line, other.downStation, downStation,
+                    distance - other.distance);
             return List.of(start, end);
         }
         if (downStation.equals(other.downStation)) {
-            Section start = new Section(id, line, upStation, other.upStation, distance - other.distance);
+            Section start = new Section(id, line, upStation, other.upStation,
+                    distance - other.distance);
             Section end = new Section(line, other.upStation, downStation, other.distance);
             return List.of(start, end);
         }
@@ -103,7 +105,7 @@ public class Section {
         }
         Section section = (Section) o;
         return Objects.equals(upStation, section.upStation) && Objects
-            .equals(downStation, section.downStation);
+                .equals(downStation, section.downStation);
     }
 
     @Override
@@ -114,11 +116,11 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-            "id=" + id +
-            ", line=" + line +
-            ", upStation=" + upStation +
-            ", downStation=" + downStation +
-            ", distance=" + distance +
-            '}';
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }

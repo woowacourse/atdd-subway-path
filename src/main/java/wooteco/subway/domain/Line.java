@@ -44,7 +44,8 @@ public class Line {
 
     private void validateNameRange(String name) {
         if (name.length() >= MAX_RANGE) {
-            throw new IllegalArgumentException(String.format("노선 이름은 %d글자를 초과할 수 없습니다.", MAX_RANGE));
+            throw new IllegalArgumentException(
+                    String.format("노선 이름은 %d글자를 초과할 수 없습니다.", MAX_RANGE));
         }
 
         if (name.length() < MIN_RANGE) {
@@ -90,9 +91,9 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
     }
 }

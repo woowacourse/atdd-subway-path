@@ -27,15 +27,15 @@ public class LineRepository {
 
     public Line findById(Long id) {
         LineEntity entity = lineDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 노선이 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new NotFoundException("조회하려는 노선이 존재하지 않습니다. id : " + id));
         return toLine(entity);
     }
 
     public List<Line> findAll() {
         List<LineEntity> entities = lineDao.findAll();
         return entities.stream()
-            .map(this::toLine)
-            .collect(Collectors.toList());
+                .map(this::toLine)
+                .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {

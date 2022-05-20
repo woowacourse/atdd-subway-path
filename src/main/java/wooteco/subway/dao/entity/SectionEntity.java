@@ -1,6 +1,7 @@
 package wooteco.subway.dao.entity;
 
 public class SectionEntity {
+
     private final Long id;
     private final Long lineId;
     private final Long upStationId;

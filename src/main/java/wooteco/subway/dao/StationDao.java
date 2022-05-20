@@ -15,10 +15,10 @@ import wooteco.subway.dao.entity.StationEntity;
 public class StationDao {
 
     private static final RowMapper<StationEntity> mapper = (rs, rowNum) ->
-        new StationEntity(
-            rs.getLong("id"),
-            rs.getString("name")
-        );
+            new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -26,8 +26,8 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity save(StationEntity stationEntity) {
@@ -38,7 +38,8 @@ public class StationDao {
 
     public Optional<StationEntity> findById(Long id) {
         String sql = "select * from station where id = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, mapper, id)));
+        return Optional
+                .ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, mapper, id)));
     }
 
     public List<StationEntity> findAll() {

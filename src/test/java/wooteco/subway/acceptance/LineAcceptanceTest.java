@@ -1,7 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import io.restassured.RestAssured;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
@@ -80,7 +80,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_저장_응답(빈_파라미터);
 
-                assertThat(response.body().jsonPath().getString("message")).isEqualTo("이름과 색깔은 공백일 수 없습니다.");
+                assertThat(response.body().jsonPath().getString("message"))
+                        .isEqualTo("이름과 색깔은 공백일 수 없습니다.");
             }
         }
     }
@@ -138,7 +139,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_조회(1);
 
-                assertThat(response.body().jsonPath().getString("message")).isEqualTo("조회하려는 노선이 존재하지 않습니다. id : 1");
+                assertThat(response.body().jsonPath().getString("message"))
+                        .isEqualTo("조회하려는 노선이 존재하지 않습니다. id : 1");
             }
         }
     }
@@ -171,7 +173,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_lines() {
                 ExtractableResponse<Response> response = 노선_목록_조회();
 
-                List<LineResponse> responses = response.body().jsonPath().getList(".", LineResponse.class);
+                List<LineResponse> responses = response.body().jsonPath()
+                        .getList(".", LineResponse.class);
                 assertThat(responses).extracting("name").isEqualTo(List.of("1호선", "2호선"));
             }
         }
@@ -222,7 +225,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId + 1L, 노선_수정_파라미터);
 
-                assertThat(response.body().jsonPath().getString("message")).contains("조회하려는 노선이 존재하지 않습니다.");
+                assertThat(response.body().jsonPath().getString("message"))
+                        .contains("조회하려는 노선이 존재하지 않습니다.");
             }
         }
 
@@ -250,7 +254,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId, 노선_수정_파라미터);
 
-                assertThat(response.body().jsonPath().getString("message")).isEqualTo("이름과 색깔은 공백일 수 없습니다.");
+                assertThat(response.body().jsonPath().getString("message"))
+                        .isEqualTo("이름과 색깔은 공백일 수 없습니다.");
             }
         }
 
@@ -273,7 +278,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId, 노선_중복_파라미터);
 
-                assertThat(response.body().jsonPath().getString("message")).isEqualTo("노선이 이름과 색상은 중복될 수 없습니다.");
+                assertThat(response.body().jsonPath().getString("message"))
+                        .isEqualTo("노선이 이름과 색상은 중복될 수 없습니다.");
             }
         }
     }

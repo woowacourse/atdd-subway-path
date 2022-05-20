@@ -24,15 +24,15 @@ public class StationRepository {
 
     public Station findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 역이 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new NotFoundException("조회하려는 역이 존재하지 않습니다. id : " + id));
         return toStation(stationEntity);
     }
 
     public List<Station> findAll() {
         List<StationEntity> entities = stationDao.findAll();
         return entities.stream()
-            .map(this::toStation)
-            .collect(Collectors.toList());
+                .map(this::toStation)
+                .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {

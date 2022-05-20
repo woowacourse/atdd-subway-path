@@ -28,7 +28,8 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> IllegalArgumentExceptionHandler(IllegalArgumentException e) {
+    public ResponseEntity<ErrorResponse> IllegalArgumentExceptionHandler(
+            IllegalArgumentException e) {
         log.debug(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }

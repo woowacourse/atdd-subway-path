@@ -25,8 +25,9 @@ public class Sections {
 
     public List<Section> findDeleteSections(Line line, Station station) {
         return sections.stream()
-            .filter(value -> value.isEqualToLine(line) && value.isEqualToUpOrDownStation(station))
-            .collect(Collectors.toList());
+                .filter(value -> value.isEqualToLine(line) && value
+                        .isEqualToUpOrDownStation(station))
+                .collect(Collectors.toList());
     }
 
     public Section combine(Line line, List<Section> sections) {
@@ -59,16 +60,18 @@ public class Sections {
 
     private Section findAddedSection(Section section) {
         return sections.stream()
-            .filter(it -> it.isEqualToUpStation(section.getUpStation()) || it.isEqualToDownStation(section.getDownStation()))
-            .findFirst()
-            .orElseGet(() -> isAddableFirstOrEndSection(section));
+                .filter(it -> it.isEqualToUpStation(section.getUpStation()) || it
+                        .isEqualToDownStation(section.getDownStation()))
+                .findFirst()
+                .orElseGet(() -> isAddableFirstOrEndSection(section));
     }
 
     private Section isAddableFirstOrEndSection(Section section) {
         return sections.stream()
-            .filter(it -> it.isEqualToUpStation(section.getDownStation()) || it.isEqualToDownStation(section.getUpStation()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("생성할 수 없는 구간입니다."));
+                .filter(it -> it.isEqualToUpStation(section.getDownStation()) || it
+                        .isEqualToDownStation(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("생성할 수 없는 구간입니다."));
     }
 
     private Station findNextStation(List<Section> sections, Station next, List<Section> result) {
@@ -83,22 +86,22 @@ public class Sections {
 
     private Station findFirstStation(List<Station> upStations, List<Station> downStations) {
         return upStations.stream()
-            .filter(upStation -> !downStations.contains(upStation))
-            .findFirst()
-            .orElseThrow(() ->  new IllegalArgumentException("첫번째 역이 존재하지 않습니다."));
+                .filter(upStation -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("첫번째 역이 존재하지 않습니다."));
     }
 
     private boolean containsSection(Section section) {
         return sections.stream()
-            .anyMatch(value -> value.equals(section));
+                .anyMatch(value -> value.equals(section));
     }
 
     private Section combineSection(Line line, Section upSection, Section downSection) {
         return new Section(
-            line,
-            upSection.getUpStation(),
-            downSection.getDownStation(),
-            upSection.getDistance() + downSection.getDistance()
+                line,
+                upSection.getUpStation(),
+                downSection.getDownStation(),
+                upSection.getDistance() + downSection.getDistance()
         );
     }
 
@@ -116,14 +119,14 @@ public class Sections {
 
     private List<Station> getAllUpStations(List<Section> sections) {
         return sections.stream()
-            .map(Section::getUpStation)
-            .collect(Collectors.toList());
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
     }
 
     private List<Station> getAllDownStations(List<Section> sections) {
         return sections.stream()
-            .map(Section::getDownStation)
-            .collect(Collectors.toList());
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {

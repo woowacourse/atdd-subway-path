@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.domain.fixtures.TestFixtures.강남;
 import static wooteco.subway.domain.fixtures.TestFixtures.삼성;
 import static wooteco.subway.domain.fixtures.TestFixtures.성수;
+
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -116,8 +117,8 @@ public class SectionTest {
         Section 추가할_구간 = new Section(line, 강남, 성수, 10);
 
         assertThatThrownBy(() -> 기존_구간.split(추가할_구간))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("추가하려는 거리가 큽니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("추가하려는 거리가 큽니다.");
     }
 
     @Test
@@ -126,8 +127,8 @@ public class SectionTest {
         Line line = new Line(1L, "2호선", "green");
 
         assertThatThrownBy(() -> new Section(1L, line, 삼성, 성수, 0))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("거리는 1이상이어야 합니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 1이상이어야 합니다.");
     }
 
     @Test

@@ -38,11 +38,13 @@ public class SubwayGraph {
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createPath(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+                DefaultWeightedEdge.class);
         for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+                    section.getDistance());
         }
         return new DijkstraShortestPath<>(graph);
     }
@@ -58,7 +60,8 @@ public class SubwayGraph {
             return FEE_BASE;
         }
         if (distance <= OVER_FEE_DISTANCE) {
-            return (int) ((Math.ceil((distance - BASE_FEE_DISTANCE ) / FIVE_KM)) * OVER_FEE) + FEE_BASE;
+            return (int) ((Math.ceil((distance - BASE_FEE_DISTANCE) / FIVE_KM)) * OVER_FEE)
+                    + FEE_BASE;
         }
         return (int) ((Math.ceil((distance - OVER_FEE_DISTANCE) / EIGHT_KM)) * OVER_FEE) + FEE_50KM;
     }
