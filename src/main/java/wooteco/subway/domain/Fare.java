@@ -14,27 +14,18 @@ public class Fare {
     }
 
     public int calculateFare(int distance) {
-        int fare = baseFare;
-
-        fare = belowMaximumBoundary(fare, distance);
-        fare = overMaximumBoundary(fare, distance);
-
-        return fare;
-    }
-
-    private int belowMaximumBoundary(int fare, int distance) {
         if (MINIMUM_BOUNDARY < distance && distance <= MAXIMUM_BOUNDARY) {
-            fare += calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
+            return baseFare
+                + calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
         }
-        return fare;
-    }
 
-    private int overMaximumBoundary(int fare, int distance) {
         if (MAXIMUM_BOUNDARY < distance) {
-            fare += calculateOverFare(MAXIMUM_BOUNDARY - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
-            fare += calculateOverFare(distance - MAXIMUM_BOUNDARY, OVER_FIFTY_POLICY);
+            return baseFare
+                + calculateOverFare(MAXIMUM_BOUNDARY - MINIMUM_BOUNDARY, OVER_TEN_POLICY)
+                + calculateOverFare(distance - MAXIMUM_BOUNDARY, OVER_FIFTY_POLICY);
         }
-        return fare;
+
+        return baseFare;
     }
 
     private int calculateOverFare(int overDistance, int policy) {
