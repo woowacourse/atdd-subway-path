@@ -8,8 +8,8 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.infra.repository.SectionRepository;
 import wooteco.subway.service.dto.request.SectionServiceRequest;
 
-@Service
 @Transactional
+@Service
 public class SpringSectionService implements SectionService {
 
     private final SectionRepository sectionRepository;

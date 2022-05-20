@@ -15,8 +15,8 @@ import wooteco.subway.exception.validation.LineNameDuplicateException;
 import wooteco.subway.infra.repository.LineRepository;
 import wooteco.subway.service.dto.request.LineServiceRequest;
 
-@Service
 @Transactional
+@Service
 public class SpringLineService implements LineService {
 
     private final LineRepository lineRepository;
@@ -106,3 +106,4 @@ public class SpringLineService implements LineService {
         }
     }
 }
+

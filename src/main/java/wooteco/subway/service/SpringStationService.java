@@ -10,8 +10,8 @@ import wooteco.subway.exception.validation.StationNameDuplicateException;
 import wooteco.subway.infra.repository.StationRepository;
 import wooteco.subway.service.dto.request.StationServiceRequest;
 
-@Service
 @Transactional
+@Service
 public class SpringStationService implements StationService {
 
     private final StationRepository stationRepository;
