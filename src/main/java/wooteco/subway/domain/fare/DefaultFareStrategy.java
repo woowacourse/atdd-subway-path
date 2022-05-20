@@ -4,6 +4,6 @@ public class DefaultFareStrategy extends FareStrategy {
 
     @Override
     public int calculateFare(final FareCondition fareCondition) {
-        return 0;
+        return DEFAULT_FARE + fareCondition.getExtraFare();
     }
 }
