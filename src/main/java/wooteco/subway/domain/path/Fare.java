@@ -14,22 +14,24 @@ public class Fare {
     }
 
     public int calculate() {
-        if (distance <= FIRST_RESTRICTION_DISTANCE) {
-            return BASIC_FARE;
-        }
+        return BASIC_FARE + calculateFareOverFirstRestrictionDistance() + calculateFareOverSecondRestrictionDistance();
+    }
+
+    private int calculateFareOverFirstRestrictionDistance() {
         if (distance <= SECOND_RESTRICTION_DISTANCE) {
-            return BASIC_FARE + calculateFareOverFirstDistance(distance);
+            return calculateAdditionalFare(distance, FIRST_RESTRICTION_DISTANCE, 5.0);
         }
-        return BASIC_FARE
-                + calculateFareOverFirstDistance(SECOND_RESTRICTION_DISTANCE)
-                + calculateFareOverSecondDistance();
+        return calculateAdditionalFare(SECOND_RESTRICTION_DISTANCE, FIRST_RESTRICTION_DISTANCE, 5.0);
     }
 
-    private int calculateFareOverFirstDistance(int distance) {
-        return (int) (Math.ceil((distance - FIRST_RESTRICTION_DISTANCE) / 5.0) * ADDITIONAL_FARE);
+    private int calculateFareOverSecondRestrictionDistance() {
+        return calculateAdditionalFare(distance, SECOND_RESTRICTION_DISTANCE, 8.0);
     }
 
-    private int calculateFareOverSecondDistance() {
-        return (int) (Math.ceil((distance - SECOND_RESTRICTION_DISTANCE) / 8.0) * ADDITIONAL_FARE);
+    private int calculateAdditionalFare(int distance, int restrictionDistance, double standardDistance) {
+        if (distance <= restrictionDistance) {
+            return 0;
+        }
+        return (int) (Math.ceil((distance - restrictionDistance) / standardDistance) * ADDITIONAL_FARE);
     }
 }
