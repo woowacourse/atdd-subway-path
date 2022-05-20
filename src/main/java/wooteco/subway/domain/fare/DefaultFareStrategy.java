@@ -4,6 +4,7 @@ public class DefaultFareStrategy extends FareStrategy {
 
     @Override
     public int calculateFare(final FareCondition fareCondition) {
-        return DEFAULT_FARE + fareCondition.getExtraFare();
+        return getAgeDiscountPolicy(fareCondition.getAge())
+                .discount(DEFAULT_FARE + fareCondition.getExtraFare());
     }
 }

@@ -6,9 +6,10 @@ public class MaxFareStrategy extends OverFareStrategy {
 
     @Override
     public int calculateFare(final FareCondition fareCondition) {
-        return DEFAULT_FARE
+        int fare = DEFAULT_FARE
                 + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
                 + calculateOverFare(fareCondition.getDistance() - OVER_FARE_DISTANCE, MAX_UNIT)
                 + fareCondition.getExtraFare();
+        return getAgeDiscountPolicy(fareCondition.getAge()).discount(fare);
     }
 }

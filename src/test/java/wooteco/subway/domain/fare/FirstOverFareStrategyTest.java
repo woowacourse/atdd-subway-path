@@ -13,6 +13,6 @@ class FirstOverFareStrategyTest {
     void calculateFare() {
         FirstOverFareStrategy firstOverFareStrategy = new FirstOverFareStrategy();
         FareCondition fareCondition = new FareCondition(11, 15, 100);
-        assertThat(firstOverFareStrategy.calculateFare(fareCondition)).isEqualTo(1450);
+        assertThat(firstOverFareStrategy.calculateFare(fareCondition)).isEqualTo(880);
     }
 }

@@ -12,7 +12,7 @@ class MaxFareStrategyTest {
     void calculateFare() {
         MaxFareStrategy maxFareStrategy = new MaxFareStrategy();
         FareCondition fareCondition = new FareCondition(51, 15, 100);
-        assertThat(maxFareStrategy.calculateFare(fareCondition)).isEqualTo(2250);
+        assertThat(maxFareStrategy.calculateFare(fareCondition)).isEqualTo(1520);
     }
 
 }
