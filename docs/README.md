@@ -64,18 +64,12 @@
         - 조회 값이 없으면 예외 처리까지
     - [X] 이름 중복 처리 로직을 Service 로 이동
     - [X] JdbcTemplate -> NamedParam 수정
-    - [ ] Dto 만들어 필드 수정시 생기는 변경 범위 격리
+    - [X] Dto 만들어 필드 수정시 생기는 변경 범위 격리
     - [X] 정적 팩터리 메서드 대신 부생성자 이용 고려해보기
-- Domain
-    - [ ] Sections 의 구간들이 같은 Line 이라는 사실 나타내기
-    - [ ] 불필요한 getter 사용 제거
-    - [ ] 원시값 포장을 통한 validation 추가
-- Test
-    - [ ] 변수 명을 한글로할지, 영어로할지 고민
 - 그 외
-    - [ ] 컨벤션 확인
-    - [ ] 네이밍이 명시적인지 확인
-    - [ ] 불필요한 중복이 없는지 확인
+    - [x] 컨벤션 확인
+    - [X] 네이밍이 명시적인지 확인
+    - [X] 불필요한 중복이 없는지 확인
     - [X] 지역 변수 final 삭제
 
 ### 스티치의 1단계 첫번째 리뷰
@@ -85,7 +79,7 @@
 - [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [X] NamedParameterJdbcTemplate 으로 수정
 - [X] FareCalculator 가 필드로 distance 를 갖도록 수정
-- [ ] 매직넘버 상수로 관리하기
+- [x] 매직넘버 상수로 관리하기
 - [X] @RequestParam @ModelAttribute 로 묶어보기
 - [X] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
 - [X] StationService 의 try-catch 수정해보기
