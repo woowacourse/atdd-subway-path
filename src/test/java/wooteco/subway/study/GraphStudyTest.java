@@ -1,9 +1,11 @@
 package wooteco.subway.study;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -38,7 +40,7 @@ public class GraphStudyTest {
     @DisplayName("지하철역을 가지는 정점을 이용한 최단경로를 구한다.")
     @Test
     void graphWithStation() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         Station 신림역 = new Station("신림역");
         Station 봉천역 = new Station("봉천역");
         Station 서울대입구역 = new Station("서울대입구역");
@@ -58,5 +60,21 @@ public class GraphStudyTest {
                 () -> assertThat(shortestPath).containsExactly(서울대입구역, 봉천역, 신림역),
                 () -> assertThat(weight).isEqualTo(4.0)
         );
+    }
+
+    @DisplayName("지하철역을 가지는 정점을 이용한 최단경로를 구한다.")
+    @Test
+    void thrown_vertexNoRtExist() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        Station 신림역 = new Station("신림역");
+        Station 봉천역 = new Station("봉천역");
+        Station 서울대입구역 = new Station("서울대입구역");
+        graph.addVertex(신림역);
+        graph.addVertex(봉천역);
+        graph.setEdgeWeight(graph.addEdge(신림역, 봉천역), 2);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        assertThatThrownBy(() -> dijkstraShortestPath.getPath(서울대입구역, 신림역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -27,7 +27,7 @@ public class Sections {
         value.add(section);
     }
 
-    private void addBetweenSection(Section section) {
+    private void addBetweenSection(final Section section) {
         final Optional<Section> upSection = findUpSection(section);
         final Optional<Section> downSection = findDownSection(section);
 
@@ -44,7 +44,7 @@ public class Sections {
         return origin;
     }
 
-    private List<Section> findSections(List<Section> sections) {
+    private List<Section> findSections(final List<Section> sections) {
         return sections.stream()
                 .map(this::findSection)
                 .filter(Optional::isPresent)
@@ -52,7 +52,7 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    private Optional<Section> findSection(Section section) {
+    private Optional<Section> findSection(final Section section) {
         return value.stream()
                 .filter(originSection -> originSection.equals(section))
                 .findFirst();
@@ -76,7 +76,7 @@ public class Sections {
         return merge(sections.get(FIRST), sections.get(SECOND));
     }
 
-    private Optional<Section> merge(Section source, Section target) {
+    private Optional<Section> merge(final Section source, final Section target) {
         if (source.getDownStation().equals(target.getUpStation())) {
             return Optional.of(source.merge(target));
         }
@@ -139,7 +139,7 @@ public class Sections {
         validateSectionInsertion(other, stations);
     }
 
-    private Stream<Station> getStations(Function<Section, Station> function) {
+    private Stream<Station> getStations(final Function<Section, Station> function) {
         return value.stream()
                 .map(function);
     }

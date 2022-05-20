@@ -18,7 +18,7 @@ public class PathController {
     }
 
     @GetMapping
-    public PathResponse findPath(@RequestParam long source, @RequestParam long target, @RequestParam int age) {
+    public PathResponse findPath(@RequestParam(defaultValue = "0") long source, @RequestParam(defaultValue = "0") long target, @RequestParam(defaultValue = "20") int age) {
         return pathService.getPath(source, target, age);
     }
 }

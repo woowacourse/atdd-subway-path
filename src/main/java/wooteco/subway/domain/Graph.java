@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -13,8 +14,9 @@ public class Graph {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
-    public ShortestPath getShortestPath(Station source, Station target) {
+    public ShortestPath getShortestPath(final Station source, final Station target) {
         validateEmpty();
+        validateVertexesExist(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return new ShortestPath(dijkstraShortestPath.getPath(source, target));
     }
@@ -23,6 +25,19 @@ public class Graph {
         if (graph.vertexSet().isEmpty()) {
             throw new IllegalStateException("그래프가 초기화되지 않았습니다.");
         }
+    }
+
+    private void validateVertexesExist(final Station source, final Station target) {
+        validateVertexExist(source);
+        validateVertexExist(target);
+    }
+
+    private void validateVertexExist(final Station station) {
+        graph.vertexSet()
+                .stream()
+                .filter(vertex -> vertex.equals(station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("지하철역이 존재하지 않습니다."));
     }
 
     public void addSections(Sections sections) {
