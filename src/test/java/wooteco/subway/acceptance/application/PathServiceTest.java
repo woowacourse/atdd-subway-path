@@ -31,9 +31,9 @@ class PathServiceTest {
     @Mock
     private SectionDao sectionDao;
 
-    @DisplayName("거리가 10Km일 때 요금은 1250원 이다.")
+    @DisplayName("최단 경로를 구했을 때 거리와 거리에 따른 요금이 정확한지 확인")
     @ParameterizedTest
-    @CsvSource(value = {"10,1250", "15,1350", "58,2150"})
+    @CsvSource(value = {"10,1250", "11,1350", "16,1450","50,2050", "51,2150"})
     void getPath(int distance, int expectedCost) {
         // given
         final Station 강남역 = new Station("강남역");
