@@ -20,8 +20,7 @@ public class Path {
     public List<Long> createShortestPath(Long upStationId, Long downStationId) {
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         try {
-            return dijkstraShortestPath.getPath(upStationId,
-                    downStationId).getVertexList();
+            return dijkstraShortestPath.getPath(upStationId, downStationId).getVertexList();
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
         }
