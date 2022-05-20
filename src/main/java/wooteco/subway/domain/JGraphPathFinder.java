@@ -17,7 +17,7 @@ public class JGraphPathFinder implements PathFinder {
         this.graph = graph;
     }
 
-    public static JGraphPathFinder of(List<Section> sections) {
+    public static PathFinder of(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         Set<Station> stations = getDistinctStations(sections);
         stations.forEach(graph::addVertex);

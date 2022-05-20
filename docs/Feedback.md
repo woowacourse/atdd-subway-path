@@ -6,7 +6,7 @@
     - 현재 객체가 아닌 함수처럼 사용되는 것으로 보임
     - 거리를 전달하여 실제 계산은 객체가 수행하도록 수정
     - `new Fare(distance).longValue();`
-- [ ] `JGraphPathFinder`
+- [x] `JGraphPathFinder`
     - 정적팩터리 메서드의 반환 타입을 인터페이스로 수정
 - [ ] `Sections`
     - 구간 추가, 삭제 시 도메인 규칙을 따르지만 객체 생성 시에는 그렇지 않음.
