@@ -58,6 +58,12 @@
 - 변경된 API 스펙은 [API 문서 v3](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c4c291f19953498e8eda8a38253eed51#Path) 참고
 
 <br>
+🛠 2단계 요구사항
+- [] 노선별 추가요금 정책
+  - [] Line별로 저장된 추가요금 더하기
+- [] 연령별 할인정책
+  - [] 어린이 : (기존요금-350) * 0.5
+  - [] 청소년 : (기존요금-350) * 0.8
 
 ## 🚀 Getting Started
 ### Usage
@@ -80,8 +86,4 @@
 
 ## 📝 License
 
-<<<<<<< HEAD
 This project is [MIT](https://github.com/woowacourse/atdd-subway-map/blob/master/LICENSE) licensed.
-=======
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
->>>>>>> master
