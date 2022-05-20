@@ -1,5 +1,7 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.exception.PositiveDigitException;
+
 public class LineRequest {
 
     private String name;
@@ -13,12 +15,30 @@ public class LineRequest {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
+        validatePositive(distance, extraFare);
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
         this.extraFare = extraFare;
+    }
+
+    private void validatePositive(int distance, int extraFare) {
+        validatePositiveDistance(distance);
+        validatePositiveExtraFare(extraFare);
+    }
+
+    private void validatePositiveDistance(int distance) {
+        if (distance <= 0) {
+            throw new PositiveDigitException("구간의 길이가 양수가 아닙니다.");
+        }
+    }
+
+    private void validatePositiveExtraFare(int extraFare) {
+        if (extraFare <= 0) {
+            throw new PositiveDigitException("추가 요금이 양수가 아닙니다.");
+        }
     }
 
     public String getName() {

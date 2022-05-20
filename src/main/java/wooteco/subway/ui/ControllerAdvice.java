@@ -25,6 +25,6 @@ public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception exception) {
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.internalServerError().body(exception.getMessage());
     }
 }
