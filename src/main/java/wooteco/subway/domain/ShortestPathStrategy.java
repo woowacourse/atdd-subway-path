@@ -8,11 +8,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class ShortestPath {
+public class ShortestPathStrategy implements PathStrategy {
 
     private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
 
-    public ShortestPath(List<Station> stations, List<Section> sections) {
+    public ShortestPathStrategy(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
         setVertex(graph, stations);
         setEdgeWeight(graph, sections, stations);

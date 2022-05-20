@@ -10,7 +10,8 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.CostCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.ShortestPath;
+import wooteco.subway.domain.PathStrategy;
+import wooteco.subway.domain.ShortestPathStrategy;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
@@ -36,17 +37,17 @@ public class PathService {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
 
-        ShortestPath shortestPath = new ShortestPath(stations, sections);
+        PathStrategy pathStrategy = new ShortestPathStrategy(stations, sections);
         Station source = findById(stations, sourceId);
         Station target = findById(stations, targetId);
 
-        int distance = shortestPath.calculateDistance(source, target);
-        int extraFare = findMaxExtraFare(shortestPath.findLineIds(source, target));
+        int distance = pathStrategy.calculateDistance(source, target);
+        int extraFare = findMaxExtraFare(pathStrategy.findLineIds(source, target));
 
         return new PathResponse(
                 distance,
                 CostCalculator.calculate(distance, extraFare),
-                generateStationResponses(shortestPath.findPath(source, target))
+                generateStationResponses(pathStrategy.findPath(source, target))
         );
     }
 

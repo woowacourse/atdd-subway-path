@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-class ShortestPathTest {
+class PathStrategyTest {
 
     private static final Station station1 = new Station(1L, "v1");
     private static final Station station2 = new Station(2L, "v2");
@@ -31,10 +29,10 @@ class ShortestPathTest {
     @Test
     void create() {
         // given
-        ShortestPath shortestPath = new ShortestPath(stations, sections);
+        PathStrategy pathStrategy = new ShortestPathStrategy(stations, sections);
 
         // when
-        List<Station> result = shortestPath.findPath(station3, station1);
+        List<Station> result = pathStrategy.findPath(station3, station1);
 
         // then
         List<Station> expected = List.of(station3, station2, station4, station1);
@@ -45,10 +43,10 @@ class ShortestPathTest {
     @Test
     void calculateDistance() {
         // given
-        ShortestPath shortestPath = new ShortestPath(stations, sections);
+        PathStrategy pathStrategy = new ShortestPathStrategy(stations, sections);
 
         // when
-        int result = shortestPath.calculateDistance(station3, station1);
+        int result = pathStrategy.calculateDistance(station3, station1);
 
         // then
         assertThat(result).isEqualTo(5);
@@ -57,8 +55,8 @@ class ShortestPathTest {
     @DisplayName("순회하는 노선 목록 찾기")
     @Test
     void findLines() {
-        ShortestPath shortestPath = new ShortestPath(stations, sections);
-        List<Long> ids = shortestPath.findLineIds(station1, station2);
+        PathStrategy pathStrategy = new ShortestPathStrategy(stations, sections);
+        List<Long> ids = pathStrategy.findLineIds(station1, station2);
 
         assertThat(ids).contains(lineId1, lineId2);
     }
