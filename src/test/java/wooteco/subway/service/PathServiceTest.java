@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class PathServiceTest {
 
     @DisplayName("하나의 line에서 경로를 조회할 수 있다.")
     @Test
-    public void findPath() {
+    public void findPathByOneLine() {
         // given
         final StationRequest a = new StationRequest("a");
         final StationRequest b = new StationRequest("b");
@@ -71,7 +72,7 @@ class PathServiceTest {
 
     @DisplayName("여러 개의 line에서 경로를 조회할 수 있다.")
     @Test
-    public void findPath2() {
+    public void findPathBy3Lines() {
         // given
         final StationRequest a = new StationRequest("a");
         final StationRequest b = new StationRequest("b");
@@ -100,10 +101,8 @@ class PathServiceTest {
         sectionService.save(경중선id, new SectionRequest(response4.getId(), response5.getId(), 1));
         sectionService.save(경중선id, new SectionRequest(response6.getId(), response7.getId(), 6));
 
-
         final LineRequest 분당선 = new LineRequest("분당선", "bg-yellow-600", response3.getId(), response5.getId(), 5);
         final Long 분당선id = lineService.save(분당선).getId();
-
 
         // when
         final PathResponse response = pathService.findPath(response1.getId(), response6.getId());
@@ -120,5 +119,30 @@ class PathServiceTest {
                         tuple(response5.getId(), "e"),
                         tuple(response6.getId(), "f")
                 );
+    }
+
+    @DisplayName("연결되어 있지 않은 경로 검색 시 예외가 발생한다.")
+    @Test
+    public void notFindPathException() {
+        // given
+        final StationRequest a = new StationRequest("a");
+        final StationRequest b = new StationRequest("b");
+        final StationRequest c = new StationRequest("c");
+        final StationRequest d = new StationRequest("d");
+
+        final StationResponse response1 = stationService.save(a);
+        final StationResponse response2 = stationService.save(b);
+        final StationResponse response3 = stationService.save(c);
+        final StationResponse response4 = stationService.save(d);
+
+        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response2.getId(), 10);
+        lineService.save(신분당선);
+
+        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response3.getId(), response4.getId(), 21);
+        lineService.save(경중선);
+
+        // when then
+        assertThatThrownBy(() -> pathService.findPath(response1.getId(), response3.getId()))
+                .isInstanceOf(NullPointerException.class);
     }
 }

@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,5 +60,25 @@ class PathTest {
                 () -> assertThat(shortestPath).containsExactly(1L, 2L, 3L, 4L, 6L, 7L),
                 () -> assertEquals(weight, 5)
         );
+    }
+
+    @DisplayName("연결되어 있지 않은 경로 검색 시 예외가 발생한다.")
+    @Test
+    public void notFindPathException() {
+        // given
+        List<Section> sections = new ArrayList<>();
+        sections.add(new Section(1L, 1L, 1L, 2L, 1));
+        sections.add(new Section(2L, 2L, 3L, 4L, 2));
+
+        //when
+        final Path path = Path.of(new Sections(sections), 1L, 3L);
+
+        // then
+        assertAll(
+                () ->assertThatThrownBy(path::getShortestPath)
+                        .isInstanceOf(NullPointerException.class),
+                () ->assertThatThrownBy(path::getShortestPathWeight)
+                        .isInstanceOf(NullPointerException.class)
+                );
     }
 }
