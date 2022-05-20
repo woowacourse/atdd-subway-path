@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.distanceUnit.Kilometer;
 import wooteco.subway.domain.PathCalculator;
+import wooteco.subway.domain.distance.FarePolicy;
+import wooteco.subway.domain.distance.Kilometer;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.response.PathResponse;
@@ -32,10 +32,9 @@ public class PathService {
         Station targetStation = findStationById((long)target);
         List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
 
-        double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
+        int distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
 
-        FareCalculator fareCalculator = new FareCalculator();
-        int fare = fareCalculator.calculate(new Kilometer(distance));
+        int fare = FarePolicy.getFare(new Kilometer(distance)).value();
 
         return new PathResponse(StationResponse.of(path), distance, fare);
     }
