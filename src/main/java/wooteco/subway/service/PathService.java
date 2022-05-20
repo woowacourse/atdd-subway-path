@@ -1,11 +1,10 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.*;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -23,15 +22,16 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(long source, long target, int age) {
-        List<Section> sections = sectionDao.findAll();
-        Path path = new Path(sections);
+        Sections sections = new Sections(sectionDao.findAll());
+        Stations stations = new Stations(stationDao.findAll());
+        Path path = new Path(stations, sections);
 
-        List<Long> shortestPath = path.calculateShortestPath(source, target);
+        List<Station> shortestPath = path.calculateShortestPath(source, target);
         int shortestDistance = path.calculateShortestDistance(source, target);
 
         List<StationResponse> stationResponses = shortestPath.stream()
-                .map(stationDao::getById)
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
