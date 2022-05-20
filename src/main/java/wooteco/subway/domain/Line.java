@@ -8,14 +8,20 @@ public class Line {
     private final Long id;
     private String name;
     private String color;
+    private int extraFare;
     private final Sections sections = new Sections();
 
-    public Line(final Long id, final String name, final String color) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
         validateNullOrBlank(name);
         validateNullOrBlank(color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(final Long id, final String name, final String color) {
+        this(id, name, color, 0);
     }
 
     public Line(final String name, final String color) {
@@ -92,6 +98,8 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                ", sections=" + sections +
                 '}';
     }
 }
