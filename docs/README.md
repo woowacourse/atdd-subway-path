@@ -81,7 +81,7 @@
 ### 스티치의 1단계 첫번째 리뷰
 
 - [X] Dao 에 @Repository 대신 @Component 사용하기
-- [ ] RowMapper를 메서드 또는 상수로 관리하기
+- [X] RowMapper를 메서드 또는 상수로 관리하기
 - [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [X] NamedParameterJdbcTemplate 으로 수정
 - [X] FareCalculator 가 필드로 distance 를 갖도록 수정

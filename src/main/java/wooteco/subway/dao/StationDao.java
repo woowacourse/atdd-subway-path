@@ -1,20 +1,20 @@
 package wooteco.subway.dao;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Station;
@@ -24,10 +24,6 @@ public class StationDao {
 
     private final SimpleJdbcInsert jdbcInsert;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
-            new Station(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"));
 
     public StationDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -49,16 +45,23 @@ public class StationDao {
         return station;
     }
 
+    private Station mapToStation(ResultSet resultSet) throws SQLException {
+        return new Station(
+                resultSet.getLong("id"),
+                resultSet.getString("name"));
+    }
+
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
-        return jdbcTemplate.query(sql, stationRowMapper);
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToStation(resultSet));
     }
 
     public Optional<Station> findById(Long id) {
         String sql = "SELECT * FROM station WHERE id = :id";
         SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, paramSource, stationRowMapper));
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sql, paramSource, (resultSet, rowNum) -> mapToStation(resultSet)));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

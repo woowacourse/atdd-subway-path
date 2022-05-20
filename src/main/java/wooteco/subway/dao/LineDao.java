@@ -9,14 +9,12 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Line;
@@ -27,12 +25,6 @@ import wooteco.subway.domain.Station;
 public class LineDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) ->
-            new Line(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("color"),
-                    findSectionsById(resultSet.getLong("id")));
 
     public LineDao(DataSource dataSource) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -54,16 +46,25 @@ public class LineDao {
         return line;
     }
 
+    private Line mapToLine(ResultSet resultSet) throws SQLException {
+        return new Line(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("color"),
+                findSectionsById(resultSet.getLong("id")));
+    }
+
     public List<Line> findAll() {
         String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, lineRowMapper);
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToLine(resultSet));
     }
 
     public Optional<Line> findById(Long id) {
         String sql = "SELECT * FROM line WHERE id = :id";
         SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, paramSource, lineRowMapper));
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sql, paramSource, (resultSet, rowNum) -> mapToLine(resultSet)));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
