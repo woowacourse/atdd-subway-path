@@ -7,6 +7,7 @@ import static wooteco.subway.domain.AgeDisCount.CHILDREN;
 import static wooteco.subway.domain.AgeDisCount.TEENAGER;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -38,5 +39,29 @@ class AgeDisCountTest {
     @DisplayName("19살부터는 ADULT다")
     void ageDiscountAdult(final int age) {
         assertThat(AgeDisCount.from(age)).isEqualTo(ADULT);
+    }
+
+    @Test
+    @DisplayName("BABY는 할인된 가격이 0원이다.")
+    void babyDiscountedMoney() {
+        assertThat(BABY.discountedMoney(1_250)).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("CHILDREN은 할인된 가격이 350원 공제 후 50%다.")
+    void childrenDiscountedMoney() {
+        assertThat(CHILDREN.discountedMoney(1_250)).isEqualTo(450);
+    }
+
+    @Test
+    @DisplayName("TEENAGER은 할인된 가격이 350원 공제 후 50%다.")
+    void teenagerDiscountedMoney() {
+        assertThat(TEENAGER.discountedMoney(1_250)).isEqualTo(720);
+    }
+
+    @Test
+    @DisplayName("ADULT는 할인된 가격이 그대로다.")
+    void adultDiscountedMoney() {
+        assertThat(ADULT.discountedMoney(1_250)).isEqualTo(1_250);
     }
 }
