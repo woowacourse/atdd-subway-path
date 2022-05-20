@@ -58,7 +58,7 @@ public class PathServiceTest {
 
     @Test
     @DisplayName("경로 조회한다")
-    void getPath() {
+    void getPath() throws Exception {
         // given
         PathResponse pathResponse = pathService.getPath(yongdapStationEntity.getId(), sinseolStationEntity.getId());
 
