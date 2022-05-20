@@ -77,3 +77,15 @@
     - [ ] 네이밍이 명시적인지 확인
     - [ ] 불필요한 중복이 없는지 확인
     - [X] 지역 변수 final 삭제
+
+### 스티치의 1단계 첫번째 리뷰
+
+- [ ] Dao 에 @Repository 대신 @Component 사용하기
+- [ ] RowMapper를 메서드 또는 상수로 관리하기
+- [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
+- [ ] NamedParameterJdbcTemplate 으로 수정
+- [ ] FareCalculator 가 필드로 distance 를 갖도록 수정
+- [ ] 매직넘버 상수로 관리하기
+- [ ] @RequestParam @ModelAttribute 로 묶어보기
+- [ ] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
+- [ ] StationService 의 try-catch 수정해보기
