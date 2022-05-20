@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public enum AgeDisCount {
+public enum AgeDisCountPolicy {
 
     BABY(age -> 0 <= age && age <= 5, money -> 0),
     CHILDREN(age -> 6 <= age && age <= 12, money -> (int) ((money - 350) * 0.5)),
@@ -15,14 +15,14 @@ public enum AgeDisCount {
     private final Predicate<Integer> containsAgePredicate;
     private final Function<Integer, Integer> discountPolicy;
 
-    AgeDisCount(final Predicate<Integer> containsAgePredicate, final Function<Integer, Integer> discountPolicy) {
+    AgeDisCountPolicy(final Predicate<Integer> containsAgePredicate, final Function<Integer, Integer> discountPolicy) {
         this.containsAgePredicate = containsAgePredicate;
         this.discountPolicy = discountPolicy;
     }
 
-    public static AgeDisCount from(final int age) {
+    public static AgeDisCountPolicy from(final int age) {
         return Arrays.stream(values())
-                .filter(ageDisCount -> ageDisCount.containsAgePredicate.test(age))
+                .filter(ageDisCountPolicy -> ageDisCountPolicy.containsAgePredicate.test(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("정상적인 사람 나이가 아닙니다."));
     }
