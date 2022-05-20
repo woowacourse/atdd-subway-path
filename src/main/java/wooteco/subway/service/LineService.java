@@ -43,8 +43,8 @@ public class LineService {
     }
 
     private void checkDuplication(Line line) {
-        if(lineDao.existByName(line.getName())){
-            throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
+        if(lineDao.existByNameOrColor(line)){
+            throw new IllegalArgumentException("이미 존재하는 노선 이름 혹은 색입니다.");
         }
     }
 
@@ -76,6 +76,6 @@ public class LineService {
     }
 
     public void delete(Long id) {
-        lineDao.delete(id);
+        lineDao.deleteById(id);
     }
 }

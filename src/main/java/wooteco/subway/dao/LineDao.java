@@ -38,7 +38,7 @@ public class LineDao {
         return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         String sql = "delete from LINE where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
@@ -56,9 +56,9 @@ public class LineDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public boolean existByName(String name) {
-        String sql = "select EXISTS (select id from LINE where name = :name) as success";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", name);
+    public boolean existByNameOrColor(Line line) {
+        String sql = "select EXISTS (select id from LINE where name = :name or color = :color) as success";
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
         return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class));
     }
 }

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class ConcreteDeletionStrategyTest {
 
-    private ConcreteDeletionStrategy concreteDeletionStrategy = new ConcreteDeletionStrategy();
+    private final ConcreteDeletionStrategy concreteDeletionStrategy = new ConcreteDeletionStrategy();
     private List<Section> sections;
 
     @BeforeEach

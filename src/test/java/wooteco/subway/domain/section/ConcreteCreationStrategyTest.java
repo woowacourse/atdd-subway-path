@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class ConcreteCreationStrategyTest {
 
-    private ConcreteCreationStrategy concreteCreationStrategy = new ConcreteCreationStrategy();
+    private final ConcreteCreationStrategy concreteCreationStrategy = new ConcreteCreationStrategy();
     private List<Section> sections;
 
     @BeforeEach

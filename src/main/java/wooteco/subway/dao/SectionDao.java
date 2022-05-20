@@ -42,7 +42,7 @@ public class SectionDao {
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
-    public void delete(Long lineId, Long stationId) {
+    public void deleteByLineIdAndStationId(Long lineId, Long stationId) {
         String sql = "delete from SECTION where line_id = :lineId and (up_station_id = :stationId or down_station_id = :stationId)";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(Map.of("lineId", lineId, "stationId", stationId));
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
