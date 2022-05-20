@@ -1,4 +1,4 @@
-package wooteco.subway.dto.request;
+package wooteco.subway.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
