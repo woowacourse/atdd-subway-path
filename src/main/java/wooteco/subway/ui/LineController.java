@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.service.LineService;
-import wooteco.subway.service.SectionService;
-import wooteco.subway.service.StationService;
 
 @RequestMapping("/lines")
 @RestController
