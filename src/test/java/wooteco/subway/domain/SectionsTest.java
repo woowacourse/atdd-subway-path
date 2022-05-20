@@ -122,13 +122,22 @@ class SectionsTest {
 
         List<Section> sections = 기존_구간.getDeleteSections(line, 잠실);
 
+        assertThat(sections).hasSize(3);
+
         assertThat(sections.get(0).getId()).isNotNull();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("강남");
         assertThat(sections.get(0).getDownStation().getName()).isEqualTo("잠실");
+        assertThat(sections.get(0).getDistance()).isEqualTo(12);
 
         assertThat(sections.get(1).getId()).isNotNull();
         assertThat(sections.get(1).getUpStation().getName()).isEqualTo("잠실");
         assertThat(sections.get(1).getDownStation().getName()).isEqualTo("성수");
+        assertThat(sections.get(1).getDistance()).isEqualTo(12);
+
+        assertThat(sections.get(2).getId()).isNull();
+        assertThat(sections.get(2).getUpStation().getName()).isEqualTo("강남");
+        assertThat(sections.get(2).getDownStation().getName()).isEqualTo("성수");
+        assertThat(sections.get(2).getDistance()).isEqualTo(24);
     }
 
     @Test
