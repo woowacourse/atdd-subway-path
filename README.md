@@ -1,39 +1,47 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
-</p>
+# 🚀 경로 조회 기능
 
-<br>
+## 지하철 경로 조회
 
-# 지하철 노선도 미션
-스프링 과정 실습을 위한 지하철 노선도 애플리케이션
-
-<br>
-
-## 🚀 Getting Started
-### Usage
-#### application 구동
+### 요청
+```http
+GET /paths?source=1&target=5 HTTP/1.1
+Accept: application/json
+Host: localhost:8080
 ```
-./gradlew bootRun
+
+### 응답
+```http
+HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 239
+
+{
+  "stations" : [ {
+    "id" : 1,
+    "name" : "지하철역이름"
+  }, {
+    "id" : 2,
+    "name" : "새로운지하철역이름"
+  }, {
+    "id" : 3,
+    "name" : "또다른지하철역이름"
+  } ],
+  "distance" : 9,
+  "fare" : 1250
+}
 ```
-<br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
-
-<br>
-
-## 🐞 Bug Report
-
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
-
-<br>
-
-## 📝 License
-
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+### 기능 명세
+* [x] 정상적인 경우 요청 값 반환 
+  
+* [x] source 지하철 역이 없는 경우, target 지하철 역이 없는 경우
+    * 404 NOT FOUND
+    
+* [x] source에서 target으로 못 가는 경우
+    * 400 BAD REQUEST
+  
+* [x] source와 target이 같은 경우 
+  * 400 BAD REQUEST
