@@ -12,10 +12,6 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    private Sections() {
-        this(new ArrayList<>());
-    }
-
     public void add(Section section) {
         boolean isIncludeUpStation = hasSameUpStation(section) || hasSameDownStationWithOtherUpStation(section);
         boolean isIncludeDownStation = hasSameDownStation(section) || hasSameUpStationWithOtherDownStation(section);
