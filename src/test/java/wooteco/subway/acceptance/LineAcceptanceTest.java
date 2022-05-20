@@ -35,7 +35,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10);
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 500);
 
         // when
         ExtractableResponse<Response> response = RestAssuredConvenienceMethod.postRequest(request, basicPath);
@@ -52,7 +52,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithInvalidNameDateSize() {
         // given
-        LineRequest request = new LineRequest("", "yellow", 선릉역_id, 선정릉역_id, 10);
+        LineRequest request = new LineRequest("", "yellow", 선릉역_id, 선정릉역_id, 10, 500);
 
         // when
         ExtractableResponse<Response> response =
@@ -66,7 +66,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithInvalidColorDateSize() {
         // given
-        LineRequest request = new LineRequest("분당선", "", 선릉역_id, 선정릉역_id, 10);
+        LineRequest request = new LineRequest("분당선", "", 선릉역_id, 선정릉역_id, 10, 500);
 
         // when
         ExtractableResponse<Response> response =
@@ -80,7 +80,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void throwsExceptionWhenCreateDuplicatedName() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10);
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 500);
         RestAssuredConvenienceMethod.postRequest(request, basicPath);
 
         // when
@@ -95,7 +95,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void throwsExceptionWhenCreateLineWithSameUpDownStation() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선릉역_id, 10);
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선릉역_id, 10, 500);
 
         // when
         ExtractableResponse<Response> response =
@@ -109,7 +109,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void throwsExceptionWhenCreateLineWithNonExistStation() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 100L, 10);
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 100L, 10, 500);
 
         // when
         ExtractableResponse<Response> response =
@@ -123,7 +123,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void throwsExceptionWhenCreateLineWithInvalidDistance() {
         // given
-        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 0);
+        LineRequest request = new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 0, 500);
 
         // when
         ExtractableResponse<Response> response =
@@ -138,10 +138,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     void getLines() {
         // given
         LineResponse createResponse1 = RestAssuredConvenienceMethod.postRequest(
-                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
+                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 500), basicPath)
                 .jsonPath().getObject(".", LineResponse.class);
         LineResponse createResponse2 = RestAssuredConvenienceMethod.postRequest(
-                new LineRequest("신분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
+                new LineRequest("신분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 600), basicPath)
                 .jsonPath().getObject(".", LineResponse.class);
 
          // when
@@ -165,7 +165,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void getLine() {
         // given
         LineResponse createResponse = RestAssuredConvenienceMethod.postRequest(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath)
+                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 500), basicPath)
                 .jsonPath().getObject(".", LineResponse.class);
 
         // when
@@ -186,8 +186,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         Long createdLineId = RestAssuredConvenienceMethod.postLineAndGetId(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath);
-        Line requestBody = new Line("다른분당선", "blue");
+                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 700), basicPath);
+        Line requestBody = new Line("다른분당선", "blue", 600);
 
         // when
         ExtractableResponse<Response> response =
@@ -210,7 +210,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void deleteLine() {
         // given
         Long createdLineId = RestAssuredConvenienceMethod.postLineAndGetId(
-                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), basicPath);
+                        new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 500), basicPath);
 
         // when
         ExtractableResponse<Response> response = RestAssuredConvenienceMethod.deleteRequest("/lines/" + createdLineId);

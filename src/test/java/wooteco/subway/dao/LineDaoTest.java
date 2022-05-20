@@ -25,7 +25,7 @@ public class LineDaoTest {
     private DataSource dataSource;
     private LineDao lineDao;
 
-    private final Line line = new Line("신분당선", "red");
+    private final Line line = new Line("신분당선", "red", 700);
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,8 @@ public class LineDaoTest {
 
         assertAll(
                 () -> assertThat(actual.getName()).isEqualTo(line.getName()),
-                () -> assertThat(actual.getColor()).isEqualTo(line.getColor())
+                () -> assertThat(actual.getColor()).isEqualTo(line.getColor()),
+                () -> assertThat(actual.getExtraFare()).isEqualTo(line.getExtraFare())
         );
     }
 
@@ -64,7 +65,7 @@ public class LineDaoTest {
     @Test
     void findAll() {
         Line savedLine1 = lineDao.insert(line);
-        Line savedLine2 = lineDao.insert(new Line("1호선", "blue"));
+        Line savedLine2 = lineDao.insert(new Line("1호선", "blue", 500));
 
         List<Line> lines = lineDao.findAll();
 
@@ -75,7 +76,7 @@ public class LineDaoTest {
     @Test
     void update() {
         Line saveLine = lineDao.insert(line);
-        Line expected = new Line(saveLine.getId(), "다른 분당선", "green");
+        Line expected = new Line(saveLine.getId(), "다른 분당선", "green", 500);
 
         lineDao.update(expected);
         Line actual = lineDao.findById(saveLine.getId());

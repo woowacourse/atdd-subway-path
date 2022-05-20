@@ -36,7 +36,7 @@ public class LineService {
     @Transactional
     public LineResponse create(LineRequest request) {
         validateExistLineName(request.getName());
-        Line line = new Line(request.getName(), request.getColor());
+        Line line = new Line(request.getName(), request.getColor(), request.getExtraFare());
         Line savedLine = lineDao.insert(line);
 
         validateExistStation(request.getUpStationId(), request.getDownStationId());
@@ -45,7 +45,7 @@ public class LineService {
         sectionDao.insert(section);
 
         List<StationResponse> stationResponses = finAllStationsByLineId(savedLine);
-        return new LineResponse(savedLine.getId(), savedLine.getName(), savedLine.getColor(), stationResponses);
+        return new LineResponse(savedLine.getId(), savedLine.getName(), savedLine.getColor(), savedLine.getExtraFare(), stationResponses);
     }
 
     private void validateExistLineName(String name) {
@@ -103,7 +103,7 @@ public class LineService {
 
     public void update(Long lineId, LineRequest request) {
         validateExistData(lineId);
-        lineDao.update(new Line(lineId, request.getName(), request.getColor()));
+        lineDao.update(new Line(lineId, request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     public void delete(Long lineId) {

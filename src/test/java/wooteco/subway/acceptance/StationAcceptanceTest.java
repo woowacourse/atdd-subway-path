@@ -115,7 +115,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         Long 선릉역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("선릉역"), "/stations");
         Long 선정릉역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("선정릉역"), "/stations");
         Long 분당선_id = RestAssuredConvenienceMethod.postLineAndGetId(
-                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), "/lines");
+                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 0), "/lines");
 
         // when
         ExtractableResponse<Response> response =

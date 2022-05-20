@@ -59,7 +59,7 @@ class StationDaoTest {
 
         Station savedStation1 = stationDao.insert(new Station("강남역"));
         Station savedStation2 = stationDao.insert(new Station("신논현역"));
-        Line line = lineDao.insert(new Line("2호선", "yellow"));
+        Line line = lineDao.insert(new Line("2호선", "yellow", 500));
         sectionDao.insert(new Section(line.getId(), savedStation1.getId(), savedStation2.getId(), 10));
 
         List<Station> stations = stationDao.findAllByLineId(line.getId());

@@ -27,7 +27,7 @@ public class LineDao {
     public Line insert(Line line) {
         final SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
         final Long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
@@ -45,13 +45,14 @@ public class LineDao {
             final Long id = rs.getLong("id");
             final String name = rs.getString("name");
             final String color = rs.getString("color");
-            return new Line(id, name, color);
+            final int extraFare = rs.getInt("extraFare");
+            return new Line(id, name, color, extraFare);
         };
     }
 
     public void update(Line line) {
-        String SQL = "update line set name = ?, color = ? where id = ?;";
-        jdbcTemplate.update(SQL, line.getName(), line.getColor(), line.getId());
+        String SQL = "update line set name = ?, color = ?, extraFare = ? where id = ?;";
+        jdbcTemplate.update(SQL, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
     public void delete(Long id) {

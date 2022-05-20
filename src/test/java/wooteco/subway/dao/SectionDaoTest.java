@@ -43,7 +43,7 @@ public class SectionDaoTest {
         선정릉역 = stationDao.insert(new Station("선정릉역"));
         한티역 = stationDao.insert(new Station("한티역"));
 
-        분당선 = lineDao.insert(new Line("분당선", "yellow"));
+        분당선 = lineDao.insert(new Line("분당선", "yellow", 0));
         savedSection = sectionDao.insert(new Section(분당선.getId(), 선릉역.getId(), 선정릉역.getId(), 10));
     }
 

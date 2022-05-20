@@ -59,16 +59,16 @@ class PathServiceTest {
         강남역 = stationService.create(new StationRequest("강남역"));
 
         LineResponse 분당선 = lineService.create(new LineRequest("분당선", "yellow", 선릉역.getId(),
-                선정릉역.getId(), 50));
+                선정릉역.getId(), 50, 0));
         sectionDao.insert(new Section(분당선.getId(), 선정릉역.getId(), 한티역.getId(), 8));
         sectionDao.insert(new Section(분당선.getId(), 한티역.getId(), 강남역.getId(), 20));
 
         LineResponse 신분당선 = lineService.create(new LineRequest("신분당선", "red", 기흥역.getId(),
-                모란역.getId(), 10));
+                모란역.getId(), 10, 500));
         sectionDao.insert(new Section(신분당선.getId(), 모란역.getId(), 강남역.getId(), 5));
 
         LineResponse 우테코선 = lineService.create(new LineRequest("우테코선", "red", 모란역.getId(),
-                선정릉역.getId(), 6));
+                선정릉역.getId(), 6, 700));
     }
 
     @DisplayName("경로를 올바르게 조회한다.")

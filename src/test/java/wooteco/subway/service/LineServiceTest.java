@@ -50,20 +50,21 @@ class LineServiceTest {
         기흥역 = stationService.create(new StationRequest("기흥역"));
 
         분당선 = lineService.create(new LineRequest("분당선", "yellow", 선릉역.getId(),
-                선정릉역.getId(), 10));
+                선정릉역.getId(), 10, 0));
     }
 
     @DisplayName("새로운 노선 셍성 정보를 이용해 노선을 생성한다.")
     @Test
     void create() {
         LineRequest request =
-                new LineRequest("신분당선", "red", 선릉역.getId(), 선정릉역.getId(), 10);
+                new LineRequest("신분당선", "red", 선릉역.getId(), 선정릉역.getId(), 10, 500);
 
         LineResponse response = lineService.create(request);
 
         assertAll(
                 () -> assertThat(response.getName()).isEqualTo(request.getName()),
                 () -> assertThat(response.getColor()).isEqualTo(request.getColor()),
+                () -> assertThat(response.getExtraFare()).isEqualTo(request.getExtraFare()),
                 () -> assertThat(response.getStations()).hasSize(2)
         );
     }
@@ -72,7 +73,7 @@ class LineServiceTest {
     @Test
     void throwsExceptionWhenCreateLineWithExistName() {
         LineRequest request =
-                new LineRequest("신분당선", "red", 선릉역.getId(), 선정릉역.getId(), 10);
+                new LineRequest("신분당선", "red", 선릉역.getId(), 선정릉역.getId(), 10, 500);
         lineService.create(request);
 
         assertThatThrownBy(() -> lineService.create(request))
@@ -84,7 +85,7 @@ class LineServiceTest {
     @Test
     void throwsExceptionWhenCreateLineWithNotExistsStation() {
         LineRequest request =
-                new LineRequest("신분당선", "red", 선릉역.getId(), 100L, 10);
+                new LineRequest("신분당선", "red", 선릉역.getId(), 100L, 10, 500);
 
         assertThatThrownBy(() -> lineService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -94,7 +95,7 @@ class LineServiceTest {
     @Test
     void throwsExceptionWhenCreateLineWithDuplicateStation() {
         LineRequest request =
-                new LineRequest("신분당선", "red", 선릉역.getId(), 선릉역.getId(), 10);
+                new LineRequest("신분당선", "red", 선릉역.getId(), 선릉역.getId(), 10, 500);
 
         assertThatThrownBy(() -> lineService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -104,7 +105,7 @@ class LineServiceTest {
     @Test
     void throwsExceptionWhenCreateLineWithZeroDistance() {
         LineRequest request =
-                new LineRequest("신분당선", "red", 선릉역.getId(), 선릉역.getId(), 10);
+                new LineRequest("신분당선", "red", 선릉역.getId(), 선릉역.getId(), 10, 500);
 
         assertThatThrownBy(() -> lineService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -130,7 +131,7 @@ class LineServiceTest {
     @Test
     void findAll() {
         LineResponse 새로운_분당선 = lineService.create(new LineRequest("새로운 분당선", "yellow", 기흥역.getId(),
-                모란역.getId(), 10));
+                모란역.getId(), 10, 700));
 
         List<LineResponse> response = lineService.findAll();
 
@@ -151,11 +152,13 @@ class LineServiceTest {
                 () -> assertThat(분당선_응답.getId()).isEqualTo(분당선.getId()),
                 () -> assertThat(분당선_응답.getName()).isEqualTo(분당선.getName()),
                 () -> assertThat(분당선_응답.getColor()).isEqualTo(분당선.getColor()),
+                () -> assertThat(분당선_응답.getExtraFare()).isEqualTo(분당선.getExtraFare()),
                 () -> assertThat(분당선_모든역_포함여부).isTrue(),
 
                 () -> assertThat(새로운_분당선_응답.getId()).isEqualTo(새로운_분당선.getId()),
                 () -> assertThat(새로운_분당선_응답.getName()).isEqualTo(새로운_분당선.getName()),
                 () -> assertThat(새로운_분당선_응답.getColor()).isEqualTo(새로운_분당선.getColor()),
+                () -> assertThat(새로운_분당선_응답.getExtraFare()).isEqualTo(새로운_분당선.getExtraFare()),
                 () -> assertThat(새로운_분당선_모든역_포함여부).isTrue()
         );
     }
@@ -175,20 +178,21 @@ class LineServiceTest {
     @DisplayName("노선 정보를 업데이트한다.")
     @Test
     void update() {
-        LineRequest request = new LineRequest("신분당선", "red", 0L, 0L, 0);
+        LineRequest request = new LineRequest("신분당선", "red", 0L, 0L, 0, 500);
         lineService.update(분당선.getId(), request);
         LineResponse response = lineService.findById(분당선.getId());
 
         assertAll(
                 () -> assertThat(request.getName()).isEqualTo(response.getName()),
-                () -> assertThat(request.getColor()).isEqualTo(response.getColor())
+                () -> assertThat(request.getColor()).isEqualTo(response.getColor()),
+                () -> assertThat(request.getExtraFare()).isEqualTo(response.getExtraFare())
         );
     }
 
     @DisplayName("존재하지 않는 노선 정보 업데이트를 시도하면 예외가 발생한다.")
     @Test
     void throwsExceptionWhenUpdateNotExistLine() {
-        LineRequest request = new LineRequest("신분당선", "red", 0L, 0L, 0);
+        LineRequest request = new LineRequest("신분당선", "red", 0L, 0L, 0, 500);
         assertThatThrownBy(() -> lineService.update(100L, request))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageMatching("접근하려는 노선이 존재하지 않습니다.");

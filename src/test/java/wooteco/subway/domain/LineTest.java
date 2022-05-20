@@ -14,7 +14,7 @@ class LineTest {
     @ValueSource(strings = {"", "aaaaaaaaaaaaaaaaaaaaa"})
     void throwsExceptionWithInvalidNameLength(final String name) {
 
-        assertThatThrownBy(() -> new Line(name, "red"))
+        assertThatThrownBy(() -> new Line(name, "red", 500))
                 .isInstanceOf(DataLengthException.class);
     }
 
@@ -23,7 +23,7 @@ class LineTest {
     @ValueSource(strings = {"", "yellowYellowYellowYellowYellow"})
     void throwsExceptionWithInvalidColorLength(final String color) {
 
-        assertThatThrownBy(() -> new Line("신분당선", color))
+        assertThatThrownBy(() -> new Line("신분당선", color, 500))
                 .isInstanceOf(DataLengthException.class);
     }
 }

@@ -33,7 +33,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         모란역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("모란역"), "/stations");
 
         분당선_id = RestAssuredConvenienceMethod.postLineAndGetId(
-                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10), "/lines");
+                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 10, 0), "/lines");
 
         createPath = "/lines/" + 분당선_id + "/sections";
         deletePath = "/lines/" + 분당선_id + "/sections?stationId=";

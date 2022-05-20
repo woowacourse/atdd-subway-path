@@ -32,13 +32,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         강남역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("강남역"), "/stations");
 
         Long 분당선_id = RestAssuredConvenienceMethod.postLineAndGetId(
-                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 50), "/lines");
+                new LineRequest("분당선", "yellow", 선릉역_id, 선정릉역_id, 50, 0), "/lines");
         RestAssuredConvenienceMethod.postRequest(new SectionRequest(선정릉역_id, 한티역_id, 8), "/lines/" + 분당선_id + "/sections");
         RestAssuredConvenienceMethod.postRequest(new SectionRequest(한티역_id, 강남역_id, 20), "/lines/" + 분당선_id + "/sections");
         Long 신분당선_id = RestAssuredConvenienceMethod.postLineAndGetId(
-                new LineRequest("신분당선", "red", 모란역_id, 선정릉역_id, 6), "/lines");
+                new LineRequest("신분당선", "red", 모란역_id, 선정릉역_id, 6, 500), "/lines");
         Long 우테코선_id = RestAssuredConvenienceMethod.postLineAndGetId(
-                new LineRequest("우테코선", "blue", 기흥역_id, 모란역_id, 10), "/lines");
+                new LineRequest("우테코선", "blue", 기흥역_id, 모란역_id, 10, 700), "/lines");
         RestAssuredConvenienceMethod.postRequest(new SectionRequest(모란역_id, 강남역_id, 5), "/lines/" + 우테코선_id + "/sections");
     }
 
