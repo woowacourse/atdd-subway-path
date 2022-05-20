@@ -11,7 +11,7 @@ public class LineRequest {
     private int distance;
     private int extraFare;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
@@ -24,18 +24,18 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
-    private void validatePositive(int distance, int extraFare) {
+    private void validatePositive(final int distance, final int extraFare) {
         validatePositiveDistance(distance);
         validatePositiveExtraFare(extraFare);
     }
 
-    private void validatePositiveDistance(int distance) {
+    private void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
             throw new PositiveDigitException("구간의 길이가 양수가 아닙니다.");
         }
     }
 
-    private void validatePositiveExtraFare(int extraFare) {
+    private void validatePositiveExtraFare(final int extraFare) {
         if (extraFare <= 0) {
             throw new PositiveDigitException("추가 요금이 양수가 아닙니다.");
         }

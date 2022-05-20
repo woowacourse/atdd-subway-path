@@ -6,7 +6,7 @@ public class Path {
 
     private final Sections sections;
 
-    public Path(final Sections sections) {
+    public Path(Sections sections) {
         this.sections = sections;
     }
 

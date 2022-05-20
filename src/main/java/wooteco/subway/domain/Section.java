@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import wooteco.subway.exception.AddSectionException;
 
 public class Section {
+
     private final Long id;
     private final Long lineId;
     private Station upStation;

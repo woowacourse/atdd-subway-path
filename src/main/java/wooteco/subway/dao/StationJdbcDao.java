@@ -27,7 +27,7 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public Station save(Station station) {
+    public Station save(final Station station) {
         final String sql = "INSERT INTO station (name, deleted) VALUES (?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -40,7 +40,7 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public boolean existByName(String name) {
+    public boolean existByName(final String name) {
         final String sql = "SELECT EXISTS (SELECT * FROM station WHERE name = (?) AND deleted = (?))";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name, false));
     }
@@ -52,7 +52,7 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public Station findById(Long id) {
+    public Station findById(final Long id) {
         try {
             final String sql = "SELECT * FROM station WHERE id = (?) AND deleted = (?)";
             return jdbcTemplate.queryForObject(sql, stationRowMapper(), id, false);
@@ -62,13 +62,13 @@ public class StationJdbcDao implements StationDao {
     }
 
     @Override
-    public int deleteById(Long id) {
+    public int deleteById(final Long id) {
         final String sql = "UPDATE station SET deleted = (?) WHERE id = (?)";
         return jdbcTemplate.update(sql, true, id);
     }
 
     @Override
-    public void deleteByExistName(String name) {
+    public void deleteByExistName(final String name) {
         final String sql = "DELETE FROM station WHERE name = (?)";
         jdbcTemplate.update(sql, name);
     }

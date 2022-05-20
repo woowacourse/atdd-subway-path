@@ -18,7 +18,7 @@ public class SectionJdbcDao implements SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SectionJdbcDao(JdbcTemplate jdbcTemplate) {
+    public SectionJdbcDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -51,7 +51,7 @@ public class SectionJdbcDao implements SectionDao {
     }
 
     @Override
-    public List<Section> findByLineId(long lineId) {
+    public List<Section> findByLineId(final Long lineId) {
         final String sql = "SELECT section.id AS id, line_id, up_station_id, down_station_id, distance, "
                 + "upstation.name AS up_name, downstation.name AS dw_name "
                 + "FROM section "
@@ -74,7 +74,7 @@ public class SectionJdbcDao implements SectionDao {
     }
 
     @Override
-    public int update(List<Section> sections) {
+    public int update(final List<Section> sections) {
         final String sql = "UPDATE section SET (up_station_id, down_station_id, distance) = (?, ?, ?) "
                 + "WHERE id = (?) AND deleted = (?)";
         return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {

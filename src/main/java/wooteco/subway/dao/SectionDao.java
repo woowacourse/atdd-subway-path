@@ -7,7 +7,7 @@ public interface SectionDao {
 
     Section save(Section section);
 
-    List<Section> findByLineId(long lineId);
+    List<Section> findByLineId(Long lineId);
 
     List<Section> findAll();
 

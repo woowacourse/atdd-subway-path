@@ -49,7 +49,7 @@ public class PathService {
 
     private List<StationResponse> convertToStationResponses(final List<Station> stations) {
         return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 }

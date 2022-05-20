@@ -29,7 +29,7 @@ public class FakeSectionDao implements SectionDao {
     }
 
     @Override
-    public List<Section> findByLineId(long lineId) {
+    public List<Section> findByLineId(Long lineId) {
         return sections.stream()
                 .filter(section -> section.getLineId() == lineId)
                 .collect(Collectors.toList());

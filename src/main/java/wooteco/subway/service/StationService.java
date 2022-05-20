@@ -18,31 +18,31 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse createStation(StationRequest stationRequest) {
+    public StationResponse createStation(final StationRequest stationRequest) {
         validateDuplicateName(stationRequest.getName());
         Station station = new Station(stationRequest.getName());
         Station newStation = save(station);
-        return new StationResponse(newStation.getId(), newStation.getName());
+        return StationResponse.from(newStation);
     }
 
-    private void validateDuplicateName(String name) {
+    private void validateDuplicateName(final String name) {
         if (stationDao.existByName(name)) {
             throw new StationDuplicateException("이미 등록된 지하철역 이름입니다.");
         }
     }
 
-    private Station save(Station station) {
+    private Station save(final Station station) {
         stationDao.deleteByExistName(station.getName());
         return stationDao.save(station);
     }
 
     public List<StationResponse> findAll() {
         return stationDao.findAll().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public int deleteStation(Long id) {
+    public int deleteStation(final Long id) {
         Station station = stationDao.findById(id);
         return stationDao.deleteById(station.getId());
     }

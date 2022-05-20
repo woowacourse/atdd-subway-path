@@ -48,7 +48,7 @@ public class LineService {
         return lineDao.existByName(lineRequest.getName());
     }
 
-    private Line save(Line line) {
+    private Line save(final Line line) {
         lineDao.deleteByExistName(line.getName());
         return lineDao.save(line);
     }
@@ -61,11 +61,11 @@ public class LineService {
     }
 
 
-    private List<StationResponse> getStationsFromSection(Long lineId) {
+    private List<StationResponse> getStationsFromSection(final Long lineId) {
         final Sections sections = new Sections(sectionDao.findByLineId(lineId));
         List<Station> stations = sections.getSortedStations();
         return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
