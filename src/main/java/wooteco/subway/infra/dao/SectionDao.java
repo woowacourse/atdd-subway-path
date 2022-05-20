@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import wooteco.subway.infra.dao.entity.SectionEntity;
 
-@Repository
+@Component
 public class SectionDao extends AbstractDao<SectionEntity, Long> {
 
     private static final String SECTION_STATION_JOIN_QUERY =
