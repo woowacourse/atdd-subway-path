@@ -12,16 +12,16 @@ import wooteco.subway.exception.DomainException;
 
 class SectionsTest {
 
-    Station 상계 = new Station(1L, "상계");
-    Station 중계 = new Station(2L, "중계");
-    Station 하계 = new Station(3L, "하계");
-    Station 노원 = new Station(4L, "노원");
+    Station 상계;
+    Station 중계;
+    Station 하계;
+    Station 노원;
 
-    Section 상계_중계 = new Section(1L, 1L, 상계, 중계, 10);
-    Section 중계_하계 = new Section(2L, 1L, 중계, 하계, 10);
-    Section 상계_노원 = new Section(3L, 1L, 상계, 노원, 5);
-    Sections sections = new Sections(List.of(상계_중계, 중계_하계));
-    Sections invalidSection = new Sections(List.of(상계_노원, 중계_하계));
+    Section 상계_중계;
+    Section 중계_하계;
+    Section 상계_노원;
+    Sections sections;
+    Sections invalidSection;
 
     @BeforeEach
     void setUp() {
@@ -34,6 +34,7 @@ class SectionsTest {
         상계_중계 = new Section(2L, 1L, 상계, 중계, 10);
         상계_노원 = new Section(3L, 1L, 상계, 노원, 5);
         sections = new Sections(List.of(상계_중계, 중계_하계));
+        invalidSection = new Sections(List.of(상계_노원, 중계_하계));
     }
 
     @Test
@@ -53,7 +54,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("상계-중계, 중계-하계 에서 순서대로 역반환 시도시 예외")
+    @DisplayName("상계-노원, 중계-하계 에서 순서대로 역반환 시도시 예외")
     void getSortedStation_unconnected() {
         // given
         assertThatThrownBy(() -> invalidSection.getSortedStation())
