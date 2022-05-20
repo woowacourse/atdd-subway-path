@@ -12,15 +12,21 @@ public class Path {
     private final int distance;
     private final Cost cost;
 
-
-    public Path(List<Section> sections, Station departure, Station arrival) {
-        final GraphPath<Station, DefaultWeightedEdge> path = generatePath(sections, departure, arrival);
-        this.stations = path.getVertexList();
-        this.distance = (int) path.getWeight();
-        this.cost = Cost.from(distance);
+    private Path(List<Station> stations, int distance, Cost cost) {
+        this.stations = stations;
+        this.distance = distance;
+        this.cost = cost;
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> generatePath(List<Section> sections, Station departure,
+    public static Path from(List<Section> sections, Station departure, Station arrival) {
+        final GraphPath<Station, DefaultWeightedEdge> path = generatePath(sections, departure, arrival);
+        final List<Station> stations = path.getVertexList();
+        final int distance = (int) path.getWeight();
+        final Cost cost = Cost.from(distance);
+        return new Path(stations, distance, cost);
+    }
+
+    private static GraphPath<Station, DefaultWeightedEdge> generatePath(List<Section> sections, Station departure,
                                                                  Station arrival) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
                 DefaultWeightedEdge.class);
@@ -35,7 +41,7 @@ public class Path {
         }
     }
 
-    private void addSectionsToGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private static void addSectionsToGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
             final Station upStation = section.getUpStation();
             final Station downStation = section.getDownStation();

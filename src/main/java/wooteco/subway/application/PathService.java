@@ -25,6 +25,6 @@ public class PathService {
 
         List<Section> sections = sectionDao.findAll();
 
-        return new PathResponse(new Path(sections, departure, arrival));
+        return PathResponse.of(Path.from(sections, departure, arrival));
     }
 }

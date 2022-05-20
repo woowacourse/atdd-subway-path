@@ -45,7 +45,7 @@ class PathTest {
     @Test
     void constructor_withSectionList() {
         // given & when
-        Path createdPath = new Path(sections, 강남역, 잠실역);
+        Path createdPath = Path.from(sections, 강남역, 잠실역);
 
         // then
         assertThat(createdPath).isNotNull();
@@ -55,7 +55,7 @@ class PathTest {
     @Test
     void shortest_path() {
         // given
-        Path createdPath = new Path(sections, 강남역, 잠실역);
+        Path createdPath = Path.from(sections, 강남역, 잠실역);
 
         // when
         List<Station> actual = createdPath.getStations();
@@ -68,7 +68,7 @@ class PathTest {
     @Test
     void shortest_path_2() {
         // given
-        Path createdPath = new Path(sections, 강남역, 잠실새내역);
+        Path createdPath = Path.from(sections, 강남역, 잠실새내역);
 
         // when
         List<Station> actual = createdPath.getStations();
@@ -81,7 +81,7 @@ class PathTest {
     @Test
     void cost_of_shortest_path() {
         // given
-        Path createdPath = new Path(sections, 강남역, 잠실역);
+        Path createdPath = Path.from(sections, 강남역, 잠실역);
 
         // when
         int actual = createdPath.getCost();

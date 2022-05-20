@@ -9,13 +9,20 @@ public class PathResponse {
     private final int distance;
     private final int fare;
 
-    public PathResponse(Path path) {
-        this.stations = path.getStations()
+    private PathResponse(List<StationResponse> stations, int distance, int fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
+    }
+
+    public static PathResponse of(Path path) {
+        final List<StationResponse> stationResponses = path.getStations()
                 .stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
-        this.distance = path.getDistance();
-        this.fare = path.getCost();
+        final int distance = path.getDistance();
+        final int fare = path.getCost();
+        return new PathResponse(stationResponses, distance, fare);
     }
 
     public List<StationResponse> getStations() {
