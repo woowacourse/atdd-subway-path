@@ -15,7 +15,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
@@ -39,13 +38,16 @@ class LineServiceTest {
     private StationDao stationDao;
 
     @Autowired
-    private SectionDao sectionDao;
+    private StationService stationService;
+
+    @Autowired
+    private SectionService sectionService;
 
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineDao, stationDao, sectionDao);
+        lineService = new LineService(lineDao, stationService, sectionService);
 
         upStationId = stationDao.save(new Station("강남역")).getId();
         downStationId = stationDao.save(new Station("선릉역")).getId();

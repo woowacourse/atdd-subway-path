@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -22,23 +20,20 @@ import wooteco.subway.exception.EmptyResultException;
 @Transactional
 public class LineService {
     private final LineDao lineDao;
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
+    private final StationService stationService;
+    private final SectionService sectionService;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+    public LineService(LineDao lineDao, StationService stationService, SectionService sectionService) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+        this.stationService = stationService;
+        this.sectionService = sectionService;
     }
 
     public LineResponse save(LineRequest lineRequest) {
         Line line = new Line(lineRequest.getName(), lineRequest.getColor());
         Long savedLineId = lineDao.save(line);
 
-        Station upStation = findStationById(lineRequest.getUpStationId());
-        Station downStation = findStationById(lineRequest.getDownStationId());
-
-        sectionDao.save(new Section(upStation, downStation, lineRequest.getDistance()), savedLineId);
+        sectionService.save(SectionRequest.of(lineRequest), savedLineId);
         return LineResponse.from(savedLineId, line);
     }
 
@@ -56,6 +51,11 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return lineDao.findAll();
+    }
+
     public boolean deleteById(Long id) {
         return lineDao.deleteById(id);
     }
@@ -67,29 +67,23 @@ public class LineService {
         return lineDao.updateById(id, line);
     }
 
-    public void insertSection(Long id, SectionRequest sectionRequest) {
-        Line line = findLineById(id);
-        Station upStation = findStationById(sectionRequest.getUpStationId());
-        Station downStation = findStationById(sectionRequest.getDownStationId());
-        Section section = new Section(upStation, downStation, sectionRequest.getDistance());
+    public void insertSection(Long lineId, SectionRequest sectionRequest) {
+        Line line = findLineById(lineId);
+        Section section = sectionService.createSection(sectionRequest);
 
         line.insertSection(section);
-        sectionDao.update(line.getSections());
-        sectionDao.save(section, line.getId());
+        sectionService.update(line.getSections());
+        sectionService.save(sectionRequest, lineId);
     }
 
     public void deleteStation(Long lineId, Long stationId) {
-        Station station = findStationById(stationId);
+        Station station = stationService.findById(stationId);
         Line line = findLineById(lineId);
         Long sectionId = line.deleteSection(station);
         checkEmptyResult(sectionId);
-        sectionDao.update(line.getSections());
-        sectionDao.delete(sectionId);
-    }
 
-    private Station findStationById(Long id) {
-        return stationDao.findById(id)
-            .orElseThrow((throwEmptyStationException()));
+        sectionService.update(line.getSections());
+        sectionService.deleteById(sectionId);
     }
 
     private Line findLineById(Long id) {
@@ -101,10 +95,6 @@ public class LineService {
         if (sectionId == -1L) {
             throw new EmptyResultException("삭제할 구간을 찾지 못했습니다.");
         }
-    }
-
-    private Supplier<EmptyResultException> throwEmptyStationException() {
-        return () -> new EmptyResultException("해당 역을 찾을 수 없습니다.");
     }
 
     private Supplier<EmptyResultException> throwEmptyLineResultException() {

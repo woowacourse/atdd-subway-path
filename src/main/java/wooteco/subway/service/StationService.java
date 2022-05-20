@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.EmptyResultException;
 
 @Service
 @Transactional
@@ -37,5 +39,15 @@ public class StationService {
 
     public boolean deleteById(Long id) {
         return stationDao.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Station findById(Long id) {
+        return stationDao.findById(id)
+            .orElseThrow((throwEmptyStationException()));
+    }
+
+    private Supplier<EmptyResultException> throwEmptyStationException() {
+        return () -> new EmptyResultException("해당 역을 찾을 수 없습니다.");
     }
 }
