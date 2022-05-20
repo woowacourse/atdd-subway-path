@@ -32,23 +32,27 @@ public class LineService {
     public LineResponse create(LineRequest lineRequest) {
         String name = lineRequest.getName();
         String color = lineRequest.getColor();
+        Section section = getSection(lineRequest);
+        Line line = new Line(name, color, section);
+        return save(section, line);
+    }
 
+    private Section getSection(LineRequest lineRequest) {
         Station upStation = stationDao.findById(lineRequest.getUpStationId())
                 .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         Station downStation = stationDao.findById(lineRequest.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
-        Section section = new Section(upStation, downStation, lineRequest.getDistance());
+        return new Section(upStation, downStation, lineRequest.getDistance());
+    }
 
-        Line line = new Line(name, color, section);
-        Line createdLine;
+    private LineResponse save(Section section, Line line) {
         try {
-            createdLine = lineDao.save(line);
+            Line createdLine = lineDao.save(line);
+            sectionDao.save(section, createdLine.getId());
+            return new LineResponse(createdLine);
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
         }
-        sectionDao.save(section, createdLine.getId());
-
-        return new LineResponse(createdLine);
     }
 
     public List<LineResponse> findAll() {
