@@ -1,7 +1,10 @@
 package wooteco.subway.dao.jdbc;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -29,18 +32,23 @@ public class JdbcSectionDao implements SectionDao {
 
     @Override
     public Section create(Section section) {
-        String sql = "INSERT INTO section (line_id,  up_station_id, down_station_id, distance) values(?,?,?,?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        final SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("section").usingGeneratedKeyColumns("id");
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
-            statement.setLong(1, section.getLineId());
-            statement.setLong(2, section.getUpStationId());
-            statement.setLong(3, section.getDownStationId());
-            statement.setInt(4, section.getDistance());
-            return statement;
-        }, keyHolder);
-        return new Section(keyHolder.getKey().longValue(), section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance());
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("line_id", section.getLineId());
+        parameters.put("up_station_id", section.getUpStationId());
+        parameters.put("down_station_id", section.getDownStationId());
+        parameters.put("distance", section.getDistance());
+
+        final Number number = simpleJdbcInsert.executeAndReturnKey(parameters);
+        return new Section(
+                number.longValue(),
+                section.getLineId(),
+                section.getUpStationId(),
+                section.getDownStationId(),
+                section.getDistance()
+        );
     }
 
     @Override
