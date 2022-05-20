@@ -15,7 +15,7 @@ import wooteco.subway.exception.notfound.DataNotFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({DuplicateDataException.class, IllegalArgumentException.class})
-    public ResponseEntity<String> handleDuplicateKey(Exception e) {
+    public ResponseEntity<String> handleBadRequest(Exception e) {
         return ResponseEntity.badRequest()
                 .body(e.getMessage());
     }
@@ -33,12 +33,14 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(System.lineSeparator()));
-        return ResponseEntity.badRequest().body(exceptionMessage);
+        return ResponseEntity.badRequest()
+                .body(exceptionMessage);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, InvalidFormatException.class})
     public ResponseEntity<String> handleInvalidType() {
-        return ResponseEntity.badRequest().body("요청하는 타입이 올바르지 않습니다.");
+        return ResponseEntity.badRequest()
+                .body("요청하는 타입이 올바르지 않습니다.");
     }
 
     @ExceptionHandler(Exception.class)

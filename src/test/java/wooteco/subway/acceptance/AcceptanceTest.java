@@ -91,4 +91,12 @@ public class AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> requestGetPath(Long source, Long target, int age) {
+        return RestAssured.given().log().all()
+                .when()
+                .get("/paths?source=" + source + "&target=" + target + "&age=" + age)
+                .then().log().all()
+                .extract();
+    }
+
 }

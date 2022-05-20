@@ -11,6 +11,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
+import wooteco.subway.exception.invalidrequest.InvalidPathRequestException;
 
 class DijkstraPathStrategyTest {
 
@@ -45,6 +46,19 @@ class DijkstraPathStrategyTest {
         assertThatThrownBy(() -> pathStrategy.calculatePath(gangnam, gangnam, sections))
                 .isInstanceOf(DuplicateStationException.class)
                 .hasMessage("경로의 시작과 끝은 같은 역일 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("경로가 끊겨 있어 목적지까지 도착할 수 없을 경우 예외가 발생한다.")
+    void disconnectedPath() {
+        PathStrategy pathStrategy = new DijkstraPathStrategy();
+
+        Section gangnam_yeoksam = new Section(gangnam, yeoksam, 1);
+        Sections sections = new Sections(List.of(gangnam_yeoksam));
+
+        assertThatThrownBy(() -> pathStrategy.calculatePath(gangnam, seolleung, sections))
+                .isInstanceOf(InvalidPathRequestException.class)
+                .hasMessage("목적지까지 도달할 수 없습니다.");
     }
 
 }

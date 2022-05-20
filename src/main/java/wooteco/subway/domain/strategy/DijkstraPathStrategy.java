@@ -9,6 +9,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
+import wooteco.subway.exception.invalidrequest.InvalidPathRequestException;
 
 @Component
 public class DijkstraPathStrategy implements PathStrategy {
@@ -20,8 +21,12 @@ public class DijkstraPathStrategy implements PathStrategy {
         addVertices(sections, graph);
         addEdges(sections, graph);
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return new Path(shortestPath.getPath(source, target).getVertexList(),
-                (int) shortestPath.getPathWeight(source, target));
+        try {
+            return new Path(shortestPath.getPath(source, target).getVertexList(),
+                    (int) shortestPath.getPathWeight(source, target));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidPathRequestException("목적지까지 도달할 수 없습니다.");
+        }
     }
 
     private void addVertices(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -41,6 +46,5 @@ public class DijkstraPathStrategy implements PathStrategy {
             throw new DuplicateStationException("경로의 시작과 끝은 같은 역일 수 없습니다.");
         }
     }
-
 
 }
