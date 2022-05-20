@@ -3,9 +3,11 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.common.TLine.LINE_SIX;
+import static wooteco.subway.common.TLine.LINE_TWO;
 import static wooteco.subway.common.TStation.BOMUN;
 import static wooteco.subway.common.TStation.CHANGSIN;
 import static wooteco.subway.common.TStation.DONGMYO;
+import static wooteco.subway.common.TStation.SANGWANGSIMNI;
 import static wooteco.subway.common.TStation.SINDANG;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
 
@@ -55,6 +57,25 @@ class PathAcceptanceTest extends AcceptanceTest {
         LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(보문_창신);
         ExtractableResponse<Response> response = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("경로 조회시, 환승이 발생하면 최대 추가비용이 추가되고 200 OK를 반환한다.")
+    @Test
+    void getPathsTransfer() {
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 상왕십리역 = SANGWANGSIMNI.역을등록한다();
+
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 신당_상왕십리 = createSectionRequest(신당역, 상왕십리역, STANDARD_DISTANCE);
+
+        LINE_SIX.노선을등록한다(신당_동묘);
+        LINE_TWO.노선을등록한다(신당_상왕십리);
+
+        PathResponse response = DONGMYO.에서(SANGWANGSIMNI).의최단거리를계산한다(20)
+                .as(PathResponse.class);
+
+        assertThat(response.getFare()).isEqualTo(1650);
     }
 
     private SectionRequest createSectionRequest(Station up, Station down, int distance) {

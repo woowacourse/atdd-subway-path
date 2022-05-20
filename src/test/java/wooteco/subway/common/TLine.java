@@ -21,13 +21,18 @@ public enum TLine {
         this.extraFare = extraFare;
     }
 
-    public LineResponse 노선을등록한다(Long startStationId, Long endStationId, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, extraFare, startStationId, endStationId, distance);
+    public LineResponse 노선을등록한다(SectionRequest sectionRequest) {
+        LineRequest lineRequest = new LineRequest(name,
+                color,
+                extraFare,
+                sectionRequest.getUpStationId(),
+                sectionRequest.getDownStationId(),
+                sectionRequest.getDistance());
         return requestLine(lineRequest);
     }
 
-    public LineAddAnd 노선을등록하고(SectionRequest sectionRequest) {
-        return new LineAddAnd(this,
+    public LineAddAndRequest 노선을등록하고(SectionRequest sectionRequest) {
+        return new LineAddAndRequest(this,
                 sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId(),
                 sectionRequest.getDistance());

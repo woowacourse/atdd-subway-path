@@ -2,7 +2,6 @@ package wooteco.subway.common;
 
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -29,8 +28,8 @@ public enum TStation {
         return new Station(id, stationResponse.getName());
     }
 
-    public PathAnd 에서(TStation target) {
-        return new PathAnd(this, target);
+    public PathAndRequest 에서(TStation target) {
+        return new PathAndRequest(this, target);
     }
 
     private static StationResponse requestStation(final StationRequest stationRequest) {
