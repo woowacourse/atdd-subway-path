@@ -40,9 +40,10 @@ public class LineService {
                 lineRequest.getColor(),
                 lineRequest.getExtraFare()
         );
+        validateDuplication(line);
+
         final Line newLine = lineDao.save(line);
 
-        validateDuplication(line);
         sectionDao.save(
                 newLine.getId(),
                 lineRequest.getUpStationId(),
@@ -88,7 +89,9 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse getById(final Long id) {
-        final Line line = lineDao.findById(id);
+        Line line = lineDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(LINE_NOT_EXIST));
+
         return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line),
                 line.getExtraFare());
     }

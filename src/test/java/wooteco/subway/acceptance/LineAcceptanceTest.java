@@ -31,11 +31,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         역삼역_ID = extractId(createStation("역삼역"));
         createStation("선릉역");
     }
-    
+
     @DisplayName("정상적으로 노선이 등록되는 경우를 테스트한다.")
     @Test
     void createLineTest() {
-        ExtractableResponse<Response> response = createLine("신분당선", "bg-red-600", 강남역_ID, 역삼역_ID, 5);
+        ExtractableResponse<Response> response = createLine("신분당선", "bg-red-600", 강남역_ID, 역삼역_ID, 5, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -44,8 +44,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
-        createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 5);
-        ExtractableResponse<Response> response = createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 5);
+        createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 5, 0);
+        ExtractableResponse<Response> response = createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 5, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -54,17 +54,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         ExtractableResponse<Response> createResponse1 = createLine("신분당선", "bg-red-600",
-                강남역_ID, 역삼역_ID, 5);
+                강남역_ID, 역삼역_ID, 5, 0);
         ExtractableResponse<Response> createResponse2 = createLine("다른분당선", "bg-blue-600",
-                강남역_ID, 역삼역_ID, 5);
+                강남역_ID, 역삼역_ID, 5, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
                 .get("/lines")
                 .then().log().all()
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
@@ -73,14 +71,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+        );
     }
 
     @DisplayName("특정 노선을 조회한다.")
     @Test
     void getLine() {
         ExtractableResponse<Response> createResponse = createLine("신분당선", "bg-red-600",
-                강남역_ID, 역삼역_ID, 5);
+                강남역_ID, 역삼역_ID, 5, 0);
 
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -113,7 +114,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     public void updateLine() {
         ExtractableResponse<Response> createResponse = createLine("신분당선", "bg-red-600",
-                강남역_ID, 역삼역_ID, 5);
+                강남역_ID, 역삼역_ID, 5, 0);
 
         String uri = createResponse.header("Location");
 
@@ -152,7 +153,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 삭제한다.")
     @Test
     void deleteLine() {
-        ExtractableResponse<Response> createResponse = createLine("신분당선", "bg-red-600", 강남역_ID, 역삼역_ID, 5);
+        ExtractableResponse<Response> createResponse = createLine("신분당선", "bg-red-600", 강남역_ID, 역삼역_ID, 5, 0);
 
         String uri = createResponse.header("Location");
         Long id = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -161,8 +162,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .delete(uri)
                 .then().log().all()
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
         ExtractableResponse<Response> linesResponse = RestAssured.given().log().all()
                 .when()
@@ -174,7 +173,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
-        assertThat(resultLineIds.contains(id)).isFalse();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(resultLineIds.contains(id)).isFalse()
+        );
     }
 
     @DisplayName("존재하지 않는 노선을 삭제하는 경우 예외를 발생시킨다.")
@@ -190,13 +192,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> createLine(final String name, final String color, final Long upStationId,
-                                                     final Long downStationId, final Integer distance) {
+                                                     final Long downStationId, final Integer distance, final int extraFare) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", distance);
+        params.put("extraFare", extraFare);
 
         return RestAssured.given().log().all()
                 .body(params)

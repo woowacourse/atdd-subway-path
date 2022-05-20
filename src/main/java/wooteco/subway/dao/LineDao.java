@@ -1,17 +1,17 @@
 package wooteco.subway.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Repository
 public class LineDao {
@@ -53,9 +53,13 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public Line findById(Long id) {
-        final String sql = "select id, name, color, extra_fare from Line where id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+    public Optional<Line> findById(Long id) {
+        try {
+            final String sql = "select id, name, color, extra_fare from Line where id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, lineRowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public int update(Long id, Line line) {

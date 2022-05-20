@@ -1,5 +1,7 @@
 package wooteco.subway.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Station;
-
-import java.util.NoSuchElementException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @Sql("classpath:station.sql")
@@ -37,15 +34,6 @@ public class StationDaoTest {
     }
 
     @Test
-    @DisplayName("중복된 지하철역을 저장하는 경우 예외를 발생시킨다.")
-    void saveDuplicateTest() {
-        stationDao.save(new Station("선릉역"));
-
-        assertThatThrownBy(() -> stationDao.save(new Station("선릉역")))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
     @DisplayName("정상적으로 전체 조회되는 경우를 테스트한다.")
     void findAllTest() {
         stationDao.save(new Station("선릉역"));
@@ -58,9 +46,9 @@ public class StationDaoTest {
     @Test
     @DisplayName("존재하지 않는 지하철 역을 삭제하는 경우를 테스트한다.")
     void deleteNotExistTest() {
-        assertThatThrownBy(() -> {
-            stationDao.deleteById(999999L);
-        }).isInstanceOf(NoSuchElementException.class);
+        int actual = stationDao.deleteById(9999L);
+
+        assertThat(actual).isEqualTo(0);
     }
 
     @Test

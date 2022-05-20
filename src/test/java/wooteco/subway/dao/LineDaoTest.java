@@ -1,5 +1,9 @@
 package wooteco.subway.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,12 +12,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
-
-import java.util.NoSuchElementException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 @Sql("classpath:line.sql")
@@ -44,14 +42,6 @@ public class LineDaoTest {
     }
 
     @Test
-    @DisplayName("중복된 이름을 저장한 경우 예외를 발생시킨다")
-    void saveDuplicateTest() {
-        assertThatThrownBy(() -> {
-            lineDao.save(new Line("신분당선", "bg-red-600", 0));
-        }).isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
     @DisplayName("정상적으로 전체 조회되는 경우를 테스트한다.")
     void findAllTest() {
         assertThat(lineDao.findAll()).hasSize(3);
@@ -60,15 +50,17 @@ public class LineDaoTest {
     @Test
     @DisplayName("존재하지 않는 id를 조회하는 경우 예외를 발생시킨다.")
     void findExceptionTest() {
-        assertThatThrownBy(() -> lineDao.findById(9999999L))
-                .isInstanceOf(NoSuchElementException.class);
+        Optional<Line> line = lineDao.findById(9999L);
+
+        assertThat(line.isEmpty()).isTrue();
     }
 
     @Test
     @DisplayName("정상적으로 특정 조회하는 경우를 테스트한다.")
     void findByIdTest() {
         final Line newLine = lineDao.save(new Line("라쿤선", "bg-black-600", 0));
-        final Line line = lineDao.findById(newLine.getId());
+        final Line line = lineDao.findById(newLine.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 지하철 노선입니다."));
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo("라쿤선"),
                 () -> assertThat(line.getColor()).isEqualTo("bg-black-600")
@@ -80,7 +72,9 @@ public class LineDaoTest {
     void updateTest() {
         final Line newLine = lineDao.save(new Line("짱구선", "bg-white-600", 0));
         lineDao.update(newLine.getId(), new Line("38선", "bg-rainbow-600", 0));
-        Line line = lineDao.findById(newLine.getId());
+        Line line = lineDao.findById(newLine.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 지하철 노선입니다."));
+
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo("38선"),
                 () -> assertThat(line.getColor()).isEqualTo("bg-rainbow-600")
@@ -91,9 +85,7 @@ public class LineDaoTest {
     @DisplayName("정상적으로 제거되는 경우를 테스트한다.")
     void deleteTest() {
         final Line newLine = lineDao.save(new Line("짱구선", "bg-white-600", 0));
-        lineDao.deleteById(newLine.getId());
-        assertThatThrownBy(() -> {
-            lineDao.findById(newLine.getId());
-        }).isInstanceOf(NoSuchElementException.class);
+        int actual = lineDao.deleteById(newLine.getId());
+        assertThat(actual).isEqualTo(1);
     }
 }
