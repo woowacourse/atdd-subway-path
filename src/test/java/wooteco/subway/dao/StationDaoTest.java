@@ -19,7 +19,6 @@ import wooteco.subway.domain.Station;
 
 @DisplayName("Station Dao를 통해서")
 @JdbcTest
-@Transactional
 class StationDaoTest {
 
     private static final Station STATION_FIXTURE = new Station(1L, "선릉역");

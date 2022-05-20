@@ -16,7 +16,6 @@ import wooteco.subway.service.dto.SectionDto;
 
 @DisplayName("SectionDao 는")
 @JdbcTest
-@Transactional
 class SectionDaoTest {
 
     @Autowired

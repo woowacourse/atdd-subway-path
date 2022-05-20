@@ -21,7 +21,6 @@ import wooteco.subway.service.dto.LineDto;
 
 @DisplayName("Line Dao를 통해서")
 @JdbcTest
-@Transactional
 class LineDaoTest {
 
     private static final LineDto LINE_FIXTURE = new LineDto("a", "b", 1L, 2L, 3);
