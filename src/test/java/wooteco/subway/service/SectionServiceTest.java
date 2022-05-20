@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.dao.line.InmemoryLineDao;
 import wooteco.subway.dao.section.InmemorySectionDao;
 import wooteco.subway.dao.station.InmemoryStationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.section.SectionSaveRequest;
 
 class SectionServiceTest {

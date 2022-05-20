@@ -1,10 +1,10 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.domain.AgeDisCountPolicy.ADULT;
-import static wooteco.subway.domain.AgeDisCountPolicy.BABY;
-import static wooteco.subway.domain.AgeDisCountPolicy.CHILDREN;
-import static wooteco.subway.domain.AgeDisCountPolicy.TEENAGER;
+import static wooteco.subway.domain.path.AgeDisCountPolicy.ADULT;
+import static wooteco.subway.domain.path.AgeDisCountPolicy.BABY;
+import static wooteco.subway.domain.path.AgeDisCountPolicy.CHILDREN;
+import static wooteco.subway.domain.path.AgeDisCountPolicy.TEENAGER;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -10,9 +10,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {

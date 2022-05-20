@@ -1,9 +1,9 @@
-package wooteco.subway.config;
+package wooteco.subway.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import wooteco.subway.domain.strategy.FindDijkstraShortestPathStrategy;
-import wooteco.subway.domain.strategy.FindPathStrategy;
+import wooteco.subway.domain.path.FindPathStrategy;
+import wooteco.subway.infrastructure.path.FindDijkstraShortestPathStrategy;
 
 @Configuration
 public class FindPathConfiguration {

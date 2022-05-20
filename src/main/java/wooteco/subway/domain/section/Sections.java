@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.NotFoundException;
 
 public class Sections {

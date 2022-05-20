@@ -1,6 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.Objects;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 
 public class Section {
 

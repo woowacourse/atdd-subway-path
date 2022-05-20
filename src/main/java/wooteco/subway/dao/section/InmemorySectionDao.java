@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 public class InmemorySectionDao implements SectionDao {
 

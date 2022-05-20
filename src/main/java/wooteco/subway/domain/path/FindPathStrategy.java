@@ -1,8 +1,7 @@
-package wooteco.subway.domain.strategy;
+package wooteco.subway.domain.path;
 
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.NotFoundException;
 
 public interface FindPathStrategy {

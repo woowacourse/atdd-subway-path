@@ -13,9 +13,9 @@ import wooteco.subway.dao.line.JdbcLineDao;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 @JdbcTest
 class JdbcSectionDaoTest {

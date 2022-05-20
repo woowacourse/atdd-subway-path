@@ -2,7 +2,7 @@ package wooteco.subway.dto.line;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineUpdateRequest {
 

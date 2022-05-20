@@ -1,4 +1,4 @@
-package wooteco.subway.domain.strategy;
+package wooteco.subway.infrastructure.path;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.FindPathStrategy;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 
 public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
 
