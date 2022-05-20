@@ -1,8 +1,6 @@
 package wooteco.subway.domain;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -32,19 +30,10 @@ public class Path {
     }
 
     private void addVertex(List<Section> sections) {
-        Set<Station> stations = getStations(sections);
-        for (Station station : stations) {
-            graph.addVertex(station.getId());
-        }
-    }
-
-    private Set<Station> getStations(List<Section> sections) {
-        Set<Station> stations = new LinkedHashSet<>();
         for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
+            graph.addVertex(section.getUpStation().getId());
+            graph.addVertex(section.getDownStation().getId());
         }
-        return stations;
     }
 
     private void addEdge(List<Section> sections) {
