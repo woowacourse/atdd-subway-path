@@ -11,10 +11,10 @@ import wooteco.subway.exception.SubwayException;
 
 public class Path {
 
-    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath;
 
-    public Path(DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
+    public Path(DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath) {
+        this.shortestPath = shortestPath;
     }
 
     public static Path of(List<Section> sections, List<Long> stationIds) {
@@ -48,7 +48,7 @@ public class Path {
     }
 
     private GraphPath<Long, DefaultWeightedEdge> getPath(Long source, Long target) {
-        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+        return Optional.ofNullable(shortestPath.getPath(source, target))
                 .orElseThrow(() -> new SubwayException("경로가 존재하지 않습니다."));
     }
 }
