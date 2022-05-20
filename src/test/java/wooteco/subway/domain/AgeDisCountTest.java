@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.domain.AgeDisCount.BABY;
 import static wooteco.subway.domain.AgeDisCount.CHILDREN;
+import static wooteco.subway.domain.AgeDisCount.TEENAGER;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,5 +23,12 @@ class AgeDisCountTest {
     @DisplayName("6살부터 12살까지는 CHILDREN이다")
     void ageDiscountChildren(final int age) {
         assertThat(AgeDisCount.from(age)).isEqualTo(CHILDREN);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {13, 15, 18})
+    @DisplayName("13살부터 18살까지는 TEENAGER다")
+    void ageDiscountTeenager(final int age) {
+        assertThat(AgeDisCount.from(age)).isEqualTo(TEENAGER);
     }
 }

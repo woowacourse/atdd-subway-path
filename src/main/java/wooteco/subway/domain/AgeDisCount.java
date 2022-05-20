@@ -7,6 +7,7 @@ public enum AgeDisCount {
 
     BABY(age -> 0 <= age && age <= 5),
     CHILDREN(age -> 6 <= age && age <= 12),
+    TEENAGER(age -> 13 <= age && age <= 18)
     ;
 
     private final Predicate<Integer> containsAgePredicate;
