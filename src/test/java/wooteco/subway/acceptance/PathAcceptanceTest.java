@@ -7,20 +7,50 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationResponse;
+import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.utils.RestAssuredUtil;
 
+@DisplayName("지하철 경로 관련 기능 - PathAcceptanceTest")
 public class PathAcceptanceTest extends AcceptanceTest {
+
+    private Long sourceId;
+    private Long targetId;
+
+    @Autowired
+    private LineDao lineDao;
+
+    @Autowired
+    private StationDao stationDao;
+
+    @Autowired
+    private SectionDao sectionDao;
+
+    @BeforeEach
+    void init() {
+        sourceId = stationDao.save(new Station("강남역"));
+        targetId = stationDao.save(new Station("왕십리역"));
+
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("3호선", "red", sourceId, targetId, 10, 500);
+        Long lineId = lineDao.save(lineCreateRequest);
+
+        sectionDao.save(new Section(lineId, sourceId, targetId, 10));
+    }
 
     @DisplayName("경로를 조회한다.")
     @Test
     void searchPath() {
         //given
-        Long sourceId = 1L;
-        Long targetId = 2L;
         String url = "/paths?source=" + sourceId + "&target=" + targetId + "&age=15";
 
         //when
@@ -33,8 +63,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(fare).isEqualTo(1250),
-                () -> assertThat(distance).isEqualTo(5),
+                () -> assertThat(fare).isEqualTo(1750),
+                () -> assertThat(distance).isEqualTo(10),
                 () -> assertThat(stationIds).contains(sourceId, targetId)
         );
     }

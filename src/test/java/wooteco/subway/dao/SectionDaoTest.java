@@ -4,21 +4,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class SectionDaoTest {
 
+    private Long lineId;
+    private Long stationId1;
+    private Long stationId2;
+    private Long sectionId;
+
+    @Autowired
+    private StationDao stationDao;
+
     @Autowired
     private SectionDao sectionDao;
+
+    @BeforeEach
+    void init() {
+        lineId = 1L;
+
+        stationId1 = stationDao.save(new Station("강남역"));
+        stationId2 = stationDao.save(new Station("왕십리역"));
+
+        sectionId = sectionDao.save(new Section(lineId, stationId1, stationId2, 10));
+    }
 
     @DisplayName("구간 전체 조회")
     @Test
@@ -38,7 +57,7 @@ class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findByLineId(1L);
+        List<Section> sections = sectionDao.findByLineId(lineId);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -50,7 +69,7 @@ class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findByStationId(2L);
+        List<Section> sections = sectionDao.findByStationId(stationId1);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -62,7 +81,7 @@ class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findByLineIdAndStationId(1L, 2L);
+        List<Section> sections = sectionDao.findByLineIdAndStationId(lineId, stationId2);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -72,29 +91,28 @@ class SectionDaoTest {
     @Test
     void save() {
         // given
-        SectionRequest section = new SectionRequest(1L, 2L, 10);
+        SectionRequest section = new SectionRequest(stationId1, stationId2, 10);
 
         // when
-        Long id = sectionDao.save(section.toEntity(1L));
+        Long id = sectionDao.save(section.toEntity(lineId));
 
         // then
-        assertThat(id).isEqualTo(2L);
+        assertThat(id).isEqualTo(sectionId + 1);
     }
 
     @DisplayName("구간 수정")
     @Test
     void update() {
         // given
-        Long id = 1L;
-        Section updateSection = new Section(id, 1L, 2L, 1L, 30);
+        Section updateSection = new Section(sectionId, lineId, stationId2, stationId1, 30);
 
         // when
         sectionDao.update(updateSection);
 
         // then
-        Section section = sectionDao.findByLineId(1L)
+        Section section = sectionDao.findByLineId(lineId)
                 .stream()
-                .filter(it -> id.equals(it.getId()))
+                .filter(it -> sectionId.equals(it.getId()))
                 .findAny()
                 .orElseThrow();
 
@@ -105,7 +123,6 @@ class SectionDaoTest {
     @Test
     void deleteByLineId() {
         // given
-        Long lineId = 1L;
 
         // when
         sectionDao.deleteByLineId(lineId);
@@ -118,15 +135,14 @@ class SectionDaoTest {
     @Test
     void deleteById() {
         // given
-        Long id = 1L;
 
         // when
-        sectionDao.deleteById(id);
+        sectionDao.deleteById(lineId);
 
         // then
         List<Section> sameSectionIds = sectionDao.findAll()
                 .stream()
-                .filter(section -> id.equals(section.getId()))
+                .filter(section -> lineId.equals(section.getId()))
                 .collect(Collectors.toList());
 
         assertThat(sameSectionIds.size()).isEqualTo(0);

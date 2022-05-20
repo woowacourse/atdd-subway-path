@@ -6,46 +6,31 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.utils.RestAssuredUtil;
 
-@DisplayName("지하철역 관련 기능")
+@DisplayName("지하철역 관련 기능 - StationAcceptanceTest")
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    private Long savedId1;
-    private Long savedId2;
+    private Long stationId1;
+    private Long stationId2;
 
     @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private StationDao stationDao;
 
     @BeforeEach
     void init() {
-        jdbcTemplate.update("delete from STATION", new EmptySqlParameterSource());
-
-        savedId1 = insertData("강남역");
-        savedId2 = insertData("역삼역");
-    }
-
-    private Long insertData(String name) {
-        String insertSql = "insert into STATION (name) values (:name)";
-        SqlParameterSource source = new MapSqlParameterSource("name", name);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        stationId1 = stationDao.save(new Station("강남역"));
+        stationId2 = stationDao.save(new Station("역삼역"));
     }
 
     @DisplayName("지하철역을 생성한다.")
@@ -86,7 +71,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> stationIds = generateStationIds(response);
 
-        assertThat(stationIds).containsAll(List.of(savedId1, savedId2));
+        assertThat(stationIds).containsAll(List.of(stationId1, stationId2));
     }
 
     private List<Long> generateStationIds(ExtractableResponse<Response> response) {

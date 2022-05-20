@@ -32,7 +32,7 @@ public class LineDao {
     }
 
     public Long save(LineCreateRequest line) {
-        String sql = "insert into LINE (name, color) values (:name, :color)";
+        String sql = "insert into LINE (name, color, extra_fare) values (:name, :color, :extraFare)";
         SqlParameterSource source = new BeanPropertySqlParameterSource(line);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, source, keyHolder);

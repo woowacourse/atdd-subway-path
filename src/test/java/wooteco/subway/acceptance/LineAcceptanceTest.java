@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +18,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
@@ -31,58 +30,40 @@ import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.utils.RestAssuredUtil;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 - LineAcceptanceTest")
 public class LineAcceptanceTest extends AcceptanceTest {
 
-    private Long savedId1;
-    private Long savedId2;
-    private Long savedInsertId;
+    private Long stationId1;
+    private Long stationId2;
+    private Long lineId1;
+    private Long lineId2;
+    private Long sectionId;
 
     @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private LineDao lineDao;
+
+    @Autowired
+    private SectionDao sectionDao;
+
+    @Autowired
+    private StationDao stationDao;
 
     @BeforeEach
     void init() {
-        jdbcTemplate.update("delete from LINE", new EmptySqlParameterSource());
+        stationId1 = stationDao.save(new Station("강남역"));
+        stationId2 = stationDao.save(new Station("왕십리역"));
 
-        savedId1 = insertLine("신분당선", "bg-red-600");
-        savedId2 = insertLine("분당선", "bg-green-600");
+        lineId1 = lineDao.save(new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
+        lineId2 = lineDao.save(new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
 
-        savedInsertId = insertSection(savedId1);
-    }
-
-    private Long insertLine(String name, String color) {
-        String insertSql = "insert into LINE (name, color) values (:name, :color)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        source.addValue("name", name);
-        source.addValue("color", color);
-
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
-    }
-
-    private Long insertSection(Long lineId) {
-        String insertSql = "insert into section (line_id, up_station_id, down_station_id, distance) "
-                + "values (:lineId, :upStationId, :downStationId, :distance)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        source.addValue("lineId", lineId);
-        source.addValue("upStationId", 1L);
-        source.addValue("downStationId", 2L);
-        source.addValue("distance", 5);
-
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        sectionId = sectionDao.save(new Section(lineId1, stationId1, 2L, 5));
     }
 
     @DisplayName("지하철 노선 생성")
     @Test
     void createLine() {
         // given
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 20, 0);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", stationId1, stationId2, 20, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
@@ -130,7 +111,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         /// given
-        List<Long> expectedLineIds = List.of(savedId1, savedId2);
+        List<Long> expectedLineIds = List.of(lineId1, lineId2);
 
         // when
         ExtractableResponse<Response> response = RestAssuredUtil.get("/lines");
@@ -151,7 +132,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void findLine() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
         ExtractableResponse<Response> response = RestAssuredUtil.get("/lines/" + id);
@@ -178,7 +159,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
         String name = "다른분당선";
@@ -194,7 +175,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithDuplicatedName() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
         String name = "분당선";
@@ -210,7 +191,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineById() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
         List<Long> expectedIds = selectLines();
         expectedIds.remove(Long.parseLong(id));
 
@@ -230,19 +211,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createSection() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
-        String url = "/lines/" + savedId2 + "/sections";
+        SectionRequest sectionRequest = new SectionRequest(stationId1, stationId2, 5);
+        String url = "/lines/" + lineId2 + "/sections";
 
         // when
         RestAssuredUtil.post(url, sectionRequest);
 
         // then
-        List<StationResponse> stations = findStations(savedId2);
+        List<StationResponse> stations = findStations(lineId2);
 
         assertThat(stations).extracting("id", "name")
                 .containsExactly(
-                        tuple(1L, "강남역"),
-                        tuple(2L, "왕십리역")
+                        tuple(stationId1, "강남역"),
+                        tuple(stationId2, "왕십리역")
                 );
     }
 
@@ -251,19 +232,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteSection() {
         // given
         Map<String, String> source = new HashMap<>();
-        source.put("stationId", savedInsertId.toString());
-        String url = "/lines/" + savedId1 + "/sections";
+        source.put("stationId", sectionId.toString());
+        String url = "/lines/" + lineId1 + "/sections";
 
         // when
         RestAssuredUtil.delete(url, source);
 
         // then
-        List<Long> stationIds = findStations(savedId1)
+        List<Long> stationIds = findStations(lineId1)
                 .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(stationIds).doesNotContain(savedInsertId);
+        assertThat(stationIds).doesNotContain(sectionId);
     }
 
     private List<StationResponse> findStations(Long lineId) {

@@ -8,10 +8,23 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class CostCalculatorTest {
 
-    @DisplayName("거리 계산하기 - 추가 요금 없음")
-    @ParameterizedTest(name = "{0} km -> 요금 {1}원 예상")
-    @CsvSource(value = {"5,0,1250", "44,0,1950", "60,0,2250"})
-    void calculateCost(int distance, int extraFare, int expected) {
+    @DisplayName("거리별 요금 계산 (추가 요금 X)")
+    @ParameterizedTest(name = "{0} km -> 요금 {2}원 예상")
+    @CsvSource(value = {"1,0,1250", "10,0,1250", "11,0,1350", "30,0,1650", "50,0,2050", "51,0,2150", "60,0,2250"})
+    void calculateCostByDistance(int distance, int extraFare, int expected) {
+        // given
+
+        // when
+        int result = CostCalculator.calculate(distance, extraFare);
+
+        // then
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("추가 요금별 계산 (거리 10km 고정)")
+    @ParameterizedTest(name = "{1} 원 -> 요금 {2}원 예상")
+    @CsvSource(value = {"10,0,1250", "10,100,1350", "10,9000,10250"})
+    void calculateCostByExtraForce(int distance, int extraFare, int expected) {
         // given
 
         // when

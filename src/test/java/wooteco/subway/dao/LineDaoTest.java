@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,17 @@ import wooteco.subway.ui.dto.LineRequest;
 @Transactional
 class LineDaoTest {
 
+    private Long stationId1;
+    private Long stationId2;
+
     @Autowired
     private LineDao lineDao;
+
+    @BeforeEach
+    void init() {
+        stationId1 = lineDao.save(new LineCreateRequest("신분당선", "red", 1L, 2L, 2, 500));
+        stationId2 = lineDao.save(new LineCreateRequest("2호선", "green", 1L, 2L, 2, 0));
+    }
 
     @DisplayName("노선 저장")
     @Test
@@ -30,7 +40,7 @@ class LineDaoTest {
         Long id = lineDao.save(line);
 
         // then
-        assertThat(id).isEqualTo(3L);
+        assertThat(id).isEqualTo(stationId2 + 1);
     }
 
     @DisplayName("노선 이름이 존재하는지 확인")
@@ -53,7 +63,7 @@ class LineDaoTest {
         String name = "신분당선";
 
         // when
-        boolean result = lineDao.existsByNameExceptWithId(name, 1L);
+        boolean result = lineDao.existsByNameExceptWithId(name, stationId1);
 
         // then
         assertThat(result).isFalse();
@@ -65,7 +75,7 @@ class LineDaoTest {
         // given
 
         // when
-        boolean result = lineDao.existsById(1L);
+        boolean result = lineDao.existsById(stationId1);
 
         // then
         assertThat(result).isTrue();
@@ -75,10 +85,10 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "신분당선", "red", 0);
+        Line expected = new Line(stationId1, "신분당선", "red", 500);
 
         // when
-        Optional<Line> line = lineDao.findById(1L);
+        Optional<Line> line = lineDao.findById(stationId1);
 
         // then
         assertThat(line.isPresent()).isTrue();
@@ -101,14 +111,13 @@ class LineDaoTest {
     @Test
     void update() {
         // given
-        Long id = 1L;
         LineRequest lineRequest = new LineRequest("신분당선", "pink", 0);
 
         // when
-        lineDao.update(id, lineRequest);
+        lineDao.update(stationId1, lineRequest);
 
         // then
-        Optional<Line> line = lineDao.findById(id);
+        Optional<Line> line = lineDao.findById(stationId1);
 
         assertThat(line.isPresent()).isTrue();
         assertThat(line.get()).extracting(Line::getName, Line::getColor)
@@ -119,12 +128,11 @@ class LineDaoTest {
     @Test
     void deleteById() {
         // given
-        Long id = 1L;
 
         // when
-        lineDao.deleteById(id);
+        lineDao.deleteById(stationId1);
 
         // then
-        assertThat(lineDao.findById(id)).isEqualTo(Optional.empty());
+        assertThat(lineDao.findById(stationId1)).isEqualTo(Optional.empty());
     }
 }
