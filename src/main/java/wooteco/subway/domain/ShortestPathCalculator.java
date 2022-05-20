@@ -2,35 +2,41 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import wooteco.subway.exception.SectionNotFoundException;
 
-public class ShortestPathCalculator {
+@Component
+public class ShortestPathCalculator implements PathCalculator {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> algorithm;
+    private DijkstraShortestPath<Station, ShortestPathEdge> initializePath(final Sections sections) {
+        WeightedMultigraph<Station, ShortestPathEdge> graph
+                = new WeightedMultigraph<>(ShortestPathEdge.class);
 
-    public ShortestPathCalculator(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                                  final ShortestPathAlgorithm<Station, DefaultWeightedEdge> algorithm) {
-        this.graph = graph;
-        this.algorithm = algorithm;
-    }
-
-    public void initializeGraph(final Sections sections) {
         for (Station station : sections.getAllStations()) {
             graph.addVertex(station);
         }
         for (Section section : sections.getValues()) {
-            assignWeight(section);
+            assignWeight(graph, section);
         }
+
+        return new DijkstraShortestPath<>(graph);
     }
 
-    private void assignWeight(final Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    private void assignWeight(final WeightedMultigraph<Station, ShortestPathEdge> graph,
+                              final Section section) {
+        graph.addEdge(section.getUpStation(),
+                section.getDownStation(),
+                new ShortestPathEdge(section.getLineId(),
+                        section.getDistance()));
     }
 
-    public int calculateShortestDistance(final Station startStation, final Station endStation) {
+    @Override
+    public int calculateShortestDistance(final Sections sections,
+                                         final Station startStation,
+                                         final Station endStation) {
+        ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
             return (int) algorithm.getPath(startStation, endStation).getWeight();
         } catch (IllegalArgumentException | NullPointerException e) {
@@ -38,7 +44,11 @@ public class ShortestPathCalculator {
         }
     }
 
-    public List<Station> calculateShortestStations(final Station startStation, final Station endStation) {
+    @Override
+    public List<Station> calculateShortestStations(final Sections sections,
+                                                   final Station startStation,
+                                                   final Station endStation) {
+        ShortestPathAlgorithm<Station, ShortestPathEdge> algorithm = initializePath(sections);
         try {
             return algorithm.getPath(startStation, endStation).getVertexList();
         } catch (IllegalArgumentException | NullPointerException e) {

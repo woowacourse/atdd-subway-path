@@ -1,10 +1,6 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import java.util.Objects;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import wooteco.subway.exception.SectionNotFoundException;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {
@@ -15,15 +11,15 @@ public class Path {
     private static final int STANDARD_UNIT = 5;
     private static final int MAX_UNIT = 8;
 
-    private final ShortestPathCalculator shortestPathCalculator;
+    private final PathCalculator pathCalculator;
     private final Station startStation;
     private final Station endStation;
 
-    public Path(final ShortestPathCalculator shortestPathCalculator,
+    public Path(final PathCalculator pathCalculator,
                 final Station startStation,
                 final Station endStation) {
         validateDifferentStation(startStation, endStation);
-        this.shortestPathCalculator = shortestPathCalculator;
+        this.pathCalculator = pathCalculator;
         this.startStation = startStation;
         this.endStation = endStation;
     }
@@ -34,16 +30,16 @@ public class Path {
         }
     }
 
-    public int calculateMinDistance() {
-       return shortestPathCalculator.calculateShortestDistance(startStation, endStation);
+    public int calculateMinDistance(final Sections sections) {
+       return pathCalculator.calculateShortestDistance(sections, startStation, endStation);
     }
 
-    public List<Station> findShortestStations() {
-        return shortestPathCalculator.calculateShortestStations(startStation, endStation);
+    public List<Station> findShortestStations(final Sections sections) {
+        return pathCalculator.calculateShortestStations(sections, startStation, endStation);
     }
 
-    public int calculateFare() {
-        int distance = calculateMinDistance();
+    public int calculateFare(final Sections sections) {
+        int distance = calculateMinDistance(sections);
         if (distance <= DEFAULT_DISTANCE) {
             return DEFAULT_FARE;
         }

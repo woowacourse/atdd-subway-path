@@ -2,12 +2,11 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.ShortestPathCalculator;
 import wooteco.subway.domain.Station;
@@ -22,11 +21,14 @@ import wooteco.subway.repository.StationRepository;
 public class PathService {
 
     private final StationRepository stationRepository;
-    private  final SectionRepository sectionRepository;
+    private final SectionRepository sectionRepository;
+    private final PathCalculator pathCalculator;
 
-    public PathService(StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(StationRepository stationRepository, SectionRepository sectionRepository,
+                       PathCalculator pathCalculator) {
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
+        this.pathCalculator = pathCalculator;
     }
 
     public PathResponse calculateMinDistance(final PathRequest pathRequest) {
@@ -34,21 +36,11 @@ public class PathService {
         Station startStation = stationRepository.findById(pathRequest.getSource());
         Station endStation = stationRepository.findById(pathRequest.getTarget());
 
-        Path path = new Path(initializeShortestPathCalculator(sections), startStation, endStation);
-
-        List<StationResponse> stationResponses = toStationResponses(path.findShortestStations());
-        int distance = path.calculateMinDistance();
-        int fare = path.calculateFare();
+        Path path = new Path(pathCalculator, startStation, endStation);
+        List<StationResponse> stationResponses = toStationResponses(path.findShortestStations(sections));
+        int distance = path.calculateMinDistance(sections);
+        int fare = path.calculateFare(sections);
         return new PathResponse(stationResponses, distance, fare);
-    }
-
-    private ShortestPathCalculator initializeShortestPathCalculator(final Sections sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator(graph,
-                new DijkstraShortestPath<>(graph));
-        shortestPathCalculator.initializeGraph(sections);
-        return shortestPathCalculator;
     }
 
     private List<StationResponse> toStationResponses(final List<Station> stations) {
