@@ -18,7 +18,7 @@ public class Path {
     private final Station endStation;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> graph;
 
-    public Path(Station startStation, Station endStation, DijkstraShortestPath<Station, DefaultWeightedEdge> graph) {
+    private Path(Station startStation, Station endStation, DijkstraShortestPath<Station, DefaultWeightedEdge> graph) {
         this.startStation = startStation;
         this.endStation = endStation;
         this.graph = graph;
