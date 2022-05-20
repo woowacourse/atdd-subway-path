@@ -9,12 +9,16 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 import java.util.List;
+import java.util.stream.Stream;
 
 @DisplayName("지하철 경로 관련 기능")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -48,11 +52,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void createPath() {
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response =
+                get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15");
 
         // then
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
@@ -68,35 +69,48 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> createStation(final StationRequest stationRequest) {
-        return RestAssured.given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+    @DisplayName("잘못된 값으로 경로를 추가할 시 예외를 발생한다.")
+    @ParameterizedTest
+    @MethodSource("provideForInvalidRequests")
+    void createPath_throwsExceptionOnInvalidRequest(final Long source,
+                                                    final Long target,
+                                                    final int age,
+                                                    final String message) {
+
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("source", source)
+                .param("target", target)
+                .param("age", age)
                 .when()
-                .post("/stations")
+                .get("/paths")
                 .then().log().all()
                 .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().htmlPath().getString(".")).isEqualTo(message);
+
+    }
+
+    private static Stream<Arguments> provideForInvalidRequests() {
+        return Stream.of(
+                Arguments.of(null, 2L, 10, "출발역은 공백일 수 없습니다."),
+                Arguments.of(1L, null, 10, "도착역은 공백일 수 없습니다."),
+                Arguments.of(1L, 2L, 0, "나이는 공백이거나 음수일 수 없습니다.")
+        );
+    }
+
+    private ExtractableResponse<Response> createStation(final StationRequest stationRequest) {
+        return post("/stations", stationRequest);
     }
 
     private Long createLine(final LineRequest lineRequest) {
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = post("/lines", lineRequest);
+
         return response.jsonPath().getLong("id");
     }
 
     private void createSection(final SectionRequest sectionRequest) {
-        RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
+        post("/lines/" + lineId + "/sections", sectionRequest);
     }
 }
 

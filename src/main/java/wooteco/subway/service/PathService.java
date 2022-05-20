@@ -7,7 +7,6 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.DijkstraStrategy;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
