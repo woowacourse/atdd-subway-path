@@ -29,14 +29,14 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (!(o instanceof Station)) {
             return false;
         }
-        Station station = (Station) o;
+        final Station station = (Station) o;
         return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 

@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Graph {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public Graph() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -33,27 +33,25 @@ public class Graph {
     }
 
     private void validateVertexExist(final Station station) {
-        graph.vertexSet()
-                .stream()
-                .filter(vertex -> vertex.equals(station))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("지하철역이 존재하지 않습니다."));
+        if (!graph.containsVertex(station)) {
+            throw new IllegalStateException("지하철역이 존재하지 않습니다.");
+        }
     }
 
-    public void addSections(Sections sections) {
+    public void addSections(final Sections sections) {
         addVertexes(sections);
         addEdges(sections);
     }
 
-    private void addVertexes(Sections sections) {
-        List<Station> stations = sections.extractStations();
+    private void addVertexes(final Sections sections) {
+        final List<Station> stations = sections.extractStations();
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private void addEdges(Sections sections) {
-        List<Section> sectionsForEdge = sections.getSections();
+    private void addEdges(final Sections sections) {
+        final List<Section> sectionsForEdge = sections.getSections();
         for (Section section : sectionsForEdge) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }

@@ -13,7 +13,7 @@ public class FareCalculator {
     private FareCalculator() {
     }
 
-    public static int calculate(double distance) {
+    public static int calculate(final double distance) {
         return MINIMUM_FARE + addOverTen(distance) + addOverFifty(distance);
     }
 
@@ -28,7 +28,7 @@ public class FareCalculator {
         return calculateFare(portion);
     }
 
-    private static int addOverFifty(double distance) {
+    private static int addOverFifty(final double distance) {
         if (isUnderAdditionalFareDistance(distance, SECOND_ADDITIONAL_FARE_DISTANCE)) {
             return 0;
         }
@@ -36,11 +36,11 @@ public class FareCalculator {
         return calculateFare(portion);
     }
 
-    private static boolean isUnderAdditionalFareDistance(double distance, int additionalFareDistance) {
+    private static boolean isUnderAdditionalFareDistance(final double distance, final int additionalFareDistance) {
         return distance <= additionalFareDistance;
     }
 
-    private static int getPortion(double distance, int additionalFareDistance, int additionalStandardDistance) {
+    private static int getPortion(final double distance, final int additionalFareDistance, final int additionalStandardDistance) {
         int portion = (int) (distance - additionalFareDistance) / additionalStandardDistance;
         if (portion == 0) {
             portion = 1;
@@ -48,7 +48,7 @@ public class FareCalculator {
         return portion;
     }
 
-    private static int calculateFare(int portion) {
+    private static int calculateFare(final int portion) {
         return portion * MINIMUM_ADDITIONAL_FARE;
     }
 }
