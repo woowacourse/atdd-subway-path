@@ -36,9 +36,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         final SimpleResponse response = SimpleRestAssured.post("/lines", params);
         // then
+        LineResponse lineResponse = response.body()
+                .jsonPath()
+                .getObject(".", LineResponse.class);
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
-                () -> assertThat(response.getHeader("Location")).isNotBlank()
+                () -> assertThat(response.getHeader("Location")).isNotBlank(),
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600")
         );
     }
 
@@ -79,21 +84,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params1 = mapParams("신분당선", "bg-red-600");
         Map<String, String> params2 = mapParams("경의중앙선", "bg-red-800");
 
-        SimpleResponse createResponse1 = SimpleRestAssured.post("/lines", params1);
-        SimpleResponse createResponse2 = SimpleRestAssured.post("/lines", params2);
+        SimpleRestAssured.post("/lines", params1);
+        SimpleRestAssured.post("/lines", params2);
         // when
         SimpleResponse response = SimpleRestAssured.get("/lines");
         // then
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(SimpleResponse::getIdFromLocation)
-                .collect(Collectors.toList());
-        List<Long> resultLineIds = response.toList(LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
+        List<LineResponse> lineResponses = response.getList(".", LineResponse.class);
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.OK),
-                () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+                () -> assertThat(lineResponses).hasSize(2)
         );
     }
 
@@ -106,12 +105,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         final String uri = createdResponse.getHeader("Location");
         final SimpleResponse foundResponse = SimpleRestAssured.get(uri);
-        final LineResponse createdLineResponse = createdResponse.toObject(LineResponse.class);
-        final LineResponse foundLineResponse = foundResponse.toObject(LineResponse.class);
         // then
+        LineResponse lineResponse = foundResponse.getObject(".", LineResponse.class);
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
-                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600")
         );
     }
 
