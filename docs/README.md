@@ -63,7 +63,7 @@
     - [X] find 쿼리 값이 없을 때 Optional 처리
         - 조회 값이 없으면 예외 처리까지
     - [X] 이름 중복 처리 로직을 Service 로 이동
-    - [ ] JdbcTemplate -> NamedParam 수정
+    - [X] JdbcTemplate -> NamedParam 수정
     - [ ] Dto 만들어 필드 수정시 생기는 변경 범위 격리
     - [ ] 정적 팩터리 메서드 대신 부생성자 이용 고려해보기
 - Domain
@@ -80,10 +80,10 @@
 
 ### 스티치의 1단계 첫번째 리뷰
 
-- [ ] Dao 에 @Repository 대신 @Component 사용하기
+- [X] Dao 에 @Repository 대신 @Component 사용하기
 - [ ] RowMapper를 메서드 또는 상수로 관리하기
 - [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
-- [ ] NamedParameterJdbcTemplate 으로 수정
+- [X] NamedParameterJdbcTemplate 으로 수정
 - [ ] FareCalculator 가 필드로 distance 를 갖도록 수정
 - [ ] 매직넘버 상수로 관리하기
 - [ ] @RequestParam @ModelAttribute 로 묶어보기
