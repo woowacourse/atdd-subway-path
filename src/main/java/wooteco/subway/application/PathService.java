@@ -22,16 +22,16 @@ public class PathService {
     }
 
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        Path pathFinder = new Path(sectionService.findAll());
+        Path path = new Path(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
-        List<Station> path = pathFinder.findRoute(sourceStation, targetStation);
-        int distance = pathFinder.calculateDistance(sourceStation, targetStation);
-        int fare = pathFinder.calculateFare(sourceStation, targetStation);
-        return PathResponse.from(path, distance, fare);
+        List<Station> paths = path.findRoute(sourceStation, targetStation);
+        int distance = path.calculateDistance(sourceStation, targetStation);
+        int fare = path.calculateFare(sourceStation, targetStation);
+        return PathResponse.from(paths, distance, fare);
     }
 }
