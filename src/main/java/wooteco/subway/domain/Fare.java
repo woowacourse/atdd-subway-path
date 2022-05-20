@@ -10,7 +10,10 @@ public class Fare {
     private static final int THIRD_CHARGING_UNITS = 8;
     private static final int UNIT_FARES = 100;
 
-    public int calculateFare(int distance) {
+    private Fare() {
+    }
+
+    public static int calculateFare(int distance) {
         if (distance <= BASIC_DISTANCE) {
             return BASIC_FARES;
         }
@@ -20,7 +23,7 @@ public class Fare {
         return BASIC_FARES + SECOND_SECTION_FARES + calculateOverFare(distance - SECOND_DISTANCE, THIRD_CHARGING_UNITS);
     }
 
-    private int calculateOverFare(int distance, int farePerKilometre) {
+    private static int calculateOverFare(int distance, int farePerKilometre) {
         return (int) ((Math.ceil((distance - 1) / farePerKilometre) + 1) * UNIT_FARES);
     }
 }

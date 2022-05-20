@@ -26,8 +26,7 @@ public class PathService {
 
     public PathServiceResponse findShortestPath(PathServiceRequest pathRequest) {
         Path path = Path.of(new Dijkstra(new Sections(sectionDao.findAll())), pathRequest.getSource(), pathRequest.getTarget());
-        Fare fare = new Fare();
-        int fee = fare.calculateFare(path.getShortestDistance());
+        int fee = Fare.calculateFare(path.getShortestDistance());
 
         return new PathServiceResponse(getShortestPathStations(path.getShortestPath()), path.getShortestDistance(), fee);
     }

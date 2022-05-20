@@ -12,8 +12,6 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathServiceRequest;
 import wooteco.subway.service.dto.PathServiceResponse;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
