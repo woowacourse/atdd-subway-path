@@ -25,6 +25,12 @@ public class StationService {
         return new StationResponse(savedStation.getId(), savedStation.getName());
     }
 
+    private void validateDuplicateName(Station station) {
+        if (stationRepository.existByName(station.getName())) {
+            throw new BadRequestException("지하철 역 이름은 중복될 수 없습니다.");
+        }
+    }
+
     public List<StationResponse> showAll() {
         List<Station> stations = stationRepository.findAll();
         return stations.stream()
@@ -34,11 +40,5 @@ public class StationService {
 
     public void removeById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    private void validateDuplicateName(Station station) {
-        if (stationRepository.existByName(station.getName())) {
-            throw new BadRequestException("지하철 역 이름은 중복될 수 없습니다.");
-        }
     }
 }

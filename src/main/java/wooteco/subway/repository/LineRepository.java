@@ -25,6 +25,10 @@ public class LineRepository {
         return line;
     }
 
+    private Line toLine(LineEntity entity) {
+        return new Line(entity.getId(), entity.getName(), entity.getColor());
+    }
+
     public Line findById(Long id) {
         LineEntity entity = lineDao.findById(id)
             .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
@@ -44,9 +48,5 @@ public class LineRepository {
 
     public boolean existByNameAndColor(String name, String color) {
         return lineDao.existByNameAndColor(name, color);
-    }
-
-    private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
     }
 }

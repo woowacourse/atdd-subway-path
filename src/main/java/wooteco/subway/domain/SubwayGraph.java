@@ -16,20 +16,6 @@ public class SubwayGraph {
         this.path = createPath(new ArrayList<>(sections));
     }
 
-    public List<Station> getShortestRoute(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> result = path.getPath(source, target);
-        validateRoute(result);
-        return result.getVertexList();
-    }
-
-    public int getShortestDistance(Station source, Station target) {
-        return (int) path.getPath(source, target).getWeight();
-    }
-
-    public int getFare(Station source, Station target) {
-        return calculateOverFare(getShortestDistance(source, target));
-    }
-
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createPath(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Section section : sections) {
@@ -40,10 +26,24 @@ public class SubwayGraph {
         return new DijkstraShortestPath<>(graph);
     }
 
+    public List<Station> getShortestRoute(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> result = path.getPath(source, target);
+        validateRoute(result);
+        return result.getVertexList();
+    }
+
     private void validateRoute(GraphPath<Station, DefaultWeightedEdge> result) {
         if (result == null) {
             throw new IllegalArgumentException("해당 경로가 존재하지 않습니다.");
         }
+    }
+
+    public int getShortestDistance(Station source, Station target) {
+        return (int) path.getPath(source, target).getWeight();
+    }
+
+    public int getFare(Station source, Station target) {
+        return calculateOverFare(getShortestDistance(source, target));
     }
 
     private int calculateOverFare(int distance) {

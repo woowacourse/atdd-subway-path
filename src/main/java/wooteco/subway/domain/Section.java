@@ -7,14 +7,14 @@ public class Section {
 
     private static final int MIN_DISTANCE = 1;
 
-    private Long id;
+    private final Long id;
     private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
     public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
-        validate(distance);
+        validateMinDistance(distance);
         this.id = id;
         this.line = line;
         this.upStation = upStation;
@@ -61,7 +61,7 @@ public class Section {
         return downStation.equals(other.upStation);
     }
 
-    private void validate(int distance) {
+    private void validateMinDistance(int distance) {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException("거리는 1이상이어야 합니다.");
         }

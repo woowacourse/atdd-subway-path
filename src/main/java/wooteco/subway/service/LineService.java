@@ -25,9 +25,9 @@ public class LineService {
     private final SectionRepository sectionRepository;
 
     public LineService(
-        LineRepository lineRepository,
-        StationRepository stationRepository,
-        SectionRepository sectionRepository
+            LineRepository lineRepository,
+            StationRepository stationRepository,
+            SectionRepository sectionRepository
     ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
@@ -46,15 +46,45 @@ public class LineService {
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
 
+    private Station findStation(Long stationId) {
+        return stationRepository.findById(stationId);
+    }
+
+    private void validateDuplicateNameAndColor(String name, String color) {
+        if (lineRepository.existByNameAndColor(name, color)) {
+            throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
+        }
+    }
+
+    private LineResponse toLineResponse(Line line, List<Station> stations) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
+    }
+
+    private static List<StationResponse> toResponse(List<Station> stations) {
+        return stations.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
+    }
+
     public LineResponse showById(Long lineId) {
         return toLineResponse(findLine(lineId), getStations(lineId));
+    }
+
+    private Line findLine(Long lineId) {
+        return lineRepository.findById(lineId);
+    }
+
+    private List<Station> getStations(Long lineId) {
+        Line line = lineRepository.findById(lineId);
+        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        return sections.getStations();
     }
 
     public List<LineResponse> showAll() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
-            .map(line -> toLineResponse(line, getStations(line.getId())))
-            .collect(Collectors.toList());
+                .map(line -> toLineResponse(line, getStations(line.getId())))
+                .collect(Collectors.toList());
     }
 
     public void updateById(Long id, LineUpdateRequest request) {
@@ -96,35 +126,4 @@ public class LineService {
             sectionRepository.save(combineSection);
         }
     }
-
-    private void validateDuplicateNameAndColor(String name, String color) {
-        if (lineRepository.existByNameAndColor(name, color)) {
-            throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
-        }
-    }
-
-    private Station findStation(Long stationId) {
-        return stationRepository.findById(stationId);
-    }
-
-    private Line findLine(Long lineId) {
-        return lineRepository.findById(lineId);
-    }
-
-    private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
-    }
-
-    private static List<StationResponse> toResponse(List<Station> stations) {
-        return stations.stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
-    }
-
-    private List<Station> getStations(Long lineId) {
-        Line line = lineRepository.findById(lineId);
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
-        return sections.getStations();
-    }
 }
-

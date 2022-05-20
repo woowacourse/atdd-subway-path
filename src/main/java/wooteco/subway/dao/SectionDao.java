@@ -35,6 +35,25 @@ public class SectionDao {
         return toSectionEntity(id, section);
     }
 
+    private MapSqlParameterSource insertParam(SectionEntity section) {
+        return new MapSqlParameterSource()
+                .addValue("id", section.getId())
+                .addValue("line_id", section.getLineId())
+                .addValue("up_station_id", section.getUpStationId())
+                .addValue("down_station_id", section.getDownStationId())
+                .addValue("distance", section.getDistance());
+    }
+
+    private SectionEntity toSectionEntity(long id, SectionEntity section) {
+        return new SectionEntity(
+                id,
+                section.getLineId(),
+                section.getUpStationId(),
+                section.getDownStationId(),
+                section.getDistance()
+        );
+    }
+
     public void update(SectionEntity section) {
         String sql = "update section set up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
         Long upStationId = section.getUpStationId();
@@ -58,24 +77,5 @@ public class SectionDao {
     public void deleteById(Long id) {
         String sql = "delete from section where id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    private SectionEntity toSectionEntity(long id, SectionEntity section) {
-        return new SectionEntity(
-            id,
-            section.getLineId(),
-            section.getUpStationId(),
-            section.getDownStationId(),
-            section.getDistance()
-        );
-    }
-
-    private MapSqlParameterSource insertParam(SectionEntity section) {
-        return new MapSqlParameterSource()
-            .addValue("id", section.getId())
-            .addValue("line_id", section.getLineId())
-            .addValue("up_station_id", section.getUpStationId())
-            .addValue("down_station_id", section.getDownStationId())
-            .addValue("distance", section.getDistance());
     }
 }
