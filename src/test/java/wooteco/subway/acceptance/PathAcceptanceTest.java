@@ -2,13 +2,14 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.LINE_SIX;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.보문역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.common.TLine.*;
+import static wooteco.subway.common.TStation.*;
+import static wooteco.subway.common.TestFixtures.LINE_COLOR;
+import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.common.TestFixtures.동묘앞역;
+import static wooteco.subway.common.TestFixtures.보문역;
+import static wooteco.subway.common.TestFixtures.신당역;
+import static wooteco.subway.common.TestFixtures.창신역;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,10 +18,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.common.TLine;
+import wooteco.subway.common.TStation;
+import wooteco.subway.common.TestFixtures;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -38,49 +43,40 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회를 요청하면, 200 OK 와 관련 지하철역 정보, 거리, 요금을 반환한다.")
     @Test
     void getPaths() {
-        Station saved_신당역 = stationRepository.save(신당역);
-        Station saved_동묘앞역 = stationRepository.save(동묘앞역);
-        Station saved_창신역 = stationRepository.save(창신역);
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
 
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
-
-        sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
-        sectionRepository.save(new Section(lineId, saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
-
-        ExtractableResponse<Response> response = httpGetTest(
-                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
-
-        PathResponse pathResponse = response.jsonPath()
-                .getObject(".", PathResponse.class);
-
-        List<StationResponse> stations = pathResponse.getStations();
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
+        LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+        PathResponse pathResponse = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15)
+                .as(PathResponse.class);
         assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(stations).hasSize(3);
-            assertThat(stations).containsExactly(new StationResponse(saved_신당역),
-                    new StationResponse(saved_동묘앞역),
-                    new StationResponse(saved_창신역));
+            assertThat(pathResponse.getStations()).containsExactly(new StationResponse(신당역),
+                    new StationResponse(동묘앞역),
+                    new StationResponse(창신역));
             assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
             assertThat(pathResponse.getFare()).isEqualTo(1450);
         });
     }
 
+    private SectionRequest createSectionRequest(Station up, Station down, int distance) {
+        return new SectionRequest(up.getId(), down.getId(), distance);
+    }
+
     @DisplayName("경로 조회 시, 연결된 구간을 찾을 수 없으면 404 Not Found 에러를 발생한다.")
     @Test
     void getPathsException() {
-        Station saved_신당역 = stationRepository.save(신당역);
-        Station saved_동묘앞역 = stationRepository.save(동묘앞역);
-        Station saved_창신역 = stationRepository.save(창신역);
-        Station saved_보문역 = stationRepository.save(보문역);
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
+        Station 보문역 = BOMUN.역을등록한다();
 
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
-
-        sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
-        sectionRepository.save(new Section(lineId, saved_보문역, saved_창신역, STANDARD_DISTANCE));
-
-        ExtractableResponse<Response> response = httpGetTest(
-                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
-
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 보문_창신 = createSectionRequest(보문역, 창신역, STANDARD_DISTANCE);
+        LINE_SIX.노선을등록하고(신당_동묘).구간을등록한다(보문_창신);
+        ExtractableResponse<Response> response = SINDANG.에서(CHANGSIN).의최단거리를계산한다(15);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

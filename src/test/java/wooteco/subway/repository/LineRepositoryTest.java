@@ -3,12 +3,12 @@ package wooteco.subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.보문역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.common.TestFixtures.LINE_COLOR;
+import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.common.TestFixtures.동묘앞역;
+import static wooteco.subway.common.TestFixtures.보문역;
+import static wooteco.subway.common.TestFixtures.신당역;
+import static wooteco.subway.common.TestFixtures.창신역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

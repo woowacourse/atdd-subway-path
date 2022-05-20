@@ -2,11 +2,11 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.LINE_SIX;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.신당역;
+import static wooteco.subway.common.TestFixtures.LINE_COLOR;
+import static wooteco.subway.common.TestFixtures.LINE_SIX;
+import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.common.TestFixtures.동묘앞역;
+import static wooteco.subway.common.TestFixtures.신당역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
