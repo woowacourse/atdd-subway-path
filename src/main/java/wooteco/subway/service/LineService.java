@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -35,14 +36,16 @@ public class LineService {
             throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
         }
         long savedLineId = lineDao.save(lineSaveRequest.toLine());
-        saveLineSection(savedLineId, lineSaveRequest);
-        return findById(savedLineId);
+        Line line = lineDao.findById(savedLineId);
+
+        saveLineSection(line, lineSaveRequest);
+        return LineResponse.of(line, findStationsByLineId(line.getId()));
     }
 
-    private void saveLineSection(final long lineId, final LineSaveRequest lineSaveRequest) {
+    private void saveLineSection(final Line line, final LineSaveRequest lineSaveRequest) {
         Station upStation = stationDao.findById(lineSaveRequest.getUpStationId());
         Station downStation = stationDao.findById(lineSaveRequest.getDownStationId());
-        Section section = new Section(lineId, upStation, downStation, lineSaveRequest.getDistance());
+        Section section = new Section(line, upStation, downStation, lineSaveRequest.getDistance());
         sectionDao.save(section);
     }
 
@@ -57,11 +60,6 @@ public class LineService {
         return LineResponse.of(lineDao.findById(lineId), findStationsByLineId(lineId));
     }
 
-    private List<Station> findStationsByLineId(final long lineId) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
-        return sections.calculateSortedStations();
-    }
-
     @Transactional
     public void update(final long lineId, final LineUpdateRequest request) {
         checkExistLine(lineId);
@@ -72,6 +70,11 @@ public class LineService {
     public void delete(final Long lineId) {
         checkExistLine(lineId);
         lineDao.delete(lineId);
+    }
+
+    private List<Station> findStationsByLineId(final long lineId) {
+        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        return sections.calculateSortedStations();
     }
 
     private void checkExistLine(final Long lineId) {

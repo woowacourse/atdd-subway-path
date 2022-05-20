@@ -47,7 +47,7 @@ public class InmemorySectionDao implements SectionDao {
     public List<Section> findAllByLineId(final long lineId) {
         return sections.values()
                 .stream()
-                .filter(section -> section.getLineId() == lineId)
+                .filter(section -> section.getLine().getId() == lineId)
                 .collect(Collectors.toList());
     }
 
