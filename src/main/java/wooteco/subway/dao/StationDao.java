@@ -1,8 +1,9 @@
 package wooteco.subway.dao;
 
+import wooteco.subway.domain.Station;
+
 import java.util.List;
 import java.util.Optional;
-import wooteco.subway.domain.Station;
 
 public interface StationDao {
     Station save(Station station) throws IllegalArgumentException;

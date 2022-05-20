@@ -1,14 +1,9 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import wooteco.subway.exception.NoSuchStationException;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Sections {
     private final Set<Section> values = new HashSet<>();

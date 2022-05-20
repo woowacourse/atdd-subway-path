@@ -1,14 +1,8 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,21 +12,26 @@ import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 
-public class PathAcceptanceTest extends AcceptanceTest{
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PathAcceptanceTest extends AcceptanceTest {
     /*
-    * // given
-    * 노선 두 개가 등록되어 있다.
-    *
-    * // when
-    * 경로를 조회한다.
-    *
-    * // then
-    * 경로 응답을 반환한다.
-    * */
+     * // given
+     * 노선 두 개가 등록되어 있다.
+     *
+     * // when
+     * 경로를 조회한다.
+     *
+     * // then
+     * 경로 응답을 반환한다.
+     * */
 
     @Test
     @DisplayName("출발 역과 도착 역의 경로를 조회하면 200-OK가 발생한다.")
-    void findPath(){
+    void findPath() {
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");
@@ -73,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("출발 역 id와 도착 역 id가 null이 들어오면 400-badRequest가 발생한다.")
-    void findPathFailure(){
+    void findPathFailure() {
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");
@@ -111,7 +110,7 @@ public class PathAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("나이가 음수로 들어오면 400-badRequest가 발생한다.")
-    void findPathFailureWhenAgeIsNull(){
+    void findPathFailureWhenAgeIsNull() {
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");

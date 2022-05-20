@@ -1,16 +1,13 @@
 package wooteco.subway.presentation;
 
-import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.dto.ErrorResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ValidationException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -31,7 +28,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorResponse> methodValidException(BindException exception){
+    public ResponseEntity<ErrorResponse> methodValidException(BindException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 }

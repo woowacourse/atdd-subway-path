@@ -4,7 +4,8 @@ public class LineUpdateRequest {
     private String name;
     private String color;
 
-    private LineUpdateRequest(){}
+    private LineUpdateRequest() {
+    }
 
     public LineUpdateRequest(String name, String color) {
         this.name = name;

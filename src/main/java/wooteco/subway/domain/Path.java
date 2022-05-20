@@ -1,13 +1,12 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.NoSuchPathException;
+
+import java.util.List;
+import java.util.Objects;
 
 public class Path {
 
@@ -41,7 +40,7 @@ public class Path {
 
     public int calculateDistance(final Station source, final Station target) {
         validateExistsPath(source, target);
-        return  (int) path.getPathWeight(source, target);
+        return (int) path.getPathWeight(source, target);
     }
 
     private void validateExistsPath(final Station source, final Station target) {

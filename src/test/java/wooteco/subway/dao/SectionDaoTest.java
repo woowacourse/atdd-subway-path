@@ -1,20 +1,18 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dao.jdbc.LineJdbcDao;
-import wooteco.subway.dao.jdbc.SectionJdbcDao;
-import wooteco.subway.dao.jdbc.StationJdbcDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 class SectionDaoTest {
@@ -93,7 +91,7 @@ class SectionDaoTest {
 
     @DisplayName("모든 구간들을 조회한다.")
     @Test
-    void findAll(){
+    void findAll() {
         Line line1 = lineDao.save(new Line("line1", "color1"));
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));

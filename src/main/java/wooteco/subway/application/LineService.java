@@ -1,23 +1,22 @@
 package wooteco.subway.application;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineSaveRequest;
 import wooteco.subway.dto.LineUpdateRequest;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.exception.DuplicateLineException;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchStationException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional

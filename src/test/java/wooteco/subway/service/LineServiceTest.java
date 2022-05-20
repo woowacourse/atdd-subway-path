@@ -1,32 +1,25 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.SectionService;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.jdbc.LineJdbcDao;
-import wooteco.subway.dao.jdbc.SectionJdbcDao;
-import wooteco.subway.dao.jdbc.StationJdbcDao;
+import wooteco.subway.dao.*;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineSaveRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.NoSuchLineException;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class LineServiceTest {
@@ -39,7 +32,7 @@ class LineServiceTest {
     private SectionDao sectionDao;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         stationDao = new StationJdbcDao(jdbcTemplate);
         sectionDao = new SectionJdbcDao(jdbcTemplate);
         LineDao lineDao = new LineJdbcDao(jdbcTemplate);

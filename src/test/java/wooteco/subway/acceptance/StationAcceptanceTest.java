@@ -1,16 +1,17 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.StationResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest extends AcceptanceTest {
@@ -92,16 +93,16 @@ class StationAcceptanceTest extends AcceptanceTest {
     }
 
     /*
-    * given
-    * 두 개의 지하철 역이 등록되어 있다.
-    *
-    * when
-    * 하나를 제거한다.
-    *
-    * then
-    * 성공을 응답한다.
-    * 역 목록을 조회하면 삭제되지 않은 역 하나만 조회된다.
-    * */
+     * given
+     * 두 개의 지하철 역이 등록되어 있다.
+     *
+     * when
+     * 하나를 제거한다.
+     *
+     * then
+     * 성공을 응답한다.
+     * 역 목록을 조회하면 삭제되지 않은 역 하나만 조회된다.
+     * */
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
