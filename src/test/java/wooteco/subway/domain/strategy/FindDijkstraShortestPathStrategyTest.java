@@ -20,7 +20,7 @@ class FindDijkstraShortestPathStrategyTest {
     @DisplayName("source와 target이 존재하지 않으면 예외 발생한다.")
     void findPathExceptionByNotExistStations() {
         // given
-        Line line = new Line(1L, "name", "color", 100);
+        Line line = new Line(1L, "2호선", "green", 100);
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
@@ -67,7 +67,7 @@ class FindDijkstraShortestPathStrategyTest {
     @DisplayName("경로가 없는 경우 예외가 발생한다.")
     void findPathExceptionByNotFoundPath() {
         // given
-        Line line = new Line(1L, "name", "color", 100);
+        Line line = new Line(1L, "2호선", "green", 100);
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");

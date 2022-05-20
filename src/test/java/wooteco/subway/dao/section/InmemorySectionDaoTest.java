@@ -28,7 +28,7 @@ class InmemorySectionDaoTest {
     @DisplayName("Section 을 저장할 수 있다.")
     void save() {
         // given
-        Line line = new Line(1L, "name", "color", 100);
+        Line line = new Line(1L, "2호선", "green", 100);
         Station upStation = new Station(1L, "오리");
         Station downStation = new Station(2L, "배카라");
         Section section = new Section(null, line, upStation, downStation, 1);
@@ -43,7 +43,7 @@ class InmemorySectionDaoTest {
     @Test
     @DisplayName("Line Id에 해당하는 Section을 조회할 수 있다.")
     void findAllByLineId() {
-        Line line = new Line(1L, "name", "color", 100);
+        Line line = new Line(1L, "2호선", "green", 100);
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");

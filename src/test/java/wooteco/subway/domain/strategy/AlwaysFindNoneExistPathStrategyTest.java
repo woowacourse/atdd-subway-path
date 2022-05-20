@@ -18,7 +18,7 @@ class AlwaysFindNoneExistPathStrategyTest {
     @Test
     @DisplayName("항상 경로를 찾을 수 없어 예외 발생")
     void findPathException() {
-        Line line = new Line(1L, "name", "color", 100);
+        Line line = new Line(1L, "2호선", "green", 100);
         Station source = new Station(1L, "강남역");
         Station target = new Station(2L, "선릉역");
         Sections sections = new Sections(List.of(new Section(1L, line, source, target, 10)));

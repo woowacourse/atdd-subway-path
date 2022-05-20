@@ -38,8 +38,8 @@ class PathServiceTest {
     @DisplayName("경로를 조회할 수 있다.")
     void findPath() {
         // given
-        Line line1 = lineDao.findById(lineDao.save(new Line("name1", "color1", 100)));
-        Line line2 = lineDao.findById(lineDao.save(new Line("name2", "color2", 300)));
+        Line line1 = lineDao.findById(lineDao.save(new Line("1호선", "red", 100)));
+        Line line2 = lineDao.findById(lineDao.save(new Line("2호선", "green", 300)));
 
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
@@ -75,7 +75,7 @@ class PathServiceTest {
         pathService = new PathService(sectionDao, stationDao, new AlwaysFindNoneExistPathStrategy());
 
         // given
-        Line line = lineDao.findById(lineDao.save(new Line("name", "color", 100)));
+        Line line = lineDao.findById(lineDao.save(new Line("2호선", "green", 100)));
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         sectionDao.save(new Section(line, station1, station2, 2));
