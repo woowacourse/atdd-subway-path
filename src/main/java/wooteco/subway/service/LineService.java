@@ -121,10 +121,10 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse find(Long id) {
-        Line persistLine = lineDao.findById(id)
+        Line line = lineDao.findById(id)
                 .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
-        Sections sections = new Sections(sectionDao.findAllByLine(persistLine));
-        return new LineResponse(persistLine, sections.getSortedStations());
+        Sections sections = new Sections(sectionDao.findAllByLine(line));
+        return new LineResponse(line, sections.getSortedStations());
     }
 
     @Transactional

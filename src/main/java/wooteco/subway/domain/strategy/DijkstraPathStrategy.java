@@ -30,7 +30,7 @@ public class DijkstraPathStrategy implements PathStrategy {
     }
 
     private void addVertices(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : sections.getSortedStations()) {
+        for (Station station : sections.getDistinctStations()) {
             graph.addVertex(station);
         }
     }

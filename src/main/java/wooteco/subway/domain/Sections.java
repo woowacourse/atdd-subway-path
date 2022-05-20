@@ -3,9 +3,11 @@ package wooteco.subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.duplicate.DuplicateSectionException;
 import wooteco.subway.exception.invalidrequest.InvalidSectionCreateRequestException;
@@ -212,6 +214,16 @@ public class Sections {
         return values.stream()
                 .noneMatch(section -> section.containStation(target.getUpStation()) && section.containStation(
                         target.getDownStation()));
+    }
+
+    public Set<Station> getDistinctStations() {
+        Set<Station> stations = new HashSet<>();
+        for (Section section : values) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        }
+
+        return stations;
     }
 
     public List<Section> getValues() {
