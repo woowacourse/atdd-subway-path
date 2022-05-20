@@ -12,6 +12,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.LineService;
 
@@ -38,6 +39,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 "/lines/" + lineResponse.getId() + " /sections");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(lineService.showLine(lineResponse.getId()).getStations())
+                .containsExactly(
+                        new StationResponse(강남역),
+                        new StationResponse(역삼역),
+                        new StationResponse(선릉역)
+                );
     }
 
     @DisplayName("거리가 초과하는 섹션을 등록하면 400 BadRequest를 반환한다.")
