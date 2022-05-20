@@ -30,7 +30,7 @@ import wooteco.subway.infra.repository.JdbcStationRepository;
 import wooteco.subway.infra.repository.LineRepository;
 import wooteco.subway.infra.repository.SectionRepository;
 import wooteco.subway.infra.repository.StationRepository;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.request.LineServiceRequest;
 
 @DisplayName("노선 서비스")
 @Sql("classpath:/schema.sql")

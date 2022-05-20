@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.service.dto.SectionServiceRequest;
+import wooteco.subway.service.dto.request.SectionServiceRequest;
 
 public interface SectionService {
 

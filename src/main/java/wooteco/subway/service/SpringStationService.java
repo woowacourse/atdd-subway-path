@@ -8,7 +8,7 @@ import wooteco.subway.exception.notfound.NotFoundStationException;
 import wooteco.subway.exception.unknown.StationDeleteFailureException;
 import wooteco.subway.exception.validation.StationNameDuplicateException;
 import wooteco.subway.infra.repository.StationRepository;
-import wooteco.subway.service.dto.StationServiceRequest;
+import wooteco.subway.service.dto.request.StationServiceRequest;
 
 @Service
 @Transactional

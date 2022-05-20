@@ -1,4 +1,4 @@
-package wooteco.subway.ui.dto;
+package wooteco.subway.ui.dto.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;

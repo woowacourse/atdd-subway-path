@@ -21,7 +21,7 @@ import wooteco.subway.exception.validation.StationNameDuplicateException;
 import wooteco.subway.infra.dao.StationDao;
 import wooteco.subway.infra.repository.JdbcStationRepository;
 import wooteco.subway.infra.repository.StationRepository;
-import wooteco.subway.service.dto.StationServiceRequest;
+import wooteco.subway.service.dto.request.StationServiceRequest;
 
 @DisplayName("지하철역 서비스")
 @Sql("classpath:/schema.sql")

@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.StationServiceRequest;
+import wooteco.subway.service.dto.request.StationServiceRequest;
 
 public interface StationService {
 

@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.Line;
 import wooteco.subway.service.LineService;
-import wooteco.subway.service.dto.LineServiceRequest;
-import wooteco.subway.ui.dto.LineRequest;
-import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.StationResponse;
+import wooteco.subway.service.dto.request.LineServiceRequest;
+import wooteco.subway.ui.dto.request.LineRequest;
+import wooteco.subway.ui.dto.response.LineResponse;
+import wooteco.subway.ui.dto.response.StationResponse;
 
 @RestController
 @RequestMapping("/lines")

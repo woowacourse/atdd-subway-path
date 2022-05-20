@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.infra.repository.SectionRepository;
-import wooteco.subway.service.dto.SectionServiceRequest;
+import wooteco.subway.service.dto.request.SectionServiceRequest;
 
 @Service
 @Transactional

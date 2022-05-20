@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.SubwayNotFoundException;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
-import wooteco.subway.ui.dto.ExceptionResponse;
+import wooteco.subway.ui.dto.response.ExceptionResponse;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {

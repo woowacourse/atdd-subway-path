@@ -1,4 +1,4 @@
-package wooteco.subway.ui.dto;
+package wooteco.subway.ui.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;

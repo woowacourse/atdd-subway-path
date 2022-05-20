@@ -1,4 +1,4 @@
-package wooteco.subway.service.dto;
+package wooteco.subway.service.dto.request;
 
 public class LineServiceRequest {
     private Long id;

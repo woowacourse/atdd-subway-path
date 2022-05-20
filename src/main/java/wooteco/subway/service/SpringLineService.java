@@ -13,7 +13,7 @@ import wooteco.subway.exception.unknown.LineUpdateFailureException;
 import wooteco.subway.exception.validation.LineColorDuplicateException;
 import wooteco.subway.exception.validation.LineNameDuplicateException;
 import wooteco.subway.infra.repository.LineRepository;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.request.LineServiceRequest;
 
 @Service
 @Transactional

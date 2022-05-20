@@ -16,7 +16,6 @@ import static wooteco.subway.SubwayFixtures.성담빌딩;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -267,7 +266,6 @@ class SectionsTest {
 
         final Section first = sortedSections.get(0);
         final List<Section> newgo = new ArrayList<>(sortedSections);
-        Collections.shuffle(newgo);
         newgo.remove(first);
         newgo.add(0, first);
 

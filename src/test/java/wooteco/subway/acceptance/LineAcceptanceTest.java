@@ -13,10 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.ui.dto.ExceptionResponse;
-import wooteco.subway.ui.dto.LineRequest;
-import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.StationRequest;
+import wooteco.subway.ui.dto.request.LineRequest;
+import wooteco.subway.ui.dto.request.StationRequest;
+import wooteco.subway.ui.dto.response.ExceptionResponse;
+import wooteco.subway.ui.dto.response.LineResponse;
 
 @DisplayName("노선 E2E")
 @Sql("classpath:/schema.sql")
