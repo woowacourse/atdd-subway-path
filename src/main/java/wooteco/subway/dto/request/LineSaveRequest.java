@@ -1,6 +1,6 @@
 package wooteco.subway.dto.request;
 
-public class LineRequest {
+public class LineSaveRequest {
 
     private String name;
     private String color;
@@ -8,10 +8,10 @@ public class LineRequest {
     private Long downStationId;
     private int distance;
 
-    private LineRequest() {
+    private LineSaveRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineSaveRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;

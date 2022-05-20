@@ -16,16 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.request.LineSaveRequest;
+import wooteco.subway.dto.request.LineUpdateRequest;
 import wooteco.subway.dto.response.LineResponse;
 
 @SpringBootTest
 @Transactional
 class LineServiceTest {
 
-    private LineRequest LINE_FIXTURE;
-    private LineRequest LINE_FIXTURE2;
-    private LineRequest LINE_FIXTURE3;
+    private LineSaveRequest LINE_FIXTURE;
+    private LineSaveRequest LINE_FIXTURE2;
+    private LineSaveRequest LINE_FIXTURE3;
 
     @Autowired
     private LineService lineService;
@@ -73,11 +74,11 @@ class LineServiceTest {
                 .isEqualTo(List.of(LINE_FIXTURE.getName(), LINE_FIXTURE2.getName(), LINE_FIXTURE3.getName()));
     }
 
-    private LineRequest makeLineRequest(final String stationName1, final String stationName2,
-                                               final String lineName, final String color) {
+    private LineSaveRequest makeLineRequest(final String stationName1, final String stationName2,
+                                            final String lineName, final String color) {
         final Long upStationId2 = stationDao.save(new Station(stationName1)).getId();
         final Long downStationId2 = stationDao.save(new Station(stationName2)).getId();
-        return new LineRequest(lineName, color, upStationId2, downStationId2, 3);
+        return new LineSaveRequest(lineName, color, upStationId2, downStationId2, 3);
     }
 
     @Test
@@ -122,9 +123,9 @@ class LineServiceTest {
         void update_Line_Success() {
             final LineResponse line = lineService.saveLine(LINE_FIXTURE);
             final Long id = line.getId();
-            final LineRequest lineRequest = new LineRequest("22호선", "bg-color-777", 1L, 2L, 3);
+            final LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("22호선", "bg-color-777");
 
-            lineService.updateLine(id, lineRequest);
+            lineService.updateLine(id, lineUpdateRequest);
             final LineResponse updated = lineService.findById(id);
 
             assertAll(
@@ -137,11 +138,10 @@ class LineServiceTest {
         @Test
         @DisplayName("노선이 존재하지 않으면 예외를 던진다.")
         void update_Line_Fail() {
-            assertThatThrownBy(() -> lineService.updateLine(1L, new LineRequest("a", "b", 10L, 11L, 12)))
+            assertThatThrownBy(() -> lineService.updateLine(1L, new LineUpdateRequest("a", "b")))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("요청한 노선이 존재하지 않습니다. id=1 Line{name='a', color='b'}");
 
         }
     }
-
 }
