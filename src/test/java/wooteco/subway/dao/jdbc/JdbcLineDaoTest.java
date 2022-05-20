@@ -53,7 +53,7 @@ class JdbcLineDaoTest {
         List<Line> lines = lineDao.findAll();
 
         assertAll(
-                () -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines.size()).isEqualTo(2),
                 () -> assertThat(lines).contains(line1),
                 () -> assertThat(lines).contains(line2)
         );
@@ -75,6 +75,6 @@ class JdbcLineDaoTest {
 
         lineDao.deleteById(line.getId());
 
-        assertThat(lineDao.findAll()).hasSize(0);
+        assertThat(lineDao.findAll()).isEmpty();
     }
 }
