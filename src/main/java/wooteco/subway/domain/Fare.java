@@ -38,6 +38,6 @@ public class Fare {
     }
 
     private int calculateOverFare(int overDistance, int policy) {
-        return (int)((Math.ceil((overDistance - 1) / policy) + 1) * SURCHARGE);
+        return (int)((Math.ceil((double)((overDistance - 1) / policy) + 1)) * SURCHARGE);
     }
 }
