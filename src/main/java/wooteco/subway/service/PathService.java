@@ -1,7 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -12,20 +10,19 @@ import wooteco.subway.domain.strategy.fare.FareStrategy;
 import wooteco.subway.domain.strategy.path.PathFindStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
 
 @Service
 public class PathService {
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
-    private final PathFindStrategy pathStrategy;
+    private final PathFindStrategy pathFindStrategy;
     private final FareStrategy fareStrategy;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao, PathFindStrategy pathStrategy, FareStrategy fareStrategy) {
+    public PathService(StationDao stationDao, SectionDao sectionDao, PathFindStrategy pathFindStrategy, FareStrategy fareStrategy) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
-        this.pathStrategy = pathStrategy;
+        this.pathFindStrategy = pathFindStrategy;
         this.fareStrategy = fareStrategy;
     }
 
@@ -35,14 +32,9 @@ public class PathService {
 
         Sections sections = new Sections(sectionDao.findAll());
 
-        Path path = pathStrategy.calculatePath(source, target, sections);
+        Path path = pathFindStrategy.calculatePath(source, target, sections);
+        int fare = fareStrategy.calculateFare(path.getDistance());
 
-        return new PathResponse(toResponse(path.getStations()), path.getDistance(), fareStrategy.calculateFare(path.getDistance()));
-    }
-
-    private List<StationResponse> toResponse(List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::new)
-                .collect(Collectors.toList());
+        return new PathResponse(path, fare);
     }
 }

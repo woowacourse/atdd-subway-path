@@ -3,6 +3,7 @@ package wooteco.subway.domain.strategy.path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.Fixture.강남역;
+import static wooteco.subway.Fixture.도곡역;
 import static wooteco.subway.Fixture.삼성역;
 import static wooteco.subway.Fixture.삼전역;
 import static wooteco.subway.Fixture.선릉역;
@@ -61,7 +62,18 @@ class PathFindDijkstraStrategyTest {
         PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // when && then
-        assertThatThrownBy(() -> pathStrategy.calculatePath(한티역, 삼전역, new Sections(전체_구간)))
+        assertThatThrownBy(() -> pathStrategy.calculatePath(강남역, 도곡역, new Sections(전체_구간)))
+                .isInstanceOf(PathNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("시작역과 도착역이 둘다 구간에 등록되지 않은 경우 예외가 발생한다.")
+    void notIncludedSectionsOfSourceAndTarget() {
+        // given
+        PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
+
+        // when && then
+        assertThatThrownBy(() -> pathStrategy.calculatePath(한티역, 도곡역, new Sections(전체_구간)))
                 .isInstanceOf(PathNotFoundException.class);
     }
 }
