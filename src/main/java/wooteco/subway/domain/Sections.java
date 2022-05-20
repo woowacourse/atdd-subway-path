@@ -10,11 +10,8 @@ public class Sections {
 
     public Sections(Station upStation, Station downStation, int distance) {
         final Section section = Section.createWithoutId(upStation, downStation, distance);
-        this.sections = new ArrayList<>() {
-            {
-                add(section);
-            }
-        };
+        this.sections = new ArrayList<>();
+        this.sections.add(section);
     }
 
     public Sections(List<Section> sections) {
