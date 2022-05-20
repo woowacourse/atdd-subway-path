@@ -23,7 +23,7 @@ public class Path {
         this.distance = distance;
     }
 
-    public int calculateFare() {
+    public int calculateFare(final int age) {
         return calcculateDefaultFare() + mostExpensiveLineFare();
     }
 

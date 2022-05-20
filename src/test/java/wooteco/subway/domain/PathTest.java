@@ -16,7 +16,7 @@ class PathTest {
     void calcualteDefaultFare() {
         Path path = new Path(stations, Set.of(new Line(1L, "1호선", "red", 0)), 10);
 
-        assertThat(path.calculateFare()).isEqualTo(1250);
+        assertThat(path.calculateFare(20)).isEqualTo(1250);
     }
 
     @Test
@@ -24,7 +24,7 @@ class PathTest {
     void calculate50Fare() {
         Path path = new Path(stations, Set.of(new Line(1L, "1호선", "red", 0)), 50);
 
-        assertThat(path.calculateFare()).isEqualTo(2050);
+        assertThat(path.calculateFare(20)).isEqualTo(2050);
     }
 
     @Test
@@ -32,7 +32,7 @@ class PathTest {
     void calculate58Fare() {
         Path path = new Path(stations, Set.of(new Line(1L, "1호선", "red", 0)), 58);
 
-        assertThat(path.calculateFare()).isEqualTo(2150);
+        assertThat(path.calculateFare(20)).isEqualTo(2150);
     }
 
     @Test
@@ -42,6 +42,6 @@ class PathTest {
                 new Line(2L, "2호선", "green", 100));
         Path path = new Path(stations, lines, 50);
 
-        assertThat(path.calculateFare()).isEqualTo(2250);
+        assertThat(path.calculateFare(20)).isEqualTo(2250);
     }
 }

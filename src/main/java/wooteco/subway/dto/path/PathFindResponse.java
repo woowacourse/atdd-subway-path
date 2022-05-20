@@ -20,12 +20,12 @@ public class PathFindResponse {
         this.fare = fare;
     }
 
-    public static PathFindResponse from(Path path) {
+    public static PathFindResponse from(final Path path, final int fare) {
         List<StationResponse> stationResponses = path.getStations()
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return new PathFindResponse(stationResponses, path.getDistance(), path.calculateFare());
+        return new PathFindResponse(stationResponses, path.getDistance(), fare);
     }
 
     public List<StationResponse> getStations() {
