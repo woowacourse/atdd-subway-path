@@ -3,7 +3,6 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.common.TestFixtures.LINE_COLOR;
 import static wooteco.subway.common.TestFixtures.LINE_SIX_NAME;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
@@ -22,11 +21,11 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.SectionCreateException;
-import wooteco.subway.exception.SectionDeleteException;
 
 @Transactional
 @SpringBootTest

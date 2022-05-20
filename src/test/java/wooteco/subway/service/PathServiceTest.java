@@ -53,7 +53,8 @@ public class PathServiceTest {
         sectionRepository.save(new Section(line.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
-        PathResponse pathResponse = pathService.calculateMinDistance(new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 20));
+        PathResponse pathResponse = pathService.calculateMinDistance(
+                new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 20));
         List<StationResponse> stations = pathResponse.getStations();
 
         assertAll(() -> {

@@ -2,7 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.common.TLine.LINE_NO_EXTRA;
+import static wooteco.subway.common.TLine.LINE_NO_EXTRA_FARE;
 import static wooteco.subway.common.TLine.LINE_SIX;
 import static wooteco.subway.common.TLine.LINE_TWO;
 import static wooteco.subway.common.TStation.BOMUN;
@@ -39,7 +39,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
         SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
 
-        LINE_NO_EXTRA.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+        LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
 
         PathResponse pathResponse = SINDANG.부터(CHANGSIN).의최단거리를계산한다(DEFAULT_AGE, HttpStatus.OK.value())
                 .as(PathResponse.class);
@@ -99,7 +99,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, HALF_STANDARD_DISTANCE);
         SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, HALF_STANDARD_DISTANCE);
 
-        LINE_NO_EXTRA.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+        LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
 
         PathResponse pathResponse = SINDANG.부터(CHANGSIN).의최단거리를계산한다(TEEN_MAX_AGE, HttpStatus.OK.value())
                 .as(PathResponse.class);
@@ -117,7 +117,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, HALF_STANDARD_DISTANCE);
         SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, HALF_STANDARD_DISTANCE);
 
-        LINE_NO_EXTRA.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+        LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
 
         PathResponse pathResponse = SINDANG.부터(CHANGSIN).의최단거리를계산한다(CHILD_MAX_AGE, HttpStatus.OK.value())
                 .as(PathResponse.class);

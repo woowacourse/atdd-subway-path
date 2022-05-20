@@ -123,7 +123,7 @@ public class SectionRepository {
         String sql = "SELECT EXISTS(SELECT id FROM section WHERE up_station_id = :id OR down_station_id = :id)";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
-       return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
+        return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
     }
 
     public List<Section> findAll() {

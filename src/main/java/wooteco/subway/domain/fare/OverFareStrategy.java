@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public abstract class OverFareStrategy extends FareStrategy{
+public abstract class OverFareStrategy extends FareStrategy {
 
     protected static final int STANDARD_UNIT = 5;
 

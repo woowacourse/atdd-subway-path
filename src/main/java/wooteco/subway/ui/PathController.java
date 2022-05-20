@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
-import wooteco.subway.service.SectionService;
 
 @RestController
 @RequestMapping("/paths")

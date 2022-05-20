@@ -22,16 +22,6 @@ public enum TStation {
         this.name = name;
     }
 
-    public Station 역을등록한다() {
-        StationResponse stationResponse = requestStation(new StationRequest(name));
-        this.id = stationResponse.getId();
-        return new Station(id, stationResponse.getName());
-    }
-
-    public PathAndRequest 부터(TStation target) {
-        return new PathAndRequest(this, target);
-    }
-
     private static StationResponse requestStation(final StationRequest stationRequest) {
         return RestAssured.given().log().all()
                 .body(stationRequest)
@@ -41,6 +31,16 @@ public enum TStation {
                 .then().log().all()
                 .extract()
                 .as(StationResponse.class);
+    }
+
+    public Station 역을등록한다() {
+        StationResponse stationResponse = requestStation(new StationRequest(name));
+        this.id = stationResponse.getId();
+        return new Station(id, stationResponse.getName());
+    }
+
+    public PathAndRequest 부터(TStation target) {
+        return new PathAndRequest(this, target);
     }
 
     public Long getId() {

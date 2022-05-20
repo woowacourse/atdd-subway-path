@@ -10,8 +10,8 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
-    private int extraFare;
     private final Sections sections;
+    private final int extraFare;
 
     public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;

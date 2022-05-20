@@ -10,7 +10,7 @@ public enum TLine {
 
     LINE_SIX("6호선", 200),
     LINE_TWO("2호선", 100),
-    LINE_NO_EXTRA("후니선", 0);
+    LINE_NO_EXTRA_FARE("후니선", 0);
 
     private final String name;
     private final String color;
@@ -20,6 +20,17 @@ public enum TLine {
         this.name = name;
         this.color = "bg-red-500";
         this.extraFare = extraFare;
+    }
+
+    private static LineResponse requestLine(final LineRequest lineRequest) {
+        return RestAssured.given().log().all()
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract()
+                .as(LineResponse.class);
     }
 
     public LineResponse 노선을등록한다(SectionRequest sectionRequest) {
@@ -37,17 +48,6 @@ public enum TLine {
                 sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId(),
                 sectionRequest.getDistance());
-    }
-
-    private static LineResponse requestLine(final LineRequest lineRequest) {
-        return RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .as(LineResponse.class);
     }
 
     public int getExtraFare() {

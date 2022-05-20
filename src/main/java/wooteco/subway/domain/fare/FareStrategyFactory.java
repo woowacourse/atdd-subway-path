@@ -25,6 +25,7 @@ public enum FareStrategyFactory {
     private static boolean isDefault(Integer distance) {
         return distance >= 1 && distance <= DEFAULT_DISTANCE;
     }
+
     private static boolean isFirstOver(Integer distance) {
         return distance > DEFAULT_DISTANCE && distance <= OVER_FARE_DISTANCE;
     }

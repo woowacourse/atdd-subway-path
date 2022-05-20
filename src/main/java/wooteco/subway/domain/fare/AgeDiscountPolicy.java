@@ -24,6 +24,7 @@ public enum AgeDiscountPolicy {
     private static boolean isTeenAger(final Integer age) {
         return age >= 13 && age <= 18;
     }
+
     private static int calculateTeenAgerDiscount(final Integer fare) {
         return (int) ((fare - 350) * 0.8);
     }

@@ -8,15 +8,13 @@ import wooteco.subway.dto.SectionRequest;
 
 public class LineAddAndRequest extends Request {
 
-    private Long id;
-    private TLine tLine;
+    private final Long id;
 
     public LineAddAndRequest(TLine tLine, Long startStationId, Long endStationId, int distance) {
         this.id = tLine.노선을등록한다(new SectionRequest(startStationId, endStationId, distance)).getId();
-        this.tLine = tLine;
     }
 
-    public List<ExtractableResponse<Response>> 구간을등록한다(SectionRequest ... sectionRequests) {
+    public List<ExtractableResponse<Response>> 구간을등록한다(SectionRequest... sectionRequests) {
         return List.of(sectionRequests).stream()
                 .map(this::구간을등록한다)
                 .collect(Collectors.toList());
