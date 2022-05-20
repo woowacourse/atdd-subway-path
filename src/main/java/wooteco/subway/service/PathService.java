@@ -38,7 +38,7 @@ public class PathService {
 
         Sections sections = new Sections(sectionDao.findAll());
 
-        Path path = pathStrategy.calculatePath(source, target, sections);
+        Path path = pathStrategy.findPath(source, target, sections);
 
         return new PathResponse(toResponse(path.getStations()), path.getDistance(), fareStrategy.calculateFare(path.getDistance()));
     }

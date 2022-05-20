@@ -15,7 +15,7 @@ import wooteco.subway.exception.PathNotFoundException;
 public class PathFindDijkstraStrategy implements PathFindStrategy {
 
     @Override
-    public Path calculatePath(Station source, Station target, Sections sections) {
+    public Path findPath(Station source, Station target, Sections sections) {
         validateSameStation(source, target);
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
