@@ -25,7 +25,7 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> runtimeExceptionHandler(Exception exception) {
-        return ResponseEntity.internalServerError().body(exception.getMessage());
+    public ResponseEntity<Void> runtimeExceptionHandler(Exception exception) {
+        return ResponseEntity.internalServerError().build();
     }
 }
