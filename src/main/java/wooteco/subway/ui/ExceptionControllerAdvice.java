@@ -30,4 +30,9 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handle(DuplicateKeyException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse("이미 존재합니다."));
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handle(RuntimeException e) {
+        return ResponseEntity.badRequest().build();
+    }
 }
