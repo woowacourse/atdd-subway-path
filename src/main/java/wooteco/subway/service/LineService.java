@@ -53,7 +53,7 @@ public class LineService {
                 lineRequest.getDistance()
         );
 
-        List<StationResponse> stationResponses = getStationResponsesByLine(newLine);
+        List<StationResponse> stationResponses = createStationResponsesByLine(newLine);
 
         return new LineResponse(
                 newLine.getId(),
@@ -71,7 +71,7 @@ public class LineService {
         }
     }
 
-    private List<StationResponse> getStationResponsesByLine(Line newLine) {
+    private List<StationResponse> createStationResponsesByLine(Line newLine) {
         Sections sections = new Sections(sectionDao.findAllByLineId(newLine.getId()));
         Set<Long> stationIds = sections.getStations();
         return stationIds.stream()
@@ -84,7 +84,7 @@ public class LineService {
     public List<LineResponse> findAll() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), getStationResponsesByLine(it),
+                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor(), createStationResponsesByLine(it),
                         it.getExtraFare()))
                 .collect(Collectors.toList());
     }
@@ -94,7 +94,7 @@ public class LineService {
         Line line = lineDao.findById(id)
                 .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
 
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesByLine(line),
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponsesByLine(line),
                 line.getExtraFare());
     }
 
