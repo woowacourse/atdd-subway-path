@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.station.StationResponseDto;
@@ -18,6 +19,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponseDto createStation(String name) {
         validateExistName(name);
         Station station = stationDao.create(new Station(name));
@@ -31,16 +33,19 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponseDto> findStations() {
         return stationDao.findAll().stream()
                 .map(StationResponseDto::new)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationDao.findById(id);
     }
 
+    @Transactional
     public void delete(Long id) {
         validateNonFoundId(id);
 

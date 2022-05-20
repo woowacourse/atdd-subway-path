@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
@@ -21,6 +22,7 @@ public class PathService {
         this.sectionService = sectionService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponseDto getPath(PathRequestDto pathRequestDto) {
         List<Long> stationIds = stationService.findStations().stream()
                 .map(StationResponseDto::getId)

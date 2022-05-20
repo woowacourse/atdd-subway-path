@@ -52,6 +52,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public LineResponseDto create(LineRequestDto lineRequestDto) {
         validateDuplicate(lineRequestDto);
         Line line = lineDao.create(new Line(lineRequestDto.getName(), lineRequestDto.getColor()));
@@ -98,6 +99,7 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void updateById(Long id, LineRequestDto lineRequestDto) {
         validateNonFoundId(id);
         validateExistName(id, lineRequestDto.getName());
@@ -106,6 +108,7 @@ public class LineService {
         lineDao.update(id, lineRequestDto.getName(), lineRequestDto.getColor());
     }
 
+    @Transactional
     public void deleteById(Long id) {
         validateNonFoundId(id);
 
