@@ -14,9 +14,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-import wooteco.subway.dao.dto.SectionDto;
+import wooteco.subway.dao.dto.SectionInsertDto;
+import wooteco.subway.dao.dto.SectionUpdateDto;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -38,8 +38,8 @@ public class SectionDao {
     }
 
     private void save(Section section, Long lineId, int index) {
-        SectionDto sectionDto = new SectionDto(section, lineId, index);
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionDto);
+        SectionInsertDto sectionInsertDto = new SectionInsertDto(section, lineId, index);
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionInsertDto);
         jdbcInsert.execute(paramSource);
     }
 
@@ -60,13 +60,8 @@ public class SectionDao {
                 + "SET up_station_id = :upStationId, down_station_id = :downStationId, distance = :distance, index_num = :indexNum "
                 + "WHERE id = :id";
 
-        // SectionDto sectionDto = new SectionDto(section, lineId, index);
-        // SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionDto);
-        SqlParameterSource paramSource = new MapSqlParameterSource("upStationId", section.getUpStationId())
-                .addValue("downStationId", section.getDownStationId())
-                .addValue("distance", section.getDistance())
-                .addValue("indexNum", index)
-                .addValue("id", section.getId());
+        SectionUpdateDto sectionUpdateDto = new SectionUpdateDto(section, lineId, index);
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionUpdateDto);
         jdbcTemplate.update(sql, paramSource);
     }
 
