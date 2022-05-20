@@ -41,7 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> response = httpPostTest(params, "/lines");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -66,10 +66,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest newBundangLine = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest newBundangLine = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> newBundangPostResponse = httpPostTest(newBundangLine, "/lines");
 
-        LineRequest bundangLine = new LineRequest("분당선", "bg-green-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest bundangLine = new LineRequest("분당선", "bg-green-600", 0, 강남역.getId(), 역삼역.getId(), 5);
 
         ExtractableResponse<Response> bundangPostResponse = httpPostTest(bundangLine, "/lines");
 
@@ -90,7 +90,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
@@ -114,12 +114,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
 
-        LineRequest updateParam = new LineRequest("다른분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest updateParam = new LineRequest("다른분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(updateParam)
@@ -138,7 +138,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 역삼역.getId(), 5);
 
         ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
 

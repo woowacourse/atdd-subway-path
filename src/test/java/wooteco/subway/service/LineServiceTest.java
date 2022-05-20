@@ -49,7 +49,7 @@ public class LineServiceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
         Station 선정릉역 = stationRepository.save(new Station("선정릉역"));
 
-        LineRequest lineRequest = new LineRequest("분당선", LINE_COLOR, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE);
+        LineRequest lineRequest = new LineRequest("분당선", LINE_COLOR, 0, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE);
         LineResponse lineResponse = lineService.create(lineRequest);
 
         assertAll(
