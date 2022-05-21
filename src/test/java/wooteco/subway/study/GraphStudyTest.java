@@ -19,7 +19,7 @@ public class GraphStudyTest {
     @DisplayName("문자열을 가지는 정점을 이용한 최단경로를 구한다.")
     @Test
     void graphWithString() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
