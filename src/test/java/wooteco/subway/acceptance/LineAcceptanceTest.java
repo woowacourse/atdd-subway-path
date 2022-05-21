@@ -179,7 +179,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 List<LineResponse> responses = response.body().jsonPath()
                         .getList(".", LineResponse.class);
                 assertThat(responses).extracting("name").isEqualTo(List.of("1호선", "2호선"));
-                assertThat(response).extracting("extraFare").isEqualTo(List.of("0, 0"));
             }
         }
     }

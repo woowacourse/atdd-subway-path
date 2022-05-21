@@ -24,6 +24,7 @@ public class LineDaoTest {
         LineEntity savedLine = lineDao.save(line);
         assertThat(savedLine.getId()).isNotNull();
         assertThat(savedLine.getName()).isEqualTo("1호선");
+        assertThat(savedLine.getExtraFare()).isEqualTo(0);
     }
 
     @Test
@@ -41,6 +42,7 @@ public class LineDaoTest {
         LineEntity findLine = lineDao.findById(line.getId()).get();
         assertThat(findLine.getId()).isNotNull();
         assertThat(findLine.getName()).isEqualTo("1호선");
+        assertThat(findLine.getExtraFare()).isEqualTo(0);
     }
 
     @Test
@@ -62,6 +64,7 @@ public class LineDaoTest {
         LineEntity updateLine = lineDao.findById(savedLine.getId()).get();
         assertThat(updateLine.getName()).isEqualTo("2호선");
         assertThat(updateLine.getColor()).isEqualTo("red");
+        assertThat(updateLine.getExtraFare()).isEqualTo(0);
     }
 
     @Test

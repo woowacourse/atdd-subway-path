@@ -39,6 +39,10 @@ public class LineResponse {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }

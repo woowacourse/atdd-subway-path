@@ -35,7 +35,8 @@ public class LineDao {
     public LineEntity save(LineEntity line) {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+                .addValue("color", line.getColor())
+                .addValue("extraFare", line.getExtraFare());
         long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return new LineEntity(id, line.getName(), line.getColor(), line.getExtraFare());
     }
