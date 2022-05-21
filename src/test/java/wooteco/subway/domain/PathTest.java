@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.NotFoundPathException;
-import wooteco.subway.exception.NotFoundStationException;
 
 class PathTest {
 
@@ -48,8 +47,8 @@ class PathTest {
         );
 
         assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 6L))
-                .isInstanceOf(NotFoundStationException.class)
-                .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
+                .isInstanceOf(NotFoundPathException.class)
+                .hasMessageContaining("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
     }
 
     @Test
