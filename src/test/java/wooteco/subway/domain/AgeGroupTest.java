@@ -42,4 +42,23 @@ public class AgeGroupTest {
 
     }
 
+    @DisplayName("각 연령대 별 요금을 확인한다.")
+    @Test
+    public void checkFare() {
+        //given
+        int fare = 2350;
+        final AgeGroup baby = AgeGroup.BABY;
+        final AgeGroup children = AgeGroup.CHILDREN;
+        final AgeGroup teenager = AgeGroup.TEENAGER;
+        final AgeGroup adult = AgeGroup.ADULT;
+
+        // then
+        assertAll(
+                () -> assertEquals(baby.getDiscountValue(fare), 0),
+                () -> assertEquals(children.getDiscountValue(fare), 1350),
+                () -> assertEquals(teenager.getDiscountValue(fare), 1950),
+                () -> assertEquals(adult.getDiscountValue(fare), 2350)
+        );
+    }
+
 }
