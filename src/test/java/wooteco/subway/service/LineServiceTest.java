@@ -46,13 +46,14 @@ class LineServiceTest {
         final Station downStation = stationDao.save(new Station("군자역"));
 
         final LineRequest lineRequest = new LineRequest("5호선", "bg-purple-600", upStation.getId(), downStation.getId(),
-                3);
+                3, 900);
         final LineResponse savedLine = lineService.create(lineRequest);
 
         assertAll(
                 () -> assertThat(savedLine.getId()).isNotNull(),
                 () -> assertThat(savedLine.getName()).isEqualTo(lineRequest.getName()),
-                () -> assertThat(savedLine.getColor()).isEqualTo(lineRequest.getColor())
+                () -> assertThat(savedLine.getColor()).isEqualTo(lineRequest.getColor()),
+                () -> assertThat(savedLine.getExtraFare()).isEqualTo(lineRequest.getExtraFare())
         );
     }
 
@@ -81,14 +82,15 @@ class LineServiceTest {
     @DisplayName("특정 노선을 수정한다.")
     @Test
     void modifyTest() {
-        lineService.modify(line.getId(), new LineRequest("5호선", "bg-green-600"));
+        lineService.modify(line.getId(), new LineRequest("5호선", "bg-green-600", 0L, 0L, 10, 100));
 
         final LineResponse foundLine = lineService.getById(line.getId());
 
         assertAll(
                 () -> assertThat(foundLine.getId()).isEqualTo(line.getId()),
                 () -> assertThat(foundLine.getName()).isEqualTo("5호선"),
-                () -> assertThat(foundLine.getColor()).isEqualTo("bg-green-600")
+                () -> assertThat(foundLine.getColor()).isEqualTo("bg-green-600"),
+                () -> assertThat(foundLine.getExtraFare()).isEqualTo(100)
         );
     }
 

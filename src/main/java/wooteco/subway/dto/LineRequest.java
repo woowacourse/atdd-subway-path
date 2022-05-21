@@ -20,28 +20,31 @@ public class LineRequest {
 
     private final int distance;
 
+    private final int extraFare;
+
     public LineRequest() {
-        this(null, null, null, null, 0);
+        this(null, null, null, null, 0, 0);
     }
 
     public LineRequest(final String name, final String color) {
-        this(name, color, null, null, 0);
+        this(name, color, null, null, 0, 0);
     }
 
     public LineRequest(final String name,
                        final String color,
                        final Long upStationId,
                        final Long downStationId,
-                       final int distance) {
+                       final int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public Line toEntity() {
-        return new Line(name, color);
+        return new Line(name, color, extraFare);
     }
 
     public Section toSectionEntity() {
@@ -87,5 +90,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
