@@ -61,7 +61,7 @@ public class PathService {
 
     private int getExtraFare(Sections sections, List<Long> path) {
         List<Integer> extraFares = new ArrayList<>();
-        for (int index = 0; index < path.size() - 2; index++) {
+        for (int index = 0; index < path.size() - 1; index++) {
             Section section = sections.getSectionByStationIds(path.get(index), path.get(index + 1));
             final Line line = lineDao.findById(section.getLineId())
                     .orElseThrow(() -> new IllegalArgumentException("해당하는 line이 존재하지 않습니다."));
