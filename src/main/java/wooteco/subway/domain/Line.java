@@ -13,16 +13,22 @@ public class Line {
     }
 
     public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        validateExtraFare(extraFare);
+
+        this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+    private void validateExtraFare(int extraFare) {
+        if (extraFare < 0) {
+            throw new IllegalArgumentException("추가 요금은 음수일 수 없습니다.");
+        }
     }
 
     public Long getId() {
