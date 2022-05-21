@@ -24,15 +24,14 @@ class StationDaoTest {
         this.stationDao = new StationDao(jdbcTemplate);
     }
 
-    @DisplayName("지하철역을 저장한다.")
+    @DisplayName("주어진 지하철역을 활용하여 지하철역을 생성한다.")
     @Test
     void 지하철역_저장() {
-        String stationName = "서울대입구역";
-        Station station = new Station(stationName);
+        Station station = new Station("서울대입구역");
 
         Station savedStation = stationDao.save(station);
 
-        assertThat(savedStation.getName()).isEqualTo(stationName);
+        assertThat(savedStation.getName()).isEqualTo("서울대입구역");
     }
 
     @DisplayName("지하철역 이름으로 지하철역 이름 유무를 반환한다.")
@@ -49,8 +48,7 @@ class StationDaoTest {
     @DisplayName("중복된 지하철역을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_지하철역_예외발생() {
-        String stationName = "중동역";
-        Station station = new Station(stationName);
+        Station station = new Station("중동역");
 
         stationDao.save(station);
 
@@ -66,7 +64,7 @@ class StationDaoTest {
         assertThat(station).isEmpty();
     }
 
-    @DisplayName("모든 지하철역을 조회한다.")
+    @DisplayName("저장된 모든 지하철역을 조회한다.")
     @Test
     void 모든_지하철역_조회() {
         stationDao.save(new Station("중동역"));
@@ -76,7 +74,7 @@ class StationDaoTest {
         assertThat(stationDao.findAll().size()).isEqualTo(3);
     }
 
-    @DisplayName("지하철역을 삭제한다.")
+    @DisplayName("저장된 지하철역을 삭제한다.")
     @Test
     void 지하철역_삭제() {
         Station station = stationDao.save(new Station("서울대입구역"));
