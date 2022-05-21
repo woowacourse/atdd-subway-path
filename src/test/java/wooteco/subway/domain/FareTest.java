@@ -10,7 +10,7 @@ import wooteco.subway.domain.strategy.BasicFareStrategy;
 
 class FareTest {
 
-    private final Fare fare = new Fare(1250);
+    private final Fare fare = new Fare();
 
     @DisplayName("1Km 이상 10Km 이하이면 1250원 기본 요금이다.")
     @ParameterizedTest

@@ -4,13 +4,9 @@ import wooteco.subway.domain.strategy.FareStrategy;
 
 public class Fare {
 
-    private final int basicFare;
-
-    public Fare(int basicFare) {
-        this.basicFare = basicFare;
-    }
+    private static final int BASIC_FARE = 1250;
 
     public int calculateFare(int distance, FareStrategy fareStrategy) {
-        return basicFare + fareStrategy.calculate(distance);
+        return BASIC_FARE + fareStrategy.calculate(distance);
     }
 }
