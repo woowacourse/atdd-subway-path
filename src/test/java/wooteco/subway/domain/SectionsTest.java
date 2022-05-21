@@ -30,44 +30,35 @@ import org.junit.jupiter.api.TestFactory;
 
 class SectionsTest {
 
-    @DisplayName("구간 추가 기능")
+    @DisplayName("구간 추가 기능을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromAppendSection() {
-        Section basedSection = 역곡역_부천역_5;
-        Sections sections = new Sections(List.of(basedSection));
+        Sections sections = new Sections(List.of(역곡역_부천역_5));
 
         return Stream.of(
                 dynamicTest("상행 종점을 등록한다.", () -> {
-                    Section appendSection = 온수역_역곡역_5;
-
-                    assertDoesNotThrow(() -> sections.append(appendSection));
+                    assertDoesNotThrow(() -> sections.append(온수역_역곡역_5));
                 }),
 
                 dynamicTest("상행 종점 등록 중 추가하기 위한 구간의 상행이 기존 구간에 존재하면 예외를 던진다.", () -> {
-                    Section appendSection = 부천역_역곡역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(부천역_역곡역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("상행역과 하행역 모두 노선에 포함되어 있으므로 추가할 수 없습니다.");
                 }),
 
                 dynamicTest("하행 종점을 등록한다.", () -> {
-                    Section appendSection = 부천역_중동역_5;
-
-                    assertDoesNotThrow(() -> sections.append(appendSection));
+                    assertDoesNotThrow(() -> sections.append(부천역_중동역_5));
                 }),
 
                 dynamicTest("하행 종점 등록 중 추가하기 위한 구간의 하행이 기존 구간에 존재하면 예외를 던진다.", () -> {
-                    Section appendSection = 중동역_역곡역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(중동역_역곡역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("상행역과 하행역 모두 노선에 포함되어 있으므로 추가할 수 없습니다.");
                 })
         );
     }
 
-    @DisplayName("갈래길 방지")
+    @DisplayName("갈래길 방지를 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromForkedLoad() {
         Section basedSection = 신도림역_부천역_15;
@@ -75,88 +66,63 @@ class SectionsTest {
 
         return Stream.of(
                 dynamicTest("상행이 같은 구간이 추가될 때 기존 가장 앞단 구간의 길이 보다 작은 경우 추가한다.", () -> {
-                    Section appendSection = 신도림역_온수역_5;
-
-                    assertDoesNotThrow(() -> sections.append(appendSection));
+                    assertDoesNotThrow(() -> sections.append(신도림역_온수역_5));
                 }),
 
                 dynamicTest("상행이 같은 구간이 추가될 때 기존 가장 앞단 구간의 길이와 같거나 큰 경우 예외를 던진다.", () -> {
-                    Section appendSection = 신도림역_개봉역_10;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(신도림역_개봉역_10))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("새로운 구간의 길이가 기존 구간의 길이 보다 크거나 같으므로 추가할 수 없습니다.");
                 }),
 
                 dynamicTest("하행이 같은 구간이 추가될 때 기존 가장 뒷단 구간의 길이 보다 작은 경우 추가한다.", () -> {
-                    Section appendSection = 역곡역_부천역_5;
-
-                    assertDoesNotThrow(() -> sections.append(appendSection));
+                    assertDoesNotThrow(() -> sections.append(역곡역_부천역_5));
                 }),
 
                 dynamicTest("하행이 같은 구간이 추가될 때 기존 가장 뒷간 구간의 길이와 같거나 큰 경우 예외를 던진다.", () -> {
-                    Section appendSection = 소사역_부천역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(소사역_부천역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("새로운 구간의 길이가 기존 구간의 길이 보다 크거나 같으므로 추가할 수 없습니다.");
                 })
         );
     }
 
-    @DisplayName("상행역 하행역 중복 검증")
+    @DisplayName("상행역 하행역 중복을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromDuplicateStation() {
-        Section basedSection1 = 신도림역_온수역_5;
-        Section basedSection2 = 온수역_역곡역_5;
-        Sections sections = new Sections(List.of(basedSection1, basedSection2));
+        Sections sections = new Sections(List.of(신도림역_온수역_5, 온수역_역곡역_5));
 
         return Stream.of(
                 dynamicTest("1 - 2 구간 등록 시 상행역과 하행역이 모두 중복이므로 예외를 던진다.", () -> {
-                    Section appendSection = 신도림역_온수역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(신도림역_온수역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("구간이 노선에 이미 등록되어 추가할 수 없습니다.");
                 }),
 
                 dynamicTest("2 - 3 구간 등록 시 상행역과 하행역이 모두 중복이므로 예외를 던진다.", () -> {
-                    Section appendSection = 온수역_역곡역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(온수역_역곡역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("구간이 노선에 이미 등록되어 추가할 수 없습니다.");
                 }),
 
                 dynamicTest("상행역 하행역이 모두 포함되지 않는 경우 예외를 던진다.", () -> {
-                    Section appendSection = 부천역_중동역_5;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(부천역_중동역_5))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("상행역과 하행역이 모두 노선에 포함되지 않으므로 추가할 수 없습니다.");
                 }),
 
                 dynamicTest("상행역 하행역이 모두 포함하는 경우 예외를 던진다.", () -> {
-                    Section appendSection = 신도림역_역곡역_13;
-
-                    assertThatThrownBy(() -> sections.append(appendSection))
+                    assertThatThrownBy(() -> sections.append(신도림역_역곡역_13))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("상행역과 하행역 모두 노선에 포함되어 있으므로 추가할 수 없습니다.");
                 })
         );
     }
 
-    @DisplayName("구간 삭제 기능")
+    @DisplayName("구간 삭제 기능을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromRemoveSection() {
-        Section basedSection1 = 신도림역_온수역_5;
-        Section basedSection2 = 온수역_역곡역_5;
-        Section basedSection3 = 역곡역_부천역_5;
-        Section basedSection4 = 부천역_중동역_5;
-
-        Sections sections = new Sections(List.of(basedSection1, basedSection2, basedSection3, basedSection4));
-
-        sections.getValue().forEach(System.out::println);
+        Sections sections = new Sections(List.of(신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5, 부천역_중동역_5));
 
         return Stream.of(
                 dynamicTest("중간에 위치한 역을 삭제한다.", () -> {
@@ -188,10 +154,7 @@ class SectionsTest {
     @DisplayName("조회 시 상행역 부터 하행역 순으로 정렬한다.")
     @Test
     void 구간_조회() {
-        Section basedSection1 = 신도림역_온수역_5;
-        Section basedSection2 = 온수역_역곡역_5;
-        Section basedSection3 = 역곡역_부천역_5;
-        Sections sections = new Sections(List.of(basedSection1, basedSection2, basedSection3));
+        Sections sections = new Sections(List.of(신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5));
 
         List<Section> value = sections.getValue();
 
@@ -205,10 +168,7 @@ class SectionsTest {
     @DisplayName("상행역 부터 하행역까지 정렬된 지하철역을 조회한다.")
     @Test
     void 지하철역_조회() {
-        Section basedSection1 = 신도림역_온수역_5;
-        Section basedSection2 = 온수역_역곡역_5;
-        Section basedSection3 = 역곡역_부천역_5;
-        Sections sections = new Sections(List.of(basedSection1, basedSection2, basedSection3));
+        Sections sections = new Sections(List.of(신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5));
 
         List<Station> stations = sections.getStations();
 
