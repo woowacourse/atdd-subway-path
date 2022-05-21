@@ -2,10 +2,13 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.line.LineInfo;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.fare.AgeDiscountFare;
 import wooteco.subway.domain.path.fare.BasicFare;
 import wooteco.subway.domain.path.fare.DistanceOverFare;
 import wooteco.subway.domain.path.fare.Fare;
+import wooteco.subway.domain.path.fare.LineOverFare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
@@ -23,13 +26,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
+    public PathResponse findShortestPath(long sourceStationId, long targetStationId, int age) {
         Station startStation = stationRepository.findExistingStation(sourceStationId);
         Station endStation = stationRepository.findExistingStation(targetStationId);
         List<Section> sections = subwayRepository.findAllSections();
 
         Path path = Path.of(startStation, endStation, sections);
-        Fare fare = new DistanceOverFare(new BasicFare(), path.getDistance());
+        int distance = path.getDistance();
+        List<LineInfo> lines = subwayRepository.findAllLinesByIds(path.getRegisteredLineIds());
+        Fare fare = new AgeDiscountFare(new LineOverFare(new DistanceOverFare(new BasicFare(), distance), lines), age);
         return PathResponse.of(path, fare.calculate());
     }
 }
