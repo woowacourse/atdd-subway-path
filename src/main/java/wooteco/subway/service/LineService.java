@@ -33,12 +33,9 @@ public class LineService {
     public LineResponse save(final LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateCreateRequest(newLine);
-
         Long lineId = lineDao.save(newLine);
-        sectionService.firstSave(lineId, new SectionRequest(
-                lineRequest.getUpStationId(), lineRequest.getDownStationId(),
-                lineRequest.getDistance()));
-
+        final SectionRequest sectionRequest = extractSectionRequest(lineRequest);
+        sectionService.firstSave(lineId, sectionRequest);
         return createLineResponse(lineDao.findById(lineId), getStationsByStationIds(lineId));
     }
 
@@ -59,14 +56,22 @@ public class LineService {
         }
     }
 
+    private SectionRequest extractSectionRequest(final LineRequest lineRequest) {
+        return new SectionRequest(
+                lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(),
+                lineRequest.getDistance()
+        );
+    }
+
     private LineResponse createLineResponse(Line newLine, List<StationResponse> stations) {
         return new LineResponse(
-                newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(), stations);
+                newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(), stations
+        );
     }
 
     private List<StationResponse> getStationsByStationIds(Long line) {
-        return stationService.findByStationIds(
-                sectionService.findAllStationByLineId(line));
+        return stationService.findByStationIds(sectionService.findAllStationByLineId(line));
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
@@ -86,7 +91,6 @@ public class LineService {
     public void update(Long lineId, LineRequest lineRequest) {
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
-
         lineDao.update(lineId, newLine);
     }
 

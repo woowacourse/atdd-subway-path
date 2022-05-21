@@ -57,7 +57,8 @@ public class LineSections {
         if (isInvalidDistanceWithDownStationOverlap(downStationId, distance)
                 || isInvalidDistanceWithUpStationOverlap(upStationId, distance)) {
             throw new InvalidSectionInsertException(
-                    "역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
+                    "역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다."
+            );
         }
     }
 
@@ -106,14 +107,14 @@ public class LineSections {
         }
         if (existByUpStationId(downStationId)) {
             Section oldSection = findById(findIdByUpStationId(downStationId));
-            return addSectionFront(upStationId, downStationId, distance, oldSection);
+            return addSection(upStationId, downStationId, distance, oldSection, oldSection.getLineOrder());
         }
         Section oldSection = findById(findIdByDownStationId(upStationId));
-        return addSectionBack(upStationId, downStationId, distance, oldSection);
+        return addSection(upStationId, downStationId, distance, oldSection, oldSection.getLineOrder() + 1);
     }
 
-    private SectionUpdateResult separateSectionInExistUpMatchCase(
-            long upStationId, long downStationId, int distance, Section oldSection) {
+    private SectionUpdateResult separateSectionInExistUpMatchCase(long upStationId, long downStationId,
+                                                                  int distance, Section oldSection) {
         return new SectionUpdateResult(
                 new Section(
                         oldSection.getId(),
@@ -123,7 +124,7 @@ public class LineSections {
                         distance,
                         oldSection.getLineOrder()
                 ),
-                Section.createOf(
+                Section.createWithoutId(
                         oldSection.getLineId(),
                         downStationId,
                         oldSection.getDownStationId(),
@@ -133,8 +134,8 @@ public class LineSections {
         );
     }
 
-    private SectionUpdateResult separateSectionInExistDownMatchCase(
-            long upStationId, long downStationId, int distance, Section oldSection) {
+    private SectionUpdateResult separateSectionInExistDownMatchCase(long upStationId, long downStationId,
+                                                                    int distance, Section oldSection) {
         return new SectionUpdateResult(
                 new Section(oldSection.getId(),
                         oldSection.getLineId(),
@@ -143,7 +144,7 @@ public class LineSections {
                         oldSection.getDistance() - distance,
                         oldSection.getLineOrder()
                 ),
-                Section.createOf(
+                Section.createWithoutId(
                         oldSection.getLineId(),
                         upStationId,
                         downStationId,
@@ -153,28 +154,16 @@ public class LineSections {
         );
     }
 
-    private SectionUpdateResult addSectionBack(long upStationId, long downStationId, int distance, Section oldSection) {
+    private SectionUpdateResult addSection(long upStationId, long downStationId,
+                                           int distance, Section oldSection, long lineOrder) {
         return new SectionUpdateResult(
                 oldSection,
-                Section.createOf(
+                Section.createWithoutId(
                         oldSection.getLineId(),
                         upStationId,
                         downStationId,
                         distance,
-                        oldSection.getLineOrder() + 1
-                )
-        );
-    }
-
-    private SectionUpdateResult addSectionFront(long upStationId, long downStationId, int distance, Section oldSection) {
-        return new SectionUpdateResult(
-                oldSection,
-                Section.createOf(
-                        oldSection.getLineId(),
-                        upStationId,
-                        downStationId,
-                        distance,
-                        oldSection.getLineOrder()
+                        lineOrder
                 )
         );
     }

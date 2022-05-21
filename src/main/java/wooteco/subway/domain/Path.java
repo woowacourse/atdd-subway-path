@@ -54,8 +54,10 @@ public class Path {
         stationIds.forEach(graph::addVertex);
 
         sections.getSections().forEach(
-                section -> graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                        section.getDistance())
+                section -> graph.setEdgeWeight(
+                        graph.addEdge(section.getUpStationId(), section.getDownStationId()),
+                        section.getDistance()
+                )
         );
         return graph;
     }

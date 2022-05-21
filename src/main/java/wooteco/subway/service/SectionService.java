@@ -22,12 +22,15 @@ public class SectionService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void firstSave(Long lineId, SectionRequest sectionRequest) {
-        sectionDao.save(new Section(
-                null, lineId,
-                sectionRequest.getUpStationId(),
-                sectionRequest.getDownStationId(),
-                sectionRequest.getDistance(),
-                1L));
+        sectionDao.save(
+                Section.createWithoutId(
+                        lineId,
+                        sectionRequest.getUpStationId(),
+                        sectionRequest.getDownStationId(),
+                        sectionRequest.getDistance(),
+                        1L
+                )
+        );
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -39,8 +42,7 @@ public class SectionService {
         LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
         lineSections.validateSection(upStationId, downStationId, distance);
 
-        SectionUpdateResult targetSections = lineSections.findOverlapSection(upStationId, downStationId,
-                distance);
+        SectionUpdateResult targetSections = lineSections.findOverlapSection(upStationId, downStationId, distance);
         updateSections(targetSections);
     }
 
