@@ -68,8 +68,11 @@ public class SubwayRepository {
     }
 
     public Line saveLine(LineInfo lineInfo, Section section) {
-        LineEntity lineEntity = lineDao.save(
-                new LineEntity(lineInfo.getName(), lineInfo.getColor(), lineInfo.getExtraFare()));
+        String name = lineInfo.getName();
+        String color = lineInfo.getColor();
+        int extraFare = lineInfo.getExtraFare();
+
+        LineEntity lineEntity = lineDao.save(new LineEntity(name, color, extraFare));
         sectionDao.save(SectionEntity.of(lineEntity.getId(), section));
         return Line.of(lineEntity.toDomain(), section);
     }
@@ -85,14 +88,15 @@ public class SubwayRepository {
         String name = lineInfo.getName();
         String color = lineInfo.getColor();
         int extraFare = lineInfo.getExtraFare();
+
         LineEntity updatedLine = new LineEntity(id, name, color, extraFare);
         lineDao.update(updatedLine);
     }
 
     public void deleteLine(LineInfo lineInfo) {
-        Long lineId = lineInfo.getId();
-        lineDao.deleteById(lineId);
-        sectionDao.deleteAllByLineId(lineId);
+        Long id = lineInfo.getId();
+        lineDao.deleteById(id);
+        sectionDao.deleteAllByLineId(id);
     }
 
     public void deleteSections(Long lineId, List<Section> sections) {
