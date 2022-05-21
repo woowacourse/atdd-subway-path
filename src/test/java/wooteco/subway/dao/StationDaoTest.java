@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.exception.station.StationNotFoundException;
 
 @JdbcTest
 @Sql("classpath:truncate.sql")
@@ -52,6 +54,14 @@ public class StationDaoTest {
         assertThat(stationIds)
                 .contains(1L, 2L);
     }
+
+    @DisplayName("id에 해당하는 역이 존재하지 않으면 예외를 발생시킨다.")
+    @Test
+    void getById_exception() {
+        assertThatThrownBy(() -> stationDao.getById(-1L))
+                .isInstanceOf(StationNotFoundException.class);
+    }
+
 
     @DisplayName("id 값에 해당하는 지하철 역을 삭제한다.")
     @Test

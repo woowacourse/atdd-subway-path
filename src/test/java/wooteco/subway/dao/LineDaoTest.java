@@ -12,9 +12,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.exception.line.LineNotFoundException;
 
 @JdbcTest
 @Sql("classpath:truncate.sql")
@@ -53,7 +53,7 @@ class LineDaoTest {
     @Test
     void getById_exception() {
         assertThatThrownBy(() -> lineDao.getById(-1L))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+                .isInstanceOf(LineNotFoundException.class);
     }
 
     @DisplayName("모든 노선의 정보를 가져온다.")

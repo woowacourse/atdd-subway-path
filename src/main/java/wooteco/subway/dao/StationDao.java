@@ -1,5 +1,8 @@
 package wooteco.subway.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,9 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.station.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
+import wooteco.subway.exception.station.StationNotFoundException;
 
 @Repository
 public class StationDao {
@@ -34,7 +35,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select id, name from STATION";
         return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
@@ -45,13 +46,17 @@ public class StationDao {
     }
 
     public Station getById(Long id) {
-        String sql = "select * from STATION where id = :id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
+        try {
+            String sql = "select id, name from STATION where id = :id";
+            SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+            return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
+        } catch(EmptyResultDataAccessException e) {
+            throw new StationNotFoundException();
+        }
     }
 
     public List<Station> findByIdIn(List<Long> ids) {
-        String sql = "select * from STATION where id in (:ids)";
+        String sql = "select id, name from STATION where id in (:ids)";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("ids", ids);
         return namedParameterJdbcTemplate.query(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
     }

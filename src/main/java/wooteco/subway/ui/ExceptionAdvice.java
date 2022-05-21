@@ -1,9 +1,9 @@
 package wooteco.subway.ui;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import wooteco.subway.exception.InvalidInputException;
 
 @ControllerAdvice
 public class ExceptionAdvice {
@@ -13,10 +13,10 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<Void> dataNotFoundException() {
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<Void> invalidInputException() {
         return ResponseEntity
-                .internalServerError()
+                .badRequest()
                 .build();
     }
 

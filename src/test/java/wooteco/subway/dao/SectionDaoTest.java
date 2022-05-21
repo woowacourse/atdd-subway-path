@@ -104,7 +104,17 @@ public class SectionDaoTest {
         assertThat(sections).hasSize(0);
     }
 
-    @DisplayName("모든 구간을 조회한다.")
+    @DisplayName("노선에 해당하는 모든 구간을 조회한다.")
+    @Test
+    void getByLineId() {
+        sectionDao.insert(new Section(지하철_2호선_아이디, 잠실, 선릉, 5));
+
+        List<Section> sections = sectionDao.getByLineId(지하철_2호선_아이디);
+
+        assertThat(sections).hasSize(2);
+    }
+
+    @DisplayName("존재하는 모든 구간을 조회한다.")
     @Test
     void findAll() {
         sectionDao.insert(new Section(지하철_2호선_아이디, 선릉, 잠실, 5));
