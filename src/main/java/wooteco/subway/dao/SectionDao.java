@@ -6,11 +6,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
+import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 
-@Repository
+@Component
 public class SectionDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -21,7 +21,7 @@ public class SectionDao {
 
     public Section save(Section section) {
         final String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
-            + "VALUES(:line_id, :up_station_id, :down_station_id, :distance)";
+                + "VALUES(:line_id, :up_station_id, :down_station_id, :distance)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -32,8 +32,8 @@ public class SectionDao {
 
         jdbcTemplate.update(sql, paramSource, keyHolder);
         return new Section(keyHolder.getKey().longValue(), section.getLineId(),
-            section.getUpStation(), section.getDownStation(),
-            section.getDistance());
+                section.getUpStation(), section.getDownStation(),
+                section.getDistance());
     }
 
     public boolean existByLineId(Long lineId) {
@@ -53,15 +53,15 @@ public class SectionDao {
         jdbcTemplate.update(sql, paramSource);
     }
 
-    public void saveSections(Line line) {
+    public void saveSections(long lineId, Sections saveSections) {
         final String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
-            + "VALUES(:line_id, :up_station_id, :down_station_id, :distance)";
+                + "VALUES(:line_id, :up_station_id, :down_station_id, :distance)";
 
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = saveSections.getSections();
         List<MapSqlParameterSource> params = new ArrayList<>();
         for (Section section : sections) {
             MapSqlParameterSource source = new MapSqlParameterSource();
-            source.addValue("line_id", line.getId());
+            source.addValue("line_id", lineId);
             source.addValue("up_station_id", section.getUpStation().getId());
             source.addValue("down_station_id", section.getDownStation().getId());
             source.addValue("distance", section.getDistance());

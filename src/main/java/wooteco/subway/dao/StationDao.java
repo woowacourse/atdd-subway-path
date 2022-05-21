@@ -10,15 +10,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Station;
 
-@Repository
+@Component
 public class StationDao {
 
-    private static final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
-        new Station(resultSet.getLong("id"),
-            resultSet.getString("name"));
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) ->
+            new Station(resultSet.getLong("id"),
+                    resultSet.getString("name"));
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,7 @@ public class StationDao {
         final String sql = "SELECT * FROM station";
 
         List<Station> stations = jdbcTemplate.query(sql, new EmptySqlParameterSource(),
-            stationRowMapper);
+                STATION_ROW_MAPPER);
         return Collections.unmodifiableList(stations);
     }
 
@@ -72,6 +72,6 @@ public class StationDao {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", id);
 
-        return jdbcTemplate.queryForObject(sql, parameterSource, stationRowMapper);
+        return jdbcTemplate.queryForObject(sql, parameterSource, STATION_ROW_MAPPER);
     }
 }
