@@ -23,13 +23,15 @@ public enum FarePolicy {
         @Override
         public Fare apply(DistanceUnit distanceUnit) {
             int distance = distanceUnit.toKm().value() - 50;
-            return MINIMUM_FARE.add(800).add((int) ((Math.ceil((distance - 1) / 8) + 1) * 100));
+            return MINIMUM_FARE.add(FROM_10KM_TO_50KM_FARE_VALUE)
+                    .add((int) ((Math.ceil((distance - 1) / 8) + 1) * 100));
         }
     };
 
     private static final Fare MINIMUM_FARE = new Fare(1250);
+    private static final int FROM_10KM_TO_50KM_FARE_VALUE = 800;
 
-    private Predicate<DistanceUnit> condition;
+    private final Predicate<DistanceUnit> condition;
 
     FarePolicy(Predicate<DistanceUnit> condition) {
         this.condition = condition;
@@ -45,6 +47,7 @@ public enum FarePolicy {
     private static FarePolicy findFarePolicy(DistanceUnit distanceUnit) {
         return Arrays.stream(values())
                 .filter(farePolicy -> farePolicy.condition.test(distanceUnit))
-                .findAny().orElseThrow(() -> new IllegalArgumentException("요금 정책을 찾을 수 없습니다."));
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("요금 정책을 찾을 수 없습니다."));
     }
 }
