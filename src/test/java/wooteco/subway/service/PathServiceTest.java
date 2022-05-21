@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.*;
 
@@ -39,8 +38,9 @@ class PathServiceTest {
     @BeforeEach
     void setUp() {
         pathService = new PathService(
-                new SectionDao(jdbcTemplate, dataSource),
-                new StationDao(jdbcTemplate, dataSource));
+                new LineDao(jdbcTemplate, dataSource),
+                new StationDao(jdbcTemplate, dataSource),
+                new SectionDao(jdbcTemplate, dataSource));
     }
 
     void setUpSubwayMap() {
@@ -75,7 +75,7 @@ class PathServiceTest {
     @Test
     void findPath() {
         setUpSubwayMap();
-        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId());
+        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId(), 20);
         System.out.println(result.getStations());
         assertAll(
                 () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),

@@ -18,7 +18,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathFindResponse> findPath(@ModelAttribute PathFindRequest request) {
-        PathFindResponse response = pathService.findPath(request.getSource(), request.getTarget());
+        PathFindResponse response = pathService.findPath(request.getSource(), request.getTarget(), request.getAge());
         return ResponseEntity.ok(response);
     }
 }
