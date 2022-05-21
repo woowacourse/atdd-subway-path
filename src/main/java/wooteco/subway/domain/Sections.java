@@ -17,11 +17,11 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Path findShortestPath(Long source, Long target) {
+    public Path findShortestPath(Long source, Long target, Long age) {
         WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
         initPathGraph(graph, gatherStationIds());
         GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
-        return new Path(path.getEdgeList(), (int) path.getWeight());
+        return new Path(path.getEdgeList(), (int) path.getWeight(), age);
     }
 
     private Set<Long> gatherStationIds() {

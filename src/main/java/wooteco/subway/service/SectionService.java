@@ -103,9 +103,9 @@ public class SectionService {
         }
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, Long age) {
         Sections sections = new Sections(sectionDao.findAll());
-        Path shortestPath = sections.findShortestPath(source, target);
+        Path shortestPath = sections.findShortestPath(source, target, age);
         List<Station> stations = shortestPath.getStationIds()
                 .stream()
                 .map(stationDao::findById)

@@ -93,7 +93,7 @@ class SectionServiceTest {
         LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
         lineService.save(line);
 
-        PathResponse shortestPath = sectionService.findShortestPath(firstStation.getId(), secondStation.getId());
+        PathResponse shortestPath = sectionService.findShortestPath(firstStation.getId(), secondStation.getId(), 0L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
     }

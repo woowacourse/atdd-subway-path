@@ -13,22 +13,24 @@ public class Path {
 
     private final List<SectionWeightEdge> edges;
     private final int distance;
+    private final Age age;
 
-    public Path(List<SectionWeightEdge> edges, int distance) {
+    public Path(List<SectionWeightEdge> edges, int distance, Long age) {
         this.edges = edges;
         this.distance = distance;
+        this.age = Age.find(age);
     }
 
-    public int calculateFare(List<Line> lines) {
+    public double calculateFare(List<Line> lines) {
         int lineExtraFare = findMostExpensiveExtraFare(lines);
 
         if (distance < 10) {
-            return lineExtraFare + BASIC_FARE;
+            return age.calc(lineExtraFare + BASIC_FARE);
         }
         if (distance <= 50) {
-            return lineExtraFare + calcAdditionalFare(distance - 10, FIRST_SECTION_UNIT);
+            return age.calc(lineExtraFare + calcAdditionalFare(distance - 10, FIRST_SECTION_UNIT));
         }
-        return lineExtraFare + FIRST_SECTION_FULL_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT);
+        return age.calc(lineExtraFare + FIRST_SECTION_FULL_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT));
     }
 
     private int findMostExpensiveExtraFare(List<Line> lines) {

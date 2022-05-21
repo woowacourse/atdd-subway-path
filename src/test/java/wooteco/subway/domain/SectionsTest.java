@@ -17,7 +17,7 @@ class SectionsTest {
         Section section3 = new Section(3L, 1L, 3L,4L, 20);
         Sections sections = new Sections(List.of(section1, section2, section3));
 
-        Path shortestPath = sections.findShortestPath(1L, 4L);
+        Path shortestPath = sections.findShortestPath(1L, 4L, 20L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(50);
         assertThat(shortestPath.calculateFare(List.of(new Line(1L, "2호선", "green", 0)))).isEqualTo(2050);
@@ -31,7 +31,7 @@ class SectionsTest {
         Section section3 = new Section(3L, 1L, 2L, 3L, 15);
         Sections sections = new Sections(List.of(section1, section2, section3));
 
-        Path shortestPath = sections.findShortestPath(1L, 3L);
+        Path shortestPath = sections.findShortestPath(1L, 3L, 20L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(25);
         assertThat(shortestPath.calculateFare(List.of(new Line(1L, "2호선", "green", 0)))).isEqualTo(1550);

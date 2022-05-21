@@ -24,9 +24,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         insert(new SectionRequest(2L, 3L, 40), "/lines/" + id + "/sections", 201);
 
-        select("/paths?source=1&target=3&age=15", 200)
+        select("/paths?source=1&target=3&age=20", 200)
                 .body("stations.size()", is(3))
                 .body("distance", is(50))
-                .body("fare", is(2050));
+                .body("fare", is(2050.0F));
     }
 }
