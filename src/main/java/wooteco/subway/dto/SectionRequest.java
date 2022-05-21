@@ -1,9 +1,10 @@
 package wooteco.subway.dto;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class SectionRequest {
 

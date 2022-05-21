@@ -7,10 +7,6 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station() {
-        this(null, null);
-    }
-
     public Station(final String name) {
         this(null, name);
     }

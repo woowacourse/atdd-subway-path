@@ -1,10 +1,10 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import java.util.List;
 
 public class Graph {
 

@@ -1,9 +1,10 @@
 package wooteco.subway.dto;
 
-import javax.validation.constraints.NotBlank;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import javax.validation.constraints.NotBlank;
 
 public class LineRequest {
 
