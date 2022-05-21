@@ -74,7 +74,7 @@ public class PathAcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/paths?source=" + source + "&target=" + target + "&age=15")
+            .get("/paths?source=" + source + "&target=" + target + "&age=0")
             .then().log().all()
             .extract();
 
@@ -87,6 +87,32 @@ public class PathAcceptanceTest {
                 .containsExactly("강남역", "역삼역", "잠실역"),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(21),
             () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
+        );
+    }
+
+    @DisplayName("연령별 할인 요금이 적용된 경로를 조회한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"5:1550", "6:600", "12:600", "13:960", "18:960", "19:1550"}, delimiter = ':')
+    void findPathWithAgeDiscount(int age, int expected) {
+        //given
+        Long source = stations.get("강남역").getId();
+        Long target = stations.get("잠실역").getId();
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .when()
+            .get("/paths?source=" + source + "&target=" + target + "&age=" + age)
+            .then().log().all()
+            .extract();
+
+        // then
+        PathResponse pathResponse = RestUtil.toResponseDto(response, PathResponse.class);
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(pathResponse.getStations())
+                .map(StationResponse::getName)
+                .containsExactly("강남역", "역삼역", "잠실역"),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(21),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(expected)
         );
     }
 

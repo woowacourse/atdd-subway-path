@@ -1,7 +1,8 @@
 package wooteco.subway.controller.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 public class PathRequest {
 
@@ -11,7 +12,7 @@ public class PathRequest {
     @NotNull(message = "도착 역의 id 가 비었습니다.")
     private final Long target;
 
-    @Positive(message = "연령 값은 음수일 수 없습니다.")
+    @Min(value = 0, message = "연령 값은 음수일 수 없습니다.")
     private final int age;
 
     public PathRequest(Long source, Long target, int age) {

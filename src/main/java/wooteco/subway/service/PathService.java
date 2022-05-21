@@ -20,10 +20,10 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathDto findPath(Long sourceStationId, Long targetStationId) {
+    public PathDto findPath(Long sourceStationId, Long targetStationId, int age) {
         Path path = new Path(lineRepository.findAll(), stationService.findOne(sourceStationId),
             stationService.findOne(targetStationId));
         int distance = path.getDistance();
-        return new PathDto(path.getStations(), distance, Fare.from(distance).calculate());
+        return new PathDto(path.getStations(), distance, Fare.of(distance, path.getOverFare(), age).calculate());
     }
 }

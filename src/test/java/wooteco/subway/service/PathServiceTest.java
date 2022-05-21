@@ -85,7 +85,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        PathDto path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId, 0);
 
         // then
         assertThat(path.getStations())
@@ -101,7 +101,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("내방역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
@@ -118,7 +118,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
@@ -135,7 +135,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("사평역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId)
+        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
@@ -152,7 +152,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        PathDto path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId, 0);
 
         // then
         assertThat(path.getDistance()).isEqualTo(30);
@@ -166,7 +166,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        PathDto path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId, 0);
 
         // then
         assertThat(path.getFare()).isEqualTo(1850);

@@ -51,4 +51,8 @@ public class Path {
     public int getDistance() {
         return (int)path.getWeight();
     }
+
+    public int getOverFare() {
+        return 0;
+    }
 }

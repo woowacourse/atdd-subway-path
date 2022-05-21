@@ -23,6 +23,6 @@ public class PathController {
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@ModelAttribute @Valid PathRequest pathRequest) {
         return ResponseEntity.ok().body(PathResponse.from(
-            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget())));
+            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge())));
     }
 }
