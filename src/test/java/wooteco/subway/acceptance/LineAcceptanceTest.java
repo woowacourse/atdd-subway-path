@@ -18,16 +18,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.service.LineService;
+import wooteco.subway.service.SectionService;
+import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
+import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.utils.RestAssuredUtil;
 
 @DisplayName("지하철 노선 관련 기능 - LineAcceptanceTest")
@@ -38,28 +37,33 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private Long stationId3;
     private Long lineId1;
     private Long lineId2;
-    private Long sectionId;
+    private Long sectionId1;
 
     @Autowired
-    private LineDao lineDao;
+    private StationService stationService;
 
     @Autowired
-    private SectionDao sectionDao;
+    private LineService lineService;
 
     @Autowired
-    private StationDao stationDao;
+    private SectionService sectionService;
 
     @BeforeEach
     void init() {
-        stationId1 = stationDao.save(new Station("강남역"));
-        stationId2 = stationDao.save(new Station("왕십리역"));
-        stationId3 = stationDao.save(new Station("정자역"));
+        stationId1 = stationService.save(new StationRequest("강남역")).getId();
+        stationId2 = stationService.save(new StationRequest("왕십리역")).getId();
+        stationId3 = stationService.save(new StationRequest("정자역")).getId();
 
-        lineId1 = lineDao.save(new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
-        lineId2 = lineDao.save(new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
+        LineResponse line1 = lineService.save(
+                new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
+        lineId1 = line1.getId();
 
-        sectionId = sectionDao.save(new Section(lineId1, stationId1, stationId2, 5));
-        sectionId = sectionDao.save(new Section(lineId2, stationId1, stationId2, 5));
+        sectionService.create(lineId1, new SectionRequest(stationId2, stationId3, 10));
+        sectionId1 = line1.getStations().get(0).getId();
+
+        LineResponse line2 = lineService.save(
+                new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
+        lineId2 = line2.getId();
     }
 
     @DisplayName("지하철 노선 생성")
@@ -234,19 +238,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteSection() {
         // given
         Map<String, String> source = new HashMap<>();
-        source.put("stationId", sectionId.toString());
+        source.put("stationId", stationId2.toString());
         String url = "/lines/" + lineId1 + "/sections";
 
         // when
         RestAssuredUtil.delete(url, source);
 
         // then
-        List<Long> stationIds = findStations(lineId1)
+        List<Long> stationIds = findStationIds(lineId1);
+        assertThat(stationIds).doesNotContain(stationId2);
+    }
+
+    private List<Long> findStationIds(Long lineId) {
+        return findStations(lineId)
                 .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
-
-        assertThat(stationIds).doesNotContain(sectionId);
     }
 
     private List<StationResponse> findStations(Long lineId) {

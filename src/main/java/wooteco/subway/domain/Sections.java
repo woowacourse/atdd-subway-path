@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 public class Sections {
 
-    private static final int MIN_STATIONS_COUNT = 2;
+    private static final int MIN_SECTION_COUNT = 1;
     private static final String NO_DOWN_STATION_ID_ERROR = "해당 stationId를 하행역으로 둔 구간은 존재하지 않습니다.";
     private static final String NO_STATIONS_IN_LINE_ERROR = "해당 역은 기존 노선과 이어지지 않습니다.";
     private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.";
     private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.";
     private static final String MIN_STATIONS_COUNT_ERROR = String.format("노선은 최소 %d개의 역을 갖고 있어야 합니다.",
-            MIN_STATIONS_COUNT);
+            MIN_SECTION_COUNT);
 
     private final List<Section> value;
 
@@ -125,7 +125,7 @@ public class Sections {
     }
 
     private void validRemoveCondition() {
-        if (value.size() <= MIN_STATIONS_COUNT) {
+        if (value.size() <= MIN_SECTION_COUNT) {
             throw new IllegalArgumentException(MIN_STATIONS_COUNT_ERROR);
         }
     }

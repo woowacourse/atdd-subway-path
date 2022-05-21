@@ -12,13 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.service.LineService;
+import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
+import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.utils.RestAssuredUtil;
 
 @DisplayName("지하철 경로 관련 기능 - PathAcceptanceTest")
@@ -28,23 +26,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long targetId;
 
     @Autowired
-    private LineDao lineDao;
+    private StationService stationService;
 
     @Autowired
-    private StationDao stationDao;
-
-    @Autowired
-    private SectionDao sectionDao;
+    private LineService lineService;
 
     @BeforeEach
     void init() {
-        sourceId = stationDao.save(new Station("강남역"));
-        targetId = stationDao.save(new Station("왕십리역"));
+        sourceId = stationService.save(new StationRequest("강남역")).getId();
+        targetId = stationService.save(new StationRequest("왕십리역")).getId();
 
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("3호선", "red", sourceId, targetId, 10, 500);
-        Long lineId = lineDao.save(lineCreateRequest);
-
-        sectionDao.save(new Section(lineId, sourceId, targetId, 10));
+        lineService.save(new LineCreateRequest("신분당선", "bg-red-600", sourceId, targetId, 10, 500));
     }
 
     @DisplayName("경로를 조회한다.")

@@ -12,8 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.utils.RestAssuredUtil;
@@ -25,12 +24,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private Long stationId2;
 
     @Autowired
-    private StationDao stationDao;
+    private StationService stationService;
 
     @BeforeEach
     void init() {
-        stationId1 = stationDao.save(new Station("강남역"));
-        stationId2 = stationDao.save(new Station("역삼역"));
+        stationId1 = stationService.save(new StationRequest("강남역")).getId();
+        stationId2 = stationService.save(new StationRequest("역삼역")).getId();
     }
 
     @DisplayName("지하철역을 생성한다.")
