@@ -35,7 +35,7 @@ public class PathService {
 
         final int distance = path.getShortestPathWeight();
 
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.of(distance, 0);
 
         return new PathResponse(stations, distance, fare.getValue());
     }

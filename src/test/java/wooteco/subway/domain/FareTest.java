@@ -12,7 +12,7 @@ class FareTest {
     @Test
     public void chargeDefaultFare9() {
         // given
-        final Fare fare = Fare.from(9);
+        final Fare fare = Fare.of(9, 0);
 
         // when
         final int result = fare.getValue();
@@ -25,7 +25,7 @@ class FareTest {
     @Test
     public void chargeDefaultFare10() {
         // given
-        final Fare fare = Fare.from(10);
+        final Fare fare = Fare.of(10, 0);
 
         // when
         final int result = fare.getValue();
@@ -38,7 +38,7 @@ class FareTest {
     @Test
     public void chargeAdditionalFare100() {
         // given
-        final Fare fare = Fare.from(12);
+        final Fare fare = Fare.of(12, 0);
 
         // when
         final int result = fare.getValue();
@@ -51,7 +51,7 @@ class FareTest {
     @Test
     public void chargeAdditionalFare200() {
         // given
-        final Fare fare = Fare.from(16);
+        final Fare fare = Fare.of(16, 0);
 
         // when
         final int result = fare.getValue();
@@ -64,7 +64,7 @@ class FareTest {
     @Test
     public void chargeAdditionalFareOver50() {
         // given
-        final Fare fare = Fare.from(58);
+        final Fare fare = Fare.of(58, 0);
 
         // when
         final int result = fare.getValue();
@@ -77,7 +77,7 @@ class FareTest {
     @Test
     public void chargeAdditionalFare50() {
         // given
-        final Fare fare = Fare.from(50);
+        final Fare fare = Fare.of(50, 0);
 
         // when
         final int result = fare.getValue();
@@ -90,7 +90,20 @@ class FareTest {
     @DisplayName("거리가 음수일 경우 예외가 발생한다.")
     public void validateDistance() {
         // given
-        assertThatThrownBy(() -> Fare.from(-1)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> Fare.of(-1, 0)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 양수여야합니다.");
+    }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선을 이용할 경우 추가 요금 부과")
+    public void chargeAdditionalLineFare() {
+        // given
+        final Fare fare = Fare.of(50, 500);
+
+        // when
+        final int result = fare.getValue();
+
+        // then
+        assertThat(result).isEqualTo(2550);
     }
 }

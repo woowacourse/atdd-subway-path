@@ -16,9 +16,9 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(int distance) {
+    public static Fare of(int distance, int lineFare) {
         validateDistance(distance);
-        final int value = calculate(distance);
+        final int value = calculate(distance) + lineFare;
         return new Fare(value);
     }
 
