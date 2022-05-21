@@ -126,7 +126,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
         - [x] 최단 거리 기준 조회 시 가중치를 거리로 설정
     - [x] 최단 경로 및 거리를 반환한다.
     - [x] 경로가 존재하는지 검증한다.
-  
+
 - [x] 요금을 계산한다.
     - [x] 기본운임(10㎞ 이내): 기본운임 1,250원
     - [x] 이용 거리 초과 시 추가운임 부과
@@ -134,9 +134,9 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
         - [x] 50km 초과: 8km 까지 마다 100원 추가
         - [x] 지하철 운임은 거리비례제로 책정된다.
 
-- 9km = 1250원 
-- 12km = 10km + 2km = 1350원 
-- 16km = 10km + 6km = 1450원 
+- 9km = 1250원
+- 12km = 10km + 2km = 1350원
+- 16km = 10km + 6km = 1450원
 - 58km = 10km + 40km + 8km = 2150원
 
 ## TODO
@@ -144,10 +144,12 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 ### 1단계 피드백
 
 - [x] 한번만 쓰이는 private 메소드의 경우 쓰이는 곳 밑에 두기
-- [ ] 엔티티의 id는 새로 생성된 경우 null로 나타내기 위해 Long 타입을 사용하신 걸로 생각했는데요. 다른 필드도 Long으로 나타낼 필요가 있을까요?
-- [ ] 무엇을 validate하는지 혹은 어떤 조건을 validate하는지 메서드명에 나타내보면 어떨까요?
-- [ ] Update는 동사인데, updatedSections를 찾는 메서드일까요?
-- [ ] 메서드를 호출하는 입장에서는 next 파라미터가 무엇을 의미하는지 알 수 있을까요?
+- [x] 엔티티의 id는 새로 생성된 경우 null로 나타내기 위해 Long 타입을 사용 -> 다른 필드도 Long으로 나타낼 필요가 있을까요?
+    - 이미 값이 엔티티에 들어올 때 Long으로 들어오기 때문에 그대로 뒀다. 오토박싱/언박싱 과정에서 시간이 소요될 것 같았다.
+    - 혹시 그럼에도 박싱된 클래스를 쓰지 않는 편이 낫다면 그 이유는 무엇인가요?
+- [x] 무엇을 validate하는지 혹은 어떤 조건을 validate하는지 메서드명에 나타내보면 어떨까요?
+- [x] Update는 동사인데, updatedSections를 찾는 메서드일까요?
+- [x] 메서드를 호출하는 입장에서는 next 파라미터가 무엇을 의미하는지 알 수 있을까요?
 - [ ] find 뿐만 아니라 인자로 받은 result에 add도 하고 있네요. 이 메서드에 더 적절한 이름이 있을까요?
 - [ ] 매직 넘버는 상수로 분리하면 어떨까요?
 - [ ] DB 엔티티와 도메인 객체 사이의 변환을 책임지는 계층인가보네요 💯 이 영역을 별도로 두었을 때 어떤 장점이 있었나요?

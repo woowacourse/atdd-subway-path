@@ -106,7 +106,7 @@ public class LineService {
         Sections sections = new Sections(sectionRepository.findSectionByLine(line));
         Section newSection = new Section(line, upStation, downStation, distance);
 
-        for (Section updateSection : sections.findUpdateSections(newSection)) {
+        for (Section updateSection : sections.findUpdatedSections(newSection)) {
             sectionRepository.save(updateSection);
         }
     }

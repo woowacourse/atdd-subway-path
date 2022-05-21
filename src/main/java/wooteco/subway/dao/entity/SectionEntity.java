@@ -7,7 +7,7 @@ public class SectionEntity {
     private final Long downStationId;
     private final int distance;
 
-    public SectionEntity(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
+    public SectionEntity(Long id, long lineId, long upStationId, long downStationId, int distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -15,7 +15,7 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    public SectionEntity(Long lineId, Long upStationId, Long downStationId, int distance) {
+    public SectionEntity(Long lineId, long upStationId, long downStationId, int distance) {
         this(null, lineId, upStationId, downStationId, distance);
     }
 

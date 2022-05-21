@@ -34,7 +34,7 @@ class SectionsTest {
         Sections 기존_구간 = new Sections(getSections(line));
 
         Section 추가할_구간 = new Section(line, 강남, 삼성, 5);
-        List<Section> 추가된_구간 = 기존_구간.findUpdateSections(추가할_구간);
+        List<Section> 추가된_구간 = 기존_구간.findUpdatedSections(추가할_구간);
 
         List<Section> sections = new Sections(추가된_구간).getSections();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("강남");
@@ -50,7 +50,7 @@ class SectionsTest {
         Sections 기존_구간 = new Sections(getSections(line));
 
         Section 추가할_구간 = new Section(line, 삼성, 잠실, 5);
-        List<Section> 추가된_구간 = 기존_구간.findUpdateSections(추가할_구간);
+        List<Section> 추가된_구간 = 기존_구간.findUpdatedSections(추가할_구간);
 
         List<Section> sections = new Sections(추가된_구간).getSections();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("강남");
@@ -66,7 +66,7 @@ class SectionsTest {
         Sections 기존_구간 = new Sections(getSections(line));
 
         Section 추가할_구간 = new Section(line, 합정, 강남, 5);
-        List<Section> 추가된_구간 = 기존_구간.findUpdateSections(추가할_구간);
+        List<Section> 추가된_구간 = 기존_구간.findUpdatedSections(추가할_구간);
 
         List<Section> sections = new Sections(추가된_구간).getSections();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("합정");
@@ -80,7 +80,7 @@ class SectionsTest {
         Sections 기존_구간 = new Sections(getSections(line));
 
         Section 추가할_구간 = new Section(line, 왕십리, 합정, 5);
-        List<Section> 추가된_구간 = 기존_구간.findUpdateSections(추가할_구간);
+        List<Section> 추가된_구간 = 기존_구간.findUpdatedSections(추가할_구간);
 
         List<Section> sections = new Sections(추가된_구간).getSections();
         assertThat(sections.get(0).getUpStation().getName()).isEqualTo("왕십리");
@@ -95,7 +95,7 @@ class SectionsTest {
 
         Section 추가할_구간 = new Section(line, 강남, 잠실, 5);
 
-        assertThatThrownBy(() -> 기존_구간.findUpdateSections(추가할_구간))
+        assertThatThrownBy(() -> 기존_구간.findUpdatedSections(추가할_구간))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("기존에 존재하는 구간입니다.");
     }
@@ -108,7 +108,7 @@ class SectionsTest {
 
         Section 추가할_구간 = new Section(line, 건대, 합정, 5);
 
-        assertThatThrownBy(() -> 기존_구간.findUpdateSections(추가할_구간))
+        assertThatThrownBy(() -> 기존_구간.findUpdatedSections(추가할_구간))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("생성할 수 없는 구간입니다.");
     }
