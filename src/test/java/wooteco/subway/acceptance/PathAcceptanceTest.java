@@ -92,4 +92,59 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .getObject(".", StationResponse.class)
                 .getId();
     }
+
+    @DisplayName("노선이 여러 개 일 때 추가 요금을 적용할 수 있다.")
+    @Test
+    public void chargeExtraFare() {
+
+        // given
+        final Long stationId1 = extractStationIdFromName("1");
+        final Long stationId2 = extractStationIdFromName("2");
+        final Long stationId3 = extractStationIdFromName("3");
+        final Long stationId4 = extractStationIdFromName("4");
+        final Long stationId5 = extractStationIdFromName("5");
+        final Long stationId6 = extractStationIdFromName("6");
+        final Long stationId7 = extractStationIdFromName("7");
+
+        //2호선
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 10, 300);
+        Long line2Id = extractId(AcceptanceFixture.post(params, "/lines"));
+
+        final SectionRequest line2SectionRequest1 = new SectionRequest(stationId1, stationId2, 4);
+        final SectionRequest line2SectionRequest2 = new SectionRequest(stationId3, stationId7, 4);
+        AcceptanceFixture.post(line2SectionRequest1, "/lines/" + line2Id + "/sections");
+        AcceptanceFixture.post(line2SectionRequest2, "/lines/" + line2Id + "/sections");
+
+        //3호선
+        final LineRequest params2 = new LineRequest("3호선", "bg-yello-600", stationId2, stationId4, 10, 500);
+        Long line3Id = extractId(AcceptanceFixture.post(params2, "/lines"));
+
+        final SectionRequest line3SectionRequest1 = new SectionRequest(stationId4, stationId5, 1);
+        final SectionRequest line3SectionRequest2 = new SectionRequest(stationId5, stationId6, 4);
+        final SectionRequest line3SectionRequest3 = new SectionRequest(stationId6, stationId7, 6);
+        AcceptanceFixture.post(line3SectionRequest1, "/lines/" + line3Id + "/sections");
+        AcceptanceFixture.post(line3SectionRequest2, "/lines/" + line3Id + "/sections");
+        AcceptanceFixture.post(line3SectionRequest3, "/lines/" + line3Id + "/sections");
+
+        //4호선
+        final LineRequest params4 = new LineRequest("4호선", "bg-green-600", stationId3, stationId5, 5, 700);
+        extractId(AcceptanceFixture.post(params4, "/lines"));
+
+        // when
+        final ExtractableResponse<Response> response1 = AcceptanceFixture.get(
+                "/paths?source=" + stationId1 + "&target=" + stationId6 + "&age=13");
+
+        final ExtractableResponse<Response> response2 = AcceptanceFixture.get(
+                "/paths?source=" + stationId1 + "&target=" + stationId6 + "&age=20");
+
+        final PathResponse pathResponse1 = response1.jsonPath().getObject(".", PathResponse.class);
+        final PathResponse pathResponse2 = response2.jsonPath().getObject(".", PathResponse.class);
+
+        // then
+        assertAll(
+                () -> assertEquals(pathResponse1.getFare(), 1790),
+                () -> assertEquals(pathResponse2.getFare(), 2150)
+        );
+    }
+
 }
