@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DisplayName("구간 관련 DAO 테스트")
 @JdbcTest
 class SectionDaoTest {
@@ -34,7 +36,7 @@ class SectionDaoTest {
 
         // then
         Integer count = jdbcTemplate.queryForObject("select count(*) from SECTION", Integer.class);
-        Assertions.assertThat(count).isEqualTo(1);
+        assertThat(count).isEqualTo(1);
     }
 
     @DisplayName("구간들을 생성한다.")
@@ -52,7 +54,51 @@ class SectionDaoTest {
 
         // then
         Integer count = jdbcTemplate.queryForObject("select count(*) from SECTION", Integer.class);
-        Assertions.assertThat(count).isEqualTo(3);
+        assertThat(count).isEqualTo(3);
+    }
+
+    @DisplayName("노선 아이디를 이용하여 해당 노선에 속해있는 구간을 조회한다.")
+    @Test
+    void findById() {
+        // given
+        Sections savedSections = new Sections(List.of(
+                new Section(1L, 2L, 10),
+                new Section(2L, 3L, 10),
+                new Section(3L, 4L, 10)
+        ));
+        sectionDao.saveAll(1L, savedSections);
+
+        // when
+        List<Section> sections = sectionDao.findAllById(1L);
+
+        // then
+        assertThat(sections).contains(
+                new Section(1L, 2L, 10),
+                new Section(2L, 3L, 10),
+                new Section(3L, 4L, 10)
+        );
+    }
+
+    @DisplayName("모든 구간목록을 조회한다.")
+    @Test
+    void findAll() {
+        // given
+        Sections savedSections = new Sections(List.of(
+                new Section(1L, 2L, 10),
+                new Section(2L, 3L, 10),
+                new Section(3L, 4L, 10)
+        ));
+        sectionDao.saveAll(1L, savedSections);
+
+        // when
+        List<Section> sections = sectionDao.findAll();
+
+        // then
+        assertThat(sections).contains(
+                new Section(1L, 2L, 10),
+                new Section(2L, 3L, 10),
+                new Section(3L, 4L, 10)
+        );
     }
 
     @DisplayName("특정 지하철 노선에 특정 지하철역이 존재하면 true 를 반환한다.")
@@ -62,7 +108,7 @@ class SectionDaoTest {
         sectionDao.save(1L, new Section(1L, 2L, 10));
 
         // when & then
-        Assertions.assertThat(sectionDao.existStation(1L, 1L)).isTrue();
+        assertThat(sectionDao.existStation(1L, 1L)).isTrue();
     }
 
     @DisplayName("특정 지하철 노선에 특정 상행역 아이디가 존재하면 true 를 반환한다.")
@@ -72,7 +118,7 @@ class SectionDaoTest {
         sectionDao.save(1L, new Section(1L, 2L, 10));
 
         // when & then
-        Assertions.assertThat(sectionDao.existUpStation(1L, 1L)).isTrue();
+        assertThat(sectionDao.existUpStation(1L, 1L)).isTrue();
     }
 
     @DisplayName("특정 지하철 노선에 특정 하행역 아이디가 존재하면 true 를 반환한다.")
@@ -82,7 +128,7 @@ class SectionDaoTest {
         sectionDao.save(1L, new Section(1L, 2L, 10));
 
         // when & then
-        Assertions.assertThat(sectionDao.existDownStation(1L, 2L)).isTrue();
+        assertThat(sectionDao.existDownStation(1L, 2L)).isTrue();
     }
 
     @DisplayName("구간을 수정한다.")
@@ -95,7 +141,7 @@ class SectionDaoTest {
         sectionDao.update(new Section(sectionId, 1L, 1L, 2L, 50));
 
         // then
-        Assertions.assertThat(sectionDao.findAllById(1L)).contains(
+        assertThat(sectionDao.findAllById(1L)).contains(
                 new Section(sectionId, 1L, 1L, 2L, 50)
         );
     }
@@ -111,6 +157,6 @@ class SectionDaoTest {
 
         // then
         Integer count = jdbcTemplate.queryForObject("select count(*) from SECTION where line_id = ?", Integer.class, 1L);
-        Assertions.assertThat(count).isEqualTo(0);
+        assertThat(count).isEqualTo(0);
     }
 }

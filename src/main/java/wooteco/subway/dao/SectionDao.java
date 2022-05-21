@@ -58,6 +58,11 @@ public class SectionDao {
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
 
+    public List<Section> findAll() {
+        final String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
+    }
+
     public boolean existStation(final Long lineId, final Long stationId) {
         final String sql = "select exists " +
                 "(select * from SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?))";

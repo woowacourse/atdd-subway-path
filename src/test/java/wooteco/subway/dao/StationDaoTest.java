@@ -3,6 +3,8 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,16 @@ class StationDaoTest {
         Integer count = jdbcTemplate.queryForObject("select count(*) from STATION", Integer.class);
 
         assertThat(count).isEqualTo(1);
+    }
+
+    @DisplayName("아이디를 이용하여 지하철역을 조회한다.")
+    @Test
+    void findById() {
+        long stationId = stationDao.save(STATION);
+
+        Station station = stationDao.findById(stationId).get();
+
+        assertThat(station.getName()).isEqualTo(STATION.getName());
     }
 
     @DisplayName("중복된 아이디의 지하철역이 있다면 true 를 반환한다.")

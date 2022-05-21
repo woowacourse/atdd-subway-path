@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import wooteco.subway.service.PathService;
 
-@DisplayName("PathController 는 ")
+@DisplayName("지하철 경로 관련 Controller 테스트")
 @WebMvcTest(PathController.class)
 class PathControllerTest {
 

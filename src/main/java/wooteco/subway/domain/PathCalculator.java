@@ -7,36 +7,33 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathCalculator {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathCalculator(final List<Line> lines) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+    public PathCalculator(final List<Section> sections) {
+        final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
                 DefaultWeightedEdge.class);
-        for (Line line : lines) {
-            final List<Section> sections = line.getSections();
-            addSectionInGraph(graph, sections);
+        for (Section section : sections) {
+            addSectionInGraph(graph, section);
         }
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    private void addSectionInGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                                   final List<Section> sections) {
-        for (Section section : sections) {
-            final Station upStation = section.getUpStation();
-            final Station downStation = section.getDownStation();
+    private void addSectionInGraph(final WeightedMultigraph<Long, DefaultWeightedEdge> graph,
+                                   final Section section) {
+        final Long upStationId = section.getUpStationId();
+        final Long downStationId = section.getDownStationId();
 
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
-            graph.setEdgeWeight(graph.addEdge(downStation, upStation), section.getDistance());
-        }
+        graph.addVertex(upStationId);
+        graph.addVertex(downStationId);
+        graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
+        graph.setEdgeWeight(graph.addEdge(downStationId, upStationId), section.getDistance());
     }
 
-    public List<Station> findShortestPath(final Station source, final Station target) {
+    public List<Long> findShortestPath(final Long source, final Long target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    public double findShortestDistance(final Station source, final Station target) {
+    public double findShortestDistance(final Long source, final Long target) {
         return dijkstraShortestPath.getPath(source, target).getWeight();
     }
 }

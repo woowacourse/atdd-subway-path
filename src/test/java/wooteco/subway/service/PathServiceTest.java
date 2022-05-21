@@ -2,72 +2,63 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static wooteco.subway.domain.factory.SectionFactory.AB3;
-import static wooteco.subway.domain.factory.SectionFactory.BC3;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import wooteco.subway.dao.LineDao;
+import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.repository.LineRepository;
-import wooteco.subway.repository.StationRepository;
-import wooteco.subway.service.dto.LineDto;
 
-@DisplayName("PathService 는 ")
+@DisplayName("지하철 경로 관련 service 테스트")
 @JdbcTest
 class PathServiceTest {
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     private StationDao stationDao;
-    private LineRepository lineRepository;
+    private SectionDao sectionDao;
     private PathService pathService;
 
     @BeforeEach
-    void setUp() {
-        final LineDao lineDao = new LineDao(namedParameterJdbcTemplate, dataSource);
-        final SectionDao sectionDao = new SectionDao(namedParameterJdbcTemplate, dataSource);
-        stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
-        final StationRepository stationRepository = new StationRepository(stationDao);
-        lineRepository = new LineRepository(lineDao, stationDao, sectionDao);
-        pathService = new PathService(stationRepository, lineRepository);
+    void sepUp() {
+        stationDao = new StationDao(jdbcTemplate);
+        sectionDao = new SectionDao(jdbcTemplate);
+        pathService = new PathService(stationDao, sectionDao);
     }
 
     @DisplayName("조회한 경로에 대해 최단 경로, 최단 거리, 요금 정보를 반환한다.")
     @Test
     void findShortestPath() {
-        final Long upStationId = stationDao.save(new Station("a")).getId();
-        final Long downStationId = stationDao.save(new Station("b")).getId();
-        lineRepository.save(new LineDto("신분당선", "bg-red-600", upStationId,
-                downStationId, 10));
+        // given
+        long stationId1 = stationDao.save(new Station(1L, "강남역"));
+        long stationId2 = stationDao.save(new Station(2L, "삼성역"));
+        long stationId3 = stationDao.save(new Station(3L, "역삼역"));
 
-        final PathResponse actualPathResponse = pathService.findShortestPath(upStationId, downStationId);
-        final List<String> stationNames = actualPathResponse.getStationResponses().stream()
+        sectionDao.save(1L, new Section(stationId1, stationId2, 10));
+        sectionDao.save(1L, new Section(stationId2, stationId3, 10));
+
+        // when
+        PathResponse pathResponse = pathService.findShortestPath(stationId1, stationId3);
+
+        final List<String> stationNames = pathResponse.getStationResponses().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList());
+
+        // then
         assertAll(
-                () -> assertThat(actualPathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(actualPathResponse.getFare()).isEqualTo(1250),
-                () -> assertThat(stationNames).isEqualTo(List.of("a", "b"))
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1450),
+                () -> assertThat(stationNames).isEqualTo(List.of("강남역", "삼성역", "역삼역"))
         );
     }
 }
