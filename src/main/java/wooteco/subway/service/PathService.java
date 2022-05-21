@@ -30,7 +30,7 @@ public class PathService {
 
         final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
-        final Fare fare = distance.calculateFare();
+        final Fare fare = Fare.from(distance);
 
         return PathResponse.of(stations, distance, fare);
     }

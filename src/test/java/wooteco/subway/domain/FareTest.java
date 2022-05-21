@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class DistanceTest {
+public class FareTest {
 
     @ParameterizedTest
     @DisplayName("10km 이내의 거리에 대한 기본 요금을 계산한다.")
@@ -17,7 +17,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = Fare.from(distance);
 
         // then
         assertThat(actual.getValue()).isEqualTo(1_250);
@@ -31,7 +31,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = Fare.from(distance);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
@@ -45,7 +45,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = Fare.from(distance);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
