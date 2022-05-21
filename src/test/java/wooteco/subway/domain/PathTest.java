@@ -37,9 +37,9 @@ public class PathTest {
     @Test
     void getShortestPath() {
         // given
-        Station station1 = new Station(1L, "name1");
-        Station station2 = new Station(2L, "name2");
-        Station station3 = new Station(3L, "name3");
+        Station station1 = new Station(1L, "신림역");
+        Station station2 = new Station(2L, "선릉역");
+        Station station3 = new Station(3L, "잠실역");
         Section section1 = new Section(station1, station2, 10);
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
