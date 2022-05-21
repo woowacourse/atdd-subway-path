@@ -8,46 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.LinesFixture;
+
 class LinesTest {
 
 	private Lines lines;
 
-	//            신사 (3호선)
-	//            |10|
-	// 신반포 (9호선) 잠원
-	//       \10\ |10|
-	// 내방 >10> 고속터미널 >10> 반포 >10> 논현 (7호선)
-	//            |10| \14\
-	//            서초 >3> 사평 (새호선)
-
 	@BeforeEach
 	void init() {
-		Line line7 = new Line("7호선", "red",
-			List.of(
-				makeSection("내방역", "고속터미널역", 10),
-				makeSection("고속터미널역", "반포역", 10),
-				makeSection("반포역", "논현역", 10))
-		);
-
-		Line line3 = new Line("3호선", "blue",
-			List.of(
-				makeSection("신사역", "잠원역", 10),
-				makeSection("잠원역", "고속터미널역", 10),
-				makeSection("고속터미널역", "서초역", 10))
-		);
-
-		Line line9 = new Line("9호선", "yellow",
-			List.of(makeSection("고속터미널역", "사평역", 14)));
-
-		Line newLine = new Line("새호선", "black",
-			List.of(makeSection("서초역", "사평역", 3))
-		);
-
-		lines = new Lines(List.of(line7, line3, line9, newLine));
-	}
-
-	private Section makeSection(String source, String target, int distance) {
-		return new Section(new Station(source), new Station(target), distance);
+		lines = new Lines(LinesFixture.toList());
 	}
 
 	@DisplayName("한 라인에서 경로를 순방향 조회한다.")

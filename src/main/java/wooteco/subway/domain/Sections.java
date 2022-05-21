@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -105,10 +104,6 @@ public class Sections {
 		sortedStations.addFirst(station);
 		Optional.ofNullable(stations.get(station))
 			.ifPresent(value -> addUpStream(sortedStations, stations, value));
-	}
-
-	public void executeEach(Consumer<Section> consumer) {
-		values.forEach(consumer);
 	}
 
 	public void deleteByStation(Long stationId) {
