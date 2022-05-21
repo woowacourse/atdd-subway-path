@@ -11,11 +11,12 @@ import java.util.stream.Collectors;
 public class Sections {
 
     private static final int MIN_SECTION_COUNT = 1;
-    private static final String NO_DOWN_STATION_ID_ERROR = "해당 stationId를 하행역으로 둔 구간은 존재하지 않습니다.";
-    private static final String NO_UP_STATION_ID_ERROR = "해당 stationId를 상행역으로 둔 구간은 존재하지 않습니다.";
-    private static final String NO_STATIONS_IN_LINE_ERROR = "해당 역은 기존 노선과 이어지지 않습니다.";
-    private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.";
-    private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.";
+    private static final String NO_DOWN_STATION_ID_ERROR = "해당 stationId를 하행역으로 둔 구간은 존재하지 않습니다.\n -> stationId: %d";
+    private static final String NO_UP_STATION_ID_ERROR = "해당 stationId를 상행역으로 둔 구간은 존재하지 않습니다.\n -> stationId: %d";
+    private static final String NO_STATIONS_IN_LINE_ERROR = "해당 구간은 기존 노선과 이어지지 않습니다.\n -> %s";
+    private static final String NO_STATION_IN_SECTION_ERROR = "해당 역은 구간에 포함되지 않습니다.\n -> stationId: %d";
+    private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.\n -> upStationId: %d, downStationId: %d";
+    private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.\n -> %s";
     private static final String MIN_STATIONS_COUNT_ERROR = String.format("노선은 최소 %d개의 역을 갖고 있어야 합니다.",
             MIN_SECTION_COUNT);
 
@@ -60,8 +61,7 @@ public class Sections {
     }
 
     /**
-     * 새로운 구간을 등록할 때 변경되는 기존 구간을 찾는 메서드.
-     * 종착역으로 등록되는 경우 변경되는 기존 구간이 없다.
+     * 새로운 구간을 등록할 때 변경되는 기존 구간을 찾는 메서드. 종착역으로 등록되는 경우 변경되는 기존 구간이 없다.
      *
      * @param newSection 추가하고자 하는 구간
      * @return 데이터가 변경된 Section
@@ -83,7 +83,7 @@ public class Sections {
 
     private void validCrossPath(Section newSection, Section existSection) {
         if (newSection.isSameDownStationId(existSection)) {
-            throw new IllegalArgumentException(CREATE_CROSSROADS_LIST_ERROR);
+            throw new IllegalArgumentException(String.format(CREATE_CROSSROADS_LIST_ERROR, newSection));
         }
     }
 
@@ -93,11 +93,12 @@ public class Sections {
         Long upStationId = section.getUpStationId();
 
         if (!allSectionIds.contains(downStationId) && !allSectionIds.contains(upStationId)) {
-            throw new IllegalArgumentException(NO_STATIONS_IN_LINE_ERROR);
+            throw new IllegalArgumentException(String.format(NO_STATIONS_IN_LINE_ERROR, section));
         }
 
         if (allSectionIds.containsAll(List.of(downStationId, upStationId))) {
-            throw new IllegalArgumentException(DUPLICATED_SECTION_LIST_ERROR);
+            throw new IllegalArgumentException(
+                    String.format(DUPLICATED_SECTION_LIST_ERROR, upStationId, downStationId));
         }
     }
 
@@ -128,8 +129,7 @@ public class Sections {
     }
 
     /**
-     * 기존 구간을 삭제할 때 변경되는 기존 구간을 찾는 메서드.
-     * 종착역이 삭제되는 경우 변경되는 기존 구간은 없다.
+     * 기존 구간을 삭제할 때 변경되는 기존 구간을 찾는 메서드. 종착역이 삭제되는 경우 변경되는 기존 구간은 없다.
      *
      * @param stationId 삭제하고자 하는 역
      * @return 삭제로 인해 변경 사항이 있는 Section
@@ -161,7 +161,7 @@ public class Sections {
                 .noneMatch(section -> section.isSameDownStationId(id) || section.isSameUpStationId(id));
 
         if (condition) {
-            throw new IllegalArgumentException("해당 역은 구간에 포함되지 않습니다.");
+            throw new IllegalArgumentException(String.format(NO_STATION_IN_SECTION_ERROR, id));
         }
     }
 
@@ -175,14 +175,14 @@ public class Sections {
         return value.stream()
                 .filter(section -> section.isSameDownStationId(stationId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(NO_DOWN_STATION_ID_ERROR));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(NO_DOWN_STATION_ID_ERROR, stationId)));
     }
 
     private Section findByUpStationId(Long stationId) {
         return value.stream()
                 .filter(section -> section.isSameUpStationId(stationId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(NO_UP_STATION_ID_ERROR));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(NO_UP_STATION_ID_ERROR, stationId)));
     }
 
     @Override
