@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,12 +31,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로를 조회한다.")
     @Test
     void findPath() {
-        // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.get("/paths?source=1&target=3&age=15");
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
         int distance = response.jsonPath().getInt("distance");
         int fare = response.jsonPath().getInt("fare");
-        // then
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(distance).isEqualTo(5),

@@ -1,9 +1,7 @@
 package wooteco.subway.ui;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
 
@@ -18,7 +16,7 @@ public class PathController {
     }
 
     @GetMapping
-    public PathResponse findPath(@RequestParam(defaultValue = "0") final long source, @RequestParam(defaultValue = "0") final long target, @RequestParam(defaultValue = "20") final int age) {
-        return pathService.getPath(source, target, age);
+    public PathResponse findPath(@ModelAttribute final PathRequest pathRequest) {
+        return pathService.getPath(pathRequest);
     }
 }
