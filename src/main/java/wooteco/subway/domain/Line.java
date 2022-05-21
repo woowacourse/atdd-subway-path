@@ -10,25 +10,27 @@ public class Line {
     private final Long id;
     private final Name name;
     private final String color;
+    private final int extraFare;
     private final Sections sections;
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>());
-    }
-
-    public Line(String name, String color, List<Section> sections) {
-        this(TEMPORARY_ID, name, color, sections);
-    }
-
-    public Line(Long id, String name, String color, List<Section> sections) {
+    public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
         this.id = id;
         this.name = new Name(name);
+        this.extraFare = extraFare;
         this.color = color;
         this.sections = new Sections(sections);
     }
 
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new LinkedList<>());
+    }
+
+    public Line(String name, String color, int extraFare, List<Section> sections) {
+        this(TEMPORARY_ID, name, color, extraFare, sections);
+    }
+
     public Line createWithSection(List<Section> sections) {
-        return new Line(id, name.getValue(), color, sections);
+        return new Line(id, name.getValue(), color, extraFare, sections);
     }
 
     public boolean isSameName(String name) {
@@ -76,5 +78,9 @@ public class Line {
 
     public List<Section> getSections() {
         return sections.getValues();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

@@ -138,7 +138,7 @@ public class StationAcceptanceTest {
         // given
         Long upStationId = RestUtil.getIdFromStation(RestUtil.post(new StationRequest("강남역")));
         Long downStationId = RestUtil.getIdFromStation(RestUtil.post(new StationRequest("역삼역")));
-        RestUtil.post(new LineRequest("2호선", "red", upStationId, downStationId, 10));
+        RestUtil.post(new LineRequest("2호선", "red", upStationId, downStationId, 10, 200));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

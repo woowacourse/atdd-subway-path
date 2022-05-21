@@ -43,7 +43,7 @@ class PathServiceTest {
     void init() {
         stations.putAll(saveStations("내방역", "고속터미널역", "반포역", "논현역"));
 
-        Line line7 = lineService.create("7호선", "red",
+        Line line7 = lineService.create("7호선", "red", 700,
             makeSection(stations.get("내방역"), stations.get("고속터미널역"), 10));
         lineService.addSection(line7.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("반포역"), 10));
@@ -52,7 +52,7 @@ class PathServiceTest {
 
         stations.putAll(saveStations("신사역", "잠원역", "서초역"));
 
-        Line line3 = lineService.create("3호선", "red",
+        Line line3 = lineService.create("3호선", "red", 300,
             makeSection(stations.get("신사역"), stations.get("잠원역"), 10));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("잠원역"), stations.get("고속터미널역"), 10));
@@ -61,10 +61,10 @@ class PathServiceTest {
 
         Station sapyung = stationService.create("사평역");
         stations.put("사평역", sapyung);
-        lineService.create("9호선", "red", makeSection(
-            stations.get("고속터미널역"), sapyung, 14));
+        lineService.create("9호선", "red", 900,
+            makeSection(stations.get("고속터미널역"), sapyung, 14));
 
-        lineService.create("새호선", "red",
+        lineService.create("새호선", "red", 1000,
             makeSection(stations.get("서초역"), sapyung, 3));
     }
 
@@ -158,7 +158,7 @@ class PathServiceTest {
         assertThat(path.getDistance()).isEqualTo(30);
     }
 
-    @DisplayName("최단 경로의 요금을 계산한다.")
+    @DisplayName("최단 경로의 요금을 계산한다(3호선 -> 7호선, 추가 요금 700).")
     @Test
     void fare() {
         // given
@@ -169,6 +169,6 @@ class PathServiceTest {
         PathDto path = pathService.findPath(sourceStationId, targetStationId, 0);
 
         // then
-        assertThat(path.getFare()).isEqualTo(1850);
+        assertThat(path.getFare()).isEqualTo(2550);
     }
 }

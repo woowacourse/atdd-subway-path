@@ -41,7 +41,7 @@ class LineServiceTest {
     @DisplayName("지하철 노선을 저장한다.")
     @Test
     void create() {
-        Line line = lineService.create("신분당선", "bg-red-600", section);
+        Line line = lineService.create("신분당선", "bg-red-600", 1000, section);
         assertAll(
             () -> assertThat(line.getId()).isGreaterThan(0),
             () -> assertThat(line.getName()).isEqualTo("신분당선"),
@@ -52,9 +52,9 @@ class LineServiceTest {
     @DisplayName("이미 존재하는 이름으로 지하철 노선을 생성할 수 없다.")
     @Test
     void duplicateNameException() {
-        lineService.create("신분당선", "bg-red-600", section);
+        lineService.create("신분당선", "bg-red-600", 1000, section);
 
-        assertThatThrownBy(() -> lineService.create("신분당선", "bg-blue-600", section))
+        assertThatThrownBy(() -> lineService.create("신분당선", "bg-blue-600", 1000, section))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("해당 이름의 지하철 노선이 이미 존재합니다");
     }
@@ -62,9 +62,9 @@ class LineServiceTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void listLines() {
-        lineService.create("신분당선", "bg-red-600", section);
-        lineService.create("2호선", "bg-red-600", section);
-        lineService.create("분당선", "bg-red-600", section);
+        lineService.create("신분당선", "bg-red-600", 1000, section);
+        lineService.create("2호선", "bg-red-600", 200, section);
+        lineService.create("분당선", "bg-red-600", 1000, section);
         List<Line> lines = lineService.listLines();
 
         assertAll(
@@ -77,7 +77,7 @@ class LineServiceTest {
     @DisplayName("id로 지하철 노선을 조회한다.")
     @Test
     void findOne() {
-        Line line = lineService.create("신분당선", "bg-red-600", section);
+        Line line = lineService.create("신분당선", "bg-red-600", 1000, section);
         Line foundLine = lineService.findOne(line.getId());
 
         assertAll(
@@ -90,20 +90,21 @@ class LineServiceTest {
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void update() {
-        Line line = lineService.create("신분당선", "bg-red-600", section);
-        Line updatedLine = lineService.update(new Line(line.getId(), "분당선", "bg-blue-600"));
+        Line line = lineService.create("신분당선", "bg-red-600", 1000, section);
+        Line updatedLine = lineService.update(new Line(line.getId(), "분당선", "bg-blue-600", 500));
 
         assertAll(
             () -> assertThat(updatedLine.getId()).isEqualTo(line.getId()),
             () -> assertThat(updatedLine.getName()).isEqualTo("분당선"),
-            () -> assertThat(updatedLine.getColor()).isEqualTo("bg-blue-600")
+            () -> assertThat(updatedLine.getColor()).isEqualTo("bg-blue-600"),
+            () -> assertThat(updatedLine.getExtraFare()).isEqualTo(500)
         );
     }
 
     @DisplayName("id로 지하철 노선을 삭제한다.")
     @Test
     void remove() {
-        Line line = lineService.create("신분당선", "bg-red-600", section);
+        Line line = lineService.create("신분당선", "bg-red-600", 1000, section);
         lineService.remove(line.getId());
         assertThat(lineService.listLines()).isEmpty();
     }
@@ -111,7 +112,7 @@ class LineServiceTest {
     @DisplayName("하행종점 이후 구간을 추가한다.")
     @Test
     void addSectionLeft() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
         Station newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
@@ -126,7 +127,7 @@ class LineServiceTest {
     @DisplayName("상행종점 이전 구간을 추가한다.")
     @Test
     void addSectionRight() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
         Station newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(
             newStation.getId(), upStation.getId(), 10);
@@ -142,7 +143,7 @@ class LineServiceTest {
     @DisplayName("상행역이 같은 구간을 추가한다.")
     @Test
     void addSectionLeftToRight() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
         Station newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(
             upStation.getId(), newStation.getId(), 5);
@@ -158,7 +159,7 @@ class LineServiceTest {
     @DisplayName("하행역이 같은 구간을 추가한다.")
     @Test
     void addSectionRightToLeft() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
         Station newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(newStation.getId(), downStation.getId(), 5);
         lineService.addSection(line.getId(), newSection);
@@ -172,7 +173,7 @@ class LineServiceTest {
     @DisplayName("역으로 구간을 삭제한다.")
     @Test
     void deleteSection() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
         Station newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
@@ -193,7 +194,7 @@ class LineServiceTest {
     @DisplayName("노선에 구간이 하나밖에 없으면 삭제하지 못한다.")
     @Test
     void deleteSectionEmpty() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
 
         assertThatThrownBy(() -> lineService.deleteSection(line.getId(), downStation.getId()))
             .isInstanceOf(IllegalArgumentException.class)
@@ -203,7 +204,7 @@ class LineServiceTest {
     @DisplayName("구간을 삭제할 때 노선에 해당하는 역이 없으면 예외가 발생한다.")
     @Test
     void deleteSectionNotExist() {
-        Line line = lineService.create("2호선", "bg-red-600", section);
+        Line line = lineService.create("2호선", "bg-red-600", 200, section);
 
         assertThatThrownBy(() -> lineService.deleteSection(line.getId(), 3L))
             .isInstanceOf(IllegalArgumentException.class)

@@ -7,6 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class PathTest {
 
@@ -21,24 +23,27 @@ class PathTest {
     //            서초 >3> 사평 (새호선)
     @BeforeEach
     void init() {
-        Line line7 = new Line("7호선", "red",
+        Line line7 = new Line(7L, "7호선", "red", 700,
             List.of(
                 makeSection("내방역", "고속터미널역", 10),
                 makeSection("고속터미널역", "반포역", 10),
                 makeSection("반포역", "논현역", 10))
         );
 
-        Line line3 = new Line("3호선", "blue",
+        Line line3 = new Line(3L, "3호선", "blue", 300,
             List.of(
                 makeSection("신사역", "잠원역", 10),
                 makeSection("잠원역", "고속터미널역", 10),
                 makeSection("고속터미널역", "서초역", 10))
         );
 
-        Line line9 = new Line("9호선", "yellow",
-            List.of(makeSection("고속터미널역", "사평역", 14)));
+        Line line9 = new Line(9L, "9호선", "yellow", 900,
+            List.of(
+                makeSection("신반포역", "고속터미널역", 10),
+                makeSection("고속터미널역", "사평역", 14))
+        );
 
-        Line newLine = new Line("새호선", "black",
+        Line newLine = new Line(10L, "새호선", "black", 1000,
             List.of(makeSection("서초역", "사평역", 3))
         );
 
@@ -131,4 +136,18 @@ class PathTest {
         assertThat(path.getDistance()).isEqualTo(30);
     }
 
+    @DisplayName("추가 요금 계산을 검증한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"서초역:300", "사평역:1000", "반포역:700", "신반포역:900"}, delimiter = ':')
+    void getExtraFare(String targetName, int expected) {
+        //given
+        Station source = new Station("신사역");
+        Station target = new Station(targetName);
+
+        //when
+        Path path = new Path(lines, source, target);
+
+        //then
+        assertThat(path.getExtraFare()).isEqualTo(expected);
+    }
 }

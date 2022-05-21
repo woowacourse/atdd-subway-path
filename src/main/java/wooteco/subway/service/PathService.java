@@ -24,6 +24,6 @@ public class PathService {
         Path path = new Path(lineRepository.findAll(), stationService.findOne(sourceStationId),
             stationService.findOne(targetStationId));
         int distance = path.getDistance();
-        return new PathDto(path.getStations(), distance, Fare.of(distance, path.getOverFare(), age).calculate());
+        return new PathDto(path.getStations(), distance, Fare.of(distance, path.getExtraFare(), age).calculate());
     }
 }

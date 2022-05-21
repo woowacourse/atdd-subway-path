@@ -38,7 +38,7 @@ public class LineAcceptanceTest {
             "신분당선", "bg-red-600",
             RestUtil.getIdFromStation(stationResponse1),
             RestUtil.getIdFromStation(stationResponse2),
-            10);
+            10, 1000);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -89,7 +89,7 @@ public class LineAcceptanceTest {
     void createLineNoFoundStation() {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "red", 100L, 101L, 10))
+            .body(new LineRequest("2호선", "red", 100L, 101L, 10, 200))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/lines")
@@ -128,7 +128,7 @@ public class LineAcceptanceTest {
             new LineRequest("분당선", "bg-red-600",
                 RestUtil.getIdFromStation(RestUtil.post(new StationRequest("잠실역"))),
                 RestUtil.getIdFromStation(RestUtil.post(new StationRequest("선릉역"))),
-                10)
+                10, 1000)
         );
 
         // when
@@ -199,7 +199,7 @@ public class LineAcceptanceTest {
         ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
 
         // when
-        Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600");
+        Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600", "extraFare", "1000");
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(params2)
             .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -42,13 +42,13 @@ public class PathAcceptanceTest {
     void init() {
         stations.putAll(postStations("강남역", "역삼역", "선릉역", "교대역", "잠실역"));
         LineRequest lineRequest1 = new LineRequest(
-            "신분당선", "bg-red-600", stations.get("강남역").getId(), stations.get("역삼역").getId(), 11);
+            "신분당선", "bg-red-600", stations.get("강남역").getId(), stations.get("역삼역").getId(), 11, 1000);
         ExtractableResponse<Response> lineResponse = RestUtil.post(lineRequest1);
         Long lineId = RestUtil.getIdFromLine(lineResponse);
         RestUtil.post(lineId, new SectionRequest(stations.get("역삼역").getId(), stations.get("선릉역").getId(), 10));
 
         LineRequest lineRequest2 = new LineRequest(
-            "2호선", "bg-red-600", stations.get("교대역").getId(), stations.get("역삼역").getId(), 11);
+            "2호선", "bg-red-600", stations.get("교대역").getId(), stations.get("역삼역").getId(), 11, 1000);
         ExtractableResponse<Response> lineResponse2 = RestUtil.post(lineRequest2);
         Long lineId2 = RestUtil.getIdFromLine(lineResponse2);
         RestUtil.post(lineId2, new SectionRequest(stations.get("역삼역").getId(), stations.get("잠실역").getId(), 10));
@@ -65,7 +65,7 @@ public class PathAcceptanceTest {
         return stations;
     }
 
-    @DisplayName("경로를 조회한다.")
+    @DisplayName("경로를 조회한다(신분당선 -> 2호선, 추가 요금 1000) .")
     @Test
     void findPath() {
         //given
@@ -86,13 +86,13 @@ public class PathAcceptanceTest {
                 .map(StationResponse::getName)
                 .containsExactly("강남역", "역삼역", "잠실역"),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(21),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
+            () -> assertThat(pathResponse.getFare()).isEqualTo(2550)
         );
     }
 
-    @DisplayName("연령별 할인 요금이 적용된 경로를 조회한다.")
+    @DisplayName("연령별 할인 요금이 적용된 경로를 조회한다(신분당선 -> 2호선, 추가 요금 1000).")
     @ParameterizedTest
-    @CsvSource(value = {"5:1550", "6:600", "12:600", "13:960", "18:960", "19:1550"}, delimiter = ':')
+    @CsvSource(value = {"5:2550", "6:1100", "12:1100", "13:1760", "18:1760", "19:2550"}, delimiter = ':')
     void findPathWithAgeDiscount(int age, int expected) {
         //given
         Long source = stations.get("강남역").getId();
