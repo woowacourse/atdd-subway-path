@@ -28,8 +28,9 @@ public class LineRepository {
 
     public List<Line> findAll() {
         List<LineEntity> list = lineDao.findAll();
-        return list.stream().map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor())).collect(
-                toList());
+        return list.stream()
+                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
+                .collect(toList());
     }
 
     public void modifyById(Long id, Line line) {
