@@ -10,7 +10,7 @@ public class Stations {
         this.stations = stations;
     }
 
-    public List<Station> sortedStationsById(List<Long> stationIds) {
+    public List<Station> findSortedStationsById(List<Long> stationIds) {
         return stationIds.stream()
             .map(this::findStationById)
             .collect(Collectors.toList());

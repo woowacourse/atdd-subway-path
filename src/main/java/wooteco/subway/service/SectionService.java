@@ -35,14 +35,14 @@ public class SectionService {
             sectionRequest.getDownStationId(), sectionRequest.getDistance());
     }
 
-    private Long updateMiddleSection(Section section, Sections sections) {
+    private long updateMiddleSection(Section section, Sections sections) {
         if (sections.hasStationId(section.getDownStationId())) {
             return updateUpStationSection(section, sections);
         }
         return updateDownStationSection(section, sections);
     }
 
-    private Long updateUpStationSection(Section section, Sections sections) {
+    private long updateUpStationSection(Section section, Sections sections) {
         Section updateSection = sections.findSectionByDownStationId(section.getDownStationId());
         if (updateSection.getDistance() <= section.getDistance()) {
             throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
@@ -55,7 +55,7 @@ public class SectionService {
                 updateSection.getDownStationId(), section.getDistance()));
     }
 
-    private Long updateDownStationSection(Section section, Sections sections) {
+    private long updateDownStationSection(Section section, Sections sections) {
         Section updateSection = sections.findSectionByUpStationId(section.getUpStationId());
 
         if (updateSection.getDistance() <= section.getDistance()) {

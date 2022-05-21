@@ -3,8 +3,6 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +21,7 @@ class StationsTest {
         List<Long> stationIds = List.of(3L, 2L, 1L);
 
         // when
-        List<Station> sortedStations = stations.sortedStationsById(stationIds);
+        List<Station> sortedStations = stations.findSortedStationsById(stationIds);
 
         // then
         assertAll(

@@ -46,7 +46,7 @@ public class PathService {
         List<Long> stationIds = shortestPath.findShortestPath(pathRequest.getSource(),
             pathRequest.getTarget());
         Stations stations = new Stations(stationDao.findById(stationIds));
-        return toStationServiceResponse(stations.sortedStationsById(stationIds));
+        return toStationServiceResponse(stations.findSortedStationsById(stationIds));
     }
 
     private List<StationResponse> toStationServiceResponse(List<Station> stations) {

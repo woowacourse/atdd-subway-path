@@ -20,16 +20,16 @@ public class Sections {
     }
 
     public boolean isMiddleSection(Section section) {
-        Long upStationId = findUpTerminalStationId();
-        Long downStationId = findDownTerminalStationId();
+        long upStationId = findUpTerminalStationId();
+        long downStationId = findDownTerminalStationId();
         return isMiddlePoint(section, upStationId, downStationId);
     }
 
-    private boolean isMiddlePoint(Section section, Long upStationId, Long downStationId) {
+    private boolean isMiddlePoint(Section section, long upStationId, long downStationId) {
         return !(section.matchDownStationId(upStationId) || section.mathUpStationId(downStationId));
     }
 
-    public boolean hasStationId(Long id) {
+    public boolean hasStationId(long id) {
         Set<Long> stationIds = new HashSet<>();
         for (Section section : sections) {
             stationIds.add(section.getUpStationId());
@@ -38,14 +38,14 @@ public class Sections {
         return stationIds.contains(id);
     }
 
-    public Section findSectionByUpStationId(Long id) {
+    public Section findSectionByUpStationId(long id) {
         return sections.stream()
             .filter(i -> i.mathUpStationId(id))
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("구간 중 해당 upStationId이 존재하지 않습니다."));
     }
 
-    public Section findSectionByDownStationId(Long id) {
+    public Section findSectionByDownStationId(long id) {
         return sections.stream()
             .filter(i -> i.matchDownStationId(id))
             .findAny()
@@ -60,7 +60,7 @@ public class Sections {
         return sectionIds;
     }
 
-    private Long findDownTerminalStationId() {
+    private long findDownTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
         return sectionIds.values().stream()
             .filter(i -> !sectionIds.containsKey(i))
@@ -68,7 +68,7 @@ public class Sections {
             .orElseThrow(() -> new IllegalArgumentException("하행점을 찾을 수 없습니다."));
     }
 
-    private Long findUpTerminalStationId() {
+    private long findUpTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
         return sectionIds.keySet().stream()
             .filter(i -> !sectionIds.containsValue(i))
@@ -77,7 +77,7 @@ public class Sections {
     }
 
     public List<Long> sortedStationId() {
-        Long upStationId = findUpTerminalStationId();
+        long upStationId = findUpTerminalStationId();
         List<Long> stationIds = new ArrayList<>(List.of(upStationId));
         Map<Long, Long> stationIdsInSections = getSectionIds();
 

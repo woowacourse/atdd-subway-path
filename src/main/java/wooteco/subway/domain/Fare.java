@@ -23,6 +23,6 @@ public class Fare {
     }
 
     private int calculateOverFare(int distance, int farePerKilometre) {
-        return (int) ((Math.ceil((distance - 1) / farePerKilometre) + 1) * ADDITION_UNIT_FEE);
+        return (((distance - 1) / farePerKilometre) + 1) * ADDITION_UNIT_FEE;
     }
 }

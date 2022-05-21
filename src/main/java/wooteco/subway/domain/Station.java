@@ -20,7 +20,7 @@ public class Station {
         return name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -41,7 +41,7 @@ public class Station {
         return Objects.hash(id);
     }
 
-    public boolean matchId(Long stationId) {
+    public boolean matchId(long stationId) {
         return id.equals(stationId);
     }
 }
