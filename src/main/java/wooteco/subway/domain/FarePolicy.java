@@ -8,11 +8,11 @@ public class FarePolicy {
     private static final int MIDDLE_DISTANCE_FARE_RATIO = 5;
     private static final int LONG_DISTANCE_FARE_RATIO = 8;
 
-    public static int calculateFare(int distance) {
+    public static int calculateFare(int distance, int extraFare) {
         if (distance == 0) {
             return 0;
         }
-        return BASE_FARE + calculateAdditionalFare(distance);
+        return BASE_FARE + calculateAdditionalFare(distance) + extraFare;
     }
 
     private static int calculateAdditionalFare(int distance) {
