@@ -47,8 +47,6 @@ public class JdbcLineDao implements LineDao {
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
-
-
     @Override
     public boolean deleteById(Long id) {
         final String sql = "DELETE FROM line where id = ?";

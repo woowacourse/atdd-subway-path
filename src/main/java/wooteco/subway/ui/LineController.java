@@ -29,8 +29,7 @@ public class LineController {
     public ResponseEntity<LineResponse> createLine(
         @Validated @RequestBody LineRequest lineRequest) {
         LineResponse lineResponse = lineService.save(lineRequest.toServiceRequest());
-        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId()))
-            .body(lineResponse);
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
 
     @GetMapping("/lines")
