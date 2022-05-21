@@ -55,6 +55,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("이어지지 않는 역들의 경로를 검색할 떄 예외가 발생한다.")
+    @Test
+    public void canNotFindPath() {
+        // given
+        final Long stationId1 = extractStationIdFromName("교대역");
+        final Long stationId2 = extractStationIdFromName("강남역");
+        final Long stationId3 = extractStationIdFromName("역삼역");
+        final Long stationId4 = extractStationIdFromName("왕십리역");
+
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 7);
+        Long line2Id = extractId(AcceptanceFixture.post(params, "/lines"));
+
+        final LineRequest params2 = new LineRequest("수인분당선", "bg-yellow-600", stationId3, stationId4, 7);
+        Long 수인분당Id = extractId(AcceptanceFixture.post(params2, "/lines"));
+
+        // when
+        final ExtractableResponse<Response> response = AcceptanceFixture.get(
+                "/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private Long extractId(ExtractableResponse<Response> response) {
         return response.jsonPath()
                 .getObject(".", LineResponse.class)
