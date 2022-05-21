@@ -73,7 +73,7 @@ public class LineController {
     }
 
     private LineResponse toLineResponse(Line line) {
-        if (line.emptyStations()) {
+        if (line.isEmptyStations()) {
             return new LineResponse(line.getId(), line.getName(), line.getColor());
         }
 

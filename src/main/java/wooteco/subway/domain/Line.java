@@ -50,7 +50,7 @@ public class Line {
         return stations;
     }
 
-    public boolean emptyStations() {
+    public boolean isEmptyStations() {
         return Objects.isNull(sections);
     }
 
