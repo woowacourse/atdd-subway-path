@@ -33,15 +33,15 @@ class LineDaoTest {
     @DisplayName("노선을 등록할 수 있다.")
     void save() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 1000);
 
         // when
         final Long savedId = lineDao.save(line);
 
         // then
         final Line findLine = lineDao.findById(savedId);
-        assertThat(findLine).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(findLine).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 1000);
     }
 
     @Test
@@ -53,8 +53,8 @@ class LineDaoTest {
         Station 강남역 = stationDao.findById(강남역_id);
         Station 역삼역 = stationDao.findById(역삼역_id);
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 분당선 = new Line("분당선", "bg-green-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 1000);
+        Line 분당선 = new Line("분당선", "bg-green-600", 1000);
         Long 신분당선_id = lineDao.save(신분당선);
         Long 분당선_id = lineDao.save(분당선);
 
@@ -68,10 +68,10 @@ class LineDaoTest {
 
         // then
         assertThat(lines).hasSize(2)
-                .extracting("name", "color")
+                .extracting("name", "color", "extraFare")
                 .containsExactlyInAnyOrder(
-                        tuple("신분당선", "bg-red-600"),
-                        tuple("분당선", "bg-green-600"));
+                        tuple("신분당선", "bg-red-600", 1000),
+                        tuple("분당선", "bg-green-600", 1000));
     }
 
     @Test
@@ -83,7 +83,7 @@ class LineDaoTest {
         Station 강남역 = stationDao.findById(강남역_id);
         Station 역삼역 = stationDao.findById(역삼역_id);
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 1000);
         Long 신분당선_id = lineDao.save(신분당선);
         sectionDao.save(new Section(신분당선_id, 강남역, 역삼역, 10));
 
@@ -91,32 +91,32 @@ class LineDaoTest {
         Line findLine = lineDao.findById(신분당선_id);
 
         // then
-        assertThat(findLine).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(findLine).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 1000);
     }
 
     @Test
     @DisplayName("기존 노선의 이름과 색상을 변경할 수 있다.")
     void updateById() {
         // given
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 1000);
         Long 신분당선_id = lineDao.save(신분당선);
 
         // when
-        final Line updateLine = new Line(신분당선_id, "다른분당선", "bg-red-600");
+        final Line updateLine = new Line(신분당선_id, "다른분당선", "bg-red-600", 1500);
         lineDao.updateByLine(updateLine);
 
         // then
         final Line findLine = lineDao.findById(신분당선_id);
-        assertThat(findLine).extracting("name", "color")
-                .contains("다른분당선", "bg-red-600");
+        assertThat(findLine).extracting("name", "color", "extraFare")
+                .contains("다른분당선", "bg-red-600", 1500);
     }
 
     @Test
     @DisplayName("노선을 삭제할 수 있다.")
     void deleteById() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 1000);
         final Long savedId = lineDao.save(line);
 
         // when & then

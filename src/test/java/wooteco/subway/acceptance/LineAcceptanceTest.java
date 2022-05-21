@@ -23,7 +23,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 등록한다.")
     void createLine() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
 
         // when
         ExtractableResponse<Response> response = httpPost("/lines", 신분당선_param);
@@ -43,7 +43,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성한다.")
     void createLineWithDuplicateName() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
         httpPost("/lines", 신분당선_param);
 
         // when
@@ -57,10 +57,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선 전체를 조회한다.")
     void getLines() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> 신분당선_response = httpPost("/lines", 신분당선_param);
 
-        LineRequest 분당선_param = new LineRequest("분당선", "bg-green-600", 1L, 2L, 10);
+        LineRequest 분당선_param = new LineRequest("분당선", "bg-green-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> 분당선_response = httpPost("/lines", 분당선_param);
 
         // when
@@ -81,7 +81,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 조회한다.")
     void getLine() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> 신분당선_response = httpPost("/lines", 신분당선_param);
 
         String savedId = 신분당선_response.header("Location").split("/")[2];
@@ -101,13 +101,13 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존 노선의 이름과 색상을 변경할 수 있다.")
     void updateById() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> 신분당선_response = httpPost("lines", 신분당선_param);
 
         String savedId = 신분당선_response.header("Location").split("/")[2];
 
         // when
-        LineRequest 다른분당선_param = new LineRequest("다른분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 다른분당선_param = new LineRequest("다른분당선", "bg-red-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> response = httpPut("/lines/" + savedId, 다른분당선_param);
 
         // then
@@ -118,7 +118,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존 노선을 삭제할 수 있다.")
     void deleteById() {
         // given
-        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 신분당선_param = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 1000);
         ExtractableResponse<Response> 신분당선_response = httpPost("/lines", 신분당선_param);
 
         String savedId = 신분당선_response.header("Location").split("/")[2];

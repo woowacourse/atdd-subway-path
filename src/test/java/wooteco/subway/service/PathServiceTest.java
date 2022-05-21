@@ -11,8 +11,6 @@ import static wooteco.subway.Fixture.선정릉역;
 import static wooteco.subway.Fixture.역삼역;
 import static wooteco.subway.Fixture.종합운동장역;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -67,12 +64,6 @@ class PathServiceTest {
                         삼전역.getName());
     }
 
-    private List<StationResponse> toDtoResponse(List<Station> stations) {
-        return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
-    }
-
     private void createStationAndSection() {
         강남_id = stationDao.save(강남역);
         Long 역삼_id = stationDao.save(역삼역);
@@ -84,7 +75,7 @@ class PathServiceTest {
         Long 봉은사_id = stationDao.save(봉은사역);
         삼전_id = stationDao.save(삼전역);
 
-        Long 이호선_id = lineDao.save(new Line("2호선", "초록섹"));
+        Long 이호선_id = lineDao.save(new Line("2호선", "초록섹", 1000));
 
         sectionDao.save(new Section(이호선_id, new Station(강남_id, "강남역"), new Station(역삼_id, "역삼역"), 5));
         sectionDao.save(new Section(이호선_id, new Station(역삼_id, "역삼역"), new Station(선릉_id, "선릉역"), 5));
