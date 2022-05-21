@@ -63,7 +63,7 @@ public class SectionService {
     private void insert(Section section, Section newSection) {
         sectionDao.deleteById(section.getId());
         List<Section> sections = section.split(newSection);
-        sections.forEach(sectionDao::save);
+        sectionDao.saveAll(sections);
     }
 
     private void extend(Section newSection) {
