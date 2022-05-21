@@ -44,8 +44,8 @@ class LineServiceTest {
         final LineResponse response = lineService.save(request);
 
         // then
-        assertThat(response).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(response).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 0);
         assertThat(response.getStations()).hasSize(2)
                 .extracting("id", "name")
                 .containsExactlyInAnyOrder(
@@ -73,10 +73,10 @@ class LineServiceTest {
 
         // then
         assertThat(responses).hasSize(2)
-                .extracting("name", "color")
+                .extracting("name", "color", "extraFare")
                 .containsExactlyInAnyOrder(
-                        tuple("신분당선", "bg-red-600"),
-                        tuple("분당선", "bg-green-600")
+                        tuple("신분당선", "bg-red-600", 0),
+                        tuple("분당선", "bg-green-600", 0)
                 );
         assertThat(responses.get(0).getStations()).hasSize(2)
                 .extracting("id", "name")
@@ -109,8 +109,8 @@ class LineServiceTest {
 
         // then
         final LineResponse response = lineService.findById(updateId);
-        assertThat(response).extracting("name", "color")
-                .contains("다른분당선", "bg-red-600");
+        assertThat(response).extracting("name", "color", "extraFare")
+                .contains("다른분당선", "bg-red-600", 0);
     }
 
     @Test

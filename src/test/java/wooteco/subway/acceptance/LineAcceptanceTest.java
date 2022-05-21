@@ -36,6 +36,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
         assertThat(response.as(LineResponse.class).getName()).isEqualTo("신분당선");
         assertThat(response.as(LineResponse.class).getColor()).isEqualTo("bg-red-600");
+        assertThat(response.as(LineResponse.class).getExtraFare()).isEqualTo(0);
     }
 
     @Test
@@ -102,6 +103,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.as(LineResponse.class).getName()).isEqualTo("신분당선");
         assertThat(response.as(LineResponse.class).getColor()).isEqualTo("bg-red-600");
+        assertThat(response.as(LineResponse.class).getExtraFare()).isEqualTo(0);
     }
 
     @Test
@@ -117,9 +119,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         final String savedId = param.header("Location").split("/")[2];
 
         // when
-        Map<String, String> updateParams = new HashMap<>();
+        Map<String, Object> updateParams = new HashMap<>();
         updateParams.put("name", "다른분당선");
         updateParams.put("color", "bg-red-600");
+        updateParams.put("extraFare", 0);
 
         ExtractableResponse<Response> response = AcceptanceFixture.put(updateParams, "/lines/" + savedId);
 
