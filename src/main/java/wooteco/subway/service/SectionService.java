@@ -106,11 +106,11 @@ public class SectionService {
     public PathResponse findShortestPath(Long source, Long target) {
         Sections sections = new Sections(sectionDao.findAll());
         Path shortestPath = sections.findShortestPath(source, target);
-        List<Station> stations = shortestPath.getStationIds().stream()
+        List<Station> stations = shortestPath.getStationIds()
+                .stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
 
-        int distance = shortestPath.getDistance();
-        return new PathResponse(stations, distance, shortestPath.calculateFare());
+        return new PathResponse(stations, shortestPath.getDistance(), shortestPath.calculateFare(lineDao.findAll()));
     }
 }

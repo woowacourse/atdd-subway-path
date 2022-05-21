@@ -2,7 +2,6 @@ package wooteco.subway.domain;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.ArrayList;
@@ -19,10 +18,10 @@ public class Sections {
     }
 
     public Path findShortestPath(Long source, Long target) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
         initPathGraph(graph, gatherStationIds());
         GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        return new Path(path.getEdgeList(), (int) path.getWeight());
     }
 
     private Set<Long> gatherStationIds() {
@@ -34,14 +33,14 @@ public class Sections {
         return ids;
     }
 
-    private void initPathGraph(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Set<Long> ids) {
+    private void initPathGraph(WeightedMultigraph<Long, SectionWeightEdge> graph, Set<Long> ids) {
         for (Long id : ids) {
             graph.addVertex(id);
         }
 
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                    section.getDistance());
+            graph.addEdge(section.getUpStationId(), section.getDownStationId(),
+                    new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
         }
     }
 }

@@ -20,7 +20,7 @@ class SectionsTest {
         Path shortestPath = sections.findShortestPath(1L, 4L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(50);
-        assertThat(shortestPath.calculateFare()).isEqualTo(2050);
+        assertThat(shortestPath.calculateFare(List.of(new Line(1L, "2호선", "green", 0)))).isEqualTo(2050);
     }
 
     @Test
@@ -34,6 +34,6 @@ class SectionsTest {
         Path shortestPath = sections.findShortestPath(1L, 3L);
 
         assertThat(shortestPath.getDistance()).isEqualTo(25);
-        assertThat(shortestPath.calculateFare()).isEqualTo(1550);
+        assertThat(shortestPath.calculateFare(List.of(new Line(1L, "2호선", "green", 0)))).isEqualTo(1550);
     }
 }

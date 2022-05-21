@@ -19,7 +19,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         insert(new StationRequest("강남역"), "/stations", 201);
         insert(new StationRequest("역삼역"), "/stations", 201);
         insert(new StationRequest("선릉역"), "/stations", 201);
-        LineRequest lineRequest = new LineRequest("2호선", "green", 1L, 2L, 10, 100);
+        LineRequest lineRequest = new LineRequest("2호선", "green", 1L, 2L, 10, 0);
         long id = insert(lineRequest, "/lines", 201).extract().jsonPath().getLong("id");
 
         insert(new SectionRequest(2L, 3L, 40), "/lines/" + id + "/sections", 201);
