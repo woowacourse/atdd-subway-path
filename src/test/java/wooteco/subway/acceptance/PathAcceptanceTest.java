@@ -173,7 +173,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * */
     @DisplayName("추가 요금이 있는 노선의 경로를 조회한다.")
     @Test
-    @Disabled
     void getPathInLineWithAdditionalFare() {
         // given
         int extraFare = 900;

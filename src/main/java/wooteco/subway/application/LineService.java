@@ -2,6 +2,7 @@ package wooteco.subway.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -101,7 +102,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId) {
+    public PathResponse calculatePath(final Long sourceId, final Long targetId) {
         SubwayMap subwayMap = new SubwayMap(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
@@ -110,6 +111,26 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
         Path path = subwayMap.calculatePath(sourceStation, targetStation);
-        return PathResponse.from(path.getStations(), path.getDistance(), FarePolicy.calculateFare(path.getDistance()));
+
+        List<Line> passingLines = mapLineIdToLine(path.getPassingLineIds());
+        int extraFare = calculateMostExpensiveExtraFare(passingLines);
+
+        return PathResponse.from(path.getStations(), path.getDistance(), FarePolicy.calculateFare(path.getDistance(), extraFare));
+    }
+
+    private int calculateMostExpensiveExtraFare(final List<Line> passingLines) {
+        return passingLines.stream()
+                .map(Line::getExtraFare)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    private List<Line> mapLineIdToLine(final Set<Long> passingLineIds) {
+        List<Line> passingLines = new ArrayList<>();
+        for (Long passingLineId : passingLineIds) {
+            Line line = lineDao.findById(passingLineId).orElseThrow(() -> new NoSuchLineException(passingLineId));
+            passingLines.add(line);
+        }
+        return passingLines;
     }
 }
