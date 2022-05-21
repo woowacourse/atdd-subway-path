@@ -123,12 +123,22 @@ public class SectionTest {
 
     @Test
     @DisplayName("구간 생성시 거리가 1보다 작은 경우 예외를 발생한다.")
-    void invalidDistance() {
+    void minDistance() {
         Line line = new Line(1L, "2호선", "green");
 
         assertThatThrownBy(() -> new Section(1L, line, 삼성, 성수, 0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 1이상이어야 합니다.");
+    }
+
+    @Test
+    @DisplayName("구간 생성시 거리가 200보다 큰 경우 예외를 발생한다.")
+    void maxDistance() {
+        Line line = new Line(1L, "2호선", "green");
+
+        assertThatThrownBy(() -> new Section(1L, line, 삼성, 성수, 201))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 200이하여야 합니다.");
     }
 
     @Test

@@ -7,6 +7,8 @@ import static wooteco.subway.domain.fixtures.TestFixtures.강남_삼성;
 import static wooteco.subway.domain.fixtures.TestFixtures.건대;
 import static wooteco.subway.domain.fixtures.TestFixtures.건대_성수;
 import static wooteco.subway.domain.fixtures.TestFixtures.당고개;
+import static wooteco.subway.domain.fixtures.TestFixtures.사당;
+import static wooteco.subway.domain.fixtures.TestFixtures.사당_당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.삼성;
 import static wooteco.subway.domain.fixtures.TestFixtures.삼성_건대;
 import static wooteco.subway.domain.fixtures.TestFixtures.성수;
@@ -14,8 +16,11 @@ import static wooteco.subway.domain.fixtures.TestFixtures.성수_강남;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리_당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리_합정;
+import static wooteco.subway.domain.fixtures.TestFixtures.잠실;
+import static wooteco.subway.domain.fixtures.TestFixtures.잠실_당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.창동;
 import static wooteco.subway.domain.fixtures.TestFixtures.창동_당고개;
+import static wooteco.subway.domain.fixtures.TestFixtures.합정;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정_성수;
 
 import java.util.List;
@@ -80,7 +85,7 @@ public class SubwayGraphTest {
     @DisplayName("요금을 반환한다.")
     void getFare(Station source, Station target, int fare) {
         SubwayGraph subwayGraph = new SubwayGraph(
-                List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개, 왕십리_당고개));
+                List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 창동_당고개, 왕십리_당고개, 사당_당고개, 잠실_당고개));
 
         assertThat(subwayGraph.calculateFare(source, target)).isEqualTo(fare);
     }
@@ -90,9 +95,12 @@ public class SubwayGraphTest {
                 Arguments.of(강남, 삼성, 1250),
                 Arguments.of(삼성, 건대, 1350),
                 Arguments.of(건대, 성수, 1450),
+                Arguments.of(왕십리, 합정, 2050),
                 Arguments.of(창동, 당고개, 2150),
-                Arguments.of(왕십리, 당고개, 2250)
-        );
+                Arguments.of(왕십리, 당고개, 2250),
+                Arguments.of(사당, 당고개, 3650),
+                Arguments.of(잠실, 당고개, 3950)
+                );
     }
 
 }

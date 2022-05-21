@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Section {
 
     private static final int MIN_DISTANCE = 1;
+    private static final int MAX_DISTANCE = 200;
 
     private Long id;
     private final Line line;
@@ -66,6 +67,9 @@ public class Section {
     private void validate(int distance) {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException("거리는 1이상이어야 합니다.");
+        }
+        if (distance > MAX_DISTANCE) {
+            throw new IllegalArgumentException("거리는 200이하여야 합니다.");
         }
     }
 
