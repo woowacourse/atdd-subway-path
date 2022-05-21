@@ -19,9 +19,16 @@ public class Sections {
     }
 
     private List<Section> sort(List<Section> sections) {
+        return fillSection(sections, findFirstStation(sections));
+    }
+
+    private Station findFirstStation(List<Section> sections) {
         List<Station> upStations = getAllUpStations(sections);
         List<Station> downStations = getAllDownStations(sections);
-        return fillSection(sections, findFirstStation(upStations, downStations));
+        return upStations.stream()
+                .filter(upStation -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("첫번째 역이 존재하지 않습니다."));
     }
 
     private List<Station> getAllUpStations(List<Section> sections) {
@@ -36,29 +43,22 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    private Station findFirstStation(List<Station> upStations, List<Station> downStations) {
-        return upStations.stream()
-                .filter(upStation -> !downStations.contains(upStation))
-                .findFirst()
-                .orElseThrow(() ->  new IllegalArgumentException("첫번째 역이 존재하지 않습니다."));
-    }
-
-    private List<Section> fillSection(List<Section> sections, Station next) {
+    private List<Section> fillSection(List<Section> sections, Station firstStation) {
         List<Section> result = new ArrayList<>();
+        Station nowStation = firstStation;
         while (result.size() != sections.size()) {
-            next = findNextStation(sections, next, result);
+            Section nextSection = findNextSection(sections, nowStation);
+            result.add(nextSection);
+            nowStation = nextSection.getDownStation();
         }
         return result;
     }
 
-    private Station findNextStation(List<Section> sections, Station next, List<Section> result) {
-        for (Section section : sections) {
-            if (section.isEqualToUpStation(next)) {
-                next = section.getDownStation();
-                result.add(section);
-            }
-        }
-        return next;
+    private Section findNextSection(List<Section> sections, Station upStation) {
+        return sections.stream()
+                .filter(section -> section.isEqualToUpStation(upStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 상행역과 연결된 구간이 없습니다."));
     }
 
     public Section combine(Line line, List<Section> sections) {
@@ -90,7 +90,7 @@ public class Sections {
         );
     }
 
-    public List<Section> findUpdateSections(Section section) {
+    public List<Section> findUpdatedSections(Section section) {
         validateIsExist(section);
         return findAddedSection(section).split(section);
     }
@@ -103,7 +103,8 @@ public class Sections {
 
     private Section findAddedSection(Section section) {
         return sections.stream()
-                .filter(it -> it.isEqualToUpStation(section.getUpStation()) || it.isEqualToDownStation(section.getDownStation()))
+                .filter(it -> it.isEqualToUpStation(section.getUpStation()) || it.isEqualToDownStation(
+                        section.getDownStation()))
                 .findFirst()
                 .orElseGet(() -> isAddableFirstOrEndSection(section));
     }
@@ -115,15 +116,16 @@ public class Sections {
 
     private Section isAddableFirstOrEndSection(Section section) {
         return sections.stream()
-                .filter(it -> it.isEqualToUpStation(section.getDownStation()) || it.isEqualToDownStation(section.getUpStation()))
+                .filter(it -> it.isEqualToUpStation(section.getDownStation()) || it.isEqualToDownStation(
+                        section.getUpStation()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("생성할 수 없는 구간입니다."));
     }
 
     public List<Section> findDeleteSections(Line line, Station station) {
         return sections.stream()
-            .filter(value -> value.isEqualToLine(line) && value.isEqualToUpOrDownStation(station))
-            .collect(Collectors.toList());
+                .filter(value -> value.isEqualToLine(line) && value.isEqualToUpOrDownStation(station))
+                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {

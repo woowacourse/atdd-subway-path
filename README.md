@@ -150,7 +150,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 무엇을 validate하는지 혹은 어떤 조건을 validate하는지 메서드명에 나타내보면 어떨까요?
 - [x] Update는 동사인데, updatedSections를 찾는 메서드일까요?
 - [x] 메서드를 호출하는 입장에서는 next 파라미터가 무엇을 의미하는지 알 수 있을까요?
-- [ ] find 뿐만 아니라 인자로 받은 result에 add도 하고 있네요. 이 메서드에 더 적절한 이름이 있을까요?
+- [x] find 뿐만 아니라 인자로 받은 result에 add도 하고 있네요. 이 메서드에 더 적절한 이름이 있을까요?
 - [ ] 매직 넘버는 상수로 분리하면 어떨까요?
 - [ ] DB 엔티티와 도메인 객체 사이의 변환을 책임지는 계층인가보네요 💯 이 영역을 별도로 두었을 때 어떤 장점이 있었나요?
 - [ ] id가 LineUpdateRequest 내에 포함되면 어떨까요?
