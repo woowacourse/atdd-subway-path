@@ -6,25 +6,22 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
-    private final Sections sections;
+
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public Path(Sections sections) {
-        this.sections = sections;
+        dijkstraShortestPath = getDijkstraShortestPath(sections);
     }
 
     public int getShortestDistance(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
-
         return (int) dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public List<Station> getShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
-
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(Sections sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Station station : sections.getStations()) {
             graph.addVertex(station);
