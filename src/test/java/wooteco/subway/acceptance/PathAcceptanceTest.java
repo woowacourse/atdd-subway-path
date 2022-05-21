@@ -10,6 +10,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
@@ -104,5 +106,62 @@ public class PathAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("상행 역 Id 가 빈 요청을 하면 400 에러가 발생한다.")
+    @Test
+    void pathEmptyUpStationId() {
+        // when
+        Long targetStationId = stations.get("역삼역").getId();
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .when()
+            .get("/paths?source=" + "&target=" + targetStationId + "&age=15")
+            .then().log().all()
+            .extract();
+
+        // then
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(response.jsonPath().getString("message")).isEqualTo("출발 역의 id 가 비었습니다.")
+        );
+    }
+
+    @DisplayName("하행 역 Id 가 빈 요청을 하면 400 에러가 발생한다.")
+    @Test
+    void pathEmptyDownStationId() {
+        // when
+        Long sourceStationId = stations.get("강남역").getId();
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .when()
+            .get("/paths?source=" + sourceStationId + "&target=" + "&age=15")
+            .then().log().all()
+            .extract();
+
+        // then
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(response.jsonPath().getString("message")).isEqualTo("도착 역의 id 가 비었습니다.")
+        );
+    }
+
+    @DisplayName("나이가 옳지 않은 빈 요청을 하면 400 에러가 발생한다.")
+    @ParameterizedTest
+    @CsvSource(value = {":convert", "-1:연령 값은 음수일 수 없습니다."}, delimiter = ':')
+    void pathInvalidAge(String age, String message) {
+        // when
+        Long sourceStationId = stations.get("강남역").getId();
+        Long targetStationId = stations.get("역삼역").getId();
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .when()
+            .get("/paths?source=" + sourceStationId + "&target=" + targetStationId + "&age=" + age)
+            .then().log().all()
+            .extract();
+
+        // then
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(response.jsonPath().getString("message")).contains(message)
+        );
     }
 }
