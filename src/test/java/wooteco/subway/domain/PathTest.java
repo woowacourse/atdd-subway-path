@@ -23,8 +23,8 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        List<Long> result = path.createShortestPath(강남역.getId(), 삼성역.getId());
-        assertThat(result).containsExactly(1L, 2L, 3L);
+        List<Station> result = path.createShortestPath(강남역, 삼성역);
+        assertThat(result).containsExactly(강남역, 역삼역, 삼성역);
     }
 
     @DisplayName("구간이 없는 역에 대해 최단 경로를 조회시 에러가 발생한다.")
@@ -42,7 +42,7 @@ class PathTest {
         Path path = new Path(list);
         // then
         Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> path.createShortestPath(강남역.getId(), 양재역.getId()))
+                .isThrownBy(() -> path.createShortestPath(강남역, 양재역))
                 .withMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }
 
@@ -60,7 +60,7 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        int result = path.calculateDistance(강남역.getId(), 삼성역.getId());
+        int result = path.calculateDistance(강남역, 삼성역);
         assertThat(result).isEqualTo(20);
     }
 

@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when()
                 .get("/paths")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .extract();
     }
 

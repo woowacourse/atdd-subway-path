@@ -1,7 +1,6 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
@@ -16,8 +15,6 @@ import wooteco.subway.reopository.StationRepository;
 @Service
 public class PathService {
 
-    private static final int BASIC_FARE = 1250;
-
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
@@ -27,22 +24,18 @@ public class PathService {
     }
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
-        Long source = pathRequest.getSource();
-        Long target = pathRequest.getTarget();
+        Station source = stationRepository.findById(pathRequest.getSource(), "최단 경로의 상행역을 찾을 수 없습니다.");
+        Station target = stationRepository.findById(pathRequest.getTarget(), "최단 경로의 하행역을 찾을 수 없습니다.");
 
         List<Section> sections = sectionRepository.findAll();
 
         Path path = new Path(sections);
-        List<Long> shortestPath = path.createShortestPath(source, target);
-
-        List<Station> stations = shortestPath.stream()
-                .map(station -> stationRepository.findById(station, "해당 역을 찾을 수 없음"))
-                .collect(Collectors.toList());
+        List<Station> shortestPath = path.createShortestPath(source, target);
 
         int distance = path.calculateDistance(source, target);
-        Fare fare = new Fare(BASIC_FARE);
+        Fare fare = new Fare();
 
-        return new PathResponse(stations, distance,
+        return new PathResponse(shortestPath, distance,
                 fare.calculateFare(distance, new BasicFareStrategy()));
     }
 }
