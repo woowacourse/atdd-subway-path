@@ -1,6 +1,7 @@
 package wooteco.subway.repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,10 +44,14 @@ public class LineRepository {
         return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
+    public List<Line> findAll() {
+        return jdbcTemplate.query("SELECT id, name, color, extra_fare FROM LINE", ROW_MAPPER);
+    }
+
     public Optional<Line> findById(Long id) {
         try {
             Line line = jdbcTemplate
-                .queryForObject("SELECT id, name, color, extra_fare FROM LINE WHERE id = ? ", ROW_MAPPER, id);
+                .queryForObject("SELECT id, name, color, extra_fare FROM LINE WHERE id = ?", ROW_MAPPER, id);
             return Optional.of(line);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -76,5 +81,4 @@ public class LineRepository {
     public void deleteAll() {
         jdbcTemplate.update("DELETE FROM LINE");
     }
-
 }

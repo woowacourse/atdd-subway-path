@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ class PathSearcherTest {
     private List<Station> stations;
     private List<Section> sections;
     private Graph graph;
+    private Map<Long, Integer> extraFares;
+    private FareCalculator fareCalculator;
 
     @BeforeEach
     void setUp() {
@@ -26,12 +29,14 @@ class PathSearcherTest {
             new Section(1L, 1L, new SectionEdge(2L, 3L, 7))
         );
         graph = (source, target) -> new Path(stations, sections, 10);
+        extraFares = Map.of(1L, 0);
+        fareCalculator = new FareCalculator(extraFares);
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")
     @Test
     void throwExceptionWhenSourceSameAsTarget() {
-        assertThatThrownBy(() -> new PathSearcher(graph, new FareCalculator())
+        assertThatThrownBy(() -> new PathSearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(0)))
             .isInstanceOf(UnreachablePathException.class);
     }
@@ -39,7 +44,7 @@ class PathSearcherTest {
     @DisplayName("Graph와 FareCalculator를 사용한 경로 조회")
     @Test
     void searchTransferLinePath() {
-        PathSummary pathSummary = new PathSearcher(graph, new FareCalculator())
+        PathSummary pathSummary = new PathSearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(2));
 
         assertThat(pathSummary.getPath().getStations()).containsExactlyElementsOf(stations);
@@ -51,7 +56,7 @@ class PathSearcherTest {
     void searchUnreachablePath() {
         Graph graph = (source, target) -> Path.EMPTY;
 
-        assertThatThrownBy(() -> new PathSearcher(graph, new FareCalculator())
+        assertThatThrownBy(() -> new PathSearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(2)))
         .isInstanceOf(UnreachablePathException.class);
     }

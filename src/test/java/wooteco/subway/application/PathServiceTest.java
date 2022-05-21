@@ -1,8 +1,10 @@
 package wooteco.subway.application;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +38,7 @@ class PathServiceTest {
     @Autowired
     private SectionService sectionService;
 
+    private List<Station> stations;
     private Station station1;
     private Station station2;
     private Station station3;
@@ -55,12 +58,14 @@ class PathServiceTest {
         station5 = stationService.save(new StationRequest("부산역"));
         station6 = stationService.save(new StationRequest("서면역"));
 
+        stations = List.of(station1, station2, station3, station4, station5, station6);
+
         line1 = lineService.save(
             new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 5, 0));
         sectionService.addSection(line1.getId(), new AddSectionRequest(station2.getId(), station3.getId(), 4));
 
         line2 = lineService.save(
-            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3, 0));
+            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3, 500));
 
         line3 = lineService.save(
             new LineRequest("1호선", "bg-yellow-600", station5.getId(), station6.getId(), 6, 0));
@@ -81,7 +86,7 @@ class PathServiceTest {
     }
 
     private long notFoundStationId() {
-        return Stream.of(station1, station2, station3, station4, station5, station6)
+        return stations.stream()
             .map(Station::getId)
             .max(Long::compareTo).get() + 1L;
     }
@@ -124,7 +129,18 @@ class PathServiceTest {
         assertThat(pathResponse.getStations()).containsExactly(
             new StationResponse(station1), new StationResponse(station2), new StationResponse(station4));
         assertThat(pathResponse.getDistance()).isEqualTo(8);
-        assertThat(pathResponse.getFare()).isEqualTo(1250);
+        assertThat(pathResponse.getFare()).isEqualTo(1750);
+    }
+
+    @DisplayName("노선에 추가 요금이 있는 경우")
+    @Test
+    void searchHasExtraFareLine() {
+        PathResponse pathResponse = pathService.searchPath(station2.getId(), station4.getId());
+
+        assertThat(pathResponse.getStations())
+            .containsExactly(new StationResponse(station2), new StationResponse(station4));
+        assertThat(pathResponse.getDistance()).isEqualTo(3);
+        assertThat(pathResponse.getFare()).isEqualTo(1750);
     }
 
     @Test

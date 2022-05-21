@@ -102,4 +102,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("추가 요금이 있는 지하철 노선 경로 탐색")
+    @Test
+    void searchPathHasExtraFareLine() {
+        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
+
+        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 1000).jsonPath()
+            .getLong("id");
+
+        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 900).jsonPath()
+            .getLong("id");
+        requestAddSection(line1, station2, station3, 10);
+        requestAddSection(line2, station3, station1, 5);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .param("source", station4)
+            .param("target", station2)
+            .when()
+            .get("/paths")
+            .then().log().all()
+            .extract();
+
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        int distance = response.jsonPath().getObject("distance", Integer.class);
+        int fare = response.jsonPath().getObject("fare", Integer.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(distance).isEqualTo(20);
+        assertThat(fare).isEqualTo(2450);
+    }
+
 }
