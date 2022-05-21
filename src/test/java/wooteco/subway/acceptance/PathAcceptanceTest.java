@@ -12,9 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.AgePolicy;
 import wooteco.subway.dto.controller.response.PathResponse;
@@ -107,7 +105,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createLine("2호선", "green", "2", "3", "14", "300");
         createLine("3호선", "orange", "1", "3", "30", "500");
 
-        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age="+age);
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=" + age);
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(

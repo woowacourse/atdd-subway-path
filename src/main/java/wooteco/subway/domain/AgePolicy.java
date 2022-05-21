@@ -9,8 +9,7 @@ public enum AgePolicy {
     BABY(AgePolicy::isBaby, AgePolicy::getFareByBaby),
     CHILDREN(AgePolicy::isChildren, AgePolicy::getFareByChildren),
     TEENAGER(AgePolicy::isTeenager, AgePolicy::getFareByTeenager),
-    ADULT(AgePolicy::isAdult, AgePolicy::getFareByAdult)
-    ;
+    ADULT(AgePolicy::isAdult, AgePolicy::getFareByAdult);
 
     private final Predicate<Integer> ageGroup;
     private final Function<Integer, Integer> discountPolicy;

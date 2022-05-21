@@ -22,7 +22,6 @@ import wooteco.subway.dto.service.StationDto;
 import wooteco.subway.entity.LineEntity;
 import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.strategy.DistanceFareStrategy;
-import wooteco.subway.strategy.FareStrategy;
 import wooteco.subway.utils.DijkstraShortestPathStation;
 
 @Service
