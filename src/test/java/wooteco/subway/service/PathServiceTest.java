@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.dao.*;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PathServiceTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private StationDao stationDao;
     private SectionDao sectionDao;

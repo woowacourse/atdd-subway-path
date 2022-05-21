@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.LineDaoImpl;
 import wooteco.subway.dao.SectionDao;
@@ -25,7 +25,7 @@ import wooteco.subway.service.dto.SectionServiceRequest;
 public class SectionServiceTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private SectionService sectionService;
     private SectionDao sectionDao;

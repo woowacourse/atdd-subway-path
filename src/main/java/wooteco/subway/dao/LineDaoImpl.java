@@ -3,39 +3,39 @@ package wooteco.subway.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
 
 @Repository
 public class LineDaoImpl implements LineDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public LineDaoImpl(JdbcTemplate jdbcTemplate) {
+    public LineDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Long save(Line line) {
-        final String sql = "INSERT INTO line (name, color) VALUES (?, ?)";
-
+        final String sql = "INSERT INTO line (name, color) VALUES (:name, :color)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, line.getName());
-            ps.setString(2, line.getColor());
-            return ps;
-        }, keyHolder);
-
-        return keyHolder.getKey().longValue();
+        final Map<String, Object> param = new HashMap<>();
+        param.put("name", line.getName());
+        param.put("color", line.getColor());
+        jdbcTemplate.update(sql, new MapSqlParameterSource(param), keyHolder, new String[]{"id"});
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
@@ -46,17 +46,18 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public boolean deleteById(Long id) {
-        final String sql = "DELETE FROM line where id = ?";
-        int updateSize = jdbcTemplate.update(sql, id);
+        final String sql = "DELETE FROM line where id = :id";
+        final SqlParameterSource params = new MapSqlParameterSource("id", id);
+        int updateSize = jdbcTemplate.update(sql, params);
         return updateSize != 0;
     }
 
     @Override
     public Optional<Line> findById(Long id) {
-        final String sql = "SELECT * FROM line where id = ?";
-
+        final String sql = "SELECT * FROM line where id = :id";
+        final SqlParameterSource params = new MapSqlParameterSource("id", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new LineMapper(), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, params, new LineMapper()));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
@@ -64,15 +65,17 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public boolean updateById(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? where id = ?";
-        int updateSize = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        final String sql = "UPDATE line SET name = :name, color = :color where id = :id";
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(line);
+        final int updateSize = jdbcTemplate.update(sql, params);
         return updateSize != 0;
     }
 
     @Override
     public boolean existsByName(String name) {
-        final String sql = "SELECT EXISTS (SELECT * FROM line WHERE name = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+        final String sql = "SELECT EXISTS (SELECT * FROM line WHERE name = :name)";
+        final SqlParameterSource params = new MapSqlParameterSource("name", name);
+        return jdbcTemplate.queryForObject(sql, params, Boolean.class);
     }
 
     private static class LineMapper implements RowMapper<Line> {
