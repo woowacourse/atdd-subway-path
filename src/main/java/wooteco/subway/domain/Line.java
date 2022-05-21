@@ -1,9 +1,9 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Line {
 
@@ -32,22 +32,11 @@ public class Line {
     }
 
     public List<Station> getStations() {
-        final List<Section> sections = this.sections.getSections();
-
-        List<Station> stations = getStations(sections);
-
-        return stations.stream()
+        return sections.getSections()
+                .stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
                 .distinct()
                 .collect(Collectors.toList());
-    }
-
-    private List<Station> getStations(List<Section> sections) {
-        List<Station> stations = new ArrayList<>();
-        for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-        return stations;
     }
 
     public boolean isEmptyStations() {
