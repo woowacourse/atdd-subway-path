@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.CostCalculator;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathStrategy;
 import wooteco.subway.domain.Section;
@@ -43,11 +43,11 @@ public class PathService {
 
         int distance = pathStrategy.calculateDistance(source, target);
         int extraFare = findMaxExtraFare(pathStrategy.findLineIds(source, target));
-        CostCalculator costCalculator = new CostCalculator(distance, extraFare);
+        FareCalculator fareCalculator = new FareCalculator(distance, extraFare);
 
         return new PathResponse(
                 distance,
-                costCalculator.calculate(),
+                fareCalculator.calculate(),
                 generateStationResponses(pathStrategy.findPath(source, target))
         );
     }
