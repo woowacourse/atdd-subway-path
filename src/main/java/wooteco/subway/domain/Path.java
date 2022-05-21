@@ -5,6 +5,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.NoSuchPathException;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +36,8 @@ public class Path {
 
     public List<Station> findRoute(final Station source, final Station target) {
         validateExistsPath(source, target);
-        return path.getPath(source, target).getVertexList();
+        List<Station> stations = path.getPath(source, target).getVertexList();
+        return new LinkedList<>(stations);
     }
 
     public int calculateDistance(final Station source, final Station target) {
