@@ -23,7 +23,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     private Long getLineId(Long stationId1, Long stationId2) {
-        LineRequest 육호선 = new LineRequest("육호선", "bg-red-600", stationId1, stationId2, 10);
+        LineRequest 육호선 = new LineRequest("육호선", "bg-red-600", stationId1, stationId2, 10, 100);
         return postLineId(육호선);
     }
 
