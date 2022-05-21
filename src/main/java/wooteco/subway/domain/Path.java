@@ -11,6 +11,13 @@ public class Path {
     private static final int DISTANCE_OF_FIRST_ADDITIONAL_UNIT = 5;
     private static final int DISTANCE_OF_OVER_ADDITIONAL_UNIT = 8;
     private static final int DISTANCE_OF_OVER_ADDITIONAL_FARE = 50;
+    private static final int DISCOUNT_AMOUNT = 350;
+    private static final int CHILD_MINIMUM_AGE = 6;
+    private static final int CHILD_MAXIMUM_AGE = 13;
+    private static final int YOUTH_MINIMUM_AGE = 13;
+    private static final int YOUTH_MAXIMUM_AGE = 19;
+    private static final double YOUTH_DISCOUNT_RATE = 0.8;
+    private static final double CHILD_DISCOUNT_RATE = 0.5;
 
     private final List<Station> stations;
     private final int distance;
@@ -43,7 +50,17 @@ public class Path {
         }
     }
 
-    public int calculateFare() {
+    public double calculateFinalFare(int age) {
+        if (age >= CHILD_MINIMUM_AGE && age < CHILD_MAXIMUM_AGE) {
+            return (calculateFare() - DISCOUNT_AMOUNT) * CHILD_DISCOUNT_RATE;
+        }
+        if (age >= YOUTH_MINIMUM_AGE && age < YOUTH_MAXIMUM_AGE) {
+            return (calculateFare() - DISCOUNT_AMOUNT) * YOUTH_DISCOUNT_RATE;
+        }
+        return calculateFare();
+    }
+
+    private int calculateFare() {
         if (distance <= DISTANCE_OF_DEFAULT_FARE) {
             return DEFAULT_FARE + calculateExtraFare();
         }
@@ -72,7 +89,7 @@ public class Path {
         );
     }
 
-    public int calculateExtraFare() {
+    private int calculateExtraFare() {
         int minExtraFare = lines.stream()
                 .map(Line::getExtraFare)
                 .mapToInt(fare -> fare)

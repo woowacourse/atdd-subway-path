@@ -28,13 +28,15 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         GraphPath<Station, ShortestPathEdge> shortestPath =
                 Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
                         .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        List<Line> lines = getLines(shortestPath);
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(), lines);
+    }
 
+    private List<Line> getLines(GraphPath<Station, ShortestPathEdge> shortestPath) {
         List<ShortestPathEdge> edges = shortestPath.getEdgeList();
-        List<Line> lines = edges.stream()
+        return edges.stream()
                 .map(ShortestPathEdge::getLine)
                 .collect(Collectors.toList());
-
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(), lines);
     }
 
     private void addVertexStation(final Sections sections,

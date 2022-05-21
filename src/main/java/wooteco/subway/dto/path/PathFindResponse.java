@@ -9,23 +9,23 @@ public class PathFindResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private int fare;
+    private int extraFare;
 
     private PathFindResponse() {
     }
 
-    public PathFindResponse(final List<StationResponse> stations, final int distance, final int fare) {
+    public PathFindResponse(final List<StationResponse> stations, final int distance, final int extraFare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.extraFare = extraFare;
     }
 
-    public static PathFindResponse from(Path path) {
+    public static PathFindResponse from(Path path, int age) {
         List<StationResponse> stationResponses = path.getStations()
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return new PathFindResponse(stationResponses, path.getDistance(), path.calculateFare());
+        return new PathFindResponse(stationResponses, path.getDistance(), (int) path.calculateFinalFare(age));
     }
 
     public List<StationResponse> getStations() {
@@ -36,7 +36,7 @@ public class PathFindResponse {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public int getExtraFare() {
+        return extraFare;
     }
 }

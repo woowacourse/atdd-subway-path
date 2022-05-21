@@ -66,7 +66,7 @@ class PathServiceTest {
                                 tuple(station3.getId(), station3.getName())
                         ),
                 () -> assertThat(path.getDistance()).isEqualTo(4),
-                () -> assertThat(path.getFare()).isEqualTo(1250)
+                () -> assertThat(path.getExtraFare()).isEqualTo(720)
         );
     }
 }

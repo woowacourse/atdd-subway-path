@@ -40,7 +40,7 @@ class PathTest {
         List<Line> lines = List.of(new Line("1호선", "bg-green-600", 0));
         Path path = new Path(stations, distance, lines);
 
-        assertThat(path.calculateFare()).isEqualTo(expected);
+        assertThat(path.calculateFinalFare(20)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -50,7 +50,7 @@ class PathTest {
         List<Line> lines = List.of(new Line("1호선", "bg-green-600", 0));
         Path path = new Path(stations, distance, lines);
 
-        assertThat(path.calculateFare()).isEqualTo(expected);
+        assertThat(path.calculateFinalFare(20)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -60,7 +60,7 @@ class PathTest {
         List<Line> lines = List.of(new Line("1호선", "bg-green-600", 0));
         Path path = new Path(stations, distance, lines);
 
-        assertThat(path.calculateFare()).isEqualTo(expected);
+        assertThat(path.calculateFinalFare(20)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -71,7 +71,7 @@ class PathTest {
         List<Line> lines = List.of(new Line("1호선", "bg-red-600", 900));
         Path path = new Path(stations, 8, lines);
 
-        assertThat(path.calculateFare()).isEqualTo(2150);
+        assertThat(path.calculateFinalFare(20)).isEqualTo(2150);
     }
 
     @ParameterizedTest
@@ -85,6 +85,26 @@ class PathTest {
                 new Line("2호선", "bg-green-600", 0));
         Path path = new Path(stations, 8, lines);
 
-        assertThat(path.calculateFare()).isEqualTo(2150);
+        assertThat(path.calculateFinalFare(20)).isEqualTo(2150);
+    }
+    
+    @Test
+    @DisplayName("어린이 요금으로 할인할 수 있다.")
+    void calculateChildFare() {
+        List<Station> stations = List.of(new Station(1L, "강남역"), new Station(2L, "선릉역"), new Station(3L, "선정릉역"));
+        List<Line> lines = List.of(new Line("1호선", "bg-red-600", 900));
+        Path path = new Path(stations, 8, lines);
+
+        assertThat(path.calculateFinalFare(6)).isEqualTo(900);
+    }
+
+    @Test
+    @DisplayName("청소년 요금으로 할인할 수 있다.")
+    void calculateYouthFare() {
+        List<Station> stations = List.of(new Station(1L, "강남역"), new Station(2L, "선릉역"), new Station(3L, "선정릉역"));
+        List<Line> lines = List.of(new Line("1호선", "bg-red-600", 900));
+        Path path = new Path(stations, 8, lines);
+
+        assertThat(path.calculateFinalFare(13)).isEqualTo(1440);
     }
 }

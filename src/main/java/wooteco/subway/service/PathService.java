@@ -29,6 +29,6 @@ public class PathService {
         Sections sections = new Sections(sectionDao.findAll());
         Station source = stationDao.findById(pathFindRequest.getSource());
         Station target = stationDao.findById(pathFindRequest.getTarget());
-        return PathFindResponse.from(findPathStrategy.findPath(source, target, sections));
+        return PathFindResponse.from(findPathStrategy.findPath(source, target, sections), pathFindRequest.getAge());
     }
 }
