@@ -32,11 +32,12 @@ public class Line {
         this(null, name, color, extraFare);
     }
 
-    public void update(final String name, final String color) {
+    public void update(final String name, final String color, final int extraFare) {
         validateNullOrBlank(name);
         validateNullOrBlank(color);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public void addAllSections(final List<Section> sections) {

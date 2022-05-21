@@ -387,10 +387,14 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("지하철역1").getId();
         long id2 = createStation("지하철역2").getId();
-        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10);
+        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10, 100);
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor");
+        String changedName = "changedName";
+        String changedColor = "changedColor";
+        int extraFare = 50;
+
+        LineUpdateRequest updateRequest = new LineUpdateRequest(changedName, changedColor, extraFare);
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -410,7 +414,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(line).usingRecursiveComparison().isEqualTo(
-                        new LineResponse(originLine.getId(), "changedName", "changedColor", originLine.getStations()))
+                        new LineResponse(originLine.getId(), changedName, changedColor, extraFare, originLine.getStations()))
         );
     }
 
