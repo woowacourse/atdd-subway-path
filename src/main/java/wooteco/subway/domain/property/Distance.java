@@ -8,6 +8,10 @@ public class Distance {
 
     private final int value;
 
+    public Distance(long value) {
+        this((int)value);
+    }
+
     public Distance(int value) {
         validatePositive(value);
         this.value = value;

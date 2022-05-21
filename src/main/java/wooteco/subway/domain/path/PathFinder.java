@@ -1,6 +1,7 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,21 +16,22 @@ import wooteco.subway.exception.PathNotFoundException;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath;
 
-    public PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        this.graph = graph;
+    private PathFinder(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraPath) {
+        this.dijkstraPath = dijkstraPath;
     }
 
     public static PathFinder from(LineSeries lineSeries) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        return new PathFinder(new DijkstraShortestPath<>(createGraph(lineSeries)));
+    }
 
-        final List<Line> lines = lineSeries.getLines();
-        for (Line line : lines) {
-            final List<Section> sections = line.getSectionSeries().getSections();
-            addStationEdge(graph, sections);
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(LineSeries lineSeries) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        for (Line line : lineSeries.getLines()) {
+            addStationEdge(graph, line.getSectionSeries().getSections());
         }
-        return new PathFinder(graph);
+        return graph;
     }
 
     private static void addStationEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
@@ -45,30 +47,21 @@ public class PathFinder {
 
     public List<Station> findShortestPath(Station source, Station destination) {
         validateDistinctStation(source, destination);
-        try {
-            return findPath(source, destination).getVertexList();
-        } catch (IllegalArgumentException e) {
-            throw throwPathNotFound(source, destination);
-        }
+        return findPath(source, destination).getVertexList();
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station destination) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
-        final GraphPath<Station, DefaultWeightedEdge> foundPath = path.getPath(source, destination);
-        if (foundPath == null) {
+        try {
+            final GraphPath<Station, DefaultWeightedEdge> foundPath = dijkstraPath.getPath(source, destination);
+            return Objects.requireNonNull(foundPath);
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw throwPathNotFound(source, destination);
         }
-        return foundPath;
     }
 
-    public int getDistance(Station source, Station destination) {
+    public long getDistance(Station source, Station destination) {
         validateDistinctStation(source, destination);
-        try {
-            final double weight = findPath(source, destination).getWeight();
-            return (int)Math.round(weight);
-        } catch (IllegalArgumentException e) {
-            throw throwPathNotFound(source, destination);
-        }
+        return Math.round(findPath(source, destination).getWeight());
     }
 
     private PathNotFoundException throwPathNotFound(Station source, Station destination) {

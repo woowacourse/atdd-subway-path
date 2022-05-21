@@ -83,10 +83,10 @@ class PathFinderTest {
         final PathFinder pathFinder = PathFinder.from(lineSeries);
 
         // when
-        final int distance = pathFinder.getDistance(getStationA(), getStationD());
+        final long distance = pathFinder.getDistance(getStationA(), getStationD());
 
         // then
-        assertThat(distance).isEqualTo(17);
+        assertThat(distance).isEqualTo(17L);
     }
 
     @Test
