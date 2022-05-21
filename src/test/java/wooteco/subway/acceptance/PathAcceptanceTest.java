@@ -21,9 +21,9 @@ import wooteco.subway.dto.controller.response.PathResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("최단 거리와 최단 경로를 응답한다.")
+    @DisplayName("최단 거리와 최단 경로를 응답한다.(상행 -> 하행)")
     @Test
-    void getShortestPath() {
+    void getShortestPathUpToDown() {
         createStation("신림역");
         createStation("강남역");
         createStation("역삼역");
@@ -35,6 +35,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createLine("3호선", "orange", "1", "3", "10", "900");
 
         ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=30");
+
+        PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations()).hasSize(3),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
+        );
+    }
+
+    @DisplayName("최단 거리와 최단 경로를 응답한다.(하행 -> 상행)")
+    @Test
+    void getShortestPathDownToUp() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "3", "900");
+        createLine("2호선", "green", "2", "3", "4", "900");
+        createLine("3호선", "orange", "1", "3", "10", "900");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=3&target=1&age=30");
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(

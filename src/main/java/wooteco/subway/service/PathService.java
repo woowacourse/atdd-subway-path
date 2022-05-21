@@ -80,8 +80,8 @@ public class PathService {
             Station downStation = stations.get(i + 1);
 
             SectionEntity sectionEntity = sectionEntities.stream()
-                    .filter(entity -> entity.getUpStationId() == upStation.getId())
-                    .filter(entity -> entity.getDownStationId() == downStation.getId())
+                    .filter(entity -> containsStationInSection(upStation, entity))
+                    .filter(entity -> containsStationInSection(downStation, entity))
                     .min(Comparator.comparingInt(SectionEntity::getDistance))
                     .orElseThrow(() -> new IllegalStateException("구간 정보가 잘못되었습니다."));
             lineIds.add(sectionEntity.getLineId());
@@ -92,6 +92,10 @@ public class PathService {
         }
 
         return new ArrayList<>(lineIds);
+    }
+
+    private boolean containsStationInSection(Station upStation, SectionEntity entity) {
+        return entity.getUpStationId() == upStation.getId() || entity.getDownStationId() == upStation.getId();
     }
 
     private int getExtraFare(List<Long> lineIds) {
