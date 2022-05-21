@@ -19,7 +19,7 @@
 ### 2단계 기능 요구사항
 - [x] schema.sql Line 에 extraFare 추가하기
 - [x] Line, LineResponse, LineRequest 에 extraFare 추가하기
-- [ ] Graph 에서 최소 경로 구할 때 Section 리스트로 구하기
+- [x] Graph 에서 최소 경로 구할 때 Section 리스트로 구하기
 - [ ] 요금 구하기
   - [ ] 노선별 추가요금 포함하여 요금 구하기
   - [ ] 연령별 요금 할인에 따라 요금 구하기

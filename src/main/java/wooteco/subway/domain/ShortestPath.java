@@ -8,22 +8,21 @@ import java.util.List;
 public class ShortestPath {
 
     private final List<Station> vertexes;
+    private final List<Section> sections;
     private final int distance;
 
-    public ShortestPath(final GraphPath<Station, DefaultWeightedEdge> path) {
-        validatePathExist(path);
-        this.vertexes = path.getVertexList();
-        this.distance = (int) path.getWeight();
-    }
-
-    private void validatePathExist(final GraphPath<Station, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new IllegalStateException("해당 경로가 존재하지 않습니다.");
-        }
+    public ShortestPath(List<Station> vertexes, List<Section> sections, int distance) {
+        this.vertexes = vertexes;
+        this.sections = sections;
+        this.distance = distance;
     }
 
     public List<Station> getVertexes() {
         return vertexes;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public int getDistance() {

@@ -159,4 +159,11 @@ public class Sections {
     public List<Section> getSections() {
         return value;
     }
+
+    public Section findConnectedSection(final Station source, final Station target, final int distance) {
+        return value.stream()
+                .filter(section -> section.isSameValue(new Section(source, target, distance)) || section.isSameValue(new Section(target, source, distance)))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
+    }
 }
