@@ -13,10 +13,10 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Lines {
 
-	private final List<Line> value;
+	private final List<Line> values;
 
-	public Lines(List<Line> value) {
-		this.value = new ArrayList<>(value);
+	public Lines(List<Line> values) {
+		this.values = new ArrayList<>(values);
 	}
 
 	public Path findPath(Station source, Station target) {
@@ -27,7 +27,7 @@ public class Lines {
 	}
 
 	private List<Section> getSections() {
-		return value.stream()
+		return values.stream()
 			.map(Line::getSections)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
