@@ -30,8 +30,7 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<MessageResponse> handleValidException(
-        MethodArgumentNotValidException exception) {
+    public ResponseEntity<MessageResponse> handleValidException(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getAllErrors().get(0)
             .getDefaultMessage();
         logger.error(errorMessage);

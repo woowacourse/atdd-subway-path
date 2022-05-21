@@ -30,11 +30,23 @@ public class Dijkstra implements PathFactory {
     }
 
     public int findShortestDistance(Long source, Long target) {
-        double weight = dijkstraShortestPath.getPath(source, target).getWeight();
-        return (int) weight;
+        try {
+            double weight = dijkstraShortestPath.getPath(source, target).getWeight();
+            return (int) weight;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("구간에 없는 역은 출발지 또는 목적지로 선택할 수 없습니다.");
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("이동할 수 없는 경로입니다.");
+        }
     }
 
     public List<Long> findShortestPath(Long source, Long target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        try {
+            return dijkstraShortestPath.getPath(source, target).getVertexList();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("구간에 없는 역은 출발지 또는 목적지로 선택할 수 없습니다.");
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("이동할 수 없는 경로입니다.");
+        }
     }
 }

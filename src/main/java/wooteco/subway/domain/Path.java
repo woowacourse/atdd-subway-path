@@ -13,8 +13,15 @@ public class Path {
     }
 
     public static Path of(PathFactory pathFactory, Long source, Long target) {
+        validateSameStations(source, target);
         return new Path(pathFactory.findShortestDistance(source, target),
                 pathFactory.findShortestPath(source, target));
+    }
+
+    private static void validateSameStations(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
     }
 
     public int getShortestDistance() {
