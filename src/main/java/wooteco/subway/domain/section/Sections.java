@@ -2,6 +2,7 @@ package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -55,7 +56,19 @@ public class Sections {
                 .orElseThrow(() -> new DataNotExistException("다음 역을 찾을 수 없습니다."));
     }
 
-    public void validateSectionInLine(Section newSection) {
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    public Optional<Section> getUpdatedSectionForSaveIfRequired(Section newSection) {
+        validateSectionInLine(newSection);
+        if (isRequireUpdateForSave(newSection)) {
+            return Optional.of(getUpdatedSectionForSave(newSection));
+        }
+        return Optional.empty();
+    }
+
+    private void validateSectionInLine(Section newSection) {
         List<Long> stationIds = findStationIds();
         boolean existUpStation = stationIds.contains(newSection.getUpStationId());
         boolean existDownStation = stationIds.contains(newSection.getDownStationId());
@@ -69,7 +82,30 @@ public class Sections {
         }
     }
 
-    public void validateSectionDistance(Section newSection) {
+    private boolean isRequireUpdateForSave(Section newSection) {
+        return !(isTopStation(newSection.getDownStationId()) || isBottomStation(newSection.getUpStationId()));
+    }
+
+    private Boolean isTopStation(Long stationId) {
+        return sections.get(0).equalsUpStationId(stationId);
+    }
+
+    private Boolean isBottomStation(Long stationId) {
+        return sections.get(sections.size() - 1).equalsDownStationId(stationId);
+    }
+
+    private Section getUpdatedSectionForSave(Section newSection) {
+        validateSectionDistance(newSection);
+        List<Long> stationIds = findStationIds();
+        Section existSection = getExistSection(newSection);
+
+        if (stationIds.contains(newSection.getDownStationId())) {
+            return existSection.getUpdatedSectionForSameDownStation(newSection);
+        }
+        return existSection.getUpdatedSectionForSameUpStation(newSection);
+    }
+
+    private void validateSectionDistance(Section newSection) {
         if (getExistSection(newSection).isShorterDistance(newSection)) {
             throw new SubwayException("구간의 길이는 기존 역 사이의 길이보다 작아야합니다.");
         }
@@ -80,28 +116,6 @@ public class Sections {
                 .filter(section -> section.equalsUpOrDownStationId(newSection))
                 .findFirst()
                 .orElseThrow(() -> new DataNotExistException("존재하지 않는 구간입니다."));
-    }
-
-    public Section getUpdatedSectionForSave(Section newSection) {
-        List<Long> stationIds = findStationIds();
-        Section existSection = getExistSection(newSection);
-
-        if (stationIds.contains(newSection.getDownStationId())) {
-            return existSection.getUpdatedSectionForSameDownStation(newSection);
-        }
-        return existSection.getUpdatedSectionForSameUpStation(newSection);
-    }
-
-    public boolean isRequireUpdateForSave(Section newSection) {
-        return !(isTopStation(newSection.getDownStationId()) || isBottomStation(newSection.getUpStationId()));
-    }
-
-    private Boolean isTopStation(Long stationId) {
-        return sections.get(0).equalsUpStationId(stationId);
-    }
-
-    private Boolean isBottomStation(Long stationId) {
-        return sections.get(sections.size() - 1).equalsDownStationId(stationId);
     }
 
     public void validateDelete(Long stationId) {
@@ -152,9 +166,5 @@ public class Sections {
                 .collect(Collectors.toList());
         stationIds.add(0, sections.get(0).getUpStationId());
         return stationIds;
-    }
-
-    public boolean isEmpty() {
-        return sections.isEmpty();
     }
 }

@@ -21,18 +21,11 @@ public class SectionService {
 
     public Long save(Section section) {
         Sections sections = new Sections(findAllByLineId(section.getLineId()));
-        if (!sections.isEmpty()) {
-            sections.validateSectionInLine(section);
-            updateSectionForSave(section, sections);
+        if (!sections.isEmpty()){
+            sections.getUpdatedSectionForSaveIfRequired(section)
+                    .ifPresent(sectionDao::update);
         }
         return sectionDao.save(section);
-    }
-
-    private void updateSectionForSave(Section section, Sections sections) {
-        if (sections.isRequireUpdateForSave(section)) {
-            sections.validateSectionDistance(section);
-            sectionDao.update(sections.getUpdatedSectionForSave(section));
-        }
     }
 
     public void delete(Long lineId, Long stationId) {
