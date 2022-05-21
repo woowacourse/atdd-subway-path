@@ -15,8 +15,8 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.response.PathResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.service.dto.response.PathResponse;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @DisplayName("지하철 경로 관련 service 테스트")
 @JdbcTest

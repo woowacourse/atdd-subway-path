@@ -10,7 +10,7 @@ import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.service.dto.response.PathResponse;
 
 @Service
 public class PathService {

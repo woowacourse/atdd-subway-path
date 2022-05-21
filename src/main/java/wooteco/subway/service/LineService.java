@@ -11,10 +11,10 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.request.LineSaveRequest;
-import wooteco.subway.dto.request.LineUpdateRequest;
-import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.service.dto.request.LineSaveRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineResponse;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @Service
 @Transactional(readOnly = true)

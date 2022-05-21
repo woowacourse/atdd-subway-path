@@ -1,4 +1,4 @@
-package wooteco.subway.dto.response;
+package wooteco.subway.service.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;

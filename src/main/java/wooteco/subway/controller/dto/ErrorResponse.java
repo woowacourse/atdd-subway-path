@@ -1,4 +1,4 @@
-package wooteco.subway.dto.response;
+package wooteco.subway.controller.dto;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +11,8 @@ public class ErrorResponse {
 
     private String message;
 
-    private ErrorResponse(){}
+    private ErrorResponse(){
+    }
 
     public ErrorResponse(final String message) {
         this.message = message;

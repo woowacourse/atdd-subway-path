@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.request.LineSaveRequest;
-import wooteco.subway.dto.request.LineUpdateRequest;
-import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.service.dto.request.LineSaveRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineResponse;
 import wooteco.subway.service.LineService;
 
 import javax.validation.Valid;

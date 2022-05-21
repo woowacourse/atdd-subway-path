@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dto.request.StationRequest;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.service.dto.request.StationRequest;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 service 테스트")
 @JdbcTest

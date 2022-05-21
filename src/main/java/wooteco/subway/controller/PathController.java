@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.request.PathRequest;
-import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.service.dto.request.PathRequest;
+import wooteco.subway.service.dto.response.PathResponse;
 import wooteco.subway.service.PathService;
 
 import javax.validation.Valid;

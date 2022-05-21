@@ -12,7 +12,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.service.dto.request.SectionRequest;
 
 import java.util.List;
 

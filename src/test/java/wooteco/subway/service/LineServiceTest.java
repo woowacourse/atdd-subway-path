@@ -17,10 +17,10 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.request.LineSaveRequest;
-import wooteco.subway.dto.request.LineUpdateRequest;
-import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.service.dto.request.LineSaveRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineResponse;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @DisplayName("지하철 노선 관련 service 테스트")
 @JdbcTest
