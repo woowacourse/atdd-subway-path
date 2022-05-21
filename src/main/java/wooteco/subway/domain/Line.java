@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Line {
     private final Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
     private final Sections sections = new Sections();
     private final int extraFare;
 
@@ -23,13 +23,6 @@ public class Line {
 
     public Line(final String name, final String color, final int extraFare) {
         this(null, name, color, extraFare);
-    }
-
-    public void update(final String name, final String color) {
-        validateNullOrBlank(name);
-        validateNullOrBlank(color);
-        this.name = name;
-        this.color = color;
     }
 
     public void addAllSections(final List<Section> sections) {
