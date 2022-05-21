@@ -7,9 +7,16 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.domain.AgePolicy;
 import wooteco.subway.dto.controller.response.PathResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -59,6 +66,44 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(pathResponse.getStations()).hasSize(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(27),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250 + 400 + 300)
+        );
+    }
+
+    @DisplayName("연령별 할인을 적용한다")
+    @ParameterizedTest(name = "{displayName} : {0} 살, 분류 : {1}")
+    @MethodSource("discountFareWithAgeTestSet")
+    void discountFareWithAge(Integer age, AgePolicy agePolicy) {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "13", "100");
+        createLine("2호선", "green", "2", "3", "14", "300");
+        createLine("3호선", "orange", "1", "3", "30", "500");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age="+age);
+
+        PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations()).hasSize(3),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(27),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(agePolicy.getDiscountedFare(1250 + 400 + 300))
+        );
+    }
+
+    public static Stream<Arguments> discountFareWithAgeTestSet() {
+        return Stream.of(
+                Arguments.of(1, AgePolicy.BABY),
+                Arguments.of(5, AgePolicy.BABY),
+                Arguments.of(6, AgePolicy.CHILDREN),
+                Arguments.of(12, AgePolicy.CHILDREN),
+                Arguments.of(13, AgePolicy.TEENAGER),
+                Arguments.of(18, AgePolicy.TEENAGER),
+                Arguments.of(19, AgePolicy.ADULT),
+                Arguments.of(100, AgePolicy.ADULT)
         );
     }
 

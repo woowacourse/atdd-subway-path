@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.AgePolicy;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -55,9 +56,10 @@ public class PathService {
         List<Long> visitLines = getVisitLines(path.getStations(), sectionEntities);
         int extraFare = getExtraFare(visitLines);
 
-        FareStrategy fare = new DistanceFareStrategy();
-        return new PathServiceResponse(stationDtos, path.getDistance(),
-                fare.calculate(path.getDistance()) + extraFare);
+        AgePolicy agePolicy = AgePolicy.fromAge(pathServiceRequest.getAge());
+        int fare = new DistanceFareStrategy().calculate(path.getDistance()) + extraFare;
+        fare = agePolicy.getDiscountedFare(fare);
+        return new PathServiceResponse(stationDtos, path.getDistance(), fare);
     }
 
     private Sections getSections(List<SectionEntity> sectionEntities) {
