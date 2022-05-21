@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,21 +17,21 @@ import wooteco.subway.dto.SectionRequest;
 @DisplayName("지하철 구간 관련 기능")
 class SectionAcceptanceTest extends AcceptanceTest {
 
-    @BeforeEach
-    void setup() {
+    @DisplayName("특정 노선의 구간을 추가한다.")
+    @Test
+    void createSection() {
+        // given
         createStation("아차산역");
         createStation("군자역");
         createStation("마장역");
         createLine("5호선", "bg-purple-600", 1L, 2L, 10);
-    }
 
-    @DisplayName("특정 노선의 구간을 추가한다.")
-    @Test
-    void createSection() {
+        // when
         SectionRequest sectionRequest = new SectionRequest(2L, 3L, 5);
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines/1/sections",
                 sectionRequest);
 
+        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -40,9 +39,17 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @MethodSource("thrownArguments")
     void thrown_invalidArguments(SectionRequest newSectionRequest, String errorMessage) {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("마장역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+
+        // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines/1/sections",
                 newSectionRequest);
 
+        // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.jsonPath().getString("message")).isEqualTo(errorMessage)
@@ -60,6 +67,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 노선의 구간을 삭제한다.")
     @Test
     void deleteSection() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("마장역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+
         // when
         addSection(2L, 3L, 5, 1L);
 

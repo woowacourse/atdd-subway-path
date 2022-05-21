@@ -36,19 +36,19 @@ public class PathServiceTest {
     @Autowired
     private PathService pathService;
 
-    private Station 신림역;
-    private Station 봉천역;
-    private Station 서울대입구역;
-    private Station 아차산역;
-    private Station 군자역;
-
     @BeforeEach
     void setUp() {
-        신림역 = stationDao.save(new Station("신림역"));
-        봉천역 = stationDao.save(new Station("봉천역"));
-        서울대입구역 = stationDao.save(new Station("서울대입구역"));
-        아차산역 = stationDao.save(new Station("아차산역"));
-        군자역 = stationDao.save(new Station("군자역"));
+    }
+
+    @DisplayName("두 지하철 역의 최단 경로를 반환한다.")
+    @Test
+    void getPath() {
+        // given
+        Station 신림역 = stationDao.save(new Station("신림역"));
+        Station 봉천역 = stationDao.save(new Station("봉천역"));
+        Station 서울대입구역 = stationDao.save(new Station("서울대입구역"));
+        Station 아차산역 = stationDao.save(new Station("아차산역"));
+        Station 군자역 = stationDao.save(new Station("군자역"));
 
         Line line = lineDao.save(new Line("2호선", "bg-green-600"));
         Line line2 = lineDao.save(new Line("3호선", "bg-yellow-600"));
@@ -58,13 +58,11 @@ public class PathServiceTest {
         sectionDao.save(new Section(봉천역, 서울대입구역, 5, line.getId()));
         sectionDao.save(new Section(신림역, 서울대입구역, 100, line2.getId()));
         sectionDao.save(new Section(아차산역, 군자역, 10, line3.getId()));
-    }
 
-    @DisplayName("두 지하철 역의 최단 경로를 반환한다.")
-    @Test
-    void getPath() {
+        // when
         PathResponse pathResponse = pathService.getPath(서울대입구역.getId(), 신림역.getId(), 26);
 
+        // then
         assertAll(
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
@@ -78,6 +76,23 @@ public class PathServiceTest {
     @DisplayName("없는 경로의 최단 경로를 요청할 경우 예외를 발생한다.")
     @Test
     void thrown_pathNotExist() {
+        // given
+        Station 신림역 = stationDao.save(new Station("신림역"));
+        Station 봉천역 = stationDao.save(new Station("봉천역"));
+        Station 서울대입구역 = stationDao.save(new Station("서울대입구역"));
+        Station 아차산역 = stationDao.save(new Station("아차산역"));
+        Station 군자역 = stationDao.save(new Station("군자역"));
+
+        Line line = lineDao.save(new Line("2호선", "bg-green-600"));
+        Line line2 = lineDao.save(new Line("3호선", "bg-yellow-600"));
+        Line line3 = lineDao.save(new Line("5호선", "bg-purple-600"));
+
+        sectionDao.save(new Section(신림역, 봉천역, 5, line.getId()));
+        sectionDao.save(new Section(봉천역, 서울대입구역, 5, line.getId()));
+        sectionDao.save(new Section(신림역, 서울대입구역, 100, line2.getId()));
+        sectionDao.save(new Section(아차산역, 군자역, 10, line3.getId()));
+
+        // then
         assertThatThrownBy(() -> pathService.getPath(아차산역.getId(), 신림역.getId(), 26))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("해당 경로가 존재하지 않습니다.");

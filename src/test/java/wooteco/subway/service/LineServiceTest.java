@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +30,20 @@ class LineServiceTest {
     @Autowired
     private LineService lineService;
 
-    private Line line;
-
-    @BeforeEach
-    void setUp() {
-        line = lineDao.save(new Line("2호선", "bg-green-600"));
-    }
-
     @DisplayName("노선을 생성한다.")
     @Test
     void lineCreateTest() {
+        // given
         final Station upStation = stationDao.save(new Station("아차산역"));
         final Station downStation = stationDao.save(new Station("군자역"));
 
         final LineRequest lineRequest = new LineRequest("5호선", "bg-purple-600", upStation.getId(), downStation.getId(),
                 3);
+
+        // when
         final LineResponse savedLine = lineService.create(lineRequest);
 
+        // then
         assertAll(
                 () -> assertThat(savedLine.getId()).isNotNull(),
                 () -> assertThat(savedLine.getName()).isEqualTo(lineRequest.getName()),
@@ -58,18 +54,27 @@ class LineServiceTest {
     @DisplayName("모든 노선을 조회한다.")
     @Test
     void queryAllTest() {
+        // given
+        lineDao.save(new Line("2호선", "bg-green-600"));
         lineDao.save(new Line("5호선", "bg-purple-600"));
 
+        // when
         final List<LineResponse> lines = lineService.getAll();
 
+        // then
         assertThat(lines.size()).isEqualTo(2);
     }
 
     @DisplayName("특정 노선을 조회한다.")
     @Test
     void queryByIdTest() {
+        // given
+        final Line line = lineDao.save(new Line("2호선", "bg-green-600"));
+
+        // when
         final LineResponse foundLine = lineService.getById(line.getId());
 
+        // then
         assertAll(
                 () -> assertThat(line.getId()).isEqualTo(foundLine.getId()),
                 () -> assertThat(line.getName()).isEqualTo(foundLine.getName()),
@@ -80,10 +85,15 @@ class LineServiceTest {
     @DisplayName("특정 노선을 수정한다.")
     @Test
     void modifyTest() {
+        // given
+        final Line line = lineDao.save(new Line("2호선", "bg-green-600"));
+
+        // when
         lineService.modify(line.getId(), new LineRequest("5호선", "bg-green-600"));
 
         final LineResponse foundLine = lineService.getById(line.getId());
 
+        // then
         assertAll(
                 () -> assertThat(foundLine.getId()).isEqualTo(line.getId()),
                 () -> assertThat(foundLine.getName()).isEqualTo("5호선"),
@@ -102,8 +112,13 @@ class LineServiceTest {
     @DisplayName("특정 노선을 삭제한다.")
     @Test
     void removeTest() {
+        // given
+        final Line line = lineDao.save(new Line("2호선", "bg-green-600"));
+
+        // when
         lineService.remove(line.getId());
 
+        // then
         assertThatThrownBy(() -> lineService.getById(line.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 노선이 존재하지 않습니다.");
