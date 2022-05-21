@@ -18,18 +18,17 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("지하철역 관리")
+    @DisplayName("지하철역 관리 기능을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromStation() {
         return Stream.of(
-                dynamicTest("지하철역을 생성한다.", () -> {
-                    String name = "강남역";
-
-                    ExtractableResponse<Response> response = generateStation(name);
+                dynamicTest("이름을 활용하여 지하철역을 생성한다.", () -> {
+                    ExtractableResponse<Response> response = generateStation("강남역");
 
                     assertAll(
                             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -38,14 +37,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 }),
 
                 dynamicTest("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.", () -> {
-                    String name = "강남역";
-
-                    ExtractableResponse<Response> response = generateStation(name);
+                    ExtractableResponse<Response> response = generateStation("강남역");
 
                     assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 }),
 
-                dynamicTest("지하철역을 조회한다.", () -> {
+                dynamicTest("지하철역 목록을 조회한다.", () -> {
                     generateStation("역삼역");
 
                     ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -54,12 +51,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                             .then().log().all()
                             .extract();
 
+                    List<StationResponse> stations = response.jsonPath().getList(".", StationResponse.class);
                     assertAll(
                             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                            () -> {
-                                int size = response.jsonPath().getList(".", StationResponse.class).size();
-                                assertThat(size).isEqualTo(2);
-                            }
+                            () -> assertThat(stations.size()).isEqualTo(2)
                     );
                 }),
 
@@ -89,11 +84,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> generateStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
         return RestAssured.given().log().all()
-                .body(params)
+                .body(new StationRequest(name))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
