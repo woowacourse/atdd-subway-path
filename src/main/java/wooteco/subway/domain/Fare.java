@@ -12,8 +12,8 @@ public class Fare {
 
     private final int fare;
 
-    public Fare(int distance) {
-        fare = calculateFare(distance);
+    public Fare(double distance) {
+        fare = calculateFare((int) distance);
     }
 
     private int calculateFare(int distance) {

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.station.StationResponse;
 
 @JdbcTest
 class StationDaoTest {
@@ -21,12 +20,12 @@ class StationDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     private StationDao stationDao;
-    private StationResponse station;
+    private Station station;
 
     @BeforeEach
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
-        station = stationDao.save(new Station("선릉역"));
+        station = stationDao.save("선릉역");
     }
 
     @Test
@@ -38,7 +37,7 @@ class StationDaoTest {
     @Test
     @DisplayName("Station 목록 조회")
     void findAll() {
-        var station2 = stationDao.save(new Station("잠실역"));
+        var station2 = stationDao.save("잠실역");
 
         assertAll(
                 () -> assertThat(stationDao.findAll()).hasSize(2),
@@ -58,7 +57,7 @@ class StationDaoTest {
 
     @Test
     void findById() {
-        assertThat(stationDao.findById(station.getId())).isEqualTo(new StationResponse(station.getId(), "선릉역"));
+        assertThat(stationDao.findById(station.getId())).isEqualTo(new Station(station.getId(), "선릉역"));
     }
 
     @Test

@@ -180,6 +180,34 @@ class LineServiceTest {
     }
 
     @Test
+    @DisplayName("구간 생성시 하행 종점 등록")
+    void createSection() {
+        //given
+        var lineResponse = lineService.createLine(lineRequest);
+        var id = lineResponse.getId();
+        var testStationId = insertStation("테스트3역");
+
+        //when
+        lineService.addSection(id, new SectionRequest(downStationId, testStationId, 1));
+
+        //then
+        assertThat(findSectionByLineId(id)).contains(
+                new SectionResponse(0L, upStationId, downStationId, 0),
+                new SectionResponse(0L, downStationId, testStationId, 0)
+        );
+    }
+
+    private List<SectionResponse> findSectionByLineId(Long id) {
+        var sql = "SELECT * FROM section WHERE line_id = ?";
+        RowMapper<SectionResponse> sectionMapper = (rs, rowNum) -> {
+            var upStationId = rs.getLong("up_station_id");
+            var downStationId = rs.getLong("down_station_id");
+            return new SectionResponse(0L, upStationId, downStationId, 0);
+        };
+        return jdbcTemplate.query(sql, sectionMapper, id);
+    }
+
+    @Test
     @DisplayName("구간 생성시 상행역이 같을 경우 기존 구간을 변경한다.")
     void createSection1() {
         //given
@@ -192,8 +220,8 @@ class LineServiceTest {
 
         //then
         assertThat(findSectionByLineId(id)).contains(
-                new SectionResponse(upStationId, testStationId),
-                new SectionResponse(testStationId, downStationId)
+                new SectionResponse(0L, upStationId, testStationId, 0),
+                new SectionResponse(0L, testStationId, downStationId, 0)
         );
     }
 
@@ -210,19 +238,9 @@ class LineServiceTest {
 
         //then
         assertThat(findSectionByLineId(id)).contains(
-                new SectionResponse(testStationId, downStationId),
-                new SectionResponse(upStationId, testStationId)
+                new SectionResponse(0L, testStationId, downStationId, 0),
+                new SectionResponse(0L, upStationId, testStationId, 0)
         );
-    }
-
-    private List<SectionResponse> findSectionByLineId(Long id) {
-        var sql = "SELECT * FROM section WHERE line_id = ?";
-        RowMapper<SectionResponse> sectionMapper = (rs, rowNum) -> {
-            var upStationId = rs.getLong("up_station_id");
-            var downStationId = rs.getLong("down_station_id");
-            return new SectionResponse(upStationId, downStationId);
-        };
-        return jdbcTemplate.query(sql, sectionMapper, id);
     }
 
     @Test

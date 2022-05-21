@@ -9,11 +9,6 @@ public class SectionResponse {
     private final Long downStationId;
     private int distance;
 
-    public SectionResponse(Long upStationId, Long downStationId) {
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-    }
-
     public SectionResponse(Long id, Long upStationId, Long downStationId) {
         this.id = id;
         this.upStationId = upStationId;
@@ -35,6 +30,14 @@ public class SectionResponse {
         return downStationId;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -44,20 +47,12 @@ public class SectionResponse {
             return false;
         }
         SectionResponse that = (SectionResponse) o;
-        return Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId,
-                that.downStationId);
+        return distance == that.distance && Objects.equals(id, that.id) && Objects.equals(upStationId,
+                that.upStationId) && Objects.equals(downStationId, that.downStationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upStationId, downStationId);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public int getDistance() {
-        return distance;
+        return Objects.hash(id, upStationId, downStationId, distance);
     }
 }

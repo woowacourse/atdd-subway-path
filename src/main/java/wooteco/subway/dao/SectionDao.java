@@ -67,4 +67,9 @@ public class SectionDao {
                 section.getId()
         );
     }
+
+    public List<Section> findAll() {
+        var sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, sectionRowMapper);
+    }
 }

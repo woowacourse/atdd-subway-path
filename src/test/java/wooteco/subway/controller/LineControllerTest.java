@@ -1,4 +1,4 @@
-package wooteco.subway.acceptance;
+package wooteco.subway.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.dto.line.LineResponse;
 
 @DisplayName("노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+public class LineControllerTest extends ControllerTest {
 
     private ExtractableResponse<Response> responseCreateLine;
 

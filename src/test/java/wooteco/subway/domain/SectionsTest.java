@@ -26,11 +26,11 @@ public class SectionsTest {
         var expected = new Section(2L, 3L, 1);
 
         assertAll(
-                () -> assertThat(sections.createSectionBySection(section).getUpStationId()).isEqualTo(
+                () -> assertThat(sections.createSection(section).get().getUpStationId()).isEqualTo(
                         expected.getUpStationId()),
-                () -> assertThat(sections.createSectionBySection(section).getDownStationId()).isEqualTo(
+                () -> assertThat(sections.createSection(section).get().getDownStationId()).isEqualTo(
                         expected.getDownStationId()),
-                () -> assertThat(sections.createSectionBySection(section).getDistance()).isEqualTo(expected.getDistance())
+                () -> assertThat(sections.createSection(section).get().getDistance()).isEqualTo(expected.getDistance())
         );
     }
 
@@ -42,11 +42,11 @@ public class SectionsTest {
         var expected = new Section(1L, 2L, 1);
 
         assertAll(
-                () -> assertThat(sections.createSectionBySection(section).getUpStationId()).isEqualTo(
+                () -> assertThat(sections.createSection(section).get().getUpStationId()).isEqualTo(
                         expected.getUpStationId()),
-                () -> assertThat(sections.createSectionBySection(section).getDownStationId()).isEqualTo(
+                () -> assertThat(sections.createSection(section).get().getDownStationId()).isEqualTo(
                         expected.getDownStationId()),
-                () -> assertThat(sections.createSectionBySection(section).getDistance()).isEqualTo(expected.getDistance())
+                () -> assertThat(sections.createSection(section).get().getDistance()).isEqualTo(expected.getDistance())
         );
     }
 
@@ -57,9 +57,9 @@ public class SectionsTest {
         var invalidSection2 = new Section(2L, 3L, 3);
 
         assertAll(
-                () -> assertThatThrownBy(() -> sections.createSectionBySection(invalidSection)).isInstanceOf(
+                () -> assertThatThrownBy(() -> sections.createSection(invalidSection)).isInstanceOf(
                         IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> sections.createSectionBySection(invalidSection2)).isInstanceOf(
+                () -> assertThatThrownBy(() -> sections.createSection(invalidSection2)).isInstanceOf(
                         IllegalArgumentException.class)
         );
     }
@@ -69,7 +69,7 @@ public class SectionsTest {
     void createSection4() {
         var invalidSection = new Section(1L, 3L, 1);
 
-        assertThatThrownBy(() -> sections.createSectionBySection(invalidSection))
+        assertThatThrownBy(() -> sections.createSection(invalidSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.");
     }
@@ -79,7 +79,7 @@ public class SectionsTest {
     void createSection5() {
         var invalidSection = new Section(2L, 4L, 1);
 
-        assertThatThrownBy(() -> sections.createSectionBySection(invalidSection))
+        assertThatThrownBy(() -> sections.createSection(invalidSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 상행역과 하행역 둘 중 하나도 포함되어있지 않습니다.");
     }

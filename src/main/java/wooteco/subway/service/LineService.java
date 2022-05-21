@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -13,6 +14,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.section.SectionRequest;
+import wooteco.subway.dto.station.StationResponse;
 
 @Service
 public class LineService {
@@ -33,6 +35,7 @@ public class LineService {
         var stations = sections.stream()
                 .map(it -> stationDao.findById(it.getUpStationId(), it.getDownStationId()))
                 .flatMap(Collection::stream)
+                .map(it -> new StationResponse(it.getId(), it.getName()))
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -55,7 +58,9 @@ public class LineService {
 
         var line = lineDao.save(lineRequest);
 
-        var stations = List.of(stationDao.findById(upStationId), stationDao.findById(downStationId));
+        var stations = Stream.of(stationDao.findById(upStationId), stationDao.findById(downStationId))
+                .map(it -> new StationResponse(it.getId(), it.getName()))
+                .collect(Collectors.toList());
 
         sectionDao.save(line.getId(), new SectionRequest(upStationId, downStationId, lineRequest.getDistance()));
 
@@ -78,7 +83,8 @@ public class LineService {
 
         var sections = new Sections(sectionDao.findByLineId(lineId));
 
-        sectionDao.update(sections.createSectionBySection(new Section(upStationId, downStationId, distance)));
+        sections.createSection(new Section(upStationId, downStationId, distance))
+                .ifPresent(sectionDao::update);
         sectionDao.save(lineId, sectionRequest);
     }
 

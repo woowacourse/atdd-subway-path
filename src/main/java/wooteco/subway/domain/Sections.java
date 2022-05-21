@@ -24,24 +24,26 @@ public class Sections {
         return new Sections(parsedSections);
     }
 
-    public Section createSectionBySection(Section section) {
+    public Optional<Section> createSection(Section section) {
+        checkAnyMatch(section);
+
         var sameUpStationSection = sections.stream().filter(it -> it.isSameUpStationId(section)).findAny();
         var downUpStationSection = sections.stream().filter(it -> it.isSameDownStationId(section)).findAny();
 
-        checkValidation(sameUpStationSection, downUpStationSection);
-
-        return sameUpStationSection.map(it -> Section.createWhenSameUpStation(it, section))
-                .or(() -> downUpStationSection.map(it -> Section.createWhenSameDownStation(it, section))).get();
-    }
-
-    private void checkValidation(Optional<Section> sameUpStationSection, Optional<Section> downUpStationSection) {
         if (sameUpStationSection.isPresent() && downUpStationSection.isPresent()) {
             throw new IllegalArgumentException("[ERROR] 상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.");
         }
 
-        if (sameUpStationSection.isEmpty() && downUpStationSection.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 상행역과 하행역 둘 중 하나도 포함되어있지 않습니다.");
-        }
+        return sameUpStationSection.map(it -> Section.createWhenSameUpStation(it, section))
+                .or(() -> downUpStationSection.map(it -> Section.createWhenSameDownStation(it, section)));
+    }
+
+    private void checkAnyMatch(Section section) {
+        sections.stream()
+                .filter(it -> it.isSameStationId(section.getUpStationId()) ||
+                        it.isSameStationId(section.getDownStationId()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 상행역과 하행역 둘 중 하나도 포함되어있지 않습니다."));
     }
 
     public boolean hasOnlyOneSection() {

@@ -10,12 +10,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.station.StationResponse;
 
 @Component
 public class StationDao {
 
-    private final RowMapper<StationResponse> stationRowMapper = (rs, rowNum) -> new StationResponse(
+    private final RowMapper<Station> stationRowMapper = (rs, rowNum) -> new Station(
             rs.getLong("id"),
             rs.getString("name")
     );
@@ -25,18 +24,18 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public StationResponse save(Station station) {
+    public Station save(String name) {
         var sql = "INSERT INTO station (name) VALUES(?)";
         var keyHolder = new GeneratedKeyHolder();
-        save(station, sql, keyHolder);
-        return new StationResponse(keyHolder.getKey().longValue(), station.getName());
+        save(name, sql, keyHolder);
+        return new Station(keyHolder.getKey().longValue(), name);
     }
 
-    private void save(Station station, String sql, KeyHolder keyHolder) {
+    private void save(String name, String sql, KeyHolder keyHolder) {
         try {
             jdbcTemplate.update(connection -> {
                 var statement = connection.prepareStatement(sql, new String[]{"id"});
-                statement.setString(1, station.getName());
+                statement.setString(1, name);
                 return statement;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
@@ -44,7 +43,7 @@ public class StationDao {
         }
     }
 
-    public List<StationResponse> findAll() {
+    public List<Station> findAll() {
         String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, stationRowMapper);
     }
@@ -58,7 +57,7 @@ public class StationDao {
         }
     }
 
-    public StationResponse findById(Long id) {
+    public Station findById(Long id) {
         var sql = "SELECT * FROM station WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, stationRowMapper, id);
@@ -67,7 +66,7 @@ public class StationDao {
         }
     }
 
-    public List<StationResponse> findById(Long upStationId, Long downStationId) {
+    public List<Station> findById(Long upStationId, Long downStationId) {
         var sql = "SELECT * FROM station WHERE id = ? OR id = ?";
         return jdbcTemplate.query(sql, stationRowMapper, upStationId, downStationId);
     }

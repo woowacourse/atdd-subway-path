@@ -1,9 +1,8 @@
-package wooteco.subway.acceptance;
+package wooteco.subway.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.station.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
+public class StationControllerTest extends ControllerTest {
 
     private ExtractableResponse<Response> responseCreateStation;
 
