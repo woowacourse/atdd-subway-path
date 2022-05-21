@@ -70,6 +70,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("두 역이 연결되어있지 않으면 상태코드 404를 응답한다.")
+    @Test
+    void notFoundPath() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "3", "900");
+        createLine("2호선", "green", "3", "4", "4", "900");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=30");
+
+        String message = response.body().asString();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(message).contains("이동할 수 있는 경로가 없습니다.")
+        );
+    }
+
     private void createStation(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);

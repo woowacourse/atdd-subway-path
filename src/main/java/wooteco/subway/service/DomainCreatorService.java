@@ -27,13 +27,6 @@ public class DomainCreatorService {
         this.stationDao = stationDao;
     }
 
-    Path createPath() {
-        List<Section> sections = sectionDao.findAll().stream()
-                .map(this::findSection)
-                .collect(Collectors.toList());
-        return new Path(new Sections(sections));
-    }
-
     Line createLine(Long lineId) {
         validateExists(lineId);
         LineEntity lineEntity = lineDao.find(lineId);

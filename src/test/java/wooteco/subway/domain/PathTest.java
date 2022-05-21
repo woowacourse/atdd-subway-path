@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.entity.SectionEntity;
+import wooteco.subway.utils.DijkstraShortestPathStation;
 
 public class PathTest {
 
@@ -19,13 +21,16 @@ public class PathTest {
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        Path path = new Path(sections);
 
         // when
-        int shortestDistance = path.getShortestDistance(station1, station3);
+        Path path = DijkstraShortestPathStation.getPath(
+                sections,
+                station1,
+                station2
+        );
 
         // then
-        assertThat(shortestDistance).isEqualTo(10);
+        assertThat(path.getDistance()).isEqualTo(10);
     }
 
     @DisplayName("최단 경로를 구한다.")
@@ -39,13 +44,16 @@ public class PathTest {
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        Path path = new Path(sections);
 
         // when
-        List<Station> shortestPath = path.getShortestPath(station1, station3);
+        Path path = DijkstraShortestPathStation.getPath(
+                sections,
+                station1,
+                station2
+        );
 
         // then
-        assertThat(shortestPath)
+        assertThat(path.getStations())
                 .hasSize(2)
                 .containsExactly(station1, station3);
     }

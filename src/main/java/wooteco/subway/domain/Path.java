@@ -7,29 +7,19 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final List<Station> stations;
+    private final int distance;
 
-    public Path(Sections sections) {
-        dijkstraShortestPath = getDijkstraShortestPath(sections);
+    public Path(List<Station> stations, int distance) {
+        this.stations = stations;
+        this.distance = distance;
     }
 
-    public int getShortestDistance(Station source, Station target) {
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+    public List<Station> getStations() {
+        return stations;
     }
 
-    public List<Station> getShortestPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
-    }
-
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(Sections sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : sections.getStations()) {
-            graph.addVertex(station);
-        }
-        sections.forEach(section -> graph.setEdgeWeight(
-                graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
-        );
-
-        return new DijkstraShortestPath<>(graph);
+    public int getDistance() {
+        return distance;
     }
 }
