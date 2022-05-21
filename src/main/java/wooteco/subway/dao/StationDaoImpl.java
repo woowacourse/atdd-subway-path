@@ -1,13 +1,17 @@
 package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -36,14 +40,7 @@ public class StationDaoImpl implements StationDao {
     @Override
     public List<Station> findAll() {
         final String sql = "SELECT * FROM station";
-        return jdbcTemplate.query(sql, stationMapper());
-    }
-
-    private RowMapper<Station> stationMapper() {
-        return (resultSet, rowNum) -> new Station(
-            resultSet.getLong("id"),
-            resultSet.getString("name")
-        );
+        return jdbcTemplate.query(sql, new StationMapper());
     }
 
     @Override
@@ -62,15 +59,22 @@ public class StationDaoImpl implements StationDao {
     @Override
     public Station findById(Long id) {
         final String sql = "SELECT * FROM station where id = ?";
-        return jdbcTemplate.queryForObject(sql, stationMapper(), id);
+        return jdbcTemplate.queryForObject(sql, new StationMapper(), id);
     }
 
     @Override
     public List<Station> findById(List<Long> ids) {
         final String inputIds = ids.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining(", "));
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
         final String sql = String.format("SELECT * FROM station where id in (%s)", inputIds);
-        return jdbcTemplate.query(sql, stationMapper());
+        return jdbcTemplate.query(sql, new StationMapper());
+    }
+
+    private static class StationMapper implements RowMapper<Station> {
+        public Station mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+            return new Station(rs.getLong("id"),
+                    rs.getString("name"));
+        }
     }
 }

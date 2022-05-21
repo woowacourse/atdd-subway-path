@@ -1,8 +1,11 @@
 package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,15 +41,7 @@ public class LineDaoImpl implements LineDao {
     @Override
     public List<Line> findAll() {
         final String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, lineMapper());
-    }
-
-    private RowMapper<Line> lineMapper() {
-        return (resultSet, rowNum) -> new Line(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getString("color")
-        );
+        return jdbcTemplate.query(sql, new LineMapper());
     }
 
     @Override
@@ -61,7 +56,7 @@ public class LineDaoImpl implements LineDao {
         final String sql = "SELECT * FROM line where id = ?";
 
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineMapper(), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new LineMapper(), id));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
@@ -78,5 +73,11 @@ public class LineDaoImpl implements LineDao {
     public boolean existsByName(String name) {
         final String sql = "SELECT EXISTS (SELECT * FROM line WHERE name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    private static class LineMapper implements RowMapper<Line> {
+        public Line mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+            return new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color"));
+        }
     }
 }

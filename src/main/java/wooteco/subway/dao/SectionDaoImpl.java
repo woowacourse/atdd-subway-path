@@ -1,7 +1,10 @@
 package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -38,17 +41,7 @@ public class SectionDaoImpl implements SectionDao {
     @Override
     public List<Section> findByLineId(Long lineId) {
         final String sql = "SELECT * FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, sectionMapper(), lineId);
-    }
-
-    private RowMapper<Section> sectionMapper() {
-        return (resultSet, rowNum) -> new Section(
-            resultSet.getLong("id"),
-            resultSet.getLong("line_id"),
-            resultSet.getLong("up_station_id"),
-            resultSet.getLong("down_station_id"),
-            resultSet.getInt("distance")
-        );
+        return jdbcTemplate.query(sql, new SectionMapper(), lineId);
     }
 
     @Override
@@ -68,6 +61,12 @@ public class SectionDaoImpl implements SectionDao {
     @Override
     public List<Section> findAll() {
         final String sql = "SELECT * FROM section";
-        return jdbcTemplate.query(sql, sectionMapper());
+        return jdbcTemplate.query(sql, new SectionMapper());
+    }
+
+    private static class SectionMapper implements RowMapper<Section> {
+        public Section mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+            return new Section(rs.getLong("id"), rs.getLong("line_id"), rs.getLong("up_station_id"), rs.getLong("down_station_id"), rs.getInt("distance"));
+        }
     }
 }
