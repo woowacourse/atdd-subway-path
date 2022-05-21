@@ -53,11 +53,11 @@ public class Sections {
     }
 
     private boolean isUpTerminus(Section section) {
-        return section.getDownStation().equals(getUpStation()) && !existsStation(section.getUpStation());
+        return section.getDownStation().equals(getTerminusUpStation()) && !existsStation(section.getUpStation());
     }
 
     private boolean isDownTerminus(Section section) {
-        return section.getUpStation().equals(getDownStation()) && !existsStation(section.getDownStation());
+        return section.getUpStation().equals(getTerminusDownStation()) && !existsStation(section.getDownStation());
     }
 
     private void decideForkedLoad(Section section) {
@@ -86,6 +86,7 @@ public class Sections {
     private void changeFrontSection(Section section) {
         Section frontSection = findByUpStation(section.getUpStation());
         frontSection.changeUpStation(section);
+
         int frontIndex = value.indexOf(frontSection);
         value.remove(frontSection);
         value.add(frontIndex, section);
@@ -104,6 +105,7 @@ public class Sections {
     private void changeBackSection(Section section) {
         Section backSection = findByDownStation(section.getDownStation());
         backSection.changeDownStation(section);
+
         int backIndex = value.indexOf(backSection);
         value.add(backIndex + 1, section);
     }
@@ -118,12 +120,12 @@ public class Sections {
             throw new IllegalArgumentException("구간이 1개만 존재하므로 삭제가 불가능 합니다.");
         }
 
-        if (getUpStation().equals(station)) {
+        if (getTerminusUpStation().equals(station)) {
             value.removeFirst();
             return;
         }
 
-        if (getDownStation().equals(station)) {
+        if (getTerminusDownStation().equals(station)) {
             value.removeLast();
             return;
         }
@@ -131,12 +133,12 @@ public class Sections {
         removeMiddleStation(station);
     }
 
-    private Station getUpStation() {
+    private Station getTerminusUpStation() {
         Section frontSection = value.getFirst();
         return frontSection.getUpStation();
     }
 
-    private Station getDownStation() {
+    private Station getTerminusDownStation() {
         Section backSection = value.getLast();
         return backSection.getDownStation();
     }
