@@ -27,14 +27,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createLine("2호선", "green", "2", "3", "4", "900");
         createLine("3호선", "orange", "1", "3", "10", "900");
 
-        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=15");
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=30");
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(pathResponse.getStations()).hasSize(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
+        );
+    }
+
+    @DisplayName("추가 요금은 가장 높은 금액의 추가 요금만 적용한다")
+    @Test
+    void extraFareWithMultiLines() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "13", "100");
+        createLine("2호선", "green", "2", "3", "14", "300");
+        createLine("3호선", "orange", "1", "3", "30", "500");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=30");
+
+        PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations()).hasSize(3),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(27),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1250 + 400 + 300)
         );
     }
 
@@ -59,14 +83,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createSection(2, "5", "6", "1");
         createSection(2, "6", "7", "1");
 
-        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=2&target=4&age=15");
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=2&target=4&age=30");
 
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(pathResponse.getStations()).hasSize(4),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(3),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
         );
     }
 
