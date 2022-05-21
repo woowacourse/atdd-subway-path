@@ -27,7 +27,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
         Long lineId = extractId(AcceptanceFixture.post(params, "/lines"));
 
         final SectionRequest sectionRequest = new SectionRequest(stationId1, stationId2, 4);
@@ -64,10 +64,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId3 = extractStationIdFromName("역삼역");
         final Long stationId4 = extractStationIdFromName("왕십리역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 7, 0);
         Long line2Id = extractId(AcceptanceFixture.post(params, "/lines"));
 
-        final LineRequest params2 = new LineRequest("수인분당선", "bg-yellow-600", stationId3, stationId4, 7);
+        final LineRequest params2 = new LineRequest("수인분당선", "bg-yellow-600", stationId3, stationId4, 7, 0);
         Long 수인분당Id = extractId(AcceptanceFixture.post(params2, "/lines"));
 
         // when

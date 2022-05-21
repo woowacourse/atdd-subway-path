@@ -26,7 +26,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = extractIdByStationName("지하철역");
         final Long downStationId = extractIdByStationName("새로운지하철역");
 
-        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         // when
         ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
@@ -45,7 +45,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = extractIdByStationName("지하철역");
         final Long downStationId = extractIdByStationName("새로운지하철역");
 
-        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         AcceptanceFixture.post(params, "/lines");
 
         // when
@@ -63,10 +63,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long downStationId = extractIdByStationName("새로운지하철역");
         final Long anotherStationId = extractIdByStationName("또다른 지하철역");
 
-        final LineRequest params1 = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params1 = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         ExtractableResponse<Response> createResponse1 = AcceptanceFixture.post(params1, "/lines");
 
-        final LineRequest params2 = new LineRequest("분당선", "br-green-600", upStationId, anotherStationId, 10);
+        final LineRequest params2 = new LineRequest("분당선", "br-green-600", upStationId, anotherStationId, 10, 0);
         ExtractableResponse<Response> createResponse2 = AcceptanceFixture.post(params2, "/lines");
 
         // when
@@ -87,7 +87,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = extractIdByStationName("지하철역");
         final Long downStationId = extractIdByStationName("새로운지하철역");
 
-        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         ExtractableResponse<Response> param = AcceptanceFixture.post(params, "/lines");
         final String savedId = param.header("Location").split("/")[2];
@@ -111,7 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = extractIdByStationName("지하철역");
         final Long downStationId = extractIdByStationName("새로운지하철역");
 
-        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         ExtractableResponse<Response> param = AcceptanceFixture.post(params, "/lines");
         final String savedId = param.header("Location").split("/")[2];
@@ -134,7 +134,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = extractIdByStationName("지하철역");
         final Long downStationId = extractIdByStationName("새로운지하철역");
 
-        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest params = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         ExtractableResponse<Response> param = AcceptanceFixture.post(params, "/lines");
         final String savedId = param.header("Location").split("/")[2];

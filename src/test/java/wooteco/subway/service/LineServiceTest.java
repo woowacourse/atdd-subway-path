@@ -20,14 +20,12 @@ import wooteco.subway.service.fake.FakeStationDao;
 class LineServiceTest {
 
     private LineService lineService;
-    private static FakeLineDao lineDao = new FakeLineDao();
-    private static FakeSectionDao sectionDao = new FakeSectionDao();
     private static FakeStationDao stationDao = new FakeStationDao();
 
     @BeforeEach
     void setUp() {
-        lineDao = new FakeLineDao();
-        sectionDao = new FakeSectionDao();
+        FakeLineDao lineDao = new FakeLineDao();
+        FakeSectionDao sectionDao = new FakeSectionDao();
         stationDao = new FakeStationDao();
 
         lineService = new LineService(lineDao, sectionDao, stationDao);
@@ -40,7 +38,7 @@ class LineServiceTest {
         final Long upStationId = stationDao.save(new Station("지하철역"));
         final Long downStationId = stationDao.save(new Station("새로운지하철역"));
 
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         // when
         final LineResponse response = lineService.save(request);
@@ -64,8 +62,8 @@ class LineServiceTest {
         final Long downStationId = stationDao.save(new Station("새로운지하철역"));
         final Long anotherDownStationId = stationDao.save(new Station("또다른지하철역"));
 
-        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
-        LineRequest request2 = new LineRequest("분당선", "bg-green-600", upStationId, anotherDownStationId, 10);
+        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
+        LineRequest request2 = new LineRequest("분당선", "bg-green-600", upStationId, anotherDownStationId, 10, 0);
 
         lineService.save(request1);
         lineService.save(request2);
@@ -102,11 +100,11 @@ class LineServiceTest {
         final Long downStationId = stationDao.save(new Station("새로운지하철역"));
 
         // given
-        final LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         final LineResponse savedResponse = lineService.save(request);
 
         // when
-        final LineRequest updateRequest = new LineRequest("다른분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest updateRequest = new LineRequest("다른분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         Long updateId = lineService.updateByLine(savedResponse.getId(), updateRequest);
 
         // then
@@ -122,7 +120,7 @@ class LineServiceTest {
         final Long upStationId = stationDao.save(new Station("지하철역"));
         final Long downStationId = stationDao.save(new Station("새로운지하철역"));
 
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         final LineResponse savedResponse = lineService.save(request);
 
         // when & then
@@ -136,7 +134,7 @@ class LineServiceTest {
         final Long upStationId = stationDao.save(new Station("지하철역"));
         final Long downStationId = stationDao.save(new Station("새로운지하철역"));
 
-        final LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        final LineRequest request = new LineRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
         final LineResponse savedResponse = lineService.save(request);
 
         // when & then

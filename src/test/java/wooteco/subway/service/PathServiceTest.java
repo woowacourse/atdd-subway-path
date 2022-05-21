@@ -48,7 +48,7 @@ class PathServiceTest {
         final StationResponse response2 = stationService.save(b);
         final StationResponse response3 = stationService.save(c);
 
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10, 0);
         final Long lineId = lineService.save(lineRequest).getId();
 
         final SectionRequest request = new SectionRequest(response1.getId(), response2.getId(), 4);
@@ -90,18 +90,18 @@ class PathServiceTest {
         final StationResponse response6 = stationService.save(f);
         final StationResponse response7 = stationService.save(g);
 
-        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10);
+        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10, 0);
         final Long 신분당선id = lineService.save(신분당선).getId();
         sectionService.save(신분당선id, new SectionRequest(response1.getId(), response2.getId(), 4));
         sectionService.save(신분당선id, new SectionRequest(response3.getId(), response7.getId(), 4));
 
-        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response2.getId(), response7.getId(), 21);
+        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response2.getId(), response7.getId(), 21, 0);
         final Long 경중선id = lineService.save(경중선).getId();
         sectionService.save(경중선id, new SectionRequest(response2.getId(), response4.getId(), 10));
         sectionService.save(경중선id, new SectionRequest(response4.getId(), response5.getId(), 1));
         sectionService.save(경중선id, new SectionRequest(response6.getId(), response7.getId(), 6));
 
-        final LineRequest 분당선 = new LineRequest("분당선", "bg-yellow-600", response3.getId(), response5.getId(), 5);
+        final LineRequest 분당선 = new LineRequest("분당선", "bg-yellow-600", response3.getId(), response5.getId(), 5, 0);
         final Long 분당선id = lineService.save(분당선).getId();
 
         // when
@@ -135,10 +135,10 @@ class PathServiceTest {
         final StationResponse response3 = stationService.save(c);
         final StationResponse response4 = stationService.save(d);
 
-        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response2.getId(), 10);
+        final LineRequest 신분당선 = new LineRequest("신분당선", "bg-red-600", response1.getId(), response2.getId(), 10, 0);
         lineService.save(신분당선);
 
-        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response3.getId(), response4.getId(), 21);
+        final LineRequest 경중선 = new LineRequest("경중선", "bg-blue-600", response3.getId(), response4.getId(), 21, 0);
         lineService.save(경중선);
 
         // when then

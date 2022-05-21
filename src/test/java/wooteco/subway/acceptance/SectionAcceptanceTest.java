@@ -23,7 +23,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params1 = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10);
+        final LineRequest params1 = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10, 0);
         ExtractableResponse<Response> response1 = AcceptanceFixture.post(params1, "/lines");
         Long lineId1 = extractId(response1);
 
@@ -33,7 +33,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId4 = extractStationIdFromName("신사역");
         final Long stationId5 = extractStationIdFromName("양재역");
 
-        final LineRequest params2 = new LineRequest("신분당선", "bg-red-600", stationId4, stationId2, 10);
+        final LineRequest params2 = new LineRequest("신분당선", "bg-red-600", stationId4, stationId2, 10, 0);
         ExtractableResponse<Response> response2 = AcceptanceFixture.post(params2, "/lines");
         Long lineId2 = extractId(response2);
 
@@ -53,7 +53,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
         ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
         Long lineId = extractId(response);
 
@@ -79,7 +79,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
         ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
         Long lineId = extractId(response);
 

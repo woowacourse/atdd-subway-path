@@ -40,7 +40,7 @@ class SectionServiceTest {
         final StationResponse response2 = stationService.save(b);
         final StationResponse response3 = stationService.save(c);
 
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response3.getId(), 10, 0);
         final Long lineId = lineService.save(lineRequest).getId();
 
         final SectionRequest request = new SectionRequest(response1.getId(), response2.getId(), 4);
@@ -61,7 +61,7 @@ class SectionServiceTest {
         final StationResponse response2 = stationService.save(b);
         final StationResponse response3 = stationService.save(c);
 
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response2.getId(), 10);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", response1.getId(), response2.getId(), 10, 0);
         final Long lineId = lineService.save(lineRequest).getId();
 
         final SectionRequest request = new SectionRequest(response2.getId(), response3.getId(), 10);
