@@ -46,7 +46,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> SECTIONS.validateSectionInLine(newSection))
                 .isInstanceOf(SubwayException.class)
-                .hasMessage("상행역과 하행역이 모두 노선에 포함되어있지 않습니다.");
+                .hasMessage("상행역과 하행역 중 하나만 노선에 포함되어있어야 합니다.");
     }
 
     @DisplayName("지하철 구간의 상행역과 하행역이 이미 모두 노선에 포함되어 있는 경우 예외가 발생한다.")
@@ -56,7 +56,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> SECTIONS.validateSectionInLine(newSection))
                 .isInstanceOf(SubwayException.class)
-                .hasMessage("상행역과 하행역이 이미 모두 노선에 포함되어 있습니다.");
+                .hasMessage("상행역과 하행역 중 하나만 노선에 포함되어있어야 합니다.");
     }
 
     @DisplayName("지하철 구간의 길이가 기존 역 사이의 길이보다 작은 경우 예외가 발생하지 않는다.")

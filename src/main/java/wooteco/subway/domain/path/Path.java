@@ -23,16 +23,19 @@ public class Path {
     }
 
     public static Path of(Long source, Long target, List<Section> sections, Stations stations) {
-        validateStationSame(source, target);
-        validateStationExist(stations, source);
-        validateStationExist(stations, target);
+        validateStations(stations, source, target);
 
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addVertexes(stations.getStationIds(), graph);
-        setEdgeWeights(sections, graph);
+        setGraph(sections, stations, graph);
 
         GraphPath<Long, DefaultWeightedEdge> shortestPath = findPath(graph, source, target);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private static void validateStations(Stations stations, Long source, Long target) {
+        validateStationSame(source, target);
+        validateStationExist(stations, source);
+        validateStationExist(stations, target);
     }
 
     private static void validateStationSame(Long source, Long target) {
@@ -45,6 +48,12 @@ public class Path {
         if (!stations.contains(stationId)) {
             throw new DataNotExistException("존재하지 않는 역입니다.");
         }
+    }
+
+    private static void setGraph(List<Section> sections, Stations stations,
+                                 WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+        addVertexes(stations.getStationIds(), graph);
+        setEdgeWeights(sections, graph);
     }
 
     private static void addVertexes(List<Long> stationIds, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {

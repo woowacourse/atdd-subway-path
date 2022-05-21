@@ -60,19 +60,12 @@ public class Sections {
         boolean existUpStation = stationIds.contains(newSection.getUpStationId());
         boolean existDownStation = stationIds.contains(newSection.getDownStationId());
 
-        validateBothStationsIncludeInLine(existUpStation, existDownStation);
-        validateBothStationsExcludeInLine(existUpStation, existDownStation);
+        validateStationsIncludeInLine(existUpStation, existDownStation);
     }
 
-    private void validateBothStationsIncludeInLine(boolean existUpStation, boolean existDownStation) {
-        if (!(existUpStation || existDownStation)) {
-            throw new SubwayException("상행역과 하행역이 모두 노선에 포함되어있지 않습니다.");
-        }
-    }
-
-    private void validateBothStationsExcludeInLine(boolean existUpStation, boolean existDownStation) {
-        if (existUpStation && existDownStation) {
-            throw new SubwayException("상행역과 하행역이 이미 모두 노선에 포함되어 있습니다.");
+    private void validateStationsIncludeInLine(boolean existUpStation, boolean existDownStation) {
+        if (existUpStation == existDownStation) {
+            throw new SubwayException("상행역과 하행역 중 하나만 노선에 포함되어있어야 합니다.");
         }
     }
 
