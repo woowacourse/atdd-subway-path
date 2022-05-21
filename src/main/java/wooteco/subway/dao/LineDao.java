@@ -22,7 +22,8 @@ public class LineDao {
     private final RowMapper<Line> resultMapper = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extra_fare")
     );
 
     public LineDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -30,11 +31,12 @@ public class LineDao {
     }
 
     public Line save(final Line line) {
-        final String sql = "insert into LINE (name, color) values (:name, :color)";
+        final String sql = "insert into LINE (name, color, extra_fare) values (:name, :color, :extra_fare)";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
@@ -42,14 +44,14 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        final String sql = "select * from LINE";
+        final String sql = "select id, name, color, extra_fare from LINE";
 
         return namedParameterJdbcTemplate.query(sql,
                 (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color")));
     }
 
     public Optional<Line> findById(final Long id) {
-        final String sql = "select * from LINE where id=:id";
+        final String sql = "select id, name, color, extra_fare from LINE where id=:id";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("id", id);
@@ -60,7 +62,7 @@ public class LineDao {
     }
 
     public Optional<Line> findByName(final String name) {
-        final String sql = "select * from LINE where name=:name";
+        final String sql = "select id, name, color, extra_fare from LINE where name=:name";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
