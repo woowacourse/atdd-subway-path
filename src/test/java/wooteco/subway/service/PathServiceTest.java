@@ -41,6 +41,7 @@ class PathServiceTest {
                 new LineDao(jdbcTemplate, dataSource),
                 new StationDao(jdbcTemplate, dataSource),
                 new SectionDao(jdbcTemplate, dataSource));
+        setUpSubwayMap();
     }
 
     void setUpSubwayMap() {
@@ -71,11 +72,53 @@ class PathServiceTest {
                 선정릉역.getId(), 6, 700));
     }
 
-    @DisplayName("경로를 올바르게 조회한다.")
+    @DisplayName("환승과 추가 요금이 없는 경로를 올바르게 조회한다.(성인)")
     @Test
     void findPath() {
-        setUpSubwayMap();
-        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId(), 20);
+        PathFindResponse result = pathService.findPath(선릉역.getId(), 한티역.getId(), 20);
+        System.out.println(result.getStations());
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(선릉역.getId()),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(선정릉역.getId()),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(한티역.getId()),
+                () -> assertThat(result.getDistance()).isEqualTo(58),
+                () -> assertThat(result.getFare()).isEqualTo(2150)
+        );
+    }
+
+    @DisplayName("추가요금이 있는 한개의 노선을 환승하는 경로를 조회한다.(성인)")
+    @Test
+    void findPathWithExtraLineFare() {
+        PathFindResponse result = pathService.findPath(모란역.getId(), 한티역.getId(), 20);
+        System.out.println(result.getStations());
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(모란역.getId()),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(선정릉역.getId()),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(한티역.getId()),
+                () -> assertThat(result.getDistance()).isEqualTo(14),
+                () -> assertThat(result.getFare()).isEqualTo(2050)
+        );
+    }
+
+    @DisplayName("추가요금이 있는 두개의 노선을 환승하는 경로를 조회한다.(성인)")
+    @Test
+    void findPathWithTwoExtraLineFare() {
+        PathFindResponse result = pathService.findPath(선릉역.getId(), 강남역.getId(), 20);
+        System.out.println(result.getStations());
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(선릉역.getId()),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(선정릉역.getId()),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(모란역.getId()),
+                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(강남역.getId()),
+                () -> assertThat(result.getDistance()).isEqualTo(61),
+                () -> assertThat(result.getFare()).isEqualTo(2950)
+        );
+    }
+
+    @DisplayName("추가요금이 있는 두개의 노선을 환승하는 경로를 조회한다.(청소년)")
+    @Test
+    void findPathWithTwoExtraLineFareAndTeenagerFare() {
+        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId(), 18);
         System.out.println(result.getStations());
         assertAll(
                 () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),
@@ -83,7 +126,37 @@ class PathServiceTest {
                 () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역.getId()),
                 () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역.getId()),
                 () -> assertThat(result.getDistance()).isEqualTo(24),
-                () -> assertThat(result.getFare()).isEqualTo(1550)
+                () -> assertThat(result.getFare()).isEqualTo(1520)
+        );
+    }
+
+    @DisplayName("추가요금이 있는 두개의 노선을 환승하는 경로를 조회한다.(어린이)")
+    @Test
+    void findPathWithTwoExtraLineFareAndChildFare() {
+        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId(), 9);
+        System.out.println(result.getStations());
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역.getId()),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역.getId()),
+                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역.getId()),
+                () -> assertThat(result.getDistance()).isEqualTo(24),
+                () -> assertThat(result.getFare()).isEqualTo(950)
+        );
+    }
+
+    @DisplayName("추가요금이 있는 두개의 노선을 환승하는 경로를 조회한다.(미취학 아동)")
+    @Test
+    void findPathWithTwoExtraLineFareAndPreschoolerFare() {
+        PathFindResponse result = pathService.findPath(기흥역.getId(), 한티역.getId(), 5);
+        System.out.println(result.getStations());
+        assertAll(
+                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역.getId()),
+                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역.getId()),
+                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역.getId()),
+                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역.getId()),
+                () -> assertThat(result.getDistance()).isEqualTo(24),
+                () -> assertThat(result.getFare()).isEqualTo(0)
         );
     }
 }
