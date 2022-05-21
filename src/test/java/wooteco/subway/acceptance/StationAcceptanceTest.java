@@ -17,7 +17,7 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철역 E2E")
-@Sql("classpath:/schema.sql")
+@Sql("classpath:/schema-test.sql")
 class StationAcceptanceTest extends AcceptanceTest {
 
     private static final StationRequest GANGNAM_REQUEST = new StationRequest("강남역");

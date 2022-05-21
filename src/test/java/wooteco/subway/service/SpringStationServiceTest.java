@@ -24,7 +24,7 @@ import wooteco.subway.infra.repository.StationRepository;
 import wooteco.subway.service.dto.request.StationServiceRequest;
 
 @DisplayName("지하철역 서비스")
-@Sql("classpath:/schema.sql")
+@Sql("classpath:/schema-test.sql")
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class SpringStationServiceTest {

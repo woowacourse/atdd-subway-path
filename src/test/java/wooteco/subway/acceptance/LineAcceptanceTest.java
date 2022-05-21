@@ -19,7 +19,7 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.LineResponse;
 
 @DisplayName("노선 E2E")
-@Sql("classpath:/schema.sql")
+@Sql("classpath:/schema-test.sql")
 class LineAcceptanceTest extends AcceptanceTest {
 
     private static final LineRequest BOONDANGLINE_REQUEST = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);

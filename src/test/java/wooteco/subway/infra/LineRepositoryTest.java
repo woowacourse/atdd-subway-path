@@ -26,7 +26,7 @@ import wooteco.subway.infra.repository.LineRepository;
 import wooteco.subway.infra.repository.SectionRepository;
 
 @DisplayName("Line 레포지토리")
-@Sql("classpath:/schema.sql")
+@Sql("classpath:/schema-test.sql")
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class LineRepositoryTest {
