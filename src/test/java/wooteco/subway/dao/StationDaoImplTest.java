@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ class StationDaoImplTest {
 
         List<Station> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
             stationDao.deleteById(stationId);
@@ -72,7 +73,7 @@ class StationDaoImplTest {
 
         // then
         assertThatThrownBy(() -> stationDao.save(Station2))
-            .isInstanceOf(DuplicateKeyException.class);
+                .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test

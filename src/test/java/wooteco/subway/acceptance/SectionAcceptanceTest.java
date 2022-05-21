@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,24 +39,24 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
+                .body(sectionRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
 
         List<Section> inputSections = sectionDao.findByLineId(lineId);
         Section section = inputSections.stream()
-            .filter(i -> i.mathUpStationId(1L))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(1L))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(section.getDistance()).isEqualTo(1),
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+                () -> assertThat(section.getDistance()).isEqualTo(1),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
 
@@ -69,33 +71,33 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest1 = new SectionRequest(station1, station2, 1);
 
         RestAssured.given().log().all()
-            .body(sectionRequest1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
+                .body(sectionRequest1)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .queryParam("stationId", station2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+                .queryParam("stationId", station2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .extract();
 
         List<Section> inputSections = sectionDao.findByLineId(lineId);
         Section section = inputSections.stream()
-            .filter(i -> i.mathUpStationId(1L))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(1L))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(section.getDistance()).isEqualTo(4),
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+                () -> assertThat(section.getDistance()).isEqualTo(4),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
 
@@ -103,13 +105,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
 
         String uri = response.header("Location");
         return Long.parseLong(uri.split("/")[2]);
@@ -119,12 +121,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
 
         String uri = createResponse.header("Location");
         return Long.parseLong(uri.split("/")[2]);

@@ -39,17 +39,11 @@ public class Sections {
     }
 
     public Section findSectionByUpStationId(Long id) {
-        return sections.stream()
-            .filter(i -> i.mathUpStationId(id))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("구간 중 해당 upStationId이 존재하지 않습니다."));
+        return sections.stream().filter(i -> i.mathUpStationId(id)).findAny().orElseThrow(() -> new IllegalArgumentException("구간 중 해당 upStationId이 존재하지 않습니다."));
     }
 
     public Section findSectionByDownStationId(Long id) {
-        return sections.stream()
-            .filter(i -> i.matchDownStationId(id))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("구간 중 해당 downStationId 존재하지 않습니다."));
+        return sections.stream().filter(i -> i.matchDownStationId(id)).findAny().orElseThrow(() -> new IllegalArgumentException("구간 중 해당 downStationId 존재하지 않습니다."));
     }
 
     private Map<Long, Long> getSectionIds() {
@@ -62,18 +56,12 @@ public class Sections {
 
     private Long findDownTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
-        return sectionIds.values().stream()
-            .filter(i -> !sectionIds.containsKey(i))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("하행점을 찾을 수 없습니다."));
+        return sectionIds.values().stream().filter(i -> !sectionIds.containsKey(i)).findAny().orElseThrow(() -> new IllegalArgumentException("하행점을 찾을 수 없습니다."));
     }
 
     private Long findUpTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
-        return sectionIds.keySet().stream()
-            .filter(i -> !sectionIds.containsValue(i))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("상행점을 찾을 수 없습니다."));
+        return sectionIds.keySet().stream().filter(i -> !sectionIds.containsValue(i)).findAny().orElseThrow(() -> new IllegalArgumentException("상행점을 찾을 수 없습니다."));
     }
 
     public List<Long> sortedStationId() {

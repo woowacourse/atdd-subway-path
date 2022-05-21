@@ -32,7 +32,7 @@ public class SectionService {
 
     private Section toSection(SectionServiceRequest sectionRequest, Long lineId) {
         return new Section(lineId, sectionRequest.getUpStationId(),
-            sectionRequest.getDownStationId(), sectionRequest.getDistance());
+                sectionRequest.getDownStationId(), sectionRequest.getDistance());
     }
 
     private Long updateMiddleSection(Section section, Sections sections) {
@@ -48,11 +48,11 @@ public class SectionService {
             throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
         }
         sectionDao.update(updateSection.getId(), section.getUpStationId(),
-            updateSection.getDistance() - section.getDistance());
+                updateSection.getDistance() - section.getDistance());
 
         return sectionDao.save(
-            new Section(section.getLineId(), section.getUpStationId(),
-                updateSection.getDownStationId(), section.getDistance()));
+                new Section(section.getLineId(), section.getUpStationId(),
+                        updateSection.getDownStationId(), section.getDistance()));
     }
 
     private Long updateDownStationSection(Section section, Sections sections) {
@@ -63,11 +63,11 @@ public class SectionService {
         }
 
         sectionDao.update(updateSection.getId(), section.getDownStationId(),
-            section.getDistance());
+                section.getDistance());
 
         return sectionDao.save(new Section(section.getLineId(), section.getDownStationId(),
-            updateSection.getDownStationId(),
-            updateSection.getDistance() - section.getDistance()));
+                updateSection.getDownStationId(),
+                updateSection.getDistance() - section.getDistance()));
     }
 
     @Transactional
@@ -88,24 +88,24 @@ public class SectionService {
     private boolean deleteSection(SectionServiceDeleteRequest sectionServiceDeleteRequest, Sections sections) {
         if (isEndStationSection(sectionServiceDeleteRequest, sections)) {
             Section upStationSection = sections.findSectionByUpStationId(
-                sectionServiceDeleteRequest.getStationId());
+                    sectionServiceDeleteRequest.getStationId());
             return sectionDao.deleteById(upStationSection.getId());
         }
 
         Section downStationSection = sections.findSectionByDownStationId(
-            sectionServiceDeleteRequest.getStationId());
+                sectionServiceDeleteRequest.getStationId());
         Section deleteSectionStation = sections.findSectionByUpStationId(
-            sectionServiceDeleteRequest.getStationId());
+                sectionServiceDeleteRequest.getStationId());
 
         int totalDistance = downStationSection.getDistance() + deleteSectionStation.getDistance();
         sectionDao.update(downStationSection.getId(), deleteSectionStation.getDownStationId(),
-            totalDistance);
+                totalDistance);
         return sectionDao.deleteById(deleteSectionStation.getId());
     }
 
     private boolean isEndStationSection(SectionServiceDeleteRequest sectionServiceDeleteRequest,
-        Sections sections) {
+                                        Sections sections) {
         return !sections.isMiddleSection(
-            new Section(sectionServiceDeleteRequest.getStationId(), sectionServiceDeleteRequest.getStationId()));
+                new Section(sectionServiceDeleteRequest.getStationId(), sectionServiceDeleteRequest.getStationId()));
     }
 }

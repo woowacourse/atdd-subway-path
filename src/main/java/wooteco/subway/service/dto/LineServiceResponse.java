@@ -13,7 +13,7 @@ public class LineServiceResponse {
     }
 
     public LineServiceResponse(Long id, String name, String color,
-        List<StationServiceResponse> stations) {
+                               List<StationServiceResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;

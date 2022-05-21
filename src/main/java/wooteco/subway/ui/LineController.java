@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.net.URI;
 import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,10 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineServiceResponse> createLine(
-        @Validated @RequestBody LineRequest lineRequest) {
+            @Validated @RequestBody LineRequest lineRequest) {
         LineServiceResponse lineServiceResponse = lineService.save(lineRequest.toServiceRequest());
         return ResponseEntity.created(URI.create("/lines/" + lineServiceResponse.getId()))
-            .body(lineServiceResponse);
+                .body(lineServiceResponse);
     }
 
     @GetMapping
@@ -50,7 +51,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id,
-        @RequestBody LineRequest lineRequest) {
+                                           @RequestBody LineRequest lineRequest) {
         if (lineService.updateById(id, lineRequest.toServiceRequest())) {
             return ResponseEntity.ok().build();
         }

@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
@@ -35,8 +36,8 @@ public class StationService {
     public List<StationServiceResponse> findAll() {
         List<Station> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-            .map(i -> new StationServiceResponse(i.getId(), i.getName()))
-            .collect(Collectors.toList());
+                .map(i -> new StationServiceResponse(i.getId(), i.getName()))
+                .collect(Collectors.toList());
     }
 
     public boolean deleteById(Long id) {

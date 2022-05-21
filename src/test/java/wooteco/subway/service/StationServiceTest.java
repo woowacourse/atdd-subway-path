@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ class StationServiceTest {
         stationService = new StationService(stationDao);
         List<Station> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
             stationDao.deleteById(stationId);
@@ -63,9 +64,9 @@ class StationServiceTest {
 
         // then
         assertThatThrownBy(
-            () -> stationService.save(new StationServiceRequest(station2.getName())))
-            .hasMessage("중복된 이름이 존재합니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                () -> stationService.save(new StationServiceRequest(station2.getName())))
+                .hasMessage("중복된 이름이 존재합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -79,9 +80,9 @@ class StationServiceTest {
 
         // then
         assertThat(stations).filteredOn((station) -> station.getName().equals(station1.getName()))
-            .hasSize(1);
+                .hasSize(1);
         assertThat(stations).filteredOn((station) -> station.getName().equals(station2.getName()))
-            .hasSize(1);
+                .hasSize(1);
     }
 
     @Test
@@ -95,7 +96,7 @@ class StationServiceTest {
 
         // then
         assertThat(stations).filteredOn(
-                (station) -> station.getName().equals(savedStation.getName()))
-            .hasSize(0);
+                        (station) -> station.getName().equals(savedStation.getName()))
+                .hasSize(0);
     }
 }

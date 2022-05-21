@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class PathController {
     public ResponseEntity<PathServiceResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
         PathRequest pathRequest = new PathRequest(source, target, age);
         PathServiceResponse response = pathService.findShortestPath(
-            pathRequest.toPathServiceRequest());
+                pathRequest.toPathServiceRequest());
         return ResponseEntity.ok().body(response);
     }
 }

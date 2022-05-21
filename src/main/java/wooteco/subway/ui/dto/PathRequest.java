@@ -2,6 +2,7 @@ package wooteco.subway.ui.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import wooteco.subway.service.dto.LineServiceRequest;
 import wooteco.subway.service.dto.PathServiceRequest;
 

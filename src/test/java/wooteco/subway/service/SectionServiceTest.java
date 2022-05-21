@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,14 +56,14 @@ public class SectionServiceTest {
         Long firstPointStationId = stationIds.get(0);
 
         Section firstSection = inputSections.stream()
-            .filter(i -> i.mathUpStationId(firstPointStationId))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(firstPointStationId))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(firstSection.getUpStationId()).isEqualTo(1L),
-            () -> assertThat(firstSection.getDistance()).isEqualTo(2)
+                () -> assertThat(firstSection.getUpStationId()).isEqualTo(1L),
+                () -> assertThat(firstSection.getDistance()).isEqualTo(2)
         );
     }
 
@@ -84,14 +85,14 @@ public class SectionServiceTest {
         Long lastPointStationId = stationIds.get(3);
 
         Section lastSection = inputSections.stream()
-            .filter(i -> i.mathUpStationId(lastPointStationId))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(lastPointStationId))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(lastSection.getDownStationId()).isEqualTo(5L),
-            () -> assertThat(lastSection.getDistance()).isEqualTo(2)
+                () -> assertThat(lastSection.getDownStationId()).isEqualTo(5L),
+                () -> assertThat(lastSection.getDistance()).isEqualTo(2)
         );
     }
 
@@ -109,19 +110,19 @@ public class SectionServiceTest {
         List<Long> stationIds = sections.sortedStationId();
 
         Section section1 = inputSections.stream()
-            .filter(i -> i.mathUpStationId(stationIds.get(0)))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(stationIds.get(0)))
+                .findAny()
+                .get();
 
         Section section2 = inputSections.stream()
-            .filter(i -> i.mathUpStationId(stationIds.get(1)))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(stationIds.get(1)))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(section1.getDistance()).isEqualTo(2),
-            () -> assertThat(section2.getDistance()).isEqualTo(1)
+                () -> assertThat(section1.getDistance()).isEqualTo(2),
+                () -> assertThat(section2.getDistance()).isEqualTo(1)
         );
     }
 
@@ -140,19 +141,19 @@ public class SectionServiceTest {
         List<Long> stationIds = sections.sortedStationId();
 
         Section section1 = inputSections.stream()
-            .filter(i -> i.mathUpStationId(stationIds.get(0)))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(stationIds.get(0)))
+                .findAny()
+                .get();
 
         Section section2 = inputSections.stream()
-            .filter(i -> i.mathUpStationId(stationIds.get(1)))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(stationIds.get(1)))
+                .findAny()
+                .get();
 
         // then
         assertAll(
-            () -> assertThat(section1.getDistance()).isEqualTo(1),
-            () -> assertThat(section2.getDistance()).isEqualTo(3)
+                () -> assertThat(section1.getDistance()).isEqualTo(1),
+                () -> assertThat(section2.getDistance()).isEqualTo(3)
         );
     }
 
@@ -166,9 +167,9 @@ public class SectionServiceTest {
         sectionDao.save(new Section(lineId, 4L, 5L, 5));
 
         assertThatThrownBy(() ->
-            sectionService.save(new SectionServiceRequest(2L, 1L, 4), lineId))
-            .hasMessage("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                sectionService.save(new SectionServiceRequest(2L, 1L, 4), lineId))
+                .hasMessage("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -187,15 +188,15 @@ public class SectionServiceTest {
         List<Long> result = sections.sortedStationId();
 
         Section section = inputSections.stream()
-            .filter(i -> i.mathUpStationId(2L))
-            .findAny()
-            .get();
+                .filter(i -> i.mathUpStationId(2L))
+                .findAny()
+                .get();
 
         // then
         List<Long> expected = List.of(1L, 2L, 4L);
         assertAll(
-            () -> assertThat(result).containsExactlyInAnyOrderElementsOf(expected),
-            () -> assertThat(section.getDistance()).isEqualTo(9)
+                () -> assertThat(result).containsExactlyInAnyOrderElementsOf(expected),
+                () -> assertThat(section.getDistance()).isEqualTo(9)
         );
     }
 
@@ -208,8 +209,8 @@ public class SectionServiceTest {
 
         // then
         assertThatThrownBy(() ->
-            sectionService.removeSection(new SectionServiceDeleteRequest(lineId, 2L)))
-            .hasMessage("구간을 제거할 수 없는 상태입니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                sectionService.removeSection(new SectionServiceDeleteRequest(lineId, 2L)))
+                .hasMessage("구간을 제거할 수 없는 상태입니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.net.URI;
 import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,12 +23,12 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationServiceResponse> createStation(
-        @Validated @RequestBody StationRequest stationRequest) {
+            @Validated @RequestBody StationRequest stationRequest) {
         StationServiceResponse stationServiceResponse = stationService.save(
-            stationRequest.toServiceRequest());
+                stationRequest.toServiceRequest());
         return ResponseEntity.created(URI.create("/stations/" + stationServiceResponse.getId()))
-            .body(
-                stationServiceResponse);
+                .body(
+                        stationServiceResponse);
     }
 
     @GetMapping

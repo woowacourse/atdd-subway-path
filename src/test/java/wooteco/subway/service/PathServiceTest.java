@@ -50,4 +50,4 @@ public class PathServiceTest {
 
         assertThat(pathServiceResponse.getDistance()).isEqualTo(12);
     }
- }
+}

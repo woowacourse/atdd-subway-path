@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,7 @@ class LineDaoImplTest {
         lineDaoImpl = new LineDaoImpl(jdbcTemplate);
 
         List<Line> lineEntities = lineDaoImpl.findAll();
-        List<Long> lineIds = lineEntities.stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
+        List<Long> lineIds = lineEntities.stream().map(Line::getId).collect(Collectors.toList());
 
         for (Long lineId : lineIds) {
             lineDaoImpl.deleteById(lineId);
@@ -59,8 +58,7 @@ class LineDaoImplTest {
         lineDaoImpl.save(line1);
 
         // then
-        assertThatThrownBy(() -> lineDaoImpl.save(line2))
-            .isInstanceOf(DuplicateKeyException.class);
+        assertThatThrownBy(() -> lineDaoImpl.save(line2)).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
@@ -74,14 +72,9 @@ class LineDaoImplTest {
         lineDaoImpl.save(line2);
 
         // then
-        List<String> names = lineDaoImpl.findAll()
-            .stream()
-            .map(Line::getName)
-            .collect(Collectors.toList());
+        List<String> names = lineDaoImpl.findAll().stream().map(Line::getName).collect(Collectors.toList());
 
-        assertThat(names)
-            .hasSize(2)
-            .contains(line1.getName(), line2.getName());
+        assertThat(names).hasSize(2).contains(line1.getName(), line2.getName());
     }
 
     @Test
@@ -94,14 +87,9 @@ class LineDaoImplTest {
         lineDaoImpl.deleteById(savedId);
 
         // then
-        List<Long> lineIds = lineDaoImpl.findAll()
-            .stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
+        List<Long> lineIds = lineDaoImpl.findAll().stream().map(Line::getId).collect(Collectors.toList());
 
-        assertThat(lineIds)
-            .hasSize(0)
-            .doesNotContain(savedId);
+        assertThat(lineIds).hasSize(0).doesNotContain(savedId);
     }
 
     @Test

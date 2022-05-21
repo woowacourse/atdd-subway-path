@@ -1,8 +1,10 @@
 package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,8 +39,8 @@ public class AcceptanceTest {
     private void clearAllStations() {
         List<Station> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
             stationDao.deleteById(stationId);
@@ -48,8 +50,8 @@ public class AcceptanceTest {
     private void clearAllLines() {
         List<Line> lineEntities = lineDaoImpl.findAll();
         List<Long> lineIds = lineEntities.stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
+                .map(Line::getId)
+                .collect(Collectors.toList());
 
         for (Long lineId : lineIds) {
             lineDaoImpl.deleteById(lineId);

@@ -1,6 +1,7 @@
 package wooteco.subway.ui.dto;
 
 import javax.validation.constraints.NotNull;
+
 import wooteco.subway.service.dto.SectionServiceRequest;
 
 public class SectionRequest {

@@ -25,8 +25,7 @@ public class Dijkstra implements PathFactory {
 
     private void addEdgeWeights(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Sections sections) {
         for (Section section : sections.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                    section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()), section.getDistance());
         }
     }
 

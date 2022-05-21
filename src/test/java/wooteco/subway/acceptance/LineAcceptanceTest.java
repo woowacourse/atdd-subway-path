@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,19 +32,19 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
 
         // then
         LineServiceResponse result = response.jsonPath().getObject("", LineServiceResponse.class);
         assertThat(result).extracting(
-                LineServiceResponse::getName, LineServiceResponse::getColor, i -> i.getStations().size())
-                .containsExactly( "3호선", "bg-orange-600", 2);
+                        LineServiceResponse::getName, LineServiceResponse::getColor, i -> i.getStations().size())
+                .containsExactly("3호선", "bg-orange-600", 2);
         assertThat(response.header("Location")).isNotBlank();
     }
 
@@ -54,22 +56,22 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long station2 = createStation("역삼역");
         LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
         RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then()
-            .log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then()
+                .log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -84,28 +86,28 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
 
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/lines")
-            .then().log().all()
-            .extract();
+                .when()
+                .get("/lines")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> expectedLineIds = Arrays.asList(createResponse1).stream()
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
         List<Long> resultLineIds = response.jsonPath().getList(".", LineServiceResponse.class).stream()
-            .map(LineServiceResponse::getId)
-            .collect(Collectors.toList());
+                .map(LineServiceResponse::getId)
+                .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
@@ -117,20 +119,20 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long station2 = createStation("역삼역");
         LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
 
         // when
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -140,10 +142,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 노선을 제거한다. 상태코드는 204 이어야 한다.")
     void deleteNonStation() {
         RestAssured.given().log().all()
-            .when()
-            .delete("lines/1")
-            .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .when()
+                .delete("lines/1")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -154,12 +156,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         Long station2 = createStation("역삼역");
         LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "2호선");
@@ -170,12 +172,12 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when()
-            .put(uri)
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .put(uri)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -185,12 +187,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4);
 
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when()
-            .put("/lines/1")
-            .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when()
+                .put("/lines/1")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -200,12 +202,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4);
 
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
-            .when()
-            .put("/lines/1")
-            .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when()
+                .put("/lines/1")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -216,11 +218,11 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/lines/" + lineId)
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/lines/" + lineId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 
     Long createStation(String name) {
@@ -228,12 +230,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
 
         // when
         String uri = createResponse.header("Location");
@@ -248,13 +250,13 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
 
         String uri = response.header("Location");
         return Long.parseLong(uri.split("/")[2]);
