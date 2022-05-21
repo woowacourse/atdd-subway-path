@@ -11,7 +11,9 @@ public class Section {
     private final int distance;
     private final Long lineOrder;
 
-    public Section(Long id, long lineId, long upStationId, long downStationId, int distance, Long lineOrder) {
+    public Section(final Long id, final long lineId,
+                   final long upStationId, final long downStationId,
+                   final int distance, final Long lineOrder) {
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -20,8 +22,8 @@ public class Section {
         this.lineOrder = lineOrder;
     }
 
-    public static Section createWithoutId(long lineId, long upStationId, long downStationId,
-                                          int distance, Long lineOrder) {
+    public static Section createWithoutId(final long lineId, final long upStationId, final long downStationId,
+                                          final int distance, final Long lineOrder) {
         return new Section(null, lineId, upStationId, downStationId, distance, lineOrder);
     }
 
@@ -53,23 +55,23 @@ public class Section {
         return lineOrder;
     }
 
-    public boolean isSameId(Long id) {
+    public boolean isSameId(final Long id) {
         return this.id.equals(id);
     }
 
-    public boolean isSameUpStationId(long stationId) {
+    public boolean isSameUpStationId(final long stationId) {
         return upStationId == stationId;
     }
 
-    public boolean isSameDownStationId(long stationId) {
+    public boolean isSameDownStationId(final long stationId) {
         return downStationId == stationId;
     }
 
-    public boolean hasStationId(long stationId) {
+    public boolean hasStationId(final long stationId) {
         return upStationId == stationId || downStationId == stationId;
     }
 
-    public long getOppositeStation(long stationId) {
+    public long getOppositeStation(final long stationId) {
         if (upStationId == stationId) {
             return downStationId;
         }

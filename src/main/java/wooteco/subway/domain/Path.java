@@ -13,32 +13,33 @@ public class Path {
     private final LinkedList<Section> path;
 
 
-    private Path(LinkedList<Section> path) {
+    private Path(final LinkedList<Section> path) {
         this.path = path;
     }
 
-    public static Path of(Sections sections, long sourceId, long targetId) {
+    public static Path of(final Sections sections, final long sourceId, final long targetId) {
         validateMovement(sourceId, targetId);
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
+        final WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
 
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
+        final List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
-        LinkedList<Section> path = toSections(sections, shortestPath);
+        final LinkedList<Section> path = toSections(sections, shortestPath);
         return new Path(path);
     }
 
-    private static void validateMovement(long sourceId, long targetId) {
+    private static void validateMovement(final long sourceId, final long targetId) {
         if (sourceId == targetId) {
             throw new NotFoundPathException("같은 위치로는 경로를 찾을 수 없습니다.");
         }
     }
 
-    private static List<Long> findShortestPath(long sourceId, long targetId,
-                                               DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
+    private static List<Long> findShortestPath(final long sourceId, final long targetId,
+                                               final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath) {
+
         try {
-            return dijkstraShortestPath.getPath(sourceId, targetId).getVertexList();
+            return shortestPath.getPath(sourceId, targetId).getVertexList();
         } catch (NullPointerException exception) {
             throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
         } catch (IllegalArgumentException exception) {
@@ -47,10 +48,11 @@ public class Path {
         }
     }
 
-    private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(Sections sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(final Sections sections) {
+        final WeightedMultigraph<Long, DefaultWeightedEdge> graph
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        List<Long> stationIds = sections.getStationIds();
+        final List<Long> stationIds = sections.getStationIds();
         stationIds.forEach(graph::addVertex);
 
         sections.getSections().forEach(
@@ -62,8 +64,8 @@ public class Path {
         return graph;
     }
 
-    private static LinkedList<Section> toSections(Sections sections, List<Long> shortestPath) {
-        LinkedList<Section> path = new LinkedList<>();
+    private static LinkedList<Section> toSections(final Sections sections, final List<Long> shortestPath) {
+        final LinkedList<Section> path = new LinkedList<>();
 
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
@@ -77,8 +79,8 @@ public class Path {
                 .sum();
     }
 
-    public List<Long> getStationIds(long sourceId, long targetId) {
-        List<Long> stationIds = new LinkedList<>();
+    public List<Long> getStationIds(long sourceId, final long targetId) {
+        final List<Long> stationIds = new LinkedList<>();
         for (Section section : path) {
             stationIds.add(sourceId);
             sourceId = section.getOppositeStation(sourceId);

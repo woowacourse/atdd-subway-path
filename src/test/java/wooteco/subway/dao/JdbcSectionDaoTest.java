@@ -31,7 +31,7 @@ class JdbcSectionDaoTest {
     @Test
     @DisplayName("Section을 저장한다.")
     void saveSection() {
-        Long id = sectionDao.save(GIVEN_SECTION);
+        final Long id = sectionDao.save(GIVEN_SECTION);
 
         assertThat(id).isEqualTo(1L);
     }
@@ -74,7 +74,7 @@ class JdbcSectionDaoTest {
         sectionDao.save(GIVEN_SECTION);
 
         // when
-        boolean result = sectionDao.existByLineId(GIVEN_SECTION.getLineId());
+        final boolean result = sectionDao.existByLineId(GIVEN_SECTION.getLineId());
 
         // then
         assertThat(result).isTrue();
@@ -86,7 +86,7 @@ class JdbcSectionDaoTest {
         // given
 
         // when
-        boolean result = sectionDao.existByLineId(2L);
+        final boolean result = sectionDao.existByLineId(2L);
 
         // then
         assertThat(result).isFalse();
@@ -100,7 +100,7 @@ class JdbcSectionDaoTest {
         sectionDao.save(GIVEN_SECTION2);
 
         // when
-        List<Section> sections = sectionDao.findAllByLineId(1L);
+        final List<Section> sections = sectionDao.findAllByLineId(1L);
 
         // then
         assertThat(sections).hasSize(2)
@@ -117,7 +117,7 @@ class JdbcSectionDaoTest {
         sectionDao.save(GIVEN_SECTION2);
 
         // then
-        List<Section> sections = sectionDao.findByLineIdAndStationId(1L, 2L);
+        final List<Section> sections = sectionDao.findByLineIdAndStationId(1L, 2L);
 
         // when
         assertThat(sections).hasSize(2)

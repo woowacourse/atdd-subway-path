@@ -24,7 +24,7 @@ public class JdbcLineDao implements LineDao {
             resultSet.getInt("extra_fare")
     );
 
-    public JdbcLineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public JdbcLineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
                 .withTableName("LINE")
@@ -32,60 +32,60 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public Long save(Line line) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
+    public Long save(final Line line) {
+        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
         return insertActor.executeAndReturnKey(parameters).longValue();
     }
 
     @Override
     public List<Line> findAll() {
-        String sql = "SELECT * FROM LINE";
+        final String sql = "SELECT * FROM LINE";
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
     @Override
-    public void deleteById(Long lineId) {
-        String sql = "DELETE FROM LINE WHERE id = (?)";
+    public void deleteById(final Long lineId) {
+        final String sql = "DELETE FROM LINE WHERE id = (?)";
         jdbcTemplate.update(sql, lineId);
     }
 
     @Override
-    public Line findById(Long lineId) {
-        String sql = "SELECT * FROM LINE WHERE id = (?)";
+    public Line findById(final Long lineId) {
+        final String sql = "SELECT * FROM LINE WHERE id = (?)";
         try {
             return jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
-        } catch (EmptyResultDataAccessException exception) {
+        } catch (final EmptyResultDataAccessException exception) {
             throw new NoSuchElementException("존재하지 않는 노선입니다.");
         }
     }
 
     @Override
-    public void update(Long lineId, Line line) {
-        String sql = "UPDATE LINE SET name = (?), color = (?), extra_fare = (?) WHERE id = (?)";
+    public void update(final Long lineId, final Line line) {
+        final String sql = "UPDATE LINE SET name = (?), color = (?), extra_fare = (?) WHERE id = (?)";
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), lineId);
     }
 
     @Override
-    public boolean existByName(Line line) {
-        String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, line.getName());
+    public boolean existByName(final Line line) {
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getName()));
     }
 
     @Override
-    public boolean existByColor(Line line) {
-        String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor());
+    public boolean existByColor(final Line line) {
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor()));
     }
 
     @Override
-    public boolean existByNameExceptSameId(Long lineId, Line line) {
-        String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?) AND NOT id = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, line.getName(), lineId);
+    public boolean existByNameExceptSameId(final Long lineId, final Line line) {
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?) AND NOT id = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getName(), lineId));
     }
 
     @Override
-    public boolean existByColorExceptSameId(Long lineId, Line line) {
-        String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) AND NOT id = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor(), lineId);
+    public boolean existByColorExceptSameId(final Long lineId, final Line line) {
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) AND NOT id = (?))";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor(), lineId));
     }
 }

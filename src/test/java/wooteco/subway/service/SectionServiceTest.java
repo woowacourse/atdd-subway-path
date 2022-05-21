@@ -44,7 +44,7 @@ class SectionServiceTest {
         sectionService.firstSave(1L, GIVEN_SECTION_REQ);
 
         // when
-        Throwable thrown = catchThrowable(() -> sectionService.save(1L, GIVEN_SECTION_REQ));
+        final Throwable thrown = catchThrowable(() -> sectionService.save(1L, GIVEN_SECTION_REQ));
 
         // then
         assertThat(thrown).isInstanceOf(InvalidSectionInsertException.class)
@@ -58,7 +58,7 @@ class SectionServiceTest {
         sectionService.firstSave(1L, GIVEN_SECTION_REQ);
 
         // when
-        Throwable thrown = catchThrowable(
+        final Throwable thrown = catchThrowable(
                 () -> sectionService.save(1L, new SectionRequest(3L, 4L, 6)));
 
         // then
@@ -73,7 +73,7 @@ class SectionServiceTest {
         sectionService.firstSave(1L, GIVEN_SECTION_REQ);
 
         // when
-        Throwable thrown = catchThrowable(
+        final Throwable thrown = catchThrowable(
                 () -> sectionService.save(1L, new SectionRequest(1L, 3L, 6)));
 
         // then
@@ -88,7 +88,7 @@ class SectionServiceTest {
         sectionService.firstSave(1L, GIVEN_SECTION_REQ);
 
         // when
-        Throwable thrown = catchThrowable(
+        final Throwable thrown = catchThrowable(
                 () -> sectionService.save(1L, new SectionRequest(3L, 2L, 6)));
 
         // then

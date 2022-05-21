@@ -19,29 +19,29 @@ public class PathService {
     private final SectionDao sectionDao;
     private final StationService stationService;
 
-    public PathService(SectionDao sectionDao, StationService stationService) {
+    public PathService(final SectionDao sectionDao, final StationService stationService) {
         this.sectionDao = sectionDao;
         this.stationService = stationService;
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
-    public PathResponse findShortestPath(PathRequest pathRequest) {
+    public PathResponse findShortestPath(final PathRequest pathRequest) {
         validateExistStations(pathRequest);
-        Path shortestPath = createPath(pathRequest);
-        Fare fare = Fare.from(shortestPath.getTotalDistance());
+        final Path shortestPath = createPath(pathRequest);
+        final Fare fare = Fare.from(shortestPath.getTotalDistance());
 
-        List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
-        List<StationResponse> stations = stationService.findByStationIds(stationIds);
+        final List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
+        final List<StationResponse> stations = stationService.findByStationIds(stationIds);
         return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
     }
 
-    private void validateExistStations(PathRequest pathRequest) {
+    private void validateExistStations(final PathRequest pathRequest) {
         stationService.validateExistById(pathRequest.getSource());
         stationService.validateExistById(pathRequest.getTarget());
     }
 
     private Path createPath(final PathRequest pathRequest) {
-        List<Section> allSections = sectionDao.findAll();
+        final List<Section> allSections = sectionDao.findAll();
         return Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget());
     }
 }

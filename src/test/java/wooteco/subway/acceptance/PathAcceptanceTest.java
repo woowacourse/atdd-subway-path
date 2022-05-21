@@ -20,17 +20,17 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로와 요금을 조회한다.")
     void findPath() {
         // given
-        long source = 1L;
-        long target = 7L;
-        int age = 10;
+        final long source = 1L;
+        final long target = 7L;
+        final int age = 10;
 
         // when
-        ExtractableResponse<Response> response =
+        final ExtractableResponse<Response> response =
                 requestHttpGet("/paths?source=" + source + "&target=" + target + "&age=" + age);
 
         // then
-        PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
-        List<String> stationNames = pathResponse.getStations().stream()
+        final PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+        final List<String> stationNames = pathResponse.getStations().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertAll(

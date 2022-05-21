@@ -26,7 +26,7 @@ class PathServiceTest {
     @Test
     @DisplayName("출발지와 도착지가 주어질 때 경로와 요금을 계산한다.")
     void findPath() {
-        PathResponse pathResponse = pathService.findShortestPath(new PathRequest(5L, 6L, 10));
+        final PathResponse pathResponse = pathService.findShortestPath(new PathRequest(5L, 6L, 10));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations())
@@ -51,7 +51,7 @@ class PathServiceTest {
     @Test
     @DisplayName("출발지와 도착지가 주어질 때 경로와 요금을 계산한다. - 환승")
     void findPathWithTransfer() {
-        PathResponse pathResponse = pathService.findShortestPath(new PathRequest(1L, 7L, 10));
+        final PathResponse pathResponse = pathService.findShortestPath(new PathRequest(1L, 7L, 10));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations())
@@ -69,7 +69,7 @@ class PathServiceTest {
     @Test
     @DisplayName("출발지와 도착지가 반대로 주어질 때 경로와 요금을 계산한다.")
     void findPathWithReverseStations() {
-        PathResponse pathResponse = pathService.findShortestPath(new PathRequest(7L, 1L, 10));
+        final PathResponse pathResponse = pathService.findShortestPath(new PathRequest(7L, 1L, 10));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations())

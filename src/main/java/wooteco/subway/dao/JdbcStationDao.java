@@ -20,7 +20,7 @@ public class JdbcStationDao implements StationDao {
             resultSet.getString("name")
     );
 
-    public JdbcStationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public JdbcStationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
                 .withTableName("STATION")
@@ -28,38 +28,38 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public Long save(Station station) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(station);
+    public Long save(final Station station) {
+        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(station);
         return insertActor.executeAndReturnKey(parameters).longValue();
     }
 
     @Override
     public List<Station> findAll() {
-        String sql = "SELECT * FROM STATION";
+        final String sql = "SELECT * FROM STATION";
         return jdbcTemplate.query(sql, stationRowMapper);
     }
 
     @Override
-    public void deleteById(Long stationId) {
-        String sql = "DELETE FROM STATION WHERE id = (?)";
+    public void deleteById(final Long stationId) {
+        final String sql = "DELETE FROM STATION WHERE id = (?)";
         jdbcTemplate.update(sql, stationId);
     }
 
     @Override
-    public Station findById(Long stationId) {
-        String sql = "SELECT * FROM STATION WHERE id = (?)";
+    public Station findById(final Long stationId) {
+        final String sql = "SELECT * FROM STATION WHERE id = (?)";
         return jdbcTemplate.queryForObject(sql, stationRowMapper, stationId);
     }
 
     @Override
-    public boolean existByName(Station station) {
-        String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?))";
+    public boolean existByName(final Station station) {
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?))";
         return jdbcTemplate.queryForObject(sql, Boolean.class, station.getName());
     }
 
     @Override
-    public boolean existById(Long stationId) {
-        String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
+    public boolean existById(final Long stationId) {
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
         return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
     }
 }

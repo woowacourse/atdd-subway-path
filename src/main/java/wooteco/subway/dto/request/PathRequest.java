@@ -9,7 +9,7 @@ public class PathRequest {
     private PathRequest() {
     }
 
-    public PathRequest(long source, long target, int age) {
+    public PathRequest(final long source, final long target, final int age) {
         this.source = source;
         this.target = target;
         this.age = age;

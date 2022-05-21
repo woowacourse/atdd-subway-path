@@ -12,7 +12,9 @@ public class LineRequest {
     private LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
+    public LineRequest(final String name, final String color,
+                       final Long upStationId, final Long downStationId,
+                       final int distance, final int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;

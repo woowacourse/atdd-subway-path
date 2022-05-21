@@ -5,19 +5,19 @@ import wooteco.subway.domain.Section;
 
 public interface SectionDao {
 
-    Long save(Section section);
+    Long save(final Section section);
 
-    void updateLineOrderByInc(long lineId, Long lineOrder);
+    void updateLineOrderByInc(final long lineId, final Long lineOrder);
 
-    boolean existByLineId(long lineId);
+    boolean existByLineId(final long lineId);
 
-    List<Section> findAllByLineId(long lineId);
+    List<Section> findAllByLineId(final long lineId);
 
-    void deleteById(Long id);
+    void deleteById(final Long id);
 
-    List<Section> findByLineIdAndStationId(long lineId, long stationId);
+    List<Section> findByLineIdAndStationId(final long lineId, final long stationId);
 
-    void updateLineOrderByDec(long lineId, Long lineOrder);
+    void updateLineOrderByDec(final long lineId, final Long lineOrder);
 
     List<Section> findAll();
 }

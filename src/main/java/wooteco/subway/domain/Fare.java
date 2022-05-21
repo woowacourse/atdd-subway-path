@@ -11,11 +11,11 @@ public class Fare {
 
     private final int value;
 
-    private Fare(int value) {
+    private Fare(final int value) {
         this.value = value;
     }
 
-    public static Fare from(int distance) {
+    public static Fare from(final int distance) {
         if (distance <= STANDARD_DISTANCE) {
             return new Fare(STANDARD_FARE);
         }
@@ -28,7 +28,7 @@ public class Fare {
                 + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
     }
 
-    private static int calculateOverFare(int distance, int unit) {
+    private static int calculateOverFare(final int distance, final int unit) {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * OVER_FARE_UNIT);
     }
 

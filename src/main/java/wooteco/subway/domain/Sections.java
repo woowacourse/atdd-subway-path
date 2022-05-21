@@ -9,7 +9,7 @@ public class Sections {
 
     private final List<Section> sections;
 
-    public Sections(List<Section> sections) {
+    public Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
@@ -21,7 +21,7 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    public Section findSection(Long upStationId, Long downStationId) {
+    public Section findSection(final Long upStationId, final Long downStationId) {
         return sections.stream()
                 .filter(section -> section.hasStationId(upStationId) && section.hasStationId(downStationId))
                 .findAny()

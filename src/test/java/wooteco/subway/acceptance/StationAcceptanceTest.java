@@ -22,10 +22,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationTest() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
+        final StationRequest stationRequest = new StationRequest("강남역");
 
         // when
-        ExtractableResponse<Response> response =
+        final ExtractableResponse<Response> response =
                 requestHttpPost(stationRequest, "/stations");
 
         // then
@@ -37,11 +37,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateNameTest() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
+        final StationRequest stationRequest = new StationRequest("강남역");
         requestHttpPost(stationRequest, "/stations");
 
         // when
-        ExtractableResponse<Response> response =
+        final ExtractableResponse<Response> response =
                 requestHttpPost(stationRequest, "/stations");
 
         // then
@@ -52,23 +52,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStationsTest() {
         /// given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        ExtractableResponse<Response> createResponse1 =
+        final StationRequest stationRequest1 = new StationRequest("강남역");
+        final ExtractableResponse<Response> createResponse1 =
                 requestHttpPost(stationRequest1, "/stations");
 
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        ExtractableResponse<Response> createResponse2 =
+        final StationRequest stationRequest2 = new StationRequest("역삼역");
+        final ExtractableResponse<Response> createResponse2 =
                 requestHttpPost(stationRequest2, "/stations");
 
         // when
-        ExtractableResponse<Response> response = requestHttpGet("/stations");
+        final ExtractableResponse<Response> response = requestHttpGet("/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<Long> expectedStationIds = extractStationIdsWithLocation(createResponse1,
+        final List<Long> expectedStationIds = extractStationIdsWithLocation(createResponse1,
                 createResponse2);
-        List<Long> resultStationIds = extractStationIdsWithJson(response);
+        final List<Long> resultStationIds = extractStationIdsWithJson(response);
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
@@ -90,13 +90,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStationTest() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
-        ExtractableResponse<Response> createResponse =
+        final StationRequest stationRequest = new StationRequest("강남역");
+        final ExtractableResponse<Response> createResponse =
                 requestHttpPost(stationRequest, "/stations");
 
         // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = requestHttpDelete(uri);
+        final String uri = createResponse.header("Location");
+        final ExtractableResponse<Response> response = requestHttpDelete(uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

@@ -10,13 +10,13 @@ import wooteco.subway.exception.SubwayException;
 public class SubwayControllerAdvice {
 
     @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<String> subwayException(SubwayException exception) {
+    public ResponseEntity<String> subwayException(final SubwayException exception) {
         exception.printStackTrace();
         return ResponseEntity.status(exception.getHttpStatus()).body(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> subwayException(Exception exception) {
+    public ResponseEntity<String> subwayException(final Exception exception) {
         exception.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 예외가 발생했습니다.");
     }

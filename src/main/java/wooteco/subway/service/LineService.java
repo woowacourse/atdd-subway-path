@@ -22,8 +22,9 @@ public class LineService {
     private final StationService stationService;
     private final SectionService sectionService;
 
-    public LineService(LineDao lineDao, StationService stationService,
-                       SectionService sectionService) {
+    public LineService(final LineDao lineDao,
+                       final StationService stationService,
+                       final SectionService sectionService) {
         this.lineDao = lineDao;
         this.stationService = stationService;
         this.sectionService = sectionService;
@@ -31,26 +32,26 @@ public class LineService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public LineResponse save(final LineRequest lineRequest) {
-        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateCreateRequest(newLine);
-        Long lineId = lineDao.save(newLine);
+        final Long lineId = lineDao.save(newLine);
         final SectionRequest sectionRequest = extractSectionRequest(lineRequest);
         sectionService.firstSave(lineId, sectionRequest);
         return createLineResponse(lineDao.findById(lineId), getStationsByStationIds(lineId));
     }
 
-    private void validateCreateRequest(Line line) {
+    private void validateCreateRequest(final Line line) {
         validateName(line);
         validateColor(line);
     }
 
-    private void validateName(Line line) {
+    private void validateName(final Line line) {
         if (lineDao.existByName(line)) {
             throw new DuplicateLineException("이미 존재하는 노선 이름입니다.");
         }
     }
 
-    private void validateColor(Line line) {
+    private void validateColor(final Line line) {
         if (lineDao.existByColor(line)) {
             throw new DuplicateLineException("이미 존재하는 노선 색깔입니다.");
         }
@@ -64,13 +65,13 @@ public class LineService {
         );
     }
 
-    private LineResponse createLineResponse(Line newLine, List<StationResponse> stations) {
+    private LineResponse createLineResponse(final Line newLine, final List<StationResponse> stations) {
         return new LineResponse(
                 newLine.getId(), newLine.getName(), newLine.getColor(), newLine.getExtraFare(), stations
         );
     }
 
-    private List<StationResponse> getStationsByStationIds(Long line) {
+    private List<StationResponse> getStationsByStationIds(final Long line) {
         return stationService.findByStationIds(sectionService.findAllStationByLineId(line));
     }
 
@@ -82,37 +83,37 @@ public class LineService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public LineResponse findById(Long lineId) {
-        Line line = lineDao.findById(lineId);
+    public LineResponse findById(final Long lineId) {
+        final Line line = lineDao.findById(lineId);
         return createLineResponse(line, getStationsByStationIds(line.getId()));
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void update(Long lineId, LineRequest lineRequest) {
-        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+    public void update(final Long lineId, final LineRequest lineRequest) {
+        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
         lineDao.update(lineId, newLine);
     }
 
-    private void validateUpdateRequest(Long lineId, Line line) {
+    private void validateUpdateRequest(final Long lineId, final Line line) {
         validateNameExceptSameId(lineId, line);
         validateColorExceptSameId(lineId, line);
     }
 
-    private void validateNameExceptSameId(Long lineId, Line line) {
+    private void validateNameExceptSameId(final Long lineId, final Line line) {
         if (lineDao.existByNameExceptSameId(lineId, line)) {
             throw new DuplicateLineException("이미 존재하는 노선 이름으로 업데이트할 수 없습니다.");
         }
     }
 
-    private void validateColorExceptSameId(Long lineId, Line line) {
+    private void validateColorExceptSameId(final Long lineId, final Line line) {
         if (lineDao.existByColorExceptSameId(lineId, line)) {
             throw new DuplicateLineException("이미 존재하는 노선 색깔로 업데이트할 수 없습니다.");
         }
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void delete(Long lineId) {
+    public void delete(final Long lineId) {
         lineDao.deleteById(lineId);
     }
 }

@@ -13,47 +13,47 @@ public class LineSections {
 
     private final List<Section> sections;
 
-    public LineSections(List<Section> sections) {
+    public LineSections(final List<Section> sections) {
         this.sections = sections;
     }
 
-    public void validateSection(long upStationId, long downStationId, int distance) {
+    public void validateSection(final long upStationId, final long downStationId, final int distance) {
         validateBothStationExist(upStationId, downStationId);
         validateNoneStationExist(upStationId, downStationId);
         validateDistance(upStationId, downStationId, distance);
     }
 
-    private void validateBothStationExist(long upStationId, long downStationId) {
+    private void validateBothStationExist(final long upStationId, final long downStationId) {
         if (existByStationId(upStationId)
                 && existByStationId(downStationId)) {
             throw new InvalidSectionInsertException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
         }
     }
 
-    private boolean existByStationId(long stationId) {
+    private boolean existByStationId(final long stationId) {
         return existByUpStationId(stationId) || existByDownStationId(stationId);
     }
 
-    private boolean existByUpStationId(long stationId) {
+    private boolean existByUpStationId(final long stationId) {
         return sections.stream()
                 .map(Section::getUpStationId)
                 .anyMatch(id -> id == stationId);
     }
 
-    private boolean existByDownStationId(long stationId) {
+    private boolean existByDownStationId(final long stationId) {
         return sections.stream()
                 .map(Section::getDownStationId)
                 .anyMatch(id -> id == stationId);
     }
 
-    private void validateNoneStationExist(long upStationId, long downStationId) {
+    private void validateNoneStationExist(final long upStationId, final long downStationId) {
         if (!existByStationId(upStationId)
                 && !existByStationId(downStationId)) {
             throw new InvalidSectionInsertException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
         }
     }
 
-    private void validateDistance(long upStationId, long downStationId, int distance) {
+    private void validateDistance(final long upStationId, final long downStationId, final int distance) {
         if (isInvalidDistanceWithDownStationOverlap(downStationId, distance)
                 || isInvalidDistanceWithUpStationOverlap(upStationId, distance)) {
             throw new InvalidSectionInsertException(
@@ -62,17 +62,17 @@ public class LineSections {
         }
     }
 
-    private boolean isInvalidDistanceWithDownStationOverlap(long downStationId, int distance) {
+    private boolean isInvalidDistanceWithDownStationOverlap(final long downStationId, final int distance) {
         return existByDownStationId(downStationId)
                 && findDistanceById(findIdByDownStationId(downStationId)) <= distance;
     }
 
-    private boolean isInvalidDistanceWithUpStationOverlap(long upStationId, int distance) {
+    private boolean isInvalidDistanceWithUpStationOverlap(final long upStationId, final int distance) {
         return existByUpStationId(upStationId)
                 && findDistanceById(findIdByUpStationId(upStationId)) <= distance;
     }
 
-    private long findIdByUpStationId(long stationId) {
+    private long findIdByUpStationId(final long stationId) {
         return sections.stream()
                 .filter(section -> section.isSameUpStationId(stationId))
                 .map(Section::getId)
@@ -80,7 +80,7 @@ public class LineSections {
                 .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
-    private long findIdByDownStationId(long stationId) {
+    private long findIdByDownStationId(final long stationId) {
         return sections.stream()
                 .filter(section -> section.isSameDownStationId(stationId))
                 .map(Section::getId)
@@ -88,7 +88,7 @@ public class LineSections {
                 .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
-    private int findDistanceById(Long id) {
+    private int findDistanceById(final Long id) {
         return sections.stream()
                 .filter(section -> section.isSameId(id))
                 .findAny()
@@ -96,7 +96,8 @@ public class LineSections {
                 .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
     }
 
-    public SectionUpdateResult findOverlapSection(long upStationId, long downStationId, int distance) {
+    public SectionUpdateResult findOverlapSection(final long upStationId, final long downStationId,
+                                                  final int distance) {
         if (existByUpStationId(upStationId)) {
             Section oldSection = findById(findIdByUpStationId(upStationId));
             return separateSectionInExistUpMatchCase(upStationId, downStationId, distance, oldSection);
@@ -113,8 +114,8 @@ public class LineSections {
         return addSection(upStationId, downStationId, distance, oldSection, oldSection.getLineOrder() + 1);
     }
 
-    private SectionUpdateResult separateSectionInExistUpMatchCase(long upStationId, long downStationId,
-                                                                  int distance, Section oldSection) {
+    private SectionUpdateResult separateSectionInExistUpMatchCase(final long upStationId, final long downStationId,
+                                                                  final int distance, final Section oldSection) {
         return new SectionUpdateResult(
                 new Section(
                         oldSection.getId(),
@@ -134,8 +135,8 @@ public class LineSections {
         );
     }
 
-    private SectionUpdateResult separateSectionInExistDownMatchCase(long upStationId, long downStationId,
-                                                                    int distance, Section oldSection) {
+    private SectionUpdateResult separateSectionInExistDownMatchCase(final long upStationId, final long downStationId,
+                                                                    final int distance, final Section oldSection) {
         return new SectionUpdateResult(
                 new Section(oldSection.getId(),
                         oldSection.getLineId(),
@@ -154,8 +155,8 @@ public class LineSections {
         );
     }
 
-    private SectionUpdateResult addSection(long upStationId, long downStationId,
-                                           int distance, Section oldSection, long lineOrder) {
+    private SectionUpdateResult addSection(final long upStationId, final long downStationId,
+                                           final int distance, final Section oldSection, final long lineOrder) {
         return new SectionUpdateResult(
                 oldSection,
                 Section.createWithoutId(
@@ -168,7 +169,7 @@ public class LineSections {
         );
     }
 
-    private Section findById(long sectionId) {
+    private Section findById(final long sectionId) {
         return sections.stream()
                 .filter(section -> section.isSameId(sectionId))
                 .findAny()
@@ -180,14 +181,14 @@ public class LineSections {
             return Collections.emptyList();
         }
 
-        List<Section> sortedSections = createSortedSections();
-        List<Long> stationIds = upStationIdsOf(sortedSections);
+        final List<Section> sortedSections = createSortedSections();
+        final List<Long> stationIds = upStationIdsOf(sortedSections);
         stationIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
 
         return stationIds;
     }
 
-    private List<Long> upStationIdsOf(List<Section> sections) {
+    private List<Long> upStationIdsOf(final List<Section> sections) {
         return sections.stream()
                 .map(Section::getUpStationId)
                 .collect(Collectors.toList());
@@ -212,7 +213,7 @@ public class LineSections {
     }
 
     public Section getDownsideSection() {
-        List<Section> sortedSections = createSortedSections();
+        final List<Section> sortedSections = createSortedSections();
         return sortedSections.get(sortedSections.size() - 1);
     }
 }
