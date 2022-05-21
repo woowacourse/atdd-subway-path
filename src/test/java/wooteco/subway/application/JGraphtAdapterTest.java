@@ -49,16 +49,19 @@ public class JGraphtAdapterTest {
         Path path = graph.search(stations.get(0), stations.get(3));
 
         assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
+        assertThat(path.getSections()).containsExactly(sections.get(0), sections.get(2));
         assertThat(path.getDistance()).isEqualTo(8);
     }
 
     @DisplayName("10km이상일 경우 100원 추가 요금")
     @Test
     void searchOnceOverFarePath() {
-        Path path = graph.search(stations.get(0), stations.get(4));
+        Path path = graph.search(stations.get(4), stations.get(0));
 
         assertThat(path.getStations())
-            .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4));
+            .containsExactly(stations.get(4), stations.get(2), stations.get(1), stations.get(0));
+        assertThat(path.getSections())
+            .containsExactly(sections.get(3), sections.get(1), sections.get(0));
         assertThat(path.getDistance()).isEqualTo(15);
     }
 
@@ -70,6 +73,8 @@ public class JGraphtAdapterTest {
         assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
                 stations.get(5));
+        assertThat(path.getSections())
+            .containsExactly(sections.get(0), sections.get(1), sections.get(3), sections.get(4));
         assertThat(path.getDistance()).isEqualTo(21);
     }
 
@@ -81,6 +86,9 @@ public class JGraphtAdapterTest {
         assertThat(path.getStations())
             .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
                 stations.get(5), stations.get(6));
+        assertThat(path.getSections())
+            .containsExactly(sections.get(0), sections.get(1), sections.get(3), sections.get(4),
+                sections.get(5));
         assertThat(path.getDistance()).isEqualTo(58);
     }
 
@@ -88,6 +96,10 @@ public class JGraphtAdapterTest {
     @Test
     void searchNotReachablePath() {
         Path path = graph.search(stations.get(0), stations.get(7));
+
         assertThat(path.isEmpty()).isTrue();
+        assertThat(path.getStations()).isEmpty();
+        assertThat(path.getSections()).isEmpty();
+        assertThat(path.getDistance()).isEqualTo(0);
     }
 }

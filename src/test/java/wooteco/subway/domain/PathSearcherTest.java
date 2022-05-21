@@ -12,6 +12,7 @@ import wooteco.subway.domain.exception.UnreachablePathException;
 class PathSearcherTest {
 
     private List<Station> stations;
+    private List<Section> sections;
     private Graph graph;
 
     @BeforeEach
@@ -20,8 +21,11 @@ class PathSearcherTest {
             new Station(1L, "강남역"),
             new Station(2L, "역삼역"),
             new Station(3L, "잠실역"));
-
-        graph = (source, target) -> new Path(stations, 10);
+        sections = List.of(
+            new Section(1L, 1L, new SectionEdge(1L, 2L, 3)),
+            new Section(1L, 1L, new SectionEdge(2L, 3L, 7))
+        );
+        graph = (source, target) -> new Path(stations, sections, 10);
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")
@@ -45,7 +49,8 @@ class PathSearcherTest {
 
     @Test
     void searchUnreachablePath() {
-        Graph graph = (source, target) -> new Path(List.of(), 0);
+        Graph graph = (source, target) -> Path.EMPTY;
+
         assertThatThrownBy(() -> new PathSearcher(graph, new FareCalculator())
             .search(stations.get(0), stations.get(2)))
         .isInstanceOf(UnreachablePathException.class);

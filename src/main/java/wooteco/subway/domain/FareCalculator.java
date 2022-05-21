@@ -7,8 +7,8 @@ public class FareCalculator {
     private static final int COUNT_PER_OVER_FARE = 100;
     private static final int BASIC_FARE = 1250;
 
-    public int calculateFare(int distance) {
-        return BASIC_FARE + overDistanceFare(distance);
+    public int calculateFare(Path path) {
+        return BASIC_FARE + overDistanceFare(path.getDistance());
     }
 
     private int overDistanceFare(int distance) {

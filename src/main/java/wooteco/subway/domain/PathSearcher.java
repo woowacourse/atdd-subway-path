@@ -21,7 +21,7 @@ public class PathSearcher {
         if (path.isEmpty()) {
             throw new UnreachablePathException(source, target);
         }
-        int fare = fareCalculator.calculateFare(path.getDistance());
+        int fare = fareCalculator.calculateFare(path);
         return new PathSummary(path, fare);
     }
 }

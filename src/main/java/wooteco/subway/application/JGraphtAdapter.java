@@ -14,7 +14,19 @@ import wooteco.subway.domain.Station;
 
 public class JGraphtAdapter implements Graph {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
+    private static class JGraphtSectionEdge extends DefaultWeightedEdge {
+        private Section section;
+
+        public JGraphtSectionEdge(Section section) {
+            this.section = section;
+        }
+
+        public Section getSection() {
+            return section;
+        }
+    }
+
+    private final DijkstraShortestPath<Station, JGraphtSectionEdge> shortestPath;
 
     public JGraphtAdapter(List<Station> stations, List<Section> sections) {
         this.shortestPath = createShortestPath(createStationsMap(stations), sections);
@@ -25,10 +37,10 @@ public class JGraphtAdapter implements Graph {
             .collect(Collectors.toMap(Station::getId, value -> value));
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> createShortestPath(
+    private DijkstraShortestPath<Station, JGraphtSectionEdge> createShortestPath(
         Map<Long, Station> stations, List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-            = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, JGraphtSectionEdge> graph
+            = new WeightedMultigraph<>(JGraphtSectionEdge.class);
 
         for (Station station : stations.values()) {
             graph.addVertex(station);
@@ -37,7 +49,8 @@ public class JGraphtAdapter implements Graph {
         for (Section section : sections) {
             Station upStation = stations.get(section.getUpStationId());
             Station downStation = stations.get(section.getDownStationId());
-            DefaultWeightedEdge edge = graph.addEdge(upStation, downStation);
+            JGraphtSectionEdge edge = new JGraphtSectionEdge(section);
+            graph.addEdge(upStation, downStation, edge);
             graph.setEdgeWeight(edge, section.getDistance());
         }
 
@@ -46,11 +59,13 @@ public class JGraphtAdapter implements Graph {
 
     @Override
     public Path search(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+        GraphPath<Station, JGraphtSectionEdge> path = shortestPath.getPath(source, target);
         if (path == null) {
-            return new Path(List.of(), 0);
+            return Path.EMPTY;
         }
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        List<Section> sections = path.getEdgeList().stream()
+            .map(JGraphtSectionEdge::getSection)
+            .collect(Collectors.toList());
+        return new Path(path.getVertexList(), sections, (int) path.getWeight());
     }
-
 }
