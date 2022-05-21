@@ -34,67 +34,55 @@ class SectionDaoTest {
     @DisplayName("구간을 저장한다.")
     @Test
     void 구간_저장() {
-        Line line = generateLine("2호선", "bg-green-600");
-        Station upStation = generateStation("선릉역");
-        Station downStation = generateStation("잠실역");
+        Line line2 = generateLine("2호선", "bg-green-600");
+        Station 선릉역 = generateStation("선릉역");
+        Station 잠실역 = generateStation("잠실역");
         Integer distance = 10;
 
-        Section createdSection = sectionDao.save(new Section(line, upStation, downStation, distance));
+        Section createdSection = sectionDao.save(new Section(line2, 선릉역, 잠실역, distance));
 
         assertAll(
-                () -> assertThat(createdSection.getLine()).isEqualTo(line),
-                () -> assertThat(createdSection.getUpStation()).isEqualTo(upStation),
-                () -> assertThat(createdSection.getDownStation()).isEqualTo(downStation),
+                () -> assertThat(createdSection.getLine()).isEqualTo(line2),
+                () -> assertThat(createdSection.getUpStation()).isEqualTo(선릉역),
+                () -> assertThat(createdSection.getDownStation()).isEqualTo(잠실역),
                 () -> assertThat(createdSection.getDistance()).isEqualTo(distance)
         );
     }
 
-    @DisplayName("노선 조작 기능")
+    @DisplayName("구간 조작 기능을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromLine() {
         Line line = generateLine("2호선", "bg-green-600");
-        Station upStation1 = generateStation("선릉역");
-        Station downStation1 = generateStation("잠실역");
-        Integer distance1 = 10;
-        Station upStation2 = generateStation("신도림역");
-        Station downStation2 = generateStation("신대방역");
-        Integer distance2 = 7;
-        sectionDao.save(new Section(line, upStation1, downStation1, distance1));
-        sectionDao.save(new Section(line, upStation2, downStation2, distance2));
+        Station 선릉역 = generateStation("선릉역");
+        Station 잠실역 = generateStation("잠실역");
+        int distance1 = 10;
+        Station 신도림역 = generateStation("신도림역");
+        Station 신대방역 = generateStation("신대방역");
+        int distance2 = 7;
 
         return Stream.of(
-                dynamicTest("노선 별 구간을 조회한다.", () -> {
+                dynamicTest("두 개의 구간이 주어지면 모두 저장한다.", () -> {
+                    sectionDao.saveAll(
+                            List.of(new Section(line, 선릉역, 잠실역, distance1),
+                                    new Section(line, 신도림역, 신대방역, distance2)));
+
+                    List<Section> sections = sectionDao.findByLineId(line.getId());
+                    assertThat(sections.size()).isEqualTo(2);
+                }),
+
+                dynamicTest("노선의 id를 활용하여 노선 별 구간을 조회한다.", () -> {
                     List<Section> sections = sectionDao.findByLineId(line.getId());
 
                     assertThat(sections.size()).isEqualTo(2);
                 }),
 
-                dynamicTest("노선 별 구간을 삭제한다.", () -> {
+                dynamicTest("노선의 id를 활용하여 노선 별 구간을 삭제한다.", () -> {
                     sectionDao.deleteByLineId(line.getId());
 
                     List<Section> sections = sectionDao.findByLineId(line.getId());
                     assertThat(sections.size()).isEqualTo(0);
                 })
         );
-    }
-    
-    @DisplayName("구간을 전체 저장한다.")
-    @Test
-    void 구간_전체_저장() {
-        Line line = generateLine("2호선", "bg-green-600");
-        Station upStation1 = generateStation("선릉역");
-        Station downStation1 = generateStation("잠실역");
-        Integer distance1 = 10;
-        Station upStation2 = generateStation("신도림역");
-        Station downStation2 = generateStation("신대방역");
-        Integer distance2 = 7;
-        Section section1 = new Section(line, upStation1, downStation1, distance1);
-        Section section2 = new Section(line, upStation2, downStation2, distance2);
-
-        sectionDao.saveAll(List.of(section1, section2));
-
-        List<Section> sections = sectionDao.findByLineId(line.getId());
-        assertThat(sections.size()).isEqualTo(2);
     }
 
     private Line generateLine(String name, String color) {
