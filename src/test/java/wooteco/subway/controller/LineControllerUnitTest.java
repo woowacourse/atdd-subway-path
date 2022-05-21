@@ -48,10 +48,10 @@ class LineControllerUnitTest {
         Section section = new Section(
                 new Station(1L, "서울역"),
                 new Station(2L, "용산역"), 10);
-        Line mockLine = new Line(1L, "1호선", "bg-darkblue-600", new Sections(section));
+        Line mockLine = new Line(1L, "1호선", "bg-darkblue-600", new Sections(section), 100);
         given(lineService.save(any(LineRequest.class))).willReturn(mockLine);
 
-        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10);
+        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10, 100);
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))
@@ -62,6 +62,7 @@ class LineControllerUnitTest {
                 .andExpect(jsonPath("color").value("bg-darkblue-600"))
                 .andExpect(jsonPath("stations[0].name").value("서울역"))
                 .andExpect(jsonPath("stations[1].name").value("용산역"))
+                .andExpect(jsonPath("extraFare").value(100))
                 .andDo(print());
     }
 
@@ -70,7 +71,7 @@ class LineControllerUnitTest {
     void 존재하는_노선_이름_생성_400예외() throws Exception {
         given(lineService.save(any(LineRequest.class))).willThrow(DuplicateKeyException.class);
 
-        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10);
+        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10, 100);
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))
@@ -89,7 +90,7 @@ class LineControllerUnitTest {
                 new Station(2L, "합정역"),
                 new Station(3L, "상수역"), 10);
         Line mockLine = new Line(1L, "6호선", "bg-brown-600",
-                new Sections(new LinkedList<>(List.of(section1, section2))));
+                new Sections(new LinkedList<>(List.of(section1, section2))), 100);
 
         given(lineService.findById(1L)).willReturn(mockLine);
 
@@ -103,6 +104,7 @@ class LineControllerUnitTest {
                 .andExpect(jsonPath("stations[1].name").value("합정역"))
                 .andExpect(jsonPath("stations[2].id").value("3"))
                 .andExpect(jsonPath("stations[2].name").value("상수역"))
+                .andExpect(jsonPath("extraFare").value(100))
                 .andDo(print());
     }
 

@@ -46,14 +46,15 @@ public class LineRepositoryTest {
         Station A = stationDao.save(new Station("A"));
         Station B = stationDao.save(new Station("B"));
         Section section = new Section(A, B, 10);
-        Line line = new Line("A호선", "yellow", new Sections(section));
+        Line line = new Line("A호선", "yellow", new Sections(section), 100);
 
         Long lineId = lineRepository.save(line);
         LineDto result = lineDao.findById(lineId);
 
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo("A호선"),
-                () -> assertThat(result.getColor()).isEqualTo("yellow")
+                () -> assertThat(result.getColor()).isEqualTo("yellow"),
+                () -> assertThat(result.getExtraFare()).isEqualTo(100)
         );
     }
 
@@ -63,7 +64,7 @@ public class LineRepositoryTest {
         Station A = stationDao.save(new Station("A"));
         Station B = stationDao.save(new Station("B"));
         Section section = new Section(A, B, 10);
-        Line line = new Line("A호선", "yellow", new Sections(section));
+        Line line = new Line("A호선", "yellow", new Sections(section), 100);
 
         LineDto savedLine = lineDao.save(LineDto.from(line));
         sectionDao.save(SectionDto.of(section, savedLine.getId()));
@@ -73,7 +74,8 @@ public class LineRepositoryTest {
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo("A호선"),
                 () -> assertThat(result.getColor()).isEqualTo("yellow"),
-                () -> assertThat(result.getSections()).isEqualTo(line.getSections())
+                () -> assertThat(result.getSections()).isEqualTo(line.getSections()),
+                () -> assertThat(result.getExtraFare()).isEqualTo(100)
         );
     }
 }

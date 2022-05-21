@@ -160,8 +160,7 @@ public class Sections {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addAllStationsAsVertex(graph);
         addAllSectionsAsEdge(graph);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);

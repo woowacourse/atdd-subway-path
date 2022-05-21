@@ -41,9 +41,9 @@ class LineServiceTest {
         Station up = stationDao.save(new Station("서울역"));
         Station down = stationDao.save(new Station("용산역"));
         Section section = new Section(up, down, 3);
-        Line line = new Line("1호선", "bg-darkblue-600", new Sections(section));
+        Line line = new Line("1호선", "bg-darkblue-600", new Sections(section), 100);
 
-        Line result = lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3));
+        Line result = lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3, 100));
 
         assertThat(result).isEqualTo(line);
     }
@@ -53,9 +53,9 @@ class LineServiceTest {
     void 중복된_노선_예외발생() {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
-        lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3));
+        lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3, 100));
 
-        assertThatThrownBy(() -> lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3)))
+        assertThatThrownBy(() -> lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3, 100)))
                 .isInstanceOf(DuplicateKeyException.class)
                 .hasMessageContaining("이미 존재하는 노선");
     }
@@ -66,10 +66,10 @@ class LineServiceTest {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
         Section section = new Section(up, down, 1);
-        Line line1 = new Line("1호선", "bg-darkblue-600", new Sections(section));
-        Line line2 = new Line("2호선", "bg-green-600", new Sections(section));
-        lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 1));
-        lineService.save(new LineRequest("2호선", "bg-green-600", up.getId(), down.getId(), 1));
+        Line line1 = new Line("1호선", "bg-darkblue-600", new Sections(section), 100);
+        Line line2 = new Line("2호선", "bg-green-600", new Sections(section), 100);
+        lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 1, 100));
+        lineService.save(new LineRequest("2호선", "bg-green-600", up.getId(), down.getId(), 1, 100));
 
         List<Line> result = lineService.findAll();
 
@@ -85,8 +85,8 @@ class LineServiceTest {
     void 노선_조회() {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
-        Line line = new Line("3호선", "bg-orange-600", new Sections(new Section(up, down, 3)));
-        Line savedLine = lineService.save(new LineRequest("3호선", "bg-orange-600", up.getId(), down.getId(), 3));
+        Line line = new Line("3호선", "bg-orange-600", new Sections(new Section(up, down, 3)), 100);
+        Line savedLine = lineService.save(new LineRequest("3호선", "bg-orange-600", up.getId(), down.getId(), 3, 100));
 
         Line result = lineService.findById(savedLine.getId());
 
@@ -106,8 +106,8 @@ class LineServiceTest {
     void 노선_업데이트() {
         Station up = stationDao.save(new Station("신용산역"));
         Station down = stationDao.save(new Station("삼각지역"));
-        Line savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3));
-        Line newLine = new Line("4호선", "bg-skyblue-600", new Sections(new Section(up, down, 3)));
+        Line savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3, 100));
+        Line newLine = new Line("4호선", "bg-skyblue-600", new Sections(new Section(up, down, 3)), 100);
 
         lineService.update(savedLine.getId(), new LineEditRequest("4호선", "bg-skyblue-600"));
 
@@ -120,7 +120,7 @@ class LineServiceTest {
         Station up = stationDao.save(new Station("신용산역"));
         Station down = stationDao.save(new Station("삼각지역"));
         lineDao.save(new LineDto("2호선", "bg-green-400"));
-        Line savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3));
+        Line savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3, 100));
 
         assertThatThrownBy(() -> lineService.update(savedLine.getId(), new LineEditRequest("2호선", "bg-brown-600")))
                 .isInstanceOf(DuplicateKeyException.class)
@@ -132,7 +132,7 @@ class LineServiceTest {
     void 노선_삭제() {
         Station up = stationDao.save(new Station("신용산역"));
         Station down = stationDao.save(new Station("삼각지역"));
-        Line line = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3));
+        Line line = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3, 100));
 
         lineService.deleteById(line.getId());
 

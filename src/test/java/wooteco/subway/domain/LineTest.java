@@ -96,7 +96,7 @@ class LineTest {
         Section BtoC = new Section(new Station("B"), new Station("C"), 1);
         Section CtoD = new Section(new Station("C"), new Station("D"), 1);
         Sections sections = new Sections(new LinkedList<>(List.of(AtoB, BtoC, CtoD)));
-        Line line = new Line("1호선", "red", sections);
+        Line line = new Line("1호선", "red", sections, 100);
         Sections oldSections = new Sections(line.getSections());
         line.delete(new Station("C"));
         List<Section> result = oldSections.findDifferentSections(new Sections(line.getSections()));

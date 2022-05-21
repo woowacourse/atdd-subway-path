@@ -7,14 +7,9 @@ public class LineDto {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
 
     private LineDto() {
-    }
-
-    public LineDto(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
     }
 
     public LineDto(String name, String color) {
@@ -22,8 +17,14 @@ public class LineDto {
         this.color = color;
     }
 
+    public LineDto(Long id, String name, String color, int extraFare) {
+        this(name, color);
+        this.id = id;
+        this.extraFare = extraFare;
+    }
+
     public static LineDto from(Line line) {
-        return new LineDto(line.getId(), line.getName(), line.getColor());
+        return new LineDto(line.getId(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Long getId() {
@@ -36,5 +37,9 @@ public class LineDto {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
