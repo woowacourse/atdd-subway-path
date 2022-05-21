@@ -14,6 +14,12 @@ public class SectionRequest {
         this.distance = distance;
     }
 
+    public static SectionRequest of(LineRequest lineRequest) {
+        return new SectionRequest(lineRequest.getUpStationId(),
+            lineRequest.getDownStationId(),
+            lineRequest.getDistance());
+    }
+
     public Long getUpStationId() {
         return upStationId;
     }

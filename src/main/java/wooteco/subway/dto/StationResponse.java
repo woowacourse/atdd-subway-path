@@ -2,19 +2,17 @@ package wooteco.subway.dto;
 
 import wooteco.subway.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class StationResponse {
-    private Long id;
-    private String name;
-
-    public StationResponse() {
-    }
+    private final Long id;
+    private final String name;
 
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static StationResponse from(Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {
@@ -23,5 +21,22 @@ public class StationResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        StationResponse that = (StationResponse)o;
+
+        return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getName() != null ? getName().hashCode() : 0;
     }
 }
