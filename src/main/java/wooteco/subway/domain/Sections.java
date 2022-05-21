@@ -68,9 +68,7 @@ public class Sections {
         validNewSection(newSection);
 
         for (Section section : value) {
-            if (newSection.isSameDownStationId(section)) {
-                throw new IllegalArgumentException(CREATE_CROSSROADS_LIST_ERROR);
-            }
+            validCrossPath(newSection, section);
 
             if (newSection.isSameUpStationId(section)) {
                 section.updateUpStationId(newSection.getDownStationId());
@@ -79,6 +77,12 @@ public class Sections {
             }
         }
         return Optional.empty();
+    }
+
+    private void validCrossPath(Section newSection, Section existSection) {
+        if (newSection.isSameDownStationId(existSection)) {
+            throw new IllegalArgumentException(CREATE_CROSSROADS_LIST_ERROR);
+        }
     }
 
     private void validNewSection(Section section) {
@@ -115,7 +119,7 @@ public class Sections {
         Section removedSection = findByDownStationId(stationId);
 
         for (Section section : value) {
-            if (section.isSameUpStationId(stationId)) {
+            if (!section.isSameUpStationId(stationId)) {
                 section.updateUpStationId(removedSection.getUpStationId());
                 section.addDistance(removedSection);
                 return Optional.of(section);
