@@ -11,11 +11,11 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;
 
-public class JGraphtAdapterTest {
+public class JGraphtSubwayGraphTest {
 
     private List<Station> stations;
     private List<Section> sections;
-    private JGraphtAdapter graph;
+    private JGraphtSubwayGraph graph;
 
     @BeforeEach
     void setUp() {
@@ -40,7 +40,7 @@ public class JGraphtAdapterTest {
             new Section(7L, 3L, new SectionEdge(8L, 9L, 4))
         );
 
-        graph = new JGraphtAdapter(stations, sections);
+        graph = new JGraphtSubwayGraph(stations, sections);
     }
 
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")

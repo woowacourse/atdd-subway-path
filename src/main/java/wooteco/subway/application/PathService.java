@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.domain.Passenger;
 import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Graph;
+import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathSummarySearcher;
 import wooteco.subway.domain.PathSummary;
@@ -46,10 +46,10 @@ public class PathService {
         return new PathResponse(pathSummary);
     }
 
-    private Graph createGraph() {
+    private SubwayGraph createGraph() {
         List<Station> stations = stationRepository.findAll();
         List<Section> sections = sectionRepository.findAll();
-        return new JGraphtAdapter(stations, sections);
+        return new JGraphtSubwayGraph(stations, sections);
     }
 
     private FareCalculator createFareCalculator(int age) {

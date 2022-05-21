@@ -29,6 +29,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = requestSearchPath(upStationId, upStationId, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("지하철 경로 탐색")
