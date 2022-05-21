@@ -5,6 +5,7 @@ import static wooteco.subway.domain.fixtures.TestFixtures.강남;
 import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정;
+
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,9 +43,9 @@ public class SectionDaoTest {
         List<SectionEntity> entities = sectionDao.findAll();
 
         assertThat(entities)
-            .usingRecursiveComparison()
-            .ignoringFields("id")
-            .isEqualTo(List.of(성수_합정, 합정_강남));
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(List.of(성수_합정, 합정_강남));
     }
 
     @Test

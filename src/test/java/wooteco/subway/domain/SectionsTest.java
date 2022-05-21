@@ -9,6 +9,7 @@ import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리;
 import static wooteco.subway.domain.fixtures.TestFixtures.잠실;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정;
+
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,8 +97,8 @@ class SectionsTest {
         Section 추가할_구간 = new Section(line, 강남, 잠실, 5);
 
         assertThatThrownBy(() -> 기존_구간.findUpdatedSections(추가할_구간))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("기존에 존재하는 구간입니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("기존에 존재하는 구간입니다.");
     }
 
     @Test
@@ -109,8 +110,8 @@ class SectionsTest {
         Section 추가할_구간 = new Section(line, 건대, 합정, 5);
 
         assertThatThrownBy(() -> 기존_구간.findUpdatedSections(추가할_구간))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("생성할 수 없는 구간입니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("생성할 수 없는 구간입니다.");
     }
 
     @Test
@@ -164,8 +165,8 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
         List<Section> 합칠_구간 = List.of(
-            new Section(1L, line, 강남, 잠실, 12),
-            new Section(2L, line, 잠실, 성수, 12)
+                new Section(1L, line, 강남, 잠실, 12),
+                new Section(2L, line, 잠실, 성수, 12)
         );
 
         Section sections = 기존_구간.combine(line, 합칠_구간);
@@ -182,14 +183,14 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
         List<Section> 합칠_구간 = List.of(
-            new Section(1L, line, 강남, 잠실, 12),
-            new Section(2L, line, 잠실, 성수, 12),
-            new Section(3L, line, 성수, 왕십리, 12)
+                new Section(1L, line, 강남, 잠실, 12),
+                new Section(2L, line, 잠실, 성수, 12),
+                new Section(3L, line, 성수, 왕십리, 12)
         );
 
         assertThatThrownBy(() -> 기존_구간.combine(line, 합칠_구간))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("2개의 구간을 합칠 수 있습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("2개의 구간을 합칠 수 있습니다.");
     }
 
     @Test
@@ -198,28 +199,28 @@ class SectionsTest {
         Line line = new Line("2호선", "green");
         Sections 기존_구간 = new Sections(getSavedSections(line));
         List<Section> 합칠_구간 = List.of(
-            new Section(1L, line, 강남, 잠실, 12),
-            new Section(3L, line, 성수, 왕십리, 12)
+                new Section(1L, line, 강남, 잠실, 12),
+                new Section(3L, line, 성수, 왕십리, 12)
         );
 
         assertThatThrownBy(() -> 기존_구간.combine(line, 합칠_구간))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("연결할 수 없는 구간입니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("연결할 수 없는 구간입니다.");
     }
 
     private List<Section> getSections(Line line) {
         return List.of(
-            new Section(line, 강남, 잠실, 12),
-            new Section(line, 잠실, 성수, 12),
-            new Section(line, 성수, 왕십리, 12)
+                new Section(line, 강남, 잠실, 12),
+                new Section(line, 잠실, 성수, 12),
+                new Section(line, 성수, 왕십리, 12)
         );
     }
 
     private List<Section> getSavedSections(Line line) {
         return List.of(
-            new Section(1L, line, 강남, 잠실, 12),
-            new Section(2L, line, 잠실, 성수, 12),
-            new Section(3L, line, 성수, 왕십리, 12)
+                new Section(1L, line, 강남, 잠실, 12),
+                new Section(2L, line, 잠실, 성수, 12),
+                new Section(3L, line, 성수, 왕십리, 12)
         );
     }
 }

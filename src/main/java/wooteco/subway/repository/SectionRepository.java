@@ -82,15 +82,15 @@ public class SectionRepository {
 
     private SectionEntity toEntity(Section section) {
         return new SectionEntity(
-            section.getId(),
-            section.getLine().getId(),
-            section.getUpStation().getId(),
-            section.getDownStation().getId(),
-            section.getDistance());
+                section.getId(),
+                section.getLine().getId(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance());
     }
 
     private StationEntity getStationEntity(Long id) {
         return stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
+                .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
     }
 }

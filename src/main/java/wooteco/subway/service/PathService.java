@@ -20,7 +20,7 @@ public class PathService {
     private final StationRepository stationRepository;
 
     public PathService(SectionRepository sectionRepository,
-        StationRepository stationRepository) {
+                       StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
@@ -39,8 +39,8 @@ public class PathService {
 
     private List<StationResponse> toStationResponse(List<Station> route) {
         return route.stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 
 }

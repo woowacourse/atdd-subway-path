@@ -23,7 +23,6 @@ import wooteco.subway.service.dto.response.LineResponse;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
     private final LineService lineService;
 
     public LineController(LineService lineService) {
@@ -66,5 +65,4 @@ public class LineController {
     public void deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.deleteSection(lineId, stationId);
     }
-
 }

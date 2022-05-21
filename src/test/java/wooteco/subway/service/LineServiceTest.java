@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -224,8 +225,8 @@ class LineServiceTest {
         SectionRequest sectionRequest = new SectionRequest(양재.getId(), 창동.getId(), 4);
 
         assertThatThrownBy(() -> lineService.createSection(신분당선.getId(), sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("생성할 수 없는 구간입니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("생성할 수 없는 구간입니다.");
     }
 
     @Test
@@ -239,8 +240,8 @@ class LineServiceTest {
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 광교.getId(), 4);
 
         assertThatThrownBy(() -> lineService.createSection(신분당선.getId(), sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("기존에 존재하는 구간입니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("기존에 존재하는 구간입니다.");
     }
 
     @Test
@@ -255,14 +256,14 @@ class LineServiceTest {
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 10);
 
         assertThatThrownBy(() -> lineService.createSection(신분당선.getId(), sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("추가하려는 거리가 큽니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("추가하려는 거리가 큽니다.");
     }
 
     private Section findSection(Station station, List<Section> sections) {
         return sections.stream()
-            .filter(entity -> entity.isEqualToUpStation(station))
-            .findFirst()
-            .get();
+                .filter(entity -> entity.isEqualToUpStation(station))
+                .findFirst()
+                .get();
     }
 }

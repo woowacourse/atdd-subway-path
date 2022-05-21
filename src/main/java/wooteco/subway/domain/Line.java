@@ -90,9 +90,9 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
     }
 }

@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +18,6 @@ import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
 import wooteco.subway.service.dto.request.SectionRequest;
 import wooteco.subway.service.dto.response.PathResponse;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PathServiceTest {
@@ -63,8 +64,8 @@ class PathServiceTest {
         PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 15));
 
         assertThat(actual.getStations())
-            .extracting("name")
-            .isEqualTo(List.of("강남","양재","판교"));
+                .extracting("name")
+                .isEqualTo(List.of("강남", "양재", "판교"));
         assertThat(actual.getDistance()).isEqualTo(8);
         assertThat(actual.getFare()).isEqualTo(1250);
     }

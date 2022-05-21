@@ -103,7 +103,7 @@ public class Section {
         }
         Section section = (Section) o;
         return Objects.equals(upStation, section.upStation) && Objects
-            .equals(downStation, section.downStation);
+                .equals(downStation, section.downStation);
     }
 
     @Override
@@ -114,11 +114,11 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-            "id=" + id +
-            ", line=" + line +
-            ", upStation=" + upStation +
-            ", downStation=" + downStation +
-            ", distance=" + distance +
-            '}';
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }

@@ -15,11 +15,11 @@ import wooteco.subway.dao.entity.LineEntity;
 public class LineDao {
 
     private static final RowMapper<LineEntity> mapper = (rs, rowNum) ->
-        new LineEntity(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getString("color")
-        );
+            new LineEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color")
+            );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -27,14 +27,14 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("line")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
     }
 
     public LineEntity save(LineEntity line) {
         SqlParameterSource parameters = new MapSqlParameterSource()
-            .addValue("name", line.getName())
-            .addValue("color", line.getColor());
+                .addValue("name", line.getName())
+                .addValue("color", line.getColor());
         long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return new LineEntity(id, line.getName(), line.getColor());
     }

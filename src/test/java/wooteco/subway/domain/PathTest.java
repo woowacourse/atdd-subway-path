@@ -16,6 +16,7 @@ import static wooteco.subway.domain.fixtures.TestFixtures.창동;
 import static wooteco.subway.domain.fixtures.TestFixtures.창동_당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정_성수;
+
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class PathTest {
+
+    private static List<Arguments> getSections() {
+        return List.of(
+                Arguments.of(강남, 삼성, 1250),
+                Arguments.of(삼성, 건대, 1350),
+                Arguments.of(건대, 성수, 1450),
+                Arguments.of(창동, 당고개, 2150)
+        );
+    }
 
     @Test
     @DisplayName("두개 이상의 경로가 존재할 때 최단 경로를 반환한다.")
@@ -54,8 +64,8 @@ public class PathTest {
         SubwayGraph subwayGraph = new SubwayGraph(구간들);
 
         assertThatThrownBy(() -> subwayGraph.getShortestRoute(강남, 창동))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("해당 경로가 존재하지 않습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 경로가 존재하지 않습니다.");
     }
 
     @Test
@@ -65,8 +75,8 @@ public class PathTest {
         SubwayGraph subwayGraph = new SubwayGraph(구간들);
 
         assertThatThrownBy(() -> subwayGraph.getShortestRoute(강남, 창동))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("graph must contain the sink vertex");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("graph must contain the sink vertex");
     }
 
     @ParameterizedTest
@@ -74,18 +84,9 @@ public class PathTest {
     @DisplayName("요금을 반환한다.")
     void getFare(Station source, Station target, int fare) {
         SubwayGraph subwayGraph = new SubwayGraph(
-            List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개));
+                List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개));
 
-        assertThat(new Fare().getFare(subwayGraph.getShortestDistance(source,target))).isEqualTo(fare);
-    }
-
-    private static List<Arguments> getSections() {
-        return List.of(
-            Arguments.of(강남, 삼성, 1250),
-            Arguments.of(삼성, 건대, 1350),
-            Arguments.of(건대, 성수, 1450),
-            Arguments.of(창동, 당고개, 2150)
-        );
+        assertThat(new Fare().getFare(subwayGraph.getShortestDistance(source, target))).isEqualTo(fare);
     }
 
 }

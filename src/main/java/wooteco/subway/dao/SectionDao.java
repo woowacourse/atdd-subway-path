@@ -13,11 +13,11 @@ import wooteco.subway.dao.entity.SectionEntity;
 public class SectionDao {
 
     private static final RowMapper<SectionEntity> mapper = (rs, rowNum) -> new SectionEntity(
-        rs.getLong("id"),
-        rs.getLong("line_id"),
-        rs.getLong("up_station_id"),
-        rs.getLong("down_station_id"),
-        rs.getInt("distance"));
+            rs.getLong("id"),
+            rs.getLong("line_id"),
+            rs.getLong("up_station_id"),
+            rs.getLong("down_station_id"),
+            rs.getInt("distance"));
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -25,8 +25,8 @@ public class SectionDao {
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("section")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
     public SectionEntity save(SectionEntity section) {

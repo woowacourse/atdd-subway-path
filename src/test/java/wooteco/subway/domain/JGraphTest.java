@@ -1,14 +1,15 @@
 package wooteco.subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.domain.fixtures.TestFixtures.강남;
+import static wooteco.subway.domain.fixtures.TestFixtures.삼성;
+import static wooteco.subway.domain.fixtures.TestFixtures.잠실;
+
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.domain.fixtures.TestFixtures.강남;
-import static wooteco.subway.domain.fixtures.TestFixtures.삼성;
-import static wooteco.subway.domain.fixtures.TestFixtures.잠실;
 
 public class JGraphTest {
 

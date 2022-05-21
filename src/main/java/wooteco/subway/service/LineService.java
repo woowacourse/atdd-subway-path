@@ -34,6 +34,12 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
+    private static List<StationResponse> toResponse(List<Station> stations) {
+        return stations.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
+    }
+
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor());
@@ -58,12 +64,6 @@ public class LineService {
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
-    }
-
-    private static List<StationResponse> toResponse(List<Station> stations) {
-        return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
     }
 
     public LineResponse showById(Long lineId) {
