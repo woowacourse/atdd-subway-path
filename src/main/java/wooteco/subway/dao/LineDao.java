@@ -44,8 +44,7 @@ public class LineDao {
     public List<Line> findAll() {
         final String sql = "select * from LINE";
 
-        return namedParameterJdbcTemplate.query(sql,
-                (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color")));
+        return namedParameterJdbcTemplate.query(sql, resultMapper);
     }
 
     public Optional<Line> findById(final Long id) {
