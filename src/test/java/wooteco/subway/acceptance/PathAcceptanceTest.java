@@ -47,20 +47,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 경로 탐색")
     @Test
     void searchPath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10).jsonPath()
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역 = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역 = requestCreateStation("선릉역").jsonPath().getLong("id");
+        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10).jsonPath()
             .getLong("id");
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10).jsonPath()
+        long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10).jsonPath()
             .getLong("id");
-        requestAddSection(line1, station2, station3, 10);
-        requestAddSection(line2, station3, station1, 5);
+        requestAddSection(신분당선, 역삼역, 잠실역, 10);
+        requestAddSection(일호선, 잠실역, 강남역, 5);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station4)
-            .param("target", station2)
+            .param("source", 선릉역)
+            .param("target", 역삼역)
             .when()
             .get("/paths")
             .then().log().all()
@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         int fare = response.jsonPath().getObject("fare", Integer.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(actualStationIds).containsExactly(선릉역, 강남역, 역삼역);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450);
     }

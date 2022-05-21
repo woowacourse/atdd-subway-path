@@ -36,7 +36,6 @@ public class PathService {
         FareCalculator fareCalculator = new FareCalculator();
 
         List<Station> path = graph.findPath(source, target);
-
         if (path.isEmpty()) {
             throw new UnreachablePathException(source, target);
         }

@@ -37,70 +37,70 @@ class PathServiceTest {
     @Autowired
     private SectionService sectionService;
 
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-    private Station station5;
-    private Station station6;
-    private Line line1;
-    private Line line2;
-    private Line line3;
+    private Station 강남역;
+    private Station 역삼역;
+    private Station 잠실역;
+    private Station 선릉역;
+    private Station 부산역;
+    private Station 서면역;
+    private Line 신분당선;
+    private Line 분당선;
+    private Line 일호선;
 
     @BeforeEach
     void setUp() {
-        station1 = stationService.save(new StationRequest("강남역"));
-        station2 = stationService.save(new StationRequest("역삼역"));
-        station3 = stationService.save(new StationRequest("잠실역"));
-        station4 = stationService.save(new StationRequest("선릉역"));
-        station5 = stationService.save(new StationRequest("부산역"));
-        station6 = stationService.save(new StationRequest("서면역"));
+        강남역 = stationService.save(new StationRequest("강남역"));
+        역삼역 = stationService.save(new StationRequest("역삼역"));
+        잠실역 = stationService.save(new StationRequest("잠실역"));
+        선릉역 = stationService.save(new StationRequest("선릉역"));
+        부산역 = stationService.save(new StationRequest("부산역"));
+        서면역 = stationService.save(new StationRequest("서면역"));
 
-        line1 = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 5));
-        sectionService.addSection(line1.getId(), new AddSectionRequest(station2.getId(), station3.getId(), 4));
+        신분당선 = lineService.save(
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5));
+        sectionService.addSection(신분당선.getId(), new AddSectionRequest(역삼역.getId(), 잠실역.getId(), 4));
 
-        line2 = lineService.save(
-            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3));
+        분당선 = lineService.save(
+                new LineRequest("분당선", "bg-green-600", 역삼역.getId(), 선릉역.getId(), 3));
 
-        line3 = lineService.save(
-            new LineRequest("1호선", "bg-yellow-600", station5.getId(), station6.getId(), 6));
+        일호선 = lineService.save(
+                new LineRequest("1호선", "bg-yellow-600", 부산역.getId(), 서면역.getId(), 6));
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")
     @Test
     void throwExceptionWhenSourceSameAsTarget() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station1.getId()))
-            .isInstanceOf(UnreachablePathException.class);
+        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 강남역.getId()))
+                .isInstanceOf(UnreachablePathException.class);
     }
 
     @DisplayName("source에 존재하지 않는 역인 경우에 예외 발생")
     @Test
     void throwExceptionWhenSourceIsNotFoundStation() {
         assertThatThrownBy(() -> pathService.searchPath(notFoundStationId(), 2L))
-            .isInstanceOf(NotFoundStationException.class);
+                .isInstanceOf(NotFoundStationException.class);
     }
 
     private long notFoundStationId() {
-        return Stream.of(station1, station2, station3, station4, station5, station6)
-            .map(Station::getId)
-            .max(Long::compareTo).get() + 1L;
+        return Stream.of(강남역, 역삼역, 잠실역, 선릉역, 부산역, 서면역)
+                .map(Station::getId)
+                .max(Long::compareTo).get() + 1L;
     }
 
     @DisplayName("target에 존재하지 않는 역인 경우에 예외 발생")
     @Test
     void throwExceptionWhenTargetIsNotFoundStation() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), notFoundStationId()))
-            .isInstanceOf(NotFoundStationException.class);
+        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), notFoundStationId()))
+                .isInstanceOf(NotFoundStationException.class);
     }
 
     @DisplayName("한 같옆에 있는 지하철역 경로 찾기")
     @Test
     void searchAdjacentPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station2.getId());
+        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 역삼역.getId());
 
         assertThat(pathResponse.getStations()).containsExactly(
-            new StationResponse(station1), new StationResponse(station2));
+                new StationResponse(강남역), new StationResponse(역삼역));
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
@@ -109,10 +109,10 @@ class PathServiceTest {
     @DisplayName("두 칸옆에 있는 지하철역 경로 찾기")
     @Test
     void searchTwoBlockPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station3.getId());
+        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 잠실역.getId());
 
         assertThat(pathResponse.getStations()).containsExactly(
-            new StationResponse(station1), new StationResponse(station2), new StationResponse(station3));
+                new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(잠실역));
         assertThat(pathResponse.getDistance()).isEqualTo(9);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
@@ -120,17 +120,17 @@ class PathServiceTest {
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
     @Test
     void searchTransferLinePath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station4.getId());
+        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 선릉역.getId());
 
         assertThat(pathResponse.getStations()).containsExactly(
-            new StationResponse(station1), new StationResponse(station2), new StationResponse(station4));
+                new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(선릉역));
         assertThat(pathResponse.getDistance()).isEqualTo(8);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
     @Test
     void searchUnreachablePath() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station6.getId()))
-            .isInstanceOf(UnreachablePathException.class);
+        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 서면역.getId()))
+                .isInstanceOf(UnreachablePathException.class);
     }
 }
