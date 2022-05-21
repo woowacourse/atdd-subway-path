@@ -29,9 +29,10 @@ class SectionsTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "배리");
-        Sections sections = new Sections(List.of(new Section(3L, 1L, station3, station4, 4),
-                new Section(1L, 1L, station1, station2, 1),
-                new Section(2L, 1L, station2, station3, 2)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Sections sections = new Sections(List.of(new Section(3L, line, station3, station4, 4),
+                new Section(1L, line, station1, station2, 1),
+                new Section(2L, line, station2, station3, 2)));
 
         // when
         List<Station> stations = sections.calculateSortedStations();
@@ -48,10 +49,11 @@ class SectionsTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "배리");
-        Sections sections = new Sections(List.of(new Section(1L, 1L, station1, station2, 2)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Sections sections = new Sections(List.of(new Section(1L, line, station1, station2, 2)));
 
         // when & then
-        assertThatThrownBy(() -> sections.addSection(new Section(1L, station3, station4, 2)))
+        assertThatThrownBy(() -> sections.addSection(new Section(line, station3, station4, 2)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("구간 추가는 기존의 상행역 하행역 중 하나를 포함해야합니다.");
     }
@@ -63,11 +65,12 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Sections sections = new Sections(List.of(new Section(1L, 1L, station1, station2, 2),
-                new Section(2L, 1L, station2, station3, 3)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Sections sections = new Sections(List.of(new Section(1L, line, station1, station2, 2),
+                new Section(2L, line, station2, station3, 3)));
 
         // when & then
-        assertThatThrownBy(() -> sections.addSection(new Section(1L, station1, station3, 3)))
+        assertThatThrownBy(() -> sections.addSection(new Section(line, station1, station3, 3)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 상행에서 하행으로 갈 수 있는 구간이 존재합니다.");
     }
@@ -79,8 +82,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section section = new Section(1L, 1L, station2, station3, 3);
-        Section addSection = new Section(2L, 1L, station1, station2, 4);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(1L, line, station2, station3, 3);
+        Section addSection = new Section(2L, line, station1, station2, 4);
 
         Sections sections = new Sections(List.of(section));
         Sections expectedSections = new Sections(List.of(section, addSection));
@@ -99,8 +103,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section section = new Section(1L, 1L, station1, station2, 3);
-        Section addSection = new Section(2L, 1L, station2, station3, 4);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(1L, line, station1, station2, 3);
+        Section addSection = new Section(2L, line, station2, station3, 4);
 
         Sections sections = new Sections(List.of(section));
         Sections expectedSections = new Sections(List.of(section, addSection));
@@ -119,11 +124,12 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section addSection = new Section(1L, 1L, station1, station2, 3);
-        Sections sections = new Sections(List.of(new Section(2L, 1L, station1, station3, 10)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section addSection = new Section(1L, line, station1, station2, 3);
+        Sections sections = new Sections(List.of(new Section(2L, line, station1, station3, 10)));
 
         Sections expectedSections = new Sections(List.of(addSection,
-                new Section(2L, 1L, station2, station3, 7)));
+                new Section(2L, line, station2, station3, 7)));
 
         // when
         sections.addSection(addSection);
@@ -140,8 +146,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section addSection = new Section(1L, 1L, station1, station2, distance);
-        Sections sections = new Sections(List.of(new Section(2L, 1L, station1, station3, 2)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section addSection = new Section(1L, line, station1, station2, distance);
+        Sections sections = new Sections(List.of(new Section(2L, line, station1, station3, 2)));
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(addSection))
@@ -156,11 +163,12 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section addSection = new Section(1L, 1L, station2, station3, 3);
-        Sections sections = new Sections(List.of(new Section(2L, 1L, station1, station3, 10)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section addSection = new Section(1L, line, station2, station3, 3);
+        Sections sections = new Sections(List.of(new Section(2L, line, station1, station3, 10)));
 
         Sections expectedSections = new Sections(List.of(addSection,
-                new Section(2L, 1L, station1, station2, 7)));
+                new Section(2L, line, station1, station2, 7)));
 
         // when
         sections.addSection(addSection);
@@ -177,8 +185,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section addSection = new Section(1L, 1L, station2, station3, distance);
-        Sections sections = new Sections(List.of(new Section(2L, 1L, station1, station3, 2)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section addSection = new Section(1L, line, station2, station3, distance);
+        Sections sections = new Sections(List.of(new Section(2L, line, station1, station3, 2)));
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(addSection))
@@ -193,7 +202,8 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station removeStation = new Station(3L, "오카라");
-        Sections sections = new Sections(List.of(new Section(1L, 1L, station1, station2, 2)));
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Sections sections = new Sections(List.of(new Section(1L, line, station1, station2, 2)));
 
         // when & then
         assertThatThrownBy(() -> sections.removeSection(removeStation))
@@ -207,7 +217,8 @@ class SectionsTest {
         // given
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
-        Section section = new Section(1L, 1L, station1, station2, 2);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(1L, line, station1, station2, 2);
         Sections sections = new Sections(List.of(section));
 
         // when & then
@@ -223,8 +234,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section topSection = new Section(1L, 1L, station1, station2, 3);
-        Section bottomSection = new Section(2L, 1L, station2, station3, 4);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section topSection = new Section(1L, line, station1, station2, 3);
+        Section bottomSection = new Section(2L, line, station2, station3, 4);
 
         Sections sections = new Sections(List.of(topSection, bottomSection));
 
@@ -242,8 +254,9 @@ class SectionsTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section topSection = new Section(1L, 1L, station1, station2, 3);
-        Section bottomSection = new Section(2L, 1L, station2, station3, 4);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section topSection = new Section(1L, line, station1, station2, 3);
+        Section bottomSection = new Section(2L, line, station2, station3, 4);
 
         Sections sections = new Sections(List.of(topSection, bottomSection));
 
@@ -261,9 +274,10 @@ class SectionsTest {
         Station topStation = new Station(1L, "오리");
         Station middleStation = new Station(2L, "배카라");
         Station bottomStation = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section topSection = new Section(1L, 1L, topStation, middleStation, 3);
-        Section bottomSection = new Section(2L, 1L, middleStation, bottomStation, 4);
+        Section topSection = new Section(1L, line, topStation, middleStation, 3);
+        Section bottomSection = new Section(2L, line, middleStation, bottomStation, 4);
         Sections sections = new Sections(List.of(topSection, bottomSection));
 
         // when
@@ -285,8 +299,9 @@ class SectionsTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(3L, "레넌");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section section = new Section(1L, 1L, station1, station2, 3);
+        Section section = new Section(1L, line, station1, station2, 3);
         Sections sections = new Sections(List.of(section));
 
         // when

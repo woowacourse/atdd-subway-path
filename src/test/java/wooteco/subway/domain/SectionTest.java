@@ -18,8 +18,9 @@ class SectionTest {
     void createExceptionByNotPositiveDistance(final int distance) {
         Station upStation = new Station(1L, "오리");
         Station downStation = new Station(2L, "배카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        assertThatThrownBy(() -> new Section(1L, upStation, downStation, distance))
+        assertThatThrownBy(() -> new Section(line, upStation, downStation, distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간의 길이는 양수만 들어올 수 있습니다.");
     }
@@ -28,8 +29,9 @@ class SectionTest {
     @DisplayName("upStation 과 downStation 이 중복될 경우 예외가 발생한다.")
     void createExceptionDByDuplicateStationId() {
         Station station = new Station(1L, "오리");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        assertThatThrownBy(() -> new Section(1L, station, station, 1))
+        assertThatThrownBy(() -> new Section(line, station, station, 1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("upstation과 downstation은 중복될 수 없습니다.");
     }
@@ -40,9 +42,10 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section upSection = new Section(1L, station1, station2, 2);
-        Section downSection = new Section(1L, station2, station3, 3);
+        Section upSection = new Section(line, station1, station2, 2);
+        Section downSection = new Section(line, station2, station3, 3);
 
         assertAll(
                 () -> assertThat(downSection.isUpperSection(upSection)).isTrue(),
@@ -56,9 +59,10 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section upSection = new Section(1L, station1, station2, 2);
-        Section downSection = new Section(1L, station2, station3, 3);
+        Section upSection = new Section(line, station1, station2, 2);
+        Section downSection = new Section(line, station2, station3, 3);
 
         assertAll(
                 () -> assertThat(upSection.isLowerSection(downSection)).isTrue(),
@@ -72,9 +76,10 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section section = new Section(1L, station1, station2, 2);
-        Section compareSection = new Section(1L, station1, station3, 3);
+        Section section = new Section(line, station1, station2, 2);
+        Section compareSection = new Section(line, station1, station3, 3);
 
         assertThat(section.isConnectedSection(compareSection)).isTrue();
     }
@@ -85,8 +90,9 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section section = new Section(1L, station1, station2, 2);
+        Section section = new Section(line, station1, station2, 2);
 
         assertAll(
                 () -> assertThat(section.containsStation(station1)).isTrue(),
@@ -99,7 +105,8 @@ class SectionTest {
     void isUpStation() {
         Station upStation = new Station(1L, "오리");
         Station downStation = new Station(2L, "배카라");
-        Section section = new Section(1L, upStation, downStation, 2);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(line, upStation, downStation, 2);
 
         assertAll(
                 () -> assertThat(section.isUpStation(upStation)).isTrue(),
@@ -112,7 +119,8 @@ class SectionTest {
     void isDownStation() {
         Station upStation = new Station(1L, "오리");
         Station downStation = new Station(2L, "배카라");
-        Section section = new Section(1L, upStation, downStation, 2);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(line, upStation, downStation, 2);
 
         assertAll(
                 () -> assertThat(section.isDownStation(downStation)).isTrue(),
@@ -127,9 +135,10 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section section = new Section(1L, station1, station2, 5);
-        Section compareSection = new Section(1L, station1, station3, distance);
+        Section section = new Section(line, station1, station2, 5);
+        Section compareSection = new Section(line, station1, station3, distance);
 
         assertThat(section.isEqualsOrLargerDistance(compareSection)).isEqualTo(expected);
     }
@@ -141,8 +150,9 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section section = new Section(1L, 1L, station1, station3, 10);
-        Section middleSection = new Section(2L, 1L, station1, station2, 3);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(1L, line, station1, station3, 10);
+        Section middleSection = new Section(2L, line, station1, station2, 3);
 
         // when
         Section updatedSection = section.createMiddleSectionByDownStationSection(middleSection);
@@ -150,7 +160,7 @@ class SectionTest {
         // then
         assertThat(updatedSection)
                 .usingRecursiveComparison()
-                .isEqualTo(new Section(1L, 1L, station2, station3, 7));
+                .isEqualTo(new Section(1L, line, station2, station3, 7));
     }
 
     @Test
@@ -160,8 +170,10 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section section = new Section(1L, 1L, station1, station3, 10);
-        Section middleSection = new Section(2L, 1L, station2, station3, 3);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+
+        Section section = new Section(1L, line, station1, station3, 10);
+        Section middleSection = new Section(2L, line, station2, station3, 3);
 
         // when
         Section updatedSection = section.createMiddleSectionByUpStationSection(middleSection);
@@ -169,7 +181,7 @@ class SectionTest {
         // then
         assertThat(updatedSection)
                 .usingRecursiveComparison()
-                .isEqualTo(new Section(1L, 1L, station1, station2, 7));
+                .isEqualTo(new Section(1L, line, station1, station2, 7));
     }
 
     @Test
@@ -179,8 +191,9 @@ class SectionTest {
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        Section section = new Section(1L, 1L, station1, station2, 10);
-        Section middleSection = new Section(2L, 1L, station2, station3, 3);
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
+        Section section = new Section(1L, line, station1, station2, 10);
+        Section middleSection = new Section(2L, line, station2, station3, 3);
 
         // when
         Section updatedSection = section.createExtensionSection(middleSection);
@@ -188,6 +201,6 @@ class SectionTest {
         // then
         assertThat(updatedSection)
                 .usingRecursiveComparison()
-                .isEqualTo(new Section(1L, 1L, station1, station3, 13));
+                .isEqualTo(new Section(1L, line, station1, station3, 13));
     }
 }

@@ -47,7 +47,7 @@ public class LineService {
     private void saveLineSection(final long lineId, final LineSaveRequest lineSaveRequest) {
         Station upStation = stationDao.findById(lineSaveRequest.getUpStationId());
         Station downStation = stationDao.findById(lineSaveRequest.getDownStationId());
-        Section section = new Section(lineId, upStation, downStation, lineSaveRequest.getDistance());
+        Section section = new Section(lineDao.findById(lineId), upStation, downStation, lineSaveRequest.getDistance());
         sectionDao.save(section);
     }
 
