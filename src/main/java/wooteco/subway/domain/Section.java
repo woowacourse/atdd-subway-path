@@ -70,6 +70,7 @@ public class Section {
     }
 
     public void updateUpStationId(Long id) {
+        validStations(id, downStationId);
         this.upStationId = id;
     }
 
