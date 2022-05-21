@@ -1,5 +1,9 @@
 package wooteco.subway.repository.dao;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -8,8 +12,9 @@ import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -31,12 +36,12 @@ public class SectionDao {
 	}
 
 	public Long save(SectionTable section) {
-		return insertActor.executeAndReturnKey(new MapSqlParameterSource()
-			.addValue("line_id", section.getLineId())
-			.addValue("up_station_id", section.getUpStationId())
-			.addValue("down_station_id", section.getDownStationId())
-			.addValue("distance", section.getDistance())
-		).longValue();
+		return insertActor.executeAndReturnKey(new BeanPropertySqlParameterSource(section))
+			.longValue();
+	}
+
+	public void saveAll(List<SectionTable> sections) {
+		insertActor.executeBatch(SqlParameterSourceUtils.createBatch(sections));
 	}
 
 	public SectionTable findById(Long id) {
@@ -64,24 +69,38 @@ public class SectionDao {
 	}
 
 	public void update(SectionTable section) {
-		String sql = "update section set "
+		jdbcTemplate.update(getUpdateSql(), new BeanPropertySqlParameterSource(section));
+	}
+
+	public void updateAll(List<SectionTable> sections) {
+		jdbcTemplate.batchUpdate(getUpdateSql(), SqlParameterSourceUtils.createBatch(sections));
+	}
+
+	private String getUpdateSql() {
+		return "update section set "
 			+ "up_station_id = :upStationId, "
 			+ "down_station_id = :downStationId, "
 			+ "distance = :distance "
 			+ "where id = :id";
-		jdbcTemplate.update(sql, new MapSqlParameterSource()
-			.addValue("upStationId", section.getUpStationId())
-			.addValue("downStationId", section.getDownStationId())
-			.addValue("distance", section.getDistance())
-			.addValue("id", section.getId())
-		);
 	}
 
 	public void remove(Long id) {
-		String sql = "delete from section where id = :id";
-		if (jdbcTemplate.update(sql, Map.of("id", id)) == 0) {
+		if (jdbcTemplate.update(getDeleteSql(), Map.of("id", id)) == 0) {
 			throw new NoSuchElementException(NO_SUCH_ID_ERROR);
 		}
+	}
+
+	public void removeAll(List<Long> ids) {
+		List<Map<String, Long>> batchArgs = ids.stream()
+			.map(id -> Map.of("id", id))
+			.collect(toList());
+		jdbcTemplate.batchUpdate(getDeleteSql(),
+			SqlParameterSourceUtils.createBatch(batchArgs)
+		);
+	}
+
+	private String getDeleteSql() {
+		return "delete from section where id = :id";
 	}
 
 	public Boolean existByStationId(Long stationId) {

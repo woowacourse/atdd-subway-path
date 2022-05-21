@@ -1,7 +1,10 @@
-package wooteco.subway.domain;
+package wooteco.subway.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 
 public class SectionsDirtyChecker {
 
@@ -22,28 +25,25 @@ public class SectionsDirtyChecker {
 		return new SectionsDirtyChecker(snapshot);
 	}
 
-	public Sections findUpdated(List<Section> sections) {
-		List<Section> updatedSections = sections.stream()
+	public List<Section> findUpdated(List<Section> sections) {
+		return sections.stream()
 			.filter(updated -> snapShot.stream()
 				.anyMatch(origin -> origin.isSameId(updated) && !origin.equals(updated))
 			).collect(Collectors.toList());
-		return new Sections(updatedSections);
 	}
 
-	public Sections findDeleted(List<Section> sections) {
+	public List<Section> findDeleted(List<Section> sections) {
 		List<Long> ids = sections.stream()
 			.map(Section::getId)
 			.collect(Collectors.toList());
-		List<Section> deletedSections = snapShot.stream()
+		return snapShot.stream()
 			.filter(origin -> !ids.contains(origin.getId()))
 			.collect(Collectors.toList());
-		return new Sections(deletedSections);
 	}
 
-	public Sections findSaved(List<Section> sections) {
-		List<Section> savedSections = sections.stream()
+	public List<Section> findSaved(List<Section> sections) {
+		return sections.stream()
 			.filter(updated -> !updated.hasId())
 			.collect(Collectors.toList());
-		return new Sections(savedSections);
 	}
 }

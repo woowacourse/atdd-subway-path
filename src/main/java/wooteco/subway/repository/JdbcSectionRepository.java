@@ -26,6 +26,15 @@ public class JdbcSectionRepository implements SectionRepository {
 	}
 
 	@Override
+	public void saveAll(Long lineId, List<Section> sections) {
+		sectionDao.saveAll(
+			sections.stream()
+				.map(section -> SectionTable.of(lineId, section))
+				.collect(Collectors.toList())
+		);
+	}
+
+	@Override
 	public Section findById(Long id) {
 		SectionTable sectionTable = sectionDao.findById(id);
 		return sectionTable.toEntity(
@@ -50,8 +59,25 @@ public class JdbcSectionRepository implements SectionRepository {
 	}
 
 	@Override
+	public void updateAll(List<Section> sections) {
+		sectionDao.updateAll(
+			sections.stream()
+				.map(SectionTable::from)
+				.collect(Collectors.toList())
+		);
+	}
+
+	@Override
 	public void remove(Long id) {
 		sectionDao.remove(id);
+	}
+
+	@Override
+	public void removeAll(List<Section> sections) {
+		sectionDao.removeAll(sections.stream()
+			.map(Section::getId)
+			.collect(Collectors.toList())
+		);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -56,6 +57,17 @@ class SectionRepositoryTest {
 		assertThat(sectionId).isGreaterThan(0);
 	}
 
+	@DisplayName("지하철 구간 여러 개를 한 번에 저장한다.")
+	@Test
+	void saveAll() {
+		Long stationId = stationRepository.save(new Station("교대역"));
+		Section newSection = new Section(downStation, new Station(stationId, "교대역"), 10);
+
+		sectionRepository.saveAll(lineId, List.of(section, newSection));
+
+		assertThat(sectionRepository.findByLineId(lineId)).hasSize(2);
+	}
+
 	@DisplayName("id로 지하철 구간을 조회한다.")
 	@Test
 	void findById() {
@@ -91,6 +103,30 @@ class SectionRepositoryTest {
 		assertThat(findSection).isEqualTo(updatedSection);
 	}
 
+	@DisplayName("구간을 여러 개 수정한다.")
+	@Test
+	void updateAllSection() {
+		Long stationId = stationRepository.save(new Station("교대역"));
+		Section newSection = new Section(downStation, new Station(stationId, "교대역"), 10);
+		sectionRepository.saveAll(lineId, List.of(section, newSection));
+
+		List<Section> sections = sectionRepository.findByLineId(lineId);
+
+		sectionRepository.updateAll(
+			sections.stream()
+				.map(section -> new Section(
+					section.getId(),
+					section.getUpStation(),
+					section.getDownStation(),
+					7))
+				.collect(Collectors.toList())
+		);
+
+		assertThat(sectionRepository.findByLineId(lineId))
+			.map(Section::getDistance)
+			.containsExactly(7, 7);
+	}
+
 	@DisplayName("구간을 삭제한다.")
 	@Test
 	void remove() {
@@ -98,6 +134,18 @@ class SectionRepositoryTest {
 		sectionRepository.remove(sectionId);
 
 		assertThat(sectionRepository.findByLineId(lineId)).isEmpty();
+	}
+
+	@DisplayName("구간 여러 개를 한 번에 삭제한다.")
+	@Test
+	void removeAll() {
+		Long stationId = stationRepository.save(new Station("교대역"));
+		Section newSection = new Section(downStation, new Station(stationId, "교대역"), 10);
+		sectionRepository.saveAll(lineId, List.of(section, newSection));
+
+		sectionRepository.removeAll(sectionRepository.findByLineId(lineId));
+
+		assertThat(sectionRepository.findByLineId(lineId)).hasSize(0);
 	}
 
 	@DisplayName("라인을 삭제하면 구간도 삭제된다.")
