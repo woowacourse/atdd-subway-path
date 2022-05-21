@@ -24,7 +24,7 @@ public class Path {
             new DijkstraShortestPath<>(graph);
         List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
-        return new Path(mappingSectionsWithVertex(sections, shortestPath));
+        return new Path(rebuildSectionWithVertex(sections, shortestPath));
     }
 
     private static void validateMovement(long sourceId, long targetId) {
@@ -59,8 +59,8 @@ public class Path {
         }
     }
 
-    private static List<Section> mappingSectionsWithVertex(Sections sections,
-                                                           List<Long> shortestPath) {
+    private static List<Section> rebuildSectionWithVertex(Sections sections,
+                                                          List<Long> shortestPath) {
         List<Section> path = new LinkedList<>();
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
