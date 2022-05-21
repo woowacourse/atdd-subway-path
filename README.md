@@ -140,6 +140,9 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - 58km = 10km + 40km + 8km = 2150원
 
 ## TODO
+### 질문사항
+- body/쿼리(ModelAttribute)를 통해 한번에 도메인을 가져오기 위해 request를 만듦.
+  - 이후 path 등 다른 부분에서 추가 정보가 있을때 setter 등을 통해 값을 추가 설정해줘도 되는지?
 
 ### 1단계 피드백
 
@@ -152,7 +155,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 메서드를 호출하는 입장에서는 next 파라미터가 무엇을 의미하는지 알 수 있을까요?
 - [x] find 뿐만 아니라 인자로 받은 result에 add도 하고 있네요. 이 메서드에 더 적절한 이름이 있을까요?
 - [x] 매직 넘버는 상수로 분리하면 어떨까요?
-- [ ] DB 엔티티와 도메인 객체 사이의 변환을 책임지는 계층을 별도로 두었을 때 어떤 장점이 있었나요?
+- [x] DB 엔티티와 도메인 객체 사이의 변환을 책임지는 계층을 별도로 두었을 때 어떤 장점이 있었나요?
 - [ ] id가 LineUpdateRequest 내에 포함되면 어떨까요?
 - [ ] 2단계 요구사항이 반영된 걸까요?
 - [ ] 불필요한 변경사항일까요?

@@ -22,5 +22,4 @@ public class PathController {
     public ResponseEntity<PathResponse> showPaths(@ModelAttribute PathsRequest pathsRequest) {
         return ResponseEntity.ok(pathService.showPaths(pathsRequest));
     }
-
 }

@@ -87,9 +87,9 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public void updateById(Long id, LineUpdateRequest request) {
+    public void updateById(LineUpdateRequest request) {
         validateDuplicateNameAndColor(request.getName(), request.getColor());
-        Line line = findLine(id);
+        Line line = findLine(request.getId());
         line.update(request.getName(), request.getColor());
         lineRepository.save(line);
     }
