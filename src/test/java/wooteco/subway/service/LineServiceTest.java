@@ -49,7 +49,7 @@ class LineServiceTest {
 
         // when
         LineResponse lineResponse = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
 
         // then
         LineResponse expected = new LineResponse(1L, "line1", "color1",
@@ -67,7 +67,7 @@ class LineServiceTest {
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         LineResponse expected = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
 
         // when
         LineResponse actual = lineService.findLine(expected.getId());
@@ -83,7 +83,7 @@ class LineServiceTest {
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         LineResponse createdLine = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
 
         lineService.deleteLineById(createdLine.getId());
 
@@ -99,7 +99,7 @@ class LineServiceTest {
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         LineResponse createdLine = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
 
         // when
         lineService.deleteLineById(createdLine.getId());
@@ -115,12 +115,12 @@ class LineServiceTest {
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         LineResponse createdLine1 = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
 
         Station station3 = stationDao.save(new Station("station3"));
         Station station4 = stationDao.save(new Station("station4"));
         LineResponse createdLine2 = lineService.createLine(
-                new LineSaveRequest("line2", "color2", station3.getId(), station4.getId(), 10));
+                new LineSaveRequest("line2", "color2", station3.getId(), station4.getId(), 10, 0));
 
         // when
         List<LineResponse> lines = lineService.findLines();
@@ -138,7 +138,7 @@ class LineServiceTest {
         Station station3 = stationDao.save(new Station("station3"));
 
         LineResponse createdLine = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station3.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station3.getId(), 10, 0));
 
         // when
         lineService.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 3));
@@ -161,7 +161,7 @@ class LineServiceTest {
         Station station3 = stationDao.save(new Station("station3"));
 
         LineResponse createdLine = lineService.createLine(
-                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10));
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 10, 0));
         lineService.addSection(createdLine.getId(), new SectionRequest(station2.getId(), station3.getId(), 10));
 
         // when

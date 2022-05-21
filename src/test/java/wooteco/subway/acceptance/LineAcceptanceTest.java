@@ -164,7 +164,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         long id1 = createStation("station1").getId();
         long id2 = createStation("station2").getId();
 
-        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10);
+        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10, 0);
         RestAssured.given()
                 .body(lineRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -397,7 +397,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineResponse originLine = createLine("노선", "색깔", id1, id2, 10);
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor", 0);
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -444,7 +444,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String createdLinePath = createLineAndReturnResponse("노선2", "색깔2", id3, id4, 10).header("Location");
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("노선1", "색깔1");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("노선1", "색깔1", 0);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -480,7 +480,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String createdLinePath = createLineAndReturnResponse("2호선", "초록색", id2, id3, 10).header("Location");
 
         // when
-        LineUpdateRequest duplicateColorUpdate = new LineUpdateRequest("2호선", "파란색");
+        LineUpdateRequest duplicateColorUpdate = new LineUpdateRequest("2호선", "파란색", 0);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(duplicateColorUpdate)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -504,7 +504,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .header("Location");
 
         RestAssured.when().delete(uri);
-        LineUpdateRequest updateRequest = new LineUpdateRequest("2호선", "파란색");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("2호선", "파란색", 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

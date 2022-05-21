@@ -1,71 +1,28 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.exception.NoSuchPathException;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class Path {
+    private final List<Station> stations;
+    private final int distance;
+    private final int fare;
 
-    private static final int BASIC_FARE = 1250;
-    private static final int BASIC_DISTANCE = 10;
-    private static final int LEVEL_ONE_ADDITIONAL_DISTANCE = 50;
-    private static final int ADDITIONAL_BASIC_FARE = 800;
-
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
-
-    public Path(final List<Section> sections) {
-        path = initPath(sections);
+    public Path(final List<Station> stations, final int distance, final int fare) {
+        this.stations = new LinkedList<>(stations);
+        this.distance = distance;
+        this.fare = fare;
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> initPath(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
-        }
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    public List<Station> findRoute(final Station source, final Station target) {
-        validateExistsPath(source, target);
-        List<Station> stations = path.getPath(source, target).getVertexList();
+    public List<Station> getStations() {
         return new LinkedList<>(stations);
     }
 
-    public int calculateDistance(final Station source, final Station target) {
-        validateExistsPath(source, target);
-        return (int) path.getPathWeight(source, target);
+    public int getDistance() {
+        return distance;
     }
 
-    private void validateExistsPath(final Station source, final Station target) {
-        if (Objects.isNull(this.path.getPath(source, target))) {
-            throw new NoSuchPathException(source.getId(), target.getId());
-        }
-    }
-
-    public int calculateFare(final Station source, final Station target) {
-        validateExistsPath(source, target);
-        int distance = (int) path.getPathWeight(source, target);
-        return BASIC_FARE + calculateFare(distance);
-    }
-
-    private int calculateFare(int distance) {
-        if (distance < BASIC_DISTANCE) {
-            return 0;
-        }
-
-        if (distance < LEVEL_ONE_ADDITIONAL_DISTANCE) {
-            return (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100);
-        }
-
-        return ADDITIONAL_BASIC_FARE + (int) ((Math.ceil(((distance - 50) - 1) / 8) + 1) * 100);
+    public int getFare() {
+        return fare;
     }
 }

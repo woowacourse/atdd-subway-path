@@ -50,7 +50,7 @@ class AcceptanceTest {
     protected LineResponse createLine(
             final String name, final String color, final long upStationId, final long downStationId, final int distance
     ) {
-        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance);
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, 0);
         return RestAssured
                 .given()
                 .body(lineRequest)
@@ -64,7 +64,7 @@ class AcceptanceTest {
     protected ExtractableResponse<Response> createLineAndReturnResponse(
             final String name, final String color, final long upStationId, final long downStationId, final int distance
     ) {
-        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance);
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, 0);
         return RestAssured
                 .given()
                 .body(lineRequest)
