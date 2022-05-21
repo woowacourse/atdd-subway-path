@@ -3,10 +3,11 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
+@DisplayName("경로 관련 기능")
 class PathAcceptanceTest extends AcceptanceTest {
 
     private Station gangnam;
@@ -78,28 +80,25 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("동일한 역의 경로를 조회할 경우 400 을 응답한다.")
     void ShowPath_SameStations_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = getResponseExtractableResponse(gangnam.getId(), gangnam.getId());
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(gangnam.getId(), gangnam.getId()));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> getResponseExtractableResponse(final Long sourceStationId,
-                                                                         final Long targetStationId) {
-        return RestAssured.given().log().all()
-                .queryParam("source", sourceStationId)
-                .queryParam("target", targetStationId)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
+    private Map<String, Long> getPathQueryParams(final Long sourceStationId, final Long targetStationId) {
+        final Map<String, Long> queryParams = new HashMap<>();
+        queryParams.put("source", sourceStationId);
+        queryParams.put("target", targetStationId);
+        return queryParams;
     }
 
     @Test
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = getResponseExtractableResponse(gangnam.getId(), oksu.getId());
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), oksu.getId()));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -119,8 +118,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1650));
 
         // when
-        final ExtractableResponse<Response> response = getResponseExtractableResponse(gangnam.getId(),
-                seoulForest.getId());
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(gangnam.getId(), seoulForest.getId()));
 
         final PathResponse actual = response.as(PathResponse.class);
 
@@ -147,9 +146,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(2250));
 
         // when
-        final ExtractableResponse<Response> response = getResponseExtractableResponse(yeoksam.getId(),
-                dapsimni.getId());
-
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(yeoksam.getId(), dapsimni.getId()));
         final PathResponse actual = response.as(PathResponse.class);
 
         // then
@@ -163,12 +160,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회시 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
     void ShowPath_InvalidParameter_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .queryParam("source", gangnam.getId())
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

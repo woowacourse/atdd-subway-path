@@ -3,6 +3,7 @@ package wooteco.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import wooteco.subway.dto.station.StationRequest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AcceptanceTest {
 
+    protected static final String PATH_PATH_PREFIX = "/paths";
     protected static final String STATION_PATH_PREFIX = "/stations";
     protected static final String LINE_PATH_PREFIX = "/lines";
     protected static final String SECTION_PATH_PREFIX = "/sections";
@@ -39,6 +41,15 @@ abstract class AcceptanceTest {
         jdbcTemplate.execute("DELETE FROM section");
         jdbcTemplate.execute("DELETE FROM station");
         jdbcTemplate.execute("DELETE FROM line");
+    }
+
+    protected ExtractableResponse<Response> findPath(final Map<String, Long> queryParams) {
+        return RestAssured.given().log().all()
+                .queryParams(queryParams)
+                .when()
+                .get(PATH_PATH_PREFIX)
+                .then().log().all()
+                .extract();
     }
 
     protected long createAndGetStationId(StationRequest request) {
