@@ -123,16 +123,16 @@ public class LineService {
         return map;
     }
 
-    private List<StationResponse> findStations(Sections sections, Long id) {
-        List<Long> ids = sections.getSortedStationIds();
-        Map<Long, String> nameInfo = initNameMap(id);
+    private List<StationResponse> findStations(Sections sections, Long lineId) {
+        List<Long> stationIds = sections.getSortedStationIds();
+        Map<Long, String> stationNames = initStationNameMap(lineId);
 
-        return ids.stream()
-                .map(it -> new StationResponse(it, nameInfo.get(it)))
+        return stationIds.stream()
+                .map(stationId -> new StationResponse(stationId, stationNames.get(stationId)))
                 .collect(Collectors.toList());
     }
 
-    private Map<Long, String> initNameMap(Long id) {
+    private Map<Long, String> initStationNameMap(Long id) {
         return stationDao.findByLineId(id)
                 .stream()
                 .distinct()

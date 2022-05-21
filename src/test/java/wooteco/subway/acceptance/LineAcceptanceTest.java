@@ -35,6 +35,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private Long stationId1;
     private Long stationId2;
+    private Long stationId3;
     private Long lineId1;
     private Long lineId2;
     private Long sectionId;
@@ -52,11 +53,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void init() {
         stationId1 = stationDao.save(new Station("강남역"));
         stationId2 = stationDao.save(new Station("왕십리역"));
+        stationId3 = stationDao.save(new Station("정자역"));
 
         lineId1 = lineDao.save(new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
         lineId2 = lineDao.save(new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
 
-        sectionId = sectionDao.save(new Section(lineId1, stationId1, 2L, 5));
+        sectionId = sectionDao.save(new Section(lineId1, stationId1, stationId2, 5));
     }
 
     @DisplayName("지하철 노선 생성")
@@ -191,12 +193,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineById() {
         //given
-        String id = String.valueOf(lineId1);
         List<Long> expectedIds = selectLines();
-        expectedIds.remove(Long.parseLong(id));
+        expectedIds.remove(lineId1);
 
         //when
-        RestAssuredUtil.delete("/lines/" + id, new HashMap<>());
+        RestAssuredUtil.delete("/lines/" + lineId1, new HashMap<>());
 
         //then
         assertThat(expectedIds).isEqualTo(selectLines());
@@ -211,19 +212,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createSection() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(stationId1, stationId2, 5);
-        String url = "/lines/" + lineId2 + "/sections";
+        SectionRequest sectionRequest = new SectionRequest(stationId2, stationId3, 5);
+        String url = "/lines/" + lineId1 + "/sections";
 
         // when
         RestAssuredUtil.post(url, sectionRequest);
 
         // then
-        List<StationResponse> stations = findStations(lineId2);
+        List<StationResponse> stations = findStations(lineId1);
 
         assertThat(stations).extracting("id", "name")
                 .containsExactly(
                         tuple(stationId1, "강남역"),
-                        tuple(stationId2, "왕십리역")
+                        tuple(stationId2, "왕십리역"),
+                        tuple(stationId3, "정자역")
                 );
     }
 

@@ -11,9 +11,13 @@ import org.springframework.util.CollectionUtils;
 
 public class Sections {
 
+    private static final int MIN_STATIONS_COUNT = 2;
     private static final String NO_DOWN_STATION_ID_ERROR = "해당 stationId를 하행역으로 둔 구간은 존재하지 않습니다.";
+    private static final String NO_STATIONS_IN_LINE_ERROR = "해당 역은 기존 노선과 이어지지 않습니다.";
     private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.";
     private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.";
+    private static final String MIN_STATIONS_COUNT_ERROR = String.format("노선은 최소 %d개의 역을 갖고 있어야 합니다.",
+            MIN_STATIONS_COUNT);
 
     private final List<Section> value;
 
@@ -84,9 +88,14 @@ public class Sections {
 
     private void validNewSection(Section section) {
         Set<Long> allSectionIds = findStationIds();
-        List<Long> sectionStationIds = List.of(section.getDownStationId(), section.getUpStationId());
+        Long downStationId = section.getDownStationId();
+        Long upStationId = section.getUpStationId();
 
-        if (allSectionIds.containsAll(sectionStationIds)) {
+        if (!allSectionIds.contains(downStationId) && !allSectionIds.contains(upStationId)) {
+            throw new IllegalArgumentException(NO_STATIONS_IN_LINE_ERROR);
+        }
+
+        if (allSectionIds.containsAll(List.of(downStationId, upStationId))) {
             throw new IllegalArgumentException(DUPLICATED_SECTION_LIST_ERROR);
         }
     }
@@ -107,6 +116,7 @@ public class Sections {
      * @return 삭제로 인해 변경 사항이 있는 Section
      */
     public Optional<Section> findUpdateWhenRemove(Long stationId) {
+        validRemoveCondition();
         Section removedSection = findByDownStationId(stationId);
 
         for (Section section : value) {
@@ -117,6 +127,12 @@ public class Sections {
             }
         }
         return Optional.empty();
+    }
+
+    private void validRemoveCondition() {
+        if (value.size() <= MIN_STATIONS_COUNT) {
+            throw new IllegalArgumentException(MIN_STATIONS_COUNT_ERROR);
+        }
     }
 
     public Section findByDownStationId(Long stationId) {
