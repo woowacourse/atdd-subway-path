@@ -6,7 +6,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Path {
 
-    public static final int BASIC_FARE = 1250;
+    private static final int BASIC_FARE = 1250;
     private final GraphPath<Station, DefaultWeightedEdge> graphPath;
 
     public Path(GraphPath<Station, DefaultWeightedEdge> graphPath) {
