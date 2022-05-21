@@ -28,7 +28,7 @@ public class Sections {
 
     private void checkContainsSameSection(Section newSection) {
         final boolean contains = sections.stream()
-                .anyMatch(section -> section.isSameSection(newSection));
+                .anyMatch(section -> section.isSameSection(newSection.getUpStationId(), newSection.getDownStationId()));
 
         if (contains) {
             throw new IllegalSectionException("이미 동일한 구간이 등록되어 있습니다.");
@@ -200,5 +200,12 @@ public class Sections {
             stationIds.add(section.getDownStationId());
         }
         return new ArrayList<>(stationIds);
+    }
+
+    public Section getSectionByStationIds(Long stationId1, Long stationId2) {
+        return sections.stream()
+                .filter(section -> section.isSameSection(stationId1, stationId2))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("일치하는 section이 존재하지 않습니다."));
     }
 }

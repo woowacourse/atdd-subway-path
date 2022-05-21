@@ -36,7 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // when
         final ExtractableResponse<Response> response = AcceptanceFixture.get(
-                "/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15");
+                "/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=20");
 
         final PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
 
