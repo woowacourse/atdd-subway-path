@@ -6,7 +6,7 @@ public class Path {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int UNIT_OF_ADDITIONAL_FARE = 100;
-    
+
     private static final int DISTANCE_OF_DEFAULT_FARE = 10;
     private static final int DISTANCE_OF_FIRST_ADDITIONAL_UNIT = 5;
     private static final int DISTANCE_OF_OVER_ADDITIONAL_UNIT = 8;
@@ -14,16 +14,19 @@ public class Path {
 
     private final List<Station> stations;
     private final int distance;
+    private final List<Line> lines;
 
-    public Path(final List<Station> stations, final int distance) {
+    public Path(List<Station> stations, int distance, List<Line> lines) {
         validateEmptyStations(stations);
         validatePositiveDistance(distance);
+        validateEmptyLines(lines);
         this.stations = stations;
         this.distance = distance;
+        this.lines = lines;
     }
 
     public void validateEmptyStations(final List<Station> stations) {
-        if(stations.isEmpty()) {
+        if (stations.isEmpty()) {
             throw new IllegalArgumentException("경로는 비어서는 안됩니다.");
         }
     }
@@ -34,14 +37,20 @@ public class Path {
         }
     }
 
+    private void validateEmptyLines(List<Line> lines) {
+        if (lines.isEmpty()) {
+            throw new IllegalArgumentException("이용한 노선은 비어서는 안됩니다.");
+        }
+    }
+
     public int calculateFare() {
         if (distance <= DISTANCE_OF_DEFAULT_FARE) {
-            return DEFAULT_FARE;
+            return DEFAULT_FARE + calculateExtraFare();
         }
         if (distance <= DISTANCE_OF_OVER_ADDITIONAL_FARE) {
-            return DEFAULT_FARE + calculateFirstAdditionalFare();
+            return DEFAULT_FARE + calculateFirstAdditionalFare() + calculateExtraFare();
         }
-        return DEFAULT_FARE + calculateFirstAdditionalMaxFare() + calculateOverAdditionalFare();
+        return DEFAULT_FARE + calculateFirstAdditionalMaxFare() + calculateOverAdditionalFare() + calculateExtraFare();
     }
 
     private int calculateFirstAdditionalFare() {
@@ -61,6 +70,15 @@ public class Path {
     private int calculateOverAdditionalFare() {
         return calculateOverFare(distance - DISTANCE_OF_OVER_ADDITIONAL_FARE, DISTANCE_OF_OVER_ADDITIONAL_UNIT
         );
+    }
+
+    public int calculateExtraFare() {
+        int minExtraFare = lines.stream()
+                .map(Line::getExtraFare)
+                .mapToInt(fare -> fare)
+                .max()
+                .orElseThrow(() -> new IllegalArgumentException("존재하는 노선 요금이 없습니다."));
+        return minExtraFare;
     }
 
     public List<Station> getStations() {

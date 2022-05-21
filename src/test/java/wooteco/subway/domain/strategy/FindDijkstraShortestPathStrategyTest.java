@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -23,8 +24,9 @@ class FindDijkstraShortestPathStrategyTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(3L, "레넌");
+        Line line = new Line(1L, "1호선", "bg=red-500", 0);
 
-        Section section = new Section(1L, 1L, station1, station2, 3);
+        Section section = new Section(1L, line, station1, station2, 3);
         Sections sections = new Sections(List.of(section));
 
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
@@ -42,13 +44,15 @@ class FindDijkstraShortestPathStrategyTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "레넌");
+        Line line1 = new Line(1L, "1호선", "bg=red-500", 0);
+        Line line2 = new Line(1L, "2호선", "bg=green-500", 900);
 
         Sections sections = new Sections(
                 List.of(
-                new Section(1L, 1L, station1, station2, 2),
-                new Section(2L, 1L, station2, station3, 2),
-                new Section(3L, 2L, station1, station4, 3),
-                new Section(4L, 2L, station4, station3, 3)));
+                new Section(1L, line1, station1, station2, 2),
+                new Section(2L, line1, station2, station3, 2),
+                new Section(3L, line2, station1, station4, 3),
+                new Section(4L, line2, station4, station3, 3)));
 
         //when
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
@@ -69,11 +73,13 @@ class FindDijkstraShortestPathStrategyTest {
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
         Station station4 = new Station(4L, "레넌");
+        Line line1 = new Line(1L, "1호선", "bg=red-500", 0);
+        Line line2 = new Line(1L, "2호선", "bg=green-500", 900);
 
         Sections sections = new Sections(
                 List.of(
-                        new Section(1L, 1L, station1, station2, 2),
-                        new Section(2L, 2L, station3, station4, 3)));
+                        new Section(1L, line1, station1, station2, 2),
+                        new Section(2L, line2, station3, station4, 3)));
 
         //when & then
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();
