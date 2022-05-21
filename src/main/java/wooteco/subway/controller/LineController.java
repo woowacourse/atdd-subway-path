@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
+import wooteco.subway.controller.dto.LineUpdateRequest;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.domain.Line;
 import wooteco.subway.service.LineService;
@@ -32,7 +35,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
         Line line = lineService.create(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare(),
             lineRequest.toSectionRequest());
         return ResponseEntity.created(URI.create("/lines/" + line.getId()))
@@ -54,8 +57,9 @@ public class LineController {
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineRequest) {
-        lineService.update(lineRequest.toEntity(lineId));
+    public ResponseEntity<Void> updateLine(@PathVariable Long lineId,
+        @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
+        lineService.update(lineUpdateRequest.toEntity(lineId));
         return ResponseEntity.ok().build();
     }
 
@@ -66,7 +70,8 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
+        @RequestBody @Valid SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }

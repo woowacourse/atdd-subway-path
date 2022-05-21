@@ -70,6 +70,24 @@ public class StationAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    @DisplayName("이름이 빈 값을 요청하면 400 응답을 던진다.")
+    void createStationWithNull() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .body(new StationRequest())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then()
+            .log().all()
+            .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isEqualTo("역 이름이 비었습니다.");
+    }
+
     @DisplayName("지하철역을 조회한다.")
     @Test
     void getStations() {

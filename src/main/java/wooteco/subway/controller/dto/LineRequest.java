@@ -1,13 +1,28 @@
 package wooteco.subway.controller.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import wooteco.subway.domain.Line;
 
 public class LineRequest {
+
+    @NotNull(message = "노선 이름이 비었습니다.")
     private String name;
+
+    @NotNull(message = "노선 색상이 비었습니다.")
     private String color;
+
+    @NotNull(message = "상행 역의 id 가 비었습니다.")
     private Long upStationId;
+
+    @NotNull(message = "하행 역의 id 가 비었습니다.")
     private Long downStationId;
+
+    @Min(value = 1, message = "거리는 1보다 커야합니다.")
     private int distance;
+
+    @Min(value = 0, message = "추가 요금 값은 음수일 수 없습니다.")
     private int extraFare;
 
     public LineRequest() {

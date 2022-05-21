@@ -12,6 +12,7 @@ public class Name {
     }
 
     private void validate(String value) {
+        Objects.requireNonNull(value);
         if (value.isBlank()) {
             throw new IllegalArgumentException("이름은 비어있을 수 없습니다.");
         }
