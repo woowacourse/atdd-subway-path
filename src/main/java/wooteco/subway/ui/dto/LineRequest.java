@@ -1,5 +1,7 @@
 package wooteco.subway.ui.dto;
 
+import wooteco.subway.service.dto.LineServiceRequest;
+
 public class LineRequest {
     private String name;
     private String color;
@@ -38,7 +40,7 @@ public class LineRequest {
         return distance;
     }
 
-    public wooteco.subway.service.dto.LineServiceRequest toServiceRequest() {
-        return new wooteco.subway.service.dto.LineServiceRequest(name, color, upStationId, downStationId, distance);
+    public LineServiceRequest toServiceRequest() {
+        return new LineServiceRequest(name, color, upStationId, downStationId, distance);
     }
 }
