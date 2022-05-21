@@ -32,7 +32,7 @@ class PathTest {
         Path path = Path.of(STATION2, STATION3, sections);
 
         assertThat(path.toStations()).containsExactly(STATION2, STATION3);
-        assertThat(path.calculateDistance()).isEqualTo(1);
+        assertThat(path.getDistance()).isEqualTo(1);
     }
 
     @Test
@@ -49,7 +49,7 @@ class PathTest {
         Path path = Path.of(STATION2, STATION3, sections);
 
         assertThat(path.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
-        assertThat(path.calculateDistance()).isEqualTo(10);
+        assertThat(path.getDistance()).isEqualTo(10);
     }
 
     @Test
@@ -68,7 +68,7 @@ class PathTest {
 
         assertThat(path1.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
         assertThat(path2.toStations()).containsExactly(STATION3, STATION5, STATION4, STATION2);
-        assertThat(path1.calculateDistance()).isEqualTo(path2.calculateDistance());
+        assertThat(path1.getDistance()).isEqualTo(path2.getDistance());
     }
 
     @Test

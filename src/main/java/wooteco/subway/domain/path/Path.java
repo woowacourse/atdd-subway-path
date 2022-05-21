@@ -8,7 +8,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.path.fare.Fare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
@@ -86,12 +85,8 @@ public class Path {
         return value.getVertexList();
     }
 
-    public int calculateDistance() {
+    public int getDistance() {
         return (int) value.getWeight();
-    }
-
-    public int calculateFare() {
-        return Fare.of((int) value.getWeight()).getValue();
     }
 
     public List<Long> getRegisteredLineIds() {

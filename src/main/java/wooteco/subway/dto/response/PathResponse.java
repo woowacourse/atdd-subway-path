@@ -20,10 +20,9 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(Path path){
+    public static PathResponse of(Path path, int fare){
         List<StationResponse> stations = toStationResponse(path.toStations());
-        int distance = path.calculateDistance();
-        int fare = path.calculateFare();
+        int distance = path.getDistance();
         return new PathResponse(stations, distance, fare);
     }
 

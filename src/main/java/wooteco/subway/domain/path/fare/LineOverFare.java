@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path.fare2;
+package wooteco.subway.domain.path.fare;
 
 import java.util.Comparator;
 import java.util.List;

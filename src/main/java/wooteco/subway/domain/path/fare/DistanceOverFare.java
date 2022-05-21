@@ -1,8 +1,6 @@
 package wooteco.subway.domain.path.fare;
 
-import java.util.Objects;
-
-public class DistanceOverFare {
+public class DistanceOverFare extends Decorator {
 
     private static final int OVER_FARE_DIGIT = 100;
     private static final int FIRST_OVER_FARE_AREA_THRESHOLD = 10;
@@ -10,67 +8,40 @@ public class DistanceOverFare {
     private static final int SECOND_OVER_FARE_AREA_THRESHOLD = 50;
     private static final int SECOND_OVER_FARE_DISTANCE_LIMIT = 8;
 
-    private final int value;
+    private final int distance;
 
-    DistanceOverFare(int value) {
-        this.value = value;
+    public DistanceOverFare(Fare delegate, int distance) {
+        super(delegate);
+        this.distance = distance;
     }
 
-    public static DistanceOverFare of(int distance) {
-        return new DistanceOverFare(calculateOverFare(distance));
+    @Override
+    public int calculate() {
+        int fare = super.delegate();
+        int firstAreaOverFare = calculateFirstAreaOverFare();
+        int secondAreaOverFare = calculateSecondAreaOverFare();
+        return fare + firstAreaOverFare + secondAreaOverFare;
     }
 
-    private static int calculateOverFare(int totalDistance) {
-        int firstAreaOverFare = calculateFirstAreaOverFare(totalDistance);
-        int secondAreaOverFare = calculateSecondAreaOverFare(totalDistance);
-        return firstAreaOverFare + secondAreaOverFare;
-    }
-
-    private static int calculateFirstAreaOverFare(int totalDistance) {
-        if (totalDistance <= FIRST_OVER_FARE_AREA_THRESHOLD) {
+    private int calculateFirstAreaOverFare() {
+        if (distance <= FIRST_OVER_FARE_AREA_THRESHOLD) {
             return 0;
         }
-        int distance = Math.min(totalDistance, SECOND_OVER_FARE_AREA_THRESHOLD);
-        int overDistance = distance - FIRST_OVER_FARE_AREA_THRESHOLD;
+        int maxDistance = Math.min(distance, SECOND_OVER_FARE_AREA_THRESHOLD);
+        int overDistance = maxDistance - FIRST_OVER_FARE_AREA_THRESHOLD;
         return toOverFare(overDistance, FIRST_OVER_FARE_DISTANCE_LIMIT);
     }
 
-    private static int calculateSecondAreaOverFare(int totalDistance) {
-        if (totalDistance <= SECOND_OVER_FARE_AREA_THRESHOLD) {
+    private int calculateSecondAreaOverFare() {
+        if (distance <= SECOND_OVER_FARE_AREA_THRESHOLD) {
             return 0;
         }
-        int overDistance = totalDistance - SECOND_OVER_FARE_AREA_THRESHOLD;
+        int overDistance = distance - SECOND_OVER_FARE_AREA_THRESHOLD;
         return toOverFare(overDistance, SECOND_OVER_FARE_DISTANCE_LIMIT);
     }
 
-    private static int toOverFare(int overDistance, int limit) {
+    private int toOverFare(int overDistance, int limit) {
         double overDigit = Math.ceil((overDistance - 1) / limit) + 1;
         return (int) (overDigit * OVER_FARE_DIGIT);
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        DistanceOverFare that = (DistanceOverFare) o;
-        return value == that.value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "DistanceOverFare{" + "value=" + value + '}';
     }
 }

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path.fare2;
+package wooteco.subway.domain.path.fare;
 
 public class AgeDiscountFare extends Decorator {
 
