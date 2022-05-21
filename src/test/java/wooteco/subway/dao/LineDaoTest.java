@@ -25,7 +25,7 @@ public class LineDaoTest {
         this.lineDao = new LineDao(jdbcTemplate);
     }
 
-    @DisplayName("노선을 저장한다.")
+    @DisplayName("이름과 색깔을 활용하여 노선을 저장한다.")
     @Test
     void 노선_저장() {
         Line line = new Line("2호선", "bg-green-600");
@@ -68,7 +68,7 @@ public class LineDaoTest {
         assertThat(line).isEmpty();
     }
 
-    @DisplayName("노선을 수정한다.")
+    @DisplayName("저장된 노선을 수정한다.")
     @Test
     void 노선_수정() {
         Line line = new Line("2호선", "bg-green-600");
@@ -83,7 +83,7 @@ public class LineDaoTest {
         );
     }
 
-    @DisplayName("모든 노선을 조회한다.")
+    @DisplayName("저장된 모든 노선을 조회한다.")
     @Test
     void 모든_노선_조회() {
         lineDao.save(new Line("2호선", "bg-green-600"));
@@ -93,7 +93,7 @@ public class LineDaoTest {
         assertThat(lineDao.findAll().size()).isEqualTo(3);
     }
 
-    @DisplayName("노선을 삭제한다.")
+    @DisplayName("생서된 노선을 삭제한다.")
     @Test
     void 노선_삭제() {
         Line line = lineDao.save(new Line("4호선", "bg-skyblue-600"));
