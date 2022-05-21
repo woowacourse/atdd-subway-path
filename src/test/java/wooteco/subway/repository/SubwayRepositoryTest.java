@@ -48,15 +48,15 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllLines_메서드는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveLine("노선명1", "색깔1");
-        testFixtureManager.saveLine("노선명2", "색깔2");
-        testFixtureManager.saveLine("노선명3", "색깔3");
+        testFixtureManager.saveLine("노선명1", "색깔1", 1000);
+        testFixtureManager.saveLine("노선명2", "색깔2", 0);
+        testFixtureManager.saveLine("노선명3", "색깔3", 900);
 
         List<LineInfo> actual = repository.findAllLines();
         List<LineInfo> expected = List.of(
-                new LineInfo(1L, "노선명1", "색깔1"),
-                new LineInfo(2L, "노선명2", "색깔2"),
-                new LineInfo(3L, "노선명3", "색깔3"));
+                new LineInfo(1L, "노선명1", "색깔1", 1000),
+                new LineInfo(2L, "노선명2", "색깔2", 0),
+                new LineInfo(3L, "노선명3", "색깔3", 900));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -110,9 +110,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
         @Test
         void id에_대응되는_노선이_존재하는_경우_도메인으로_반환() {
-            testFixtureManager.saveLine("노선1", "색상");
+            testFixtureManager.saveLine("노선1", "색상", 1000);
             LineInfo actual = repository.findExistingLine(1L);
-            LineInfo expected = new LineInfo(1L, "노선1", "색상");
+            LineInfo expected = new LineInfo(1L, "노선1", "색상", 1000);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -170,24 +170,24 @@ class SubwayRepositoryTest extends RepositoryTest {
 
         @Test
         void 생성된_노선의_도메인을_반환() {
-            LineInfo lineInfo = new LineInfo("노선", "색상");
+            LineInfo lineInfo = new LineInfo("노선", "색상", 1000);
             Section initialSection = new Section(1L, station1, station2, 10);
 
             Line actual = repository.saveLine(lineInfo, initialSection);
-            Line expected = Line.of(new LineInfo(1L, "노선", "색상"), initialSection);
+            Line expected = Line.of(new LineInfo(1L, "노선", "색상", 1000), initialSection);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 새로운_노선과_구간을_저장() {
-            LineInfo lineInfo = new LineInfo("노선", "색상");
+            LineInfo lineInfo = new LineInfo("노선", "색상", 300);
             Section initialSection = new Section(1L, station1, station2, 10);
             repository.saveLine(lineInfo, initialSection);
 
             LineEntity actualLine = lineDao.findById(1L).get();
             List<SectionEntity> actualSections = sectionDao.findAll();
-            LineEntity expectedLine = new LineEntity(1L, "노선", "색상");
+            LineEntity expectedLine = new LineEntity(1L, "노선", "색상", 300);
             List<SectionEntity> expectedSections = List.of(
                     new SectionEntity(1L, stationEntity1, stationEntity2, 10));
 
@@ -213,22 +213,22 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void updateLine_메서드는_노선_정보를_수정() {
-        testFixtureManager.saveLine("기존 노선명", "색상");
+        testFixtureManager.saveLine("기존 노선명", "색상", 200);
 
-        repository.updateLine(new LineInfo(1L, "새로운 노선명", "새로운 색상"));
+        repository.updateLine(new LineInfo(1L, "새로운 노선명", "새로운 색상", 0));
         LineEntity actual = lineDao.findById(1L).get();
-        LineEntity expected = new LineEntity(1L, "새로운 노선명", "새로운 색상");
+        LineEntity expected = new LineEntity(1L, "새로운 노선명", "새로운 색상", 0);
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void deleteLine_메서드는_노선과_등록된_구간들을_제거() {
-        testFixtureManager.saveLine("노선1", "색상");
+        testFixtureManager.saveLine("노선1", "색상", 100);
         testFixtureManager.saveSection(1L, 1L, 2L, 10);
         testFixtureManager.saveSection(1L, 2L, 3L, 15);
 
-        repository.deleteLine(new LineInfo(1L, "노선1", "색상"));
+        repository.deleteLine(new LineInfo(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<SectionEntity> existingSections = sectionDao.findAll();
 

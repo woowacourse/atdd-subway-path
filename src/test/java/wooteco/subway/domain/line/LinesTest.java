@@ -8,9 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineInfo;
-import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -18,9 +15,9 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class LinesTest {
 
-    private final LineInfo LINE1 = new LineInfo(1L, "노선", "색상");
-    private final LineInfo LINE2 = new LineInfo(2L, "노선2", "색상");
-    private final LineInfo LINE3 = new LineInfo(3L, "노선2", "색상");
+    private final LineInfo LINE1 = new LineInfo(1L, "노선", "색상", 1000);
+    private final LineInfo LINE2 = new LineInfo(2L, "노선2", "색상", 0);
+    private final LineInfo LINE3 = new LineInfo(3L, "노선2", "색상", 900);
 
     private final Station STATION1 = new Station(1L, "역1");
     private final Station STATION2 = new Station(2L, "역2");

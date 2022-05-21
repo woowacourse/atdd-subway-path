@@ -19,7 +19,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (resultSet, rowNum) ->
             new LineEntity(resultSet.getLong("id"),
                     resultSet.getString("name"),
-                    resultSet.getString("color"));
+                    resultSet.getString("color"),
+                    resultSet.getInt("extra_fare"));
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -54,17 +55,18 @@ public class LineDao {
     }
 
     public LineEntity save(LineEntity lineEntity) {
-        final String sql = "INSERT INTO line(name, color) VALUES(:name, :color)";
+        final String sql = "INSERT INTO line(name, color, extra_fare) VALUES(:name, :color, :extraFare)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
 
         jdbcTemplate.update(sql, paramSource, keyHolder);
         Number generatedId = keyHolder.getKey();
-        return new LineEntity(generatedId.longValue(), lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(generatedId.longValue(), lineEntity.getName(),
+                lineEntity.getColor(), lineEntity.getExtraFare());
     }
 
     public void update(LineEntity lineEntity) {
-        final String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+        final String sql = "UPDATE line SET name = :name, color = :color, extra_fare = :extraFare WHERE id = :id";
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
 
         jdbcTemplate.update(sql, paramSource);

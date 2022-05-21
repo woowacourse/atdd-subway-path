@@ -39,8 +39,8 @@ class LineServiceTest extends ServiceTest {
         @BeforeEach
         void setup() {
             testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("1호선", "색깔");
-            testFixtureManager.saveLine("2호선", "색깔2");
+            testFixtureManager.saveLine("1호선", "색깔", 1000);
+            testFixtureManager.saveLine("2호선", "색깔2", 0);
             testFixtureManager.saveSection(2L, 3L, 1L);
             testFixtureManager.saveSection(2L, 1L, 2L);
             testFixtureManager.saveSection(1L, 1L, 3L);
@@ -50,9 +50,9 @@ class LineServiceTest extends ServiceTest {
         void findAll_메서드는_모든_데이터를_노선_id_순서대로_조회() {
             List<LineResponse> actual = service.findAll();
 
-            LineResponse expectedLine1 = new LineResponse(1L, "1호선", "색깔",
+            LineResponse expectedLine1 = new LineResponse(1L, "1호선", "색깔", 1000,
                     List.of(STATION_RESPONSE_1, STATION_RESPONSE_3));
-            LineResponse expectedLine2 = new LineResponse(2L, "2호선", "색깔2",
+            LineResponse expectedLine2 = new LineResponse(2L, "2호선", "색깔2", 0,
                     List.of(STATION_RESPONSE_3, STATION_RESPONSE_1, STATION_RESPONSE_2));
             List<LineResponse> expected = List.of(expectedLine1, expectedLine2);
 
@@ -63,7 +63,7 @@ class LineServiceTest extends ServiceTest {
         void find_메서드는_구간_정보를_포함하여_특정_노선의_모든_지하철역_정보를_정렬하여_조회() {
             LineResponse actual = service.find(2L);
 
-            LineResponse expected = new LineResponse(2L, "2호선", "색깔2",
+            LineResponse expected = new LineResponse(2L, "2호선", "색깔2", 0,
                     List.of(STATION_RESPONSE_3, STATION_RESPONSE_1, STATION_RESPONSE_2));
 
             assertThat(actual).isEqualTo(expected);
@@ -85,8 +85,8 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveStations("강남역", "선릉역");
 
             LineResponse actual = service.save(new CreateLineRequest(
-                    "새로운 노선명", "색깔", 1L, 2L, 10));
-            LineResponse expected = new LineResponse(1L, "새로운 노선명", "색깔",
+                    "새로운 노선명", "색깔", 300, 1L, 2L, 10));
+            LineResponse expected = new LineResponse(1L, "새로운 노선명", "색깔", 300,
                     List.of(new StationResponse(1L, "강남역"), new StationResponse(2L, "선릉역")));
 
             assertThat(actual).isEqualTo(expected);
@@ -99,7 +99,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest duplicateLineNameRequest = new CreateLineRequest(
-                    "존재하는 노선명", "색깔", 1L, 3L, 10);
+                    "존재하는 노선명", "색깔", 200, 1L, 3L, 10);
             assertThatThrownBy(() -> service.save(duplicateLineNameRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -111,7 +111,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingUpStationRequest = new CreateLineRequest(
-                    "유효 노선명", "유효한 색", 999L, 1L, 10);
+                    "유효 노선명", "유효한 색", 200, 999L, 1L, 10);
             assertThatThrownBy(() -> service.save(noneExistingUpStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -123,7 +123,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
-                    "유효한 노선명", "유효한 색상", 1L, 999L, 10);
+                    "유효한 노선명", "유효한 색상",200, 1L, 999L, 10);
             assertThatThrownBy(() -> service.save(noneExistingDownStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -133,7 +133,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveStations("강남역", "선릉역");
 
             CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
-                    "유효한 노선명", "색깔", 1L, 2L, 0);
+                    "유효한 노선명", "색깔", 200, 1L, 2L, 0);
             assertThatThrownBy(() -> service.save(zeroDistanceRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }

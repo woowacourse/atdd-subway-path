@@ -68,7 +68,8 @@ public class SubwayRepository {
     }
 
     public Line saveLine(LineInfo lineInfo, Section section) {
-        LineEntity lineEntity = lineDao.save(new LineEntity(lineInfo.getName(), lineInfo.getColor()));
+        LineEntity lineEntity = lineDao.save(
+                new LineEntity(lineInfo.getName(), lineInfo.getColor(), lineInfo.getExtraFare()));
         sectionDao.save(SectionEntity.of(lineEntity.getId(), section));
         return Line.of(lineEntity.toDomain(), section);
     }
@@ -80,7 +81,11 @@ public class SubwayRepository {
     }
 
     public void updateLine(LineInfo lineInfo) {
-        LineEntity updatedLine = new LineEntity(lineInfo.getId(), lineInfo.getName(), lineInfo.getColor());
+        Long id = lineInfo.getId();
+        String name = lineInfo.getName();
+        String color = lineInfo.getColor();
+        int extraFare = lineInfo.getExtraFare();
+        LineEntity updatedLine = new LineEntity(id, name, color, extraFare);
         lineDao.update(updatedLine);
     }
 

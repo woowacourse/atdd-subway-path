@@ -12,15 +12,18 @@ public class LineResponse {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private final List<StationResponse> stations;
 
     public LineResponse(Long id,
                         String name,
                         String color,
+                        int extraFare,
                         List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -29,8 +32,9 @@ public class LineResponse {
         Long lineId = lineInfo.getId();
         String lineName = lineInfo.getName();
         String lineColor = lineInfo.getColor();
+        int extraFare = lineInfo.getExtraFare();
         List<StationResponse> stations = toStationResponse(line.getSortedStations());
-        return new LineResponse(lineId, lineName, lineColor, stations);
+        return new LineResponse(lineId, lineName, lineColor, extraFare, stations);
     }
 
     private static List<StationResponse> toStationResponse(List<Station> stations) {
@@ -51,6 +55,10 @@ public class LineResponse {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -64,7 +72,8 @@ public class LineResponse {
             return false;
         }
         LineResponse that = (LineResponse) o;
-        return Objects.equals(id, that.id)
+        return extraFare == that.extraFare
+                && Objects.equals(id, that.id)
                 && Objects.equals(name, that.name)
                 && Objects.equals(color, that.color)
                 && Objects.equals(stations, that.stations);
@@ -72,7 +81,7 @@ public class LineResponse {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color, stations);
+        return Objects.hash(id, name, color, extraFare, stations);
     }
 
     @Override
@@ -81,6 +90,7 @@ public class LineResponse {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 ", stations=" + stations +
                 '}';
     }

@@ -22,8 +22,13 @@ public class TestFixtureManager {
         jdbcTemplate.update(sql, name, color);
     }
 
+    public void saveLine(String name, String color, int extraFare) {
+        String sql = "INSERT INTO line(name, color, extra_fare) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, name, color, extraFare);
+    }
+
     public void saveSection(Long lineId, Long upStationId, Long downStationId) {
-        saveSection(lineId, upStationId, downStationId,10);
+        saveSection(lineId, upStationId, downStationId, 10);
     }
 
     public void saveSection(Long lineId, Long upStationId, Long downStationId, int distance) {

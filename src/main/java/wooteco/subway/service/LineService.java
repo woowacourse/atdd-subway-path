@@ -52,7 +52,7 @@ public class LineService {
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor());
+        LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         return LineResponse.of(subwayRepository.saveLine(newLine, newSection));
     }
 
@@ -61,7 +61,7 @@ public class LineService {
         String name = lineRequest.getName();
         validateExistingLine(id);
         validateUniqueLineName(name);
-        subwayRepository.updateLine(new LineInfo(id, name, lineRequest.getColor()));
+        subwayRepository.updateLine(new LineInfo(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional
