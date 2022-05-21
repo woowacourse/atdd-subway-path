@@ -135,7 +135,7 @@ class SectionDaoTest {
         assertThat(sectionDao.findAll()).isEqualTo(expected);
     }
 
-    @DisplayName("모든 구간을 찾아낸다.")
+    @DisplayName("모든 구간을 저장한다.")
     @Test
     void saveAll() {
         Station upStation1 = stationDao.save(new Station("강남역"));
