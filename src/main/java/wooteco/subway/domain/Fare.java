@@ -19,12 +19,12 @@ public class Fare {
             return BASE_FEE;
         }
         if (distance <= OVER_FIFTY_DISTANCE) {
-            return getAddedFare(distance, OVER_TEN_DISTANCE, OVER_TEN_RATE) + BASE_FEE;
+            return calculateOverFare(OVER_TEN_DISTANCE) + getAddedFare(distance, OVER_TEN_DISTANCE, OVER_TEN_RATE);
         }
-        return getAddedFare(distance, OVER_FIFTY_DISTANCE, OVER_FIFTY_RATE) + 2050;
+        return calculateOverFare(OVER_FIFTY_DISTANCE) + getAddedFare(distance, OVER_FIFTY_DISTANCE, OVER_FIFTY_RATE);
     }
 
-    private int getAddedFare(int distance, int overTenDistance, int overTenRate) {
-        return (int) ((Math.ceil((distance - overTenDistance - 1) / overTenRate) + 1) * 100);
+    private int getAddedFare(int distance, int overDistance, int overRate) {
+        return (int) ((Math.ceil((distance - overDistance - 1) / overRate) + 1) * 100);
     }
 }
