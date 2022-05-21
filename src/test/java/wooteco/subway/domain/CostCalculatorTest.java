@@ -13,9 +13,10 @@ class CostCalculatorTest {
     @CsvSource(value = {"1,0,1250", "10,0,1250", "11,0,1350", "30,0,1650", "50,0,2050", "51,0,2150", "60,0,2250"})
     void calculateCostByDistance(int distance, int extraFare, int expected) {
         // given
+        CostCalculator costCalculator = new CostCalculator(distance, extraFare);
 
         // when
-        int result = CostCalculator.calculate(distance, extraFare);
+        int result = costCalculator.calculate();
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -26,9 +27,10 @@ class CostCalculatorTest {
     @CsvSource(value = {"10,0,1250", "10,100,1350", "10,9000,10250"})
     void calculateCostByExtraForce(int distance, int extraFare, int expected) {
         // given
+        CostCalculator costCalculator = new CostCalculator(distance, extraFare);
 
         // when
-        int result = CostCalculator.calculate(distance, extraFare);
+        int result = costCalculator.calculate();
 
         // then
         assertThat(result).isEqualTo(expected);

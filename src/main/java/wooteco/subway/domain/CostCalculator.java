@@ -9,12 +9,22 @@ public class CostCalculator {
     private static final int CHARGED_UNIT_1 = 5;
     private static final int CHARGED_UNIT_2 = 8;
 
-    public static int calculate(int distance, int extraFare) {
-        return calculateByDistance(distance) + extraFare;
+    private final int distance;
+    private final int extraFare;
+
+    public CostCalculator(int distance, int extraFare) {
+        this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    private static int calculateByDistance(int distance) {
+    public int calculate() {
+        return calculateByDistance() + extraFare;
+    }
+
+    private int calculateByDistance() {
         int cost = BASIC_COST;
+        int distance = this.distance;
+
         if (distance > CHARGED_DISTANCE_2) {
             cost += calculateCost(distance, CHARGED_DISTANCE_2, CHARGED_UNIT_2);
             distance = CHARGED_DISTANCE_2;
@@ -25,7 +35,7 @@ public class CostCalculator {
         return cost;
     }
 
-    private static int calculateCost(int distance, int baseDistance, int unit) {
+    private int calculateCost(int distance, int baseDistance, int unit) {
         return ((distance - baseDistance - 1) / unit + 1) * CHARGED_COST;
     }
 }
