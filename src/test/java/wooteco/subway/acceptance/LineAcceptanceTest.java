@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.dto.line.LineResponse;
-import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.dto.line.LineUpdateRequest;
 
 class LineAcceptanceTest extends AcceptanceTest {
@@ -87,11 +86,6 @@ class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Response deleteStation(final long idWillBeDeleted) {
-        return RestAssured.when()
-                .delete("/stations/" + idWillBeDeleted);
-    }
-
     /*
      * given
      * 상행역과 하행역이 생성되어 있다.
@@ -111,8 +105,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", upStationId,
-                downStationId,
-                0);
+                downStationId, 0);
 
         // then
         assertAll(
@@ -171,15 +164,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String lineColor = "color1";
         long id1 = createStation("station1").getId();
         long id2 = createStation("station2").getId();
-
-        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10);
-        RestAssured.given()
-                .body(lineRequest1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then()
-                .extract();
+        createLine("line1", lineColor, id1, id2, 10);
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line2", lineColor, id1, id2, 10);
@@ -299,9 +284,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         StationResponse station4 = createStation("지하철역4");
 
         LineResponse line1 = createLine("노선1", "색깔1", station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), 10, 100);
         LineResponse line2 = createLine("노선2", "색깔2", station3.getId(),
-                station4.getId(), 10);
+                station4.getId(), 10, 100);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -335,7 +320,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         /// given
         StationResponse upStation = createStation("서울역");
         StationResponse downStation = createStation("시청");
-        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10);
+        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10, 100);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

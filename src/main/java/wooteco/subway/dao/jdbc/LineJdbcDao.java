@@ -22,7 +22,8 @@ public class LineJdbcDao implements LineDao {
     private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -51,18 +52,14 @@ public class LineJdbcDao implements LineDao {
 
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT id, name, color FROM LINE";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE";
 
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Line(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("color")
-        ));
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
     public Optional<Line> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE id = (?)";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE WHERE id = (?)";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException exception) {

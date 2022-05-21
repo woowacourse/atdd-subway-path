@@ -22,7 +22,7 @@ class AcceptanceTest {
     protected static final String BLANK_OR_NULL_ERROR_MESSAGE = "빈 값";
     private static final String LINE_BASE_URI = "/lines";
     private static final String STATION_BASE_URI = "/stations";
-    public static final String SECTION_BASE_URI = "/sections";
+    private static final String SECTION_BASE_URI = "/sections";
 
     @LocalServerPort
     int port;
@@ -72,7 +72,7 @@ class AcceptanceTest {
                               final StationResponse downStationResponse, final int distance) {
 
         post(new SectionRequest(upStationResponse.getId(), downStationResponse.getId(), distance),
-                LINE_BASE_URI + lineResponse.getId() + SECTION_BASE_URI);
+                LINE_BASE_URI + "/" + lineResponse.getId() + SECTION_BASE_URI);
     }
 
     private <T> ExtractableResponse<Response> post(final T requestEntity, final String uri) {
@@ -84,5 +84,10 @@ class AcceptanceTest {
                 .post(uri)
                 .then()
                 .extract();
+    }
+
+    protected Response deleteStation(final long id) {
+        return RestAssured.when()
+                .delete("/stations/" + id);
     }
 }
