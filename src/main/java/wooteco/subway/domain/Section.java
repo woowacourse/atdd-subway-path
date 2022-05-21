@@ -28,7 +28,7 @@ public class Section {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("두 역 사이의 거리는 음수일 수 없습니다.");
+            throw new IllegalArgumentException("두 역 사이의 거리는 0 또는 음수일 수 없습니다.");
         }
     }
 
