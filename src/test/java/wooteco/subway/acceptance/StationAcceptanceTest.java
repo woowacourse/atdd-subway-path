@@ -1,4 +1,4 @@
-package wooteco.subway.controller;
+package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.station.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
-public class StationControllerTest extends ControllerTest {
+public class StationAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> responseCreateStation;
 

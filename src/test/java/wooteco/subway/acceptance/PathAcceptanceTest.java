@@ -6,9 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.controller.ControllerTest;
 
-public class PathAcceptanceTest extends ControllerTest {
+public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("5개의 역을 생성한다 -> 2개의 노선을 생성한다 -> 구간을 추가한다 -> 경로를 검색한다")
