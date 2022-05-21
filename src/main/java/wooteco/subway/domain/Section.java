@@ -45,22 +45,12 @@ public class Section {
     }
 
     public void reduceDistance(Section other) {
-        if (other.distance >= distance) {
-            throw new IllegalArgumentException(INVALID_DISTANCE_ERROR_MESSAGE);
-        }
-        reduceDistance(other.distance);
-    }
-
-    private void reduceDistance(int distance) {
-        this.distance -= distance;
+        validDistance(distance - other.distance);
+        this.distance -= other.distance;
     }
 
     public void addDistance(Section other) {
-        addDistance(other.distance);
-    }
-
-    private void addDistance(int distance) {
-        this.distance += distance;
+        this.distance += other.distance;
     }
 
     public boolean isSameDownStationId(Section section) {
