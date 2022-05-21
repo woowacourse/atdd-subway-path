@@ -1,6 +1,8 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
@@ -30,12 +32,12 @@ public class PathService {
         List<Section> sections = sectionRepository.findAll();
 
         Path path = new Path(sections);
-        List<Station> shortestPath = path.createShortestPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(source, target);
 
-        int distance = path.calculateDistance(source, target);
+        int distance = (int) shortestPath.getWeight();
         Fare fare = new Fare();
 
-        return new PathResponse(shortestPath, distance,
+        return new PathResponse(shortestPath.getVertexList(), distance,
                 fare.calculateFare(distance, new BasicFareStrategy()));
     }
 }

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.service.LineService;
 
 @RestController

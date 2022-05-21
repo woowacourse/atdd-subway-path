@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +25,8 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        List<Station> result = path.createShortestPath(강남역, 삼성역);
-        assertThat(result).containsExactly(강남역, 역삼역, 삼성역);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        assertThat(shortestPath.getVertexList()).containsExactly(강남역, 역삼역, 삼성역);
     }
 
     @DisplayName("구간이 없는 역에 대해 최단 경로를 조회시 에러가 발생한다.")
@@ -60,8 +62,8 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        int result = path.calculateDistance(강남역, 삼성역);
-        assertThat(result).isEqualTo(20);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        assertThat(shortestPath.getWeight()).isEqualTo(20);
     }
 
 }
