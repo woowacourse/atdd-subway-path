@@ -76,7 +76,7 @@ public class PathTest {
         SubwayGraph subwayGraph = new SubwayGraph(
             List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개));
 
-        assertThat(subwayGraph.getFare(source, target)).isEqualTo(fare);
+        assertThat(new Fare().getFare(subwayGraph.getShortestDistance(source,target))).isEqualTo(fare);
     }
 
     private static List<Arguments> getSections() {

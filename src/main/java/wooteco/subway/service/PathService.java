@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayGraph;
@@ -32,7 +33,7 @@ public class PathService {
         Station target = stationRepository.findById(pathsRequest.getTarget());
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
-        int fare = subwayGraph.getFare(source, target);
+        int fare = new Fare().getFare(distance);
         return new PathResponse(toStationResponse(route), distance, fare);
     }
 
