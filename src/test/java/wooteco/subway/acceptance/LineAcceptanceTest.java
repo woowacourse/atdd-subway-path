@@ -2,6 +2,9 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.SubwayFixtures.BOONDANGLINE_REQUEST;
+import static wooteco.subway.SubwayFixtures.LINES_URI;
+import static wooteco.subway.SubwayFixtures.SECONDLINE_REQUEST;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.ui.dto.request.LineRequest;
 import wooteco.subway.ui.dto.request.StationRequest;
 import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.LineResponse;
@@ -21,10 +23,6 @@ import wooteco.subway.ui.dto.response.LineResponse;
 @DisplayName("노선 E2E")
 @Sql("classpath:/schema-test.sql")
 class LineAcceptanceTest extends AcceptanceTest {
-
-    private static final LineRequest BOONDANGLINE_REQUEST = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
-    private static final LineRequest SECONDLINE_REQUEST = new LineRequest("2호선", "bg-green-600", 2L, 3L, 10);
-    private static final String LINES_URI = "/lines";
 
     @BeforeEach
     void setupStations() {

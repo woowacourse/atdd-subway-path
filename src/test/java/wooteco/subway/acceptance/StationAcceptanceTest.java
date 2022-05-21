@@ -2,6 +2,9 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.SubwayFixtures.GANGNAM_REQUEST;
+import static wooteco.subway.SubwayFixtures.STATIONS_URI;
+import static wooteco.subway.SubwayFixtures.YEOKSAM_REQUEST;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,17 +15,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.ui.dto.request.StationRequest;
 import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철역 E2E")
 @Sql("classpath:/schema-test.sql")
 class StationAcceptanceTest extends AcceptanceTest {
-
-    private static final StationRequest GANGNAM_REQUEST = new StationRequest("강남역");
-    private static final StationRequest YEOKSAM_REQUEST = new StationRequest("역삼역");
-    private static final String STATIONS_URI = "/stations";
 
     @Test
     @DisplayName("신규 지하철역 생성 성공 시, 응답코드는 CREATED 이고 응답헤더에 Location 이 존재한다")
