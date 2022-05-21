@@ -1,14 +1,12 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.Graph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.path.PathEdge;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.factory.JgraphtPathFactory;
 import wooteco.subway.domain.path.factory.PathFactory;
 import wooteco.subway.domain.path.strategy.DijkstraStrategy;
-import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 

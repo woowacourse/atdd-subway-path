@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.path.*;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.factory.JgraphtPathFactory;
 import wooteco.subway.domain.path.factory.PathFactory;
 import wooteco.subway.domain.path.strategy.DijkstraStrategy;

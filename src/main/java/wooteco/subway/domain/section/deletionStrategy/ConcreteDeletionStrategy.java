@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ConcreteDeletionStrategy implements DeletionStrategy{
+public class ConcreteDeletionStrategy implements DeletionStrategy {
     public void delete(List<Section> sections, Long lineId, Station station) {
         checkDelete(sections, lineId);
 

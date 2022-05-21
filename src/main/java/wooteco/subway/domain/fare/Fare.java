@@ -11,7 +11,7 @@ public class Fare {
         this.extraFare = extraFare;
     }
 
-    public static Fare of(int distance, int age, int extraFare){
+    public static Fare of(int distance, int age, int extraFare) {
         return new Fare(distance, age, extraFare);
     }
 

@@ -14,7 +14,7 @@ public class LineEntity {
     }
 
     public LineEntity(String name, String color, int extraFare) {
-        this(null, name, color,extraFare);
+        this(null, name, color, extraFare);
     }
 
     public LineEntity(String name, String color) {

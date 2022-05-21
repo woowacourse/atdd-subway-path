@@ -1,8 +1,5 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.SectionEntity;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 

@@ -33,7 +33,7 @@ public class SectionService {
         Optional<Section> overLappedSection = sections.getSectionOverLappedBy(section);
         sections.save(section);
 
-        if(overLappedSection.isPresent()){
+        if (overLappedSection.isPresent()) {
             Section revisedSection = sections.fixOverLappedSection(overLappedSection.get(), section);
             sectionRepository.update(SectionEntity.of(revisedSection));
         }

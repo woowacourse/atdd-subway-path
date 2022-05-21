@@ -1,7 +1,6 @@
 package wooteco.subway.dto;
 
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineEntity;
 
 import java.util.List;
 

@@ -22,7 +22,7 @@ public class Line {
     }
 
     public Line(String name, String color, int extraFare, Sections sections) {
-        this(null, name, color,extraFare, sections);
+        this(null, name, color, extraFare, sections);
     }
 
     public Line(String name, String color, Sections sections) {
@@ -53,7 +53,7 @@ public class Line {
         sections.addSection(section);
     }
 
-    public List<Station> getStationsInLine(){
+    public List<Station> getStationsInLine() {
         return sections.getSortedStations();
     }
 }

@@ -31,7 +31,7 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity insert(SectionEntity sectionEntity){
+    public SectionEntity insert(SectionEntity sectionEntity) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(sectionEntity);
         Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
         return new SectionEntity(id, sectionEntity.getLineId(), sectionEntity.getUpStationId(),
@@ -46,7 +46,7 @@ public class SectionDao {
     public List<SectionEntity> findByLineId(Long lineId) {
         String sql = "select * from SECTION where line_id = :lineId";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", lineId);
-        return namedParameterJdbcTemplate.query(sql,sqlParameterSource, ACTOR_ROW_MAPPER);
+        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
     }
 
     public void update(SectionEntity sectionEntity) {

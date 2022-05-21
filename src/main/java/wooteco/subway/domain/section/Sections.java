@@ -5,7 +5,8 @@ import wooteco.subway.domain.section.deletionStrategy.DeletionStrategy;
 import wooteco.subway.domain.section.sortStrategy.SortStrategy;
 import wooteco.subway.domain.station.Station;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 public class Sections {
     private final List<Section> sections;

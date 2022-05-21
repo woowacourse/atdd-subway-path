@@ -12,7 +12,7 @@ public class LineRequest {
     private String name;
 
     @NotNull
-    @Size(max=20)
+    @Size(max = 20)
     private String color;
 
     @NotNull
@@ -43,7 +43,7 @@ public class LineRequest {
         this(name, color, upStationId, downStationId, distance, 0);
     }
 
-    public LineEntity toLineEntity(){
+    public LineEntity toLineEntity() {
         return new LineEntity(name, color, extraFare);
     }
 
