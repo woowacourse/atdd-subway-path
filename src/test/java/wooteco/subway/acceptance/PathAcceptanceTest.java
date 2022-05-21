@@ -14,6 +14,7 @@ import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
+@DisplayName("지하철 경로 관련 기능")
 class PathAcceptanceTest extends AcceptanceTest {
 
     private static final String SOURCE_STATION_ID = "source";
