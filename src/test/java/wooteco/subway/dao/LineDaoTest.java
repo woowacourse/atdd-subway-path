@@ -129,6 +129,17 @@ class LineDaoTest extends DaoTest {
         }
 
         @Test
+        void 추가_비용은_자유롭게_수정_가능() {
+            testFixtureManager.saveLine("노선명 그대로", "색깔 그대로", 1000);
+
+            dao.update(new LineEntity(1L, "노선명 그대로", "색깔 그대로", 3000));
+            int actual = jdbcTemplate.queryForObject("SELECT extra_fare FROM line WHERE id = 1", Integer.class);
+            int expected = 3000;
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
         void 중복되는_이름으로_수정하려는_경우_예외발생() {
             testFixtureManager.saveLine("현재 노선명", "색깔은 그대로");
             testFixtureManager.saveLine("존재하는 노선명", "색깔");
@@ -141,6 +152,14 @@ class LineDaoTest extends DaoTest {
         void 존재하지_않는_노선을_수정하려는_경우_예외_미발생() {
             assertThatNoException()
                     .isThrownBy(() -> dao.update(new LineEntity(999999999L, "새로운 노선 이름", "노란색", 100)));
+        }
+
+        @Test
+        void 기존_정보와_동일하게_수정하려는_경우_결과는_동일하므로_예외_미발생() {
+            testFixtureManager.saveLine("노선명 그대로", "색깔 그대로", 1000);
+
+            assertThatNoException()
+                    .isThrownBy(() -> dao.update(new LineEntity(1L, "노선명 그대로", "색깔 그대로", 3000)));
         }
     }
 
