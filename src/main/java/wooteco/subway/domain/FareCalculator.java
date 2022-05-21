@@ -14,7 +14,7 @@ public class FareCalculator {
     private static final long THIRD_LEVEL_ADDITIONAL_FARE = 100L;
     private static final int ADDITIONAL_FOR_CEILING = 1;
 
-    private FareCalculator() {
+    FareCalculator() {
     }
 
     public Long calculate(int distance) {
