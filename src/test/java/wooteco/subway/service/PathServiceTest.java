@@ -56,7 +56,7 @@ class PathServiceTest {
         sectionService.save(lineId, request);
 
         // when
-        final PathResponse response = pathService.findPath(response1.getId(), response3.getId());
+        final PathResponse response = pathService.findPath(response1.getId(), response3.getId(), 20);
 
         // then
         assertThat(response).extracting("distance", "fare")
@@ -105,7 +105,7 @@ class PathServiceTest {
         final Long 분당선id = lineService.save(분당선).getId();
 
         // when
-        final PathResponse response = pathService.findPath(response1.getId(), response6.getId());
+        final PathResponse response = pathService.findPath(response1.getId(), response6.getId(), 20);
 
         // then
         assertThat(response).extracting("distance", "fare")
@@ -142,7 +142,7 @@ class PathServiceTest {
         lineService.save(경중선);
 
         // when then
-        assertThatThrownBy(() -> pathService.findPath(response1.getId(), response3.getId()))
+        assertThatThrownBy(() -> pathService.findPath(response1.getId(), response3.getId(), 20))
                 .isInstanceOf(NullPointerException.class);
     }
 }

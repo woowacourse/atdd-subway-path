@@ -9,21 +9,26 @@ public class Fare {
     public static final int BELOW_FIFTY_KM_POLICY = 5;
     public static final int ABOVE_FIFTY_KM_POLICY = 8;
 
-    private final int distance;
+    private final int value;
 
-    public Fare(int distance) {
-        validateDistance(distance);
-        this.distance = distance;
+
+    private Fare(int value) {
+        this.value = value;
     }
 
-    private void validateDistance(int distance) {
+    public static Fare from(int distance) {
+        validateDistance(distance);
+        final int value = calculate(distance);
+        return new Fare(value);
+    }
+
+    private static void validateDistance(int distance) {
         if (distance < 0) {
             throw new IllegalArgumentException("거리는 양수여야합니다.");
         }
     }
 
-
-    public int calculate() {
+    private static int calculate(int distance) {
         if (distance <= MINIMUM_DISTANCE_BOUNDARY) {
             return BASIC_FARE;
         }
@@ -37,8 +42,12 @@ public class Fare {
                 + calculateBoundaryFare(distance, MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
     }
 
-    private int calculateBoundaryFare(int distance, int distanceBoundary, int distancePolicy) {
+    private static int calculateBoundaryFare(int distance, int distanceBoundary, int distancePolicy) {
         return (int) Math.ceil(((double) (distance - distanceBoundary) / distancePolicy))
                 * ADDITIONAL_FARE;
+    }
+
+    public int getValue() {
+        return value;
     }
 }

@@ -25,18 +25,19 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(Long sourceId, Long targetId, int age) {
         final Sections sections = new Sections(sectionDao.findAll());
         final Path path = Path.of(sections, sourceId, targetId);
+
 
         final List<Long> shortestPath = path.getShortestPath();
         final List<StationResponse> stations = getStationResponses(shortestPath);
 
         final int distance = path.getShortestPathWeight();
 
-        final Fare fare = new Fare(distance);
+        final Fare fare = Fare.from(distance);
 
-        return new PathResponse(stations, distance, fare.calculate());
+        return new PathResponse(stations, distance, fare.getValue());
     }
 
     private List<StationResponse> getStationResponses(List<Long> shortestPath) {

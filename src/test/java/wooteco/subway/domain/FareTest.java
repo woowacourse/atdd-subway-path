@@ -12,10 +12,10 @@ class FareTest {
     @Test
     public void chargeDefaultFare9() {
         // given
-        final Fare fare = new Fare(9);
+        final Fare fare = Fare.from(9);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -25,10 +25,10 @@ class FareTest {
     @Test
     public void chargeDefaultFare10() {
         // given
-        final Fare fare = new Fare(10);
+        final Fare fare = Fare.from(10);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -38,10 +38,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare100() {
         // given
-        final Fare fare = new Fare(12);
+        final Fare fare = Fare.from(12);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1350);
@@ -51,10 +51,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare200() {
         // given
-        final Fare fare = new Fare(16);
+        final Fare fare = Fare.from(16);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1450);
@@ -64,10 +64,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFareOver50() {
         // given
-        final Fare fare = new Fare(58);
+        final Fare fare = Fare.from(58);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(2150);
@@ -77,10 +77,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare50() {
         // given
-        final Fare fare = new Fare(50);
+        final Fare fare = Fare.from(50);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(2050);
@@ -90,7 +90,7 @@ class FareTest {
     @DisplayName("거리가 음수일 경우 예외가 발생한다.")
     public void validateDistance() {
         // given
-        assertThatThrownBy(() -> new Fare(-1)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> Fare.from(-1)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 양수여야합니다.");
     }
 }

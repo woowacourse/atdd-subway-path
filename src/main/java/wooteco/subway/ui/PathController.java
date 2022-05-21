@@ -20,7 +20,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
-        final PathResponse response = pathService.findPath(source, target);
+        final PathResponse response = pathService.findPath(source, target, age);
         return ResponseEntity.ok().body(response);
     }
 }
