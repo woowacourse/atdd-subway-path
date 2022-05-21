@@ -42,6 +42,7 @@ public class Path {
         } catch (NullPointerException exception) {
             throw new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
         } catch (IllegalArgumentException exception) {
+            exception.printStackTrace();
             throw new NotFoundStationException("해당 지하철역이 등록이 안되어 있습니다.");
         }
     }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.LineSections;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.SectionUpdateResult;
 import wooteco.subway.dto.request.SectionRequest;
 
 @Service
@@ -38,22 +39,22 @@ public class SectionService {
         LineSections lineSections = new LineSections(sectionDao.findAllByLineId(lineId));
         lineSections.validateSection(upStationId, downStationId, distance);
 
-        List<Section> targetSections = lineSections.findOverlapSection(upStationId, downStationId,
+        SectionUpdateResult targetSections = lineSections.findOverlapSection(upStationId, downStationId,
                 distance);
         updateSections(targetSections);
     }
 
-    private void updateSections(List<Section> sections) {
-        updateFrontSection(sections.get(0));
-        updateBackSection(sections.get(1));
+    private void updateSections(SectionUpdateResult sections) {
+        updateSection(sections.getUpdatedSection());
+        addSection(sections.getAddedSection());
     }
 
-    private void updateFrontSection(Section section) {
+    private void updateSection(Section section) {
         sectionDao.deleteById(section.getId());
         sectionDao.save(section);
     }
 
-    private void updateBackSection(Section section) {
+    private void addSection(Section section) {
         sectionDao.updateLineOrderByInc(section.getLineId(), section.getLineOrder());
         sectionDao.save(section);
     }

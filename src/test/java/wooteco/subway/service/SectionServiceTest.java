@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.exception.InvalidSectionInsertException;
 
 @SpringBootTest
 @Sql("/sectionInitSchema.sql")
@@ -46,7 +47,7 @@ class SectionServiceTest {
         Throwable thrown = catchThrowable(() -> sectionService.save(1L, GIVEN_SECTION_REQ));
 
         // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        assertThat(thrown).isInstanceOf(InvalidSectionInsertException.class)
                 .hasMessage("상행, 하행이 대상 노선에 둘 다 존재합니다.");
     }
 
@@ -61,7 +62,7 @@ class SectionServiceTest {
                 () -> sectionService.save(1L, new SectionRequest(3L, 4L, 6)));
 
         // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        assertThat(thrown).isInstanceOf(InvalidSectionInsertException.class)
                 .hasMessage("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
     }
 
@@ -76,7 +77,7 @@ class SectionServiceTest {
                 () -> sectionService.save(1L, new SectionRequest(1L, 3L, 6)));
 
         // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        assertThat(thrown).isInstanceOf(InvalidSectionInsertException.class)
                 .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
     }
 
@@ -91,7 +92,7 @@ class SectionServiceTest {
                 () -> sectionService.save(1L, new SectionRequest(3L, 2L, 6)));
 
         // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        assertThat(thrown).isInstanceOf(InvalidSectionInsertException.class)
                 .hasMessage("역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
     }
 
@@ -135,7 +136,6 @@ class SectionServiceTest {
         // then
         assertThat(sectionService.findAllStationByLineId(1L))
                 .containsExactly(1L, 2L, 3L);
-
     }
 
     @Test

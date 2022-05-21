@@ -20,9 +20,9 @@ public class Section {
         this.lineOrder = lineOrder;
     }
 
-    public static Section createOf(Long id, long lineId, long upStationId, long downStationId,
+    public static Section createOf(long lineId, long upStationId, long downStationId,
                                    int distance, Long lineOrder) {
-        return new Section(id, lineId, upStationId, downStationId, distance, lineOrder);
+        return new Section(null, lineId, upStationId, downStationId, distance, lineOrder);
     }
 
     public Long getId() {
