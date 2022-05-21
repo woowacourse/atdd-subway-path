@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
@@ -13,6 +14,7 @@ import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.exception.station.NoSuchStationException;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final LineDao lineDao;
