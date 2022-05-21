@@ -59,16 +59,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineId2 = lineDao.save(new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
 
         sectionId = sectionDao.save(new Section(lineId1, stationId1, stationId2, 5));
+        sectionId = sectionDao.save(new Section(lineId2, stationId1, stationId2, 5));
     }
 
     @DisplayName("지하철 노선 생성")
     @Test
     void createLine() {
         // given
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", stationId1, stationId2, 20, 0);
+        LineCreateRequest request = new LineCreateRequest("2호선", "bg-green-500", stationId1, stationId2, 20, 0);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
+        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -194,13 +195,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteLineById() {
         //given
         List<Long> expectedIds = selectLines();
-        expectedIds.remove(lineId1);
 
         //when
         RestAssuredUtil.delete("/lines/" + lineId1, new HashMap<>());
 
         //then
-        assertThat(expectedIds).isEqualTo(selectLines());
+        assertThat(expectedIds.size() - 1).isEqualTo(selectLines().size());
     }
 
     private List<Long> selectLines() {

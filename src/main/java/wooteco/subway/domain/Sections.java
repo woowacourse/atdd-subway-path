@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.util.CollectionUtils;
 
 public class Sections {
 
@@ -26,10 +25,6 @@ public class Sections {
     }
 
     public List<Long> getSortedStationIds() {
-        if (CollectionUtils.isEmpty(value)) {
-            return new LinkedList<>();
-        }
-
         List<Long> ids = new LinkedList<>();
         addUpStationIds(ids, value.get(0).getDownStationId());
         addDownStationIds(ids, value.get(0).getUpStationId());
