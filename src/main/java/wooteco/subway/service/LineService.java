@@ -61,7 +61,7 @@ public class LineService {
     public void updateById(Long id, LineUpdateRequest request) {
         validateDuplicateNameAndColor(request.getName(), request.getColor());
         Line line = getLine(id);
-        line.update(request.getName(), request.getColor());
+        line.update(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.save(line);
     }
 
@@ -116,8 +116,13 @@ public class LineService {
     }
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                toResponse(stations));
+        return new LineResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare(),
+                toResponse(stations)
+        );
     }
 
     private static List<StationResponse> toResponse(List<Station> stations) {

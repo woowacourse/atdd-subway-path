@@ -15,7 +15,7 @@ public class SectionTest {
     @Test
     @DisplayName("상행역을 기준으로 구간을 분리한다.")
     void splitByUpStation() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
         Section 추가할_구간 = new Section(line, 삼성, 강남, 4);
@@ -35,7 +35,7 @@ public class SectionTest {
     @Test
     @DisplayName("하행역을 기준으로 구간을 분리한다.")
     void splitByDownStation() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
         Section 추가할_구간 = new Section(line, 강남, 성수, 4);

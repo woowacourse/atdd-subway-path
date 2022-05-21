@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class LineTest {
     @DisplayName("id로 노선 정보를 수정한다.")
     void modify() {
         Line line = new Line("2호선", "bg-red-600");
-        line.update("3호선", "blue");
+        line.update("3호선", "blue", 0);
         assertThat(line.getName()).isEqualTo("3호선");
     }
 
@@ -55,7 +56,7 @@ class LineTest {
     void modifyEmpty(String value) {
         Line line = new Line("2호선", "red");
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.update(value, value))
+                .isThrownBy(() -> line.update(value, value, 0))
                 .withMessage("이름과 색깔은 공백일 수 없습니다.");
     }
 
@@ -64,7 +65,7 @@ class LineTest {
     void invalidUpdateName(String value, String message) {
         Line line = new Line("2호선", "blue");
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.update(value, "blue"))
+                .isThrownBy(() -> line.update(value, "blue", 0))
                 .withMessage(message);
     }
 
@@ -73,8 +74,15 @@ class LineTest {
     void invalidUpdateName(String name) {
         Line line = new Line("2호선", "blue");
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.update(name, "blue"))
+                .isThrownBy(() -> line.update(name, "blue", 0))
                 .withMessage("노선 이름은 한글과 숫자이어야 합니다.");
     }
 
+    @Test
+    @DisplayName("추가 금액이 0원 미만인 경우 예외를 발생한다.")
+    void invalidExtraFare() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Line("1호선", "파랑", -1))
+                .withMessage("추가 금액은 음수일 수 없습니다.");
+    }
 }

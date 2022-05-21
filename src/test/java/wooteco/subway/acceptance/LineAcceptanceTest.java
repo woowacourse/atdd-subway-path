@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.LineResponse;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 @DisplayName("노선 관련 기능")
@@ -23,7 +24,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     class Describe_Line_Create_API {
 
         @Nested
-        @DisplayName("역 2개와 노선을 입력받는 경우")
+        @DisplayName("등록할 노선 정보를 입력받는 경우")
         class Context_Input_Save_Line {
 
             private Map<Object, Object> 노선_저장_파라미터;
@@ -32,7 +33,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                노선_저장_파라미터 = 노선_저장_파라미터("신분당선", "bg-red-600", 잠실, 강남, 10);
+                노선_저장_파라미터 = 노선_저장_파라미터("신분당선", "bg-red-600", 잠실, 강남, 10, 1000);
             }
 
             @Test
@@ -45,12 +46,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("역 2개와 노선 정보로 노선을 저장한다.")
+            @DisplayName("노선을 저장한다.")
             void it_returns_save() {
                 ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
 
                 assertThat(response.body().jsonPath().getString("name")).isEqualTo("신분당선");
                 assertThat(response.body().jsonPath().getString("color")).isEqualTo("bg-red-600");
+                assertThat(response.body().jsonPath().getString("extraFare")).isEqualTo("1000");
             }
         }
 
@@ -100,7 +102,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
+                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10, 1000));
             }
 
             @Test
@@ -119,6 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
                 assertThat(response.body().jsonPath().getString("name")).isEqualTo("2호선");
                 assertThat(response.body().jsonPath().getString("color")).isEqualTo("green");
+                assertThat(response.body().jsonPath().getString("extraFare")).isEqualTo("1000");
             }
         }
 
@@ -155,8 +158,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                노선_저장(노선_저장_파라미터("1호선", "blue", 역_저장("창동"), 역_저장("강남"), 10));
-                노선_저장(노선_저장_파라미터("2호선", "green", 역_저장("도봉"), 역_저장("의정부"), 10));
+                노선_저장(노선_저장_파라미터("1호선", "blue", 역_저장("창동"), 역_저장("강남"), 10, 0));
+                노선_저장(노선_저장_파라미터("2호선", "green", 역_저장("도봉"), 역_저장("의정부"), 10, 0));
             }
 
             @Test
@@ -176,6 +179,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 List<LineResponse> responses = response.body().jsonPath()
                         .getList(".", LineResponse.class);
                 assertThat(responses).extracting("name").isEqualTo(List.of("1호선", "2호선"));
+                assertThat(response).extracting("extraFare").isEqualTo(List.of("0, 0"));
             }
         }
     }
@@ -191,7 +195,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void setUp() {
             long 잠실 = 역_저장("잠실");
             long 강남 = 역_저장("강남");
-            lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
+            lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10, 0));
             노선_수정_파라미터 = 노선_수정_파라미터("신분당선", "bg-red-600");
         }
 
@@ -298,7 +302,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 long 잠실 = 역_저장("잠실");
                 long 강남 = 역_저장("강남");
-                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10));
+                lineId = 노선_저장(노선_저장_파라미터("2호선", "green", 잠실, 강남, 10, 0));
             }
 
             @Test
@@ -327,7 +331,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             void setUp() {
                 출발역 = 역_저장("의정부");
                 도착역 = 역_저장("광운대");
-                노선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 역_저장("인천"), 10));
+                노선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 역_저장("인천"), 10, 0));
             }
 
             @Test
@@ -358,7 +362,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 long 출발역 = 역_저장("의정부");
                 long 도착역 = 역_저장("광운대");
                 인천 = 역_저장("인천");
-                일호선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 인천, 10));
+                일호선 = 노선_저장(노선_저장_파라미터("1호선", "blue", 출발역, 인천, 10, 0));
 
                 구간_등록(일호선, 구간_등록_파라미터(출발역, 도착역, 5));
             }

@@ -20,7 +20,7 @@ public class LineDaoTest {
     @Test
     @DisplayName("노선 저장")
     void save() {
-        LineEntity line = new LineEntity("1호선", "blue");
+        LineEntity line = new LineEntity("1호선", "blue", 0);
         LineEntity savedLine = lineDao.save(line);
         assertThat(savedLine.getId()).isNotNull();
         assertThat(savedLine.getName()).isEqualTo("1호선");
@@ -29,7 +29,7 @@ public class LineDaoTest {
     @Test
     @DisplayName("노선 이름, 색깔 중복 여부 조회")
     void duplicateNameAndColor() {
-        LineEntity line = new LineEntity("1호선", "blue");
+        LineEntity line = new LineEntity("1호선", "blue", 0);
         lineDao.save(line);
         assertThat(lineDao.existByNameAndColor("1호선", "blue")).isTrue();
     }
@@ -37,7 +37,7 @@ public class LineDaoTest {
     @Test
     @DisplayName("id로 노선 조회")
     void findById() {
-        LineEntity line = lineDao.save(new LineEntity("1호선", "blue"));
+        LineEntity line = lineDao.save(new LineEntity("1호선", "blue", 0));
         LineEntity findLine = lineDao.findById(line.getId()).get();
         assertThat(findLine.getId()).isNotNull();
         assertThat(findLine.getName()).isEqualTo("1호선");
@@ -46,8 +46,8 @@ public class LineDaoTest {
     @Test
     @DisplayName("노선 전체 조회")
     void findAll() {
-        LineEntity line1 = new LineEntity("1호선", "blue");
-        LineEntity line2 = new LineEntity("2호선", "red");
+        LineEntity line1 = new LineEntity("1호선", "blue", 0);
+        LineEntity line2 = new LineEntity("2호선", "red", 0);
         lineDao.save(line1);
         lineDao.save(line2);
         List<LineEntity> liens = lineDao.findAll();
@@ -57,8 +57,8 @@ public class LineDaoTest {
     @Test
     @DisplayName("노선 수정")
     void modifyById() {
-        LineEntity savedLine = lineDao.save(new LineEntity("1호선", "blue"));
-        lineDao.modifyById(new LineEntity(savedLine.getId(), "2호선", "red"));
+        LineEntity savedLine = lineDao.save(new LineEntity("1호선", "blue", 0));
+        lineDao.modifyById(new LineEntity(savedLine.getId(), "2호선", "red", 0));
         LineEntity updateLine = lineDao.findById(savedLine.getId()).get();
         assertThat(updateLine.getName()).isEqualTo("2호선");
         assertThat(updateLine.getColor()).isEqualTo("red");
@@ -67,7 +67,7 @@ public class LineDaoTest {
     @Test
     @DisplayName("id로 노선 삭제")
     void deleteById() {
-        LineEntity savedLine = lineDao.save(new LineEntity("1호선", "blue"));
+        LineEntity savedLine = lineDao.save(new LineEntity("1호선", "blue", 0));
         lineDao.deleteById(savedLine.getId());
         assertThat(lineDao.findAll()).hasSize(0);
     }

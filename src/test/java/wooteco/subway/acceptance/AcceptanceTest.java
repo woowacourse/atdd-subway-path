@@ -119,14 +119,21 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    protected Map<Object, Object> 노선_저장_파라미터(String name, String color, Long upStationId,
-            Long downStationId, int distance) {
+    protected Map<Object, Object> 노선_저장_파라미터(
+            String name,
+            String color,
+            Long upStationId,
+            Long downStationId,
+            int distance,
+            int extraFare
+    ) {
         Map<Object, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", distance);
+        params.put("extraFare", extraFare);
         return params;
     }
 
