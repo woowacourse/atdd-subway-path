@@ -20,7 +20,7 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception exception) {
-        return ResponseEntity.internalServerError().body("[ERROR] " + exception.getMessage());
+    public ResponseEntity<Void> handleException() {
+        return ResponseEntity.internalServerError().build();
     }
 }
