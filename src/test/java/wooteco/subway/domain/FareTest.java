@@ -2,6 +2,8 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,4 +108,26 @@ class FareTest {
         // then
         assertThat(result).isEqualTo(2550);
     }
+
+    @DisplayName("연령대 별 요금을 조회한다.")
+    @Test
+    public void chargeForAgeGroup() {
+        // given
+        final Fare fare = Fare.of(50, 500);
+
+        // when
+        final int resultBaby = fare.getDiscountValue(AgeGroup.BABY);
+        final int resultChildren = fare.getDiscountValue(AgeGroup.CHILDREN);
+        final int resultTeenAger = fare.getDiscountValue(AgeGroup.TEENAGER);
+        final int resultAdult = fare.getDiscountValue(AgeGroup.ADULT);
+
+        // then
+        assertAll(
+                () -> assertEquals(resultBaby, 0),
+                () -> assertEquals(resultChildren, 1450),
+                () -> assertEquals(resultTeenAger, 2110),
+                () -> assertEquals(resultAdult, 2550)
+        );
+    }
+
 }
