@@ -8,6 +8,12 @@ public class Fare {
     private static final int FARE_DISTANCE_LIMIT_FIRST = 10;
     private static final int FARE_DISTANCE_LIMIT_SECOND = 50;
 
+    private static final int CHILDREN_MIN_AGE = 6;
+    private static final int TEENAGER_MIN_AGE = 13;
+    private static final int ADULT_MIN_AGE = 19;
+    private static final double CHILDREN_DISCOUNT_RATIO = 0.5;
+    private static final double TEENAGER_DISCOUNT_RATIO = 0.2;
+
     private final int value;
 
     private Fare(int value) {
@@ -18,6 +24,11 @@ public class Fare {
         return new Fare(calculateFare(distance));
     }
 
+    public static Fare of(int distance, int extraFare, int age) {
+        final int fare = calculateFare(distance) + extraFare;
+        return new Fare(fare - discountForYouth(fare, age));
+    }
+
     private static int calculateFare(int distance) {
         if (distance <= FARE_DISTANCE_LIMIT_FIRST) {
             return DEFAULT_FARE;
@@ -26,6 +37,16 @@ public class Fare {
             return DEFAULT_FARE + (int) ((Math.ceil((distance - 11) / 5) + 1) * 100);
         }
         return DEFAULT_FARE_SECOND + (int) ((Math.ceil((distance - 51) / 8) + 1) * 100);
+    }
+
+    private static int discountForYouth(int fare, int age) {
+        if (age >= CHILDREN_MIN_AGE && age < TEENAGER_MIN_AGE) {
+            return (int) ((fare - 350) * CHILDREN_DISCOUNT_RATIO);
+        }
+        if (age >= TEENAGER_MIN_AGE && age < ADULT_MIN_AGE) {
+            return (int) ((fare - 350) * TEENAGER_DISCOUNT_RATIO);
+        }
+        return 0;
     }
 
     public int getValue() {
