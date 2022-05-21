@@ -16,7 +16,7 @@ public class Fare {
         return new Fare(calculateFare(distance));
     }
 
-    public static int calculateFare(int distance) {
+    private static int calculateFare(int distance) {
         DistanceOverFare distanceOverFare = DistanceOverFare.of(distance);
         return BASIC_FARE + distanceOverFare.getValue();
     }

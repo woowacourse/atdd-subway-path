@@ -1,8 +1,9 @@
 package wooteco.subway.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathManager;
+import wooteco.subway.domain.path.Path2;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.DtoAssembler;
 import wooteco.subway.dto.response.PathResponse;
@@ -21,11 +22,11 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
-        PathManager pathManager = PathManager.of(subwayRepository.findAllSections());
         Station startStation = stationRepository.findExistingStation(sourceStationId);
         Station endStation = stationRepository.findExistingStation(targetStationId);
-        Path optimalPath = pathManager.calculateOptimalPath(startStation, endStation);
+        List<Section> sections = subwayRepository.findAllSections();
+        Path2 path = Path2.of(startStation, endStation, sections);
 
-        return DtoAssembler.assemble(optimalPath);
+        return DtoAssembler.assemble(path);
     }
 }
