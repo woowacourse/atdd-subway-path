@@ -190,7 +190,7 @@ class LineServiceTest {
         sut.addSection(line2.getId(), new SectionRequest(station4.getId(), station5.getId(), 1));
 
         // when
-        PathResponse path = sut.calculatePath(station1.getId(), station5.getId());
+        PathResponse path = sut.calculatePath(station1.getId(), station5.getId(), 30);
 
         // then
         PathResponse expected = new PathResponse(

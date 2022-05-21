@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FarePolicy;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayMap;
+import wooteco.subway.domain.fare.FareDiscountPolicyFactory;
+import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.line.LineResponse;
@@ -102,7 +103,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse calculatePath(final Long sourceId, final Long targetId) {
+    public PathResponse calculatePath(final Long sourceId, final Long targetId, final int age) {
         SubwayMap subwayMap = new SubwayMap(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
@@ -115,7 +116,8 @@ public class LineService {
         List<Line> passingLines = mapLineIdToLine(path.getPassingLineIds());
         int extraFare = calculateMostExpensiveExtraFare(passingLines);
 
-        return PathResponse.from(path.getStations(), path.getDistance(), FarePolicy.calculateFare(path.getDistance(), extraFare));
+        return PathResponse.from(path.getStations(), path.getDistance(),
+                new FarePolicy(FareDiscountPolicyFactory.create(age)).calculateFare(path.getDistance(), extraFare));
     }
 
     private int calculateMostExpensiveExtraFare(final List<Line> passingLines) {
