@@ -3,41 +3,32 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.LineCreateRequest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@JdbcTest
 class StationDaoTest {
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private Long stationId1;
     private Long stationId2;
     private Long lineId;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private StationDao stationDao;
-
-    @Autowired
-    private LineDao lineDao;
-
-    @Autowired
-    private SectionDao sectionDao;
 
     @BeforeEach
     void init() {
-        truncate();
+        stationDao = new StationDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
 
         stationId1 = stationDao.save(new Station("강남역"));
         stationId2 = stationDao.save(new Station("왕십리역"));
@@ -46,12 +37,6 @@ class StationDaoTest {
         lineId = lineDao.save(request);
 
         sectionDao.save(new Section(lineId, stationId1, stationId2, 10));
-    }
-
-    void truncate() {
-        jdbcTemplate.update("truncate table STATION");
-        jdbcTemplate.update("truncate table SECTION");
-        jdbcTemplate.update("truncate table LINE");
     }
 
     @DisplayName("역 저장")

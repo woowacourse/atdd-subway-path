@@ -8,24 +8,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.Line;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@JdbcTest
 class LineDaoTest {
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private Long stationId1;
     private Long stationId2;
 
-    @Autowired
     private LineDao lineDao;
 
     @BeforeEach
     void init() {
+        lineDao = new LineDao(jdbcTemplate);
         stationId1 = lineDao.save(new LineCreateRequest("신분당선", "red", 1L, 2L, 2, 500));
         stationId2 = lineDao.save(new LineCreateRequest("2호선", "green", 1L, 2L, 2, 0));
     }

@@ -8,29 +8,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.SectionRequest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@JdbcTest
 class SectionDaoTest {
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private Long lineId;
     private Long stationId1;
     private Long stationId2;
     private Long sectionId;
 
-    @Autowired
-    private StationDao stationDao;
-
-    @Autowired
     private SectionDao sectionDao;
+
 
     @BeforeEach
     void init() {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        sectionDao = new SectionDao(jdbcTemplate);
+
         lineId = 1L;
 
         stationId1 = stationDao.save(new Station("강남역"));
