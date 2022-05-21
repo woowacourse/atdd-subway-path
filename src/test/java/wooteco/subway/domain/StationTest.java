@@ -26,13 +26,8 @@ public class StationTest {
     @DisplayName("Station의 name은 크기가 255보다 클 수 없다.")
     @Test
     void validateNameSize() {
-        String name = "a";
+        String finalName = "a".repeat(256);
 
-        for (int i = 0; i < 255; i++) {
-            name += "a";
-        }
-
-        String finalName = name;
         assertThatThrownBy(() -> new Station(finalName)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재할 수 없는 이름입니다.");
     }
