@@ -45,7 +45,7 @@ public class SubwayMap {
     private DijkstraShortestPath<Station, DefaultWeightedEdge> toShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        for (Section section : toSections()) {
+        for (Section section : toSectionList()) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
@@ -54,7 +54,7 @@ public class SubwayMap {
         return new DijkstraShortestPath<>(graph);
     }
 
-    private List<Section> toSections() {
+    private List<Section> toSectionList() {
         return lines.stream()
                 .map(Line::getSections)
                 .map(Sections::getValue)
