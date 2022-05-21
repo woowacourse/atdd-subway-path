@@ -2,7 +2,7 @@ package wooteco.subway.domain.path;
 
 import java.util.List;
 
-public interface Navigator<T> {
+public interface Navigator<V, E> {
 
-    List<T> calculateShortestPath();
+    List<E> calculateShortestPath(V source, V target);
 }

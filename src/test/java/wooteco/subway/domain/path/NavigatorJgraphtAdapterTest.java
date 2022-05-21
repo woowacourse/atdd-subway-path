@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.path.Navigator;
-import wooteco.subway.domain.path.NavigatorJgraphtAdapter;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
@@ -31,8 +29,8 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION5, STATION3, 100),
                 new Section(STATION3, STATION6, 100));
 
-        Navigator<Section> navigator = NavigatorJgraphtAdapter.of(STATION2, STATION3, sections);
-        List<Section> actual = navigator.calculateShortestPath();
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
         List<Section> expected = List.of(closestSection);
 
         assertThat(actual).isEqualTo(expected);
@@ -50,8 +48,8 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION2, STATION5, 100),
                 new Section(STATION3, STATION6, 6));
 
-        Navigator<Section> navigator = NavigatorJgraphtAdapter.of(STATION2, STATION3, sections);
-        List<Section> actual = navigator.calculateShortestPath();
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
         List<Section> expected = List.of(firstSection, secondSection, thirdSection);
 
         assertThat(actual).isEqualTo(expected);
@@ -69,12 +67,11 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION2, STATION5, 100),
                 new Section(STATION3, STATION6, 6));
 
-        Navigator<Section> navigator1 = NavigatorJgraphtAdapter.of(STATION2, STATION3, sections);
-        Navigator<Section> navigator2 = NavigatorJgraphtAdapter.of(STATION3, STATION2, sections);
-        List<Section> actual1 = navigator1.calculateShortestPath();
-        List<Section> actual2 = navigator2.calculateShortestPath();
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        List<Section> actual1 = navigator.calculateShortestPath(STATION2, STATION3);
+        List<Section> actual2 = navigator.calculateShortestPath(STATION3, STATION2);
         List<Section> expected1 = List.of(firstSection, secondSection, thirdSection);
-        List<Section> expected2 = List.of(thirdSection, secondSection, firstSection );
+        List<Section> expected2 = List.of(thirdSection, secondSection, firstSection);
 
         assertThat(actual1).isEqualTo(expected1);
         assertThat(actual2).isEqualTo(expected2);
@@ -86,7 +83,8 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20));
 
-        assertThatThrownBy(() -> NavigatorJgraphtAdapter.of(STATION1, STATION3, sections))
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        assertThatThrownBy(() -> navigator.calculateShortestPath(STATION1, STATION3))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

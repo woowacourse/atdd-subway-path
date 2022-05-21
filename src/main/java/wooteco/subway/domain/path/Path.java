@@ -22,8 +22,8 @@ public class Path {
     public static Path of(Station source, Station target, List<Section> sections) {
         validateNonSelfLoop(source, target);
         validateRegisteredStations(source, target, sections);
-        Navigator<Section> adapter = NavigatorJgraphtAdapter.of(source, target, sections);
-        return new Path(source, adapter.calculateShortestPath());
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        return new Path(source, navigator.calculateShortestPath(source, target));
     }
 
     private static void validateNonSelfLoop(Station source, Station target) {

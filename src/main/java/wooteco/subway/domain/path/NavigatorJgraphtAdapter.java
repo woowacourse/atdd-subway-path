@@ -13,23 +13,19 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
-public class NavigatorJgraphtAdapter implements Navigator<Section> {
+public class NavigatorJgraphtAdapter implements Navigator<Station, Section> {
 
     private static final String PATH_NOT_CONNECTED_EXCEPTION = "해당 역으로 이동하는 경로는 존재하지 않습니다.";
 
-    private final GraphPath<Station, SectionEdge> path;
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraPath;
 
-    private NavigatorJgraphtAdapter(GraphPath<Station, SectionEdge> path) {
-        this.path = path;
+    private NavigatorJgraphtAdapter(DijkstraShortestPath<Station, SectionEdge> dijkstraPath) {
+        this.dijkstraPath = dijkstraPath;
     }
 
-    public static NavigatorJgraphtAdapter of(Station source, Station target, List<Section> sections) {
+    public static NavigatorJgraphtAdapter of(List<Section> sections) {
         DijkstraShortestPath<Station, SectionEdge> shortestPath = new DijkstraShortestPath<>(toGraph(sections));
-        GraphPath<Station, SectionEdge>  path = shortestPath.getPath(source, target);
-        if (path == null) {
-            throw new IllegalArgumentException(PATH_NOT_CONNECTED_EXCEPTION);
-        }
-        return new NavigatorJgraphtAdapter(path);
+        return new NavigatorJgraphtAdapter(shortestPath);
     }
 
     private static WeightedMultigraph<Station, SectionEdge> toGraph(List<Section> sections) {
@@ -58,11 +54,20 @@ public class NavigatorJgraphtAdapter implements Navigator<Section> {
     }
 
     @Override
-    public List<Section> calculateShortestPath() {
+    public List<Section> calculateShortestPath(Station source, Station target) {
+        GraphPath<Station, SectionEdge> path = toValidShortestPath(source, target);
         return path.getEdgeList()
                 .stream()
                 .map(SectionEdge::toSection)
                 .collect(Collectors.toList());
+    }
+
+    private GraphPath<Station, SectionEdge> toValidShortestPath(Station source, Station target) {
+        GraphPath<Station, SectionEdge> path = dijkstraPath.getPath(source, target);
+        if (path == null) {
+            throw new IllegalArgumentException(PATH_NOT_CONNECTED_EXCEPTION);
+        }
+        return path;
     }
 
     private static class SectionEdge extends DefaultWeightedEdge {
