@@ -55,7 +55,7 @@ public class JdbcLineDao implements LineDao {
         try {
             return jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
         } catch (EmptyResultDataAccessException exception) {
-            throw new NotFoundLineException("존재하지 않는 노선입니다.");
+            throw new NotFoundLineException();
         }
     }
 

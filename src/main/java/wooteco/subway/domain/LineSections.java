@@ -27,7 +27,7 @@ public class LineSections {
 
     private void validateBothStationExist(long upStationId, long downStationId) {
         if (existByStationId(upStationId) && existByStationId(downStationId)) {
-            throw new AlreadyExistSectionException("상행, 하행이 대상 노선에 둘 다 존재합니다.");
+            throw new AlreadyExistSectionException();
         }
     }
 
@@ -49,15 +49,14 @@ public class LineSections {
 
     private void validateNoneStationExist(long upStationId, long downStationId) {
         if (!existByStationId(upStationId) && !existByStationId(downStationId)) {
-            throw new NotFoundStationException("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+            throw new NotFoundStationException();
         }
     }
 
     private void validateDistance(long upStationId, long downStationId, int distance) {
         if (isInvalidDistanceWithDownStationOverlap(downStationId, distance)
                 || isInvalidDistanceWithUpStationOverlap(upStationId, distance)) {
-            throw new IllegalDistanceException(
-                    "역 사이에 새로운 역을 등록할 경우, 기존 역 사이 길이보다 크거나 같으면 등록할 수 없습니다.");
+            throw new IllegalDistanceException();
         }
     }
 
@@ -76,7 +75,7 @@ public class LineSections {
                 .filter(section -> section.isSameUpStationId(stationId))
                 .map(Section::getId)
                 .findAny()
-                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(NotFoundSectionException::new);
     }
 
     private long findIdByDownStationId(long stationId) {
@@ -84,7 +83,7 @@ public class LineSections {
                 .filter(section -> section.isSameDownStationId(stationId))
                 .map(Section::getId)
                 .findAny()
-                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(NotFoundSectionException::new);
     }
 
     private int findDistanceById(Long id) {
@@ -92,7 +91,7 @@ public class LineSections {
                 .filter(section -> section.isSameId(id))
                 .findAny()
                 .map(Section::getDistance)
-                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(NotFoundSectionException::new);
     }
 
     public List<Section> findOverlapSection(long upStationId, long downStationId, int distance) {
@@ -136,7 +135,7 @@ public class LineSections {
         return sections.stream()
                 .filter(section -> section.isSameId(sectionId))
                 .findAny()
-                .orElseThrow(() -> new NotFoundSectionException("일치하는 Section이 존재하지 않습니다."));
+                .orElseThrow(NotFoundSectionException::new);
     }
 
     public List<Long> getStationsId() {

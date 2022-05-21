@@ -32,7 +32,7 @@ public class StationService {
 
     private void validateName(Station station) {
         if (stationDao.existByName(station)) {
-            throw new DuplicateStationException("이미 존재하는 역 이름입니다.");
+            throw new DuplicateStationException();
         }
     }
 
@@ -61,7 +61,7 @@ public class StationService {
     @Transactional(readOnly = true)
     public void validateExistById(Long stationId) {
         if (!stationDao.existById(stationId)) {
-            throw new NotFoundStationException("존재하지 않는 지하철 역입니다.");
+            throw new NotFoundStationException();
         }
     }
 }

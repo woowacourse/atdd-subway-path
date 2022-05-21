@@ -45,7 +45,7 @@ class PathServiceTest {
     void findPathWithNotFoundStation() {
         assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(0L, 1L, 10)))
                 .isInstanceOf(NotFoundStationException.class)
-                .hasMessageContaining("존재하지 않는 지하철 역입니다.");
+                .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }
 
     @Test

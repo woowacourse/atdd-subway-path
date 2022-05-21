@@ -25,7 +25,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.hasStationId(upStationId) && section.hasStationId(downStationId))
                 .findAny()
-                .orElseThrow(() -> new NotFoundSectionException("맞는 섹션 없음"));
+                .orElseThrow(NotFoundSectionException::new);
     }
 
     public List<Section> getSections() {

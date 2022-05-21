@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public final class NotFoundLineException extends SubwayException{
 
-    public NotFoundLineException(String message) {
-        super(message, HttpStatus.NOT_FOUND);
+    public NotFoundLineException() {
+        super("존재하지 않는 노선입니다.", HttpStatus.NOT_FOUND);
     }
 }

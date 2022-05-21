@@ -36,7 +36,7 @@ class LineSectionsTest {
     void validateSectionWithNotExistStations(){
         assertThatThrownBy(() -> lineSections.validateSection(4L ,5L, 10))
                 .isInstanceOf(NotFoundStationException.class)
-                .hasMessageContaining("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+                .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }
 
     @Test

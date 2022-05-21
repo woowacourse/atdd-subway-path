@@ -65,7 +65,7 @@ class SectionServiceTest {
 
         // then
         assertThat(thrown).isInstanceOf(NotFoundStationException.class)
-            .hasMessage("상행, 하행이 대상 노선에 둘 다 존재하지 않습니다.");
+            .hasMessage("해당 지하철역이 등록이 안되어 있습니다.");
     }
 
     @Test
