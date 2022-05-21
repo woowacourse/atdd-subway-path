@@ -30,7 +30,7 @@ public class ExceptionAdviser {
         return ResponseEntity.badRequest().body(new ErrorResponse("해당 값이 존재하지 않습니다."));
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler() {
         return ResponseEntity.internalServerError().build();
     }
