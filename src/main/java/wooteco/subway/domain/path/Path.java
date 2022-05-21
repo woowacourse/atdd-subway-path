@@ -1,39 +1,37 @@
 package wooteco.subway.domain.path;
 
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import wooteco.subway.domain.path.strategy.PathFindingStrategy;
+import wooteco.subway.domain.path.factory.PathFactory;
+import wooteco.subway.domain.station.Station;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class Path {
-    private final GraphPath<Long, PathEdge> graphPath;
+    private final List<PathEdge> pathEdges;
+    private final List<Station> stations;
 
-    public Path(GraphPath<Long, PathEdge> graphPath) {
-        this.graphPath = graphPath;
+    public Path(List<PathEdge> pathEdges, List<Station> stations) {
+        this.pathEdges = pathEdges;
+        this.stations = stations;
     }
 
-    public static Path of(Graph<Long, PathEdge> graph, Long source, Long target, PathFindingStrategy pathFindingStrategy) {
-        GraphPath<Long, PathEdge> shortestPath = pathFindingStrategy.findPathBetween(graph, source, target);
-        return new Path(shortestPath);
+    public static Path of(PathFactory pathFactory, Station source, Station target) {
+        return pathFactory.createShortestPath(source, target);
     }
 
-    public List<Long> getNodes() {
-        return graphPath.getVertexList();
+    public List<Station> getStations() {
+        return stations;
     }
 
     public int calculateDistance() {
-        return (int) graphPath.getEdgeList()
-                .stream()
+        return (int) pathEdges.stream()
                 .mapToDouble(PathEdge::getWeight)
                 .sum();
     }
 
-    public int getHighestExtraFare(Map<Long, Integer> lineExtraFares) {
-        return graphPath.getEdgeList()
-                .stream()
+    public int getPathExtraFare(Map<Long, Integer> lineExtraFares) {
+        return pathEdges.stream()
                 .map(PathEdge::getLineId)
                 .mapToInt(lineExtraFares::get)
                 .max()

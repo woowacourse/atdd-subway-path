@@ -2,39 +2,53 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.section.*;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.SectionEntity;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.section.creationStrategy.ConcreteCreationStrategy;
+import wooteco.subway.domain.section.deletionStrategy.ConcreteDeletionStrategy;
+import wooteco.subway.domain.section.sortStrategy.ConcreteSortStrategy;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.repository.SectionRepository;
 
 import java.util.Optional;
 
 @Transactional
 @Service
 public class SectionService {
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
 
-    public SectionService(SectionDao sectionDao) {
-        this.sectionDao = sectionDao;
+    public SectionService(SectionRepository sectionRepository) {
+        this.sectionRepository = sectionRepository;
     }
 
+    @Transactional
     public void save(Long lineId, SectionRequest sectionRequest) {
-        Section section = sectionRequest.toSection(lineId);
-        Sections sections = new Sections(sectionDao.findByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId),
+                new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
 
+        SectionEntity sectionEntity = new SectionEntity(lineId, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
+        Section section = sectionRepository.save(sectionEntity);
+        Optional<Section> overLappedSection = sections.getSectionOverLappedBy(section);
         sections.save(section);
-        Optional<Section> revisedSection = sections.fixOverLappedSection(section);
 
-        sectionDao.insert(section);
-        revisedSection.ifPresent(sectionDao::update);
+        if(overLappedSection.isPresent()){
+            Section revisedSection = sections.fixOverLappedSection(overLappedSection.get(), section);
+            sectionRepository.update(SectionEntity.of(revisedSection));
+        }
     }
 
+    @Transactional
     public void delete(Long lineId, Long stationId) {
-        Sections sections = new Sections(sectionDao.findByLineId(lineId), new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId),
+                new ConcreteCreationStrategy(), new ConcreteDeletionStrategy(), new ConcreteSortStrategy());
 
-        Optional<Section> connectedSection = sections.fixDisconnectedSection(lineId, stationId);
-        sections.delete(lineId, stationId);
+        Station station = sectionRepository.findStationById(stationId);
+        Optional<Section> connectedSection = sections.fixDisconnectedSection(lineId, station);
+        connectedSection.ifPresent(section -> sectionRepository.save(SectionEntity.of(section)));
 
-        sectionDao.delete(lineId, stationId);
-        connectedSection.ifPresent(sectionDao::insert);
+        sections.delete(lineId, station);
+        sectionRepository.delete(lineId, stationId);
     }
 }

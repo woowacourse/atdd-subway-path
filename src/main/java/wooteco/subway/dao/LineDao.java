@@ -6,16 +6,16 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.line.Line;
+import org.springframework.stereotype.Component;
+import wooteco.subway.domain.line.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-@Repository
+@Component
 public class LineDao {
-    private static final RowMapper<Line> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
-            new Line(resultSet.getLong("id"), resultSet.getString("name"),
+    private static final RowMapper<LineEntity> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
+            new LineEntity(resultSet.getLong("id"), resultSet.getString("name"),
                     resultSet.getString("color"), resultSet.getInt("extraFare"));
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -28,32 +28,32 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
+    public LineEntity insert(LineEntity lineInfo) {
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(lineInfo);
         Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
-        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
+        return new LineEntity(id, lineInfo.getName(), lineInfo.getColor(), lineInfo.getExtraFare());
     }
 
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select * from LINE";
         return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
-    public void delete(Long id) {
-        String sql = "delete from LINE where id = :id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
-        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
-    }
-
-    public Line findById(Long id) {
+    public LineEntity findById(Long id) {
         String sql = "select * from LINE where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
     }
 
-    public void edit(Line line) {
+    public void update(LineEntity lineInfo) {
         String sql = "update LINE set name = :name, color = :color, extraFare = :extraFare where id = :id";
-        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(lineInfo);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+    }
+
+    public void delete(Long id) {
+        String sql = "delete from LINE where id = :id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 

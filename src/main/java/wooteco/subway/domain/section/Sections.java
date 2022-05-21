@@ -1,5 +1,8 @@
 package wooteco.subway.domain.section;
 
+import wooteco.subway.domain.section.creationStrategy.CreationStrategy;
+import wooteco.subway.domain.section.deletionStrategy.DeletionStrategy;
+import wooteco.subway.domain.section.sortStrategy.SortStrategy;
 import wooteco.subway.domain.station.Station;
 
 import java.util.*;
@@ -21,33 +24,31 @@ public class Sections {
         creationStrategy.save(sections, section);
     }
 
-    public Optional<Section> fixOverLappedSection(Section section) {
-        return creationStrategy.fixOverLappedSection(sections, section);
+    public Optional<Section> getSectionOverLappedBy(Section section) {
+        return creationStrategy.getSectionOverLappedBy(sections, section);
     }
 
-    public void delete(Long lineId, Long stationId) {
-        deletionStrategy.delete(sections, lineId, stationId);
+    public Section fixOverLappedSection(Section overLappedSection, Section section) {
+        return creationStrategy.fixOverLappedSection(sections, overLappedSection, section);
     }
 
-    public Optional<Section> fixDisconnectedSection(Long lineId, Long stationId) {
-        return deletionStrategy.fixDisconnectedSection(sections, lineId, stationId);
+    public void delete(Long lineId, Station station) {
+        deletionStrategy.delete(sections, lineId, station);
     }
 
-    public List<Station> sort(List<Station> stations) {
-        return sortStrategy.sort(sections, stations);
+    public Optional<Section> fixDisconnectedSection(Long lineId, Station station) {
+        return deletionStrategy.fixDisconnectedSection(sections, lineId, station);
     }
 
-    public List<Long> getStationIds() {
-        Set<Long> stationIds = new HashSet<>();
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-
-        return new ArrayList<>(stationIds);
+    public List<Station> getSortedStations() {
+        return sortStrategy.sort(sections);
     }
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
     }
 }

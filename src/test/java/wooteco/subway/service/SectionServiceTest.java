@@ -4,64 +4,73 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineEntity;
+import wooteco.subway.domain.section.SectionEntity;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.repository.SectionRepository;
+
+import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Sql("/truncate.sql")
 public class SectionServiceTest {
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+    private final LineDao lineDao;
+    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
-    Long 강남 = 1L;
-    Long 선릉 = 2L;
-    Long 잠실 = 3L;
-    Station 강남역 = new Station(1L, "강남역");
-    Station 선릉역 = new Station(2L, "선릉역");
-    Station 잠실역 = new Station(3L, "잠실역");
-    Line 지하철2호선 = new Line("2호선", "green");
-    SectionRequest sectionRequest1 = new SectionRequest(강남, 선릉, 10);
-    SectionRequest sectionRequest2 = new SectionRequest(선릉, 잠실, 10);
+    private Station 강남역;
+    private Station 선릉역;
+    private Station 잠실역;
+    private Station 사당역;
+
     @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private LineDao lineDao;
-    @Autowired
-    private SectionDao sectionDao;
-    @Autowired
-    private SectionService sectionService;
+    SectionServiceTest(DataSource dataSource) {
+        stationDao = new StationDao(dataSource);
+        sectionDao = new SectionDao(dataSource);
+        lineDao = new LineDao(dataSource);
+        sectionRepository = new SectionRepository(stationDao, sectionDao);
+        sectionService = new SectionService(sectionRepository);
+    }
 
     @BeforeEach
     void setUp() {
+        강남역 = new Station("강남역");
+        선릉역 = new Station("선릉역");
+        잠실역 = new Station("잠실역");
+        사당역 = new Station("사당역");
+
         stationDao.insert(강남역);
         stationDao.insert(선릉역);
         stationDao.insert(잠실역);
+        stationDao.insert(사당역);
 
-        lineDao.insert(지하철2호선);
-        sectionDao.insert(sectionRequest1.toSection(1L));
+        lineDao.insert(new LineEntity("2호선", "blue", 1000));
+        sectionDao.insert(new SectionEntity(1L, 1L, 2L, 10));
+        sectionDao.insert(new SectionEntity(1L, 2L, 3L, 15));
     }
 
     @Test
     @DisplayName("구간을 하나 저장한다.")
     void saveSection() {
-        sectionService.save(1L, sectionRequest2);
+        sectionService.save(1L, new SectionRequest(3L, 4L, 10));
 
-        assertThat(sectionDao.findByLineId(1L)).hasSize(2);
+        assertThat(sectionDao.findByLineId(1L)).hasSize(3);
     }
 
     @Test
     @DisplayName("구간을 하나 삭제한다.")
     void deleteSection() {
-        sectionService.save(1L, sectionRequest2);
-
-        sectionService.delete(1L, 강남);
+        sectionService.delete(1L, 1L);
 
         assertThat(sectionDao.findByLineId(1L)).hasSize(1);
     }

@@ -1,16 +1,19 @@
-package wooteco.subway.domain.section;
+package wooteco.subway.domain.section.deletionStrategy;
+
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ConcreteDeletionStrategy implements DeletionStrategy{
-    public void delete(List<Section> sections, Long lineId, Long stationId) {
+    public void delete(List<Section> sections, Long lineId, Station station) {
         checkDelete(sections, lineId);
 
         List<Section> adjacentSections = sections.stream()
                 .filter(section -> lineId.equals(section.getLineId()))
-                .filter(section -> section.hasStation(stationId))
+                .filter(section -> section.hasStation(station))
                 .collect(Collectors.toList());
 
         adjacentSections.forEach(sections::remove);
@@ -28,12 +31,14 @@ public class ConcreteDeletionStrategy implements DeletionStrategy{
                 .count() == 1;
     }
 
-    public Optional<Section> fixDisconnectedSection(List<Section> sections, Long lineId, Long stationId) {
+    public Optional<Section> fixDisconnectedSection(List<Section> sections, Long lineId, Station station) {
         Optional<Section> upSection = sections.stream().
-                filter(section -> lineId.equals(section.getLineId()) && stationId.equals(section.getDownStationId()))
+                filter(section -> lineId.equals(section.getLineId())
+                        && station.equals(section.getDownStation()))
                 .findFirst();
         Optional<Section> downSection = sections.stream().
-                filter(section -> lineId.equals(section.getLineId()) && stationId.equals(section.getUpStationId()))
+                filter(section -> lineId.equals(section.getLineId())
+                        && station.equals(section.getUpStation()))
                 .findFirst();
 
         if (upSection.isEmpty() || downSection.isEmpty()) {
@@ -46,7 +51,7 @@ public class ConcreteDeletionStrategy implements DeletionStrategy{
     }
 
     private Section createConnectedSection(Long lineId, Section upSection, Section downSection) {
-        return new Section(lineId, upSection.getUpStationId(), downSection.getDownStationId(),
+        return new Section(lineId, upSection.getUpStation(), downSection.getDownStation(),
                 upSection.getDistance() + downSection.getDistance());
     }
 }

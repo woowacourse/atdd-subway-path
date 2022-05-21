@@ -9,7 +9,7 @@ public class StationRequest {
     @NotNull
     private String name;
 
-    public StationRequest() {
+    private StationRequest() {
     }
 
     public StationRequest(String name) {

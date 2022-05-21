@@ -22,4 +22,4 @@ create table if not exists SECTION
     down_station_id bigint not null,
     distance int,
     primary key(id)
-    );
+);

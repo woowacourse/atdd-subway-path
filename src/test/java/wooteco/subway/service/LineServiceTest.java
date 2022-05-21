@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.LineRequest;
@@ -18,9 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineServiceTest {
     @Autowired
     private StationDao stationDao;
-
-    @Autowired
-    private LineDao lineDao;
 
     @Autowired
     private LineService lineService;

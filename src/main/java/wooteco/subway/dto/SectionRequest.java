@@ -1,6 +1,7 @@
 package wooteco.subway.dto;
 
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.SectionEntity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public class SectionRequest {
     @Min(0)
     private int distance;
 
-    public SectionRequest() {
+    private SectionRequest() {
     }
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
@@ -36,9 +37,5 @@ public class SectionRequest {
 
     public int getDistance() {
         return distance;
-    }
-
-    public Section toSection(Long lineId) {
-        return new Section(lineId, upStationId, downStationId, distance);
     }
 }

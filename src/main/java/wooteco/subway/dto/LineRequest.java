@@ -1,6 +1,6 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineEntity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -27,7 +27,7 @@ public class LineRequest {
     @Min(0)
     private int extraFare;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
@@ -43,8 +43,12 @@ public class LineRequest {
         this(name, color, upStationId, downStationId, distance, 0);
     }
 
-    public Line toLine(){
-        return new Line(name, color, extraFare);
+    public LineEntity toLineEntity(){
+        return new LineEntity(name, color, extraFare);
+    }
+
+    public LineEntity toLineInfoWithId(Long id) {
+        return new LineEntity(id, name, color, extraFare);
     }
 
     public String getName() {

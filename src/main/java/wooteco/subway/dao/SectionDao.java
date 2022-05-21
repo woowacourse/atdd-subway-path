@@ -6,17 +6,17 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.section.Section;
+import org.springframework.stereotype.Component;
+import wooteco.subway.domain.section.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Component
 public class SectionDao {
-    private static final RowMapper<Section> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
-            new Section(resultSet.getLong("id"), resultSet.getLong("line_id"),
+    private static final RowMapper<SectionEntity> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
+            new SectionEntity(resultSet.getLong("id"), resultSet.getLong("line_id"),
                     resultSet.getLong("up_station_id"), resultSet.getLong("down_station_id"),
                     resultSet.getInt("distance"));
 
@@ -31,14 +31,27 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public void insert(Section section){
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(section);
-        insertActor.execute(parameterSource);
+    public SectionEntity insert(SectionEntity sectionEntity){
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(sectionEntity);
+        Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
+        return new SectionEntity(id, sectionEntity.getLineId(), sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId(), sectionEntity.getDistance());
     }
 
-    public void update(Section section) {
+    public List<SectionEntity> findAll() {
+        String sql = "select * from SECTION";
+        return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
+    }
+
+    public List<SectionEntity> findByLineId(Long lineId) {
+        String sql = "select * from SECTION where line_id = :lineId";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", lineId);
+        return namedParameterJdbcTemplate.query(sql,sqlParameterSource, ACTOR_ROW_MAPPER);
+    }
+
+    public void update(SectionEntity sectionEntity) {
         String sql = "update SECTION set up_station_id = :upStationId, down_station_id = :downStationId, distance = :distance where id = :id";
-        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(section);
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(sectionEntity);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
@@ -46,16 +59,5 @@ public class SectionDao {
         String sql = "delete from SECTION where line_id = :lineId and (up_station_id = :stationId or down_station_id = :stationId)";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(Map.of("lineId", lineId, "stationId", stationId));
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
-    }
-
-    public List<Section> findByLineId(Long lineId) {
-        String sql = "select * from SECTION where line_id = :lineId";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", lineId);
-        return namedParameterJdbcTemplate.query(sql,sqlParameterSource, ACTOR_ROW_MAPPER);
-    }
-
-    public List<Section> findAll() {
-        String sql = "select * from SECTION";
-        return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 }
