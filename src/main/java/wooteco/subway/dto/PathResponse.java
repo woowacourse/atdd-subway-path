@@ -5,11 +5,12 @@ import wooteco.subway.domain.Station;
 import java.util.List;
 
 public class PathResponse {
-    private final List<Station> stations;
-    private final int distance;
-    private final int fare;
+    private List<Station> stations;
+    private int distance;
+    private int fare;
 
-
+    public PathResponse() {
+    }
 
     public PathResponse(List<Station> stations, int distance, int fare) {
         this.stations = stations;
