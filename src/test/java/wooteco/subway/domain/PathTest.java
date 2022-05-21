@@ -19,9 +19,9 @@ import org.junit.jupiter.api.Test;
 
 class PathTest {
 
-    @DisplayName("최단 경로를 조회한다.")
+    @DisplayName("주어진 Section List를 활용하여 최단 경로를 조회한다.")
     @Test
-    void getShortestPath() {
+    void 최단경로_조회() {
         List<Section> sections = List.of(
                 신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5, 부천역_중동역_5, 신도림역_신대방역_10, 신대방역_서울대입구역_15);
 
@@ -35,7 +35,7 @@ class PathTest {
 
     @DisplayName("최단 경로를 조회할 때 경로에 없는 지하철역을 조회할 경우 예외를 던진다.")
     @Test
-    void getShortestPathNotExistsStation() {
+    void 경로에_존재하지_않는_지하철_조회_예외발생() {
         List<Section> sections = List.of(
                 신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5, 부천역_중동역_5, 신도림역_신대방역_10, 신대방역_서울대입구역_15);
 
@@ -47,7 +47,7 @@ class PathTest {
 
     @DisplayName("최단 경로 조회 중 source와 target이 동일한 지하철역인 경우 거리는 0이다.")
     @Test
-    void getShortestPathSameStation() {
+    void 동일한_지하철역_조회() {
         List<Section> sections = List.of(
                 신도림역_온수역_5, 온수역_역곡역_5, 역곡역_부천역_5, 부천역_중동역_5, 신도림역_신대방역_10, 신대방역_서울대입구역_15);
 
