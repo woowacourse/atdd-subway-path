@@ -32,6 +32,12 @@ public class SubwayRepository {
                 .collect(Collectors.toList());
     }
 
+    public List<LineInfo> findAllLinesByIds(List<Long> ids) {
+        return lineDao.findAllByIds(ids).stream()
+                .map(LineEntity::toDomain)
+                .collect(Collectors.toList());
+    }
+
     public List<Section> findAllSections() {
         return sectionDao.findAll()
                 .stream()

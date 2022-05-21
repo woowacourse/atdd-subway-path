@@ -35,7 +35,6 @@ class SubwayRepositoryTest extends RepositoryTest {
     private final Station station1 = new Station(1L, "강남역");
     private final Station station2 = new Station(2L, "잠실역");
     private final Station station3 = new Station(3L, "선릉역");
-    private final Station station4 = new Station(4L, "청계산입구역");
     private final StationEntity stationEntity1 = new StationEntity(1L, "강남역");
     private final StationEntity stationEntity2 = new StationEntity(2L, "잠실역");
     private final StationEntity stationEntity3 = new StationEntity(3L, "선릉역");
@@ -56,6 +55,20 @@ class SubwayRepositoryTest extends RepositoryTest {
         List<LineInfo> expected = List.of(
                 new LineInfo(1L, "노선명1", "색깔1", 1000),
                 new LineInfo(2L, "노선명2", "색깔2", 0),
+                new LineInfo(3L, "노선명3", "색깔3", 900));
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void findAllLinesByIds_메서드는_id_목록에_해당되는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
+        testFixtureManager.saveLine("노선명1", "색깔1", 1000);
+        testFixtureManager.saveLine("노선명2", "색깔2", 0);
+        testFixtureManager.saveLine("노선명3", "색깔3", 900);
+
+        List<LineInfo> actual = repository.findAllLinesByIds(List.of(1L, 3L));
+        List<LineInfo> expected = List.of(
+                new LineInfo(1L, "노선명1", "색깔1", 1000),
                 new LineInfo(3L, "노선명3", "색깔3", 900));
 
         assertThat(actual).isEqualTo(expected);
