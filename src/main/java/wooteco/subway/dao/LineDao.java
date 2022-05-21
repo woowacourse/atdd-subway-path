@@ -44,6 +44,13 @@ public class LineDao {
                 .findFirst();
     }
 
+    public List<LineEntity> findAllByIds(List<Long> ids) {
+        final String sql = "SELECT * FROM line WHERE id in (:ids)";
+        SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+
+        return jdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
     public Optional<LineEntity> findByName(String name) {
         final String sql = "SELECT * FROM line WHERE name = :name";
         MapSqlParameterSource paramSource = new MapSqlParameterSource();

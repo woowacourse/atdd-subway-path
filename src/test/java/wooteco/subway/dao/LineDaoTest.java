@@ -55,6 +55,20 @@ class LineDaoTest extends DaoTest {
         }
     }
 
+    @Test
+    void findAllByIds_메서드는_id_목록에_해당되는_모든_데이터를_조회() {
+        testFixtureManager.saveLine("노선명1", "색깔1", 100);
+        testFixtureManager.saveLine("노선명2", "색깔2", 0);
+        testFixtureManager.saveLine("노선명3", "색깔3", 300);
+
+        List<LineEntity> actual = dao.findAllByIds(List.of(1L, 3L));
+        List<LineEntity> expected = List.of(
+                new LineEntity(1L, "노선명1", "색깔1", 100),
+                new LineEntity(3L, "노선명3", "색깔3", 300));
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
     @DisplayName("findByName 메서드는 name에 해당하는 데이터를 조회한다")
     @Nested
     class FindByNameTest {
