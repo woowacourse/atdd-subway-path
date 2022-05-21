@@ -1,54 +1,62 @@
 package wooteco.subway.dao;
 
-import java.util.HashMap;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import java.util.Objects;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
-@Component
+@Repository
 public class StationDao {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SimpleJdbcInsert simpleInsert;
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> {
+        return new Station(
+                resultSet.getLong("id"),
+                resultSet.getString("name")
+        );
+    };
 
-    public StationDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate, final DataSource dataSource) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.simpleInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("STATION")
-                .usingGeneratedKeyColumns("id");
+    private final JdbcTemplate jdbcTemplate;
+
+    public StationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Station save(final Station station) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", station.getName());
-        final Long id = simpleInsert.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public long save(final Station station) {
+        final String sql = "insert into STATION (name) values (?)";
 
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, station.getName());
+            return preparedStatement;
+        }, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public boolean existStationById(final Long id) {
+        final String sql = "select exists (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean existStationByName(final String name) {
+        final String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
     public List<Station> findAll() {
         final String sql = "select id, name from STATION";
-        return namedParameterJdbcTemplate.query(sql, (resultSet, rowNum) -> {
-            return new Station(resultSet.getLong("id"), resultSet.getString("name"));
-        });
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
-    public Station findById(final Long id) {
-        final String sql = "select id, name from STATION WHERE id=:id";
-        final SqlParameterSource parameter = new MapSqlParameterSource(Map.of("id", id));
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, (resultSet, rowNum) -> {
-            return new Station(resultSet.getLong("id"), resultSet.getString("name"));
-        });
-    }
-
-    public int deleteById(final Long id) {
-        final String sql = "delete from STATION where id = :id";
-        return namedParameterJdbcTemplate.update(sql, Map.of("id", id));
+    public void delete(final Long id) {
+        final String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

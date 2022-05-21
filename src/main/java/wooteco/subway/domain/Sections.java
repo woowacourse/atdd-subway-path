@@ -1,158 +1,148 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Sections {
 
-    private static final String CANNOT_ADD_SECTION = "섹션을 추가할 수 없습니다.";
-    private static final String CANNOT_DELETE_SECTION = "역을 삭제할 수 없습니다.";
+    private static final int MINIMUM_SECTIONS_COUNT = 1;
 
-    private List<Section> value;
+    private final List<Section> sections;
 
     public Sections(final List<Section> sections) {
-        this.value = sections;
+        this.sections = new ArrayList<>(sections);
+        validateSectionCount();
     }
 
-    public void addIfPossible(final Section newSection) {
-        if (value.isEmpty() || isNewDownSection(newSection)) {
-            value.add(newSection);
+    public void add(final Section section) {
+        validateSection(section);
+
+        Section existSection = getExistSection(section);
+        if (existSection.isAddingEndSection(section)) {
+            sections.add(section);
             return;
         }
-        if (isNewUpSection(newSection)) {
-            value = addFirst(newSection);
+        addStationInSection(existSection, section);
+    }
+
+    public void delete(final Long stationId) {
+        validateDeletedSectionCount();
+
+        if (isEndStation(stationId)) {
+            Section existSection = getExistSection(stationId);
+            sections.remove(existSection);
             return;
         }
-        final List<Section> existedStations = new ArrayList<>(value);
-        for (Section section : existedStations) {
-            final AddMatchingResult result = AddMatchingResult.matchMiddleStation(section, newSection);
-            if (canAddStation(result, section, newSection)) {
-                addSection(section, newSection, result);
-                return;
-            }
+        deleteStationInSection(stationId);
+    }
+
+    private void addStationInSection(final Section existSection, final Section section) {
+        Section replacedSection = Section.replaced(existSection, section);
+
+        sections.remove(existSection);
+        sections.add(section);
+        sections.add(replacedSection);
+    }
+
+    private void deleteStationInSection(final Long stationId) {
+        Section sectionIncludedUpStation = getExistUpStation(stationId);
+        Section sectionIncludedDownStation = getExistDownStation(stationId);
+        Section deletedSection = Section.deleted(sectionIncludedDownStation, sectionIncludedUpStation);
+
+        sections.remove(sectionIncludedUpStation);
+        sections.remove(sectionIncludedDownStation);
+        sections.add(deletedSection);
+    }
+
+    private void validateSection(final Section section) {
+        List<Long> stationIds = getStationIdsInSection();
+        if (hasAllStation(section, stationIds)) {
+            throw new IllegalArgumentException("상행역과 하행역이 이미 지하철 노선에 존재합니다.");
         }
-        throw new IllegalArgumentException(CANNOT_ADD_SECTION + " " + newSection);
-    }
-
-    private boolean isNewUpSection(final Section newSection) {
-        return AddMatchingResult.matchStartStation(value.get(0), newSection)
-                == AddMatchingResult.ADD_TO_LEFT;
-    }
-
-    private boolean isNewDownSection(final Section newSection) {
-        return AddMatchingResult.matchEndStation(value.get(value.size() - 1), newSection)
-                == AddMatchingResult.ADD_TO_RIGHT;
-    }
-
-    private List<Section> addFirst(final Section newSection) {
-        final List<Section> newSections =  new ArrayList<>(List.of(newSection));
-        newSections.addAll(value);
-        return newSections;
-    }
-
-    private boolean canAddStation(final AddMatchingResult result, final Section section, final Section newSection) {
-        return (result == AddMatchingResult.ADD_TO_LEFT
-                || result == AddMatchingResult.ADD_TO_RIGHT)
-                && section.isDistanceLongerThan(newSection);
-    }
-
-    private void addSection(final Section section, final Section newSection, final AddMatchingResult result) {
-        final List<Section> seperatedSection = separateSection(section, newSection, result);
-        final int standardSection = value.indexOf(section) + 1;
-        final List<Section> leftSection = value.subList(0, standardSection);
-        final List<Section> rightSection = new ArrayList<>(List.of(seperatedSection.get(1)));
-
-        rightSection.addAll(value.subList(standardSection, value.size()));
-        leftSection.remove(leftSection.size() - 1);
-        leftSection.add(seperatedSection.get(0));
-        leftSection.addAll(rightSection);
-
-        value = new ArrayList<>(leftSection);
-    }
-
-    private List<Section> separateSection(final Section section,
-                                          final Section newSection,
-                                          final AddMatchingResult result) {
-        final Station newStation = newSection.getNewStation(result);
-        final Section upSection = section.changeDownStationAndDistance(newSection, newStation);
-        final Section downSection = section.changeUpStationAndDistance(newSection, newStation);
-        return List.of(upSection, downSection);
-    }
-
-    public void deleteIfPossible(final Station target) {
-        if (!canDelete()) {
-            throw new IllegalArgumentException(CANNOT_DELETE_SECTION + " " + target);
+        if (hasNotAnyStation(section, stationIds)) {
+            throw new IllegalArgumentException("추가하려는 구간이 노선에 포함되어 있지 않습니다.");
         }
-        if (sameWithLastUpStation(target) == DeleteMatchingResult.POSSIBLE_TO_DELETE) {
-            value = value.subList(1, value.size());
-            return;
+    }
+
+    private void validateSectionCount() {
+        if (sections.isEmpty()) {
+            throw new IllegalArgumentException("노선에 구간이 하나 이상 존재해야 합니다.");
         }
-        if (sameWithLastDownStation(target) == DeleteMatchingResult.POSSIBLE_TO_DELETE) {
-            value = value.subList(0, value.size() - 1);
-            return;
+    }
+
+    private void validateDeletedSectionCount() {
+        if (sections.size() <= MINIMUM_SECTIONS_COUNT) {
+            throw new IllegalArgumentException("노선에 구간이 2개 이상이어야 삭제 가능합니다.");
         }
-        final List<Section> existedStations = new ArrayList<>(value);
-        for (Section section : existedStations) {
-            final DeleteMatchingResult result = DeleteMatchingResult.matchStation(section, target);
-            if (canDeleteStation(result)) {
-                deleteStation(section, target);
-                return;
-            }
-        }
-        throw new IllegalArgumentException(CANNOT_DELETE_SECTION + " " + target);
     }
 
-    private DeleteMatchingResult sameWithLastDownStation(final Station target) {
-        return DeleteMatchingResult.matchWithLastDownStation(value.get(value.size() - 1), target);
+    private boolean hasAllStation(final Section section, final List<Long> stationIds) {
+        return stationIds.contains(section.getUpStationId()) && stationIds.contains(section.getDownStationId());
     }
 
-    private DeleteMatchingResult sameWithLastUpStation(final Station target) {
-        return DeleteMatchingResult.matchWithLastUpStation(value.get(0), target);
+    private boolean hasNotAnyStation(final Section section, final List<Long> stationIds) {
+        return !stationIds.contains(section.getUpStationId()) && !stationIds.contains(section.getDownStationId());
     }
 
-    private void deleteStation(final Section section, final Station target) {
-        final int targetIndex = value.indexOf(section);
-        final int targetNextIndex = targetIndex + 1;
-        final Section targetNext = value.get(targetNextIndex);
-        final Section newSection = section.combineTwoSection(targetNext);
-
-        if (value.size() == 2) {
-            value = new ArrayList<>(List.of(newSection));
-            return;
-        }
-
-        final List<Section> leftSections = value.subList(0, targetIndex);
-        final List<Section> rightSections = value.subList(targetIndex + 2, value.size());
-
-        leftSections.add(newSection);
-        leftSections.addAll(rightSections);
-        value = new ArrayList<>(leftSections);
+    private boolean isEndStation(final Long stationId) {
+        return (getUpStationIds().contains(stationId) && !getDownStationIds().contains(stationId))
+                || (!getUpStationIds().contains(stationId) && getDownStationIds().contains(stationId));
     }
 
-    private boolean canDeleteStation(final DeleteMatchingResult result) {
-        return result == DeleteMatchingResult.POSSIBLE_TO_DELETE;
+    private List<Long> getStationIdsInSection() {
+        List<Long> allStationIds = new ArrayList<>();
+        allStationIds.addAll(getUpStationIds());
+        allStationIds.addAll(getDownStationIds());
+
+        return allStationIds.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
-    private boolean canDelete() {
-        return value.size() >= 2;
+    private List<Long> getUpStationIds() {
+        return sections.stream()
+                .map(Section::getUpStationId)
+                .collect(Collectors.toList());
     }
 
-    public List<Section> getDeletedSections(final List<Section> sections) {
-        final List<Section> previousSections = new ArrayList<>(sections);
-        previousSections.removeAll(value);
-        return previousSections;
+    private List<Long> getDownStationIds() {
+        return sections.stream()
+                .map(Section::getDownStationId)
+                .collect(Collectors.toList());
     }
 
-    public List<Section> getAddSections(final List<Section> sections) {
-        final List<Section> currentSections = new ArrayList<>(value);
-        currentSections.removeAll(sections);
-        if (currentSections.isEmpty()) {
-            return value;
-        }
-        return currentSections;
+    private Section getExistSection(final Long sectionId) {
+        return sections.stream()
+                .filter(exist -> exist.existStation(sectionId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("구간 정보를 찾을 수 없습니다."));
     }
 
-    public List<Section> getValue() {
-        return value;
+    private Section getExistSection(final Section section) {
+        return sections.stream()
+                .filter(exist -> exist.existStation(section.getUpStationId())
+                        || exist.existStation(section.getDownStationId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("구간 정보를 찾을 수 없습니다."));
+    }
+
+    private Section getExistUpStation(final Long sectionId) {
+        return sections.stream()
+                .filter(section -> section.hasUpStation(sectionId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("구간 내 지하철역 정보를 찾을 수 없습니다."));
+    }
+
+    private Section getExistDownStation(final Long sectionId) {
+        return sections.stream()
+                .filter(section -> section.hasDownStation(sectionId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("구간 내 지하철역 정보를 찾을 수 없습니다."));
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }

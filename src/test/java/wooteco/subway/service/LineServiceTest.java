@@ -1,147 +1,212 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineSaveRequest;
 import wooteco.subway.dto.request.LineUpdateRequest;
 import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.dto.response.StationResponse;
 
-@SpringBootTest
-@Transactional
+@DisplayName("지하철 노선 관련 service 테스트")
+@JdbcTest
 class LineServiceTest {
 
-    private LineSaveRequest LINE_FIXTURE;
-    private LineSaveRequest LINE_FIXTURE2;
-    private LineSaveRequest LINE_FIXTURE3;
+    private static final LineSaveRequest LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", 1L, 2L, 10);
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private LineService lineService;
-
-    @Autowired
     private StationDao stationDao;
 
     @BeforeEach
-    void setup() {
-        LINE_FIXTURE = makeLineRequest("a", "b", "2호선", "bg-color-700");;
-        LINE_FIXTURE2 = makeLineRequest("c", "e", "3호선", "bg-color-800");
-        LINE_FIXTURE3 = makeLineRequest("f", "g", "4호선", "bg-color-900");
+    void setUp() {
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
+        stationDao = new StationDao(jdbcTemplate);
+
+        lineService = new LineService(lineDao, sectionDao, stationDao);
     }
 
-
-    @Nested
-    @DisplayName("새로운 노선을 저장할 때")
-    class SaveTest {
-
-        @Test
-        @DisplayName("노선 이름이 중복되지 않으면 저장할 수 있다.")
-        void save_Success_If_Not_Exists() {
-            assertThatCode(() -> lineService.saveLine(LINE_FIXTURE))
-                    .doesNotThrowAnyException();
-        }
-
-        @Test
-        @DisplayName("노선 이름이 중복되면 예외가 발생한다.")
-        void save_Fail_If_Exists() {
-            lineService.saveLine(LINE_FIXTURE);
-            assertThatThrownBy(() -> lineService.saveLine(LINE_FIXTURE))
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("이미 존재하는 노선입니다. " + LINE_FIXTURE);
-        }
-    }
-
+    @DisplayName("지하철 노선을 생성한다.")
     @Test
-    @DisplayName("전체 지하철 노선을 조회할 수 있다")
+    void save() {
+        // given
+        long station1Id = stationDao.save(new Station(1L, "강남역"));
+        long station2Id = stationDao.save(new Station(2L, "역삼역"));
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", station1Id, station2Id, 10);
+
+        // when
+        LineResponse lineResponse = lineService.save(lineSaveRequest);
+
+        // then
+        List<String> stationNames = lineResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertAll(
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(stationNames).contains("강남역", "역삼역")
+        );
+    }
+
+    @DisplayName("중복된 이름의 지하철 노선을 생성할 경우 예외를 발생시킨다.")
+    @Test
+    void saveDuplicatedName() {
+        // given
+        lineService.save(LINE_SAVE_REQUEST);
+
+        // when & then
+        assertThatThrownBy(
+                () -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 10))
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지하철 노선 이름이 중복됩니다.");
+    }
+
+    @DisplayName("중복된 색상의 지하철 노선을 생성할 경우 예외를 발생시킨다.")
+    @Test
+    void saveDuplicatedColor() {
+        // given
+        lineService.save(LINE_SAVE_REQUEST);
+
+        // when & then
+        assertThatThrownBy(
+                () -> lineService.save(new LineSaveRequest("다른분당선", "bg-red-600", 1L, 2L, 10))
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지하철 노선 색상이 중복됩니다.");
+    }
+
+    @DisplayName("지하철 노선의 목록을 조회한다.")
+    @Test
     void findAll() {
-        lineService.saveLine(LINE_FIXTURE);
-        lineService.saveLine(LINE_FIXTURE2);
-        lineService.saveLine(LINE_FIXTURE3);
+        // given
+        lineService.save(LINE_SAVE_REQUEST);
 
-        assertThat(lineService.findAll()).extracting("name")
-                .isEqualTo(List.of(LINE_FIXTURE.getName(), LINE_FIXTURE2.getName(), LINE_FIXTURE3.getName()));
+        // when
+        List<String> lineNames = lineService.findAll().stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(lineNames).contains("신분당선");
     }
 
-    private LineSaveRequest makeLineRequest(final String stationName1, final String stationName2,
-                                            final String lineName, final String color) {
-        final Long upStationId2 = stationDao.save(new Station(stationName1)).getId();
-        final Long downStationId2 = stationDao.save(new Station(stationName2)).getId();
-        return new LineSaveRequest(lineName, color, upStationId2, downStationId2, 3);
-    }
-
+    @DisplayName("지하철 노선을 조회한다.")
     @Test
-    @DisplayName("아이디로 지하철 노선을 조회할 수 있다")
-    void findById() {
-        final LineResponse line = lineService.saveLine(LINE_FIXTURE);
-        final LineResponse found = lineService.findById(line.getId());
-        assertThat(line.getId()).isEqualTo(found.getId());
+    void find() {
+        // given
+        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineResponse.getId();
+
+        // when & then
+        assertAll(
+                () -> assertThat(lineService.find(lineId).getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineService.find(lineId).getColor()).isEqualTo("bg-red-600")
+        );
     }
 
-    @Nested
-    @DisplayName("아이디로 지하철노선을 삭제할 때")
-    class DeleteLineTest {
-
-        @Test
-        @DisplayName("아이디가 존재하면 아이디로 지하철노선을 삭제할 수 있다.")
-        void deleteById() {
-            final LineResponse line = lineService.saveLine(LINE_FIXTURE);
-            final List<Line> lines = lineService.findAll();
-            lineService.deleteById(line.getId());
-            final List<Line> afterDelete = lineService.findAll();
-
-            assertThat(lines).isNotEmpty();
-            assertThat(afterDelete).isEmpty();
-        }
-
-        @Test
-        @DisplayName("아이디가 존재하지 않는다면 예외를 던진다.")
-        void delete_By_Id_Fail() {
-            assertThatThrownBy(() -> lineService.deleteById(1L))
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("요청한 노선이 존재하지 않습니다. id=1");
-        }
+    @DisplayName("존재하지 않는 지하철 노선을 조회할 경우 예외를 발생시킨다.")
+    @Test
+    void findNotExistLine() {
+        // when & then
+        assertThatThrownBy(() -> lineService.find(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 지하철 노선입니다.");
     }
 
-    @Nested
-    @DisplayName("노선 이름과 색상을 변경하려할 때")
-    class UpdateLineTest {
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void update() {
+        // given
+        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineResponse.getId();
 
-        @Test
-        @DisplayName("노선이 존재하면 노선 이름과 색상을 변경할 수 있다")
-        void update_Line_Success() {
-            final LineResponse line = lineService.saveLine(LINE_FIXTURE);
-            final Long id = line.getId();
-            final LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("22호선", "bg-color-777");
+        // when
+        lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-green-600"));
 
-            lineService.updateLine(id, lineUpdateRequest);
-            final LineResponse updated = lineService.findById(id);
+        // then
+        List<String> lineNames = lineService.findAll().stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
 
-            assertAll(
-                    () -> assertThat(updated.getId()).isEqualTo(id),
-                    () -> assertThat(updated.getName()).isEqualTo("22호선"),
-                    () -> assertThat(updated.getColor()).isEqualTo("bg-color-777")
-            );
-        }
+        assertThat(lineNames).contains("다른분당선");
+    }
 
-        @Test
-        @DisplayName("노선이 존재하지 않으면 예외를 던진다.")
-        void update_Line_Fail() {
-            assertThatThrownBy(() -> lineService.updateLine(1L, new LineUpdateRequest("a", "b")))
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("요청한 노선이 존재하지 않습니다. id=1 Line{name='a', color='b'}");
+    @DisplayName("중복된 이름으로 지하철 노선을 수정할 경우 예외를 발생시킨다.")
+    @Test
+    void updateDuplicatedName() {
+        // given
+        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineResponse.getId();
 
-        }
+        // when & then
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("신분당선", "bg-green-600")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지하철 노선 이름이 중복됩니다.");
+    }
+
+    @DisplayName("중복된 색상으로 지하철 노선을 수정할 경우 예외를 발생시킨다.")
+    @Test
+    void updateDuplicatedColor() {
+        // given
+        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineResponse.getId();
+
+        // when & then
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-red-600")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지하철 노선 색상이 중복됩니다.");
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 수정할 경우 예외를 발생시킨다.")
+    @Test
+    void updateNotExistLine() {
+        // when & then
+        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("다른분당선", "bg-green-600")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 지하철 노선입니다.");
+    }
+
+    @DisplayName("지하철 노선을 삭제한다.")
+    @Test
+    void delete() {
+        // given
+        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineResponse.getId();
+
+        // when
+        lineService.delete(lineId);
+
+        // then
+        List<String> lineNames = lineService.findAll().stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(lineNames).doesNotContain("신분당선");
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제할 경우 예외를 발생시킨다.")
+    @Test
+    void deleteNotExistLine() {
+        // when & then
+        assertThatThrownBy(() -> lineService.delete(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 지하철 노선입니다.");
     }
 }

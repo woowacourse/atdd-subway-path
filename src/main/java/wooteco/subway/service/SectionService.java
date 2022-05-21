@@ -1,52 +1,72 @@
 package wooteco.subway.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Line;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.request.SectionRequest;
-import wooteco.subway.repository.SectionRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class SectionService {
 
-    private final SectionRepository sectionRepository;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public SectionService(final SectionRepository sectionRepository) {
-        this.sectionRepository = sectionRepository;
+    public SectionService(final SectionDao sectionDao, final StationDao stationDao) {
+        this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
-    public void saveSection(final Long lineId, final SectionRequest request) {
-        final Line line = sectionRepository.findLineById(lineId);
-        final List<Section> previousSections = new ArrayList<>(line.getSections());
-        final Section newSection = makeSection(request);
+    @Transactional
+    public void save(final Long lineId, final SectionRequest sectionRequest) {
+        validateStationInSection(sectionRequest);
 
-        line.addSection(newSection);
-        final List<Section> addSections = line.getAddSections(previousSections);
-        final List<Section> deletedSections = line.getDeletedSections(previousSections);
+        Section newSection = convertSection(sectionRequest);
+        Sections sections = getAllSections(lineId);
+        sections.add(newSection);
 
-        sectionRepository.deleteSections(lineId, deletedSections);
-        sectionRepository.addSections(lineId, addSections);
+        update(lineId, sections);
     }
 
-    private Section makeSection(final SectionRequest request) {
-        final Station upStation = sectionRepository.findStationById(request.getUpStationId());
-        final Station downStation = sectionRepository.findStationById(request.getDownStationId());
-        return new Section(upStation, downStation, request.getDistance());
+    @Transactional
+    public void delete(final Long lineId, final Long stationId) {
+        Sections sections = getAllSections(lineId);
+        sections.delete(stationId);
+
+        update(lineId, sections);
     }
 
-    public void deleteSection(final Long lineId, final Long stationId) {
-        final Line line = sectionRepository.findLineById(lineId);
-        final Station target = sectionRepository.findStationById(stationId);
-        final List<Section> previousSections = new ArrayList<>(line.getSections());
+    private void validateStationInSection(final SectionRequest sectionRequest) {
+        if (!stationDao.existStationById(sectionRequest.getUpStationId())) {
+            throw new IllegalArgumentException("상행역이 존재하지 않습니다.");
+        }
+        if (!stationDao.existStationById(sectionRequest.getDownStationId())) {
+            throw new IllegalArgumentException("하행역이 존재하지 않습니다.");
+        }
+    }
 
-        line.deleteSection(target);
-        final List<Section> addSections = line.getAddSections(previousSections);
-        final List<Section> deletedSections = line.getDeletedSections(previousSections);
+    private Section convertSection(final SectionRequest sectionRequest) {
+        return new Section(sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
+    }
 
-        sectionRepository.deleteSections(lineId, deletedSections);
-        sectionRepository.addSections(lineId, addSections);
+    private Sections getAllSections(final Long lineId) {
+        return new Sections(sectionDao.findAllById(lineId));
+    }
+
+    private void update(final Long lineId, final Sections sections) {
+        for (Section section : sections.getSections()) {
+            if (isNewSection(section)) {
+                sectionDao.save(lineId, section);
+                continue;
+            }
+            sectionDao.update(section);
+        }
+    }
+
+    private boolean isNewSection(final Section section) {
+        return section.getSectionId() == null;
     }
 }

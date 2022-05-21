@@ -1,51 +1,87 @@
 package wooteco.subway.dao;
 
-import java.util.HashMap;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
-import wooteco.subway.service.dto.SectionDto;
+import java.util.Objects;
 
-@Component
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+
+@Repository
 public class SectionDao {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleInsert;
+    private static final RowMapper<Section> SECTION_ROW_MAPPER = (resultSet, rowNum) -> {
+        return new Section(
+                resultSet.getLong("id"),
+                resultSet.getLong("line_id"),
+                resultSet.getLong("up_station_id"),
+                resultSet.getLong("down_station_id"),
+                resultSet.getInt("distance")
+        );
+    };
 
-    public SectionDao(final NamedParameterJdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    private final JdbcTemplate jdbcTemplate;
+
+    public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SECTION")
-                .usingGeneratedKeyColumns("id");
     }
 
-    public long save(final Long lineId, final SectionDto section) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("line_id", lineId);
-        params.put("up_station_id", section.getUpStationId());
-        params.put("down_station_id", section.getDownStationId());
-        params.put("distance", section.getDistance());
-        return simpleInsert.executeAndReturnKey(params).longValue();
+    public long save(final Long lineId, final Section section) {
+        final String sql = "insert into SECTION (line_id, up_station_id, down_station_id, distance) values (?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setLong(1, lineId);
+            preparedStatement.setLong(2, section.getUpStationId());
+            preparedStatement.setLong(3, section.getDownStationId());
+            preparedStatement.setInt(4, section.getDistance());
+            return preparedStatement;
+        }, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public List<SectionDto> findAllByLineId(final Long lineId) {
-        final String sql = "select line_id, up_station_id, down_station_id, distance from SECTION where line_id=:lineId";
-        final SqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("lineId", lineId));
-        return jdbcTemplate.query(sql, parameterSource, (resultSet, rowNum) -> {
-            return new SectionDto(resultSet.getLong("up_station_id"),
-                    resultSet.getLong("down_station_id"),
-                    resultSet.getInt("distance"),
-                    resultSet.getLong("line_id"));
-        });
+    public void saveAll(final Long lineId, final Sections sections) {
+        for (Section section : sections.getSections()) {
+            save(lineId, section);
+        }
     }
 
-    public int deleteById(final Long lineId, final Long stationId) {
-        final String sql = "delete from SECTION where line_id=:lineId and up_station_id=:stationId or down_station_id=:stationId";
-        return jdbcTemplate.update(sql, Map.of("lineId", lineId, "stationId", stationId));
+    public List<Section> findAllById(final Long lineId) {
+        final String sql = "select * from SECTION where line_id = ?";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
+    }
+
+    public boolean existStation(final Long lineId, final Long stationId) {
+        final String sql = "select exists " +
+                "(select * from SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?))";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId, stationId);
+    }
+
+    public boolean existUpStation(final Long lineId, final Long stationId) {
+        final String sql = "select exists (select * from SECTION where line_id = ? and up_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId);
+    }
+
+    public boolean existDownStation(final Long lineId, final Long stationId) {
+        final String sql = "select exists (select * from SECTION where line_id = ? and down_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId);
+    }
+
+    public void update(final Section section) {
+        final String sql = "update SECTION set up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
+        jdbcTemplate.update(sql,
+                section.getUpStationId(), section.getDownStationId(), section.getDistance(), section.getSectionId());
+    }
+
+    public void delete(final Long id) {
+        final String sql = "delete from SECTION where line_id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

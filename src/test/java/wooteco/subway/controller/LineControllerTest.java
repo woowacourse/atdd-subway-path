@@ -16,7 +16,7 @@ import wooteco.subway.service.LineService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("LineController 는 ")
+@DisplayName("지하철 노선 관련 Controller 테스트")
 @WebMvcTest(LineController.class)
 class LineControllerTest {
 
@@ -28,7 +28,7 @@ class LineControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"null", "\"\"", "\" \""})
-    @DisplayName("지하철 노선 생성 시 이름에 null 또는 공백을 입력할 경우 예외가 발생한다.")
+    @DisplayName("지하철 노선 생성 시 노선 이름에 null 또는 빈값을 입력하면 예외가 발생한다.")
     void createLineNameBlank(String lineName) throws Exception {
         // given
         RequestBuilder request = MockMvcRequestBuilders

@@ -12,12 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import wooteco.subway.controller.SectionController;
 import wooteco.subway.service.SectionService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("SectionRequest 는")
+@DisplayName("구간 관련 Controller 테스트")
 @WebMvcTest(SectionController.class)
 class SectionControllerTest {
 

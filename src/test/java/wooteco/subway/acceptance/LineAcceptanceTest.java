@@ -108,8 +108,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final LineResponse expected = createResponse.jsonPath().getObject(".", LineResponse.class);
 
         final String newLineName = "11호선";
+        final String newLineColor = "bg-green-600";
         final String uri = createResponse.header("Location");
-        final ExtractableResponse<Response> response = updateLine(newLineName, "bg-red-600", uri);
+        final ExtractableResponse<Response> response = updateLine(newLineName, newLineColor, uri);
 
         final ExtractableResponse<Response> updatedResponse = getLine(uri);
         final LineResponse actual = updatedResponse.jsonPath().getObject(".", LineResponse.class);
@@ -117,6 +118,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
                 () -> assertThat(actual.getName()).isEqualTo(newLineName),
+                () -> assertThat(actual.getColor()).isEqualTo(newLineColor),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -124,7 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> updateLine(final String name, final String color, final String uri) {
         final Map<String, String> newParams = new HashMap<>();
         newParams.put("name", name);
-        newParams.put("color", "bg-red-600");
+        newParams.put("color", color);
         return RestAssured.given().log().all()
                 .body(newParams)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

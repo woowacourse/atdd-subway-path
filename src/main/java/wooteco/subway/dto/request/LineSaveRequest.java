@@ -32,7 +32,6 @@ public class LineSaveRequest {
         this.distance = distance;
     }
 
-
     public String getName() {
         return name;
     }
@@ -51,16 +50,5 @@ public class LineSaveRequest {
 
     public int getDistance() {
         return distance;
-    }
-
-    @Override
-    public String toString() {
-        return "LineRequest{" +
-                "name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", upStationId=" + upStationId +
-                ", downStationId=" + downStationId +
-                ", distance=" + distance +
-                '}';
     }
 }

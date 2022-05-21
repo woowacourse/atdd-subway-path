@@ -16,7 +16,7 @@ import wooteco.subway.service.StationService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("StationController 는")
+@DisplayName("지하철역 관련 Controller 테스트")
 @WebMvcTest(StationController.class)
 class StationControllerTest {
 

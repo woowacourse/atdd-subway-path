@@ -1,68 +1,106 @@
 package wooteco.subway.dao;
 
-import java.util.HashMap;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
-import wooteco.subway.domain.Line;
-import wooteco.subway.service.dto.LineDto;
+import java.util.Objects;
+import java.util.Optional;
 
-@Component
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
+
+@Repository
 public class LineDao {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SimpleJdbcInsert simpleInsert;
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> {
+        return new Line(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("color")
+        );
+    };
 
-    public LineDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate, final DataSource dataSource) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.simpleInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("LINE")
-                .usingGeneratedKeyColumns("id");
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> {
+        return new Station(
+                resultSet.getLong("id"),
+                resultSet.getString("name")
+        );
+    };
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public LineDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Line save(final LineDto lineDto) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", lineDto.getName());
-        params.put("color", lineDto.getColor());
-        params.put("up_station_id", lineDto.getUpStationId());
-        final Long id = simpleInsert.executeAndReturnKey(params).longValue();
-        return new Line(id, lineDto.getName(), lineDto.getColor(), lineDto.getUpStationId());
+    public long save(final Line line) {
+        final String sql = "insert into LINE (name, color) values (?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, line.getName());
+            preparedStatement.setString(2, line.getColor());
+            return preparedStatement;
+        }, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public boolean existLineById(final Long id) {
+        final String sql = "select exists (select * from LINE where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean existLineByName(final String name) {
+        final String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean existLineByColor(final String color) {
+        final String sql = "select exists (select * from LINE where color = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 
     public List<Line> findAll() {
-        final String sql = "select id, name, color, up_station_id, from LINE";
-        return namedParameterJdbcTemplate.query(sql, (resultSet, rowNum) -> {
-            return new Line(resultSet.getLong("id"), resultSet.getString("name"),
-                    resultSet.getString("color"), resultSet.getLong("up_station_id"));
-        });
+        final String sql = "select id, name, color from LINE";
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
-    public Line findById(final Long id) {
-        final String sql = "select id, name, color, up_station_id from LINE where id = :id";
-        final SqlParameterSource parameter = new MapSqlParameterSource(Map.of("id", id));
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, (resultSet, rowNum) -> {
-            return new Line(resultSet.getLong("id"), resultSet.getString("name"),
-                    resultSet.getString("color"), resultSet.getLong("up_station_id"));
-        });
+    public List<Station> findStations(final Long id) {
+        final String sql = "SELECT STATION.id, name FROM STATION " +
+                "JOIN " +
+                "( " +
+                "(SELECT up_station_id as id FROM SECTION WHERE line_id = ?) " +
+                "UNION " +
+                "(SELECT down_station_id as id FROM SECTION WHERE line_id = ?) " +
+                ") " +
+                "AS STATION_IN_LINE " +
+                "ON STATION.id = STATION_IN_LINE.id";
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER, id, id);
     }
 
-    public int update(final Long id, final Line line) {
-        final String sql = "update LINE set name = :name, color = :color where id = :id";
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-        params.put("id", id);
-        final SqlParameterSource parameter = new MapSqlParameterSource(params);
-        return namedParameterJdbcTemplate.update(sql, parameter);
+    public Optional<Line> find(final Long id) {
+        final String sql = "select id, name, color from LINE where id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
-    public int deleteById(final Long id) {
-        final String sql = "delete from LINE where id = :id";
-        return namedParameterJdbcTemplate.update(sql, Map.of("id", id));
+    public void update(final long id, final Line line) {
+        final String sql = "update LINE set name = ?, color = ? where id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+    }
+
+    public void delete(final Long id) {
+        final String sql = "delete from LINE where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

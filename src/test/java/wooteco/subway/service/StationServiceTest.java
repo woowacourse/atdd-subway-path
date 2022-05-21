@@ -1,72 +1,102 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.Station;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.StationResponse;
 
-@DisplayName("SpringStationService 는")
-@SpringBootTest
-@Transactional
+@DisplayName("지하철역 관련 service 테스트")
+@JdbcTest
 class StationServiceTest {
 
-    private static final StationRequest STATION_FIXTURE = new StationRequest("선릉역");
-    private static final StationRequest STATION_FIXTURE2 = new StationRequest("강남역");
-    private static final StationRequest STATION_FIXTURE3 = new StationRequest("역삼역");
+    private static final StationRequest STATION_REQUEST = new StationRequest("강남역");
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private StationService stationService;
 
-    @Nested
-    @DisplayName("새로운 역을 저장할 때")
-    class SaveTest {
-
-        @Test
-        @DisplayName("역 이름이 중복되지 않으면 저장할 수 있다.")
-        void save_Success_If_Not_Exists() {
-            assertThatCode(() -> stationService.saveStation(STATION_FIXTURE))
-                    .doesNotThrowAnyException();
-        }
-
-        @Test
-        @DisplayName("역 이름이 중복되면 예외가 발생한다.")
-        void save_Fail_If_Exists() {
-            stationService.saveStation(STATION_FIXTURE);
-            assertThatThrownBy(() -> stationService.saveStation(STATION_FIXTURE))
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("이미 존재하는 지하철역입니다. Station{name='선릉역'}");
-        }
+    @BeforeEach
+    void setUp() {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        stationService = new StationService(stationDao);
     }
 
+    @DisplayName("지하철역을 생성한다.")
     @Test
-    @DisplayName("전체 지하철 역을 조회할 수 있다")
+    void save() {
+        // when
+        stationService.save(STATION_REQUEST);
+
+        // then
+        List<String> stationNames = stationService.findAll().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(stationNames).contains("강남역");
+    }
+
+    @DisplayName("중복된 지하철역을 생성할 경우 예외를 발생시킨다.")
+    @Test
+    void saveDuplicatedName() {
+        // given
+        stationService.save(STATION_REQUEST);
+
+        // when & then
+        assertThatThrownBy(() -> stationService.save(STATION_REQUEST))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지하철역 이름이 중복됩니다.");
+    }
+
+    @DisplayName("지하철역의 목록을 조회한다.")
+    @Test
     void findAll() {
-        stationService.saveStation(STATION_FIXTURE);
-        stationService.saveStation(STATION_FIXTURE2);
-        stationService.saveStation(STATION_FIXTURE3);
+        // given
+        stationService.save(STATION_REQUEST);
 
-        assertThat(stationService.findAll()).extracting("name").isEqualTo(
-                List.of(STATION_FIXTURE.getName(), STATION_FIXTURE2.getName(), STATION_FIXTURE3.getName()));
+        // when
+        List<String> stationNames = stationService.findAll().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(stationNames).contains("강남역");
     }
 
+    @DisplayName("지하철역을 삭제한다.")
     @Test
-    @DisplayName("아이디로 지하철역을 삭제할 수 있다")
-    void deleteById() {
-        final Station station = stationService.saveStation(STATION_FIXTURE);
-        final List<Station> stations = stationService.findAll();
-        stationService.deleteById(station.getId());
-        final List<Station> afterDelete = stationService.findAll();
+    void delete() {
+        // given
+        long stationId = stationService.save(STATION_REQUEST);
 
-        assertThat(stations).isNotEmpty();
-        assertThat(afterDelete).isEmpty();
+        // when
+        stationService.delete(stationId);
+
+        // then
+        List<String> stationNames = stationService.findAll().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(stationNames).doesNotContain("강남역");
+    }
+
+    @DisplayName("존재하지 않는 지하철역을 삭제할 경우 예외가 발생한다.")
+    @Test
+    void deleteNotExistStation() {
+        // when & then
+        assertThatThrownBy(() -> stationService.delete(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 지하철역입니다.");
     }
 }

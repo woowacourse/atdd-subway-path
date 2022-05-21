@@ -1,101 +1,77 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Station;
 
-@DisplayName("Station Dao를 통해서")
+@DisplayName("지하철역 관련 DAO 테스트")
 @JdbcTest
 class StationDaoTest {
 
-    private static final Station STATION_FIXTURE = new Station(1L, "선릉역");
-    private static final Station STATION_FIXTURE2 = new Station(2L, "강남역");
-    private static final Station STATION_FIXTURE3 = new Station(3L, "역삼역");
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    private DataSource dataSource;
+    private static final Station STATION = new Station("강남역");
 
     private StationDao stationDao;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
-    void setup() {
-        stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
+    void setUp() {
+        stationDao = new StationDao(jdbcTemplate);
     }
 
-    @Nested
-    @DisplayName("새로운 역을 저장할 때")
-    class SaveTest {
-
-        @Test
-        @DisplayName("역 이름이 중복되지 않으면 저장할 수 있다.")
-        void save_Success_If_Not_Exists() {
-            assertThatCode(() -> stationDao.save(STATION_FIXTURE))
-                    .doesNotThrowAnyException();
-        }
-
-        @Test
-        @DisplayName("역 이름이 중복되면 예외가 발생한다.")
-        void save_Fail_If_Exists() {
-            stationDao.save(STATION_FIXTURE);
-            assertThatThrownBy(() -> stationDao.save(STATION_FIXTURE))
-                    .isInstanceOf(DuplicateKeyException.class);
-        }
-    }
-
-
+    @DisplayName("지하철역을 생성한다.")
     @Test
-    @DisplayName("전체 지하철 역을 조회할 수 있다")
+    void save() {
+        stationDao.save(STATION);
+
+        Integer count = jdbcTemplate.queryForObject("select count(*) from STATION", Integer.class);
+
+        assertThat(count).isEqualTo(1);
+    }
+
+    @DisplayName("중복된 아이디의 지하철역이 있다면 true 를 반환한다.")
+    @Test
+    void existStationById() {
+        long stationId = stationDao.save(STATION);
+
+        assertThat(stationDao.existStationById(stationId)).isTrue();
+    }
+
+    @DisplayName("중복된 이름의 지하철역이 있다면 true 를 반환한다.")
+    @Test
+    void existStationByName() {
+        stationDao.save(STATION);
+
+        assertThat(stationDao.existStationByName("강남역")).isTrue();
+    }
+
+    @DisplayName("지하철역의 전체 목록을 조회한다.")
+    @Test
     void findAll() {
-        stationDao.save(STATION_FIXTURE);
-        stationDao.save(STATION_FIXTURE2);
-        stationDao.save(STATION_FIXTURE3);
+        stationDao.save(STATION);
+        stationDao.save(new Station("선릉역"));
 
-        assertThat(stationDao.findAll()).extracting("name")
-                .isEqualTo(List.of(STATION_FIXTURE.getName(), STATION_FIXTURE2.getName(), STATION_FIXTURE3.getName()));
+        List<Station> stations = stationDao.findAll();
+
+        assertThat(stations).hasSize(2);
     }
 
+    @DisplayName("지하철역을 삭제한다.")
     @Test
-    @DisplayName("특정 지하철 역을 조회할 수 있다.")
-    void findById() {
-        final Station station = stationDao.save(STATION_FIXTURE);
+    void delete() {
+        long stationId = stationDao.save(STATION);
 
-        assertThat(stationDao.findById(station.getId()).getName()).isEqualTo(STATION_FIXTURE.getName());
+        stationDao.delete(stationId);
+
+        Integer count = jdbcTemplate.queryForObject("select count(*) from STATION", Integer.class);
+        assertThat(count).isEqualTo(0);
     }
-
-    @Test
-    @DisplayName("특정 지하철 역을 조회할 수 있다.")
-    void find() {
-        final Station station = stationDao.save(STATION_FIXTURE);
-
-        assertThat(stationDao.findById(station.getId()).getName()).isEqualTo(STATION_FIXTURE.getName());
-    }
-
-
-    @Test
-    @DisplayName("아이디가 존재하면 아이디로 지하철역을 삭제할 수 있다")
-    void deleteById() {
-        final Station station = stationDao.save(STATION_FIXTURE);
-        final List<Station> stations = stationDao.findAll();
-        stationDao.deleteById(station.getId());
-        final List<Station> afterDelete = stationDao.findAll();
-
-        assertThat(stations).isNotEmpty();
-        assertThat(afterDelete).isEmpty();
-    }
-
 }
