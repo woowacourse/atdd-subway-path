@@ -8,11 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
@@ -22,21 +17,10 @@ import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.path.NoSuchPathException;
 
-@SpringBootTest
-@Transactional
-class PathControllerTest {
+class PathControllerTest extends ControllerTest {
 
     @Autowired
     private PathController pathController;
-
-    @Autowired
-    private StationDao stationDao;
-
-    @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
-    private LineDao lineDao;
 
     private Station gangnam;
     private Station yeoksam;
