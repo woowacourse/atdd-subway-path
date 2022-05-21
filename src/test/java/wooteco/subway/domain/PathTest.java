@@ -49,7 +49,7 @@ public class PathTest {
         Path path = DijkstraShortestPathStation.getPath(
                 sections,
                 station1,
-                station2
+                station3
         );
 
         // then

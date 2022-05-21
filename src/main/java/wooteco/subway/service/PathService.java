@@ -1,7 +1,12 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
@@ -45,6 +50,7 @@ public class PathService {
         List<StationDto> stationDtos = path.getStations().stream()
                 .map(station -> new StationDto(station.getId(), station.getName()))
                 .collect(Collectors.toList());
+        List<Long> visitLines = getVisitLines(path.getStations(), sectionEntities);
 
         FareStrategy fare = new DistanceFareStrategy();
         return new PathServiceResponse(stationDtos, path.getDistance(),
@@ -59,6 +65,23 @@ public class PathService {
                         stationDao.getStation(sectionEntity.getDownStationId()),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList()));
+    }
+
+
+    private List<Long> getVisitLines(List<Station> stations, List<SectionEntity> sectionEntities) {
+        Set<Long> lineIds = new HashSet<>();
+        for (int i = 0 ; i < stations.size() - 1 ; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+
+            SectionEntity sectionEntity = sectionEntities.stream()
+                    .filter(entity -> entity.getUpStationId() == upStation.getId())
+                    .filter(entity -> entity.getDownStationId() == downStation.getId())
+                    .min(Comparator.comparingInt(SectionEntity::getDistance))
+                    .orElseThrow(() -> new IllegalStateException("구간 정보가 잘못되었습니다."));
+            lineIds.add(sectionEntity.getLineId());
+        }
+        return new ArrayList<>(lineIds);
     }
 
     private void validateExists(Long id) {
