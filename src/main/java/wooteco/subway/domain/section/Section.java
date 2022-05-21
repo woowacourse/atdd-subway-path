@@ -10,6 +10,7 @@ public class Section {
     private static final String INVALID_DISTANCE_EXCEPTION = "구간의 길이는 1이상이어야 합니다.";
     private static final String NON_ADJACENT_SECTIONS_EXCEPTION = "서로 겹치는 구간이 아닙니다.";
     private static final int MIN_DISTANCE = 1;
+    private static final String NOT_REGISTERED_STATION_EXCEPTION = "해당 구간에 등록되지 않은 지하철을 입력하였습니다.";
 
     private final Long lineId;
     private final Station upStation;
@@ -37,6 +38,16 @@ public class Section {
 
     public List<Station> toStations() {
         return List.of(upStation, downStation);
+    }
+
+    public Station getOppositeEnd(Station station) {
+        if (station.equals(upStation)) {
+            return downStation;
+        }
+        if (station.equals(downStation)) {
+            return upStation;
+        }
+        throw new IllegalArgumentException(NOT_REGISTERED_STATION_EXCEPTION);
     }
 
     public boolean hasUpStationOf(Station station) {
