@@ -40,6 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Long 우테코선_id = RestAssuredConvenienceMethod.postLineAndGetId(
                 new LineRequest("우테코선", "blue", 기흥역_id, 모란역_id, 10, 700), "/lines");
         RestAssuredConvenienceMethod.postRequest(new SectionRequest(모란역_id, 강남역_id, 5), "/lines/" + 우테코선_id + "/sections");
+
     }
 
     @DisplayName("올바른 경로와 요금을 가져오는지 테스트한다.")
@@ -56,6 +57,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathWithNotExistStation() {
         String uri = pathRequestFormat(기흥역_id, 100L);
+
+        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.getRequest(uri);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("출발지와 도착지가 같은 경로를 찾을때는 400 코드가 반환된다.")
+    @Test
+    void findPathWithSameSourceAndTarget() {
+        String uri = pathRequestFormat(기흥역_id, 기흥역_id);
+
+        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.getRequest(uri);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선에 연결되어있지 않은 역을 이용해 경로를 찾을 때는 400 코드가 반환된다.")
+    @Test
+    void findPathWithNotConnectedStation() {
+        Long 수서역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("수서역"), "/stations");
+        String uri = pathRequestFormat(기흥역_id, 수서역_id);
+
+        ExtractableResponse<Response> response = RestAssuredConvenienceMethod.getRequest(uri);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("이동할 수 없는 경로를 찾을 때는 400 코드가 반환된다.")
+    @Test
+    void findPathWithNotConnectedRoute() {
+        Long 인천역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("인천역"), "/stations");
+        Long 수원역_id = RestAssuredConvenienceMethod.postStationAndGetId(new StationRequest("수원역"), "/stations");
+        RestAssuredConvenienceMethod.postLineAndGetId(
+                new LineRequest("수인선", "green", 인천역_id, 수원역_id, 10, 400), "/lines");
+        String uri = pathRequestFormat(기흥역_id, 수원역_id); // 변경 필요
 
         ExtractableResponse<Response> response = RestAssuredConvenienceMethod.getRequest(uri);
 
