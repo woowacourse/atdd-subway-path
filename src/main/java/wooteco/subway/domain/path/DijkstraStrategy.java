@@ -16,7 +16,12 @@ public class DijkstraStrategy implements PathFindingStrategy {
         return findShortestDijkstraPath(graph, source, target).getVertexList();
     }
 
-    private GraphPath<Long, DefaultWeightedEdge> findShortestDijkstraPath(Graph<Long, DefaultWeightedEdge> graph, Long source, Long target){
-        return DijkstraShortestPath.findPathBetween(graph, source, target);
+    private GraphPath<Long, DefaultWeightedEdge> findShortestDijkstraPath(Graph<Long, DefaultWeightedEdge> graph, Long source, Long target) {
+        GraphPath<Long, DefaultWeightedEdge> graphPath = DijkstraShortestPath.findPathBetween(graph, source, target);
+
+        if (graphPath == null) {
+            throw new IllegalArgumentException("최단 경로를 찾을 수 없습니다.");
+        }
+        return graphPath;
     }
 }
