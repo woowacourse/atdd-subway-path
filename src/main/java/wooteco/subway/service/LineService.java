@@ -46,38 +46,6 @@ public class LineService {
         return new LineResponse(savedLine, makeStationResponseList(request));
     }
 
-    @Transactional(readOnly = true)
-    public LineResponse findById(Long id) {
-        final Line line = lineDao.findById(id)
-                .orElseThrow(() -> new NotExistException("찾으려는 노선이 존재하지 않습니다."));
-
-        final Sections sections = new Sections(sectionDao.findByLineId(line.getId()));
-
-        return new LineResponse(line, sortedStations(sections));
-    }
-
-    @Transactional(readOnly = true)
-    public List<LineResponse> findAll() {
-        return lineDao.findAll()
-                .stream()
-                .map(line -> new LineResponse(line, sortedStations(getSections(line))))
-                .collect(toUnmodifiableList());
-    }
-
-    public Long updateByLine(Long id, LineRequest request) {
-        final Line updateLine = new Line(id, request.getName(), request.getColor());
-        return lineDao.updateByLine(updateLine);
-    }
-
-    public void deleteById(Long id) {
-        final int isDeleted = lineDao.deleteById(id);
-
-        if (isDeleted == DELETE_FAIL) {
-            throw new NotExistException("존재하지 않는 노선입니다.");
-        }
-        sectionDao.deleteByLineId(id);
-    }
-
     private List<StationResponse> makeStationResponseList(LineRequest request) {
         final Station upStation = getStationById(request.getUpStationId());
         final Station downStation = getStationById(request.getDownStationId());
@@ -93,18 +61,50 @@ public class LineService {
                 .orElseThrow(() -> new NotExistException("찾으려는 역이 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
+    public LineResponse findById(Long id) {
+        final Line line = lineDao.findById(id)
+                .orElseThrow(() -> new NotExistException("찾으려는 노선이 존재하지 않습니다."));
+
+        final Sections sections = new Sections(sectionDao.findByLineId(line.getId()));
+
+        return new LineResponse(line, getStationResponses(sections));
+    }
+
+    @Transactional(readOnly = true)
+    public List<LineResponse> findAll() {
+        return lineDao.findAll()
+                .stream()
+                .map(line -> new LineResponse(line, getStationResponses(getSections(line))))
+                .collect(toUnmodifiableList());
+    }
+
     private Sections getSections(Line line) {
         final List<Section> sections = sectionDao.findByLineId(line.getId());
 
         return new Sections(sections);
     }
 
-    private List<StationResponse> sortedStations(Sections sections) {
+    private List<StationResponse> getStationResponses(Sections sections) {
         final List<Long> stationIds = sections.getStationIds();
         return stationIds.stream()
                 .map(stationDao::findById)
                 .map(Optional::orElseThrow)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public Long updateByLine(Long id, LineRequest request) {
+        final Line updateLine = new Line(id, request.getName(), request.getColor());
+        return lineDao.updateByLine(updateLine);
+    }
+
+    public void deleteById(Long id) {
+        final int isDeleted = lineDao.deleteById(id);
+
+        if (isDeleted == DELETE_FAIL) {
+            throw new NotExistException("존재하지 않는 노선입니다.");
+        }
+        sectionDao.deleteByLineId(id);
     }
 }
