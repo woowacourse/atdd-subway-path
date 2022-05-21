@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.exception.UnreachablePathException;
 
-class PathSearcherTest {
+class PathSummarySearcherTest {
 
     private List<Station> stations;
     private List<Section> sections;
@@ -36,7 +36,7 @@ class PathSearcherTest {
     @DisplayName("source와 target이 같은 경우 예외 발생")
     @Test
     void throwExceptionWhenSourceSameAsTarget() {
-        assertThatThrownBy(() -> new PathSearcher(graph, fareCalculator)
+        assertThatThrownBy(() -> new PathSummarySearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(0)))
             .isInstanceOf(UnreachablePathException.class);
     }
@@ -44,7 +44,7 @@ class PathSearcherTest {
     @DisplayName("Graph와 FareCalculator를 사용한 경로 조회")
     @Test
     void searchTransferLinePath() {
-        PathSummary pathSummary = new PathSearcher(graph, fareCalculator)
+        PathSummary pathSummary = new PathSummarySearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(2));
 
         assertThat(pathSummary.getPath().getStations()).containsExactlyElementsOf(stations);
@@ -56,7 +56,7 @@ class PathSearcherTest {
     void searchUnreachablePath() {
         Graph graph = (source, target) -> Path.EMPTY;
 
-        assertThatThrownBy(() -> new PathSearcher(graph, fareCalculator)
+        assertThatThrownBy(() -> new PathSummarySearcher(graph, fareCalculator)
             .search(stations.get(0), stations.get(2)))
         .isInstanceOf(UnreachablePathException.class);
     }

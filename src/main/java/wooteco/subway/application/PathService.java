@@ -10,7 +10,7 @@ import wooteco.subway.domain.Passenger;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Graph;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathSearcher;
+import wooteco.subway.domain.PathSummarySearcher;
 import wooteco.subway.domain.PathSummary;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -41,8 +41,8 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
             .orElseThrow(() -> new NotFoundStationException(target));
 
-        PathSearcher pathSearcher = new PathSearcher(createGraph(), createFareCalculator(age));
-        PathSummary pathSummary = pathSearcher.search(sourceStation, targetStation);
+        PathSummarySearcher pathSummarySearcher = new PathSummarySearcher(createGraph(), createFareCalculator(age));
+        PathSummary pathSummary = pathSummarySearcher.search(sourceStation, targetStation);
         return new PathResponse(pathSummary);
     }
 
