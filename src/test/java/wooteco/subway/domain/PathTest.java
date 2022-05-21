@@ -25,10 +25,10 @@ class PathTest {
         final Path graph = Path.of(new Sections(List.of(section1, section2, section3)));
         ShortestPath path = graph.getShortestPath(서울대입구역, 신림역);
 
-        final List<Section> sections = path.getSections();
+        final Sections sections = path.getSections();
         assertAll(
                 () -> assertThat(path.getVertexes()).containsExactly(서울대입구역, 봉천역, 신림역),
-                () -> assertThat(sections).containsExactly(section2, section1),
+                () -> assertThat(sections.getSections()).containsExactly(section2, section1),
                 () -> assertThat(path.getDistance()).isEqualTo(30)
         );
     }

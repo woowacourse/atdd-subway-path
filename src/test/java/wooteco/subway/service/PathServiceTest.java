@@ -51,10 +51,10 @@ public class PathServiceTest {
         Line line2 = lineDao.save(new Line("3호선", "bg-yellow-600"));
         Line line3 = lineDao.save(new Line("5호선", "bg-purple-600"));
 
-        sectionDao.save(new Section(신림역, 봉천역, 5, line.getId()));
-        sectionDao.save(new Section(봉천역, 서울대입구역, 5, line.getId()));
-        sectionDao.save(new Section(신림역, 서울대입구역, 100, line2.getId()));
-        sectionDao.save(new Section(아차산역, 군자역, 10, line3.getId()));
+        sectionDao.save(new Section(신림역, 봉천역, 5, line));
+        sectionDao.save(new Section(봉천역, 서울대입구역, 5, line));
+        sectionDao.save(new Section(신림역, 서울대입구역, 100, line2));
+        sectionDao.save(new Section(아차산역, 군자역, 10, line3));
     }
 
     @DisplayName("두 지하철 역의 최단 경로를 반환한다.")

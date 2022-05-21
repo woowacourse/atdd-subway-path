@@ -45,7 +45,7 @@ class SectionServiceTest {
         savedLine = lineDao.save(new Line("5호선", "bg-purple-600"));
         Station upStation = stationDao.save(new Station("아차산역"));
         downStation = stationDao.save(new Station("군자역"));
-        section = sectionDao.save(new Section(upStation, downStation, 10, savedLine.getId()));
+        section = sectionDao.save(new Section(upStation, downStation, 10, savedLine));
     }
 
     @DisplayName("(갈래길이 아닌 경우) 특정 노선에 구간을 추가한다.")
@@ -91,7 +91,7 @@ class SectionServiceTest {
     @Test
     void delete() {
         final Station newStation = stationDao.save(new Station("마장역"));
-        sectionDao.save(new Section(downStation, newStation, 10, savedLine.getId()));
+        sectionDao.save(new Section(downStation, newStation, 10, savedLine));
 
         sectionService.remove(savedLine.getId(), downStation.getId());
 
@@ -115,7 +115,7 @@ class SectionServiceTest {
     @Test
     void deleteLast() {
         final Station newStation = stationDao.save(new Station("마장역"));
-        sectionDao.save(new Section(downStation, newStation, 10, savedLine.getId()));
+        sectionDao.save(new Section(downStation, newStation, 10, savedLine));
 
         sectionService.remove(savedLine.getId(), newStation.getId());
 

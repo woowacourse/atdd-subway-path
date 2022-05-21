@@ -8,23 +8,23 @@ public class Section {
     private final Station upStation;
     private final Station downStation;
     private final int distance;
-    private final Long lineId;
+    private final Line line;
 
     public Section(final Station upStation, final Station downStation, final int distance) {
         this(null, upStation, downStation, distance, null);
     }
 
-    public Section(final Station upStation, final Station downStation, final int distance, final Long lineId) {
-        this(null, upStation, downStation, distance, lineId);
+    public Section(final Station upStation, final Station downStation, final int distance, final Line line) {
+        this(null, upStation, downStation, distance, line);
     }
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance,
-                   final Long lineId) {
+                   final Line line) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-        this.lineId = lineId;
+        this.line = line;
     }
 
     public Long getId() {
@@ -39,8 +39,8 @@ public class Section {
         return downStation;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     public int getDistance() {
@@ -52,7 +52,7 @@ public class Section {
     }
 
     public Section merge(final Section section) {
-        return new Section(this.upStation, section.downStation, sumDistance(section), this.lineId);
+        return new Section(this.upStation, section.downStation, sumDistance(section), this.line);
     }
 
     private int sumDistance(final Section section) {
@@ -61,9 +61,9 @@ public class Section {
 
     public Section createSectionInBetween(final Section section) {
         if (this.upStation.equals(section.upStation)) {
-            return new Section(this.id, section.downStation, this.downStation, subtractDistance(section), this.lineId);
+            return new Section(this.id, section.downStation, this.downStation, subtractDistance(section), this.line);
         }
-        return new Section(this.id, this.upStation, section.upStation, subtractDistance(section), this.lineId);
+        return new Section(this.id, this.upStation, section.upStation, subtractDistance(section), this.line);
     }
 
     private int subtractDistance(final Section section) {
@@ -84,12 +84,11 @@ public class Section {
         }
         final Section section = (Section) o;
         return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(upStation,
-                section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(lineId,
-                section.lineId);
+                section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(line, section.line);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance, lineId);
+        return Objects.hash(id, upStation, downStation, distance, line);
     }
 }

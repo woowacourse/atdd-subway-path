@@ -35,7 +35,7 @@ public class LineService {
 
         final Section section = lineRequest.toSectionEntity();
         sectionDao.save(new Section(section.getUpStation(), section.getDownStation(), section.getDistance(),
-                savedLine.getId()));
+                savedLine));
 
         return LineResponse.from(savedLine, getStationsByLine(savedLine.getId()));
     }

@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.List;
+
 public enum Fare {
 
     AREA_0(1250, 1, 0, 10, 0),
@@ -21,7 +23,18 @@ public enum Fare {
         this.additionalFare = additionalFare;
     }
 
-    public static int calculate(final double distance) {
+    public static int calculate(final Sections sections) {
+        return getMaxExtraFare(sections.getLines()) + calculate(sections.getTotalDistance());
+    }
+
+    private static int getMaxExtraFare(final List<Line> lines) {
+        return lines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
+    }
+
+    private static int calculate(final double distance) {
         return AREA_0.defaultFare + calculateMoreFare(distance, AREA_1) + calculateMoreFare(distance, AREA_2);
     }
 

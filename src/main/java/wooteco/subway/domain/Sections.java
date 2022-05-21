@@ -166,4 +166,16 @@ public class Sections {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
     }
+
+    public int getTotalDistance() {
+        return value.stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+    }
+
+    public List<Line> getLines() {
+        return value.stream()
+                .map(Section::getLine)
+                .collect(Collectors.toList());
+    }
 }

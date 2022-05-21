@@ -87,7 +87,7 @@ class StationDaoTest {
     void findAllByLineId() {
         Station newStation = stationDao.save(new Station("아차산역"));
         Line savedLine = lineDao.save(new Line("5호선", "bg-purple-600"));
-        sectionDao.save(new Section(savedStation, newStation, 10, savedLine.getId()));
+        sectionDao.save(new Section(savedStation, newStation, 10, savedLine));
 
         List<Station> savedStations = stationDao.findAllByLineId(savedLine.getId());
 

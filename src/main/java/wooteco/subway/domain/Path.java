@@ -44,7 +44,7 @@ public class Path {
         final GraphPath<Station, DefaultWeightedEdge> path = getPath(source, target);
         final List<Station> stations = path.getVertexList();
         List<Section> connectedSections = getConnectedSections(stations);
-        return new ShortestPath(stations, connectedSections, (int) path.getWeight());
+        return new ShortestPath(stations, new Sections(connectedSections), (int) path.getWeight());
     }
 
     private void validateVertexesExist(final Station source, final Station target) {

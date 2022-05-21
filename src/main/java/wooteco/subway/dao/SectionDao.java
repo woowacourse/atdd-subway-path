@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
@@ -26,8 +27,11 @@ public class SectionDao {
         final long upStationId = rs.getLong("up_station_id");
         final long downStationId = rs.getLong("down_station_id");
         final int distance = rs.getInt("distance");
+        final String lineName = rs.getString("line_name");
+        final String lineColor = rs.getString("color");
+        final int extraFare = rs.getInt("extraFare");
         return new Section(id, new Station(upStationId, rs.getString("up_name")),
-                new Station(downStationId, rs.getString("down_name")), distance, lineId);
+                new Station(downStationId, rs.getString("down_name")), distance, new Line(lineId, lineName, lineColor, extraFare));
     };
 
     public SectionDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -38,7 +42,7 @@ public class SectionDao {
         final String sql = "insert into SECTION(up_station_id, down_station_id, distance, line_id) values(:upStationId, :downStationId, :distance, :lineId)";
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("lineId", section.getLineId());
+        params.put("lineId", section.getLine().getId());
         params.put("upStationId", section.getUpStation().getId());
         params.put("downStationId", section.getDownStation().getId());
         params.put("distance", section.getDistance());
@@ -47,26 +51,28 @@ public class SectionDao {
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
         final long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         return new Section(id, section.getUpStation(), section.getDownStation(), section.getDistance(),
-                section.getLineId());
+                section.getLine());
     }
 
     public List<Section> findAll() {
 
         final String sql = "select SC.id, SC.up_station_id, SC.down_station_id, SC.distance, SC.line_id, " +
-                "S1.name as up_name, S2.name as down_name " +
+                "S1.name as up_name, S2.name as down_name, L.id as line_id, L.name as line_name, L.color, L.extraFare " +
                 "from SECTION SC " +
                 "join STATION S1 on SC.up_station_id=S1.id " +
-                "join STATION S2 on SC.down_station_id=S2.id";
+                "join STATION S2 on SC.down_station_id=S2.id " +
+                "join LINE L on SC.line_id=L.id";
 
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public List<Section> findAllByLineId(final long lineId) {
         final String sql = "select SC.id, SC.up_station_id, SC.down_station_id, SC.distance, SC.line_id, " +
-                "S1.name as up_name, S2.name as down_name " +
+                "S1.name as up_name, S2.name as down_name, L.id as line_id, L.name as line_name, L.color, L.extraFare " +
                 "from SECTION SC " +
                 "join STATION S1 on SC.up_station_id=S1.id " +
                 "join STATION S2 on SC.down_station_id=S2.id " +
+                "join LINE L on SC.line_id=L.id " +
                 "where SC.line_id=:lineId";
 
         final Map<String, Object> params = new HashMap<>();

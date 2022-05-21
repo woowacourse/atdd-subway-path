@@ -42,7 +42,7 @@ class SectionDaoTest {
     @DisplayName("특정 노선의 구간을 저장한다.")
     @Test
     void save() {
-        final Section section = new Section(station1, station2, 10, line.getId());
+        final Section section = new Section(station1, station2, 10, line);
         final Section savedSection = sectionDao.save(section);
 
         assertAll(
@@ -57,8 +57,8 @@ class SectionDaoTest {
     void findAll() {
         final Station station3 = stationDao.save(new Station("광나루역"));
 
-        final Section section1 = new Section(station1, station2, 10, line.getId());
-        final Section section2 = new Section(station2, station3, 10, line.getId());
+        final Section section1 = new Section(station1, station2, 10, line);
+        final Section section2 = new Section(station2, station3, 10, line);
         sectionDao.save(section1);
         sectionDao.save(section2);
 
@@ -70,8 +70,8 @@ class SectionDaoTest {
     void findAllByLineId() {
         final Station station3 = stationDao.save(new Station("광나루역"));
 
-        final Section section1 = new Section(station1, station2, 10, line.getId());
-        final Section section2 = new Section(station2, station3, 10, line.getId());
+        final Section section1 = new Section(station1, station2, 10, line);
+        final Section section2 = new Section(station2, station3, 10, line);
         sectionDao.save(section1);
         sectionDao.save(section2);
 
@@ -81,12 +81,12 @@ class SectionDaoTest {
     @DisplayName("특정 구간을 수정한다.")
     @Test
     void update() {
-        final Section section1 = new Section(station1, station2, 10, line.getId());
+        final Section section1 = new Section(station1, station2, 10, line);
         final Station station3 = stationDao.save(new Station("광나루역"));
 
         final Section savedSection = sectionDao.save(section1);
 
-        final Section newSection = new Section(station1, station3, 5, line.getId());
+        final Section newSection = new Section(station1, station3, 5, line);
         sectionDao.update(savedSection.getId(), newSection);
 
         final Optional<Section> updatedSection = sectionDao.findAllByLineId(line.getId())
@@ -103,11 +103,11 @@ class SectionDaoTest {
     @DisplayName("특정 구간을 삭제한다.")
     @Test
     void delete() {
-        final Section section1 = new Section(station1, station2, 10, line.getId());
+        final Section section1 = new Section(station1, station2, 10, line);
         final Section savedSection = sectionDao.save(section1);
 
         sectionDao.deleteById(savedSection.getId());
 
-        assertThat(sectionDao.findAllByLineId(savedSection.getLineId()).size()).isZero();
+        assertThat(sectionDao.findAllByLineId(savedSection.getLine().getId()).size()).isZero();
     }
 }

@@ -24,7 +24,7 @@ public class PathService {
         final Path graph = Path.of(new Sections(sectionDao.findAll()));
         final ShortestPath shortestPath = graph.getShortestPath(getStationById(pathRequest.getSource()), getStationById(pathRequest.getTarget()));
 
-        return PathResponse.from(shortestPath, Fare.calculate(shortestPath.getDistance()));
+        return PathResponse.from(shortestPath, Fare.calculate(shortestPath.getSections()));
     }
 
     private Station getStationById(final Long id) {
