@@ -16,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.PathDto;
 
 @SpringBootTest
 @Transactional
@@ -85,7 +85,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
         assertThat(path.getStations())
@@ -152,7 +152,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
         assertThat(path.getDistance()).isEqualTo(30);
@@ -166,9 +166,9 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(sourceStationId, targetStationId);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
-        assertThat(path.calculateFare()).isEqualTo(1950);
+        assertThat(path.getFare()).isEqualTo(1950);
     }
 }

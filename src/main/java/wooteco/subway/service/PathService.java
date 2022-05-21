@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.repository.LineRepository;
-import wooteco.subway.domain.Lines;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.PathDto;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,10 +20,10 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public Path findPath(Long sourceStationId, Long targetStationId) {
-        Station source = stationService.findOne(sourceStationId);
-        Station target = stationService.findOne(targetStationId);
-        Lines lines = new Lines(lineRepository.findAll());
-        return lines.findPath(source, target);
+    public PathDto findPath(Long sourceStationId, Long targetStationId) {
+        Path path = new Path(lineRepository.findAll(), stationService.findOne(sourceStationId),
+            stationService.findOne(targetStationId));
+        int distance = path.getDistance();
+        return new PathDto(path.getStations(), distance, Fare.from(distance).calculate());
     }
 }

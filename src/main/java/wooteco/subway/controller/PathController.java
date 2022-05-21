@@ -1,15 +1,14 @@
 package wooteco.subway.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.dto.PathRequest;
 import wooteco.subway.controller.dto.PathResponse;
-import wooteco.subway.domain.Path;
 import wooteco.subway.service.PathService;
 
-@Controller
+@RestController
 public class PathController {
 
     private final PathService pathService;
@@ -20,7 +19,7 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
-        Path path = pathService.findPath(pathRequest.getSource(), pathRequest.getTarget());
-        return ResponseEntity.ok().body(PathResponse.from(path));
+        return ResponseEntity.ok().body(PathResponse.from(
+            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget())));
     }
 }

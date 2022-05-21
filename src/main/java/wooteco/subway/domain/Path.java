@@ -1,46 +1,54 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private static final int BASIC_FARE = 1250;
-    private static final int INCREASE_FARE = 100;
-    private static final int PER_DISTANCE_OVER_TEN = 5;
-    private static final int PER_DISTANCE_OVER_FIFTY = 8;
+    private final List<Line> lines;
+    private final GraphPath<Station, DefaultWeightedEdge> path;
 
-    private final List<Station> stations;
-    private final int distance;
-
-    public Path(List<Station> stations, Number distance) {
-        this.stations = new ArrayList<>(stations);
-        this.distance = distance.intValue();
-    }
-
-    public int calculateFare() {
-        return BASIC_FARE + getOverTenFare() + getOverFiftyFare();
-    }
-
-    private int getOverTenFare() {
-        if (distance > 10) {
-            return Math.min(800, (int)(Math.ceil((distance - 10) / PER_DISTANCE_OVER_TEN) + 1) * INCREASE_FARE);
-        }
-        return 0;
-    }
-
-    private int getOverFiftyFare() {
-        if (distance > 50) {
-            return (int)(Math.ceil((distance - 50) / PER_DISTANCE_OVER_FIFTY)) * INCREASE_FARE;
-        }
-        return 0;
+    public Path(List<Line> lines, Station source, Station target) {
+        this.lines = List.copyOf(lines);
+        this.path = new DijkstraShortestPath<>(initGraph(getSections())).getPath(source, target);
     }
 
     public List<Station> getStations() {
-        return new ArrayList<>(stations);
+        return path.getVertexList();
+    }
+
+    private List<Section> getSections() {
+        return lines.stream()
+            .map(Line::getSections)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
+    private Graph<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        for (Section section : sections) {
+            addSection(graph, section);
+        }
+        return graph;
+    }
+
+    private void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        graph.setEdgeWeight(
+            graph.addEdge(section.getUpStation(), section.getDownStation()),
+            section.getDistance()
+        );
     }
 
     public int getDistance() {
-        return distance;
+        return (int)path.getWeight();
     }
 }
