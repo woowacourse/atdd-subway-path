@@ -2,8 +2,6 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static wooteco.subway.domain.factory.SectionFactory.AB3;
-import static wooteco.subway.domain.factory.SectionFactory.BC3;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,15 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.repository.LineRepository;
@@ -61,7 +55,7 @@ class PathServiceTest {
                 downStationId, 10));
 
         final PathResponse actualPathResponse = pathService.findShortestPath(upStationId, downStationId);
-        final List<String> stationNames = actualPathResponse.getStationResponses().stream()
+        final List<String> stationNames = actualPathResponse.getStations().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList());
         assertAll(
