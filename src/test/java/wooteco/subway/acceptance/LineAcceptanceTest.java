@@ -19,6 +19,7 @@ import wooteco.subway.dto.line.LineUpdateRequest;
 class LineAcceptanceTest extends AcceptanceTest {
 
     private static final String DUPLICATE_LINE_ERROR_MESSAGE = "노선이 이미 있습니다";
+    private static final String NEGATIVE_EXTRA_FARE_ERROR_MESSAGE = "추가 요금은 0 이상이어야 합니다";
 
     /*
      * given
@@ -245,6 +246,26 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+        );
+    }
+
+    @DisplayName("추가 요금을 음수로 생성한다")
+    @Test
+    void createLineWithNegativeExtraFare() {
+        // given
+        long id1 = createStation("station1").getId();
+        long id2 = createStation("station2").getId();
+        int extraFare = -1;
+
+        // when
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", id1, id2,
+                10, extraFare);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().jsonPath().getString("message")).contains(
+                        NEGATIVE_EXTRA_FARE_ERROR_MESSAGE)
         );
     }
 

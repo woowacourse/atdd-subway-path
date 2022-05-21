@@ -12,8 +12,7 @@ public class Line {
     private final Sections sections = new Sections();
 
     public Line(final Long id, final String name, final String color, final int extraFare) {
-        validateNullOrBlank(name);
-        validateNullOrBlank(color);
+        validateRequiredArgument(name, color, extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
@@ -33,8 +32,7 @@ public class Line {
     }
 
     public void update(final String name, final String color, final int extraFare) {
-        validateNullOrBlank(name);
-        validateNullOrBlank(color);
+        validateRequiredArgument(name, color, extraFare);
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
@@ -62,9 +60,21 @@ public class Line {
         return Collections.unmodifiableList(sections.sortedStations());
     }
 
+    private void validateRequiredArgument(final String name, final String color, final int extraFare) {
+        validateNullOrBlank(name);
+        validateNullOrBlank(color);
+        validateNegative(extraFare);
+    }
+
     private void validateNullOrBlank(final String string) {
         if (string == null || string.isBlank()) {
             throw new IllegalArgumentException("빈 값이 들어올 수 없습니다.");
+        }
+    }
+
+    private void validateNegative(final int extraFare) {
+        if (extraFare < 0) {
+            throw new IllegalArgumentException("추가 요금은 0 이상이어야 합니다.");
         }
     }
 
