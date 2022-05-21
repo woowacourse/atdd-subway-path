@@ -35,7 +35,7 @@ public class Section {
     }
 
     public List<Section> assign(final Section newSection) {
-        distance.checkCanAssign(newSection.distance);
+        validateNewSection(newSection);
 
         final Distance assignedDistance = distance.minus(newSection.distance);
         if (upStation.equals(newSection.upStation)) {
@@ -48,6 +48,12 @@ public class Section {
                 new Section(line, upStation, newSection.upStation, assignedDistance),
                 newSection
         );
+    }
+
+    private void validateNewSection(Section section) {
+        if (distance.isLessThanOrEqual(section.distance)) {
+            throw new IllegalInputException("구간의 길이가 기존 구간의 길이 보다 큽니다.");
+        }
     }
 
     public Section merge(final Section section) {

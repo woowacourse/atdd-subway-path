@@ -20,12 +20,6 @@ public class Distance {
         }
     }
 
-    public void checkCanAssign(final Distance distance) {
-        if (value <= distance.value) {
-            throw new IllegalInputException("기존 구간의 길이 보다 작지 않습니다.");
-        }
-    }
-
     public Distance minus(final Distance distance) {
         return new Distance(value - distance.value);
     }
@@ -34,8 +28,12 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
-    public boolean isLessThanOrEqual(final int standardValue) {
+    public boolean isLessThanOrEqualByValue(final int standardValue) {
         return value <= standardValue;
+    }
+
+    public boolean isLessThanOrEqual(final Distance distance) {
+        return value <= distance.getValue();
     }
 
     public int getValue() {

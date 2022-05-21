@@ -119,7 +119,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(actual.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(actualResponse.getMessage()).isEqualTo("기존 구간의 길이 보다 작지 않습니다.");
+        assertThat(actualResponse.getMessage()).isEqualTo("구간의 길이가 기존 구간의 길이 보다 큽니다.");
     }
 
     @Test

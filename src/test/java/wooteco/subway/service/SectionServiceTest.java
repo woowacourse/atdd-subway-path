@@ -137,7 +137,7 @@ class SectionServiceTest extends ServiceTest {
         // then
         assertThatThrownBy(() -> sectionService.save(request))
                 .isInstanceOf(IllegalInputException.class)
-                .hasMessage("기존 구간의 길이 보다 작지 않습니다.");
+                .hasMessage("구간의 길이가 기존 구간의 길이 보다 큽니다.");
     }
 
     @Test
