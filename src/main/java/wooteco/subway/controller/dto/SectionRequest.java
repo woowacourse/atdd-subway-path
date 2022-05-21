@@ -1,11 +1,18 @@
 package wooteco.subway.controller.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class SectionRequest {
+
+    @NotNull
     private Long upStationId;
+    @NotNull
     private Long downStationId;
+    @Positive
     private int distance;
 
-    public SectionRequest() {
+    private SectionRequest() {
     }
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {

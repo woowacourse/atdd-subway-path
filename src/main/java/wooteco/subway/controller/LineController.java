@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +40,7 @@ public class LineController {
 	}
 
 	@PostMapping
-	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+	public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
 		Section section = toSection(lineRequest.toSectionRequest());
 		Line line = lineService.create(lineRequest.getName(), lineRequest.getColor(), section);
 		return ResponseEntity.created(URI.create("/lines/" + line.getId()))
@@ -60,7 +62,7 @@ public class LineController {
 	}
 
 	@PutMapping("/{lineId}")
-	public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineRequest) {
+	public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody @Valid LineRequest lineRequest) {
 		lineService.update(lineRequest.toEntity(lineId));
 		return ResponseEntity.ok().build();
 	}
@@ -72,7 +74,7 @@ public class LineController {
 	}
 
 	@PostMapping("/{lineId}/sections")
-	public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+	public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
 		Section section = toSection(sectionRequest);
 		lineService.addSection(lineId, section);
 		return ResponseEntity.ok().build();

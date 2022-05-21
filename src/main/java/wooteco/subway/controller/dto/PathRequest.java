@@ -1,8 +1,12 @@
 package wooteco.subway.controller.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class PathRequest {
 
+	@NotNull
 	private final Long source;
+	@NotNull
 	private final Long target;
 	private final int age;
 

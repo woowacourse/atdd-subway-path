@@ -199,9 +199,8 @@ public class LineAcceptanceTest {
 		ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
 
 		// when
-		Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600");
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.body(params2)
+			.body(new LineRequest("name", "red", 1L, 2L, 1))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.put("/lines/" + RestUtil.getIdFromLine(createResponse))
