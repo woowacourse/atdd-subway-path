@@ -17,6 +17,7 @@ import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.DataNotExistException;
@@ -30,6 +31,7 @@ public class PathServiceTest {
     private Long stationId3;
     private Long stationId4;
     private Long stationId5;
+    private PathRequest pathRequest;
 
     private PathService pathService;
 
@@ -60,7 +62,10 @@ public class PathServiceTest {
     @DisplayName("경로를 조회한다.")
     @Test
     void findPath() {
-        PathResponse pathResponse = pathService.findPath(stationId1, stationId4);
+        pathRequest = new PathRequest(stationId1, stationId4, 10);
+
+        PathResponse pathResponse = pathService.findPath(pathRequest);
+
         assertAll(
                 () -> assertThat(pathResponse.getStations())
                         .extracting(StationResponse::getId, StationResponse::getName)
@@ -80,7 +85,9 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
     @Test
     void findPathSameTargetAndSource() {
-        assertThatThrownBy(() -> pathService.findPath(stationId1, stationId1))
+        pathRequest = new PathRequest(stationId1, stationId1, 0);
+
+        assertThatThrownBy(() -> pathService.findPath(pathRequest))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
@@ -88,7 +95,9 @@ public class PathServiceTest {
     @DisplayName("역이 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void findPathNotExistStation() {
-        assertThatThrownBy(() -> pathService.findPath(100L, stationId1))
+        pathRequest = new PathRequest(100L, stationId1, 0);
+
+        assertThatThrownBy(() -> pathService.findPath(pathRequest))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }

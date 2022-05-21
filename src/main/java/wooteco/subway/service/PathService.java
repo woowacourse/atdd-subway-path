@@ -7,6 +7,7 @@ import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Stations;
+import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
 
@@ -21,10 +22,10 @@ public class PathService {
         this.sectionService = sectionService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(PathRequest pathRequest) {
         List<Section> sections = sectionService.findAll();
         Stations stations = stationService.findAll();
-        Path path = Path.of(source, target, sections, stations);
+        Path path = Path.of(pathRequest.getSource(), pathRequest.getTarget(), sections, stations);
         return getPathResponse(stations, path.getPath(), path.getDistance());
     }
 

@@ -24,9 +24,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long stationId3;
     private Long stationId4;
     private Long stationId5;
-
-    private LineRequest 분당선;
-    private LineRequest 다른분당선;
     private Long lineId1;
     private Long lineId2;
 
@@ -38,8 +35,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         stationId4 = postStationId(광흥창역);
         stationId5 = postStationId(상수역);
 
-        분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2, 100);
-        다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3, 200);
+        LineRequest 분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2, 100);
+        LineRequest 다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3, 200);
         lineId1 = postLineId(분당선);
         lineId2 = postLineId(다른분당선);
     }
@@ -60,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 10)
                 .then().log().all();
 
         // then
@@ -88,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 10)
                 .then().log().all();
 
         // then
