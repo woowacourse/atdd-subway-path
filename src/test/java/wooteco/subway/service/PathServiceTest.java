@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -30,23 +31,25 @@ class PathServiceTest {
     class findShortestPathTest {
         @Test
         void 가장_짧은_경로를_찾는다() {
-            PathResponse path = pathService.findShortestPath(1L, 3L);
+            PathRequest pathRequest = new PathRequest(1L, 3L, 10);
+            PathResponse path = pathService.findShortestPath(pathRequest);
             List<StationResponse> stations = path.getStations();
 
             assertAll(() -> {
                 assertThat(stations)
-                    .extracting("id")
-                    .containsExactly(1L, 2L, 3L);
+                        .extracting("id")
+                        .containsExactly(1L, 2L, 3L);
                 assertThat(path)
-                    .extracting("distance", "fare")
-                    .containsExactly(15, 1350);
+                        .extracting("distance", "fare")
+                        .containsExactly(15, 1350);
             });
         }
 
         @Test
         void 존재하지_않는_역_id를_입력받은_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(9999L, 3L))
-                .isInstanceOf(IllegalArgumentException.class);
+            PathRequest pathRequest = new PathRequest(9999L, 3L, 10);
+            assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 }

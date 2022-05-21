@@ -36,7 +36,7 @@ class SectionDaoTest {
     @Test
     void save_메서드는_데이터를_저장한다() {
         Section actual = dao.save(
-            new Section(1L, new Station(1L, "가천대역"), new Station(2L, "태평역"), 10));
+                new Section(1L, new Station(1L, "가천대역"), new Station(2L, "태평역"), 10));
 
         Section expected = new Section(1L, 1L, new Station(1L, "가천대역"), new Station(2L, "태평역"), 10);
 
@@ -61,13 +61,13 @@ class SectionDaoTest {
     @Test
     void saveSections_메서드는_구간들을_저장한다() {
         Sections sections = new Sections(List.of(
-            new Section(1L, new Station(1L, "복정역"), new Station(2L, "가천대역"), 10),
-            new Section(2L, new Station(2L, "가천대역"), new Station(3L, "태평역"), 4)
+                new Section(1L, new Station(1L, "복정역"), new Station(2L, "가천대역"), 10),
+                new Section(2L, new Station(2L, "가천대역"), new Station(3L, "태평역"), 4)
         ));
         Line line = new Line(1L, "분당선", "노란색", sections);
 
-        dao.saveSections(line);
+        dao.saveSections(line.getId(), line.getSections());
 
-        assertThatCode(() -> dao.saveSections(line)).doesNotThrowAnyException();
+        assertThatCode(() -> dao.saveSections(line.getId(), line.getSections())).doesNotThrowAnyException();
     }
 }

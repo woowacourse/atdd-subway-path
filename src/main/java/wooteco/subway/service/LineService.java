@@ -25,7 +25,7 @@ public class LineService {
     private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao,
-        StationService stationService) {
+                       StationService stationService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
@@ -34,7 +34,7 @@ public class LineService {
     @Transactional
     public LineResponse save(LineRequest lineRequest) {
         validateDuplicatedName(lineRequest.getName());
-        Line line = lineDao.save(new Line(lineRequest.getName(), lineRequest.getColor()));
+        Line line = lineDao.save(lineRequest.toLine());
         Station upStation = stationService.findById(lineRequest.getUpStationId());
         Station downStation = stationService.findById(lineRequest.getDownStationId());
         Section section = new Section(line.getId(), upStation, downStation, lineRequest.getDistance());
@@ -50,15 +50,15 @@ public class LineService {
 
     private LineResponse toLineBasicResponse(Line line) {
         List<StationResponse> stations = line.getStations().stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
 
     public List<LineResponse> findAll() {
         return lineDao.findAll().stream()
-            .map(this::toLineBasicResponse)
-            .collect(Collectors.toList());
+                .map(this::toLineBasicResponse)
+                .collect(Collectors.toList());
     }
 
     public LineResponse findById(Long id) {
@@ -119,6 +119,6 @@ public class LineService {
             throw new IllegalArgumentException("존재하지 않는 노선 id입니다.");
         }
         sectionDao.deleteByLineId(line.getId());
-        sectionDao.saveSections(line);
+        sectionDao.saveSections(line.getId(), line.getSections());
     }
 }
