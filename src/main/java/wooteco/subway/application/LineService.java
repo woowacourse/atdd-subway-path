@@ -42,7 +42,7 @@ public class LineService {
 
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = lineRepository.save(new Line(request.getName(), request.getColor()));
+        Line line = lineRepository.save(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         SectionEdge edge = new SectionEdge(upStation.getId(), downStation.getId(),
             request.getDistance());
         Section section = new Section(line.getId(), edge);
@@ -63,7 +63,7 @@ public class LineService {
             throw new DuplicateLineNameException(request.getName());
         }
 
-        return lineRepository.update(new Line(id, request.getName(), request.getColor()));
+        return lineRepository.update(new Line(id, request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     private boolean isDuplicateName(Line line, String name) {

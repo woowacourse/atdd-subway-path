@@ -56,14 +56,14 @@ class PathServiceTest {
         station6 = stationService.save(new StationRequest("서면역"));
 
         line1 = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 5));
+            new LineRequest("신분당선", "bg-red-600", station1.getId(), station2.getId(), 5, 0));
         sectionService.addSection(line1.getId(), new AddSectionRequest(station2.getId(), station3.getId(), 4));
 
         line2 = lineService.save(
-            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3));
+            new LineRequest("분당선", "bg-green-600", station2.getId(), station4.getId(), 3, 0));
 
         line3 = lineService.save(
-            new LineRequest("1호선", "bg-yellow-600", station5.getId(), station6.getId(), 6));
+            new LineRequest("1호선", "bg-yellow-600", station5.getId(), station6.getId(), 6, 0));
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")

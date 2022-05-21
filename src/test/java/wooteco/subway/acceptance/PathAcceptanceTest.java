@@ -31,7 +31,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void searchPathBySourceSameAsTarget() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10);
+
+        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .param("source", upStationId)
@@ -51,9 +52,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
         long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10).jsonPath()
+
+        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0).jsonPath()
             .getLong("id");
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10).jsonPath()
+
+        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 0).jsonPath()
             .getLong("id");
         requestAddSection(line1, station2, station3, 10);
         requestAddSection(line2, station3, station1, 5);
@@ -84,8 +87,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
         long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
 
-        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10);
-        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10);
+        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0);
+
+        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .param("source", station1)

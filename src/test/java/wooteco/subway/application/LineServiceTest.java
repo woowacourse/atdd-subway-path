@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,7 +52,7 @@ public class LineServiceTest {
     @Test
     void saveLine() {
         LineRequest request = new LineRequest("신분당선", "bg-red-600",
-            upStation.getId(), downStation.getId(), 10);
+            upStation.getId(), downStation.getId(), 10, 900);
 
         Line line = lineService.save(request);
 
@@ -60,7 +61,11 @@ public class LineServiceTest {
             .map(StationResponse::getId)
             .collect(Collectors.toList());
 
-        assertThat(lineRepository.findById(response.getId())).isNotEmpty();
+        Optional<Line> expectedLine = lineRepository.findById(response.getId());
+        assertThat(expectedLine).isNotEmpty();
+        assertThat(expectedLine.get().getColor()).isEqualTo("bg-red-600");
+        assertThat(expectedLine.get().getName()).isEqualTo("신분당선");
+        assertThat(expectedLine.get().getExtraFare()).isEqualTo(900);
         assertThat(actualIds).containsExactlyInAnyOrder(upStation.getId(), downStation.getId());
     }
 
@@ -69,7 +74,7 @@ public class LineServiceTest {
     @ValueSource(strings = {"", "  ", "     "})
     void saveLineWithEmptyName(String name) {
         assertThatThrownBy(() -> lineService.save(
-            new LineRequest(name, "bg-red-600", upStation.getId(), downStation.getId(), 10))
+            new LineRequest(name, "bg-red-600", upStation.getId(), downStation.getId(), 10, 0))
         ).isInstanceOf(BlankArgumentException.class);
     }
 
@@ -78,7 +83,7 @@ public class LineServiceTest {
     @ValueSource(strings = {"", "  ", "     "})
     void saveLineWithEmptyColor(String color) {
         assertThatThrownBy(() -> lineService.save(
-            new LineRequest("신분당선", color, upStation.getId(), downStation.getId(), 10))
+            new LineRequest("신분당선", color, upStation.getId(), downStation.getId(), 10, 0))
         ).isInstanceOf(BlankArgumentException.class);
     }
 
@@ -89,10 +94,10 @@ public class LineServiceTest {
         String color = "bg-red-600";
         Station newStation = stationRepository.save(new Station("선릉역"));
 
-        lineService.save(new LineRequest(name, color, upStation.getId(), downStation.getId(), 10));
+        lineService.save(new LineRequest(name, color, upStation.getId(), downStation.getId(), 10, 0));
 
         assertThatThrownBy(() -> lineService
-            .save(new LineRequest(name, color, newStation.getId(), upStation.getId(), 10))
+            .save(new LineRequest(name, color, newStation.getId(), upStation.getId(), 10, 0))
         ).isInstanceOf(DuplicateLineNameException.class);
     }
 
@@ -100,7 +105,7 @@ public class LineServiceTest {
     @Test
     void saveWithNotExistStation() {
         long notFoundStationId = Math.max(upStation.getId(), downStation.getId()) + 10;
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", 1L, notFoundStationId, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", 1L, notFoundStationId, 10, 0);
 
         assertThatThrownBy(() -> lineService.save(request))
             .isInstanceOf(NotFoundStationException.class);
@@ -117,7 +122,7 @@ public class LineServiceTest {
     @Test
     void queryLine() {
         Line line = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10));
+            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 500));
 
         LineResponse expected = lineService.getById(line.getId());
         List<Long> expectedStationIds = expected.getStations().stream()
@@ -127,6 +132,7 @@ public class LineServiceTest {
         assertThat(expected.getId()).isEqualTo(line.getId());
         assertThat(expected.getName()).isEqualTo("신분당선");
         assertThat(expected.getColor()).isEqualTo("bg-red-600");
+        assertThat(expected.getExtraFare()).isEqualTo(500);
         assertThat(expectedStationIds)
             .containsExactlyInAnyOrder(upStation.getId(), downStation.getId());
     }
@@ -135,9 +141,9 @@ public class LineServiceTest {
     void queryAll() {
         Station station3 = stationRepository.save(new Station("선릉역"));
         Line line1 = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10));
+            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 500));
         Line line2 = lineService.save(
-            new LineRequest("1호선", "bg-blue-600", upStation.getId(), station3.getId(), 10));
+            new LineRequest("1호선", "bg-blue-600", upStation.getId(), station3.getId(), 10, 0));
 
         List<Long> lineIds = lineService.getAll().stream()
             .map(LineResponse::getId)
@@ -150,13 +156,13 @@ public class LineServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "  ", "     "})
     void updateLineWithEmptyName(String name) {
-        LineRequest request = new LineRequest("신분당선", "bg-red-600",
-            upStation.getId(), downStation.getId(), 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStation.getId(),
+            downStation.getId(), 10, 0);
 
         Line line = lineService.save(request);
 
         assertThatThrownBy(
-            () -> lineService.update(line.getId(), new LineRequest(name, "bg-red-600")))
+            () -> lineService.update(line.getId(), new LineRequest(name, "bg-red-600", 0)))
             .isInstanceOf(BlankArgumentException.class);
     }
 
@@ -164,35 +170,36 @@ public class LineServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "  ", "     "})
     void updateLineWithEmptyColor(String color) {
-        LineRequest request = new LineRequest("신분당선", "bg-red-600",
-            upStation.getId(), downStation.getId(), 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStation.getId(),
+            downStation.getId(), 10, 0);
 
         Line line = lineService.save(request);
 
         assertThatThrownBy(
-            () -> lineService.update(line.getId(), new LineRequest("신분당선", color)))
+            () -> lineService.update(line.getId(), new LineRequest("신분당선", color, 0)))
             .isInstanceOf(BlankArgumentException.class);
     }
 
     @DisplayName("지하철 노선의 정보를 수정한다.")
     @Test
     void updateLine() {
-        LineRequest request = new LineRequest("신분당선", "bg-red-600",
-            upStation.getId(), downStation.getId(), 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", upStation.getId(),
+            downStation.getId(), 10, 0);
 
         Line line = lineService.save(request);
 
-        lineService.update(line.getId(), new LineRequest("1호선", "bg-blue-600"));
+        lineService.update(line.getId(), new LineRequest("1호선", "bg-blue-600", 900));
 
         Line expectedLine = lineRepository.findById(line.getId()).orElseThrow();
         assertThat(expectedLine.getName()).isEqualTo("1호선");
         assertThat(expectedLine.getColor()).isEqualTo("bg-blue-600");
+        assertThat(expectedLine.getExtraFare()).isEqualTo(900);
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
     @Test
     void updateNotExistLine() {
-        assertThatThrownBy(() -> lineService.update(50L, new LineRequest("1호선", "bg-red-600")))
+        assertThatThrownBy(() -> lineService.update(50L, new LineRequest("1호선", "bg-red-600", 0)))
             .isInstanceOf(NotFoundLineException.class);
     }
 
@@ -207,7 +214,7 @@ public class LineServiceTest {
     @Test
     void deleteLine() {
         Line line = lineService.save(
-            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10));
+            new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 0));
 
         lineService.deleteById(line.getId());
 

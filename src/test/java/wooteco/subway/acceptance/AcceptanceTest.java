@@ -52,14 +52,15 @@ public class AcceptanceTest {
     }
 
     protected ExtractableResponse<Response> requestCreateLine(String name, String color,
-                                                              Long upStationId, Long downStationId,
-                                                              int distance) {
+                                                            Long upStationId, Long downStationId,
+                                                            int distance, int extraFare) {
         Map<String, String> params = Map.of(
             "name", name,
             "color", color,
             "upStationId", String.valueOf(upStationId),
             "downStationId", String.valueOf(downStationId),
-            "distance", String.valueOf(distance));
+            "distance", String.valueOf(distance),
+            "extraFare", String.valueOf(extraFare));
 
         return RestAssured.given().log().all()
             .body(params)

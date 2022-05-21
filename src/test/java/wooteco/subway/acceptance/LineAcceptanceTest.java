@@ -28,7 +28,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestCreateLine(name, "bg-red-600", upStationId,
-            downStationId, 10);
+            downStationId, 10, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -41,7 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestCreateLine("신분당선", color, upStationId,
-            downStationId, 10);
+            downStationId, 10, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -51,11 +51,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLine() {
         String name = "신분당선";
         String color = "bg-red-600";
+        int extraFare = 900;
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestCreateLine(name, color, upStationId,
-            downStationId, 10);
+            downStationId, 10, extraFare);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -64,6 +65,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("color")).isEqualTo(color);
         assertThat(response.jsonPath().getList("stations.id", Long.class))
             .containsExactlyInAnyOrder(upStationId, downStationId);
+        assertThat(response.jsonPath().getInt("extraFare")).isEqualTo(extraFare);
     }
 
     @DisplayName("지하철 노선 중복 등록을 허용하지 않는다")
@@ -74,11 +76,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String color = "bg-red-600";
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine(name, color, upStationId, downStationId, 10);
+
+        requestCreateLine(name, color, upStationId, downStationId, 10, 0);
 
         // when
+
         ExtractableResponse<Response> response = requestCreateLine(name, color, upStationId,
-            downStationId, 10);
+            downStationId, 10, 0);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -87,8 +91,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선은 존재하지 않는 상행 또는 하행 역으로 등록할 수 없다.")
     @Test
     void createLineWithNotExistStation() {
-        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600", 1L, 2L,
-            10);
+
+        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600", 1L, 2L, 10,
+            0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -101,8 +106,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String color = "bg-red-600";
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> createResponse = requestCreateLine(name, color, upStationId,
-            downStationId, 10);
+            downStationId, 10, 0);
         Long createdId = createResponse.jsonPath().getLong("id");
 
         // when
@@ -139,10 +145,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> createResponse1 = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
+
         ExtractableResponse<Response> createResponse2 = requestCreateLine("1호선", "bg-blue-600",
-            upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -167,8 +175,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
         long createdId = response.jsonPath().getLong("id");
 
         // when & then
@@ -188,8 +197,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
         long createdId = response.jsonPath().getLong("id");
 
         // when & then
@@ -210,13 +220,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         String newName = "1호선";
         String newColor = "bg-blue-600";
+        int newExtraFare = 900;
+
         ExtractableResponse<Response> createResponse = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
         long createdId = createResponse.jsonPath().getLong("id");
 
         // when
         RestAssured.given().log().all()
-            .body(Map.of("name", newName, "color", newColor))
+            .body(Map.of("name", newName, "color", newColor, "extraFare", newExtraFare))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .put("/lines/" + createdId)
@@ -233,6 +245,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getLong("id")).isEqualTo(createdId);
         assertThat(response.jsonPath().getString("name")).isEqualTo(newName);
         assertThat(response.jsonPath().getString("color")).isEqualTo(newColor);
+        assertThat(response.jsonPath().getInt("extraFare")).isEqualTo(newExtraFare);
     }
 
     @DisplayName("중복된 노선 이름 수정을 허용하지 않는다")
@@ -241,9 +254,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
-        requestCreateLine("1호선", "bg-red-600", upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
+
+        requestCreateLine("1호선", "bg-red-600", upStationId, downStationId, 10, 0);
 
         long createdId = response.jsonPath().getLong("id");
 
@@ -288,9 +303,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
+
         ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10);
-        requestCreateLine("1호선", "bg-red-600", upStationId, downStationId, 10);
+            upStationId, downStationId, 10, 0);
+
+        requestCreateLine("1호선", "bg-red-600", upStationId, downStationId, 10, 0);
         long createdId = response.jsonPath().getLong("id");
 
         // when
