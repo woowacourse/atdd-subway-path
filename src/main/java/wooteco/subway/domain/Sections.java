@@ -12,6 +12,7 @@ public class Sections {
 
     private static final int MIN_SECTION_COUNT = 1;
     private static final String NO_DOWN_STATION_ID_ERROR = "해당 stationId를 하행역으로 둔 구간은 존재하지 않습니다.";
+    private static final String NO_UP_STATION_ID_ERROR = "해당 stationId를 상행역으로 둔 구간은 존재하지 않습니다.";
     private static final String NO_STATIONS_IN_LINE_ERROR = "해당 역은 기존 노선과 이어지지 않습니다.";
     private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.";
     private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.";
@@ -59,7 +60,8 @@ public class Sections {
     }
 
     /**
-     * 새로운 구간을 등록하는 메서드
+     * 새로운 구간을 등록할 때 변경되는 기존 구간을 찾는 메서드.
+     * 종착역으로 등록되는 경우 변경되는 기존 구간이 없다.
      *
      * @param newSection 추가하고자 하는 구간
      * @return 데이터가 변경된 Section
@@ -109,23 +111,43 @@ public class Sections {
     }
 
     /**
-     * 기존 구간을 삭제하는 메서드
+     * 역 id를 통해 삭제하는 구간의 id를 구하는 메서드.
+     *
+     * @param stationId 삭제하고자 하는 역
+     * @return 삭제되는 구간의 id
+     */
+    public Long findRemoveSectionId(Long stationId) {
+        validRemoveCondition();
+        validStationId(stationId);
+
+        try {
+            return findByDownStationId(stationId).getId();
+        } catch (IllegalArgumentException e) {
+            return findByUpStationId(stationId).getId();
+        }
+    }
+
+    /**
+     * 기존 구간을 삭제할 때 변경되는 기존 구간을 찾는 메서드.
+     * 종착역이 삭제되는 경우 변경되는 기존 구간은 없다.
      *
      * @param stationId 삭제하고자 하는 역
      * @return 삭제로 인해 변경 사항이 있는 Section
      */
     public Optional<Section> findUpdateWhenRemove(Long stationId) {
         validRemoveCondition();
-        Section removedSection = findByDownStationId(stationId);
+        validStationId(stationId);
 
-        for (Section section : value) {
-            if (!section.isSameUpStationId(stationId)) {
-                section.updateUpStationId(removedSection.getUpStationId());
-                section.addDistance(removedSection);
-                return Optional.of(section);
-            }
+        if (isLastStation(stationId)) {
+            return Optional.empty();
         }
-        return Optional.empty();
+
+        Section removedSection = findByDownStationId(stationId);
+        Section updatedSection = findByUpStationId(stationId);
+        updatedSection.updateUpStationId(removedSection.getUpStationId());
+        updatedSection.addDistance(removedSection);
+
+        return Optional.of(updatedSection);
     }
 
     private void validRemoveCondition() {
@@ -134,11 +156,33 @@ public class Sections {
         }
     }
 
-    public Section findByDownStationId(Long stationId) {
+    private void validStationId(Long id) {
+        boolean condition = value.stream()
+                .noneMatch(section -> section.isSameDownStationId(id) || section.isSameUpStationId(id));
+
+        if (condition) {
+            throw new IllegalArgumentException("해당 역은 구간에 포함되지 않습니다.");
+        }
+    }
+
+    private boolean isLastStation(Long stationId) {
+        List<Long> stationIds = getSortedStationIds();
+        int index = stationIds.indexOf(stationId);
+        return index == 0 || index == stationIds.size() - 1;
+    }
+
+    private Section findByDownStationId(Long stationId) {
         return value.stream()
                 .filter(section -> section.isSameDownStationId(stationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(NO_DOWN_STATION_ID_ERROR));
+    }
+
+    private Section findByUpStationId(Long stationId) {
+        return value.stream()
+                .filter(section -> section.isSameUpStationId(stationId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(NO_UP_STATION_ID_ERROR));
     }
 
     @Override

@@ -51,7 +51,7 @@ public class SectionService {
         Optional<Section> updatedSection = sections.findUpdateWhenRemove(stationId);
         updatedSection.ifPresent(sectionDao::update);
 
-        Section section = sections.findByDownStationId(stationId);
-        sectionDao.deleteById(section.getId());
+        Long removeId = sections.findRemoveSectionId(stationId);
+        sectionDao.deleteById(removeId);
     }
 }

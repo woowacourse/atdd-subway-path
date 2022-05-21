@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 
 class SectionsTest {
 
@@ -29,10 +27,10 @@ class SectionsTest {
         sections = new Sections(new ArrayList<>(List.of(section3, section2, section1, section4)));
     }
 
-    @DisplayName("Section 추가 확인")
+    @DisplayName("Section 추가 시 수정되는 데이터")
     @ParameterizedTest
     @MethodSource("parameterProvider")
-    void add(Section newSection, Section expected) {
+    void find_update_when_add(Section newSection, Section expected) {
         // given
 
         // when
@@ -66,5 +64,56 @@ class SectionsTest {
         // then
         assertThat(ids).containsExactly(section4.getUpStationId(), section4.getDownStationId(),
                 section3.getDownStationId(), section2.getDownStationId(), section1.getDownStationId());
+    }
+
+    @DisplayName("Section 삭제 시 수정되는 데이터")
+    @ParameterizedTest
+    @MethodSource("parameterProvider3")
+    void find_update_when_delete(Long removeStationId, Long expected) {
+        // given
+
+        // when
+        Long removedId = sections.findRemoveSectionId(removeStationId);
+
+        // then
+        assertThat(removedId).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> parameterProvider3() {
+        return Stream.of(
+                Arguments.arguments(1L, 1L),
+                Arguments.arguments(3L, 2L),
+                Arguments.arguments(5L, 4L)
+        );
+    }
+
+    @DisplayName("Section 삭제 시 삭제되는 구간의 id")
+    @ParameterizedTest
+    @MethodSource("parameterProvider2")
+    void when_delete(Long removeId, Section expected) {
+        // given
+
+        // when
+        Optional<Section> section = sections.findUpdateWhenRemove(removeId);
+
+        // then
+        assertThat(section).isEqualTo(Optional.ofNullable(expected));
+    }
+
+    private static Stream<Arguments> parameterProvider2() {
+        return Stream.of(
+                Arguments.arguments(
+                        1L,
+                        null
+                ),
+                Arguments.arguments(
+                        3L,
+                        new Section(1L, 1L, 2L, 1L, 20)
+                ),
+                Arguments.arguments(
+                        5L,
+                        null
+                )
+        );
     }
 }
