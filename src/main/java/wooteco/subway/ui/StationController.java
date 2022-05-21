@@ -3,7 +3,9 @@ package wooteco.subway.ui;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.service.StationService;
 
 @RestController
+@Validated
 public class StationController {
 
     private final StationService stationService;
@@ -41,7 +44,7 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
+    public ResponseEntity<Void> deleteStation(@Min(1) @PathVariable final Long id) {
         stationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
