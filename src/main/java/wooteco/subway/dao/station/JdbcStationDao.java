@@ -12,12 +12,10 @@ import wooteco.subway.domain.station.Station;
 @Repository
 public class JdbcStationDao implements StationDao {
 
-    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> {
-        return new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        );
-    };
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> new Station(
+            resultSet.getLong("id"),
+            resultSet.getString("name")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -54,7 +52,7 @@ public class JdbcStationDao implements StationDao {
     @Override
     public List<Station> findAll() {
         final String sql = "select id, name from STATION";
-        return jdbcTemplate.query(sql, stationRowMapper);
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
     @Override

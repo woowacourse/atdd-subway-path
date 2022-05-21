@@ -12,7 +12,7 @@ import wooteco.subway.domain.line.Line;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getString("color"),
@@ -50,13 +50,13 @@ public class JdbcLineDao implements LineDao {
     @Override
     public List<Line> findAll() {
         final String sql = "select id, name, color, extra_fare from LINE";
-        return jdbcTemplate.query(sql, lineRowMapper);
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
     public Line findById(Long id) {
         final String sql = "select id, name, color, extra_fare from LINE where id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+        return jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id);
     }
 
     @Override
