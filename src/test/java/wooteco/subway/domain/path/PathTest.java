@@ -9,7 +9,7 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
-class Path2Test {
+class PathTest {
 
     private final Station STATION1 = new Station(1L, "역1");
     private final Station STATION2 = new Station(2L, "역2");
@@ -29,7 +29,7 @@ class Path2Test {
                 new Section(STATION5, STATION3, 100),
                 new Section(STATION3, STATION6, 100));
 
-        Path2 path = Path2.of(STATION2, STATION3, sections);
+        Path path = Path.of(STATION2, STATION3, sections);
 
         assertThat(path.toStations()).containsExactly(STATION2, STATION3);
         assertThat(path.calculateDistance()).isEqualTo(1);
@@ -46,7 +46,7 @@ class Path2Test {
                 new Section(STATION5, STATION3, 5),
                 new Section(STATION3, STATION6, 6));
 
-        Path2 path = Path2.of(STATION2, STATION3, sections);
+        Path path = Path.of(STATION2, STATION3, sections);
 
         assertThat(path.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
         assertThat(path.calculateDistance()).isEqualTo(10);
@@ -63,8 +63,8 @@ class Path2Test {
                 new Section(STATION5, STATION3, 5),
                 new Section(STATION3, STATION6, 6));
 
-        Path2 path1 = Path2.of(STATION2, STATION3, sections);
-        Path2 path2 = Path2.of(STATION3, STATION2, sections);
+        Path path1 = Path.of(STATION2, STATION3, sections);
+        Path path2 = Path.of(STATION3, STATION2, sections);
 
         assertThat(path1.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
         assertThat(path2.toStations()).containsExactly(STATION3, STATION5, STATION4, STATION2);
@@ -79,7 +79,7 @@ class Path2Test {
                 new Section(STATION2, STATION3, 100),
                 new Section(STATION3, STATION4, 20));
 
-        assertThatThrownBy(() -> Path2.of(STATION1, nonRegisteredStation, sections))
+        assertThatThrownBy(() -> Path.of(STATION1, nonRegisteredStation, sections))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ class Path2Test {
     void 출발점과_도착점이_동일한_경우_예외_발생() {
         List<Section> sections = List.of(new Section(STATION1, STATION2, 10));
 
-        assertThatThrownBy(() -> Path2.of(STATION1, STATION1, sections))
+        assertThatThrownBy(() -> Path.of(STATION1, STATION1, sections))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -97,7 +97,7 @@ class Path2Test {
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20));
 
-        assertThatThrownBy(() -> Path2.of(STATION1, STATION3, sections))
+        assertThatThrownBy(() -> Path.of(STATION1, STATION3, sections))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

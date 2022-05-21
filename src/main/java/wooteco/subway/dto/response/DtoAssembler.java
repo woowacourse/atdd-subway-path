@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineInfo;
-import wooteco.subway.domain.path.Path2;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Station;
 
 public class DtoAssembler {
@@ -21,7 +21,7 @@ public class DtoAssembler {
         return new LineResponse(lineId, lineName, lineColor, stations);
     }
 
-    public static PathResponse assemble(Path2 path){
+    public static PathResponse assemble(Path path){
         List<StationResponse> stations = toStationResponse(path.toStations());
         int distance = path.calculateDistance();
         int fare = path.calculateFare();
