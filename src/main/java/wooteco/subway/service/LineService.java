@@ -83,12 +83,6 @@ public class LineService {
         return new StationResponse(station.getId(), station.getName());
     }
 
-    private List<StationResponse> toStationResponse(List<Station> stations) {
-        return stations.stream()
-            .map(i -> new StationResponse(i.getId(), i.getName()))
-            .collect(Collectors.toList());
-    }
-
     public boolean deleteById(Long id) {
         return lineDao.deleteById(id);
     }
@@ -105,6 +99,12 @@ public class LineService {
         List<Station> stations = findSortedStationByLineId(line.getId());
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
             toStationResponse(stations));
+    }
+
+    private List<StationResponse> toStationResponse(List<Station> stations) {
+        return stations.stream()
+            .map(i -> new StationResponse(i.getId(), i.getName()))
+            .collect(Collectors.toList());
     }
 
     private List<Station> findSortedStationByLineId(Long lineId) {
