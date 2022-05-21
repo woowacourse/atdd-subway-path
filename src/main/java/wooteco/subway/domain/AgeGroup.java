@@ -1,14 +1,21 @@
 package wooteco.subway.domain;
 
+import static wooteco.subway.domain.AgeGroup.Constants.*;
+
 import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 
 public enum AgeGroup {
-    BABY(age -> 0 <= age && age < 6, value -> 0),
-    CHILDREN(age -> 6 <= age && age < 13, value -> value - (value - 350) / 2),
-    TEENAGER(age -> 13 <= age && age < 19, value -> value - (value - 350) / 5),
-    ADULT(age -> 19 <= age, value -> value);
+    BABY(age -> BABY_MIN_AGE <= age && age < CHILD_MIN_AGE, value -> FREE),
+
+    CHILDREN(age -> CHILD_MIN_AGE <= age && age < TEENAGE_MIN_AGE,
+            value -> value - (value - COMMON_DC_FARE) / CHILD_DC_RATE),
+
+    TEENAGER(age -> TEENAGE_MIN_AGE <= age && age < ADULT_MIN_AGE,
+            value -> value - (value - COMMON_DC_FARE) / TEENAGER_DC_RATE),
+
+    ADULT(age -> ADULT_MIN_AGE <= age, value -> value);
 
     private final Predicate<Integer> grouping;
     private final IntUnaryOperator discountValue;
@@ -27,5 +34,16 @@ public enum AgeGroup {
 
     public int getDiscountValue(int value) {
         return discountValue.applyAsInt(value);
+    }
+
+    public static class Constants {
+        public static final int FREE = 0;
+        public static final int BABY_MIN_AGE = 0;
+        public static final int CHILD_MIN_AGE = 6;
+        public static final int TEENAGE_MIN_AGE = 13;
+        public static final int ADULT_MIN_AGE = 19;
+        public static final int COMMON_DC_FARE = 350;
+        public static final int CHILD_DC_RATE = 2;
+        public static final int TEENAGER_DC_RATE = 5;
     }
 }
