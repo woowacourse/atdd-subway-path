@@ -1,8 +1,9 @@
 package wooteco.subway.domain.strategy.path;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Path;
@@ -18,19 +19,20 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
     public Path calculatePath(Station source, Station target, Sections sections) {
         validateSameStation(source, target);
 
-        WeightedMultigraph<Station , DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, ShortestPathCustomEdge> graph = new WeightedMultigraph<>(ShortestPathCustomEdge.class);
         addVertex(sections, graph);
-        addEdgeWeight(sections, graph);
+        addEdge(sections, graph);
 
-        GraphPath<Station, DefaultWeightedEdge> shortPath = createShortestPath(source, target, graph);
+        GraphPath<Station, ShortestPathCustomEdge> shortPath = createShortestPath(source, target, graph);
+        List<Long> distinctLineIds = createDistinctLineIds(shortPath);
 
-        return new Path(shortPath.getVertexList(), (int) shortPath.getWeight());
+        return new Path(shortPath.getVertexList(), distinctLineIds, (int)shortPath.getWeight());
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> createShortestPath(
-            Station source, Station target, WeightedMultigraph<Station , DefaultWeightedEdge> graph) {
+    private GraphPath<Station, ShortestPathCustomEdge> createShortestPath(
+            Station source, Station target, WeightedMultigraph<Station , ShortestPathCustomEdge> graph) {
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, ShortestPathCustomEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         try {
             return dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
@@ -38,15 +40,29 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
         }
     }
 
-    private void addEdgeWeight(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section value : sections.getValues()) {
-            graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
+    private List<Long> createDistinctLineIds(GraphPath<Station, ShortestPathCustomEdge> shortPath) {
+        return shortPath.getEdgeList().stream()
+                .map(value -> value.getLineId())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private void addVertex(Sections sections, WeightedMultigraph<Station, ShortestPathCustomEdge> graph) {
+        for (Station station : sections.getDistinctStations()) {
+            graph.addVertex(station);
         }
     }
 
-    private void addVertex(Sections sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : sections.getDistinctStations()) {
-            graph.addVertex(station);
+//    private void addEdgeWeight(Sections sections, WeightedMultigraph<Station, ShortestPathCustomEdge> graph) {
+//        for (Section value : sections.getValues()) {
+//            graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
+//        }
+//    }
+
+    private void addEdge(Sections sections, WeightedMultigraph<Station, ShortestPathCustomEdge> graph) {
+        for (Section section : sections.getValues()) {
+            graph.addEdge(section.getUpStation(), section.getDownStation(),
+                    new ShortestPathCustomEdge(section.getLineId(), section.getDistance()));
         }
     }
 

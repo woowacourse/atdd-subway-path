@@ -6,10 +6,12 @@ import java.util.Objects;
 public class Path {
 
     private final List<Station> stations;
+    private final List<Long> lines;
     private final int distance;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, List<Long> lines, int distance) {
         this.stations = stations;
+        this.lines = lines;
         this.distance = distance;
     }
 
@@ -30,11 +32,21 @@ public class Path {
             return false;
         }
         Path path = (Path) o;
-        return distance == path.distance && Objects.equals(stations, path.stations);
+        return distance == path.distance && Objects.equals(stations, path.stations) && Objects.equals(
+                lines, path.lines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stations, distance);
+        return Objects.hash(stations, lines, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Path{" +
+                "stations=" + stations +
+                ", lines=" + lines +
+                ", distance=" + distance +
+                '}';
     }
 }
