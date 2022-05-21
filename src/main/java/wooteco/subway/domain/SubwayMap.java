@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -20,14 +21,17 @@ public class SubwayMap {
         checkReachable(source, target);
         List<Station> stations = calculatePassingStations(source, target);
         int distance = calculateDistance(source, target);
+        Set<Long> passingLineIds = calculatePassingLines(source, target);
+        return new Path(stations, distance, passingLineIds);
+    }
 
+    private Set<Long> calculatePassingLines(final Station source, final Station target) {
         HashSet<Long> passingLineIds = new HashSet<>();
         GraphPath<Station, SectionWeightedEdge> path = graph.getPath(source, target);
         for (final SectionWeightedEdge sectionWeightedEdge : path.getEdgeList()) {
             passingLineIds.add(sectionWeightedEdge.getIncludedLineId());
         }
-
-        return new Path(stations, distance, passingLineIds);
+        return passingLineIds;
     }
 
     private List<Station> calculatePassingStations(final Station source, final Station target) {

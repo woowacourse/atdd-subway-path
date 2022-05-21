@@ -11,7 +11,7 @@ public class Path {
     private final int distance;
     private final Set<Long> passingLineIds;
 
-    public Path(final List<Station> stations, final int distance, final HashSet<Long> passingLineIds) {
+    public Path(final List<Station> stations, final int distance, final Set<Long> passingLineIds) {
         this.stations = stations;
         this.distance = distance;
         this.passingLineIds = passingLineIds;
