@@ -15,7 +15,7 @@ public class SubwaySectionsGraph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public SubwaySectionsGraph(List<Section> sections) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         fillVertex(sections);
         fillEdge(sections);
     }
@@ -40,9 +40,9 @@ public class SubwaySectionsGraph {
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
-    private GraphPath getDijkstraShortestPath(Station source, Station target) {
+    private GraphPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(Station source, Station target) {
         try {
-            return new DijkstraShortestPath(graph).getPath(source, target);
+            return new DijkstraShortestPath<>(graph).getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(UNREGISTERED_SECTION_STATION);
         }
