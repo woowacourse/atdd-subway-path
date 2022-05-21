@@ -53,5 +53,5 @@
 - PathCalculator
     - 경로 조회
     - 거리
-- FareCalculator
-    - 요금 계산
+- FarePolicy
+    - 거리에 따른 요금 계산
