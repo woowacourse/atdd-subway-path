@@ -26,10 +26,6 @@ public class Section implements Comparable<Section> {
         this(null, null, upStation, downStation, distance);
     }
 
-    public boolean isSameId(Long id) {
-        return Objects.equals(this.id, id);
-    }
-
     public boolean isSameLineId(Long lineId) {
         return Objects.equals(this.lineId, lineId);
     }
