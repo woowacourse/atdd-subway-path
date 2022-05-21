@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,22 @@ class SectionsTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @DisplayName("구간들의 역들을 정상적으로 가져오는 지 확인한다.")
+    @Test
+    void getStationsIdsInSections() {
+        // given
+        Sections sections = new Sections(List.of(
+                new Section(1L, 2L),
+                new Section(2L, 3L),
+                new Section(4L, 2L)));
+
+        // when
+        Set<Long> stationIdsInSections = sections.getStationIdsInSections();
+
+        // then
+        assertThat(stationIdsInSections).contains(1L, 2L, 3L, 4L);
     }
 
     Sections createSections() {

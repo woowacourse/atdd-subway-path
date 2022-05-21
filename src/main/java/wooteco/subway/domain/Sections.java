@@ -1,13 +1,6 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Sections {
 
@@ -74,6 +67,15 @@ public class Sections {
             stationIds.add(upStationId);
         }
 
+        return stationIds;
+    }
+
+    public Set<Long> getStationIdsInSections() {
+        Set<Long> stationIds = new HashSet<>();
+        for (final Section section : sections) {
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
+        }
         return stationIds;
     }
 

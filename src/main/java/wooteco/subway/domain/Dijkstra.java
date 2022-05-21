@@ -18,7 +18,7 @@ public class Dijkstra implements PathFactory {
     }
 
     private void initVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Sections sections) {
-        for (Long stationId : sections.sortedStationId()) {
+        for (Long stationId : sections.getStationIdsInSections()) {
             graph.addVertex(stationId);
         }
     }
