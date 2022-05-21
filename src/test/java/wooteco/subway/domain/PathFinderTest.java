@@ -26,8 +26,8 @@ class PathFinderTest {
     @BeforeEach
     void setUp() {
         initStations();
-        line1 = new Line(1L, "line1", "color1");
-        line2 = new Line(2L, "line2", "color2");
+        line1 = new Line(1L, "line1", "color1", 0);
+        line2 = new Line(2L, "line2", "color2", 0);
         initSections();
     }
 

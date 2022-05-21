@@ -34,7 +34,7 @@ class SectionDaoTest {
     @Test
     void createSection() {
         // given
-        Line line = lineDao.save(new Line("line", "color"));
+        Line line = lineDao.save(new Line("line", "color", 0));
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         Section section = new Section(line.getId(), station1, station2, 10);
@@ -47,7 +47,7 @@ class SectionDaoTest {
     @Test
     void findSectionByLineId() {
         // given
-        Line line = new Line("line", "color");
+        Line line = new Line("line", "color", 0);
         Line savedLine = lineDao.save(line);
 
         Station upStation = new Station("upStation");
@@ -69,7 +69,7 @@ class SectionDaoTest {
     @Test
     void update() {
         // given
-        Line line = new Line("line", "color");
+        Line line = new Line("line", "color", 0);
         Line savedLine = lineDao.save(line);
 
         Station station1 = stationDao.save(new Station("station1"));
@@ -92,12 +92,12 @@ class SectionDaoTest {
     @DisplayName("모든 구간들을 조회한다.")
     @Test
     void findAll() {
-        Line line1 = lineDao.save(new Line("line1", "color1"));
+        Line line1 = lineDao.save(new Line("line1", "color1", 0));
         Station station1 = stationDao.save(new Station("station1"));
         Station station2 = stationDao.save(new Station("station2"));
         Section section1 = new Section(line1.getId(), station1, station2, 10);
 
-        Line line2 = lineDao.save(new Line("line2", "color2"));
+        Line line2 = lineDao.save(new Line("line2", "color2", 0));
         Station station3 = stationDao.save(new Station("station3"));
         Station station4 = stationDao.save(new Station("station4"));
         Section section2 = new Section(line2.getId(), station3, station4, 10);

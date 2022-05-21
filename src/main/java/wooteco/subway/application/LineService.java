@@ -61,7 +61,7 @@ public class LineService {
     }
 
     public void updateLine(final Long id, final LineUpdateRequest lineRequest) {
-        lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor()));
+        lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     public void deleteLineById(final Long id) {

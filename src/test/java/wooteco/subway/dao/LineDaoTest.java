@@ -32,7 +32,7 @@ class LineDaoTest {
     @DisplayName("새로운 노선을 저장한다")
     @Test
     void saveLine() {
-        Line savedLine = dao.save(new Line("line", "color"));
+        Line savedLine = dao.save(new Line("line", "color", 0));
         assertThat(savedLine).isNotNull();
     }
 
@@ -47,9 +47,9 @@ class LineDaoTest {
     @Test
     void findAll() {
         // given
-        dao.save(new Line("line1", "color1"));
-        dao.save(new Line("line2", "color2"));
-        dao.save(new Line("line3", "color3"));
+        dao.save(new Line("line1", "color1", 0));
+        dao.save(new Line("line2", "color2", 0));
+        dao.save(new Line("line3", "color3", 0));
 
         // when
         List<Line> lines = dao.findAll();
@@ -62,7 +62,7 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line savedLine = dao.save(new Line("line2", "color2"));
+        Line savedLine = dao.save(new Line("line2", "color2", 0));
 
         // when
         Line findLine = dao.findById(savedLine.getId()).get();
@@ -82,10 +82,10 @@ class LineDaoTest {
     @Test
     void update() {
         // given
-        Line savedLine = dao.save(new Line("line", "color"));
+        Line savedLine = dao.save(new Line("line", "color", 0));
 
         // when
-        dao.update(new Line(savedLine.getId(), "changedName", "changedColor"));
+        dao.update(new Line(savedLine.getId(), "changedName", "changedColor", 0));
 
         // then
         Line findLine = dao.findById(savedLine.getId()).get();
@@ -98,11 +98,11 @@ class LineDaoTest {
     void throwExceptionWhenUpdateToExistName() {
         // given
         String name = "line";
-        dao.save(new Line(name, "color"));
-        Line savedLine = dao.save(new Line("test", "test"));
+        dao.save(new Line(name, "color", 0));
+        Line savedLine = dao.save(new Line("test", "test", 0));
 
         //when, then
-        assertThatThrownBy(() -> dao.update(new Line(savedLine.getId(), name, "changedColor")))
+        assertThatThrownBy(() -> dao.update(new Line(savedLine.getId(), name, "changedColor", 0)))
                 .isInstanceOf(DuplicateLineException.class);
     }
 
@@ -111,21 +111,21 @@ class LineDaoTest {
     void throwExceptionWhenUpdateToExistColor() {
         // given
         String color = "red";
-        dao.save(new Line("line", color));
-        Line savedLine = dao.save(new Line("test", "test"));
+        dao.save(new Line("line", color, 0));
+        Line savedLine = dao.save(new Line("test", "test", 0));
 
         //when, then
-        assertThatThrownBy(() -> dao.update(new Line(savedLine.getId(), "changedName", color)))
+        assertThatThrownBy(() -> dao.update(new Line(savedLine.getId(), "changedName", color, 0)))
                 .isInstanceOf(DuplicateLineException.class);
     }
 
     @DisplayName("없는 노선 정보를 변경하려 할 때, 예외를 던진다")
     @Test
     void throwExceptionWhenTryToUpdateNoLine() {
-        Line nonExistLine = dao.save(new Line("test", "test"));
+        Line nonExistLine = dao.save(new Line("test", "test", 0));
         dao.deleteById(nonExistLine.getId());
 
-        assertThatThrownBy(() -> dao.update(new Line(nonExistLine.getId(), "changedName", "changedColor")))
+        assertThatThrownBy(() -> dao.update(new Line(nonExistLine.getId(), "changedName", "changedColor", 0)))
                 .isInstanceOf(NoSuchLineException.class);
     }
 
@@ -133,7 +133,7 @@ class LineDaoTest {
     @Test
     void deleteById() {
         // given
-        Line savedLine = dao.save(new Line("line", "color"));
+        Line savedLine = dao.save(new Line("line", "color", 0));
 
         // when
         dao.deleteById(savedLine.getId());
@@ -147,7 +147,7 @@ class LineDaoTest {
     void existByNameReturnTrue() {
         // given
         String name = "line";
-        dao.save(new Line(name, "color"));
+        dao.save(new Line(name, "color", 0));
 
         // when
         boolean actual = dao.existByName(name);
@@ -171,7 +171,7 @@ class LineDaoTest {
     void existByColorReturnTrue() {
         // given
         String color = "color";
-        dao.save(new Line("line", color));
+        dao.save(new Line("line", color, 0));
 
         // when
         boolean actual = dao.existByColor(color);
