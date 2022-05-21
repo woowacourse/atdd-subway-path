@@ -2,6 +2,9 @@ package wooteco.subway.dto.response;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.station.Station;
 
 public class PathResponse {
 
@@ -15,6 +18,19 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
+    }
+
+    public static PathResponse of(Path path){
+        List<StationResponse> stations = toStationResponse(path.toStations());
+        int distance = path.calculateDistance();
+        int fare = path.calculateFare();
+        return new PathResponse(stations, distance, fare);
+    }
+
+    private static List<StationResponse> toStationResponse(List<Station> stations) {
+        return stations.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public List<StationResponse> getStations() {

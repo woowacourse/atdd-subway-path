@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.response.DtoAssembler;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.repository.SubwayRepository;
@@ -27,6 +26,6 @@ public class PathService {
         List<Section> sections = subwayRepository.findAllSections();
         Path path = Path.of(startStation, endStation, sections);
 
-        return DtoAssembler.assemble(path);
+        return PathResponse.of(path);
     }
 }

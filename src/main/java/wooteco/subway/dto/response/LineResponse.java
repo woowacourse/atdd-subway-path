@@ -2,6 +2,10 @@ package wooteco.subway.dto.response;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.station.Station;
 
 public class LineResponse {
 
@@ -18,6 +22,21 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
+    }
+
+    public static LineResponse of(Line line) {
+        LineInfo lineInfo = line.getLineInfo();
+        Long lineId = lineInfo.getId();
+        String lineName = lineInfo.getName();
+        String lineColor = lineInfo.getColor();
+        List<StationResponse> stations = toStationResponse(line.getSortedStations());
+        return new LineResponse(lineId, lineName, lineColor, stations);
+    }
+
+    private static List<StationResponse> toStationResponse(List<Station> stations) {
+        return stations.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Long getId() {

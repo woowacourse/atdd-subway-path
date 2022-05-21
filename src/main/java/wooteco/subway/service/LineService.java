@@ -12,7 +12,6 @@ import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
-import wooteco.subway.dto.response.DtoAssembler;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
@@ -36,14 +35,14 @@ public class LineService {
         return Lines.of(subwayRepository.findAllLines(), subwayRepository.findAllSections())
                 .toSortedList()
                 .stream()
-                .map(DtoAssembler::assemble)
+                .map(LineResponse::of)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     public LineResponse find(Long id) {
         LineInfo lineInfo = subwayRepository.findExistingLine(id);
         Sections sections = new Sections(subwayRepository.findAllSectionsByLineId(id));
-        return DtoAssembler.assemble(new Line(lineInfo, sections));
+        return LineResponse.of(new Line(lineInfo, sections));
     }
 
     @Transactional
@@ -54,7 +53,7 @@ public class LineService {
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
         LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor());
-        return DtoAssembler.assemble(subwayRepository.saveLine(newLine, newSection));
+        return LineResponse.of(subwayRepository.saveLine(newLine, newSection));
     }
 
     @Transactional
