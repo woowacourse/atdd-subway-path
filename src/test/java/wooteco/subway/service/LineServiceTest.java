@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dto.request.CreateLineRequest;
+import wooteco.subway.dto.request.UpdateLineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -123,7 +125,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
-                    "유효한 노선명", "유효한 색상",200, 1L, 999L, 10);
+                    "유효한 노선명", "유효한 색상", 200, 1L, 999L, 10);
             assertThatThrownBy(() -> service.save(noneExistingDownStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -135,6 +137,61 @@ class LineServiceTest extends ServiceTest {
             CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
                     "유효한 노선명", "색깔", 200, 1L, 2L, 0);
             assertThatThrownBy(() -> service.save(zeroDistanceRequest))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 추가비용이_0미만인_경우_예외발생() {
+            testFixtureManager.saveStations("강남역", "선릉역");
+
+            CreateLineRequest negativeExtraFareRequest = new CreateLineRequest(
+                    "유효한 노선명", "색깔", -1, 1L, 2L, 0);
+            assertThatThrownBy(() -> service.save(negativeExtraFareRequest))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @DisplayName("update 메서드는 데이터를 수정한다")
+    @Nested
+    class UpdateTest {
+
+        @Test
+        void 유효한_입력인_경우_성공() {
+            testFixtureManager.saveLine("노선1", "색깔", 100);
+
+            service.update(1L, new UpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
+            LineEntity actual = lineDao.findById(1L).get();
+            LineEntity expected = new LineEntity(1L, "수정된 노선명", "수정된 색깔", 300);
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 존재하지_않는_노선을_수정하려는_경우_예외발생() {
+            UpdateLineRequest validValueRequest = new UpdateLineRequest(
+                    "새로운 노선명", "새로운 색깔", 300);
+            assertThatThrownBy(() -> service.update(999999L, validValueRequest))
+                    .isInstanceOf(NotFoundException.class);
+        }
+
+        @Test
+        void 중복되는_노선명으로_수정하려는_경우_예외발생() {
+            testFixtureManager.saveLine("존재하는 노선명", "색깔");
+            testFixtureManager.saveLine("현재 노선명", "색깔");
+
+            UpdateLineRequest duplicateLineNameRequest = new UpdateLineRequest(
+                    "존재하는 노선명", "새로운 색깔", 300);
+            assertThatThrownBy(() -> service.update(2L, duplicateLineNameRequest))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 추가비용이_0미만인_경우_예외발생() {
+            testFixtureManager.saveLine("현재 노선명", "색깔");
+
+            UpdateLineRequest negativeExtraFareRequest = new UpdateLineRequest(
+                    "유효한 노선명", "색깔", -1);
+            assertThatThrownBy(() -> service.update(1L, negativeExtraFareRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
