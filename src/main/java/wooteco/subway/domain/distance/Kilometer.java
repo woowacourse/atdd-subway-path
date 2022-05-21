@@ -1,17 +1,30 @@
 package wooteco.subway.domain.distance;
 
-public class Kilometer extends DistanceUnit {
-    public Kilometer(int value) {
-        super(value);
+public class Kilometer {
+
+    private final int value;
+
+    private Kilometer(int value) {
+        this.value = value;
     }
 
-    @Override
-    public Kilometer toKm() {
-        return this;
+    public static Kilometer from(int value) {
+        return new Kilometer(value);
     }
 
-    @Override
-    public String toString() {
-        return value() + "km";
+    public int value() {
+        return value;
+    }
+
+    public boolean lessThanKm(int otherValue) {
+        return value <= otherValue;
+    }
+
+    public boolean moreThanKm(int otherValue) {
+        return value >= otherValue;
+    }
+
+    public boolean exceedKm(int otherValue) {
+        return value > otherValue;
     }
 }

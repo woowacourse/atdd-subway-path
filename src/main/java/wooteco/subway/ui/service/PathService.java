@@ -34,7 +34,7 @@ public class PathService {
 
         int distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
 
-        int fare = FarePolicy.getFare(new Kilometer(distance)).value();
+        int fare = FarePolicy.getFare(Kilometer.from(distance)).value();
 
         return new PathResponse(StationResponse.of(path), distance, fare);
     }

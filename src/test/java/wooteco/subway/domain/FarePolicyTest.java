@@ -20,14 +20,14 @@ public class FarePolicyTest {
 
     private static Stream<Arguments> provideDistanceAndFare() {
         return Stream.of(
-                Arguments.of(new Kilometer(10), new Fare(1250)),
-                Arguments.of(new Kilometer(11), new Fare(1350)),
-                Arguments.of(new Kilometer(15), new Fare(1350)),
-                Arguments.of(new Kilometer(16), new Fare(1450)),
-                Arguments.of(new Kilometer(50), new Fare(2050)),
-                Arguments.of(new Kilometer(51), new Fare(2150)),
-                Arguments.of(new Kilometer(58), new Fare(2150)),
-                Arguments.of(new Kilometer(59), new Fare(2250))
+                Arguments.of(Kilometer.from(10), new Fare(1250)),
+                Arguments.of(Kilometer.from(11), new Fare(1350)),
+                Arguments.of(Kilometer.from(15), new Fare(1350)),
+                Arguments.of(Kilometer.from(16), new Fare(1450)),
+                Arguments.of(Kilometer.from(50), new Fare(2050)),
+                Arguments.of(Kilometer.from(51), new Fare(2150)),
+                Arguments.of(Kilometer.from(58), new Fare(2150)),
+                Arguments.of(Kilometer.from(59), new Fare(2250))
         );
     }
 }
