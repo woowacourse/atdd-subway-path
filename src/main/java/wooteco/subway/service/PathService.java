@@ -1,20 +1,16 @@
 package wooteco.subway.service;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
-
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PathService {
@@ -26,16 +22,25 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long upStationId, Long downStationId) {
         validateNotSameStations(upStationId, downStationId);
-        final GraphPath<Station, DefaultWeightedEdge> graphPath = findGraphPath(upStationId, downStationId);
-        validatePathExist(graphPath);
+        Path path = getPath();
 
-        final List<Station> stations = graphPath.getVertexList();
-        final int shortestDistance = (int) graphPath.getWeight();
+        final Station upStation = findStation(upStationId);
+        final Station downStation = findStation(downStationId);
+
+        final List<Station> stations = path.getStations(upStation, downStation);
+        final int shortestDistance = path.getShortestDistance(upStation, downStation);
         final Fare fare = Fare.from(shortestDistance);
         return new PathResponse(stations, shortestDistance, fare.getValue());
+    }
+
+    private Path getPath() {
+        Path path = new Path();
+        path.addAllStations(stationDao.findAll());
+        addAllSections(path);
+        return path;
     }
 
     private void validateNotSameStations(Long upStationId, Long downStationId) {
@@ -44,42 +49,12 @@ public class PathService {
         }
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findGraphPath(Long upStationId, Long downStationId) {
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
-                new DijkstraShortestPath<>(initSubwayMap());
-
-        final Station upStation = findStation(upStationId);
-        final Station downStation = findStation(downStationId);
-        return dijkstraShortestPath.getPath(upStation, downStation);
-    }
-
-    private void validatePathExist(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        if (graphPath == null) {
-            throw new IllegalArgumentException("해당 역 사이 경로가 존재하지 않습니다.");
-        }
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initSubwayMap() {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addAllStations(graph);
-        addAllSections(graph);
-        return graph;
-    }
-
-    private void addAllStations(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        final List<Station> stations = stationDao.findAll();
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-    }
-
-    private void addAllSections(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addAllSections(Path graph) {
         final List<Section> sections = sectionDao.findAll();
         for (Section section : sections) {
             final Station upStation = findStation(section.getUpStationId());
             final Station downStation = findStation(section.getDownStationId());
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+            graph.addSection(upStation, downStation, section.getDistance());
         }
     }
 
