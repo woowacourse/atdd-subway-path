@@ -17,58 +17,43 @@ class PathTest {
     private final Station STATION4 = new Station(4L, "역4");
     private final Station STATION5 = new Station(5L, "역5");
     private final Station STATION6 = new Station(6L, "역6");
+    private final List<Section> SECTIONS = List.of(
+            new Section(1L, STATION1, STATION2, 1),
+            new Section(1L, STATION2, STATION3, 100),
+            new Section(2L, STATION2, STATION4, 2),
+            new Section(3L, STATION2, STATION5, 100),
+            new Section(1L, STATION3, STATION6, 6),
+            new Section(2L, STATION4, STATION5, 3),
+            new Section(3L, STATION5, STATION3, 5));
 
     @Test
-    void 인접한_두_역_사이가_최단거리인_경우_해당_경로를_그대로_조회() {
-        List<Section> sections = List.of(
-                new Section(STATION1, STATION2, 100),
-                new Section(STATION2, STATION3, 1),
-                new Section(STATION2, STATION4, 100),
-                new Section(STATION4, STATION5, 100),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION5, STATION3, 100),
-                new Section(STATION3, STATION6, 100));
+    void toStations_메서드는_시작점부터_목적지까지의_최단경로에_해당하는_지하철역들을_순서대로_제공() {
+        Path path = Path.of(STATION2, STATION3, SECTIONS);
 
-        Path path = Path.of(STATION2, STATION3, sections);
+        List<Station> actual = path.toStations();
+        List<Station> expected = List.of(STATION2, STATION4, STATION5, STATION3);
 
-        assertThat(path.toStations()).containsExactly(STATION2, STATION3);
-        assertThat(path.getDistance()).isEqualTo(1);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 인접한_두_역_사이가_최단거리가_아닌_경우_최적의_경로를_계산하여_조회() {
-        List<Section> sections = List.of(
-                new Section(STATION1, STATION2, 1),
-                new Section(STATION2, STATION3, 100),
-                new Section(STATION2, STATION4, 2),
-                new Section(STATION4, STATION5, 3),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION5, STATION3, 5),
-                new Section(STATION3, STATION6, 6));
+    void getDistance_메서드는_최단경로의_거리를_반환() {
+        Path path = Path.of(STATION2, STATION3, SECTIONS);
 
-        Path path = Path.of(STATION2, STATION3, sections);
+        int actual = path.getDistance();
+        int expected = 10;
 
-        assertThat(path.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
-        assertThat(path.getDistance()).isEqualTo(10);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 출발점과_도착점이_반대가_되면_지하철역들의_순서만_반대로_반환() {
-        List<Section> sections = List.of(
-                new Section(STATION1, STATION2, 1),
-                new Section(STATION2, STATION3, 100),
-                new Section(STATION2, STATION4, 2),
-                new Section(STATION4, STATION5, 3),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION5, STATION3, 5),
-                new Section(STATION3, STATION6, 6));
+    void getPassingLineIds_메서드는_최단거리의_구간들이_속해있는_모든_노선들의_id를_반환() {
+        Path path = Path.of(STATION2, STATION3, SECTIONS);
 
-        Path path1 = Path.of(STATION2, STATION3, sections);
-        Path path2 = Path.of(STATION3, STATION2, sections);
+        List<Long> actual = path.getPassingLineIds();
+        List<Long> expected = List.of(2L, 3L);
 
-        assertThat(path1.toStations()).containsExactly(STATION2, STATION4, STATION5, STATION3);
-        assertThat(path2.toStations()).containsExactly(STATION3, STATION5, STATION4, STATION2);
-        assertThat(path1.getDistance()).isEqualTo(path2.getDistance());
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test

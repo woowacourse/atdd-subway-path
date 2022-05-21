@@ -1,10 +1,12 @@
-package wooteco.subway.domain.path2;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.Navigator;
+import wooteco.subway.domain.path.NavigatorJgraphtAdapter;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 

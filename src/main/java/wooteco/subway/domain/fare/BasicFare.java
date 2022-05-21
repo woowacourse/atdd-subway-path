@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path.fare;
+package wooteco.subway.domain.fare;
 
 public class BasicFare implements Fare {
 

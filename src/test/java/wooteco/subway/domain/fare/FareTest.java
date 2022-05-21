@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path.fare;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
