@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public class JdbcStationDao implements StationDao {
 
-    private static final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> new Station(
             resultSet.getLong("id"),
             resultSet.getString("name")
     );
@@ -44,7 +44,7 @@ public class JdbcStationDao implements StationDao {
     public Optional<Station> findById(Long id) {
         final String sql = "select * from STATION where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -53,7 +53,7 @@ public class JdbcStationDao implements StationDao {
     @Override
     public List<Station> findAll() {
         final String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, stationRowMapper);
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 
     @Override

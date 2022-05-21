@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private static final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getString("color"),
@@ -48,7 +48,7 @@ public class JdbcLineDao implements LineDao {
     public Optional<Line> findById(Long id) {
         final String sql = "select * from LINE where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -57,7 +57,7 @@ public class JdbcLineDao implements LineDao {
     @Override
     public List<Line> findAll() {
         final String sql = "select * from LINE";
-        return jdbcTemplate.query(sql, lineRowMapper);
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
