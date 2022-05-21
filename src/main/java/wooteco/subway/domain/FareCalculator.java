@@ -9,14 +9,20 @@ public class FareCalculator {
     private static final int COUNT_PER_OVER_FARE = 100;
     private static final int BASIC_FARE = 1250;
 
-    private Map<Long, Integer> extraFares;
+    private final Map<Long, Integer> extraFares;
+    private final Passenger passenger;
 
-    public FareCalculator(Map<Long, Integer> extraFares) {
+    public FareCalculator(Map<Long, Integer> extraFares, Passenger passenger) {
         this.extraFares = extraFares;
+        this.passenger = passenger;
     }
 
     public int calculateFare(Path path) {
-        return BASIC_FARE + overDistanceFare(path.getDistance()) + extraLineFare(path);
+        return passenger.calculateFare(BASIC_FARE + extraFare(path));
+    }
+
+    private int extraFare(Path path) {
+        return overDistanceFare(path.getDistance()) + extraLineFare(path);
     }
 
     private int overDistanceFare(int distance) {

@@ -1,11 +1,9 @@
 package wooteco.subway.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,14 +72,14 @@ class PathServiceTest {
     @DisplayName("source와 target이 같은 경우 예외 발생")
     @Test
     void throwExceptionWhenSourceSameAsTarget() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station1.getId()))
+        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station1.getId(), 21))
             .isInstanceOf(UnreachablePathException.class);
     }
 
     @DisplayName("source에 존재하지 않는 역인 경우에 예외 발생")
     @Test
     void throwExceptionWhenSourceIsNotFoundStation() {
-        assertThatThrownBy(() -> pathService.searchPath(notFoundStationId(), 2L))
+        assertThatThrownBy(() -> pathService.searchPath(notFoundStationId(), 2L, 21))
             .isInstanceOf(NotFoundStationException.class);
     }
 
@@ -94,14 +92,14 @@ class PathServiceTest {
     @DisplayName("target에 존재하지 않는 역인 경우에 예외 발생")
     @Test
     void throwExceptionWhenTargetIsNotFoundStation() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), notFoundStationId()))
+        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), notFoundStationId(), 21))
             .isInstanceOf(NotFoundStationException.class);
     }
 
     @DisplayName("한 같옆에 있는 지하철역 경로 찾기")
     @Test
     void searchAdjacentPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station2.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station2.getId(), 21);
 
         assertThat(pathResponse.getStations()).containsExactly(
             new StationResponse(station1), new StationResponse(station2));
@@ -113,7 +111,7 @@ class PathServiceTest {
     @DisplayName("두 칸옆에 있는 지하철역 경로 찾기")
     @Test
     void searchTwoBlockPath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station3.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station3.getId(), 21);
 
         assertThat(pathResponse.getStations()).containsExactly(
             new StationResponse(station1), new StationResponse(station2), new StationResponse(station3));
@@ -124,7 +122,7 @@ class PathServiceTest {
     @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
     @Test
     void searchTransferLinePath() {
-        PathResponse pathResponse = pathService.searchPath(station1.getId(), station4.getId());
+        PathResponse pathResponse = pathService.searchPath(station1.getId(), station4.getId(), 21);
 
         assertThat(pathResponse.getStations()).containsExactly(
             new StationResponse(station1), new StationResponse(station2), new StationResponse(station4));
@@ -135,7 +133,7 @@ class PathServiceTest {
     @DisplayName("노선에 추가 요금이 있는 경우")
     @Test
     void searchHasExtraFareLine() {
-        PathResponse pathResponse = pathService.searchPath(station2.getId(), station4.getId());
+        PathResponse pathResponse = pathService.searchPath(station2.getId(), station4.getId(), 21);
 
         assertThat(pathResponse.getStations())
             .containsExactly(new StationResponse(station2), new StationResponse(station4));
@@ -143,9 +141,31 @@ class PathServiceTest {
         assertThat(pathResponse.getFare()).isEqualTo(1750);
     }
 
+    @DisplayName("청소년이 지하철 경로 조회")
+    @Test
+    void searchPathByYouth() {
+        PathResponse pathResponse = pathService.searchPath(station2.getId(), station4.getId(), 15);
+
+        assertThat(pathResponse.getStations())
+            .containsExactly(new StationResponse(station2), new StationResponse(station4));
+        assertThat(pathResponse.getDistance()).isEqualTo(3);
+        assertThat(pathResponse.getFare()).isEqualTo(1120);
+    }
+
+    @DisplayName("어린이가 지하철 경로 조회")
+    @Test
+    void searchPathByChild() {
+        PathResponse pathResponse = pathService.searchPath(station2.getId(), station4.getId(), 6);
+
+        assertThat(pathResponse.getStations())
+            .containsExactly(new StationResponse(station2), new StationResponse(station4));
+        assertThat(pathResponse.getDistance()).isEqualTo(3);
+        assertThat(pathResponse.getFare()).isEqualTo(700);
+    }
+
     @Test
     void searchUnreachablePath() {
-        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station6.getId()))
+        assertThatThrownBy(() -> pathService.searchPath(station1.getId(), station6.getId(), 21))
             .isInstanceOf(UnreachablePathException.class);
     }
 }

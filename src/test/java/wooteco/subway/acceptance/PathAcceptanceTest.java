@@ -2,7 +2,6 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -15,13 +14,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("역이 없는 경우에 404 에러를 발생시킨다.")
     @Test
     void searchPathByNotFoundStation() {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", 1L)
-            .param("target", 2L)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(1L, 2L, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -31,16 +24,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void searchPathBySourceSameAsTarget() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-
         requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", upStationId)
-            .param("target", upStationId)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(upStationId, upStationId, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -61,13 +47,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         requestAddSection(line1, station2, station3, 10);
         requestAddSection(line2, station3, station1, 5);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station4)
-            .param("target", station2)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 21);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
@@ -86,18 +66,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
         long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
-
         requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0);
-
         requestCreateLine("1호선", "bg-blue-600", station3, station4, 10, 0);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station1)
-            .param("target", station4)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(station1, station4, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -109,22 +81,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
         long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
-
         long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 1000).jsonPath()
             .getLong("id");
-
         long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 900).jsonPath()
             .getLong("id");
         requestAddSection(line1, station2, station3, 10);
         requestAddSection(line2, station3, station1, 5);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station4)
-            .param("target", station2)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 21);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
@@ -136,4 +100,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(fare).isEqualTo(2450);
     }
 
+    @DisplayName("청소년 지하철 경로 탐색")
+    @Test
+    void searchPathByYouth() {
+        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
+
+        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0).jsonPath()
+            .getLong("id");
+
+        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 0).jsonPath()
+            .getLong("id");
+        requestAddSection(line1, station2, station3, 10);
+        requestAddSection(line2, station3, station1, 5);
+
+        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 15);
+
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        int distance = response.jsonPath().getObject("distance", Integer.class);
+        int fare = response.jsonPath().getObject("fare", Integer.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(distance).isEqualTo(20);
+        assertThat(fare).isEqualTo(880);
+    }
 }

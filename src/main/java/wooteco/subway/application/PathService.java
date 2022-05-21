@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
+import wooteco.subway.domain.Passenger;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Graph;
 import wooteco.subway.domain.Line;
@@ -34,13 +35,13 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse searchPath(Long source, Long target) {
+    public PathResponse searchPath(Long source, Long target, int age) {
         Station sourceStation = stationRepository.findById(source)
             .orElseThrow(() -> new NotFoundStationException(source));
         Station targetStation = stationRepository.findById(target)
             .orElseThrow(() -> new NotFoundStationException(target));
 
-        PathSearcher pathSearcher = new PathSearcher(createGraph(), createFareCalculator());
+        PathSearcher pathSearcher = new PathSearcher(createGraph(), createFareCalculator(age));
         PathSummary pathSummary = pathSearcher.search(sourceStation, targetStation);
         return new PathResponse(pathSummary);
     }
@@ -51,10 +52,10 @@ public class PathService {
         return new JGraphtAdapter(stations, sections);
     }
 
-    private FareCalculator createFareCalculator() {
+    private FareCalculator createFareCalculator(int age) {
         List<Line> lines = lineRepository.findAll();
         Map<Long, Integer> extraFares = lines.stream()
             .collect(Collectors.toUnmodifiableMap(Line::getId, Line::getExtraFare));
-        return new FareCalculator(extraFares);
+        return new FareCalculator(extraFares, Passenger.valueOf(age));
     }
 }

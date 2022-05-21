@@ -30,7 +30,7 @@ class PathSearcherTest {
         );
         graph = (source, target) -> new Path(stations, sections, 10);
         extraFares = Map.of(1L, 0);
-        fareCalculator = new FareCalculator(extraFares);
+        fareCalculator = new FareCalculator(extraFares, Passenger.valueOf(21));
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")

@@ -84,4 +84,15 @@ public class AcceptanceTest {
             .when().post("/lines/" + lineId + "/sections")
             .then().extract();
     }
+
+    protected ExtractableResponse<Response> requestSearchPath(long source, long target, int age) {
+        return RestAssured.given().log().all()
+            .param("source", source)
+            .param("target", target)
+            .param("age", age)
+            .when()
+            .get("/paths")
+            .then().log().all()
+            .extract();
+    }
 }
