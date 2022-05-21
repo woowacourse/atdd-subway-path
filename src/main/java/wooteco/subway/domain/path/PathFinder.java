@@ -1,8 +1,10 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.Multigraph;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -10,22 +12,29 @@ import wooteco.subway.domain.Station;
 
 public class PathFinder {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    Multigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
     public Path getShortestPath(Station source, Station target, Sections sections) {
-        validateStations(source, target, sections.extractStations());
+        validateDifferentEachStation(source, target);
+        validateStationsInSection(source, target, sections.extractStations());
         if (isBeforeInitGraph()) {
             addSections(sections);
         }
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         return new Path(shortestPath.getPath(source, target));
     }
 
-    private void validateStations(Station source, Station target, List<Station> stationsInSection) {
+    private void validateDifferentEachStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("source와 target이 같으면 안됩니다.");
+        }
+    }
+
+    private void validateStationsInSection(Station source, Station target, List<Station> stationsInSection) {
         validateStationInSection(source, stationsInSection);
         validateStationInSection(target, stationsInSection);
     }
