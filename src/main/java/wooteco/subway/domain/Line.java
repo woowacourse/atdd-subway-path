@@ -24,6 +24,10 @@ public class Line {
         this(null, name, color, DEFAULT_EXTRA_FARE, Collections.emptyList());
     }
 
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare, Collections.emptyList());
+    }
+
     public Line(Long id, String name, String color, int extraFare) {
         this(id, name, color, extraFare, Collections.emptyList());
     }
