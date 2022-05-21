@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -24,12 +25,12 @@ public class LineService {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationService stationService;
+    private final StationDao stationDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationService = stationService;
+        this.stationDao = stationDao;
     }
 
     @Transactional
@@ -38,8 +39,8 @@ public class LineService {
             throw new IllegalArgumentException(lineRequest.getName() + "은 이미 존재하는 노선 이름입니다.");
         }
 
-        Station upStation = stationService.findById(lineRequest.getUpStationId()).toStation();
-        Station downStation = stationService.findById(lineRequest.getDownStationId()).toStation();
+        Station upStation = getStation(lineRequest.getUpStationId());
+        Station downStation = getStation(lineRequest.getDownStationId());
 
         if (upStation.equals(downStation)) {
             throw new IllegalArgumentException("상행과 하행은 같을 수 없습니다.");
@@ -55,8 +56,8 @@ public class LineService {
     public void addSection(Long lineId, SectionRequest sectionRequest) {
         Line line = getLine(lineId);
 
-        Station upStation = stationService.findById(sectionRequest.getUpStationId()).toStation();
-        Station downStation = stationService.findById(sectionRequest.getDownStationId()).toStation();
+        Station upStation = getStation(sectionRequest.getUpStationId());
+        Station downStation = getStation(sectionRequest.getDownStationId());
 
         Section saveSection = new Section(line, upStation, downStation, sectionRequest.getDistance());
 
@@ -70,7 +71,7 @@ public class LineService {
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
-        sections.remove(stationService.findById(stationId).toStation());
+        sections.remove(getStation(stationId));
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.saveAll(sections.getValue());
@@ -121,6 +122,11 @@ public class LineService {
         getLine(id);
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
+    }
+
+    private Station getStation(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(id + "의 지하철역은 존재하지 않습니다."));
     }
 
     private Line getLine(Long id) {
