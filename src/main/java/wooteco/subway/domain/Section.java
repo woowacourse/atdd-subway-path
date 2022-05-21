@@ -11,7 +11,7 @@ public class Section {
     private int distance;
 
     public Section(Long id, Long lineId, Station upStation, Station downStation,
-        Integer distance) {
+                   int distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
@@ -19,7 +19,7 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, Integer distance) {
+    public Section(Long lineId, Station upStation, Station downStation, int distance) {
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -62,8 +62,8 @@ public class Section {
         }
         Section section = (Section) o;
         return Objects.equals(getLineId(), section.getLineId()) && Objects.equals(
-            getUpStation(), section.getUpStation()) && Objects.equals(getDownStation(),
-            section.getDownStation()) && Objects.equals(getDistance(), section.getDistance());
+                getUpStation(), section.getUpStation()) && Objects.equals(getDownStation(),
+                section.getDownStation()) && Objects.equals(getDistance(), section.getDistance());
     }
 
     @Override
@@ -74,10 +74,10 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-            "id=" + id +
-            ", upStation=" + upStation +
-            ", downStation=" + downStation +
-            ", distance=" + distance +
-            '}';
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
