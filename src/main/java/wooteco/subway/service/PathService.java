@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.shortestpath.DistanceShortestPathStrategy;
+import wooteco.subway.domain.shortestpath.ShortestPath;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
@@ -27,7 +28,8 @@ public class PathService {
     public PathResponse findShortestPath(PathRequest pathRequest) {
         validateExistStations(pathRequest);
         List<Section> allSections = sectionDao.findAll();
-        Path shortestPath = Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget());
+        ShortestPath shortestPath = new ShortestPath(new DistanceShortestPathStrategy(), new Sections(allSections),
+                pathRequest.getSource(), pathRequest.getTarget());
         Fare fare = Fare.from(shortestPath.getTotalDistance());
         List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
         List<StationResponse> stations = stationService.findByStationIds(stationIds);

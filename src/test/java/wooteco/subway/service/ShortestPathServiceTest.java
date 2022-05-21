@@ -18,7 +18,7 @@ import wooteco.subway.exception.NotFoundStationException;
 @SpringBootTest
 @Transactional
 @Sql("/pathInitSchema.sql")
-class PathServiceTest {
+class ShortestPathServiceTest {
 
     @Autowired
     private PathService pathService;
