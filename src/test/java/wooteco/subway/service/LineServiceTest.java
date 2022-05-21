@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -28,13 +29,13 @@ class LineServiceTest {
     private Station upStation;
     private Station downStation;
 
-    private Section section;
+    private SectionRequest section;
 
     @BeforeEach
     void init() {
         upStation = stationService.create("강남역");
         downStation = stationService.create("역삼역");
-        section = new Section(upStation, downStation, 10);
+        section = new SectionRequest(upStation.getId(), downStation.getId(), 10);
     }
 
     @DisplayName("지하철 노선을 저장한다.")
@@ -112,7 +113,7 @@ class LineServiceTest {
     void addSectionLeft() {
         Line line = lineService.create("2호선", "bg-red-600", section);
         Station newStation = stationService.create("교대역");
-        Section newSection = new Section(downStation, newStation, 10);
+        SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
 
         Line updatedLine = lineService.findOne(line.getId());
@@ -127,8 +128,8 @@ class LineServiceTest {
     void addSectionRight() {
         Line line = lineService.create("2호선", "bg-red-600", section);
         Station newStation = stationService.create("교대역");
-        Section newSection = new Section(
-            newStation, upStation, 10);
+        SectionRequest newSection = new SectionRequest(
+            newStation.getId(), upStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
 
         Line updatedLine = lineService.findOne(line.getId());
@@ -143,8 +144,8 @@ class LineServiceTest {
     void addSectionLeftToRight() {
         Line line = lineService.create("2호선", "bg-red-600", section);
         Station newStation = stationService.create("교대역");
-        Section newSection = new Section(
-            upStation, newStation, 5);
+        SectionRequest newSection = new SectionRequest(
+            upStation.getId(), newStation.getId(), 5);
 
         lineService.addSection(line.getId(), newSection);
 
@@ -159,7 +160,7 @@ class LineServiceTest {
     void addSectionRightToLeft() {
         Line line = lineService.create("2호선", "bg-red-600", section);
         Station newStation = stationService.create("교대역");
-        Section newSection = new Section(newStation, downStation, 5);
+        SectionRequest newSection = new SectionRequest(newStation.getId(), downStation.getId(), 5);
         lineService.addSection(line.getId(), newSection);
 
         Line updatedLine = lineService.findOne(line.getId());
@@ -173,7 +174,7 @@ class LineServiceTest {
     void deleteSection() {
         Line line = lineService.create("2호선", "bg-red-600", section);
         Station newStation = stationService.create("교대역");
-        Section newSection = new Section(downStation, newStation, 10);
+        SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
 
         lineService.deleteSection(line.getId(), downStation.getId());

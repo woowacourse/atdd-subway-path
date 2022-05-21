@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathDto;
 
@@ -44,7 +44,7 @@ class PathServiceTest {
         stations.putAll(saveStations("내방역", "고속터미널역", "반포역", "논현역"));
 
         Line line7 = lineService.create("7호선", "red",
-            new Section(stations.get("내방역"), stations.get("고속터미널역"), 10));
+            makeSection(stations.get("내방역"), stations.get("고속터미널역"), 10));
         lineService.addSection(line7.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("반포역"), 10));
         lineService.addSection(line7.getId(),
@@ -53,7 +53,7 @@ class PathServiceTest {
         stations.putAll(saveStations("신사역", "잠원역", "서초역"));
 
         Line line3 = lineService.create("3호선", "red",
-            new Section(stations.get("신사역"), stations.get("잠원역"), 10));
+            makeSection(stations.get("신사역"), stations.get("잠원역"), 10));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("잠원역"), stations.get("고속터미널역"), 10));
         lineService.addSection(line3.getId(),
@@ -73,8 +73,8 @@ class PathServiceTest {
             .collect(toMap(name -> name, name -> stationService.create(name)));
     }
 
-    private Section makeSection(Station source, Station target, int distance) {
-        return new Section(source, target, distance);
+    private SectionRequest makeSection(Station source, Station target, int distance) {
+        return new SectionRequest(source.getId(), target.getId(), distance);
     }
 
     @DisplayName("한 라인에서 조회한다.")

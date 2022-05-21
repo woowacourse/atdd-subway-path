@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.domain.Section;
+import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.domain.Station;
 
 @SpringBootTest
@@ -72,7 +72,7 @@ public class StationServiceTest {
     void deleteExceptionBySection() {
         Station upStation = stationService.create("강남역");
         Station downStation = stationService.create("역삼역");
-        Section section = new Section(upStation, downStation, 10);
+        SectionRequest section = new SectionRequest(upStation.getId(), downStation.getId(), 10);
 
         lineService.create("2호선", "red", section);
 
