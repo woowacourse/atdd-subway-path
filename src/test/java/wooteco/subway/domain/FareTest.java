@@ -11,13 +11,13 @@ public class FareTest {
     @DisplayName("거리에 따른 요금 정책에 따라 요금을 계산한다.")
     @ParameterizedTest
     @CsvSource(
-        value = {"10:1250", "11:1350", "16:1450", "40:1950", "50:2050", "58:2150"},
+        value = {"10:1250", "11:1350", "16:1450", "40:1850", "50:2050", "58:2150"},
         delimiter = ':')
     void fare(int distance, int fare) {
         // when
-        int expected = Fare.from(distance).calculate();
+        int actual = Fare.from(distance).calculate();
 
         // then
-        assertThat(fare).isEqualTo(expected);
+        assertThat(actual).isEqualTo(fare);
     }
 }

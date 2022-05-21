@@ -169,6 +169,6 @@ class PathServiceTest {
         PathDto path = pathService.findPath(sourceStationId, targetStationId);
 
         // then
-        assertThat(path.getFare()).isEqualTo(1950);
+        assertThat(path.getFare()).isEqualTo(1850);
     }
 }
