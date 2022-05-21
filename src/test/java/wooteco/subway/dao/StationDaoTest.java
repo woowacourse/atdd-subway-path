@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @JdbcTest
 @Sql("classpath:station.sql")
@@ -58,9 +59,9 @@ public class StationDaoTest {
     @Test
     @DisplayName("존재하지 않는 지하철 역을 삭제하는 경우를 테스트한다.")
     void deleteNotExistTest() {
-        assertThatThrownBy(() -> {
+        assertDoesNotThrow(() -> {
             stationDao.deleteById(999999L);
-        }).isInstanceOf(NoSuchElementException.class);
+        });
     }
 
     @Test

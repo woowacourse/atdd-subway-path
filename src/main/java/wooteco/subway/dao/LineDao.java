@@ -86,9 +86,6 @@ public class LineDao {
 
     public void deleteById(long id) {
         final String sql = "delete from Line where id = ?";
-        if (!isNotExistById(id)) {
-            throw new NoSuchElementException("해당하는 노선이 존재하지 않습니다.");
-        }
         jdbcTemplate.update(sql, id);
     }
 }

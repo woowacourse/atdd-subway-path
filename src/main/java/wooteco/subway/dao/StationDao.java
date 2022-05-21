@@ -54,7 +54,7 @@ public class StationDao {
     private boolean isNotExistId(long id) {
         final String sql = "select count(*) from Station where id = ?";
         final int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count > 0;
+        return count == 0;
     }
 
     public List<Station> findAll() {
@@ -64,9 +64,6 @@ public class StationDao {
 
     public void deleteById(long id) {
         final String sql = "delete from Station where id = ?";
-        if (isNotExistId(id)) {
-            throw new NoSuchElementException("해당하는 지하철이 존재하지 않습니다.");
-        }
         jdbcTemplate.update(sql, id);
     }
 

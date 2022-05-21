@@ -90,7 +90,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds.contains(id)).isFalse();
     }
 
-    @DisplayName("존재하지 않는 지하철역을 제거하는 경우 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 지하철역을 제거하는 경우 응답 코드로 204를 반환한다.")
     @Test
     void deleteStationNotExist() {
 
@@ -100,7 +100,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> createStation(final String name) {
