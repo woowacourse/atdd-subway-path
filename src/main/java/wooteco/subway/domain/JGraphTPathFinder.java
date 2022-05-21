@@ -16,7 +16,7 @@ import wooteco.subway.exception.notfound.NotFoundStationException;
 @Component
 public class JGraphTPathFinder implements PathFinder {
 
-    private JGraphTPathFinder() {
+    JGraphTPathFinder() {
     }
 
     @Override
