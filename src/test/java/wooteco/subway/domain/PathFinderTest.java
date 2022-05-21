@@ -23,8 +23,7 @@ class PathFinderTest {
         Section section3 = new Section(신림역, 서울대입구역, 100);
 
         PathFinder pathFinder = new PathFinder();
-        pathFinder.addSections(new Sections(List.of(section1, section2, section3)));
-        Path path = pathFinder.getShortestPath(서울대입구역, 신림역);
+        Path path = pathFinder.getShortestPath(서울대입구역, 신림역, new Sections(List.of(section1, section2, section3)));
 
         assertAll(
                 () -> assertThat(path.getVertexes()).containsExactly(서울대입구역, 봉천역, 신림역),

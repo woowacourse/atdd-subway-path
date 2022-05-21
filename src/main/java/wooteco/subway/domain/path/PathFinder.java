@@ -16,29 +16,31 @@ public class PathFinder {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
-    public Path getShortestPath(Station source, Station target) {
-        validateEmpty();
-        validateStations(source, target);
+    public Path getShortestPath(Station source, Station target, Sections sections) {
+        validateStations(source, target, sections.extractStations());
+        if (isBeforeInitGraph()) {
+            addSections(sections);
+        }
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         return new Path(shortestPath.getPath(source, target));
     }
 
-    private void validateStations(Station source, Station target) {
-        if (!graph.containsVertex(source)) {
-            throw new IllegalArgumentException(String.format("%s 역이 구간으로 존재하지 않습니다.", source.getName()));
-        }
-        if (!graph.containsVertex(target)) {
-            throw new IllegalArgumentException(String.format("%s 역이 구간으로 존재하지 않습니다.", target.getName()));
+    private void validateStations(Station source, Station target, List<Station> stationsInSection) {
+        validateStationInSection(source, stationsInSection);
+        validateStationInSection(target, stationsInSection);
+    }
+
+    private void validateStationInSection(Station station, List<Station> stationsInSection) {
+        if (!stationsInSection.contains(station)) {
+            throw new IllegalArgumentException(String.format("%s 역이 구간으로 존재하지 않습니다.", station.getName()));
         }
     }
 
-    private void validateEmpty() {
-        if (graph.vertexSet().isEmpty()) {
-            throw new IllegalStateException("그래프가 초기화되지 않았습니다.");
-        }
+    private boolean isBeforeInitGraph() {
+        return graph.vertexSet().isEmpty();
     }
 
-    public void addSections(Sections sections) {
+    private void addSections(Sections sections) {
         addVertexes(sections);
         addEdges(sections);
     }
