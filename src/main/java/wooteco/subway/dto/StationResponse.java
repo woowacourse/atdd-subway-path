@@ -1,8 +1,6 @@
 package wooteco.subway.dto;
 
-import java.util.List;
 import java.util.Objects;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 
 public class StationResponse {
@@ -40,7 +38,7 @@ public class StationResponse {
         }
         StationResponse that = (StationResponse) o;
         return Objects.equals(getId(), that.getId()) && Objects.equals(getName(),
-            that.getName());
+                that.getName());
     }
 
     @Override
@@ -51,8 +49,8 @@ public class StationResponse {
     @Override
     public String toString() {
         return "StationResponse{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
