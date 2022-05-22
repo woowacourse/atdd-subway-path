@@ -79,7 +79,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given & when
         ExtractableResponse<Response> response = findLine(1);
         // then
-        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat(response.statusCode()).isEqualTo(404);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("노선 수정시 존재하지 않는 id인 경우 400응답을 한다.")
+    @DisplayName("노선 수정시 존재하지 않는 id인 경우 404응답을 한다.")
     void modifyNotfoundId() {
         // given
         long 잠실역 = saveStationAndGetId("잠실");
@@ -142,7 +142,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .log().all().extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat(response.statusCode()).isEqualTo(404);
     }
 
     @Test
