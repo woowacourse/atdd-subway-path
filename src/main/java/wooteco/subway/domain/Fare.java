@@ -13,19 +13,22 @@ public class Fare {
         this.baseFare = baseFare;
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, Lines lines) {
+        int maxExtraFare = lines.findMaxExtraFare();
         if (MINIMUM_BOUNDARY < distance && distance <= MAXIMUM_BOUNDARY) {
             return baseFare
+                + maxExtraFare
                 + calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
         }
 
         if (MAXIMUM_BOUNDARY < distance) {
             return baseFare
+                + maxExtraFare
                 + calculateOverFare(MAXIMUM_BOUNDARY - MINIMUM_BOUNDARY, OVER_TEN_POLICY)
                 + calculateOverFare(distance - MAXIMUM_BOUNDARY, OVER_FIFTY_POLICY);
         }
 
-        return baseFare;
+        return baseFare + maxExtraFare;
     }
 
     private int calculateOverFare(int overDistance, int policy) {

@@ -1,10 +1,11 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import wooteco.subway.domain.vo.Path;
@@ -13,50 +14,55 @@ import wooteco.subway.exception.EmptyResultException;
 public class Subway {
     private static final int BASE_FARE = 1250;
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder;
+    private final ShortestPathAlgorithm<Station, ShortestPathEdge> pathFinder;
     private final Fare fare;
 
-    public Subway(DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder, Fare fare) {
+    private Subway(ShortestPathAlgorithm<Station, ShortestPathEdge> pathFinder, Fare fare) {
         this.pathFinder = pathFinder;
         this.fare = fare;
     }
 
     public static Subway of(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         initGraph(lines, graph);
 
-        return new Subway(new DijkstraShortestPath(graph), new Fare(BASE_FARE));
+        return new Subway(new DijkstraShortestPath<>(graph), new Fare(BASE_FARE));
     }
 
-    private static void initGraph(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private static void initGraph(List<Line> lines, WeightedMultigraph<Station, ShortestPathEdge> graph) {
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
 
-        for(Line line : lines){
-            addEdge(graph, line.getSections());
+        for (Line line : lines) {
+            addEdge(graph, line);
         }
     }
 
-    private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
+    private static void addVertex(WeightedMultigraph<Station, ShortestPathEdge> graph, List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private static void addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-            graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()), section.getDistance());
+    private static void addEdge(WeightedMultigraph<Station, ShortestPathEdge> graph, Line line) {
+        for (Section section : line.getSections()) {
+            graph.addEdge(section.getUpStation(), section.getDownStation(),
+                new ShortestPathEdge(line, section.getDistance()));
         }
     }
 
     public Path findShortestPath(Station source, Station target) {
         validateSameStation(source, target);
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
+        GraphPath<Station, ShortestPathEdge> path = pathFinder.getPath(source, target);
 
         validateEmptyPath(path);
-        return Path.of(path.getVertexList(), path.getWeight());
+        List<Line> lines = path.getEdgeList().stream()
+            .map(ShortestPathEdge::getLine)
+            .distinct()
+            .collect(Collectors.toList());
+
+        return Path.of(path.getVertexList(), path.getWeight(), new Lines(lines));
     }
 
     private void validateSameStation(Station source, Station target) {
@@ -65,13 +71,13 @@ public class Subway {
         }
     }
 
-    private void validateEmptyPath(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validateEmptyPath(GraphPath<Station, ShortestPathEdge> path) {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
     }
 
-    public int calculateFare(int distance) {
-        return fare.calculateFare(distance);
+    public int calculateFare(int distance, Lines lines) {
+        return fare.calculateFare(distance, lines);
     }
 }

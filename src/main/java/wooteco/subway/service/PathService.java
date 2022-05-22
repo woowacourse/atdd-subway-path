@@ -29,6 +29,6 @@ public class PathService {
         Station target = stationService.findById(targetStationId);
 
         Path path = subway.findShortestPath(source, target);
-        return PathResponse.of(path, subway.calculateFare(path.getDistance()));
+        return PathResponse.of(path, subway.calculateFare(path.getDistance(), path.getLines()));
     }
 }

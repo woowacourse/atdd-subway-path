@@ -2,20 +2,23 @@ package wooteco.subway.domain.vo;
 
 import java.util.List;
 
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Station;
 
 public class Path {
 
     private final List<Station> stations;
     private final int distance;
+    private final Lines lines;
 
-    private Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, Lines lines) {
         this.stations = stations;
         this.distance = distance;
+        this.lines = lines;
     }
 
-    public static Path of(List<Station> stations, double distance) {
-        return new Path(stations, (int) Math.floor(distance));
+    public static Path of(List<Station> stations, double distance, Lines lines) {
+        return new Path(stations, (int) Math.floor(distance), lines);
     }
 
     public List<Station> getStations() {
@@ -24,6 +27,10 @@ public class Path {
 
     public int getDistance() {
         return this.distance;
+    }
+
+    public Lines getLines() {
+        return lines;
     }
 
     @Override

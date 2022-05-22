@@ -36,7 +36,7 @@ public class SubwayTest {
         sections1.add(new Section(stations.get(0), stations.get(1), 5));
         sections1.add(new Section(stations.get(1), stations.get(2), 15));
         sections1.add(new Section(stations.get(2), stations.get(3), 10));
-        return Line.from(new Line(1L, "1", "red"), sections1);
+        return Line.from(new Line(1L, "1", "red", 100), sections1);
     }
 
     private static Line createLine2() {
@@ -44,7 +44,7 @@ public class SubwayTest {
         sections2.add(new Section(stations.get(1), stations.get(4), 4));
         sections2.add(new Section(stations.get(4), stations.get(5), 7));
         sections2.add(new Section(stations.get(5), stations.get(6), 4));
-        return Line.from(new Line(2L, "2", "green"), sections2);
+        return Line.from(new Line(2L, "2", "green", 500), sections2);
     }
 
     private static Line createLine3() {
@@ -52,13 +52,13 @@ public class SubwayTest {
         sections3.add(new Section(stations.get(6), stations.get(2), 10));
         sections3.add(new Section(stations.get(2), stations.get(7), 15));
         sections3.add(new Section(stations.get(7), stations.get(8), 23));
-        return Line.from(new Line(3L, "3", "orange"), sections3);
+        return Line.from(new Line(3L, "3", "orange", 300), sections3);
     }
 
     private static Line createLine4() {
         List<Section> sections4 = new ArrayList<>();
         sections4.add(new Section(stations.get(9), stations.get(10), 10));
-        return Line.from(new Line(4L, "4", "blue"), sections4);
+        return Line.from(new Line(4L, "4", "blue", 400), sections4);
     }
 
     @Test
@@ -114,26 +114,26 @@ public class SubwayTest {
     }
 
     @Test
-    @DisplayName("0 -> 1 경로의 요금은 1250원이어야 한다.")
+    @DisplayName("0 -> 1 경로의 요금은 1350(1250 + 100)원이어야 한다.")
     void calculateFare1() {
         Path path = subway.findShortestPath(stations.get(0), stations.get(1));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(1250);
+        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1())));
+        assertThat(fare).isEqualTo(1350);
     }
 
     @Test
-    @DisplayName("0 -> 6 경로의 요금은 1450원이어야 한다.")
+    @DisplayName("0 -> 6 경로의 요금은 1950(1450 + 500)원이어야 한다.")
     void calculateFare2() {
         Path path = subway.findShortestPath(stations.get(0), stations.get(6));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(1450);
+        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1(), createLine2())));
+        assertThat(fare).isEqualTo(1950);
     }
 
     @Test
-    @DisplayName("0 -> 8 경로의 요금은 2150원이어야 한다.")
+    @DisplayName("0 -> 8 경로의 요금은 2650(2150 + 500)원이어야 한다.")
     void calculateFare3() {
         Path path = subway.findShortestPath(stations.get(0), stations.get(8));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(2150);
+        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1(), createLine2(), createLine3(), createLine4())));
+        assertThat(fare).isEqualTo(2650);
     }
 }
