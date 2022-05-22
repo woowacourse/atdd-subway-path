@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.domain.TestFixture.*;
 
 import java.util.List;
 
@@ -20,20 +21,12 @@ class LineTest {
     private static final Long LINE_ID = 1L;
     private static final String LINE_NAME = "2호선";
     private static final String LINE_COLOR = "blue";
-    private static final Station 강남역 = new Station(1L, "강남역");
-    private static final Station 역삼역 = new Station(2L, "역삼역");
-    private static final Station 선릉역 = new Station(3L, "선릉역");
-    private static final Station 삼성역 = new Station(4L, "삼성역");
-    private static final Section FIRST_SECTION = new Section(1L, 강남역, 역삼역, 10);
-    private static final Section SECOND_SECTION = new Section(2L, 역삼역, 선릉역, 10);
-    private static final Section THIRD_SECTION = new Section(3L, 선릉역, 삼성역, 10);
-    private static final List<Section> SECTIONS = List.of(FIRST_SECTION, SECOND_SECTION);
 
     private Line line;
 
     @BeforeEach
     void setUp() {
-        this.line = new Line(LINE_ID, SECTIONS, LINE_NAME, LINE_COLOR);
+        this.line = new Line(LINE_ID, 강남_역삼_선릉_삼성, LINE_NAME, LINE_COLOR);
     }
 
     @DisplayName("이름과 색상을 변경한다.")
@@ -52,7 +45,7 @@ class LineTest {
     @Test
     void appendSection() {
         int expected = line.getSections().size();
-        line.appendSection(THIRD_SECTION);
+        line.appendSection(new Section(10L, 광교역, 강남역, 10));
 
         List<Section> actual = line.getSections();
         assertThat(actual).hasSize(expected + 1);
@@ -68,38 +61,17 @@ class LineTest {
         assertThat(actual).hasSize(expected - 1);
     }
 
-    @DisplayName("식별자를 반환한다.")
-    @Test
-    void getId() {
-        Long id = line.getId();
-        assertThat(id).isEqualTo(LINE_ID);
-    }
-
     @DisplayName("노선의 지하철구간들을 정렬하여 반환한다.")
     @Test
     void getSections() {
         List<Section> sections = line.getSections();
-        assertThat(sections).containsExactly(FIRST_SECTION, SECOND_SECTION);
+        assertThat(sections).containsExactly(강남_역삼, 역삼_선릉, 선릉_삼성);
     }
 
     @DisplayName("노선의 지하철역들을 정렬하여 반환한다.")
     @Test
     void getStations() {
         List<Station> stations = line.getStations();
-        assertThat(stations).containsExactly(강남역, 역삼역, 선릉역);
-    }
-
-    @DisplayName("이름을 반환한다.")
-    @Test
-    void getName() {
-        String name = line.getName();
-        assertThat(name).isEqualTo(LINE_NAME);
-    }
-
-    @DisplayName("색상을 반환한다.")
-    @Test
-    void getColor() {
-        String color = line.getColor();
-        assertThat(color).isEqualTo(LINE_COLOR);
+        assertThat(stations).containsExactly(강남역, 역삼역, 선릉역, 삼성역);
     }
 }

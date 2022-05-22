@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Test;
 
 class RouteTest {
 
-    private static final int ROUTE_DISTANCE = 10;
+    private static final int DISTANCE = 10;
+
     private Route route;
 
     @BeforeEach
     void setup() {
-        route = new Route(STATIONS, ROUTE_DISTANCE);
+        route = new Route(STATIONS, DISTANCE);
     }
 
     @DisplayName("경로를 반환한다")
@@ -26,6 +27,6 @@ class RouteTest {
     @DisplayName("거리를 반환한다")
     @Test
     void getRouteDistance() {
-        assertThat(route.getDistance()).isEqualTo(ROUTE_DISTANCE);
+        assertThat(route.getDistance()).isEqualTo(DISTANCE);
     }
 }

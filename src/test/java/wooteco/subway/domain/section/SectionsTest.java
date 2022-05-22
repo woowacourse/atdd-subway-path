@@ -2,6 +2,11 @@ package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wooteco.subway.domain.TestFixture.강남역;
+import static wooteco.subway.domain.TestFixture.광교역;
+import static wooteco.subway.domain.TestFixture.삼성역;
+import static wooteco.subway.domain.TestFixture.선릉역;
+import static wooteco.subway.domain.TestFixture.역삼역;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,10 +27,6 @@ class SectionsTest {
 
     private static final int STANDARD_DISTANCE = 5;
     private static final int SMALLER_DISTANCE = 1;
-    private static final Station 강남역 = new Station(1L, "강남역");
-    private static final Station 역삼역 = new Station(2L, "역삼역");
-    private static final Station 선릉역 = new Station(3L, "선릉역");
-    private static final Station 삼성역 = new Station(4L, "삼성역");
     private static final List<Section> SECTIONS = List.of(
             new Section(1L, 강남역, 역삼역, STANDARD_DISTANCE),
             new Section(2L, 역삼역, 선릉역, STANDARD_DISTANCE));
@@ -59,9 +60,9 @@ class SectionsTest {
     @DisplayName("상행 종점을 추가한다.")
     @Test
     void appendUpStation() {
-        sections.append(new Section(3L, 삼성역, 강남역, SMALLER_DISTANCE));
+        sections.append(new Section(3L, 광교역, 강남역, SMALLER_DISTANCE));
 
-        List<Station> expected = List.of(삼성역, 강남역, 역삼역, 선릉역);
+        List<Station> expected = List.of(광교역, 강남역, 역삼역, 선릉역);
         assertThat(sections.getStations()).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(expected);

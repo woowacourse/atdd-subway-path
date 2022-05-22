@@ -3,13 +3,14 @@ package wooteco.subway.domain.graph;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.domain.TestFixture.SECTIONS;
+import static wooteco.subway.domain.TestFixture.강남_역삼_선릉_삼성;
+import static wooteco.subway.domain.TestFixture.강남_선릉_거리;
+import static wooteco.subway.domain.TestFixture.강남_역삼;
 import static wooteco.subway.domain.TestFixture.강남역;
 import static wooteco.subway.domain.TestFixture.광교역;
-import static wooteco.subway.domain.TestFixture.교대_강남;
-import static wooteco.subway.domain.TestFixture.교대역;
+import static wooteco.subway.domain.TestFixture.삼성역;
+import static wooteco.subway.domain.TestFixture.선릉_삼성;
 import static wooteco.subway.domain.TestFixture.선릉역;
-import static wooteco.subway.domain.TestFixture.역삼_선릉;
 import static wooteco.subway.domain.TestFixture.역삼역;
 
 import java.util.List;
@@ -30,19 +31,19 @@ class SubwayGraphTest {
 
     @BeforeEach
     void setUp() {
-        this.subwayGraph = new SubwayGraph(SECTIONS);
+        this.subwayGraph = new SubwayGraph(강남_역삼_선릉_삼성);
     }
 
     @DisplayName("구간 정보와 출발지 도착지를 이용해 최단 경로 및 거리를 계산한다")
     @Test
     void calculateShortestRoute() {
-        Route shortestRoute = subwayGraph.calculateShortestRoute(교대역, 선릉역);
+        Route shortestRoute = subwayGraph.calculateShortestRoute(강남역, 선릉역);
         List<Station> actualRoute = shortestRoute.getRoute();
         int actualDistance = shortestRoute.getDistance();
 
         assertAll(
-                () -> assertThat(actualRoute).containsExactly(교대역, 강남역, 역삼역, 선릉역),
-                () -> assertThat(actualDistance).isEqualTo(18)
+                () -> assertThat(actualRoute).containsExactly(강남역, 역삼역, 선릉역),
+                () -> assertThat(actualDistance).isEqualTo(강남_선릉_거리)
         );
     }
 
@@ -64,8 +65,8 @@ class SubwayGraphTest {
     @Test
     @DisplayName("출발지부터 도착지까지 연결된 경로가 없을 경우 반환값이 존재하지 않는다")
     void ifRouteDoesNotExistResultShouldBeNull() {
-        SubwayGraph subwayGraph = new SubwayGraph(List.of(교대_강남, 역삼_선릉));
-        assertThatThrownBy(() -> subwayGraph.calculateShortestRoute(교대역, 선릉역))
+        SubwayGraph subwayGraph = new SubwayGraph(List.of(강남_역삼, 선릉_삼성));
+        assertThatThrownBy(() -> subwayGraph.calculateShortestRoute(강남역, 삼성역))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("출발지부터 도착지까지 구간이 연결되어 있지 않습니다.");
     }

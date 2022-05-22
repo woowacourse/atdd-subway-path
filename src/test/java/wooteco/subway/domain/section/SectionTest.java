@@ -2,6 +2,10 @@ package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wooteco.subway.domain.TestFixture.강남역;
+import static wooteco.subway.domain.TestFixture.삼성역;
+import static wooteco.subway.domain.TestFixture.선릉역;
+import static wooteco.subway.domain.TestFixture.역삼역;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,22 +24,19 @@ import wooteco.subway.domain.station.Station;
 class SectionTest {
 
     private static final Long SECTION_ID = 1L;
-    private static final Station UP_STATION = new Station(1L, "강남역");
-    private static final Station DOWN_STATION = new Station(2L, "역삼역");
-    private static final Station TEMP_STATION = new Station(3L, "선릉역");
     private static final int DEFAULT_DISTANCE = 10;
 
     private Section section;
 
     @BeforeEach
     void setUp() {
-        this.section = new Section(SECTION_ID, UP_STATION, DOWN_STATION, DEFAULT_DISTANCE);
+        this.section = new Section(SECTION_ID, 강남역, 역삼역, DEFAULT_DISTANCE);
     }
 
     @DisplayName("상행역과 하행역은 동일할 수 없다.")
     @Test
     void validateStationsNotSame() {
-        assertThatThrownBy(() -> new Section(UP_STATION, UP_STATION, DEFAULT_DISTANCE))
+        assertThatThrownBy(() -> new Section(강남역, 강남역, DEFAULT_DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행역과 하행역은 동일할 수 없습니다.");
     }
@@ -50,10 +51,10 @@ class SectionTest {
 
     private static Stream<Arguments> provideForContainsUpStationOf() {
         return Stream.of(
-                Arguments.of(new Section(UP_STATION, DOWN_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(DOWN_STATION, UP_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(TEMP_STATION, UP_STATION, DEFAULT_DISTANCE), false),
-                Arguments.of(new Section(TEMP_STATION, DOWN_STATION, DEFAULT_DISTANCE), false));
+                Arguments.of(new Section(강남역, 역삼역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(역삼역, 강남역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(선릉역, 강남역, DEFAULT_DISTANCE), false),
+                Arguments.of(new Section(선릉역, 역삼역, DEFAULT_DISTANCE), false));
     }
 
     @DisplayName("해당 구간의 하행역을 포함하고 있는지 확인한다.")
@@ -66,10 +67,10 @@ class SectionTest {
 
     private static Stream<Arguments> provideForContainsDownStationOf() {
         return Stream.of(
-                Arguments.of(new Section(UP_STATION, DOWN_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(DOWN_STATION, UP_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(UP_STATION, TEMP_STATION, DEFAULT_DISTANCE), false),
-                Arguments.of(new Section(DOWN_STATION, TEMP_STATION, DEFAULT_DISTANCE), false));
+                Arguments.of(new Section(강남역, 역삼역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(역삼역, 강남역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(강남역, 선릉역, DEFAULT_DISTANCE), false),
+                Arguments.of(new Section(역삼역, 선릉역, DEFAULT_DISTANCE), false));
     }
 
     @DisplayName("이어지는 이전 구간인지 확인한다.")
@@ -82,8 +83,8 @@ class SectionTest {
 
     private static Stream<Arguments> provideForIsPreviousOf() {
         return Stream.of(
-                Arguments.of(new Section(DOWN_STATION, TEMP_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(TEMP_STATION, UP_STATION, DEFAULT_DISTANCE), false));
+                Arguments.of(new Section(역삼역, 선릉역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(선릉역, 강남역, DEFAULT_DISTANCE), false));
     }
 
     @DisplayName("이어지는 다음 구간인지 확인한다.")
@@ -96,8 +97,8 @@ class SectionTest {
 
     private static Stream<Arguments> provideForIsNextOf() {
         return Stream.of(
-                Arguments.of(new Section(DOWN_STATION, TEMP_STATION, DEFAULT_DISTANCE), false),
-                Arguments.of(new Section(TEMP_STATION, UP_STATION, DEFAULT_DISTANCE), true));
+                Arguments.of(new Section(역삼역, 선릉역, DEFAULT_DISTANCE), false),
+                Arguments.of(new Section(선릉역, 강남역, DEFAULT_DISTANCE), true));
     }
 
     @DisplayName("상행역이 일치하는지 확인한다.")
@@ -110,8 +111,8 @@ class SectionTest {
 
     private static Stream<Arguments> provideForEqualsUpStation() {
         return Stream.of(
-                Arguments.of(new Section(UP_STATION, TEMP_STATION, DEFAULT_DISTANCE), true),
-                Arguments.of(new Section(TEMP_STATION, DOWN_STATION, DEFAULT_DISTANCE), false));
+                Arguments.of(new Section(강남역, 선릉역, DEFAULT_DISTANCE), true),
+                Arguments.of(new Section(선릉역, 역삼역, DEFAULT_DISTANCE), false));
     }
 
     @DisplayName("하행역이 일치하는지 확인한다.")
@@ -124,8 +125,8 @@ class SectionTest {
 
     private static Stream<Arguments> provideForEqualsDownStation() {
         return Stream.of(
-                Arguments.of(new Section(UP_STATION, TEMP_STATION, DEFAULT_DISTANCE), false),
-                Arguments.of(new Section(TEMP_STATION, DOWN_STATION, DEFAULT_DISTANCE), true));
+                Arguments.of(new Section(강남역, 선릉역, DEFAULT_DISTANCE), false),
+                Arguments.of(new Section(선릉역, 역삼역, DEFAULT_DISTANCE), true));
     }
 
     @DisplayName("해당 역을 상행역으로 지니고 있는지 확인한다.")
@@ -138,9 +139,9 @@ class SectionTest {
 
     private static Stream<Arguments> provideForContainsAsUpStation() {
         return Stream.of(
-                Arguments.of(UP_STATION, true),
-                Arguments.of(DOWN_STATION, false),
-                Arguments.of(TEMP_STATION, false));
+                Arguments.of(강남역, true),
+                Arguments.of(역삼역, false),
+                Arguments.of(선릉역, false));
     }
 
     @DisplayName("해당 역을 하행역으로 지니고 있는지 확인한다.")
@@ -153,9 +154,9 @@ class SectionTest {
 
     private static Stream<Arguments> provideForContainsAsDownStation() {
         return Stream.of(
-                Arguments.of(UP_STATION, false),
-                Arguments.of(DOWN_STATION, true),
-                Arguments.of(TEMP_STATION, false));
+                Arguments.of(강남역, false),
+                Arguments.of(역삼역, true),
+                Arguments.of(선릉역, false));
     }
 
     @DisplayName("구간을 쪼개다.")
@@ -172,22 +173,22 @@ class SectionTest {
         return Stream.of(
                 Arguments.of(
                         Named.of("기존 구간의 상행역과 일치하는 경우",
-                                new Section(UP_STATION, TEMP_STATION, DEFAULT_DISTANCE - 5)),
+                                new Section(강남역, 선릉역, DEFAULT_DISTANCE - 5)),
                         List.of(
-                                new Section(UP_STATION, TEMP_STATION, DEFAULT_DISTANCE - 5),
-                                new Section(TEMP_STATION, DOWN_STATION, 5))),
+                                new Section(강남역, 선릉역, DEFAULT_DISTANCE - 5),
+                                new Section(선릉역, 역삼역, 5))),
                 Arguments.of(
                         Named.of("기존 구간의 하행역과 일치하는 경우",
-                                new Section(TEMP_STATION, DOWN_STATION, DEFAULT_DISTANCE - 5)),
+                                new Section(선릉역, 역삼역, DEFAULT_DISTANCE - 5)),
                         List.of(
-                                new Section(UP_STATION, TEMP_STATION, 5),
-                                new Section(TEMP_STATION, DOWN_STATION, DEFAULT_DISTANCE - 5))));
+                                new Section(강남역, 선릉역, 5),
+                                new Section(선릉역, 역삼역, DEFAULT_DISTANCE - 5))));
     }
 
     @DisplayName("상행역 또는 하행역이 일치하지 않는 구간으로 기존의 구간을 쪼개다.")
     @Test
     void splitWithNonConnectedSection() {
-        Section other = new Section(new Station(5L, "제주"), new Station(6L, "서울"), 5);
+        Section other = new Section(선릉역, 삼성역, DEFAULT_DISTANCE - 1);
         assertThatThrownBy(() -> section.split(other))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행역과 하행역이 일치하지 않습니다.");
@@ -196,16 +197,16 @@ class SectionTest {
     @DisplayName("거리가 길거나 같은 구간으로 기존의 구간을 쪼개다.")
     @Test
     void splitWithLongestDistance() {
-        Section other = new Section(UP_STATION, TEMP_STATION, 999);
+        Section other = new Section(강남역, 선릉역, DEFAULT_DISTANCE);
         assertThatThrownBy(() -> section.split(other))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("기존 구간의 거리보다 길거나 같습니다.");
     }
 
-    @DisplayName("구간을 합치다.")
+    @DisplayName("이어지지 않는 구간들을 합치다.")
     @Test
     void mergeWithNonConnectedSection() {
-        Section other = new Section(new Station(5L, "제주"), new Station(6L, "서울"), 5);
+        Section other = new Section(선릉역, 삼성역, DEFAULT_DISTANCE - 1);
         assertThatThrownBy(() -> section.merge(other))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("두 구간은 이어지지 않았습니다.");
@@ -222,14 +223,14 @@ class SectionTest {
     @Test
     void getUpStation() {
         Station actual = section.getUpStation();
-        assertThat(actual).isEqualTo(UP_STATION);
+        assertThat(actual).isEqualTo(강남역);
     }
 
     @DisplayName("하행역을 반환한다.")
     @Test
     void getDownStation() {
         Station actual = section.getDownStation();
-        assertThat(actual).isEqualTo(DOWN_STATION);
+        assertThat(actual).isEqualTo(역삼역);
     }
 
     @DisplayName("거리를 반환한다.")

@@ -10,13 +10,7 @@ class CashierTest {
     @ParameterizedTest
     @CsvSource(value = {"10,1250", "11,1350", "15,1350", "16,1450", "50,2050", "51,2150", "58,2150", "59,2250"})
     void calculateFare(int distance, long expected) {
-        // given
-        Cashier cashier = new Cashier();
-
-        // when
-        Long actual = cashier.calculateFare(distance);
-
-        // then
+        Long actual = (new Cashier()).calculateFare(distance);
         assertThat(actual).isEqualTo(expected);
     }
 }
