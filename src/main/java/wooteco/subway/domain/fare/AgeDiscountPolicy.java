@@ -9,11 +9,12 @@ public enum AgeDiscountPolicy {
 
     TEEN_AGER(AgeDiscountPolicy::isTeenAger, AgeDiscountPolicy::calculateTeenAgerDiscount),
     CHILDREN(AgeDiscountPolicy::isChildren, AgeDiscountPolicy::calculateChildrenDiscount),
-    NONE(age -> !isChildren(age) && !isTeenAger(age), fare -> fare);
+    PREFERENTIAL(AgeDiscountPolicy::isPreferential, fare -> 0),
+    NONE(age -> !isChildren(age) && !isTeenAger(age) && !isPreferential(age), fare -> fare);
 
     private final Predicate<Integer> predicate;
-    private final Function<Integer, Integer> function;
 
+    private final Function<Integer, Integer> function;
     AgeDiscountPolicy(Predicate<Integer> predicate,
                       Function<Integer, Integer> function) {
         this.predicate = predicate;
@@ -34,6 +35,10 @@ public enum AgeDiscountPolicy {
 
     private static int calculateChildrenDiscount(final Integer fare) {
         return (int) ((fare - 350) * 0.5);
+    }
+
+    private static boolean isPreferential(Integer age) {
+        return age < 6 || age >= 65;
     }
 
     public static AgeDiscountPolicy findPolicy(final int age) {
