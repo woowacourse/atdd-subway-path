@@ -21,7 +21,8 @@ public class PathTest {
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        Path path = new Path(sections);
+        Line line = new Line(1L, "2호선", "green", 900, sections);
+        Path path = new Path(new Lines(List.of(line)));
 
         // when
         int shortestDistance = path.getShortestDistance(station1, station3);
@@ -41,8 +42,8 @@ public class PathTest {
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
         Sections sections = new Sections(List.of(section1, section2, section3));
-        Path path = new Path(sections);
-
+        Line line = new Line(1L, "2호선", "green", 900, sections);
+        Path path = new Path(new Lines(List.of(line)));
         // when
         List<Station> shortestPath = path.getShortestPath(station1, station3);
 

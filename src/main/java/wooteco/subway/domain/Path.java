@@ -3,36 +3,39 @@ package wooteco.subway.domain;
 import java.util.List;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
-    private final Sections sections;
+    private final Lines lines;
 
-    public Path(Sections sections) {
-        this.sections = sections;
+    public Path(Lines lines) {
+        this.lines = lines;
     }
 
     public int getShortestDistance(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
+        DijkstraShortestPath<Station, WeightEdgeWithLineId> dijkstraShortestPath = getDijkstraShortestPath();
 
         return (int)dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public List<Station> getShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
+        DijkstraShortestPath<Station, WeightEdgeWithLineId> dijkstraShortestPath = getDijkstraShortestPath();
 
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : sections.getStations()) {
+    private DijkstraShortestPath<Station, WeightEdgeWithLineId> getDijkstraShortestPath() {
+        WeightedMultigraph<Station, WeightEdgeWithLineId> graph = new WeightedMultigraph<>(WeightEdgeWithLineId.class);
+        for (Station station : lines.getStations()) {
             graph.addVertex(station);
         }
-        sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-            section.getDistance()));
-
+        lines.forEach(line -> {
+            line.getSections().forEach(section -> {
+                WeightEdgeWithLineId weightEdgeWithLineId = new WeightEdgeWithLineId(line.getId(),
+                    section.getDistance());
+                graph.addEdge(section.getUpStation(), section.getDownStation(), weightEdgeWithLineId);
+            });
+        });
         return new DijkstraShortestPath<>(graph);
     }
 }
