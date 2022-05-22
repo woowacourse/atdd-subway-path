@@ -15,19 +15,19 @@ public enum Age {
     private final Predicate<Integer> ageDiscriminator;
     private final Function<Integer, Integer> fareCalculator;
 
-    Age(final Predicate<Integer> ageDiscriminator, Function<Integer, Integer> fareCalculator) {
+    Age(final Predicate<Integer> ageDiscriminator, final Function<Integer, Integer> fareCalculator) {
         this.ageDiscriminator = ageDiscriminator;
         this.fareCalculator = fareCalculator;
     }
 
-    public static Age findAge(int age) {
+    public static Age findAge(final int age) {
         return Arrays.stream(values())
                 .filter(ageGroup -> ageGroup.ageDiscriminator.test(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 연령을 찾을 수 없습니다."));
     }
 
-    public int discountFare(int fare) {
+    public int discountFare(final int fare) {
         return this.fareCalculator.apply(fare);
     }
 }

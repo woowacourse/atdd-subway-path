@@ -15,7 +15,7 @@ public enum Fare {
     private final int underLimitOfDistance;
     private final int additionalFare;
 
-    Fare(int defaultFare, int standardDistance, int overLimitOfDistance, int underLimitOfDistance, int additionalFare) {
+    Fare(final int defaultFare, final int standardDistance, final int overLimitOfDistance, final int underLimitOfDistance, final int additionalFare) {
         this.defaultFare = defaultFare;
         this.standardDistance = standardDistance;
         this.overLimitOfDistance = overLimitOfDistance;
@@ -23,7 +23,7 @@ public enum Fare {
         this.additionalFare = additionalFare;
     }
 
-    public static int calculate(final Sections sections, Age age) {
+    public static int calculate(final Sections sections, final Age age) {
         final int fare = getMaxExtraFare(sections.getLines()) + calculateByArea(sections.getTotalDistance());
         return age.discountFare(fare);
     }
@@ -47,7 +47,7 @@ public enum Fare {
         return portion * fare.additionalFare;
     }
 
-    private static double calculateDistance(final double distance, Fare fare) {
+    private static double calculateDistance(final double distance, final Fare fare) {
         if (distance >= fare.underLimitOfDistance) {
             return fare.underLimitOfDistance - fare.overLimitOfDistance;
         }
