@@ -11,8 +11,15 @@ public class CostManager {
     private final List<CostSection> costSections;
 
     public CostManager(List<CostSection> costSections) {
+        validateEmptySections(costSections);
         this.costSections = new ArrayList<>(costSections);
         Collections.sort(this.costSections);
+    }
+
+    private void validateEmptySections(List<CostSection> costSections) {
+        if (costSections.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public int calculateFare(int totalDistance) {
@@ -24,9 +31,10 @@ public class CostManager {
         for (int i = 0; i < lastIndex; i++) {
             CostSection current = costSections.get(i);
             CostSection next = costSections.get(i + 1);
-            totalFare += Math.min(current.calculateOverFare(totalDistance), current.calculateMaxFare(next));
+            totalFare += current.calculateFareWithBound(next, totalDistance);
         }
-        totalFare += costSections.get(lastIndex).calculateOverFare(totalDistance);
+        CostSection lastSection = costSections.get(lastIndex);
+        totalFare += lastSection.calculateFareWithBound(CostSection.ofInfinity(), totalDistance);
         return totalFare + BASIC_FARE;
     }
 }

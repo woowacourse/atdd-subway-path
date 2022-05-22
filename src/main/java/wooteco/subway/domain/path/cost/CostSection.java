@@ -2,6 +2,8 @@ package wooteco.subway.domain.path.cost;
 
 public class CostSection implements Comparable<CostSection> {
 
+    private static final int INFINITY = -1;
+
     private final int threshold;
     private final int delimiter;
     private final int fare;
@@ -12,7 +14,11 @@ public class CostSection implements Comparable<CostSection> {
         this.fare = fare;
     }
 
-    public int calculateOverFare(int nowDistance) {
+    static CostSection ofInfinity() {
+        return new CostSection(INFINITY, 0, 0);
+    }
+
+    private int calculateOverFare(int nowDistance) {
         int faredDistance = nowDistance - threshold;
         if (faredDistance <= 0) {
             return 0;
@@ -20,8 +26,22 @@ public class CostSection implements Comparable<CostSection> {
         return (int) ((Math.ceil((faredDistance - 1) / delimiter) + 1) * fare);
     }
 
-    public int calculateMaxFare(CostSection nextSection) {
+    private int calculateMaxFare(CostSection nextSection) {
         return (int) Math.ceil(((nextSection.threshold - threshold) / delimiter) * fare);
+    }
+
+    public int calculateFareWithBound(CostSection nextSection, int distance) {
+        if (nextSection.isInfinite()) {
+            return calculateOverFare(distance);
+        }
+        return Math.min(calculateOverFare(distance), calculateMaxFare(nextSection));
+    }
+
+    private boolean isInfinite() {
+        if (threshold == -1) {
+            return true;
+        }
+        return false;
     }
 
     @Override
