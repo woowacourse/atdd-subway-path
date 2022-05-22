@@ -19,9 +19,4 @@ public class PathRequest {
     public Long getTarget() {
         return target;
     }
-
-    public int getAge() {
-        return age;
-    }
-
 }
