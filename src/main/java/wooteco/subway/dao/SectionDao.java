@@ -35,46 +35,46 @@ public class SectionDao {
         );
     }
 
-    public void delete(Long lineId, Long stationId) {
-        var sql = "DELETE FROM section WHERE line_id = ? AND id = ?";
-        var removedRowCount = jdbcTemplate.update(sql, lineId, stationId);
-
-        if (removedRowCount == 0) {
-            throw new NoSuchElementException("[ERROR] 정보와 일치하는 구간이 없습니다.");
-        }
-    }
-
     public void delete(Section section) {
         var sql = "DELETE FROM section WHERE id = ?";
         var removedRowCount = jdbcTemplate.update(sql, section.getId());
 
-        if (removedRowCount == 0) {
+        checkValidation(removedRowCount);
+    }
+
+    private void checkValidation(int rowCount) {
+        if (rowCount == 0) {
             throw new NoSuchElementException("[ERROR] 정보와 일치하는 구간이 없습니다.");
         }
     }
 
     public List<Section> findByLineId(Long id) {
         var sql = "SELECT * FROM section WHERE line_id = ?";
+
         return jdbcTemplate.query(sql, sectionRowMapper, id);
     }
 
     public void update(Section section) {
         var sql = "UPDATE section SET up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
+        var updatedRow = jdbcTemplate.update(sql,
                 section.getUpStationId(),
                 section.getDownStationId(),
                 section.getDistance(),
                 section.getId()
         );
+
+        checkValidation(updatedRow);
     }
 
     public List<Section> findAll() {
         var sql = "SELECT * FROM section";
+
         return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
     public List<Section> findByStationId(Long id) {
         var sql = "SELECT * FROM section WHERE up_station_id = ? OR down_station_id = ?";
+
         return jdbcTemplate.query(sql, sectionRowMapper, id, id);
     }
 }
