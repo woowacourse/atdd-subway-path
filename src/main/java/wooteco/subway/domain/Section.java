@@ -60,6 +60,11 @@ public class Section {
         }
     }
 
+    public boolean checkTwoStations(Long stationId1, Long stationId2) {
+        return (upStationId.equals(stationId1) && downStationId.equals(stationId2))
+                || (downStationId.equals(stationId1) && upStationId.equals(stationId2));
+    }
+
     @Override
     public String toString() {
         return "Section{" +
@@ -73,8 +78,12 @@ public class Section {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Section section = (Section) o;
         return Objects.equals(id, section.id);
     }

@@ -31,7 +31,7 @@ class JdbcSectionDaoTest {
         lineDao = new JdbcLineDao(jdbcTemplate);
         sectionDao = new JdbcSectionDao(jdbcTemplate);
 
-        lineDao.create(new Line("2호선", "bg-green-300"));
+        lineDao.create(new Line("2호선", "bg-green-300", 200));
         stationDao.create(new Station("낙성대"));
         stationDao.create(new Station("교대"));
         stationDao.create(new Station("선릉"));

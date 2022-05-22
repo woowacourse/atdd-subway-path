@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -133,5 +134,40 @@ public class Sections {
 
     public boolean hasUpStationId(Long upStationId) {
         return getUpStationIds().contains(upStationId);
+    }
+
+    public List<Section> getSectionsFromShortestPath(List<Long> shortestPath) {
+        List<Section> shortestPathSections = new ArrayList<>();
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            List<Section> candidateSections = getCandidateSections(shortestPath, i);
+            if (candidateSections.isEmpty()) {
+                continue;
+            }
+            addToShortestPathSections(shortestPathSections, candidateSections);
+
+        }
+        return shortestPathSections;
+    }
+
+    private void addToShortestPathSections(List<Section> shortestPathSections, List<Section> candidateSections) {
+        Section tempSection = new Section(0L, 0L, 0L, Integer.MAX_VALUE);
+        shortestPathSections.add(candidateSections.stream()
+                .reduce(tempSection, this::getShorterDistance)
+        );
+    }
+
+    private Section getShorterDistance(Section section1, Section section2) {
+        if (section1.getDistance() < section2.getDistance()) {
+            return section1;
+        }
+        return section2;
+    }
+
+    private List<Section> getCandidateSections(List<Long> shortestPath, int i) {
+        Long stationId1 = shortestPath.get(i);
+        Long stationId2 = shortestPath.get(i + 1);
+        return sections.stream()
+                .filter(section -> section.checkTwoStations(stationId1, stationId2))
+                .collect(Collectors.toList());
     }
 }

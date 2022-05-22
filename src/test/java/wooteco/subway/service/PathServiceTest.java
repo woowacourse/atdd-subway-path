@@ -38,7 +38,7 @@ class PathServiceTest {
                 new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
-        pathService = new PathService(stationService, sectionService);
+        pathService = new PathService(stationService, sectionService, lineService);
         stationService.createStation("에덴");
         stationService.createStation("제로");
         stationService.createStation("서초");
@@ -82,6 +82,24 @@ class PathServiceTest {
                 () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
                 () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
                 () -> assertThat(pathResponseDto.getFare()).isEqualTo(1550)
+        );
+    }
+
+    @Test
+    @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
+    void FindPathWithDuplicatedNodes2() {
+        //given
+        lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5, 300));
+        Long source = 1L;
+        Long target = 5L;
+        int age = 15;
+        //when
+        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        //then
+        assertAll(
+                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
+                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1850)
         );
     }
 

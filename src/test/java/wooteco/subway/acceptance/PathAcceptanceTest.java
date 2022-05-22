@@ -47,9 +47,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         createPostLineResponse(이호선);
 
-        createPostSectionResponse(2L, 사당_서초);
-        createPostSectionResponse(2L, 사당_방배);
-        createPostSectionResponse(2L, 봉천_낙성대);
+        createPostSectionResponse(1L, 사당_서초);
+        createPostSectionResponse(1L, 사당_방배);
+        createPostSectionResponse(1L, 봉천_낙성대);
     }
 
     @DisplayName("경로를 구한다.")
@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
                 () -> assertThat(경로응답.getDistance()).isEqualTo(40),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1850)
+                () -> assertThat(경로응답.getFare()).isEqualTo(2050)
         );
     }
 
@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
                 () -> assertThat(경로응답.getDistance()).isEqualTo(35),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1750)
+                () -> assertThat(경로응답.getFare()).isEqualTo(1950)
         );
     }
 

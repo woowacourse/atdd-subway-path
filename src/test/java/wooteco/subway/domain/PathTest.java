@@ -21,7 +21,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 3L, 10));
         sections.add(new Section(1L, 1L, 3L, 5L, 10));
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
-        Path path = new Path(1L, 5L, stationIds, new Sections(sections));
+        Path path = Path.of(1L, 5L, stationIds, new Sections(sections));
         //when
         List<Long> actualPath = path.getShortestPath();
         int actualTotalDistance = path.getTotalDistance();
@@ -43,7 +43,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 3L, 5));
         sections.add(new Section(1L, 1L, 3L, 5L, 10));
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
-        Path path = new Path(1L, 5L, stationIds, new Sections(sections));
+        Path path = Path.of(1L, 5L, stationIds, new Sections(sections));
         //when
         List<Long> actualPath = path.getShortestPath();
         int actualTotalDistance = path.getTotalDistance();
@@ -63,7 +63,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 2L, 10));
         //when
         //then
-        assertThatThrownBy(() -> new Path(1L, -1L, stationIds, new Sections(sections)))
+        assertThatThrownBy(() -> Path.of(1L, -1L, stationIds, new Sections(sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 역을 찾을 수 없습니다");
     }
@@ -78,7 +78,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 3L, 4L, 10));
         //when
         //then
-        assertThatThrownBy(() -> new Path(1L, 4L, stationIds, new Sections(sections)))
+        assertThatThrownBy(() -> Path.of(1L, 4L, stationIds, new Sections(sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 경로를 찾을 수 없습니다");
     }

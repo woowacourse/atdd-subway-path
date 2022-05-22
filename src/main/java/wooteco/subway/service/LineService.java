@@ -1,5 +1,9 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -11,11 +15,6 @@ import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.line.LineResponseDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
 import wooteco.subway.service.dto.station.StationResponseDto;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -55,8 +54,13 @@ public class LineService {
     @Transactional
     public LineResponseDto create(LineRequestDto lineRequestDto) {
         validateDuplicate(lineRequestDto);
-        Line line = lineDao.create(new Line(lineRequestDto.getName(), lineRequestDto.getColor(), lineRequestDto.getExtraFare()));
-        sectionService.create(new SectionRequestDto(line.getId(), lineRequestDto.getUpStationId(), lineRequestDto.getDownStationId(), lineRequestDto.getDistance()));
+        Line line = lineDao.create(
+                new Line(lineRequestDto.getName(), lineRequestDto.getColor(), lineRequestDto.getExtraFare())
+        );
+        sectionService.create(
+                new SectionRequestDto(line.getId(), lineRequestDto.getUpStationId(), lineRequestDto.getDownStationId(),
+                        lineRequestDto.getDistance())
+        );
 
         return makeLineResponseDto(line);
     }
@@ -71,7 +75,7 @@ public class LineService {
     }
 
     private void addStations(Long upStationId, Sections sections, List<StationResponseDto> stations) {
-        if (sections.hasUpStationId(upStationId)){
+        if (sections.hasUpStationId(upStationId)) {
             Section section = sections.getSectionByUpStationId(upStationId);
             Station station = stationService.findById(upStationId);
             stations.add(new StationResponseDto(station));
@@ -133,5 +137,9 @@ public class LineService {
                 .ifPresent(s -> {
                     throw new NoSuchElementException("[ERROR] 이미 존재하는 색상입니다.");
                 });
+    }
+
+    public int getExtraFareByLineId(Long lineId) {
+        return lineDao.findById(lineId).getExtraFare();
     }
 }

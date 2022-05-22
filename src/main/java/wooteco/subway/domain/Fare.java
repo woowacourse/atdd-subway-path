@@ -11,8 +11,8 @@ public class Fare {
 
     private final int fare;
 
-    public Fare() {
-        this.fare = BASIC_FARE;
+    public Fare(int extraFare) {
+        this.fare = BASIC_FARE + extraFare;
     }
 
     public int calculateFare(int distance) {
@@ -26,11 +26,12 @@ public class Fare {
     }
 
     private int calculateOverTenDistance(int distance) {
-        return (int) ((Math.ceil((distance - FIRST_RESTRICTION_DISTANCE) / FIRST_RESTRICTION_DIVIDE)) * ADDITIONAL_FARE);
+        return (int) ((Math.ceil((distance - FIRST_RESTRICTION_DISTANCE) / FIRST_RESTRICTION_DIVIDE))
+                * ADDITIONAL_FARE);
     }
 
     private int calculateOverFiftyDistance(int distance) {
-        return (int) ((Math.ceil((distance - SECOND_RESTRICTION_DISTANCE) / SECOND_RESTRICTION_DIVIDE)) * ADDITIONAL_FARE);
+        return (int) ((Math.ceil((distance - SECOND_RESTRICTION_DISTANCE) / SECOND_RESTRICTION_DIVIDE))
+                * ADDITIONAL_FARE);
     }
-
 }
