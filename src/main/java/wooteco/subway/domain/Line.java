@@ -46,6 +46,10 @@ public class Line {
         return sections.getDeletedSections(previousSections);
     }
 
+    public boolean containStation(final Station station) {
+        return sections.containStation(station);
+    }
+
     public Long getId() {
         return id;
     }

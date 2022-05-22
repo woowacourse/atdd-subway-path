@@ -32,7 +32,7 @@ public class PathService {
         final GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(source, target);
         final List<Station> stations = path.getVertexList();
         final int distance = (int) path.getWeight();
-        final int fare = (new Fare()).calculate(distance);
+        final int fare = (new Fare()).calculate(distance, stations, lines);
 
         return new PathResponse(stations, distance, fare);
     }

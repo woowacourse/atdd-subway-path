@@ -152,6 +152,16 @@ public class Sections {
         return currentSections;
     }
 
+    public boolean containStation(final Station station) {
+        return value.stream()
+                .anyMatch(section -> hasStation(section, station));
+    }
+
+    private boolean hasStation(final Section section, final Station station) {
+        return section.isSameWithUpStation(station)
+                || section.isSameWithDownStation(station);
+    }
+
     public List<Section> getValue() {
         return value;
     }
