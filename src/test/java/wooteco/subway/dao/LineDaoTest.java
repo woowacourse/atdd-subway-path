@@ -86,7 +86,8 @@ public class LineDaoTest {
 
         assertThat(lineResponses)
             .hasSize(2)
-            .extracting(LineResponse::getId, LineResponse::getName, LineResponse::getColor, LineResponse::getExtraFare)
+            .extracting(LineResponse::getId, LineResponse::getName, LineResponse::getColor,
+                LineResponse::getExtraFare)
             .containsExactlyInAnyOrder(
                 tuple(line1.getId(), line1.getName(), line1.getColor(), line1.getExtraFare()),
                 tuple(line2.getId(), line2.getName(), line2.getColor(), line2.getExtraFare())

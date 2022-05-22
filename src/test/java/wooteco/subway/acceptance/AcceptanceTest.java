@@ -52,8 +52,8 @@ public class AcceptanceTest {
     }
 
     protected ExtractableResponse<Response> requestCreateLine(String name, String color,
-                                                            Long upStationId, Long downStationId,
-                                                            int distance, int extraFare) {
+                                                              Long upStationId, Long downStationId,
+                                                              int distance, int extraFare) {
         Map<String, String> params = Map.of(
             "name", name,
             "color", color,

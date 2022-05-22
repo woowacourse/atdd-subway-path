@@ -27,7 +27,7 @@ public class FareCalculatorTest {
     @DisplayName("기본 거리 요금 계산")
     @ParameterizedTest
     @ValueSource(ints = {5, 6, 10})
-    void calculateFare (int distance) {
+    void calculateFare(int distance) {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, distance))
         );
@@ -41,7 +41,7 @@ public class FareCalculatorTest {
 
     @DisplayName("1차 기준 거리 초과 시 요금 계산")
     @ParameterizedTest
-    @CsvSource({"11,1350", "15,1350","21,1550","26,1650"})
+    @CsvSource({"11,1350", "15,1350", "21,1550", "26,1650"})
     void calculateOverPrimaryDistance(int distance, int fare) {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, distance))
@@ -56,7 +56,7 @@ public class FareCalculatorTest {
 
     @DisplayName("2차 기준 거리 초과 시 요금 계산")
     @ParameterizedTest
-    @CsvSource({"51, 2150","58,2150", "59,2250", "67,2350"})
+    @CsvSource({"51, 2150", "58,2150", "59,2250", "67,2350"})
     void calculateOverSecondaryDistance(int distance, int fare) {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, distance))
@@ -71,7 +71,7 @@ public class FareCalculatorTest {
 
     @DisplayName("추가 요금이 있는 노선의 요금 계산")
     @Test
-    void calculateHasExtraFare () {
+    void calculateHasExtraFare() {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, 10)),
             new Section(1L, 2L, new SectionEdge(2L, 3L, 3))
@@ -87,7 +87,7 @@ public class FareCalculatorTest {
     @DisplayName("청소년 지하철 요금 계산")
     @ParameterizedTest
     @ValueSource(ints = {13, 16, 18})
-    void calculateYouthFare (int age) {
+    void calculateYouthFare(int age) {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, 10)),
             new Section(1L, 2L, new SectionEdge(2L, 3L, 3))
@@ -103,7 +103,7 @@ public class FareCalculatorTest {
     @DisplayName("어린이 지하철 요금 계산")
     @ParameterizedTest
     @ValueSource(ints = {6, 10, 12})
-    void calculateChildFare (int age) {
+    void calculateChildFare(int age) {
         List<Section> sections = List.of(
             new Section(1L, 1L, new SectionEdge(1L, 2L, 10)),
             new Section(1L, 2L, new SectionEdge(2L, 3L, 3))

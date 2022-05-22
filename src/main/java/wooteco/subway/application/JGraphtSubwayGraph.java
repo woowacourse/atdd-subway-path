@@ -7,14 +7,15 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwayGraph;
 
 public class JGraphtSubwayGraph implements SubwayGraph {
 
     private static class JGraphtSectionEdge extends DefaultWeightedEdge {
+
         private Section section;
 
         public JGraphtSectionEdge(Section section) {

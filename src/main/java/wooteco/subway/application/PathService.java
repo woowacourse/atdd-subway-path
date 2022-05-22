@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
-import wooteco.subway.domain.Passenger;
 import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathSummarySearcher;
+import wooteco.subway.domain.Passenger;
 import wooteco.subway.domain.PathSummary;
+import wooteco.subway.domain.PathSummarySearcher;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -41,7 +41,8 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
             .orElseThrow(() -> new NotFoundStationException(target));
 
-        PathSummarySearcher pathSummarySearcher = new PathSummarySearcher(createGraph(), createFareCalculator(age));
+        PathSummarySearcher pathSummarySearcher = new PathSummarySearcher(createGraph(),
+            createFareCalculator(age));
         PathSummary pathSummary = pathSummarySearcher.search(sourceStation, targetStation);
         return new PathResponse(pathSummary);
     }

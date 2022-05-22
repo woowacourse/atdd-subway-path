@@ -58,6 +58,6 @@ class PathSummarySearcherTest {
 
         assertThatThrownBy(() -> new PathSummarySearcher(subwayGraph, fareCalculator)
             .search(stations.get(0), stations.get(2)))
-        .isInstanceOf(UnreachablePathException.class);
+            .isInstanceOf(UnreachablePathException.class);
     }
 }

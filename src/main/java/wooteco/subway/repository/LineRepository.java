@@ -33,7 +33,8 @@ public class LineRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                .prepareStatement("INSERT INTO LINE(name, color, extra_fare) VALUES(?, ?, ?)", new String[]{"id"});
+                .prepareStatement("INSERT INTO LINE(name, color, extra_fare) VALUES(?, ?, ?)",
+                    new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
             ps.setInt(3, line.getExtraFare());
@@ -51,7 +52,8 @@ public class LineRepository {
     public Optional<Line> findById(Long id) {
         try {
             Line line = jdbcTemplate
-                .queryForObject("SELECT id, name, color, extra_fare FROM LINE WHERE id = ?", ROW_MAPPER, id);
+                .queryForObject("SELECT id, name, color, extra_fare FROM LINE WHERE id = ?",
+                    ROW_MAPPER, id);
             return Optional.of(line);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -69,7 +71,8 @@ public class LineRepository {
     }
 
     public Line update(Line line) {
-        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ?, extra_fare = ? WHERE id = ?", line.getName(),
+        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ?, extra_fare = ? WHERE id = ?",
+            line.getName(),
             line.getColor(), line.getExtraFare(), line.getId());
         return line;
     }

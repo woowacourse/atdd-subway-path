@@ -94,7 +94,8 @@ public class LineServiceTest {
         String color = "bg-red-600";
         Station newStation = stationRepository.save(new Station("선릉역"));
 
-        lineService.save(new LineRequest(name, color, upStation.getId(), downStation.getId(), 10, 0));
+        lineService
+            .save(new LineRequest(name, color, upStation.getId(), downStation.getId(), 10, 0));
 
         assertThatThrownBy(() -> lineService
             .save(new LineRequest(name, color, newStation.getId(), upStation.getId(), 10, 0))

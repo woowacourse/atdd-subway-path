@@ -62,7 +62,8 @@ public class JGraphtSubwayGraphTest {
     void searchTransferLinePath() {
         Path path = graph.search(stations.get(0), stations.get(3));
 
-        assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
+        assertThat(path.getStations())
+            .containsExactly(stations.get(0), stations.get(1), stations.get(3));
         assertThat(path.getSections()).containsExactly(sections.get(0), sections.get(2));
         assertThat(path.getDistance()).isEqualTo(8);
     }
