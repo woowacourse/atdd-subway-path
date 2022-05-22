@@ -6,6 +6,7 @@ import wooteco.subway.domain.property.Distance;
 public class FareCalculator {
 
     private static final int BASIC_FARE = 1250;
+    private static final int BABY_FARE = 0;
     private static final int EXTRA_FARE = 100;
 
     private static final int BASE_DISTANCE_THRESHOLD = 10;
@@ -19,12 +20,14 @@ public class FareCalculator {
     private static final int DISCOUNT_DEDUCTION = 350;
 
     public static int calculate(Distance distance, Age age, int extraFare) {
-        int amount = BASIC_FARE;
+        if (age.isBaby()) {
+            return BABY_FARE;
+        }
 
+        int amount = BASIC_FARE;
         amount += calculateBasicExtra(distance);
         amount += calculateHighExtra(distance);
         amount -= calculateDiscount(amount, age);
-
         amount += extraFare;
 
         return amount;
