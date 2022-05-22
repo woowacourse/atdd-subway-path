@@ -103,7 +103,7 @@ class SectionsTest {
         assertThat(result).isFalse();
     }
 
-    @DisplayName("구간들의 역들을 정상적으로 가져오는 지 확인한다.")
+    @DisplayName("구간들의 역들을 정상적으로 가져오는지 확인한다.")
     @Test
     void getStationsIdsInSections() {
         // given

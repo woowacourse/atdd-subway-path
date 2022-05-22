@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LineTest {
 
-    @DisplayName("추가 요금이 더 비싼 노선을 반환하는 지 확인한다.")
+    @DisplayName("추가 요금이 더 비싼 노선을 반환하는지 확인한다.")
     @Test
     void comparesMoreExpensiveExtraFare() {
         final Line lineExtraFare100 = new Line("1호선", "red", 100);

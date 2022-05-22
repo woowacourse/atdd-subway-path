@@ -31,7 +31,7 @@ public class PathTest {
         sectionSevenToTwoInLine2 = new Section(2L, 7L, 2L, 32);
     }
 
-    @DisplayName("최단 거리를 정상적으로 찾는 지 확인한다.")
+    @DisplayName("최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestDistance() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1));
@@ -41,7 +41,7 @@ public class PathTest {
         assertThat(result).isEqualTo(7);
     }
 
-    @DisplayName("최단 경로를 정상적으로 찾는 지 확인한다.")
+    @DisplayName("최단 경로를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPath() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1));
@@ -51,7 +51,7 @@ public class PathTest {
         assertThat(shortestPath).containsExactlyElementsOf(List.of(1L, 2L, 3L, 4L));
     }
 
-    @DisplayName("등록한 구간과 반대방향 일 때 최단 경로를 정상적으로 찾는 지 확인한다.")
+    @DisplayName("등록한 구간과 반대방향 일 때 최단 경로를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathReverse() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1));
@@ -61,7 +61,7 @@ public class PathTest {
         assertThat(shortestPath).containsExactlyElementsOf(List.of(4L, 3L, 2L, 1L));
     }
 
-    @DisplayName("노선이 다를 때 최단 거리를 정상적으로 찾는 지 확인한다.")
+    @DisplayName("노선이 다를 때 최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathWithDifferenceLine() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1, sectionThreeToFourInLine2));
@@ -71,7 +71,7 @@ public class PathTest {
         assertThat(result).isEqualTo(7);
     }
 
-    @DisplayName("환승 역이 있을 때 최단 거리를 정상적으로 찾는 지 확인한다.")
+    @DisplayName("환승 역이 있을 때 최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathWithTransferStations() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1, sectionSevenToTwoInLine2, sectionTwoToSixInLine2));
@@ -81,7 +81,7 @@ public class PathTest {
         assertThat(result).isEqualTo(48);
     }
 
-    @DisplayName("출발역과 도착역이 같을 때 예외를 발생시키는 지 확인한다.")
+    @DisplayName("출발역과 도착역이 같을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathSameStationsException() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1));
@@ -91,7 +91,7 @@ public class PathTest {
                 .hasMessage("출발역과 도착역이 같습니다.");
     }
 
-    @DisplayName("구간에 등록되지 않은 역을 선택했을 때 예외를 발생시키는 지 확인한다.")
+    @DisplayName("구간에 등록되지 않은 역을 선택했을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathNoneStationException() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine1));
@@ -101,7 +101,7 @@ public class PathTest {
                 .hasMessage("구간에 없는 역은 출발지 또는 목적지로 선택할 수 없습니다.");
     }
 
-    @DisplayName("갈수 없는 구간을 선택했을 때 예외를 발생시키는 지 확인한다.")
+    @DisplayName("갈수 없는 구간을 선택했을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathNoneSectionException() {
         final Sections sections = new Sections(List.of(sectionThreeToFourInLine1, sectionOneToTwoInLine1));
@@ -111,7 +111,7 @@ public class PathTest {
                 .hasMessage("이동할 수 없는 경로입니다.");
     }
 
-    @DisplayName("최단 경로의 노선 아이디를 올바르게 반환하는 지 확인한다.")
+    @DisplayName("최단 경로의 노선 아이디를 올바르게 반환하는지 확인한다.")
     @Test
     void findLines() {
         final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine2));

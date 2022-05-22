@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LinesTest {
 
-    @DisplayName("노선들 중 제일 비싼 요금을 가진 노선 중 하나를 반환하는 지 확인한다.")
+    @DisplayName("노선들 중 제일 비싼 요금을 가진 노선 중 하나를 반환하는지 확인한다.")
     @Test
     void getMaxExtraFare() {
         final Line lineExtraFare100 = new Line("1호선", "red", 100);
