@@ -20,7 +20,7 @@ public enum FareAgeStrategyFactory {
     }
 
     private static boolean isInfant(Integer age) {
-        return age < 6;
+        return age >= 0 && age < 6;
     }
 
     private static boolean isChild(Integer age) {

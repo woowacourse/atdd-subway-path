@@ -1,5 +1,6 @@
 package wooteco.subway.domain.strategy.fare;
 
+import wooteco.subway.domain.strategy.fare.age.FareDiscountAgeStrategy;
 import wooteco.subway.domain.strategy.fare.distance.FareDistanceStrategy;
 
 public class FarePolicy {
@@ -12,12 +13,15 @@ public class FarePolicy {
     public static final double STEP_TWO_CHARGE_DISTANCE = 8.0;
 
     private final FareDistanceStrategy fareDistanceStrategy;
+    private final FareDiscountAgeStrategy fareAgeStrategyFactory;
 
-    public FarePolicy(FareDistanceStrategy fareDistanceStrategy) {
+    public FarePolicy(FareDistanceStrategy fareDistanceStrategy, FareDiscountAgeStrategy fareAgeStrategyFactory) {
         this.fareDistanceStrategy = fareDistanceStrategy;
+        this.fareAgeStrategyFactory = fareAgeStrategyFactory;
     }
 
     public int getFare(int distance, int extraFare) {
-        return fareDistanceStrategy.distanceFare(distance) + extraFare;
+        int distanceFare = fareDistanceStrategy.distanceFare(distance) + extraFare;
+        return distanceFare - fareAgeStrategyFactory.discountAge(distanceFare);
     }
 }
