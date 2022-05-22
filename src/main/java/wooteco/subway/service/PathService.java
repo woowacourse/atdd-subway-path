@@ -40,10 +40,10 @@ public class PathService {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(source, target);
 
         int distance = (int) shortestPath.getWeight();
-        Fare fare = new Fare();
+        Fare fare = new Fare(new BasicFareStrategy());
 
         return new PathResponse(shortestPath.getVertexList(), distance,
-                fare.calculateFare(distance, new BasicFareStrategy()));
+                fare.calculateFare(distance));
     }
 }
 
