@@ -19,6 +19,10 @@ public class Path {
         return stations;
     }
 
+    public List<Long> getLines() {
+        return lines;
+    }
+
     public int getDistance() {
         return distance;
     }

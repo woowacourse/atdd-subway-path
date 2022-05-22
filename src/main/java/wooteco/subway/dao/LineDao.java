@@ -2,8 +2,10 @@ package wooteco.subway.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.exception.ExtraFareNotFoundException;
 
 @Repository
 public class LineDao {
@@ -69,6 +72,17 @@ public class LineDao {
         return new Sections(lineSections.stream()
                 .map(LineSection::getSection)
                 .collect(Collectors.toList()));
+    }
+
+    public int findMaxExtraFareByLineId(List<Long> lineIds) {
+        String sql = "SELECT MAX(extraFare) FROM line WHERE id IN (:lineIds)";
+        SqlParameterSource nameParameters = new MapSqlParameterSource("lineIds", lineIds);
+
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, nameParameters, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ExtraFareNotFoundException();
+        }
     }
 
     public Long updateByLine(final Line line) {

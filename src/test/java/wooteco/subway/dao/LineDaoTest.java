@@ -113,6 +113,24 @@ class LineDaoTest {
     }
 
     @Test
+    @DisplayName("라인 아이디들의 정보를 통해 가장 높은 추가 금액을 가진 라인을 조회할 수 있다.")
+    void findMaxExtraFareByLineId() {
+        // given
+        Line 이호선 = new Line("2호선", "bg-green-600", 1000);
+        Long 이호선_id = lineDao.save(이호선);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 2000);
+        Long 신분당선_id = lineDao.save(신분당선);
+
+        List<Long> lineIds = List.of(이호선_id, 신분당선_id);
+
+        // when
+        int maxExtraFare = lineDao.findMaxExtraFareByLineId(lineIds);
+
+        // then
+        assertThat(maxExtraFare).isEqualTo(2000);
+    }
+
+    @Test
     @DisplayName("노선을 삭제할 수 있다.")
     void deleteById() {
         // given
