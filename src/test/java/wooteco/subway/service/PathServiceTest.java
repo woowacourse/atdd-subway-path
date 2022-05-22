@@ -166,7 +166,7 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        PathDto path = pathService.findPath(sourceStationId, targetStationId, 0);
+        PathDto path = pathService.findPath(sourceStationId, targetStationId, 19);
 
         // then
         assertThat(path.getFare()).isEqualTo(2550);

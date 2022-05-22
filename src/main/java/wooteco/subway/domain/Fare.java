@@ -15,7 +15,6 @@ public class Fare {
     private static final int DEFAULT_DEDUCTION = 350;
 
     private static final int MIN_CHILD_AGE = 6;
-    private static final int MAX_CHILD_AGE = 12;
     private static final double CHILD_POLICY_RATE = 0.5;
 
     private static final int MIN_TEENAGER_AGE = 13;
@@ -44,6 +43,10 @@ public class Fare {
     }
 
     private int calculateAgeDiscounted(int fare) {
+        if (isBabyPolicy()) {
+            return 0;
+        }
+
         if (isChildPolicy()) {
             return calculatePolicy(fare, CHILD_POLICY_RATE);
         }
@@ -55,8 +58,12 @@ public class Fare {
         return fare;
     }
 
+    private boolean isBabyPolicy() {
+        return age < MIN_CHILD_AGE;
+    }
+
     private boolean isChildPolicy() {
-        return age >= MIN_CHILD_AGE && age <= MAX_CHILD_AGE;
+        return age >= MIN_CHILD_AGE && age < MIN_TEENAGER_AGE;
     }
 
     private boolean isTeenagerPolicy() {

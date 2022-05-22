@@ -15,7 +15,7 @@ public class FareTest {
         delimiter = ':')
     void fare(int distance, int fare) {
         // when
-        int actual = Fare.of(distance, 0, 0).calculate();
+        int actual = Fare.of(distance, 0, 19).calculate();
 
         // then
         assertThat(actual).isEqualTo(fare);
@@ -26,7 +26,7 @@ public class FareTest {
     @CsvSource(value = {"58:900:3050", "58:500:2650"}, delimiter = ':')
     void fareWithOverFare(int distance, int overFare, int expected) {
         //when
-        int actual = Fare.of(distance, overFare, 0).calculate();
+        int actual = Fare.of(distance, overFare, 19).calculate();
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -34,7 +34,7 @@ public class FareTest {
 
     @DisplayName("연령별 할인 요금이 적용된 요금을 계산한다.")
     @ParameterizedTest
-    @CsvSource(value = {"58:5:2150", "58:6:900", "58:12:900", "58:13:1440", "58:18:1440", "58:19:2150"},
+    @CsvSource(value = {"58:5:0", "58:6:900", "58:12:900", "58:13:1440", "58:18:1440", "58:19:2150"},
         delimiter = ':')
     void fareWithAgeDiscount(int distance, int age, int expected) {
         //when
@@ -46,7 +46,7 @@ public class FareTest {
 
     @DisplayName("노선별 추가 요금과 연령별 할인 요금이 적용된 요금을 계산한다.")
     @ParameterizedTest
-    @CsvSource(value = {"58:500:5:2650", "58:500:6:1150", "58:500:12:1150",
+    @CsvSource(value = {"58:500:5:0", "58:500:6:1150", "58:500:12:1150",
         "58:500:13:1840", "58:500:18:1840", "58:500:19:2650"},
         delimiter = ':')
     void fareWithOverFareAndAgeDiscount(int distance, int overFare, int age, int expected) {

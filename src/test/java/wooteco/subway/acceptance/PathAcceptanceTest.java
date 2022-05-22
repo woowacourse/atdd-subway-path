@@ -74,7 +74,7 @@ public class PathAcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .when()
-            .get("/paths?source=" + source + "&target=" + target + "&age=0")
+            .get("/paths?source=" + source + "&target=" + target + "&age=19")
             .then().log().all()
             .extract();
 
@@ -92,7 +92,7 @@ public class PathAcceptanceTest {
 
     @DisplayName("연령별 할인 요금이 적용된 경로를 조회한다(신분당선 -> 2호선, 추가 요금 1000).")
     @ParameterizedTest
-    @CsvSource(value = {"5:2550", "6:1100", "12:1100", "13:1760", "18:1760", "19:2550"}, delimiter = ':')
+    @CsvSource(value = {"5:0", "6:1100", "12:1100", "13:1760", "18:1760", "19:2550"}, delimiter = ':')
     void findPathWithAgeDiscount(int age, int expected) {
         //given
         Long source = stations.get("강남역").getId();
