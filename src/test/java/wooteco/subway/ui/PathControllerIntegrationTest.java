@@ -44,7 +44,7 @@ public class PathControllerIntegrationTest {
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 900);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -78,8 +78,9 @@ public class PathControllerIntegrationTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
-        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance);
+                            final int distance, final int extraFare) throws Exception {
+        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance,
+                extraFare);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         return Long.parseLong(Objects.requireNonNull(mockMvc.perform(post("/lines")

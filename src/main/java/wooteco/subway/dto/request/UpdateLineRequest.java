@@ -9,17 +9,19 @@ public class UpdateLineRequest {
     private String name;
     @NotBlank
     private String color;
+    private int extraFare;
 
     private UpdateLineRequest() {
     }
 
-    public UpdateLineRequest(final String name, final String color) {
+    public UpdateLineRequest(final String name, final String color, final int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line toLine(final Long id) {
-        return new Line(id, name, color);
+        return new Line(id, name, color, extraFare);
     }
 
     public String getName() {
@@ -28,5 +30,9 @@ public class UpdateLineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

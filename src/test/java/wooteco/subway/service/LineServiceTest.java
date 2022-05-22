@@ -61,8 +61,8 @@ class LineServiceTest {
     @DisplayName("지하철 노선을 생성한다. 이때 관련 구간을 같이 생성한다.")
     void create() {
         // given
-        final Line savedLine = new Line(1L, LINE_2, SKY_BLUE, new Sections(SECTION_1_2_10));
-        final CreateLineRequest request = new CreateLineRequest(LINE_2, SKY_BLUE, 1L, 2L, 10);
+        final Line savedLine = new Line(1L, LINE_2, SKY_BLUE, 900, new Sections(SECTION_1_2_10));
+        final CreateLineRequest request = new CreateLineRequest(LINE_2, SKY_BLUE, 1L, 2L, 10, 900);
         final Sections sections = new Sections(SECTION_1_2_10);
 
         // mocking
@@ -90,7 +90,7 @@ class LineServiceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 생성하면, 예외를 발생한다.")
     void createWithDuplicateName() {
         // given
-        final CreateLineRequest request = new CreateLineRequest(LINE_2, SKY_BLUE, 1L, 2L, 10);
+        final CreateLineRequest request = new CreateLineRequest(LINE_2, SKY_BLUE, 1L, 2L, 10, 900);
 
         // mocking
         given(lineRepository.save(any(Line.class))).willThrow(DuplicateKeyException.class);
@@ -104,8 +104,8 @@ class LineServiceTest {
     @DisplayName("지하철 노선 목록을 조회한다. 관련 역들도 함께 조회한다.")
     void showAll() {
         // given
-        final List<Line> lines = List.of(new Line(1L, LINE_2, SKY_BLUE, new Sections(SECTION_1_2_10)),
-                new Line(2L, LINE_4, GREEN, new Sections(SECTION_1_2_10)));
+        final List<Line> lines = List.of(new Line(1L, LINE_2, SKY_BLUE, 900, new Sections(SECTION_1_2_10)),
+                new Line(2L, LINE_4, GREEN, 900, new Sections(SECTION_1_2_10)));
 
         // mocking
         given(lineRepository.findAll()).willReturn(lines);
@@ -121,7 +121,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회한다. 관련 역들도 함께 조회한다.")
     void show() {
         // mocking
-        given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_2, SKY_BLUE, new Sections(SECTION_1_2_10)));
+        given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_2, SKY_BLUE, 900, new Sections(SECTION_1_2_10)));
         // when
         final LineResponse response = lineService.find(1L);
         final StationResponse stationResponse1 = response.getStations().get(0);
@@ -153,16 +153,11 @@ class LineServiceTest {
     @Test
     @DisplayName("노선을 업데이트 한다.")
     void updateLine() {
-        // given
-        final long id = 1L;
-        final String name = "2호선";
-        final String color = "bg-red-600";
-
         // mocking
         given(lineRepository.existsById(1L)).willReturn(true);
 
         // when
-        lineService.updateLine(id, new UpdateLineRequest(name, color));
+        lineService.updateLine(1L, new UpdateLineRequest(LINE_4, SKY_BLUE, 800));
 
         // then
         verify(lineRepository).updateById(any(Line.class));
@@ -175,7 +170,7 @@ class LineServiceTest {
         given(lineRepository.existsById(1L)).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> lineService.updateLine(1L, new UpdateLineRequest(LINE_4, GREEN)))
+        assertThatThrownBy(() -> lineService.updateLine(1L, new UpdateLineRequest(LINE_4, GREEN, 800)))
                 .isInstanceOf(NotFoundLineException.class);
     }
 

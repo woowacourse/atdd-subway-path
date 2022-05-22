@@ -19,7 +19,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color"));
+            resultSet.getString("color"),
+            resultSet.getInt("extraFare"));
 
     private final SimpleJdbcInsert insertActor;
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -51,8 +52,10 @@ public class LineDao {
     }
 
     public void updateById(final LineEntity line) {
-        final String sql = "UPDATE LINE SET name = :name, color = :color WHERE id = :id";
-        jdbcTemplate.update(sql, Map.of("id", line.getId(), "name", line.getName(), "color", line.getColor()));
+        final String sql = "UPDATE LINE SET name = :name, color = :color, extraFare = :extraFare WHERE id = :id";
+        jdbcTemplate.update(sql,
+                Map.of("id", line.getId(), "name", line.getName(), "color", line.getColor(), "extraFare",
+                        line.getExtraFare()));
     }
 
     public void deleteById(final Long id) {

@@ -60,8 +60,8 @@ public class PathServiceTest {
         right = stationRepository.findById(rightId);
         down = stationRepository.findById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_2, SKY_BLUE));
-        final Long line4Id = lineRepository.save(new Line(LINE_4, GREEN));
+        final Long line2Id = lineRepository.save(new Line(LINE_2, SKY_BLUE, 900));
+        final Long line4Id = lineRepository.save(new Line(LINE_4, GREEN, 900));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));

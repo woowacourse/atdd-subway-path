@@ -41,7 +41,7 @@ public class SectionDaoTest {
     void save() {
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
         final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final SectionEntity SectionEntity = new SectionEntity(lineId, upStationId, downStationId, 10);
 
         final Long id = sectionDao.save(SectionEntity);
@@ -62,7 +62,7 @@ public class SectionDaoTest {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
         final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final List<SectionEntity> sections = List.of(new SectionEntity(lineId, stationId1, stationId2, 10),
                 new SectionEntity(lineId, stationId2, stationId3, 10));
 
@@ -80,7 +80,7 @@ public class SectionDaoTest {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
         final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final SectionEntity section1 = new SectionEntity(lineId, stationId1, stationId2, 10);
         final SectionEntity section2 = new SectionEntity(lineId, stationId2, stationId3, 10);
 
@@ -98,7 +98,7 @@ public class SectionDaoTest {
         // given
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
         final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final SectionEntity SectionEntity = new SectionEntity(lineId, upStationId, downStationId, 10);
         final Long id = sectionDao.save(SectionEntity);
 
@@ -120,7 +120,7 @@ public class SectionDaoTest {
         // given
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
         final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final Long sectionId = sectionDao.save(new SectionEntity(lineId, upStationId, downStationId, 10));
 
         // when
@@ -137,7 +137,7 @@ public class SectionDaoTest {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
         final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final List<SectionEntity> sections = List.of(new SectionEntity(lineId, stationId1, stationId2, 10),
                 new SectionEntity(lineId, stationId2, stationId3, 10));
 
@@ -156,7 +156,7 @@ public class SectionDaoTest {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
         final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
         final SectionEntity section1 = new SectionEntity(lineId, stationId1, stationId2, 10);
         final SectionEntity section2 = new SectionEntity(lineId, stationId2, stationId3, 10);
         sectionDao.save(section1);

@@ -48,6 +48,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -61,15 +62,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .getList("stations", StationResponse.class);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-            assertThat(response.header("Location")).isNotBlank();
-            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_4);
-            assertThat(response.body().jsonPath().getString("color")).isEqualTo(SKY_BLUE);
-            assertThat(stationResponses).hasSize(2);
-            assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(stationResponses.get(1).getName()).isEqualTo(SUNGSHIN);
-        });
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+            () -> assertThat(response.header("Location")).isNotBlank(),
+            () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_4),
+            () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(SKY_BLUE),
+            () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(900),
+            () -> assertThat(stationResponses).hasSize(2),
+            () -> assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA),
+            () -> assertThat(stationResponses.get(1).getName()).isEqualTo(SUNGSHIN)
+        );
     }
 
     /*
@@ -84,6 +86,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         final Long upStationId = createStation(HYEHWA);
         final Long downStationId = createStation(SUNGSHIN);
+        createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("name", LINE_4);
@@ -91,14 +94,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
-
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -126,32 +121,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
         final Long stationId4 = createStation(JAMSIL);
-
-        final Map<String, Object> params1 = new HashMap<>();
-        params1.put("name", LINE_4);
-        params1.put("color", SKY_BLUE);
-        params1.put("upStationId", stationId1);
-        params1.put("downStationId", stationId2);
-        params1.put("distance", 10);
-        RestAssured.given().log().all()
-                .body(params1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all();
-
-        final Map<String, Object> params2 = new HashMap<>();
-        params2.put("name", LINE_2);
-        params2.put("color", GREEN);
-        params2.put("upStationId", stationId3);
-        params2.put("downStationId", stationId4);
-        params2.put("distance", 10);
-        RestAssured.given().log().all()
-                .body(params2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all();
+        createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 900);
+        createLine(LINE_2, GREEN, stationId3, stationId4, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -166,10 +137,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(lineResponses.get(0).getName()).isEqualTo(LINE_4);
             assertThat(lineResponses.get(0).getColor()).isEqualTo(SKY_BLUE);
+            assertThat(lineResponses.get(0).getExtraFare()).isEqualTo(900);
             assertThat(lineResponses.get(0).getStations().get(0).getName()).isEqualTo(HYEHWA);
             assertThat(lineResponses.get(0).getStations().get(1).getName()).isEqualTo(SUNGSHIN);
             assertThat(lineResponses.get(1).getName()).isEqualTo(LINE_2);
             assertThat(lineResponses.get(1).getColor()).isEqualTo(GREEN);
+            assertThat(lineResponses.get(1).getExtraFare()).isEqualTo(0);
             assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo(GANGNAM);
             assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo(JAMSIL);
         });
@@ -186,26 +159,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         final Long upStationId = createStation(HYEHWA);
         final Long downStationId = createStation(SUNGSHIN);
-
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_4);
-        params.put("color", SKY_BLUE);
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", 10);
-        final long id = Long.parseLong(RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .header("Location").split("/")[2]);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .get("/lines/" + id)
+                .get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
         final List<StationResponse> stationResponses = response.body().jsonPath()
@@ -216,6 +175,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_4);
             assertThat(response.body().jsonPath().getString("color")).isEqualTo(SKY_BLUE);
+            assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(900);
             assertThat(stationResponses).hasSize(2);
             assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
             assertThat(stationResponses.get(1).getName()).isEqualTo(SUNGSHIN);
@@ -257,31 +217,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final Long upStationId = createStation(HYEHWA);
         final Long downStationId = createStation(SUNGSHIN);
 
-        final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_4);
-        saveParams.put("color", SKY_BLUE);
-        saveParams.put("upStationId", upStationId);
-        saveParams.put("downStationId", downStationId);
-        saveParams.put("distance", 10);
-        final long id = Long.parseLong(RestAssured.given().log().all()
-                .body(saveParams)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .header("Location").split("/")[2]);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
 
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", LINE_2);
         params.put("color", GREEN);
+        params.put("extraFare", 0);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put("/lines/" + id)
+                .put("/lines/" + lineId)
                 .then().log().all()
                 .extract();
 
@@ -298,17 +246,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID로 업데이트 한다면, 예외를 발생한다.")
     void updateNotExistId() {
         // given
-        final long id = 100L;
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", LINE_4);
         params.put("color", SKY_BLUE);
+        params.put("extraFare", 0);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put("/lines/" + id)
+                .put("/lines/" + 100L)
                 .then().log().all()
                 .extract();
 
@@ -328,26 +276,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         final Long upStationId = createStation(HYEHWA);
         final Long downStationId = createStation(SUNGSHIN);
-
-        final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_4);
-        saveParams.put("color", SKY_BLUE);
-        saveParams.put("upStationId", upStationId);
-        saveParams.put("downStationId", downStationId);
-        saveParams.put("distance", 10);
-        final long id = Long.parseLong(RestAssured.given().log().all()
-                .body(saveParams)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .header("Location").split("/")[2]);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .delete("/lines/" + id)
+                .delete("/lines/" + lineId)
                 .then().log().all()
                 .extract();
 
@@ -394,7 +328,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -421,7 +355,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId2, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId2, stationId3, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -448,7 +382,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -475,7 +409,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -502,7 +436,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -554,7 +488,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             // given
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -582,7 +516,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
             final Long stationId4 = createStation(JAMSIL);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId3);
@@ -621,7 +555,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -659,7 +593,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -679,7 +613,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             // given
             final Long stationId1 = createStation(HYEHWA);
             final Long stationId2 = createStation(SUNGSHIN);
-            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
 
             // when
             final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -708,13 +642,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) {
+                            final int distance, final int extraFare) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", distance);
+        params.put("extraFare", extraFare);
 
         return Long.parseLong(RestAssured.given().log().all()
                 .body(params)
