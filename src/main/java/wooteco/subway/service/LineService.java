@@ -105,16 +105,6 @@ public class LineService {
         return new LineResponse(line, stationResponses);
     }
 
-    public int getMaxExtraFare(List<Station> stations) {
-        List<Section> sections = sectionDao.findAllIn(stations);
-        return sections.stream()
-                .map(Section::getLine)
-                .distinct()
-                .mapToInt(Line::getExtraFare)
-                .max()
-                .orElse(0);
-    }
-
     @Transactional
     public void update(Long id, LineUpdateRequest lineRequest) {
         Line line = getLine(id);

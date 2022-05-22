@@ -66,11 +66,11 @@ class PathServiceTest {
         StationResponse 대림역 = stationService.save(new StationRequest("대림역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, extraFare);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
         LineResponse line7Response = lineService.save(line7);
         lineService.addSection(line7Response.getId(), new SectionRequest(강남구청역.getId(), 대림역.getId(), 10));
         LineRequest line2 = new LineRequest(
-                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5, 0);
+                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5, extraFare);
         LineResponse line2Response = lineService.save(line2);
         lineService.addSection(line2Response.getId(), new SectionRequest(낙성대역.getId(), 대림역.getId(), 5));
 

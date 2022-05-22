@@ -130,12 +130,6 @@ class LineServiceTest {
                     assertThat(lines.size()).isEqualTo(2);
                 }),
 
-                dynamicTest("지하철역을 가진 구간 중 가장 높은 추가 요금을 확인한다.", () -> {
-                    int maxExtraFare = lineService.getMaxExtraFare(List.of(선릉역, 잠실역, 중동역, 신도림역));
-
-                    assertThat(maxExtraFare).isEqualTo(900);
-                }),
-
                 dynamicTest("존재하는 노선을 수정한다.", () -> {
                     String updateColor = "bg-blue-600";
                     LineUpdateRequest updateRequest = new LineUpdateRequest(name1, updateColor, 0);

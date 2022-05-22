@@ -1,7 +1,5 @@
 package wooteco.subway.dao;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,32 +127,6 @@ public class SectionDao {
 
             return new Section(sectionId, line, upStation, downStation, distance);
         };
-    }
-
-    public List<Section> findAllIn(List<Station> stations) {
-        String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, l.extra_fare as line_extra_fare, "
-                + "s.up_station_id, up.name as up_station_name, "
-                + "s.down_station_id, down.name as down_station_name, "
-                + "s.distance "
-                + "from SECTION s "
-                + "join LINE l on s.line_id = l.id "
-                + "join STATION up on s.up_station_id = up.id "
-                + "join STATION down on s.down_station_id = down.id "
-                + "where s.up_station_id in (:upStationIds) or s.down_station_id in (:downStationIds)";
-
-        List<Long> stationIds = convertToStationId(stations);
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("upStationIds", stationIds)
-                .addValue( "downStationIds", stationIds);
-
-        return jdbcTemplate.query(sql, sqlParameterSource, generateRowMapper());
-    }
-
-    private List<Long> convertToStationId(List<Station> stations) {
-        return stations.stream()
-                .map(Station::getId)
-                .collect(toList());
     }
 
     public void deleteByLineId(Long lineId) {

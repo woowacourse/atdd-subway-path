@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Objects;
 import org.jgrapht.GraphPath;
@@ -9,14 +11,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public Path(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
         fillVertexes(sections, graph);
         fillEdge(sections, graph);
 
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
     private void fillVertexes(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -28,7 +30,8 @@ public class Path {
 
     private void fillEdge(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionEdge sectionEdge = new SectionEdge(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
         }
     }
 
@@ -45,8 +48,17 @@ public class Path {
 
         return (int) shortestPath.getWeight();
     }
+    
+    public List<Section> getSections(Station source, Station target) {
+        GraphPath<Station, SectionEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
+        return shortestPath.getEdgeList()
+                .stream()
+                .map(SectionEdge::getSection)
+                .collect(toList());
+    }
 
-    private GraphPath getPath(Station source, Station target, DijkstraShortestPath dijkstraShortestPath) {
+    private GraphPath getPath(
+            Station source, Station target, DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         try {
             return dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
