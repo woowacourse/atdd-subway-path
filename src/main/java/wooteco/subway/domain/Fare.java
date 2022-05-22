@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.exception.IllegalInputException;
 
 public class Fare {
 
@@ -14,7 +15,14 @@ public class Fare {
     private final int value;
 
     public Fare(final int value) {
+        validateFareValue(value);
         this.value = value;
+    }
+
+    private void validateFareValue(final int value) {
+        if (value < 0) {
+            throw new IllegalInputException("요금은 0보다 작을 수 없습니다.");
+        }
     }
 
     public static Fare from(final Distance distance) {
