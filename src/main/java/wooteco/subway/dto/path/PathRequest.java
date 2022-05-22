@@ -6,16 +6,13 @@ import javax.validation.constraints.Positive;
 public class PathRequest {
 
     @NotNull
-    private Long source;
+    private final Long source;
 
     @NotNull
-    private Long target;
+    private final Long target;
 
     @Positive
-    private int age;
-
-    private PathRequest() {
-    }
+    private final int age;
 
     public PathRequest(final Long source, final Long target, final int age) {
         this.source = source;
