@@ -17,7 +17,8 @@ class NameTest {
         String value = null;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Name(value))
+                .withMessageContaining("이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -27,6 +28,7 @@ class NameTest {
         String value = "";
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Name(value));
+                .isThrownBy(() -> new Name(value))
+                .withMessageContaining("이름은 필수 입력값입니다.");
     }
 }

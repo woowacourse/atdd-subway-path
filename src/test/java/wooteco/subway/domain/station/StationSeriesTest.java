@@ -26,7 +26,8 @@ class StationSeriesTest {
         final List<Station> stations = List.of(stationA, stationB);
         // then
         assertThatExceptionOfType(IdMissingException.class)
-                .isThrownBy(() -> new StationSeries(stations));
+                .isThrownBy(() -> new StationSeries(stations))
+                .withMessageContaining("A역에 ID가 없습니다.");
     }
 
     @Test
@@ -49,9 +50,10 @@ class StationSeriesTest {
         // when
         final Station addStation = new Station(3L, "B");
 
-        assertThatExceptionOfType(RowDuplicatedException.class)
-                .isThrownBy(() -> series.add(addStation));
         // then
+        assertThatExceptionOfType(RowDuplicatedException.class)
+                .isThrownBy(() -> series.add(addStation))
+                .withMessageContaining("B는 이미 존재하는 역 이름입니다.");
     }
 
     @Test
@@ -78,7 +80,8 @@ class StationSeriesTest {
 
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-                .isThrownBy(() -> series.delete(deleteId));
+                .isThrownBy(() -> series.delete(deleteId))
+                .withMessageContaining("3에 해당하는 역이 없습니다.");
     }
 
     @Test

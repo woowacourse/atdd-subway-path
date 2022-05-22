@@ -17,7 +17,8 @@ class DistanceTest {
         int value = 0;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Distance(value));
+                .isThrownBy(() -> new Distance(value))
+                .withMessageContaining("구간의 거리는 0 이하가 될 수 없습니다.");
     }
 
     @Test

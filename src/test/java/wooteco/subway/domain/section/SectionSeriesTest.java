@@ -121,7 +121,8 @@ class SectionSeriesTest {
         final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb()));
         // then
         assertThatExceptionOfType(SectionNotEnoughException.class)
-                .isThrownBy(() -> sectionSeries.remove(getStationA()));
+                .isThrownBy(() -> sectionSeries.remove(getStationA()))
+                .withMessageContaining("구간이 하나인 경우에는 삭제할 수 없습니다.");
     }
 
     @Test
@@ -170,6 +171,7 @@ class SectionSeriesTest {
         final SectionSeries sectionSeries = new SectionSeries(List.of(getSectionAb(), getSectionBc()));
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-                .isThrownBy(() -> sectionSeries.remove(getStationX()));
+                .isThrownBy(() -> sectionSeries.remove(getStationX()))
+                .withMessageContaining("삭제하려는 역이 구간에 등록되어 있지 않습니다.");
     }
 }
