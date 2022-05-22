@@ -78,7 +78,7 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );
     }
-    
+
     @DisplayName("다른 노선의 갈 수 없는 경로를 조회하면 예외를 던진다.")
     @Test
     void findPathCanNotGo() {

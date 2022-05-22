@@ -44,7 +44,7 @@ class StationDaoTest {
 
         assertThat(result).isEqualTo(expected);
     }
-    
+
     @DisplayName("중복된 지하철역을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_지하철역_예외발생() {
