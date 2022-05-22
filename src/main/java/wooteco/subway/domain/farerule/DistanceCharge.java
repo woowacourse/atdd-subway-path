@@ -1,11 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.farerule;
 
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DistanceCharge implements Predicate<Integer> {
-    
+
     NONE(distance -> distance <= 10, distance -> 0),
     PER_5KM(distance -> distance > 10 && distance <= 50, DistanceCharge::calculateHundredPer5km),
     PER_8KM(distance -> distance > 50, DistanceCharge::calculateHundredPer8km);

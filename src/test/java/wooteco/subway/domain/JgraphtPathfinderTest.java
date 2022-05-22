@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import wooteco.subway.domain.pathfinder.PathFinder;
 
 @SpringBootTest
 class JgraphtPathfinderTest {
@@ -29,7 +30,6 @@ class JgraphtPathfinderTest {
         경유 : 2호선, 9호선, 4호선
         추가요금 : 1000원
          */
-
         Station 합정 = new Station("홍대");
         Station 당산 = new Station("당산");
         Station 대림 = new Station("대림");

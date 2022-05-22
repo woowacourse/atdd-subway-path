@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.domain.farerule.AgeDiscount;
+import wooteco.subway.domain.farerule.DistanceCharge;
 
 public class Path {
 

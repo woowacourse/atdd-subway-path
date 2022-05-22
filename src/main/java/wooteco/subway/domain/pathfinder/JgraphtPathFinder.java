@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.pathfinder;
 
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +7,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {

@@ -22,11 +22,6 @@ public class Line {
         this.extraFare = new ExtraFare(extraFare);
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
-        this(name, color, extraFare);
-        this.id = id;
-    }
-
     public Line(String name, String color, Sections sections, int extraFare) {
         this(name, color, extraFare);
         this.sections = sections;
@@ -104,5 +99,26 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(name, color, sections);
+    }
+
+    private static class ExtraFare {
+
+        private int extraFare;
+
+        public ExtraFare(int extraFare) {
+            validateNotUnderZero(extraFare);
+            this.extraFare = extraFare;
+        }
+
+        private void validateNotUnderZero(int extraFare) {
+            if (extraFare < 0) {
+                throw new IllegalArgumentException("추가 요금은 음수가 될 수 없습니다.");
+            }
+        }
+
+        public int getExtraFare() {
+            return extraFare;
+        }
+
     }
 }
