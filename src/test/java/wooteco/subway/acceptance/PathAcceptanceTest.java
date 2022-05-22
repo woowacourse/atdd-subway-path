@@ -33,10 +33,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
                 .getId();
 
-        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2))
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
                 .as(LineResponse.class).getId();
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
-        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
 
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4);
         PathResponse pathResponse = response.jsonPath()
@@ -71,10 +71,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
 
-        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2))
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
                 .as(LineResponse.class).getId();
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
-        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
 
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
 
@@ -100,10 +100,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
 
-        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2))
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
                 .as(LineResponse.class).getId();
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
-        createLine(new LineRequest("3호선", "orange", stationId4, stationId5, 2));
+        createLine(new LineRequest("3호선", "orange", stationId4, stationId5, 2, 0));
 
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
 

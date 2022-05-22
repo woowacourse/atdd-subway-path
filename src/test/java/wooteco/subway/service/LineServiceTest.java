@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,8 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest = new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest = new LineServiceRequest("2호선", "green", upStation.getId(),
+                downStation.getId(), 10, 0);
 
         LineServiceResponse lineServiceResponse = lineService.save(lineServiceRequest);
 
@@ -47,8 +49,8 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest = 
-                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest =
+                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10, 0);
 
         lineService.save(lineServiceRequest);
 
@@ -62,14 +64,14 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest1 = 
-                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest1 =
+                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10, 0);
 
         Station upStation2 = stationDao.save(new Station("교대역"));
         Station downStation2 = stationDao.save(new Station("수서역"));
 
-        LineServiceRequest lineServiceRequest2 = 
-                new LineServiceRequest("3호선", "orange", upStation2.getId(), downStation2.getId(), 10);
+        LineServiceRequest lineServiceRequest2 =
+                new LineServiceRequest("3호선", "orange", upStation2.getId(), downStation2.getId(), 10, 0);
 
         lineService.save(lineServiceRequest1);
         lineService.save(lineServiceRequest2);
@@ -88,8 +90,8 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest = 
-                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest =
+                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10, 0);
 
         LineServiceResponse lineServiceResponse = lineService.save(lineServiceRequest);
 
@@ -111,13 +113,17 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest = 
-                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest =
+                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10, 0);
         LineServiceResponse lineServiceResponse = lineService.save(lineServiceRequest);
 
-        lineService.update(lineServiceResponse.getId(), "3호선", "orange");
+        lineService.update(lineServiceResponse.getId(), "3호선", "orange", 900);
 
-        assertThat(lineService.findById(lineServiceResponse.getId()).getName()).isEqualTo("3호선");
+        assertAll(
+                () -> assertThat(lineService.findById(lineServiceResponse.getId()).getName()).isEqualTo("3호선"),
+                () -> assertThat(lineService.findById(lineServiceResponse.getId()).getColor()).isEqualTo("orange"),
+                () -> assertThat(lineService.findById(lineServiceResponse.getId()).getExtraFare()).isEqualTo(900)
+        );
     }
 
     @DisplayName("지하철 노선을 삭제한다.")
@@ -126,8 +132,8 @@ class LineServiceTest extends ServiceTest {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
 
-        LineServiceRequest lineServiceRequest = 
-                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10);
+        LineServiceRequest lineServiceRequest =
+                new LineServiceRequest("2호선", "green", upStation.getId(), downStation.getId(), 10, 0);
         LineServiceResponse lineServiceResponse = lineService.save(lineServiceRequest);
 
         lineService.deleteById(lineServiceResponse.getId());

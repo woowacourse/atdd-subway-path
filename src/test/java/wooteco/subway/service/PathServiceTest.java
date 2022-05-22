@@ -42,9 +42,10 @@ class PathServiceTest extends ServiceTest {
         Station station3 = stationDao.save(new Station("수서역"));
         Station station4 = stationDao.save(new Station("가락시장역"));
 
-        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
 
@@ -66,9 +67,10 @@ class PathServiceTest extends ServiceTest {
         Station station4 = stationDao.save(new Station("가락시장역"));
         Station station5 = stationDao.save(new Station("천호역"));
 
-        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
@@ -86,9 +88,10 @@ class PathServiceTest extends ServiceTest {
         Station station4 = stationDao.save(new Station("가락시장역"));
         Station station5 = stationDao.save(new Station("천호역"));
 
-        LineServiceResponse line = lineService.save(new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2));
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
-        lineService.save(new LineServiceRequest("3호선", "orange", station5.getId(), station4.getId(), 4));
+        lineService.save(new LineServiceRequest("3호선", "orange", station5.getId(), station4.getId(), 4, 0));
 
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 

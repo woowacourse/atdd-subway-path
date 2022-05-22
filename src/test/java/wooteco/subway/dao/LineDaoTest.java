@@ -25,7 +25,7 @@ public class LineDaoTest {
     @DisplayName("노선을 저장한다.")
     @Test
     void save() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
 
         Line savedLine = lineDao.save(line);
 
@@ -35,7 +35,7 @@ public class LineDaoTest {
     @DisplayName("같은 이름의 노선을 저장하는 경우 예외가 발생한다.")
     @Test
     void saveExistingName() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
 
         lineDao.save(line);
 
@@ -46,9 +46,9 @@ public class LineDaoTest {
     @DisplayName("모든 지하철 노선을 조회한다.")
     @Test
     void findAll() {
-        Line line1 = new Line("2호선", "green");
-        Line line2 = new Line("3호선", "orange");
-        Line line3 = new Line("8호선", "pink");
+        Line line1 = new Line("2호선", "green", 0);
+        Line line2 = new Line("3호선", "orange", 0);
+        Line line3 = new Line("8호선", "pink", 0);
 
         lineDao.save(line1);
         lineDao.save(line2);
@@ -60,7 +60,7 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void findById() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
         Line savedLine = lineDao.save(line);
 
         Line foundLine = lineDao.findById(savedLine.getId());
@@ -78,10 +78,10 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void update() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
         Line savedLine = lineDao.save(line);
 
-        lineDao.updateById(savedLine.getId(), new Line("3호선", "orange"));
+        lineDao.updateById(savedLine.getId(), new Line("3호선", "orange", 0));
 
         assertThat(lineDao.findById(savedLine.getId()).getName()).isEqualTo("3호선");
     }
@@ -89,7 +89,7 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 삭제한다.")
     @Test
     void deleteById() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
         Line savedLine = lineDao.save(line);
 
         lineDao.deleteById(savedLine.getId());

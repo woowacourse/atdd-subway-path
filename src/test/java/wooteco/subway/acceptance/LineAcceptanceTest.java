@@ -31,7 +31,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
 
         // when
         ExtractableResponse<Response> response = createLine(lineRequest);
@@ -61,7 +61,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
 
         createLine(lineRequest);
 
@@ -90,8 +90,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station3 = createStation(stationRequest3).as(Station.class);
         Station station4 = createStation(stationRequest4).as(Station.class);
 
-        LineRequest lineRequest1 = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        LineRequest lineRequest2 = new LineRequest("3호선", "orange", station3.getId(), station4.getId(), 10);
+        LineRequest lineRequest1 = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
+        LineRequest lineRequest2 = new LineRequest("3호선", "orange", station3.getId(), station4.getId(), 10, 0);
 
         createLine(lineRequest1);
         createLine(lineRequest2);
@@ -136,7 +136,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
 
         ExtractableResponse<Response> createResponse = createLine(lineRequest);
 
@@ -176,14 +176,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
 
         // when
         ExtractableResponse<Response> response = createLine(lineRequest);
 
         long savedLineId = Long.parseLong(response.header("Location").split("/")[2]);
 
-        LineRequest updateRequest = new LineRequest("3호선", "orange", 1L, 2L, 1);
+        LineRequest updateRequest = new LineRequest("3호선", "orange", 1L, 2L, 1, 900);
 
         ExtractableResponse<Response> updateResponse = updateLine(savedLineId, updateRequest);
 
@@ -193,7 +193,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(lineResponse.getName()).isEqualTo(updateRequest.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(updateRequest.getColor())
+                () -> assertThat(lineResponse.getColor()).isEqualTo(updateRequest.getColor()),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(updateRequest.getExtraFare())
         );
     }
 
@@ -207,7 +208,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
 
         LineResponse lineResponse = createLine(lineRequest).as(LineResponse.class);
 

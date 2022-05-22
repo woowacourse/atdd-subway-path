@@ -33,7 +33,7 @@ class SectionDaoTest {
     void save() {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
-        Line line = lineDao.save(new Line("2호선", "green"));
+        Line line = lineDao.save(new Line("2호선", "green", 0));
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
@@ -45,7 +45,7 @@ class SectionDaoTest {
     void findAllByLineId() {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
-        Line line = lineDao.save(new Line("2호선", "green"));
+        Line line = lineDao.save(new Line("2호선", "green", 0));
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
@@ -59,7 +59,7 @@ class SectionDaoTest {
     void findBySameUpStation() {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
-        Line line = lineDao.save(new Line("2호선", "green"));
+        Line line = lineDao.save(new Line("2호선", "green", 0));
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
@@ -76,7 +76,7 @@ class SectionDaoTest {
     void findBySameDownStation() {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
-        Line line = lineDao.save(new Line("2호선", "green"));
+        Line line = lineDao.save(new Line("2호선", "green", 0));
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
@@ -101,7 +101,7 @@ class SectionDaoTest {
     void deleteById() {
         Station upStation = stationDao.save(new Station("강남역"));
         Station downStation = stationDao.save(new Station("선릉역"));
-        Line line = lineDao.save(new Line("2호선", "green"));
+        Line line = lineDao.save(new Line("2호선", "green", 0));
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
@@ -117,13 +117,13 @@ class SectionDaoTest {
     void findAll() {
         Station upStation1 = stationDao.save(new Station("강남역"));
         Station downStation1 = stationDao.save(new Station("선릉역"));
-        Line line1 = lineDao.save(new Line("2호선", "green"));
+        Line line1 = lineDao.save(new Line("2호선", "green", 0));
 
         Section section1 = new Section(line1.getId(), upStation1.getId(), downStation1.getId(), 10);
 
         Station upStation2 = stationDao.save(new Station("수서역"));
         Station downStation2 = stationDao.save(new Station("가락시장역"));
-        Line line2 = lineDao.save(new Line("3호선", "orange"));
+        Line line2 = lineDao.save(new Line("3호선", "orange", 0));
 
         Section section2 = new Section(line2.getId(), upStation2.getId(), downStation2.getId(), 10);
 
@@ -140,13 +140,13 @@ class SectionDaoTest {
     void saveAll() {
         Station upStation1 = stationDao.save(new Station("강남역"));
         Station downStation1 = stationDao.save(new Station("선릉역"));
-        Line line1 = lineDao.save(new Line("2호선", "green"));
+        Line line1 = lineDao.save(new Line("2호선", "green", 0));
 
         Section section1 = new Section(line1.getId(), upStation1.getId(), downStation1.getId(), 10);
 
         Station upStation2 = stationDao.save(new Station("수서역"));
         Station downStation2 = stationDao.save(new Station("가락시장역"));
-        Line line2 = lineDao.save(new Line("3호선", "orange"));
+        Line line2 = lineDao.save(new Line("3호선", "orange", 0));
 
         Section section2 = new Section(line2.getId(), upStation2.getId(), downStation2.getId(), 10);
 
