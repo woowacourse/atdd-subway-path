@@ -24,8 +24,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest lineRequest) {
-        final LineDto lineDto = new LineDto(lineRequest.getName(), lineRequest.getColor(),
-                lineRequest.getUpStationId(), lineRequest.getDownStationId(), lineRequest.getDistance());
+        final LineDto lineDto = new LineDto(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
         final Line line = lineRepository.save(lineDto);
         return LineResponse.from(line);
     }

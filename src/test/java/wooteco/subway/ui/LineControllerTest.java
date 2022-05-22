@@ -42,7 +42,7 @@ public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
-    private final LineResponse response = new LineResponse(1L, "a", "bg-red-600",
+    private final LineResponse response = new LineResponse(1L, "a", "bg-red-600", 10,
             List.of(new StationResponse(1L, "sa"), new StationResponse(2L, "sb")));
 
     private final Map<String, Object> body = new HashMap<>(Map.ofEntries(
@@ -97,7 +97,7 @@ public class LineControllerTest {
         final Sections sections = new Sections(List.of(SectionFactory.from(SectionFactory.AB3),
                 SectionFactory.from(SectionFactory.BC3)));
         given(lineService.findAll())
-                .willReturn(List.of(new Line(1L, "a", "bg-red-600", sections, 1L)));
+                .willReturn(List.of(new Line(1L, "a", "bg-red-600", sections, 1L, 10)));
 
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk());

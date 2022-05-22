@@ -25,7 +25,7 @@ class PathCalculatorTest {
     @BeforeEach
     void setUp() {
         final Sections sections = new Sections(List.of(SectionFactory.from(AB3), SectionFactory.from(BC3)));
-        final Line line = new Line(1L, "신분당선", "bg-red-600", sections, 1L);
+        final Line line = new Line(1L, "신분당선", "bg-red-600", sections, 1L, 0);
         pathCalculator = new PathCalculator(List.of(line));
     }
 

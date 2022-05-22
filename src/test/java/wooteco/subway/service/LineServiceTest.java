@@ -18,6 +18,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.service.dto.LineDto;
 
 @SpringBootTest
 @Transactional
@@ -55,10 +56,12 @@ class LineServiceTest {
         @Test
         @DisplayName("노선 이름이 중복되면 예외가 발생한다.")
         void save_Fail_If_Exists() {
+            final LineDto lineDto = new LineDto(LINE_FIXTURE.getName(), LINE_FIXTURE.getColor(),
+                    LINE_FIXTURE.getUpStationId(), LINE_FIXTURE.getDownStationId(), LINE_FIXTURE.getDistance());
             lineService.saveLine(LINE_FIXTURE);
             assertThatThrownBy(() -> lineService.saveLine(LINE_FIXTURE))
                     .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("이미 존재하는 노선입니다. " + LINE_FIXTURE);
+                    .hasMessageContaining("이미 존재하는 노선입니다. " + lineDto);
         }
     }
 
@@ -77,7 +80,7 @@ class LineServiceTest {
                                                final String lineName, final String color) {
         final Long upStationId2 = stationDao.save(new Station(stationName1)).getId();
         final Long downStationId2 = stationDao.save(new Station(stationName2)).getId();
-        return new LineRequest(lineName, color, upStationId2, downStationId2, 3);
+        return new LineRequest(lineName, color, upStationId2, downStationId2, 3, 0);
     }
 
     @Test
@@ -122,7 +125,8 @@ class LineServiceTest {
         void update_Line_Success() {
             final LineResponse line = lineService.saveLine(LINE_FIXTURE);
             final Long id = line.getId();
-            final LineRequest lineRequest = new LineRequest("22호선", "bg-color-777", 1L, 2L, 3);
+            final LineRequest lineRequest = new LineRequest("22호선", "bg-color-777", 1L,
+                    2L, 3, 0);
 
             lineService.updateLine(id, lineRequest);
             final LineResponse updated = lineService.findById(id);
@@ -137,7 +141,8 @@ class LineServiceTest {
         @Test
         @DisplayName("노선이 존재하지 않으면 예외를 던진다.")
         void update_Line_Fail() {
-            assertThatThrownBy(() -> lineService.updateLine(1L, new LineRequest("a", "b", 10L, 11L, 12)))
+            assertThatThrownBy(() -> lineService.updateLine(1L, new LineRequest("a", "b",
+                    10L, 11L, 12, 0)))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("요청한 노선이 존재하지 않습니다. id=1 Line{name='a', color='b'}");
 

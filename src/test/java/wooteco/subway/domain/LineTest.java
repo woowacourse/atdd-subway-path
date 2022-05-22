@@ -11,7 +11,8 @@ class LineTest {
     @Test
     @DisplayName("Line 생성 테스트")
     void create_Line() {
-        final Line line = new Line(1L, "name", "color", new Sections(new ArrayList<>()), 0L);
+        final Line line = new Line(1L, "name", "color", new Sections(new ArrayList<>()),
+                0L, 0);
 
         assertThat(line).isNotNull();
     }
