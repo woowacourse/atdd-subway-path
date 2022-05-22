@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -122,10 +123,10 @@ class SectionsTest {
                 new Section(new Station("10"), new Station("xx"), 100));
     }
 
-    @ParameterizedTest(name = "{index}: {1}")
+    @ParameterizedTest(name = "{0}")
     @MethodSource("exceptionParameters")
     @DisplayName("구간이 삽입될 수 없으면 예외를 반환해야 한다.")
-    void insertExceptionParameters(Section section, String testName) {
+    void insertExceptionParameters(Section section) {
         Sections sections1 = Sections.of(sections);
         assertThatThrownBy(() -> sections1.insert(section))
             .isInstanceOf(IllegalArgumentException.class);
@@ -133,14 +134,10 @@ class SectionsTest {
 
     private static Stream<Arguments> exceptionParameters() {
         return Stream.of(
-            Arguments.of(new Section(new Station("11"), new Station("12"), 100),
-                "아무 역과도 연결되지 않을 때"),
-            Arguments.of(new Section(new Station("2"), new Station("3"), 100),
-                "역과는 연결되었지만 길이가 길때"),
-            Arguments.of(new Section(new Station("2"), new Station("4"), 3),
-                "상행선과 하행선이 이미 있는 구간일 때"),
-            Arguments.of(new Section(new Station("2"), new Station("6"), 3),
-                "상행선과 하행선이 이미 있는 구간일 때")
+            Arguments.of(Named.of("아무 역과도 연결되지 않을 때", new Section(new Station("11"), new Station("12"), 100))),
+            Arguments.of(Named.of("역과는 연결되었지만 길이가 길때", new Section(new Station("2"), new Station("3"), 100))),
+            Arguments.of(Named.of("상행선과 하행선이 이미 있는 구간일 때", new Section(new Station("2"), new Station("4"), 3))),
+            Arguments.of(Named.of("상행선과 하행선이 이미 있는 구간일 때", new Section(new Station("2"), new Station("6"), 3)))
         );
     }
 
