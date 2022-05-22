@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.LineResponse;
-import wooteco.subway.service.dto.response.StationResponse;
 
 @SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 @DisplayName("노선 관련 기능")
