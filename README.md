@@ -25,7 +25,7 @@
 - [X] 지하철 노선 수정 기능
 - API 스펙은 [API 문서 v1](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/d5c93e187919493da3280be44de0f17f#Line) 참고
 
-🛠추가된 요구사항
+## 🛠 추가된 요구사항
 - [x] 노선 추가시 3가지 정보를 추가로 입력받기
   - upStationId: 상행 종점
   - downStationId: 하행 종점
@@ -39,7 +39,7 @@
 - 변경된 API 스펙은 [API 문서 v2](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c682be69ae4e412c9e3905a59ef7b7ed) 참고
 
 
-🛠추가된 요구사항 2
+## 🛠 추가된 요구사항 2
 - [x] 출발역과 도착역 사이의 최단경로 조회 기능
   - [x] 최단 경로
   - [x] 요금
@@ -49,6 +49,14 @@
       - [x] 50km 초과: 8km 까지 마다 100원 추가
 - [x] get / 경로 조회 api 등록
 - 변경된 API 스펙은 [API 문서 v3](https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/c4c291f19953498e8eda8a38253eed51#Path) 참고
+
+## 🛠 추가된 요구사항 3
+- [ ] 노선별 추가 요금
+  - [ ] 경로 중 추가요금이 있는 노선을 환승하여 이용할 경우 가장 높은 금액의 추가 요금만 적용
+- [ ] 연령별 요금 할인
+  - [ ] 청소년 (13 <= age <= 18): 운임에서 350원을 공제한 금액의 20% 할인
+  - [ ] 어린이 (6 <= age < 13): 운임에서 350원을 공제한 금액의 50% 할인
+  - [ ] 우대 (age < 6, 65 <= age): 무료 
 
 <br>
 
