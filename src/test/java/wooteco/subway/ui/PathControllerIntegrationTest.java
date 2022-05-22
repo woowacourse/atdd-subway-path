@@ -64,6 +64,25 @@ public class PathControllerIntegrationTest {
                 .andExpect(jsonPath("fare").value(1450));
     }
 
+    @Test
+    @DisplayName("경로 조회를 실패한다.")
+    void find_fail() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SINSA);
+        final Long stationId3 = createStation(GANGNAM);
+        createLine(LINE_2, RED, stationId1, stationId2, 10);
+
+        // when
+        final ResultActions response = mockMvc.perform(
+                        get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=" + 29))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("경로를 찾을 수 없습니다."));
+    }
+
     private Long createStation(final String name) throws Exception {
         final CreateStationRequest request = new CreateStationRequest(name);
         final String requestContent = objectMapper.writeValueAsString(request);

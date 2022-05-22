@@ -30,7 +30,7 @@ public class PathFinderTest {
         final PathFinder pathFinder = new PathFinder(stations, sections);
 
         // when
-        final Path path = pathFinder.findPath(source, target);
+        final Path path = pathFinder.find(source, target);
 
         // then
         assertAll(
@@ -60,7 +60,7 @@ public class PathFinderTest {
         final PathFinder pathFinder = new PathFinder(stations, sections);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> pathFinder.findPath(UP, UP))
+        Assertions.assertThatThrownBy(() -> pathFinder.find(UP, UP))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역은 같을 수 없습니다.");
     }
@@ -74,7 +74,7 @@ public class PathFinderTest {
         final PathFinder pathFinder = new PathFinder(stations, sections);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> pathFinder.findPath(UP, LEFT))
+        Assertions.assertThatThrownBy(() -> pathFinder.find(UP, LEFT))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("경로를 찾을 수 없습니다.");
     }
