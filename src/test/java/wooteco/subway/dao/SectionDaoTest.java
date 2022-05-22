@@ -37,7 +37,7 @@ public class SectionDaoTest {
     }
 
     private void insertSection(Long lineId, SectionRequest sectionRequest) {
-        sectionDao.save(lineId, sectionRequest);
+        sectionDao.create(lineId, sectionRequest);
     }
 
     @Test

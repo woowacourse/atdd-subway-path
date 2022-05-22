@@ -23,7 +23,7 @@ class LineDaoTest {
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate);
-        line = lineDao.save(new LineRequest("1호선", "blue"));
+        line = lineDao.create(new LineRequest("1호선", "blue"));
     }
 
     @Test
@@ -44,7 +44,7 @@ class LineDaoTest {
     @Test
     void findAll() {
         //given
-        var line2 = lineDao.save(new LineRequest("2호선", "green"));
+        var line2 = lineDao.create(new LineRequest("2호선", "green"));
 
         //when
         var lines = lineDao.findAll();

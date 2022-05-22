@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.section.SectionRequest;
 
 @Component
 public class StationDao {
@@ -66,8 +67,8 @@ public class StationDao {
         }
     }
 
-    public List<Station> findById(Long upStationId, Long downStationId) {
+    public List<Station> findBySection(SectionRequest section) {
         var sql = "SELECT * FROM station WHERE id = ? OR id = ?";
-        return jdbcTemplate.query(sql, stationRowMapper, upStationId, downStationId);
+        return jdbcTemplate.query(sql, stationRowMapper, section.getUpStationId(), section.getDownStationId());
     }
 }

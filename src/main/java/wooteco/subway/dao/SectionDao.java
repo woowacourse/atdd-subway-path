@@ -24,7 +24,7 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void save(long lineId, SectionRequest sectionRequest) {
+    public void create(long lineId, SectionRequest sectionRequest) {
         var sql = "INSERT INTO section (up_station_id, down_station_id, distance, line_id) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,

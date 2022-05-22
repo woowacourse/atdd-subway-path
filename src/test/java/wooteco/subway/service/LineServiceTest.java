@@ -1,11 +1,11 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,18 +18,18 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.dto.line.LineRequest;
-import wooteco.subway.dto.section.SectionRequest;
-import wooteco.subway.dto.section.SectionResponse;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.station.StationResponse;
 
 @JdbcTest
 class LineServiceTest {
 
+    private static final String LINE_NAME = "테스트1호선";
+    private static final String LINE_COLOR = "테스트1색";
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private LineService lineService;
-    private Long upStationId;
-    private Long downStationId;
-    private LineRequest lineRequest;
+    private Long lineId;
 
     @BeforeEach
     void setUp() {
@@ -38,14 +38,20 @@ class LineServiceTest {
                 new SectionDao(jdbcTemplate),
                 new StationDao(jdbcTemplate)
         );
-        upStationId = insertStation("테스트1역");
-        downStationId = insertStation("테스트2역");
-        lineRequest = new LineRequest("테스트호선", "테스트색", upStationId, downStationId, 2);
+
+        var upStationId = insertStation("테스트1역");
+        var downStationId = insertStation("테스트2역");
+        var lineRequest = new LineRequest(LINE_NAME, LINE_COLOR, upStationId, downStationId, 2);
+
+        var lineResponse = lineService.create(lineRequest);
+
+        lineId = lineResponse.getId();
     }
 
     private Long insertStation(String name) {
-        var keyHolder = new GeneratedKeyHolder();
         var sql = "INSERT INTO station (name) values(?)";
+
+        var keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             var statement = con.prepareStatement(sql, new String[]{"id"});
@@ -57,227 +63,114 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("노선 생성")
-    void saveLine() {
-        var lineResponse = lineService.createLine(lineRequest);
-        var upStationResponse = lineResponse.getStations().get(0);
-        var downStationResponse = lineResponse.getStations().get(1);
+    void createLine() {
+        //given
+        var station3Id = insertStation("테스트3역");
+        var station4Id = insertStation("테스트4역");
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2);
+
+        //when
+        var lineResponse = lineService.create(lineRequest);
+
+        //then
+        var stationNames = lineResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(upStationResponse.getId()).isEqualTo(upStationId),
-                () -> assertThat(downStationResponse.getId()).isEqualTo(downStationId),
-                () -> assertThat(lineResponse.getName()).isEqualTo("테스트호선"),
-                () -> assertThat(lineResponse.getColor()).isEqualTo("테스트색")
+                () -> assertThat(lineResponse.getName()).isEqualTo("테스트2호선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("테스트2색"),
+                () -> assertThat(stationNames).contains("테스트3역", "테스트4역")
         );
-    }
-
-    @Test
-    @DisplayName("중복 노선 생성시 예외 발생")
-    void duplicateLineName() {
-        lineService.createLine(lineRequest);
-
-        assertThatThrownBy(() -> lineService.createLine(lineRequest))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("노선 조회")
-    void findLine() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-
+    void findLineByLineId() {
         //when
-        var findLineResponse = lineService.findLineInfos(lineResponse.getId());
+        var findLineResponse = lineService.find(lineId);
 
         //then
-        assertAll(
-                () -> assertThat(findLineResponse.getId()).isEqualTo(lineResponse.getId()),
-                () -> assertThat(findLineResponse.getName()).isEqualTo("테스트호선"),
-                () -> assertThat(findLineResponse.getColor()).isEqualTo("테스트색")
-        );
-    }
+        var stationNames = findLineResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
 
-    @Test
-    @DisplayName("노선 조회 실패")
-    void findLineFail() {
-        assertThatThrownBy(() -> lineService.findLineInfos(-1L))
-                .isInstanceOf(NoSuchElementException.class);
+        assertAll(
+                () -> assertThat(findLineResponse.getName()).isEqualTo(LINE_NAME),
+                () -> assertThat(findLineResponse.getColor()).isEqualTo(LINE_COLOR),
+                () -> assertThat(stationNames).contains("테스트1역", "테스트2역")
+        );
     }
 
     @Test
     @DisplayName("노선 목록 조회")
-    void findAllLine() {
+    void findAll() {
         //given
-        var createResponse = lineService.createLine(lineRequest);
+        var station3Id = insertStation("테스트3역");
+        var station4Id = insertStation("테스트4역");
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2);
+        lineService.create(lineRequest);
 
         //when
-        var lines = lineService.findAll();
-        var findResponse = lines.get(0);
+        var lineResponses = lineService.findAll();
 
         //then
-        assertThat(findResponse).isEqualTo(createResponse);
+        var lineNames = lineResponses.stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
+        var lineColors = lineResponses.stream()
+                .map(LineResponse::getColor)
+                .collect(Collectors.toList());
+        var stationsNames = lineResponses.stream()
+                .map(LineResponse::getStations)
+                .flatMap(Collection::stream)
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertAll(
+                () -> assertThat(lineNames).contains(LINE_NAME, "테스트2호선"),
+                () -> assertThat(lineColors).contains(LINE_COLOR, "테스트2색"),
+                () -> assertThat(stationsNames).contains("테스트1역", "테스트2역", "테스트3역", "테스트4역")
+        );
     }
 
     @Test
-    @DisplayName("노선 업데이트 성공")
     void updateLine() {
         //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색");
 
         //when
-        lineService.updateById(id, "2호선", "green");
-        var lineInfos = lineService.findLineInfos(id);
+        lineService.update(lineId, lineRequest);
 
         //then
+        var actual = findLine().get(0);
+
         assertAll(
-                () -> assertThat(lineInfos.getName()).isEqualTo("2호선"),
-                () -> assertThat(lineInfos.getColor()).isEqualTo("green")
+                () -> assertThat(actual.getName()).isEqualTo("테스트2호선"),
+                () -> assertThat(actual.getColor()).isEqualTo("테스트2색")
         );
     }
 
-    @Test
-    @DisplayName("노선 업데이트 실패")
-    void failUpdateLine() {
-        lineService.createLine(lineRequest);
+    private List<LineResponse> findLine() {
+        var sql = "SELECT * FROM line";
 
-        var upStationId2 = insertStation("테스트3역");
-        var downStationId2 = insertStation("테스트4역");
-        var lineRequest2 = new LineRequest("테스트2호선", "테스트2색", upStationId2, downStationId2, 1);
-        var lineResponse2 = lineService.createLine(lineRequest2);
+        RowMapper<LineResponse> rowMapper = (rs, rowNum) -> {
+            var id = rs.getLong("id");
+            var name = rs.getString("name");
+            var color = rs.getString("color");
+            return new LineResponse(id, name, color);
+        };
 
-        assertAll(
-                () -> assertThatThrownBy(() -> lineService.updateById(-1L, "3호선", "orange"))
-                        .isInstanceOf(NoSuchElementException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponse2.getId(), "테스트호선", "테스트2색"))
-                        .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponse2.getId(), "테스트2호선", "테스트색"))
-                        .isInstanceOf(IllegalArgumentException.class)
-        );
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Test
     @DisplayName("노선 삭제")
     void deleteLine() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-
         //when
-        lineService.deleteById(id);
-        var actual = lineService.findAll().stream()
-                .noneMatch(it -> it.getId().equals(id));
+        lineService.deleteById(lineId);
 
         //then
-        assertThat(actual).isTrue();
-    }
-
-    @Test
-    @DisplayName("없는 노선 삭제요청 시 예외 발생")
-    void invalidLine() {
-        assertThatThrownBy(() -> lineService.deleteById(-1L))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("구간 생성시 하행 종점 등록")
-    void createSection() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-        var testStationId = insertStation("테스트3역");
-
-        //when
-        lineService.addSection(id, new SectionRequest(downStationId, testStationId, 1));
-
-        //then
-        assertThat(findSectionByLineId(id)).contains(
-                new SectionResponse(0L, upStationId, downStationId, 0),
-                new SectionResponse(0L, downStationId, testStationId, 0)
-        );
-    }
-
-    private List<SectionResponse> findSectionByLineId(Long id) {
-        var sql = "SELECT * FROM section WHERE line_id = ?";
-        RowMapper<SectionResponse> sectionMapper = (rs, rowNum) -> {
-            var upStationId = rs.getLong("up_station_id");
-            var downStationId = rs.getLong("down_station_id");
-            return new SectionResponse(0L, upStationId, downStationId, 0);
-        };
-        return jdbcTemplate.query(sql, sectionMapper, id);
-    }
-
-    @Test
-    @DisplayName("구간 생성시 상행역이 같을 경우 기존 구간을 변경한다.")
-    void createSection1() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-        var testStationId = insertStation("테스트3역");
-
-        //when
-        lineService.addSection(id, new SectionRequest(upStationId, testStationId, 1));
-
-        //then
-        assertThat(findSectionByLineId(id)).contains(
-                new SectionResponse(0L, upStationId, testStationId, 0),
-                new SectionResponse(0L, testStationId, downStationId, 0)
-        );
-    }
-
-    @Test
-    @DisplayName("구간 생성시 하행역이 같을 경우 기존 구간을 변경한다.")
-    void createSection2() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-        var testStationId = insertStation("테스트3역");
-
-        //when
-        lineService.addSection(id, new SectionRequest(testStationId, downStationId, 1));
-
-        //then
-        assertThat(findSectionByLineId(id)).contains(
-                new SectionResponse(0L, testStationId, downStationId, 0),
-                new SectionResponse(0L, upStationId, testStationId, 0)
-        );
-    }
-
-    @Test
-    @DisplayName("구간 삭제시 상행역이 삭제되는 경우")
-    void deleteSection() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-        var testStationId = insertStation("테스트3역");
-        lineService.addSection(id, new SectionRequest(testStationId, downStationId, 1));
-
-        //when
-        lineService.deleteSection(id, upStationId);
-
-        //then
-        var sectionResponse = findSectionByLineId(id);
-        assertThat(sectionResponse.size()).isEqualTo(1);
-        assertThat(sectionResponse.get(0).getUpStationId()).isEqualTo(testStationId);
-        assertThat(sectionResponse.get(0).getDownStationId()).isEqualTo(downStationId);
-    }
-
-    @Test
-    @DisplayName("구간 삭제시 중간역이 삭제되는 경우")
-    void deleteSection2() {
-        //given
-        var lineResponse = lineService.createLine(lineRequest);
-        var id = lineResponse.getId();
-        var testStationId = insertStation("테스트3역");
-        lineService.addSection(id, new SectionRequest(testStationId, downStationId, 1));
-
-        //when
-        lineService.deleteSection(id, testStationId);
-
-        //then
-        var sectionResponse = findSectionByLineId(id);
-        assertThat(sectionResponse.size()).isEqualTo(1);
-        assertThat(sectionResponse.get(0).getUpStationId()).isEqualTo(upStationId);
-        assertThat(sectionResponse.get(0).getDownStationId()).isEqualTo(downStationId);
+        assertThat(findLine().isEmpty()).isTrue();
     }
 }

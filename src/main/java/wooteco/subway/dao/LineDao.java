@@ -27,14 +27,14 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public LineResponse save(LineRequest line) {
+    public LineResponse create(LineRequest line) {
         var sql = "INSERT INTO line (name, color) VALUES(?, ?)";
         var keyHolder = new GeneratedKeyHolder();
-        save(line, sql, keyHolder);
+        create(line, sql, keyHolder);
         return new LineResponse(keyHolder.getKey().longValue(), line.getName(), line.getColor());
     }
 
-    private void save(LineRequest line, String sql, KeyHolder keyHolder) {
+    private void create(LineRequest line, String sql, KeyHolder keyHolder) {
         try {
             jdbcTemplate.update(connection -> {
                 var statement = connection.prepareStatement(sql, new String[]{"id"});
@@ -64,7 +64,7 @@ public class LineDao {
     }
 
     public void update(Long id, String name, String color) {
-        var sql = "UPDATE line SET name=?, color=? WHERE id=?";
+        var sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
         var updatedRowCount = 0;
       
         try {
