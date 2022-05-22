@@ -28,10 +28,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
 
         // when
-        LineRequest newLineRequest = new LineRequest("6호선", "bg-yellow-600", 2L, 3L, 20);
+        LineRequest newLineRequest = new LineRequest("6호선", "bg-yellow-600", 2L, 3L, 20, 200);
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines", newLineRequest);
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
 
@@ -52,7 +51,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines", newLineRequest);
 
@@ -81,7 +80,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         LineRequest newLineRequest = new LineRequest("5호선", "bg-purple-600", 1L, 2L, 10);
         AcceptanceTestFixture.post("/lines", newLineRequest);
@@ -103,8 +102,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
-        createLine("신분당선", "rgb-yellow-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+        createLine("신분당선", "rgb-yellow-600", 1L, 2L, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.get("/lines");
@@ -135,7 +134,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.get("/lines/1");
@@ -159,7 +158,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         LineRequest newLineRequest = new LineRequest("6호선", "bg-brown-600");
@@ -176,7 +175,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.delete("/lines/1");

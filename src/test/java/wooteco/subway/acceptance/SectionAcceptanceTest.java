@@ -24,7 +24,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("마장역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         SectionRequest sectionRequest = new SectionRequest(2L, 3L, 5);
@@ -43,7 +43,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("마장역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines/1/sections",
@@ -71,7 +71,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         createStation("아차산역");
         createStation("군자역");
         createStation("마장역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
 
         // when
         addSection(2L, 3L, 5, 1L);

@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,5 +98,42 @@ public class PathServiceTest {
         assertThatThrownBy(() -> pathService.getPath(아차산역.getId(), 신림역.getId(), 26))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("해당 경로가 존재하지 않습니다.");
+    }
+
+    @DisplayName("추가 요금이 있는 노선을 이용할 경우 측정된 요금에 추가한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"2,0", "9,900", "15,1440", "26,2150"})
+    void getPath_withExtraFare(int age, int resultFare) {
+        // given
+        Station 신림역 = stationDao.save(new Station("신림역"));
+        Station 봉천역 = stationDao.save(new Station("봉천역"));
+        Station 서울대입구역 = stationDao.save(new Station("서울대입구역"));
+        Station 아차산역 = stationDao.save(new Station("아차산역"));
+        Station 군자역 = stationDao.save(new Station("군자역"));
+
+        Line line = lineDao.save(new Line("2호선", "bg-green-600"));
+        Line line2 = lineDao.save(new Line("3호선", "bg-yellow-600", 100));
+        Line line3 = lineDao.save(new Line("5호선", "bg-purple-600", 500));
+
+        sectionDao.save(new Section(신림역, 봉천역, 5, line.getId()));
+        sectionDao.save(new Section(봉천역, 서울대입구역, 5, line.getId()));
+        sectionDao.save(new Section(신림역, 서울대입구역, 100, line2.getId()));
+        sectionDao.save(new Section(신림역, 아차산역, 10, line3.getId()));
+        sectionDao.save(new Section(아차산역, 군자역, 10, line3.getId()));
+
+        // when
+        PathResponse pathResponse = pathService.getPath(군자역.getId(), 서울대입구역.getId(), age);
+
+        // then
+        assertAll(
+                () -> assertThat(pathResponse.getFare()).isEqualTo(resultFare),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(30),
+                () -> assertThat(pathResponse.getStations()).usingRecursiveComparison()
+                        .isEqualTo(List.of(new StationResponse(군자역),
+                                new StationResponse(아차산역),
+                                new StationResponse(신림역),
+                                new StationResponse(봉천역),
+                                new StationResponse(서울대입구역)))
+        );
     }
 }

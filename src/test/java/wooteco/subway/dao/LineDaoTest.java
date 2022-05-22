@@ -25,7 +25,7 @@ class LineDaoTest {
     @Test
     void lineSaveTest() {
         // when
-        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600"));
+        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600", 100));
 
         // then
         assertThat(savedLine.getId()).isNotZero();

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare.strategy;
+package wooteco.subway.domain.fare.strategy.fare;
 
 public class DefaultFareStrategy implements FareStrategy {
 
@@ -12,8 +12,8 @@ public class DefaultFareStrategy implements FareStrategy {
 
     private static final int DEFAULT_PORTION = 1;
 
-    public int calculate(double distance) {
-        return MINIMUM_FARE + addOverTen(distance) + addOverFifty(distance);
+    public int calculate(double distance, int extraFare) {
+        return MINIMUM_FARE + addOverTen(distance) + addOverFifty(distance) + extraFare;
     }
 
     private int addOverTen(double distance) {
