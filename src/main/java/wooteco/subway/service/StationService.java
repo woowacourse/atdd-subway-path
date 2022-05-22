@@ -35,7 +35,7 @@ public class StationService {
 
     private void validateDuplicateName(final boolean isDuplicateName, final String name) {
         if (isDuplicateName) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + name);
+            throw new NameDuplicatedException(name);
         }
     }
 

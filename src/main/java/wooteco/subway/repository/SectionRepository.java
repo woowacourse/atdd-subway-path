@@ -55,7 +55,7 @@ public class SectionRepository {
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 
@@ -70,7 +70,7 @@ public class SectionRepository {
         try {
             return namedParameterJdbcTemplate.query(sql, parameters, rowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 
@@ -101,7 +101,7 @@ public class SectionRepository {
                 .addValue("id", section.getId());
         int rowCounts = namedParameterJdbcTemplate.update(sql, parameters);
         if (rowCounts == NO_ROW) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + section.getId());
+            throw new IdNotFoundException(section.getId());
         }
     }
 

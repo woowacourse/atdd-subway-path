@@ -37,7 +37,7 @@ public class StationRepository {
                     .longValue();
             return new Station(id, station.getName());
         } catch (DuplicateKeyException e) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + station.getName());
+            throw new NameDuplicatedException(station.getName());
         }
     }
 
@@ -51,7 +51,7 @@ public class StationRepository {
         String sql = "DELETE FROM station WHERE id = :id";
         int rowCounts = namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource("id", id));
         if (rowCounts == NO_ROW) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 
@@ -67,7 +67,7 @@ public class StationRepository {
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 

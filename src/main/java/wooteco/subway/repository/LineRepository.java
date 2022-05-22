@@ -45,7 +45,7 @@ public class LineRepository {
             return simpleJdbcInsert.executeAndReturnKey(parameters)
                     .longValue();
         } catch (DuplicateKeyException e) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + line.getName());
+            throw new NameDuplicatedException(line.getName());
         }
     }
 
@@ -74,7 +74,7 @@ public class LineRepository {
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 
@@ -126,9 +126,9 @@ public class LineRepository {
         try {
             namedParameterJdbcTemplate.update(sql, nameParameters);
         } catch (DuplicateKeyException e) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + line.getName());
+            throw new NameDuplicatedException(line.getName());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + line.getId());
+            throw new IdNotFoundException(line.getId());
         }
     }
 
@@ -137,7 +137,7 @@ public class LineRepository {
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         int rowCounts = namedParameterJdbcTemplate.update(sql, parameters);
         if (rowCounts == NO_ROW) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 }
