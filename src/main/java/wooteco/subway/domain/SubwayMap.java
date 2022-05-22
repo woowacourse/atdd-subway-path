@@ -1,10 +1,9 @@
 package wooteco.subway.domain;
 
 import org.jgrapht.GraphPath;
-import wooteco.subway.exception.EmptyResultException;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 

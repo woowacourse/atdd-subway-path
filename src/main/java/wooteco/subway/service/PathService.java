@@ -10,11 +10,9 @@ import wooteco.subway.domain.SubwayMap;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.exception.EmptyResultException;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
 
 @Service
 @Transactional(readOnly = true)
