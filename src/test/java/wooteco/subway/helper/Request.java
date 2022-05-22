@@ -1,4 +1,4 @@
-package wooteco.subway.common;
+package wooteco.subway.helper;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

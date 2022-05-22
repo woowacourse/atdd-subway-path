@@ -1,4 +1,4 @@
-package wooteco.subway.common;
+package wooteco.subway.helper;
 
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;

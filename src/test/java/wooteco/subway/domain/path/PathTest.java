@@ -1,7 +1,7 @@
 package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.common.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.신당역;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

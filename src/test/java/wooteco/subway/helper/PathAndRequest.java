@@ -1,4 +1,4 @@
-package wooteco.subway.common;
+package wooteco.subway.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

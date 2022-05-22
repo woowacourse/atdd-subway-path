@@ -3,10 +3,10 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.common.TestFixtures.동묘앞역;
-import static wooteco.subway.common.TestFixtures.보문역;
-import static wooteco.subway.common.TestFixtures.신당역;
-import static wooteco.subway.common.TestFixtures.창신역;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.보문역;
+import static wooteco.subway.helper.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.창신역;
 
 import java.util.ArrayList;
 import java.util.List;
