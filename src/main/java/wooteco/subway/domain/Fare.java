@@ -12,22 +12,24 @@ public class Fare {
     private static final int SECOND_PROGRESSIVE_INTERVAL = 50;
     private static final int PER_DISTANCE_SECOND_INTERVAL = 8;
 
+    private static final int DEFAULT_DEDUCTION = 350;
+
+    private static final int MIN_CHILD_AGE = 6;
+    private static final int MAX_CHILD_AGE = 12;
+    private static final double CHILD_POLICY_RATE = 0.5;
+
+    private static final int MIN_TEENAGER_AGE = 13;
+    private static final int MAX_TEENAGER_AGE = 18;
+    private static final double TEENAGER_POLICY_RATE = 0.8;
+
     private final int distance;
     private final int overFare;
     private final int age;
 
-    public Fare(int distance, int overFare, int age) {
+    private Fare(int distance, int overFare, int age) {
         this.distance = distance;
         this.overFare = overFare;
         this.age = age;
-    }
-
-    private Fare(int distance) {
-        this(distance, 0, 0);
-    }
-
-    public static Fare from(int distance) {
-        return new Fare(distance);
     }
 
     public static Fare of(int distance, int overFare, int age) {
@@ -42,15 +44,27 @@ public class Fare {
     }
 
     private int calculateAgeDiscounted(int fare) {
-        if (age >= 6 && age < 13) {
-            return (int)((fare - 350) * 0.5);
+        if (isChildPolicy()) {
+            return calculatePolicy(fare, CHILD_POLICY_RATE);
         }
 
-        if (age >= 13 && age < 19) {
-            return (int)((fare - 350) * 0.8);
+        if (isTeenagerPolicy()) {
+            return calculatePolicy(fare, TEENAGER_POLICY_RATE);
         }
 
         return fare;
+    }
+
+    private boolean isChildPolicy() {
+        return age >= MIN_CHILD_AGE && age <= MAX_CHILD_AGE;
+    }
+
+    private boolean isTeenagerPolicy() {
+        return age >= MIN_TEENAGER_AGE && age <= MAX_TEENAGER_AGE;
+    }
+
+    private int calculatePolicy(int fare, double policyRate) {
+        return (int)((fare - DEFAULT_DEDUCTION) * policyRate);
     }
 
     private int getOverFare(int progressiveInterval, int perDistanceOverInterval, int MaxFareInterval) {

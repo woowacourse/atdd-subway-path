@@ -15,7 +15,7 @@ public class FareTest {
         delimiter = ':')
     void fare(int distance, int fare) {
         // when
-        int actual = Fare.from(distance).calculate();
+        int actual = Fare.of(distance, 0, 0).calculate();
 
         // then
         assertThat(actual).isEqualTo(fare);
