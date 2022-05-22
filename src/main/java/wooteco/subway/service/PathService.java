@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
@@ -16,10 +17,12 @@ public class PathService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao) {
+    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     @Transactional(readOnly = true)
@@ -30,11 +33,24 @@ public class PathService {
 
         List<Station> shortestPath = path.calculateShortestPath(source, target);
         int shortestDistance = path.calculateShortestDistance(source, target);
+        List<Long> shortestPathLines = path.calculateShortestPathLines(source, target);
+        List<Integer> extraFares = convertExtraFare(shortestPathLines);
 
-        List<StationResponse> stationResponses = shortestPath.stream()
+        List<StationResponse> stationResponses = createStationResponses(shortestPath);
+
+        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance, extraFares, age));
+    }
+
+    private List<StationResponse> createStationResponses(List<Station> shortestPath) {
+        return shortestPath.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
+    }
 
-        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance));
+    private List<Integer> convertExtraFare(List<Long> lineIds) {
+        return lineIds.stream()
+                .map(lineDao::findById)
+                .map(Line::getExtraFare)
+                .collect(Collectors.toList());
     }
 }

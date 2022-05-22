@@ -27,7 +27,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 마라도_ID;
     private Long 호선2_ID;
     private Long 호선3_ID;
-    private int 나이 = 10;
+    private int 나이 = 20;
 
     @BeforeEach
     void setUpData() {

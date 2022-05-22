@@ -13,7 +13,7 @@ public class Stations {
 
     public Station getStationById(long id) {
         return stations.stream()
-                .filter(station -> station.getId() == id)
+                .filter(station -> station.isSameId(id))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 id를 찾을 수 없습니다."));
     }
