@@ -55,7 +55,7 @@ public class LineDao {
     }
 
     public LineEntity save(LineEntity lineEntity) {
-        final String sql = "INSERT INTO line(name, color) VALUES(:name, :color)";
+        final String sql = "INSERT INTO line(name, color, extraFare) VALUES(:name, :color, :extraFare)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
 
@@ -65,7 +65,7 @@ public class LineDao {
     }
 
     public void update(LineEntity lineEntity) {
-        final String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+        final String sql = "UPDATE line SET name = :name, color = :color extraFare = :extraFare WHERE id = :id";
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
 
         jdbcTemplate.update(sql, paramSource);
