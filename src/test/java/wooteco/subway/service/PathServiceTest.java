@@ -39,7 +39,7 @@ class PathServiceTest extends ServiceTest {
         final Station geumho = new Station(8L, "금호역");
         final Station oksu = new Station(9L, "옥수역");
 
-        Line greenLine = new Line(1L, new Name("2호선"), "green", 0);
+        Line greenLine = new Line(1L, new Name("2호선"), "green", 100);
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
@@ -49,7 +49,7 @@ class PathServiceTest extends ServiceTest {
                 greenSectionC
         )));
 
-        Line yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 0);
+        Line yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 300);
         final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
         final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
         yellowLine = yellowLine.addSections(new Sections(List.of(
@@ -57,7 +57,7 @@ class PathServiceTest extends ServiceTest {
                 yellowSectionB
         )));
 
-        Line orangeLine = new Line(3L, new Name("3호선"), "orange", 0);
+        Line orangeLine = new Line(3L, new Name("3호선"), "orange", 500);
         final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
         final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
         orangeLine = orangeLine.addSections(new Sections(List.of(
@@ -84,7 +84,7 @@ class PathServiceTest extends ServiceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(20);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1450));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1750));
 
         // when
         final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId());

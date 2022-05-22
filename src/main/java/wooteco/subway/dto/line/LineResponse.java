@@ -12,16 +12,18 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
     private LineResponse() {
     }
 
-    private LineResponse(final Long id, final String name, final String color,
-                         final List<StationResponse> stations) {
+    public LineResponse(final Long id, final String name, final String color, final int extraFare,
+                        final List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -33,6 +35,7 @@ public class LineResponse {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
+                line.getExtraFare(),
                 stationResponses
         );
     }
@@ -49,6 +52,10 @@ public class LineResponse {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -62,13 +69,14 @@ public class LineResponse {
             return false;
         }
         final LineResponse that = (LineResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(color, that.color) && Objects.equals(stations, that.stations);
+        return extraFare == that.extraFare && Objects.equals(id, that.id) && Objects.equals(name,
+                that.name) && Objects.equals(color, that.color) && Objects.equals(stations,
+                that.stations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color, stations);
+        return Objects.hash(id, name, color, extraFare, stations);
     }
 
     @Override
@@ -77,6 +85,7 @@ public class LineResponse {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 ", stations=" + stations +
                 '}';
     }

@@ -40,18 +40,20 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
-    public Fare calculateFare() {
+    public Fare calculateFare(final int extraFare) {
         if (isLessThanOrEqual(DISTANCE_OF_BASIC_FARE)) {
-            return new Fare(BASIC_FARE);
+            return new Fare(BASIC_FARE + extraFare);
         }
         if (isLessThanOrEqual(DISTANCE_OF_OVER_FARE)) {
             return new Fare(
                     BASIC_FARE +
+                            extraFare +
                             calculateOverFare(value - DISTANCE_OF_BASIC_FARE, STANDARD_DISTANCE_OF_OVER_FARE)
             );
         }
         return new Fare(
                 BASIC_FARE +
+                        extraFare +
                         calculateOverFare(DISTANCE_OF_OVER_FARE - DISTANCE_OF_BASIC_FARE,
                                 STANDARD_DISTANCE_OF_OVER_FARE) +
                         calculateOverFare(value - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE)

@@ -60,7 +60,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         oksu = requestPost(new StationRequest(OKSU), STATION_URL_PREFIX).extract().as(Station.class);
 
         final long greenLineId = createAndGetId(
-                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10, 0),
+                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10, 200),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(yeoksam.getId(), seolleung.getId(), 8), greenLineId);
         requestPostSection(new SectionRequest(seolleung.getId(), samsung.getId(), 5), greenLineId);
@@ -71,7 +71,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         requestPostSection(new SectionRequest(seoulForest.getId(), wangsimni.getId(), 7), yellowLineId);
 
         final long purpleLineId = createAndGetId(
-                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11, 0),
+                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11, 500),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(wangsimni.getId(), majang.getId(), 17), purpleLineId);
         requestPostSection(new SectionRequest(majang.getId(), dapsimni.getId(), 15), purpleLineId);
@@ -112,6 +112,29 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("환승을 하지 않는 출발역과 도착역의 경로 정보를 조회한다.")
+    void ShowPath_NotTransfer_OK() {
+        // given
+        final String[] expectedStationNames = {
+                GANGNAM,
+                YEOKSAM,
+                SEOLLEUNG,
+                SAMSUNG
+        };
+        final int expectedDistance = 23;
+        final int expectedFare = 1750;
+
+        // when
+        final ValidatableResponse response = requestGetPath(gangnam.getId(), samsung.getId());
+
+        // then
+        response.statusCode(HttpStatus.OK.value())
+                .body(STATION_NAMES, contains(expectedStationNames))
+                .body(DISTANCE, equalTo(expectedDistance))
+                .body(FARE, equalTo(expectedFare));
+    }
+
+    @Test
     @DisplayName("환승을 한 번하는 출발역과 도착역의 경로 정보를 조회한다.")
     void ShowPath_TransferOnce_OK() {
         // given
@@ -122,7 +145,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 SEOUL_FOREST
         };
         final int expectedDistance = 30;
-        final int expectedFare = 1650;
+        final int expectedFare = 1850;
 
         // when
         final ValidatableResponse response = requestGetPath(gangnam.getId(), seoulForest.getId());
@@ -147,7 +170,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 DAPSIMNI
         };
         final int expectedDistance = 59;
-        final int expectedFare = 2250;
+        final int expectedFare = 2750;
 
         // when
         final ValidatableResponse response = requestGetPath(yeoksam.getId(), dapsimni.getId());

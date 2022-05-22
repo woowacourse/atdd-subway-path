@@ -17,7 +17,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = distance.calculateFare(0);
 
         // then
         assertThat(actual.getValue()).isEqualTo(1_250);
@@ -31,7 +31,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = distance.calculateFare(0);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
@@ -45,7 +45,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare();
+        final Fare actual = distance.calculateFare(0);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);

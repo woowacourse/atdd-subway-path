@@ -56,21 +56,21 @@ class PathControllerTest extends ControllerTest {
         geumho = stationDao.insert(new Station("금호역")).orElseThrow();
         oksu = stationDao.insert(new Station("옥수역")).orElseThrow();
 
-        final Line greenLine = lineDao.insert(new Line("2호선", "green")).orElseThrow();
+        final Line greenLine = lineDao.insert(new Line("2호선", "green", 200)).orElseThrow();
         sectionDao.insert(new Section(greenLine, gangnam, yeoksam, new Distance(10)));
         sectionDao.insert(new Section(greenLine, yeoksam, seolleung, new Distance(8)));
         sectionDao.insert(new Section(greenLine, seolleung, samsung, new Distance(5)));
 
-        final Line yellowLine = lineDao.insert(new Line("수인분당선", "yellow")).orElseThrow();
+        final Line yellowLine = lineDao.insert(new Line("수인분당선", "yellow", 100)).orElseThrow();
         sectionDao.insert(new Section(yellowLine, seolleung, seoulForest, new Distance(12)));
         sectionDao.insert(new Section(yellowLine, seoulForest, wangsimni, new Distance(7)));
 
-        final Line purpleLine = lineDao.insert(new Line("5호선", "purple")).orElseThrow();
+        final Line purpleLine = lineDao.insert(new Line("5호선", "purple", 400)).orElseThrow();
         sectionDao.insert(new Section(purpleLine, heangdang, wangsimni, new Distance(11)));
         sectionDao.insert(new Section(purpleLine, wangsimni, majang, new Distance(17)));
         sectionDao.insert(new Section(purpleLine, majang, dapsimni, new Distance(15)));
 
-        final Line orangeLine = lineDao.insert(new Line("3호선", "orange")).orElseThrow();
+        final Line orangeLine = lineDao.insert(new Line("3호선", "orange", 5000)).orElseThrow();
         sectionDao.insert(new Section(orangeLine, yacksu, geumho, new Distance(7)));
         sectionDao.insert(new Section(orangeLine, geumho, oksu, new Distance(12)));
     }
@@ -115,7 +115,7 @@ class PathControllerTest extends ControllerTest {
                 majang,
                 dapsimni
         );
-        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69), new Fare(2350));
+        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69), new Fare(2750));
 
         // when
         final PathResponse actual = pathController.showPath(sourceStationId, targetStationId)
