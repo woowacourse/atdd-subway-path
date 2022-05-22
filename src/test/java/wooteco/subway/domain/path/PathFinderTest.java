@@ -24,7 +24,7 @@ class PathFinderTest {
         final PathFinder pathFinder = PathFinder.from(lineSeries);
 
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationD());
+        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationD()).getRoute();
         // then
         Assertions.assertAll(
             () -> assertThat(shortestPath).hasSize(3),
@@ -39,7 +39,7 @@ class PathFinderTest {
         final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineAc()));
         final PathFinder pathFinder = PathFinder.from(lineSeries);
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationC());
+        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationC()).getRoute();
         // then
         Assertions.assertAll(
             () -> assertThat(shortestPath).hasSize(2),
@@ -83,37 +83,9 @@ class PathFinderTest {
         final PathFinder pathFinder = PathFinder.from(lineSeries);
 
         // when
-        final long distance = pathFinder.getDistance(getStationA(), getStationD());
+        final long distance = pathFinder.findShortestPath(getStationA(), getStationD()).getDistance().getValue();
 
         // then
         assertThat(distance).isEqualTo(17L);
-    }
-
-    @Test
-    @DisplayName("역이 구간에 등록되지 않아서 길이가 없는 경우 예외를 던진다.")
-    public void throwsExceptionWithPathNotFoundOfStationNotEnrolledWhenFindDistance() {
-        // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineBd()));
-
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
-        assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.getDistance(getStationA(), getStationX()));
-    }
-
-    @Test
-    @DisplayName("구간이 겹치지 않아서 길이가 없는 경우 예외를 던진다.")
-    public void throwsExceptionWithPathNotFoundOfSeperatedLineWhenFindDistance() {
-        // given
-        final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineXy()));
-
-        // when
-        final PathFinder pathFinder = PathFinder.from(lineSeries);
-
-        // then
-        assertThatExceptionOfType(PathNotFoundException.class)
-            .isThrownBy(() -> pathFinder.getDistance(getStationA(), getStationX()));
     }
 }

@@ -45,31 +45,10 @@ public class PathFinder {
         }
     }
 
-    public List<Station> findShortestPath(Station source, Station destination) {
+    public Path findShortestPath(Station source, Station destination) {
         validateDistinctStation(source, destination);
-        return findPath(source, destination).getVertexList();
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station destination) {
-        try {
-            final GraphPath<Station, DefaultWeightedEdge> foundPath = dijkstraPath.getPath(source, destination);
-            return Objects.requireNonNull(foundPath);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw throwPathNotFound(source, destination);
-        }
-    }
-
-    public long getDistance(Station source, Station destination) {
-        validateDistinctStation(source, destination);
-        return Math.round(findPath(source, destination).getWeight());
-    }
-
-    private PathNotFoundException throwPathNotFound(Station source, Station destination) {
-        throw new PathNotFoundException(String.format(
-            "(%s) 로부터 (%s) 까지의 경로가 존재하지 않습니다.",
-            source.getName(),
-            destination.getName()
-        ));
+        final GraphPath<Station, DefaultWeightedEdge> pathGraph = findPath(source, destination);
+        return new Path(pathGraph.getVertexList(), Math.round(pathGraph.getWeight()));
     }
 
     private void validateDistinctStation(Station source, Station destination) {
@@ -77,6 +56,19 @@ public class PathFinder {
             throw new PathNotFoundException(
                 String.format("출발지와 도착지(%s)는 동일할 수 없습니다.", source.getName())
             );
+        }
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station destination) {
+        try {
+            final GraphPath<Station, DefaultWeightedEdge> foundPath = dijkstraPath.getPath(source, destination);
+            return Objects.requireNonNull(foundPath);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new PathNotFoundException(String.format(
+                "(%s) 로부터 (%s) 까지의 경로가 존재하지 않습니다.",
+                source.getName(),
+                destination.getName()
+            ));
         }
     }
 }

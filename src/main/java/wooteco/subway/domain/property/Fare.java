@@ -1,5 +1,6 @@
 package wooteco.subway.domain.property;
 
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.exception.NegativeFareException;
 
 public class Fare {
@@ -21,8 +22,8 @@ public class Fare {
         this.amount = amount;
     }
 
-    public static Fare from(Distance distance) {
-        return ofDefault().calculate(distance);
+    public static Fare from(Path path) {
+        return ofDefault().calculate(path.getDistance());
     }
 
     public static Fare ofDefault() {

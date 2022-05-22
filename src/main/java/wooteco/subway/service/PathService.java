@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.line.LineSeries;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.property.Distance;
 import wooteco.subway.domain.property.Fare;
@@ -27,15 +28,12 @@ public class PathService {
 
     public PathResponse findPath(PathRequest pathRequest) {
         LineSeries lineSeries = new LineSeries(lineRepository.findAllLines());
-        PathFinder finder = PathFinder.from(lineSeries);
-
         final Station sourceStation = stationRepository.findById(pathRequest.getSource());
         final Station targetStation = stationRepository.findById(pathRequest.getTarget());
 
-        final List<Station> paths = finder.findShortestPath(sourceStation, targetStation);
-        final Distance distance = new Distance(finder.getDistance(sourceStation, targetStation));
-
-        final Fare calculatedFare = Fare.from(distance);
-        return PathResponse.of(paths, distance, calculatedFare);
+        PathFinder finder = PathFinder.from(lineSeries);
+        Path path = finder.findShortestPath(sourceStation, targetStation);
+        final Fare calculatedFare = Fare.from(path);
+        return PathResponse.of(path, calculatedFare);
     }
 }
