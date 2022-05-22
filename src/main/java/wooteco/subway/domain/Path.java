@@ -11,19 +11,17 @@ public class Path {
 
     private final List<SectionWeightEdge> edges;
     private final int distance;
-    private final Age age;
 
-    private Path(List<SectionWeightEdge> edges, int distance, Age age) {
+    private Path(List<SectionWeightEdge> edges, int distance) {
         this.edges = edges;
         this.distance = distance;
-        this.age = age;
     }
 
-    public static Path of(List<Section> sections, Long source, Long target, Long age) {
+    public static Path of(List<Section> sections, Long source, Long target) {
         WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
         initPathGraph(sections, graph, gatherStationIds(sections));
         GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
-        return new Path(path.getEdgeList(), (int) path.getWeight(), Age.find(age));
+        return new Path(path.getEdgeList(), (int) path.getWeight());
     }
 
     private static Set<Long> gatherStationIds(List<Section> sections) {
@@ -46,10 +44,10 @@ public class Path {
         }
     }
 
-    public double calculateFare(List<Line> lines) {
+    public double calculateFare(List<Line> lines, Long age) {
         int lineExtraFare = findMostExpensiveExtraFare(lines);
         Fare fare = Fare.find(distance);
-        return age.calc(lineExtraFare + fare.calc(distance));
+        return Age.find(age).calc(lineExtraFare + fare.calc(distance));
     }
 
     private int findMostExpensiveExtraFare(List<Line> lines) {

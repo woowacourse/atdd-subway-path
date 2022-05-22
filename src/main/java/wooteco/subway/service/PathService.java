@@ -25,11 +25,11 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target, Long age) {
-        Path path = Path.of(sectionDao.findAll(), source, target, age);
+        Path path = Path.of(sectionDao.findAll(), source, target);
         List<Station> stations = path.getStationIds()
                 .stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
-        return new PathResponse(stations, path.getDistance(), path.calculateFare(lineDao.findAll()));
+        return new PathResponse(stations, path.getDistance(), path.calculateFare(lineDao.findAll(), age));
     }
 }
