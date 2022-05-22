@@ -7,24 +7,34 @@ public class Line {
     private String name;
     private String color;
     private final Sections sections;
+    private final int extraFare;
 
-    private Line(Long id, String name, String color, Sections sections) {
+    private Line(Long id, String name, String color, Sections sections, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = extraFare;
     }
 
     public Line(String name, String color) {
-        this(null, name, color, null);
+        this(null, name, color, null, 0);
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, null, extraFare);
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, null);
+        this(id, name, color, null, 0);
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, null, extraFare);
     }
 
     public static Line from(Line line, List<Section> sections) {
-        return new Line(line.getId(), line.getName(), line.getColor(), Sections.of(sections));
+        return new Line(line.getId(), line.getName(), line.getColor(), Sections.of(sections), line.getExtraFare());
     }
 
     public void update(String name, String color) {
@@ -58,6 +68,10 @@ public class Line {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

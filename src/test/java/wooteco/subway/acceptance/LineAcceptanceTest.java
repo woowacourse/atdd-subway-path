@@ -322,6 +322,18 @@ class LineAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    @DisplayName("추가요금을 포함한 요청으로도 line을 생성할 수 있어야 한다.")
+    void createWithExtraFare() {
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 500);
+
+        ExtractableResponse<Response> response = extractCreateLineRequest(lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
     private Long createNewStation(String stationName) {
         StationRequest newStationRequest = new StationRequest(stationName);
         ExtractableResponse<Response> response = createStation(newStationRequest);
