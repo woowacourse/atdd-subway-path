@@ -47,7 +47,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(lineId, saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
-        ExtractableResponse<Response> response = httpGetTest(
+        ExtractableResponse<Response> response = get(
                 "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
 
         PathResponse pathResponse = response.jsonPath()
@@ -78,7 +78,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(lineId, saved_보문역, saved_창신역, STANDARD_DISTANCE));
 
-        ExtractableResponse<Response> response = httpGetTest(
+        ExtractableResponse<Response> response = get(
                 "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());

@@ -20,7 +20,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void createStation() {
         StationRequest params = new StationRequest("강남역");
 
-        ExtractableResponse<Response> response = httpPostTest(params, "/stations");
+        ExtractableResponse<Response> response = post(params, "/stations");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -30,9 +30,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         StationRequest params = new StationRequest("강남역");
-        httpPostTest(params, "/stations");
+        post(params, "/stations");
 
-        ExtractableResponse<Response> response = httpPostTest(params, "/stations");
+        ExtractableResponse<Response> response = post(params, "/stations");
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -40,12 +40,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         StationRequest params1 = new StationRequest("강남역");
-        ExtractableResponse<Response> createResponse1 = httpPostTest(params1, "/stations");
+        ExtractableResponse<Response> createResponse1 = post(params1, "/stations");
 
         StationRequest params2 = new StationRequest("역삼역");
-        ExtractableResponse<Response> createResponse2 = httpPostTest(params2, "/stations");
+        ExtractableResponse<Response> createResponse2 = post(params2, "/stations");
 
-        ExtractableResponse<Response> response = httpGetTest("/stations");
+        ExtractableResponse<Response> response = get("/stations");
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> expectedLineIds = Arrays.asList(createResponse1, createResponse2).stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
@@ -60,10 +60,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         StationRequest params = new StationRequest("강남역");
-        ExtractableResponse<Response> createResponse = httpPostTest(params, "/stations");
+        ExtractableResponse<Response> createResponse = post(params, "/stations");
 
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = httpDeleteTest(uri);
+        ExtractableResponse<Response> response = delete(uri);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }

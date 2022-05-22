@@ -21,7 +21,7 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    protected ExtractableResponse<Response> httpPostTest(Object params, String url) {
+    protected ExtractableResponse<Response> post(Object params, String url) {
         return RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +31,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    protected ExtractableResponse<Response> httpGetTest(String url) {
+    protected ExtractableResponse<Response> get(String url) {
         return RestAssured.given().log().all()
                 .when()
                 .get(url)
@@ -39,7 +39,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    protected ExtractableResponse<Response> httpDeleteTest(String url) {
+    protected ExtractableResponse<Response> delete(String url) {
         return RestAssured.given().log().all()
                 .when()
                 .delete(url)

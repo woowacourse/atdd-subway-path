@@ -34,7 +34,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = lineService.create(
                 new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
         SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
+        ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -50,7 +50,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = lineService.create(
                 new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
         SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 선릉역.getId(), 6);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
+        ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -66,7 +66,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = lineService.create(
                 new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
         SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 역삼역.getId(), 6);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
+        ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -82,9 +82,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = lineService.create(
                 new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
         SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
-        httpPostTest(sectionRequest, "/lines/" + lineResponse.getId() + " /sections");
+        post(sectionRequest, "/lines/" + lineResponse.getId() + " /sections");
 
-        ExtractableResponse<Response> response = httpDeleteTest(
+        ExtractableResponse<Response> response = delete(
                 "/lines/" + lineResponse.getId() + "/sections?stationId=" + 선릉역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -99,7 +99,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = lineService.create(
                 new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
 
-        ExtractableResponse<Response> response = httpDeleteTest(
+        ExtractableResponse<Response> response = delete(
                 "/lines/" + lineResponse.getId() + "/sections?stationId=" + 역삼역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

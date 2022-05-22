@@ -11,8 +11,6 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +40,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
-        ExtractableResponse<Response> response = httpPostTest(params, "/lines");
+        ExtractableResponse<Response> response = post(params, "/lines");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -54,8 +52,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRepository.save(new Line("신분당선", "bg-red-600"));
         LineRequest params = new LineRequest("신분당선", "bg-red-600");
 
-        httpPostTest(params, "/lines");
-        ExtractableResponse<Response> response = httpPostTest(params, "/lines");
+        post(params, "/lines");
+        ExtractableResponse<Response> response = post(params, "/lines");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -67,13 +65,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
         LineRequest newBundangLine = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
-        ExtractableResponse<Response> newBundangPostResponse = httpPostTest(newBundangLine, "/lines");
+        ExtractableResponse<Response> newBundangPostResponse = post(newBundangLine, "/lines");
 
         LineRequest bundangLine = new LineRequest("분당선", "bg-green-600", 강남역.getId(), 역삼역.getId(), 5);
 
-        ExtractableResponse<Response> bundangPostResponse = httpPostTest(bundangLine, "/lines");
+        ExtractableResponse<Response> bundangPostResponse = post(bundangLine, "/lines");
 
-        ExtractableResponse<Response> response = httpGetTest("/lines");
+        ExtractableResponse<Response> response = get("/lines");
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> expectedLineIds = Arrays.asList(newBundangPostResponse, bundangPostResponse).stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
@@ -91,11 +89,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
-        ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
+        ExtractableResponse<Response> createResponse = post(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
 
-        ExtractableResponse<Response> getResponse = httpGetTest("/lines/" + id);
+        ExtractableResponse<Response> getResponse = get("/lines/" + id);
         JsonPath lineResponsePath = getResponse.jsonPath();
         long responseId = lineResponsePath.getLong("id");
         List<Station> stations = lineResponsePath.getList("stations", Station.class);
@@ -115,7 +113,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
-        ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
+        ExtractableResponse<Response> createResponse = post(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
 
@@ -140,10 +138,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
 
-        ExtractableResponse<Response> createResponse = httpPostTest(params, "/lines");
+        ExtractableResponse<Response> createResponse = post(params, "/lines");
 
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = httpDeleteTest(uri);
+        ExtractableResponse<Response> response = delete(uri);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
