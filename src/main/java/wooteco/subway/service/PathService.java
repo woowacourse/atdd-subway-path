@@ -34,7 +34,8 @@ public class PathService {
         Station endStation = stationRepository.findExistingStation(targetStationId);
         Path optimalPath = pathManager.calculateOptimalPath(startStation, endStation);
         CostManager costManager = new CostManager(costSections);
+        int fare = costManager.calculateFare(optimalPath.getTotalDistance());
 
-        return PathResponse.of(optimalPath, costManager);
+        return PathResponse.of(optimalPath, fare);
     }
 }
