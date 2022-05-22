@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.*;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
 import wooteco.subway.exception.PathNotExistsException;
 import wooteco.subway.exception.SectionNotExistException;
@@ -53,8 +57,11 @@ class PathServiceTest {
     @DisplayName("경로를 생성한다.")
     @Test
     void createPath() {
-        assertThat(pathService.createPath(station1.getId(), station3.getId(), 15)).usingRecursiveComparison()
-                .isEqualTo(new Path(List.of(station1, station2, station3), List.of(savedLine), 20));
+        final List<StationResponse> stationResponses = List.of(StationResponse.from(station1),
+                StationResponse.from(station2),
+                StationResponse.from(station3));
+        assertThat(pathService.createPath(station1.getId(), station3.getId(), 20)).usingRecursiveComparison()
+                .isEqualTo(new PathResponse(stationResponses, 20, 1450));
     }
 
     @DisplayName("출발지와 도착지가 같은 경우 예외를 발생한다.")

@@ -53,7 +53,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     void createPath() {
         // when
         final ExtractableResponse<Response> response =
-                get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15");
+                get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=20");
 
         // then
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);

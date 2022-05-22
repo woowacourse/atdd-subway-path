@@ -17,14 +17,13 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(final Path path) {
+    public static PathResponse of(final Path path, final int discountedFare) {
         final List<StationResponse> stationResponses = path.getStations().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
         final int distance = path.getDistance();
-        final int price = Fare.of(path.getDistance(), path.getLines().getHighestOverFare()).getPrice();
 
-        return new PathResponse(stationResponses, distance, price);
+        return new PathResponse(stationResponses, distance, discountedFare);
     }
 
     public List<StationResponse> getStations() {
