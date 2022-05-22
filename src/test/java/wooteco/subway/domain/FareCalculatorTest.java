@@ -29,7 +29,7 @@ class FareCalculatorTest {
         assertThat(fare).isEqualTo(actualFare);
     }
 
-    @DisplayName("경로 거리가 50Km 이상이면 8km당 100원이 부과된다.")
+    @DisplayName("경로 거리가 50Km 초과이면 8km당 100원이 부과된다.")
     @ParameterizedTest
     @CsvSource({"51,2150", "58,2150", "59,2250"})
     void calculateFare_high(int distance, int fare) {

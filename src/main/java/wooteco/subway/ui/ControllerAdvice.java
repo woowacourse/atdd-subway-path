@@ -26,7 +26,8 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception exception) {
-        return ResponseEntity.internalServerError().body(exception.getMessage());
+    public ResponseEntity<Void> handleException(Exception exception) {
+        exception.printStackTrace();
+        return ResponseEntity.internalServerError().build();
     }
 }

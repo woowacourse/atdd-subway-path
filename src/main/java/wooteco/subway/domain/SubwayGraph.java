@@ -27,8 +27,10 @@ public class SubwayGraph {
 
     private void addSectionsToEdge(final Sections sections) {
         for (Section section : sections.getSections()) {
-            subwayGraph.setEdgeWeight(subwayGraph.addEdge(section.getUpStation(), section.getDownStation()),
-                    section.getDistance());
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+            int distance = section.getDistance();
+            subwayGraph.setEdgeWeight(subwayGraph.addEdge(upStation, downStation), distance);
         }
     }
 
