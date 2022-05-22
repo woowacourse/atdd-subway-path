@@ -12,15 +12,10 @@ import wooteco.subway.dto.response.ErrorResponse;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler({IllegalStateException.class})
-    public ResponseEntity<ErrorResponse> duplicateStation(final IllegalStateException exception) {
+    @ExceptionHandler({IllegalStateException.class, ConstraintViolationException.class,
+            MethodArgumentNotValidException.class})
+    public ResponseEntity<ErrorResponse> duplicateStation(final Exception exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<Void> requestDataValidationError(final MethodArgumentNotValidException exception) {
-        exception.printStackTrace();
-        return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})
