@@ -60,11 +60,11 @@ class PathServiceTest {
         서면역 = stationService.save(new StationRequest("서면역"));
 
         신분당선 = lineService.save(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5, 900));
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5, 1000));
         sectionService.addSection(신분당선.getId(), new AddSectionRequest(역삼역.getId(), 잠실역.getId(), 4));
 
         분당선 = lineService.save(
-                new LineRequest("분당선", "bg-green-600", 역삼역.getId(), 선릉역.getId(), 3, 0));
+                new LineRequest("분당선", "bg-green-600", 역삼역.getId(), 선릉역.getId(), 3, 900));
 
         일호선 = lineService.save(
                 new LineRequest("1호선", "bg-yellow-600", 부산역.getId(), 서면역.getId(), 6, 0));
@@ -100,22 +100,22 @@ class PathServiceTest {
     @DisplayName("한 같옆에 있는 지하철역 경로 찾기")
     @Test
     void searchAdjacentPath() {
-        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 역삼역.getId(), 20);
+        PathResponse pathResponse = pathService.searchPath(부산역.getId(), 서면역.getId(), 20);
 
         assertThat(pathResponse.getStations()).containsExactly(
-                new StationResponse(강남역), new StationResponse(역삼역));
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
+                new StationResponse(부산역), new StationResponse(서면역));
+        assertThat(pathResponse.getDistance()).isEqualTo(6);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
     @DisplayName("두 칸옆에 있는 지하철역 경로 찾기")
     @Test
     void searchTwoBlockPath() {
-        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 잠실역.getId(), 20);
+        PathResponse pathResponse = pathService.searchPath(부산역.getId(), 서면역.getId(), 20);
 
         assertThat(pathResponse.getStations()).containsExactly(
-                new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(잠실역));
-        assertThat(pathResponse.getDistance()).isEqualTo(9);
+                new StationResponse(부산역), new StationResponse(서면역));
+        assertThat(pathResponse.getDistance()).isEqualTo(6);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
@@ -127,7 +127,7 @@ class PathServiceTest {
         assertThat(pathResponse.getStations()).containsExactly(
                 new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(선릉역));
         assertThat(pathResponse.getDistance()).isEqualTo(8);
-        assertThat(pathResponse.getFare()).isEqualTo(1250);
+        assertThat(pathResponse.getFare()).isEqualTo(1250 + 1000);
     }
 
     @Test
@@ -143,4 +143,32 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 서면역.getId(), age))
                 .isInstanceOf(RidiculousAgeException.class);
     }
+
+    @DisplayName("노선에 추가 요금이 있는 경우 경로 찾기")
+    @Test
+    void searchPathWithExtraFare() {
+        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 잠실역.getId(), 20);
+
+        assertThat(pathResponse.getStations()).containsExactly(
+                new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(잠실역));
+        assertThat(pathResponse.getDistance()).isEqualTo(9);
+        assertThat(pathResponse.getFare()).isEqualTo(1250 + 1000);
+    }
+
+    @DisplayName("환승했을 경우 노선에 추가 요금이 있는 경우 경로 찾기")
+    @Test
+    void searchPathWithTransferAndExtraFare() {
+        PathResponse pathResponse = pathService.searchPath(강남역.getId(), 선릉역.getId(), 20);
+
+        assertThat(pathResponse.getStations()).containsExactly(
+                new StationResponse(강남역), new StationResponse(역삼역), new StationResponse(선릉역));
+        assertThat(pathResponse.getDistance()).isEqualTo(8);
+        assertThat(pathResponse.getFare()).isEqualTo(1250 + 1000);
+    }
+
+    // 나이가 청소년인 걍우
+
+    // 나이가 어린이인 경우
+
+    // 나이가 청소년 + 추가 요금 있는 경로인 경우
 }

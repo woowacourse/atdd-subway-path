@@ -7,13 +7,13 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.path.Graph;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Graph;
 
 public class JGraphtAdapter implements Graph {
 
-    private final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath;
+    private final DijkstraShortestPath<Long, Edge> shortestPath;
     private final Map<Long, Station> vertex;
 
     public JGraphtAdapter(List<Station> vertex, List<Section> edge) {
@@ -21,19 +21,32 @@ public class JGraphtAdapter implements Graph {
         this.vertex = createVertexMap(vertex);
     }
 
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> createDijkstraShortestPath(
+    private class Edge extends DefaultWeightedEdge {
+        private final Long lineId;
+        private final Long source;
+        private final Long target;
+
+        public Edge(Long lineId, Long source, Long target) {
+            this.lineId = lineId;
+            this.source = source;
+            this.target = target;
+        }
+    }
+
+    private DijkstraShortestPath<Long, Edge> createDijkstraShortestPath(
             List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        WeightedMultigraph<Long, Edge> graph
+                = new WeightedMultigraph<>(Edge.class);
 
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
 
         for (Section section : sections) {
-            graph.setEdgeWeight(
-                    graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                    section.getDistance());
+            Edge edge = new Edge(section.getLineId(), section.getUpStationId(), section.getDownStationId());
+            graph.addEdge(section.getUpStationId(), section.getDownStationId(), edge);
+            graph.setEdgeWeight(edge, section.getDistance());
         }
 
         return new DijkstraShortestPath<>(graph);
@@ -46,7 +59,7 @@ public class JGraphtAdapter implements Graph {
 
     @Override
     public List<Station> findPath(Long source, Long target) {
-        GraphPath<Long, DefaultWeightedEdge> graph = shortestPath.getPath(source, target);
+        GraphPath<Long, Edge> graph = shortestPath.getPath(source, target);
 
         if (graph == null) {
             return List.of();
@@ -60,5 +73,16 @@ public class JGraphtAdapter implements Graph {
     @Override
     public int findDistance(Long source, Long target) {
         return (int) shortestPath.getPathWeight(source, target);
+    }
+
+    @Override
+    public List<Long> findLineIdsRelatedPath(Long source, Long target) {
+        GraphPath<Long, Edge> graph = shortestPath.getPath(source, target);
+
+        return graph.getEdgeList()
+                .stream()
+                .map(edge -> edge.lineId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

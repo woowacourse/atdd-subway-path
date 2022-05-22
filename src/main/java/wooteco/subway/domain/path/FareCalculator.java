@@ -1,5 +1,8 @@
 package wooteco.subway.domain.path;
 
+import java.util.List;
+import wooteco.subway.domain.Line;
+
 public class FareCalculator {
 
     private static final int BASE_FARE = 1250;
@@ -10,8 +13,12 @@ public class FareCalculator {
     private static final int DISTANCE_PER_FARE_STEP_AT_MIDDLE_RANGE = 5;
     private static final int DISTANCE_PER_FARE_STEP_AT_LONG_RANGE = 8;
 
-    public int findFare(int distance) {
-        return BASE_FARE + additionalFare(distance);
+    public int findFare(int distance, List<Line> lines) {
+        int extraFare = lines.stream()
+                .map(Line::getExtraFare)
+                .max(Integer::compare)
+                .orElse(NOTHING);
+        return BASE_FARE + additionalFare(distance) + extraFare;
     }
 
     private int additionalFare(int distance) {

@@ -55,7 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long 잠실역 = requestCreateStation("잠실역").jsonPath().getLong("id");
         long 선릉역 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 900).jsonPath()
+        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 0).jsonPath()
                 .getLong("id");
         long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10, 0).jsonPath()
                 .getLong("id");
@@ -106,8 +106,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("age가 음수이거나 150초과이면 400 에러를 발생시킨다.")
     @ParameterizedTest
-    @CsvSource({"151", "1000", "0", "-1"," -1000"})
-            void searchPathWithRidiculousAge(int age) {
+    @CsvSource({"151", "1000", "0", "-1", " -1000"})
+    void searchPathWithRidiculousAge(int age) {
         long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
         long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
 
@@ -124,4 +124,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    @DisplayName("노선에 추가 요금이 있을 경우 경로 탐색")
+    @Test
+    void searchPathWithExtraFare() {
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 20, 900);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("source", 강남역)
+                .param("target", 역삼역)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        int distance = response.jsonPath().getObject("distance", Integer.class);
+        int fare = response.jsonPath().getObject("fare", Integer.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
+        assertThat(distance).isEqualTo(20);
+        assertThat(fare).isEqualTo(1450+900);
+    }
+
+    // 청소년인 경우
+
+    // 어린이인 경우
+
+    // 노선에 추가 요금이 있는데 환승할 경우
 }

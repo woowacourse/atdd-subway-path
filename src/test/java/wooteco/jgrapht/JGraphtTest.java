@@ -71,5 +71,6 @@ public class JGraphtTest {
         DijkstraShortestPath<String, CustomEdge> path = new DijkstraShortestPath<>(graph);
         assertThat(path.getPath("v1", "v3").getEdgeList())
             .containsExactly(edge1, edge2);
+        assertThat(path.getPathWeight("v1", "v3")).isEqualTo(4);
     }
 }
