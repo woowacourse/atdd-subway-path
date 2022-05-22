@@ -90,12 +90,11 @@ public class Path {
     }
 
     private int calculateExtraFare() {
-        int minExtraFare = lines.stream()
+        return lines.stream()
                 .map(Line::getExtraFare)
                 .mapToInt(fare -> fare)
                 .max()
                 .orElseThrow(() -> new IllegalArgumentException("존재하는 노선 요금이 없습니다."));
-        return minExtraFare;
     }
 
     public List<Station> getStations() {
