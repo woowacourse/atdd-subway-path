@@ -20,7 +20,7 @@ public enum Age {
         this.ageStrategy = ageStrategy;
     }
 
-    public static AgeStrategy from(int age){
+    public static AgeStrategy from(int age) {
         return Arrays.stream(Age.values())
                 .filter(agejudge -> agejudge.judgeAge.test(age))
                 .findFirst()

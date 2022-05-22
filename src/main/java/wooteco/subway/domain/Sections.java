@@ -1,10 +1,6 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,7 +15,7 @@ public class Sections {
 
     public static Sections of(List<Section> sections) {
         Map<Station, Station> stations = sections.stream()
-            .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
         Station upStation = findUpStation(stations);
         List<Section> newSections = getSortedSections(sections, stations, upStation);
 
@@ -28,13 +24,13 @@ public class Sections {
 
     private static Station findUpStation(Map<Station, Station> stations) {
         return stations.keySet().stream()
-            .filter(station -> !stations.containsValue(station))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다."));
+                .filter(station -> !stations.containsValue(station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다."));
     }
 
     private static List<Section> getSortedSections(List<Section> sections, Map<Station, Station> stations,
-        Station upStation) {
+                                                   Station upStation) {
         List<Section> newSections = new LinkedList<>();
         while (stations.containsKey(upStation)) {
             final Station station = upStation;
@@ -46,9 +42,9 @@ public class Sections {
 
     private static Section findSectionByUpStation(List<Section> sections, Station station) {
         return sections.stream()
-            .filter(section -> section.hasUpStation(station))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다."));
+                .filter(section -> section.hasUpStation(station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다."));
     }
 
     public void insert(Section section) {
@@ -56,8 +52,8 @@ public class Sections {
 
         LinkedList<Section> flexibleSections = new LinkedList<>(this.sections);
         OptionalInt findIndex = IntStream.range(0, flexibleSections.size())
-            .filter(index -> canInsertSection(section, flexibleSections.get(index)))
-            .findFirst();
+                .filter(index -> canInsertSection(section, flexibleSections.get(index)))
+                .findFirst();
         if (findIndex.isPresent()) {
             int index = findIndex.getAsInt();
             insertSection(section, flexibleSections, index, flexibleSections.get(index));
@@ -72,17 +68,17 @@ public class Sections {
     }
 
     private void insertSection(Section section, LinkedList<Section> flexibleSections,
-        int index, Section sectionInLine) {
+                               int index, Section sectionInLine) {
 
         if (canInsertLeft(section, sectionInLine)) {
             flexibleSections.add(index, section);
             sectionInLine.updateUpStation(section.getDownStation(),
-                sectionInLine.getDistance() - section.getDistance());
+                    sectionInLine.getDistance() - section.getDistance());
         }
         if (canInsertRight(section, sectionInLine)) {
             flexibleSections.add(index + 1, section);
             sectionInLine.updateDownStation(section.getUpStation(),
-                sectionInLine.getDistance() - section.getDistance());
+                    sectionInLine.getDistance() - section.getDistance());
         }
         sections = flexibleSections;
     }
@@ -122,12 +118,12 @@ public class Sections {
 
     private boolean canInsertUpStation(Section section, Section sectionInLine) {
         return sectionInLine.hasUpStation(section.getUpStation())
-            && sectionInLine.isLongerThan(section.getDistance());
+                && sectionInLine.isLongerThan(section.getDistance());
     }
 
     private boolean canInsertDownStation(Section section, Section sectionInLine) {
         return sectionInLine.hasDownStation(section.getDownStation())
-            && sectionInLine.isLongerThan(section.getDistance());
+                && sectionInLine.isLongerThan(section.getDistance());
     }
 
     public Long delete(Station station) {
@@ -167,10 +163,10 @@ public class Sections {
     }
 
     private Long deleteMiddleSection(Station station,
-        LinkedList<Section> flexibleSections, int lastIndex) {
+                                     LinkedList<Section> flexibleSections, int lastIndex) {
         OptionalInt index = IntStream.range(0, lastIndex)
-            .filter(i -> sections.get(i).hasDownStation(station))
-            .findFirst();
+                .filter(i -> sections.get(i).hasDownStation(station))
+                .findFirst();
         if (index.isPresent()) {
             int indexAsInt = index.getAsInt();
             return removeMiddleStation(flexibleSections, indexAsInt, sections.get(indexAsInt));
@@ -181,7 +177,7 @@ public class Sections {
     private Long removeMiddleStation(LinkedList<Section> flexibleSections, int index, Section leftSection) {
         Section rightSection = sections.get(index + 1);
         leftSection.updateDownStation(rightSection.getDownStation(),
-            leftSection.getDistance() + rightSection.getDistance());
+                leftSection.getDistance() + rightSection.getDistance());
         flexibleSections.remove(rightSection);
         sections = flexibleSections;
         return rightSection.getId();
@@ -198,7 +194,7 @@ public class Sections {
             stations.add(section.getDownStation());
         }
         return stations.stream()
-            .distinct()
-            .collect(Collectors.toList());
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

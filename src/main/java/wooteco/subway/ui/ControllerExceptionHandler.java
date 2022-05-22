@@ -1,8 +1,5 @@
 package wooteco.subway.ui;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -12,9 +9,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import wooteco.subway.dto.ExceptionMessageDto;
 import wooteco.subway.exception.EmptyResultException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -43,10 +42,10 @@ public class ControllerExceptionHandler {
         logger.error(exception.getMessage());
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         return ResponseEntity.badRequest().body(fieldErrors.stream()
-                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                            .map(ExceptionMessageDto::new)
-                            .map(ExceptionMessageDto::getMessage)
-                            .collect(Collectors.toList()));
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(ExceptionMessageDto::new)
+                .map(ExceptionMessageDto::getMessage)
+                .collect(Collectors.toList()));
     }
 
     @ExceptionHandler

@@ -16,7 +16,7 @@ public class CustomEdge extends DefaultWeightedEdge {
     }
 
     @Override
-    protected double getWeight(){
+    protected double getWeight() {
         return distance;
     }
 }

@@ -1,11 +1,5 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +8,28 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class SectionsTest {
     private List<Section> sections = new LinkedList<>();
+
+    private static Stream<Arguments> exceptionParameters() {
+        return Stream.of(
+                Arguments.of(new Section(new Station("11"), new Station("12"), 100),
+                        "아무 역과도 연결되지 않을 때"),
+                Arguments.of(new Section(new Station("2"), new Station("3"), 100),
+                        "역과는 연결되었지만 길이가 길때"),
+                Arguments.of(new Section(new Station("2"), new Station("4"), 3),
+                        "상행선과 하행선이 이미 있는 구간일 때"),
+                Arguments.of(new Section(new Station("2"), new Station("6"), 3),
+                        "상행선과 하행선이 이미 있는 구간일 때")
+        );
+    }
 
     @BeforeEach
     void setUp() {
@@ -36,20 +50,20 @@ class SectionsTest {
         Sections sections1 = Sections.of(sections);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(4)
-            .containsExactly(
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("6"), 5),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5));
+                .hasSize(4)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("6"), 5),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5));
     }
 
     @Test
     @DisplayName("한 구간의 상행성과 하행선이 같으면 예외를 반환해야 한다.")
     void validateSameStation() {
         assertThatThrownBy(() -> new Section(new Station("a"), new Station("a"), 5))
-            .hasMessage("구간의 상행선과 하행선이 같을 수 없습니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                .hasMessage("구간의 상행선과 하행선이 같을 수 없습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -60,13 +74,13 @@ class SectionsTest {
         sections1.insert(section);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(5)
-            .containsExactly(
-                new Section(new Station("1"), new Station("2"), 100),
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("6"), 5),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5));
+                .hasSize(5)
+                .containsExactly(
+                        new Section(new Station("1"), new Station("2"), 100),
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("6"), 5),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5));
     }
 
     @Test
@@ -77,14 +91,14 @@ class SectionsTest {
         sections1.insert(section);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(5)
-            .containsExactly(
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("5"), 3),
-                new Section(new Station("5"), new Station("6"), 2),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5)
-            );
+                .hasSize(5)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("5"), 3),
+                        new Section(new Station("5"), new Station("6"), 2),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5)
+                );
     }
 
     @Test
@@ -95,14 +109,14 @@ class SectionsTest {
         sections1.insert(section);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(5)
-            .containsExactly(
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("5"), 2),
-                new Section(new Station("5"), new Station("6"), 3),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5)
-            );
+                .hasSize(5)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("5"), 2),
+                        new Section(new Station("5"), new Station("6"), 3),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5)
+                );
     }
 
     @Test
@@ -113,13 +127,13 @@ class SectionsTest {
         sections1.insert(section);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(5)
-            .containsExactly(
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("6"), 5),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5),
-                new Section(new Station("10"), new Station("xx"), 100));
+                .hasSize(5)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("6"), 5),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5),
+                        new Section(new Station("10"), new Station("xx"), 100));
     }
 
     @ParameterizedTest(name = "{index}: {1}")
@@ -128,20 +142,7 @@ class SectionsTest {
     void insertExceptionParameters(Section section, String testName) {
         Sections sections1 = Sections.of(sections);
         assertThatThrownBy(() -> sections1.insert(section))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    private static Stream<Arguments> exceptionParameters() {
-        return Stream.of(
-            Arguments.of(new Section(new Station("11"), new Station("12"), 100),
-                "아무 역과도 연결되지 않을 때"),
-            Arguments.of(new Section(new Station("2"), new Station("3"), 100),
-                "역과는 연결되었지만 길이가 길때"),
-            Arguments.of(new Section(new Station("2"), new Station("4"), 3),
-                "상행선과 하행선이 이미 있는 구간일 때"),
-            Arguments.of(new Section(new Station("2"), new Station("6"), 3),
-                "상행선과 하행선이 이미 있는 구간일 때")
-        );
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -152,11 +153,11 @@ class SectionsTest {
         sections1.delete(station);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(3)
-            .containsExactly(
-                new Section(new Station("4"), new Station("6"), 5),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5));
+                .hasSize(3)
+                .containsExactly(
+                        new Section(new Station("4"), new Station("6"), 5),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5));
     }
 
     @Test
@@ -167,12 +168,12 @@ class SectionsTest {
         sections1.delete(station);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(3)
-            .containsExactly(
-                new Section(new Station("2"), new Station("4"), 5),
-                new Section(new Station("4"), new Station("6"), 5),
-                new Section(new Station("6"), new Station("8"), 5)
-            );
+                .hasSize(3)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("4"), 5),
+                        new Section(new Station("4"), new Station("6"), 5),
+                        new Section(new Station("6"), new Station("8"), 5)
+                );
     }
 
     @Test
@@ -183,12 +184,12 @@ class SectionsTest {
         sections1.delete(station);
         List<Section> newSections = sections1.getSections();
         assertThat(newSections)
-            .hasSize(3)
-            .containsExactly(
-                new Section(new Station("2"), new Station("6"), 10),
-                new Section(new Station("6"), new Station("8"), 5),
-                new Section(new Station("8"), new Station("10"), 5)
-            );
+                .hasSize(3)
+                .containsExactly(
+                        new Section(new Station("2"), new Station("6"), 10),
+                        new Section(new Station("6"), new Station("8"), 5),
+                        new Section(new Station("8"), new Station("10"), 5)
+                );
     }
 
     @Test
@@ -199,8 +200,8 @@ class SectionsTest {
         sections1.delete(new Station("4"));
         sections1.delete(new Station("6"));
         assertThatThrownBy(() -> sections1.delete(new Station("8")))
-            .hasMessage("한개 남은 구간은 제거할 수 없습니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                .hasMessage("한개 남은 구간은 제거할 수 없습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

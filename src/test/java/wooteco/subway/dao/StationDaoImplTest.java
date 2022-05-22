@@ -1,10 +1,5 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class StationDaoImplTest {
@@ -27,8 +28,8 @@ class StationDaoImplTest {
 
         List<Station> stations = stationDao.findAll();
         List<Long> stationIds = stations.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
             stationDao.deleteById(stationId);
@@ -58,8 +59,8 @@ class StationDaoImplTest {
 
         // then
         assertThat(stations)
-            .hasSize(2)
-            .contains(station1, station2);
+                .hasSize(2)
+                .contains(station1, station2);
     }
 
     @Test
@@ -73,7 +74,7 @@ class StationDaoImplTest {
 
         // then
         assertThatThrownBy(() -> stationDao.save(station2))
-            .isInstanceOf(DuplicateKeyException.class);
+                .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
@@ -87,7 +88,7 @@ class StationDaoImplTest {
 
         // then
         assertThat(stations)
-            .hasSize(0)
-            .doesNotContain(station);
+                .hasSize(0)
+                .doesNotContain(station);
     }
 }

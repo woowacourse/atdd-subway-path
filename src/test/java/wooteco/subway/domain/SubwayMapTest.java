@@ -1,20 +1,20 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.exception.EmptyResultException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import wooteco.subway.exception.EmptyResultException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class SubwayMapTest {
-    private static SubwayMap subwayMap;
     private static final List<Station> stations = new ArrayList<>();
+    private static SubwayMap subwayMap;
 
     @BeforeAll
     public static void setUp() {
@@ -43,7 +43,7 @@ public class SubwayMapTest {
         sections2.add(new Section(stations.get(1), stations.get(4), 4));
         sections2.add(new Section(stations.get(4), stations.get(5), 7));
         sections2.add(new Section(stations.get(5), stations.get(6), 4));
-        return Line.from(new Line(2L, "2", "green",0 ), sections2);
+        return Line.from(new Line(2L, "2", "green", 0), sections2);
     }
 
     private static Line createLine3() {
@@ -66,9 +66,9 @@ public class SubwayMapTest {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(1));
 
         assertAll(
-            () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1)),
-            () -> assertThat(path.getDistance()).isEqualTo(5)
+                () -> assertThat(path.getStations())
+                        .containsExactly(stations.get(0), stations.get(1)),
+                () -> assertThat(path.getDistance()).isEqualTo(5)
         );
     }
 
@@ -78,9 +78,9 @@ public class SubwayMapTest {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(6));
 
         assertAll(
-            () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1), stations.get(4), stations.get(5), stations.get(6)),
-            () -> assertThat(path.getDistance()).isEqualTo(20)
+                () -> assertThat(path.getStations())
+                        .containsExactly(stations.get(0), stations.get(1), stations.get(4), stations.get(5), stations.get(6)),
+                () -> assertThat(path.getDistance()).isEqualTo(20)
         );
     }
 
@@ -90,9 +90,9 @@ public class SubwayMapTest {
         Path path = subwayMap.findShortestPath(stations.get(0), stations.get(8));
 
         assertAll(
-            () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(7), stations.get(8)),
-            () -> assertThat(path.getDistance()).isEqualTo(58)
+                () -> assertThat(path.getStations())
+                        .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(7), stations.get(8)),
+                () -> assertThat(path.getDistance()).isEqualTo(58)
         );
     }
 
@@ -100,7 +100,7 @@ public class SubwayMapTest {
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
         assertThatThrownBy(() -> subwayMap.findShortestPath(stations.get(0), stations.get(9)))
-            .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
-            .isInstanceOf(EmptyResultException.class);
+                .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
+                .isInstanceOf(EmptyResultException.class);
     }
 }

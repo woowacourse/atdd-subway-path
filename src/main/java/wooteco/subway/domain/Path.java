@@ -19,7 +19,7 @@ public class Path {
         return new Path(stations, (int) Math.floor(distance), edgeList);
     }
 
-    public List<Long> findShortestPathLines(){
+    public List<Long> findShortestPathLines() {
         return edgeList.stream()
                 .map(CustomEdge::getLineId)
                 .distinct()

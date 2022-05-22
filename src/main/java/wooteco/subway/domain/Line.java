@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Line {
     private final Long id;
-    private String name;
-    private String color;
     private final Sections sections;
     private final int extraFare;
+    private String name;
+    private String color;
 
     private Line(Long id, String name, String color, Sections sections, int extraFare) {
         this.id = id;
@@ -73,7 +73,7 @@ public class Line {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Line line = (Line)o;
+        Line line = (Line) o;
 
         return getName() != null ? getName().equals(line.getName()) : line.getName() == null;
     }

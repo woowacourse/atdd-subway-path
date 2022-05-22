@@ -1,33 +1,23 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.dto.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("경로 조회 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -44,14 +34,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         clearAllLines();
 
         List<StationRequest> requests = new ArrayList<>();
-        for(char c = 'a'; c <= 'k'; c++){
+        for (char c = 'a'; c <= 'k'; c++) {
             requests.add(new StationRequest(String.valueOf(c)));
         }
 
         stationIds = requests.stream()
-            .map(request -> createStationRequest(request).extract())
-            .map(this::getSavedStationIdByResponse)
-            .collect(Collectors.toList());
+                .map(request -> createStationRequest(request).extract())
+                .map(this::getSavedStationIdByResponse)
+                .collect(Collectors.toList());
 
         Map<SectionRequest, String> sectionRequests = new LinkedHashMap<>();
         createLine1(sectionRequests);
@@ -64,14 +54,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    private void createLine1(Map<SectionRequest,String> sectionRequests) {
+    private void createLine1(Map<SectionRequest, String> sectionRequests) {
         LineRequest lineRequest = new LineRequest("1", "red", stationIds.get(0), stationIds.get(1), 5, 0);
         ExtractableResponse<Response> createLineResponse1 = createLineRequest(lineRequest).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(1), stationIds.get(2), 15),
-            createLineResponse1.header("Location"));
+                createLineResponse1.header("Location"));
         sectionRequests.put(new SectionRequest(stationIds.get(2), stationIds.get(3), 10),
-            createLineResponse1.header("Location"));
+                createLineResponse1.header("Location"));
     }
 
     private void createLine2(Map<SectionRequest, String> sectionRequests) {
@@ -79,19 +69,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createLineResponse2 = createLineRequest(lineRequest2).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(4), stationIds.get(5), 7),
-            createLineResponse2.header("Location"));
+                createLineResponse2.header("Location"));
         sectionRequests.put(new SectionRequest(stationIds.get(5), stationIds.get(6), 4),
-            createLineResponse2.header("Location"));
+                createLineResponse2.header("Location"));
     }
 
     private void createLine3(Map<SectionRequest, String> sectionRequests) {
-        LineRequest lineRequest3 = new LineRequest("3", "orange", stationIds.get(6), stationIds.get(2), 10, 0 );
+        LineRequest lineRequest3 = new LineRequest("3", "orange", stationIds.get(6), stationIds.get(2), 10, 0);
         ExtractableResponse<Response> createLineResponse3 = createLineRequest(lineRequest3).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(2), stationIds.get(7), 15),
-            createLineResponse3.header("Location"));
+                createLineResponse3.header("Location"));
         sectionRequests.put(new SectionRequest(stationIds.get(7), stationIds.get(8), 23),
-            createLineResponse3.header("Location"));
+                createLineResponse3.header("Location"));
     }
 
     private void createLine4() {
@@ -104,24 +94,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPath() {
 
         Map<String, String> params = new HashMap<>();
-        params.put("source","1");
-        params.put("target","9");
+        params.put("source", "1");
+        params.put("target", "9");
         params.put("age", "20");
 
         ExtractableResponse<Response> response = requestShortestPath(params).extract();
 
         PathResponse pathResponse = objectMapper.convertValue(response.jsonPath().get("."), PathResponse.class);
         assertAll(
-            () -> assertThat(pathResponse.getStations())
-                .containsExactly(
-                    new StationResponse(1L, "a"),
-                    new StationResponse(2L, "b"),
-                    new StationResponse(3L, "c"),
-                    new StationResponse(8L, "h"),
-                    new StationResponse(9L, "i")
-                ),
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(58),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
+                () -> assertThat(pathResponse.getStations())
+                        .containsExactly(
+                                new StationResponse(1L, "a"),
+                                new StationResponse(2L, "b"),
+                                new StationResponse(3L, "c"),
+                                new StationResponse(8L, "h"),
+                                new StationResponse(9L, "i")
+                        ),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(58),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
         );
     }
 
@@ -129,20 +119,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 연결되어있지 않은 경우 상태코드는 notFound 이어야 합니다.")
     void findInvalidPath() {
         Map<String, String> params = new HashMap<>();
-        params.put("source","1");
-        params.put("target","11");
+        params.put("source", "1");
+        params.put("target", "11");
         params.put("age", "15");
 
         requestShortestPath(params)
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private ValidatableResponse requestShortestPath(Map<String, String> params) {
         return RestAssured.given().log().all()
-            .params(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/paths")
-            .then().log().all();
+                .params(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/paths")
+                .then().log().all();
     }
 }

@@ -1,17 +1,11 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -21,6 +15,12 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -34,7 +34,7 @@ class PathServiceTest {
     private List<Station> stations;
 
     PathServiceTest(LineDao lineDao, StationDao stationDao, SectionDao sectionDao,
-        PathService pathService) {
+                    PathService pathService) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
@@ -78,7 +78,7 @@ class PathServiceTest {
 
     private List<Station> createStations() {
         List<Station> stations = new ArrayList<>();
-        for (char c = 'a';  c <= 'k' ; c++) {
+        for (char c = 'a'; c <= 'k'; c++) {
             Station station = new Station(String.valueOf(c));
             stations.add(stationDao.save(station));
         }
@@ -87,15 +87,15 @@ class PathServiceTest {
 
     @Test
     @DisplayName("최단거리 경로를 반환한다.")
-    void findShortestPath(){
+    void findShortestPath() {
         PathRequest pathRequest = new PathRequest(stations.get(0).getId(), stations.get(8).getId(), 20);
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         assertThat(pathResponse.getStations()).containsExactly(
-            StationResponse.from(stations.get(0)),
-            StationResponse.from(stations.get(1)),
-            StationResponse.from(stations.get(2)),
-            StationResponse.from(stations.get(7)),
-            StationResponse.from(stations.get(8))
+                StationResponse.from(stations.get(0)),
+                StationResponse.from(stations.get(1)),
+                StationResponse.from(stations.get(2)),
+                StationResponse.from(stations.get(7)),
+                StationResponse.from(stations.get(8))
         );
         assertThat(pathResponse.getDistance()).isEqualTo(58);
         assertThat(pathResponse.getFare()).isEqualTo(2150);
@@ -106,7 +106,7 @@ class PathServiceTest {
     void findSameStationsPath() {
         PathRequest pathRequest = new PathRequest(stations.get(0).getId(), stations.get(0).getId(), 0);
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
-            .hasMessage("출발역과 도착역이 동일합니다.")
-            .isInstanceOf(IllegalArgumentException.class);
+                .hasMessage("출발역과 도착역이 동일합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

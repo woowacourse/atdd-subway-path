@@ -1,5 +1,15 @@
 package wooteco.subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,17 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
 
 @Repository
 public class LineDaoImpl implements LineDao {
@@ -34,7 +33,7 @@ public class LineDaoImpl implements LineDao {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
             ps.setInt(3, line.getExtraFare());
@@ -47,27 +46,27 @@ public class LineDaoImpl implements LineDao {
     @Override
     public List<Line> findAll() {
         final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, "
-            + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
-            + "ds.name as down_station_name, s.distance "
-            + "FROM LINE as l "
-            + "LEFT JOIN SECTION AS s ON s.line_id = l.id "
-            + "LEFT JOIN STATION AS us ON us.id = s.up_station_id "
-            + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id";
+                + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
+                + "ds.name as down_station_name, s.distance "
+                + "FROM LINE as l "
+                + "LEFT JOIN SECTION AS s ON s.line_id = l.id "
+                + "LEFT JOIN STATION AS us ON us.id = s.up_station_id "
+                + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id";
 
         List<LineSection> lineSections = jdbcTemplate.query(sql, joinRowMapper());
         Map<Line, List<LineSection>> groupByLine = lineSections.stream()
-            .collect(Collectors.groupingBy(LineSection::getLine));
+                .collect(Collectors.groupingBy(LineSection::getLine));
         List<Line> lines = groupByLine.keySet().stream()
-            .map(line -> Line.from(line, toSections(groupByLine.get(line))))
-            .collect(Collectors.toList());
+                .map(line -> Line.from(line, toSections(groupByLine.get(line))))
+                .collect(Collectors.toList());
 
         return lines;
     }
 
     private List<Section> toSections(List<LineSection> lineSections) {
         return lineSections.stream()
-            .map(LineSection::getSection)
-            .collect(Collectors.toList());
+                .map(LineSection::getSection)
+                .collect(Collectors.toList());
     }
 
     private RowMapper<LineSection> joinRowMapper() {
@@ -91,7 +90,7 @@ public class LineDaoImpl implements LineDao {
         final int distance = resultSet.getInt("distance");
 
         return new Section(sectionId, new Station(upStationId, upStationName),
-            new Station(downStationId, downStationName), distance);
+                new Station(downStationId, downStationName), distance);
     }
 
     @Override
@@ -104,13 +103,13 @@ public class LineDaoImpl implements LineDao {
     @Override
     public Optional<Line> findById(Long id) {
         final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, "
-            + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
-            + "ds.name as down_station_name, s.distance "
-            + "FROM LINE as l "
-            + "LEFT JOIN SECTION AS s ON s.line_id = l.id "
-            + "LEFT JOIN STATION AS us ON us.id = s.up_station_id "
-            + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id "
-            + "WHERE l.id = ?";
+                + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
+                + "ds.name as down_station_name, s.distance "
+                + "FROM LINE as l "
+                + "LEFT JOIN SECTION AS s ON s.line_id = l.id "
+                + "LEFT JOIN STATION AS us ON us.id = s.up_station_id "
+                + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id "
+                + "WHERE l.id = ?";
         try {
             List<LineSection> lineSections = jdbcTemplate.query(sql, joinRowMapper(), id);
             if (lineSections.isEmpty()) {
@@ -119,8 +118,8 @@ public class LineDaoImpl implements LineDao {
             LineSection lineSection = lineSections.get(0);
             Line findLine = lineSection.getLine();
             List<Section> sections = lineSections.stream()
-                .map(LineSection::getSection)
-                .collect(Collectors.toList());
+                    .map(LineSection::getSection)
+                    .collect(Collectors.toList());
             return Optional.of(Line.from(findLine, sections));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();

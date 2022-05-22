@@ -1,19 +1,19 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
-
 import wooteco.subway.dao.FakeStationDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StationServiceTest {
 
@@ -24,8 +24,8 @@ class StationServiceTest {
     void setUp() {
         List<Station> stations = stationDao.findAll();
         List<Long> stationIds = stations.stream()
-            .map(Station::getId)
-            .collect(Collectors.toList());
+                .map(Station::getId)
+                .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
             stationDao.deleteById(stationId);
@@ -55,8 +55,8 @@ class StationServiceTest {
 
         // then
         assertThatThrownBy(() -> stationService.save(stationRequest2))
-            .hasMessage("이미 존재하는 데이터 입니다.")
-            .isInstanceOf(DuplicateKeyException.class);
+                .hasMessage("이미 존재하는 데이터 입니다.")
+                .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
@@ -70,8 +70,8 @@ class StationServiceTest {
 
         // then
         assertThat(stationResponses)
-            .hasSize(2)
-            .contains(stationResponse1, stationResponse2);
+                .hasSize(2)
+                .contains(stationResponse1, stationResponse2);
     }
 
     @Test
@@ -85,7 +85,7 @@ class StationServiceTest {
 
         // then
         assertThat(stationResponses)
-            .hasSize(0)
-            .doesNotContain(stationResponse);
+                .hasSize(0)
+                .doesNotContain(stationResponse);
     }
 }

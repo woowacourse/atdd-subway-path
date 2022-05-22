@@ -1,11 +1,5 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -24,6 +17,13 @@ import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.EmptyResultException;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
@@ -61,8 +61,8 @@ class LineServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(lineRequest.getName()).isEqualTo(lineResponse.getName()),
-            () -> assertThat(lineRequest.getColor()).isEqualTo(lineResponse.getColor())
+                () -> assertThat(lineRequest.getName()).isEqualTo(lineResponse.getName()),
+                () -> assertThat(lineRequest.getColor()).isEqualTo(lineResponse.getColor())
         );
 
     }
@@ -78,7 +78,7 @@ class LineServiceTest {
 
         // then
         assertThatThrownBy(() -> lineService.save(lineRequest2))
-            .isInstanceOf(DuplicateKeyException.class);
+                .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
@@ -93,13 +93,13 @@ class LineServiceTest {
 
         // then
         List<String> names = lineService.findAll()
-            .stream()
-            .map(LineResponse::getName)
-            .collect(Collectors.toList());
+                .stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
 
         assertThat(names)
-            .hasSize(2)
-            .contains(lineRequest1.getName(), lineRequest2.getName());
+                .hasSize(2)
+                .contains(lineRequest1.getName(), lineRequest2.getName());
     }
 
     @Test
@@ -113,13 +113,13 @@ class LineServiceTest {
 
         // then
         List<Long> lineIds = lineService.findAll()
-            .stream()
-            .map(LineResponse::getId)
-            .collect(Collectors.toList());
+                .stream()
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
 
         assertThat(lineIds)
-            .hasSize(0)
-            .doesNotContain(lineResponse.getId());
+                .hasSize(0)
+                .doesNotContain(lineResponse.getId());
     }
 
     @Test
@@ -151,14 +151,14 @@ class LineServiceTest {
         lineService.insertSection(lineResponse.getId(), sectionRequest);
         LineResponse newLineResponse = lineService.findById(lineResponse.getId());
         assertAll(
-            () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
-            () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
-            () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
-            () -> assertThat(newLineResponse.getStations())
-                .hasSize(3)
-                .contains(StationResponse.from(new Station("강남역")),
-                    StationResponse.from(new Station("교대역")),
-                    StationResponse.from(new Station("선릉역")))
+                () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
+                () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
+                () -> assertThat(newLineResponse.getStations())
+                        .hasSize(3)
+                        .contains(StationResponse.from(new Station("강남역")),
+                                StationResponse.from(new Station("교대역")),
+                                StationResponse.from(new Station("선릉역")))
         );
     }
 
@@ -175,7 +175,7 @@ class LineServiceTest {
 
         // then
         assertThatThrownBy(
-            () -> lineService.insertSection(lineResponse.getId(), sectionRequest)
+                () -> lineService.insertSection(lineResponse.getId(), sectionRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -194,14 +194,14 @@ class LineServiceTest {
         // then
         LineResponse newLineResponse = lineService.findById(lineResponse.getId());
         assertAll(
-            () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
-            () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
-            () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
-            () -> assertThat(newLineResponse.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList()))
-                .hasSize(2)
-                .contains("강남역", "선릉역")
+                () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
+                () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
+                () -> assertThat(newLineResponse.getStations().stream()
+                        .map(StationResponse::getName)
+                        .collect(Collectors.toList()))
+                        .hasSize(2)
+                        .contains("강남역", "선릉역")
         );
     }
 
@@ -220,7 +220,7 @@ class LineServiceTest {
 
         // then
         assertThatThrownBy(() -> lineService.deleteStation(lineResponse.getId(), notInLineStationId))
-            .hasMessage("삭제할 구간을 찾지 못했습니다.")
-            .isInstanceOf(EmptyResultException.class);
+                .hasMessage("삭제할 구간을 찾지 못했습니다.")
+                .isInstanceOf(EmptyResultException.class);
     }
 }

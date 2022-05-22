@@ -3,8 +3,8 @@ package wooteco.subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
     private final String name;
+    private Long id;
 
     public Station(String name) {
         this.name = name;
@@ -31,7 +31,7 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station)o;
+        Station station = (Station) o;
         return name.equals(station.name);
     }
 
@@ -40,4 +40,3 @@ public class Station {
         return Objects.hash(name);
     }
 }
-

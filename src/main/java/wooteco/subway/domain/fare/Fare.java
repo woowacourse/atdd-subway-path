@@ -18,7 +18,7 @@ public class Fare {
     }
 
     public int calculateDistanceFare(int distance) {
-        if(distance <= MINIMUM_BOUNDARY){
+        if (distance <= MINIMUM_BOUNDARY) {
             return BASE_FARE;
         }
         if (distance <= MAXIMUM_BOUNDARY) {
@@ -27,7 +27,7 @@ public class Fare {
         return BASE_FARE + calculateOverFare(MAXIMUM_BOUNDARY - MINIMUM_BOUNDARY, OVER_TEN_POLICY) + overMaximumBoundary(distance);
     }
 
-    private int belowMaximumBoundary (int distance) {
+    private int belowMaximumBoundary(int distance) {
         return calculateOverFare(distance - MINIMUM_BOUNDARY, OVER_TEN_POLICY);
     }
 

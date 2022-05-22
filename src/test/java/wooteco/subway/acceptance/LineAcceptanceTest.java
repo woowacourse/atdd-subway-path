@@ -1,26 +1,25 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.StationRequest;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineAcceptanceTest extends AcceptanceTest {
@@ -48,12 +47,12 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> createStation(StationRequest stationRequest1) {
         return RestAssured.given().log().all()
-            .body(stationRequest1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+                .body(stationRequest1)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
     }
 
     @Test
@@ -96,7 +95,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         getLineRequest(uri)
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -109,7 +108,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = getLineRequest(uri)
-            .extract();
+                .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -125,10 +124,10 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/lines")
-            .then().log().all()
-            .extract();
+                .when()
+                .get("/lines")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -160,10 +159,10 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> extractDeleteLineRequest(String uri) {
         return RestAssured.given().log().all()
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
     }
 
     @Test
@@ -179,7 +178,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         putLineRequest(lineRequest1, uri)
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -189,16 +188,16 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = createLine1();
 
         putLineRequest(lineRequest, "/lines/1")
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private ValidatableResponse putLineRequest(LineRequest lineRequest, String uri) {
         return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest)
-            .when()
-            .put(uri)
-            .then().log().all();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+                .when()
+                .put(uri)
+                .then().log().all();
     }
 
     @Test
@@ -206,7 +205,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void emptyName() {
         LineRequest lineRequest = new LineRequest(null, "bg-red-600", stationId1, stationId2, 10, 0);
         createLineRequest(lineRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -214,7 +213,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void emptyColor() {
         LineRequest lineRequest = new LineRequest("1호선", null, stationId1, stationId2, 10, 0);
         createLineRequest(lineRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -222,7 +221,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void emptyUpStationId() {
         LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", null, stationId2, 10, 0);
         createLineRequest(lineRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -230,7 +229,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void emptyDownStationId() {
         LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, null, 10, 0);
         createLineRequest(lineRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -238,7 +237,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void notPositiveDistance() {
         LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 0, 0);
         createLineRequest(lineRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -255,7 +254,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(stationId1, newDownStationId, 3);
         String uri = createResponse.header("Location");
         createSectionRequest(sectionRequest, uri)
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -271,7 +270,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(newUpStationId, newDownStationId, 3);
         String uri = createResponse.header("Location");
         createSectionRequest(sectionRequest, uri)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -292,11 +291,11 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete(uri + "/sections?stationId=" + newDownStationId)
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(uri + "/sections?stationId=" + newDownStationId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -315,11 +314,11 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete(uri + "/sections?stationId=" + newDownStationId)
-            .then().log().all()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(uri + "/sections?stationId=" + newDownStationId)
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     private Long createNewStation(String stationName) {
@@ -329,58 +328,58 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private List<Long> getExpectedLineIds(ExtractableResponse<Response> createResponse1,
-        ExtractableResponse<Response> createResponse2) {
+                                          ExtractableResponse<Response> createResponse2) {
         return Arrays.asList(createResponse1, createResponse2).stream()
-            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-            .collect(Collectors.toList());
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
     }
 
     private List<Long> getResultLineIds(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", LineResponse.class).stream()
-            .map(LineResponse::getId)
-            .collect(Collectors.toList());
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
     }
 
     private ExtractableResponse<Response> extractCreateLineRequest(LineRequest lineRequest) {
         return RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .extract();
     }
 
     private LineRequest createLine1() {
         return new LineRequest(
-            "1호선",
-            "bg-red-600",
-            stationId1,
-            stationId2,
-            10,
-            0
+                "1호선",
+                "bg-red-600",
+                stationId1,
+                stationId2,
+                10,
+                0
         );
     }
 
     private LineRequest createLine2() {
         return new LineRequest(
-            "2호선",
-            "bg-green-600",
-            stationId1,
-            stationId2,
-            10,
-            0
+                "2호선",
+                "bg-green-600",
+                stationId1,
+                stationId2,
+                10,
+                0
         );
     }
 
     private LineRequest createLine3() {
         return new LineRequest(
-            "3호선",
-            "bg-orange-600",
-            stationId1,
-            stationId2,
-            10,
-            0
+                "3호선",
+                "bg-orange-600",
+                stationId1,
+                stationId2,
+                10,
+                0
         );
     }
 }

@@ -1,12 +1,7 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -17,6 +12,10 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.exception.EmptyResultException;
+
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,15 +44,15 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         return lineDao.findById(id)
-            .map(LineResponse::from)
-            .orElseThrow(throwEmptyLineResultException());
+                .map(LineResponse::from)
+                .orElseThrow(throwEmptyLineResultException());
     }
 
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         return lineDao.findAll().stream()
-            .map(LineResponse::from)
-            .collect(Collectors.toList());
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
     }
 
     public boolean deleteById(Long id) {
@@ -89,12 +88,12 @@ public class LineService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-            .orElseThrow((throwEmptyStationException()));
+                .orElseThrow((throwEmptyStationException()));
     }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id)
-            .orElseThrow(throwEmptyLineResultException());
+                .orElseThrow(throwEmptyLineResultException());
     }
 
     private void checkEmptyResult(Long sectionId) {

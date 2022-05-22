@@ -9,7 +9,7 @@ public class FareCalculator {
         this.ageStrategy = ageStrategy;
     }
 
-    public double calculateAgeFare(int currentFare){
+    public double calculateAgeFare(int currentFare) {
         return ageStrategy.calculate(currentFare);
     }
 }

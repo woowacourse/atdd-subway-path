@@ -1,15 +1,15 @@
 package wooteco.subway.dao;
 
+import wooteco.subway.domain.Section;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import wooteco.subway.domain.Section;
-
 public class FakeSectionDao implements SectionDao {
 
-    private Long seq = 0L;
     private final Map<Long, Section> sections = new HashMap<>();
+    private Long seq = 0L;
 
     @Override
     public Long save(Section section, Long lineId) {

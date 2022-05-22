@@ -1,8 +1,8 @@
 package wooteco.subway.dao;
 
-import java.util.List;
-
 import wooteco.subway.domain.Section;
+
+import java.util.List;
 
 public interface SectionDao {
     Long save(Section section, Long lineId);

@@ -1,13 +1,11 @@
 package wooteco.subway.domain;
 
-import java.util.List;
-
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-
 import wooteco.subway.exception.EmptyResultException;
+
+import java.util.List;
 
 public class SubwayMap {
     private final DijkstraShortestPath<Station, CustomEdge> pathFinder;
@@ -23,7 +21,7 @@ public class SubwayMap {
             addVertex(graph, line.getStations());
         }
 
-        for(Line line : lines){
+        for (Line line : lines) {
             addEdge(graph, line.getSections(), line.getId());
         }
 
