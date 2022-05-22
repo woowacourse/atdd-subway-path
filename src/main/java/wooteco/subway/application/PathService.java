@@ -24,17 +24,17 @@ public class PathService {
     }
 
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        SubwayGraph subwayGraph = new SubwayGraph(sectionDao.findAll());
+        ShortestPath subwayGraph = new SubwayGraph(sectionDao.findAll());
+        PathAdapter pathAdapter = new PathAdapter(subwayGraph);
 
         Station sourceStation = stationDao.findById(sourceId)
                 .orElseThrow(() -> new NoSuchStationException(sourceId));
         Station targetStation = stationDao.findById(targetId)
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
-        Long lineId = subwayGraph.getExpensiveLineId(sourceStation, targetStation);
+        Long lineId = pathAdapter.getExpensiveLineId(sourceStation, targetStation);
         Line line = lineDao.findById(lineId).orElseThrow(() -> new NoSuchLineException(lineId));
-
-        Path path = subwayGraph.getPath(sourceStation, targetStation, new Fare(line.getExtraFare()), age);
+        Path path = pathAdapter.getShortestPath(sourceStation, targetStation, new Fare(line.getExtraFare()), age);
 
         return PathResponse.from(path);
     }
