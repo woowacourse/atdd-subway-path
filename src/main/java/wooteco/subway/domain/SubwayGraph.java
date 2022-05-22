@@ -16,7 +16,7 @@ public class SubwayGraph {
     }
 
     public List<Station> getShortestRoute(Station source, Station target) {
-        GraphPath<Station, LineWeightedEdge> result = subwayMap.getPath(source, target);
+        GraphPath<Station, LineWeightedEdge> result = getShortestPath(source, target);
         validateRoute(result);
         return result.getVertexList();
     }
@@ -44,6 +44,16 @@ public class SubwayGraph {
             subwayMap.addEdge(upStation, downStation, new LineWeightedEdge(line, distance));
         }
         return new DijkstraShortestPath<>(subwayMap);
+    }
+
+    private GraphPath<Station, LineWeightedEdge> getShortestPath(Station source, Station target) {
+        GraphPath<Station, LineWeightedEdge> result;
+        try {
+            result = subwayMap.getPath(source, target);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("존재하지 않는 역입니다.");
+        }
+        return result;
     }
 
     private void validateRoute(GraphPath<Station, LineWeightedEdge> route) {

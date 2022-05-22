@@ -106,7 +106,7 @@ public class SubwayGraphTest {
 
         assertThatThrownBy(() -> subwayGraph.getShortestRoute(강남, 창동))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("graph must contain the sink vertex");
+                .hasMessage("존재하지 않는 역입니다.");
     }
 
     @ParameterizedTest
