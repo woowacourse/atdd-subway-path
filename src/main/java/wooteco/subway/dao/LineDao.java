@@ -31,6 +31,7 @@ public class LineDao implements CommonLineDao {
         params.put("name", lineDto.getName());
         params.put("color", lineDto.getColor());
         params.put("up_station_id", lineDto.getUpStationId());
+        params.put("extra_fare", lineDto.getExtraFare());
         final Long id = simpleInsert.executeAndReturnKey(params).longValue();
         return new Line(id, lineDto.getName(), lineDto.getColor(), lineDto.getUpStationId());
     }
