@@ -83,7 +83,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE)
         );
     }
 
@@ -111,7 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains("거리")
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains("거리")
         );
     }
 
@@ -144,7 +144,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE)
         );
     }
 
@@ -173,7 +173,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE)
         );
     }
 
@@ -191,7 +191,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
         );
     }
 
@@ -209,7 +209,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
         );
     }
 
@@ -227,7 +227,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
         );
     }
 
@@ -245,7 +245,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
         );
     }
 
@@ -264,7 +264,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
                         NEGATIVE_EXTRA_FARE_ERROR_MESSAGE)
         );
     }
@@ -281,7 +281,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains("같은 역")
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains("같은 역")
         );
     }
 
@@ -388,7 +388,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE);
     }
 
     /*
@@ -473,7 +473,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE);
     }
 
     /*
@@ -509,7 +509,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE);
     }
 
     @DisplayName("존재하지 않는 노선을 수정한다.")
@@ -535,7 +535,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE);
     }
 
     /*
@@ -576,7 +576,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE)
         );
     }
 

@@ -18,6 +18,7 @@ import wooteco.subway.dto.line.LineSaveRequest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AcceptanceTest {
 
+    protected static final String ERROR_MESSAGE_PATH = "messages";
     protected static final String NOT_FOUND_ERROR_MESSAGE = "존재하지 않습니다";
     protected static final String BLANK_OR_NULL_ERROR_MESSAGE = "빈 값";
     private static final String LINE_BASE_URI = "/lines";

@@ -40,7 +40,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_STATION_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_STATION_ERROR_MESSAGE);
     }
 
     @DisplayName("지하철역 이름을 빈 값으로 지하철역을 생성한다.")
@@ -52,7 +52,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE);
     }
 
     @DisplayName("지하철역 이름을 null로 지하철역을 생성한다.")
@@ -64,7 +64,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE);
     }
 
     @DisplayName("지하철역을 조회한다.")

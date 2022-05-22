@@ -117,7 +117,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(pathResponse.body().jsonPath().getString("message")).isEqualTo(
+                () -> assertThat(pathResponse.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
                         UNREACHABLE_PATH_MESSAGE)
         );
     }
@@ -194,7 +194,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(NEGATIVE_AGE_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NEGATIVE_AGE_ERROR_MESSAGE)
         );
     }
 
