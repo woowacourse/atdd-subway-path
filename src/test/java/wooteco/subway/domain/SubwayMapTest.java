@@ -76,7 +76,7 @@ class SubwayMapTest {
                 .hasMessageContaining("이동 가능한 경로가 존재하지 않습니다");
     }
 
-    @DisplayName("지나는 노선의 id를 추가한다.")
+    @DisplayName("Path 계산시, Path에 포함되어 있는 Section이 속한 Line의 id를 추가한다.")
     @Test
     void calculatePassingLineId() {
         // given
