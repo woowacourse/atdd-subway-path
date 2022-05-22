@@ -7,8 +7,10 @@ import java.util.function.Predicate;
 public enum AgeDisCountPolicy {
 
     BABY(age -> 0 <= age && age <= 5, money -> 0),
-    CHILDREN(age -> 6 <= age && age <= 12, money -> (int) ((money - 350) * 0.5)),
-    TEENAGER(age -> 13 <= age && age <= 18, money -> (int) ((money - 350) * 0.8)),
+    CHILDREN(age -> 6 <= age && age <= 12,
+            money -> (int) ((money - Constants.DEDUCTIBLE) * Constants.CHILDREN_DISCOUNT_RATE)),
+    TEENAGER(age -> 13 <= age && age <= 18,
+            money -> (int) ((money - Constants.DEDUCTIBLE) * Constants.TEENAGER_DISCOUNT_RATE)),
     ADULT(age -> 19 <= age, money -> money),
     ;
 
@@ -29,5 +31,11 @@ public enum AgeDisCountPolicy {
 
     public int discountedMoney(final int money) {
         return discountPolicy.apply(money);
+    }
+
+    private static class Constants {
+        private static final int DEDUCTIBLE = 350;
+        public static final double CHILDREN_DISCOUNT_RATE = 0.5;
+        public static final double TEENAGER_DISCOUNT_RATE = 0.8;
     }
 }
