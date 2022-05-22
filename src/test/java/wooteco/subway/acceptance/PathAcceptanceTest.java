@@ -25,9 +25,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Autowired
     private LineService lineService;
 
-    @Autowired
-    private SectionService sectionService;
-
     private StationEntity gangnam;
     private StationEntity nowon;
     private StationEntity jamsil;
@@ -51,7 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회하기")
     void getPath() {
         // given
-        String url = "/paths?source=1&target=3&age=15";
+        String url = "/paths?source=" + gangnam.getId() + "&target=" + jamsil.getId() + "&age=15";
         ExtractableResponse<Response> response = get(url);
         // when
         PathResponse pathResponse = response.body().as(PathResponse.class);
