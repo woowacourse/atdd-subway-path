@@ -31,14 +31,14 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(long sourceStationId, long targetStationId) {
+    public PathResponse findShortestPath(long sourceStationId, long targetStationId, int age) {
         PathManager pathManager = PathManager.of(
                 GraphGenerator.toAdjacentPath(subwayRepository.findAllSections(), generateAllLinesCosts()));
         Station startStation = stationRepository.findExistingStation(sourceStationId);
         Station endStation = stationRepository.findExistingStation(targetStationId);
         Path optimalPath = pathManager.calculateOptimalPath(startStation, endStation);
         CostManager costManager = new CostManager(costSections);
-        int fare = costManager.calculateFare(optimalPath.getTotalDistance(), optimalPath.getExtraFare());
+        int fare = costManager.calculateFare(optimalPath.getTotalDistance(), optimalPath.getExtraFare(), age);
 
         return PathResponse.of(optimalPath, fare);
     }

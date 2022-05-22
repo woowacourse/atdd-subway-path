@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             PathResponse actualBody = response.jsonPath().getObject(".", PathResponse.class);
             PathResponse expectedBody = new PathResponse(
                     List.of(new StationResponse(1L, "강남역"), new StationResponse(2L, "선릉역"),
-                            new StationResponse(3L, "잠실역")), 15, 1350);
+                            new StationResponse(3L, "잠실역")), 15, 1360);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(actualBody).isEqualTo(expectedBody);

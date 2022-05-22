@@ -38,7 +38,7 @@ class PathServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L, 5);
             testFixtureManager.saveSection(1L, 2L, 3L, 5);
 
-            PathResponse actual = service.findShortestPath(1L, 3L);
+            PathResponse actual = service.findShortestPath(1L, 3L, 19);
             PathResponse expected = new PathResponse(
                     List.of(STATION_RESPONSE1, STATION_RESPONSE2, STATION_RESPONSE3), 10, 1260);
 
@@ -50,7 +50,7 @@ class PathServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L, 5);
             testFixtureManager.saveSection(1L, 2L, 3L, 5);
 
-            assertThatThrownBy(() -> service.findShortestPath(1L, 9999999999L))
+            assertThatThrownBy(() -> service.findShortestPath(1L, 9999999999L, 19))
                     .isInstanceOf(NotFoundException.class);
         }
     }

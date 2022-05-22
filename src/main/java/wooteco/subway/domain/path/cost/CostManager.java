@@ -22,7 +22,8 @@ public class CostManager {
         }
     }
 
-    public int calculateFare(int totalDistance, int extraFare) {
+    public int calculateFare(int totalDistance, int extraFare, int age) {
+        validateAge(age);
         if (totalDistance <= 0) {
             return 0;
         }
@@ -35,6 +36,22 @@ public class CostManager {
         }
         CostSection lastSection = costSections.get(lastIndex);
         totalFare += lastSection.calculateFareWithBound(CostSection.ofInfinity(), totalDistance);
-        return totalFare + BASIC_FARE + extraFare;
+        return calculateByAge(totalFare + BASIC_FARE + extraFare, age);
+    }
+
+    private int calculateByAge(int fare, int age) {
+        if (age < 13) {
+            return (int) ((fare - 350) * 0.5);
+        }
+        if (age < 19) {
+            return (int) ((fare - 350) * 0.8);
+        }
+        return fare;
+    }
+
+    private void validateAge(int age) {
+        if (age < 6) {
+            throw new IllegalArgumentException();
+        }
     }
 }
