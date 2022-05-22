@@ -25,13 +25,12 @@ public class DijkstraStrategy implements ShortestPathStrategy {
             return Optional.empty();
         }
 
+        final GraphPath<Station, DefaultWeightedEdge> graphPath = path.get();
+        final int distance = (int) graphPath.getWeight();
+
         return Optional.of(
-                new Path(
-                        path.get().getVertexList(),
-                        (int) path.get().getWeight(),
-                        Fare.from((int) path.get().getWeight()
-                        )
-                ));
+                new Path(graphPath.getVertexList(), distance, Fare.from(distance))
+        );
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> initializeGraph(
