@@ -73,7 +73,8 @@ public class LineAddAndRequest extends Request {
     }
 
     public void 구간을삭제한다(Station station, int status) {
-        ExtractableResponse<Response> response = delete(String.format("/lines/%d/sections?stationId=%d", id, station.getId()));
+        ExtractableResponse<Response> response = delete(
+                String.format("/lines/%d/sections?stationId=%d", id, station.getId()));
 
         assertThat(response.statusCode()).isEqualTo(status);
     }

@@ -6,15 +6,11 @@ import static wooteco.subway.helper.TStation.SINDANG;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")

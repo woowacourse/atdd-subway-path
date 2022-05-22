@@ -2,7 +2,6 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.helper.TLine.LINE_SIX;
 import static wooteco.subway.helper.TLine.LINE_TWO;
 import static wooteco.subway.helper.TStation.DONGMYO;
@@ -70,10 +69,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .단건노선을조회한다(HttpStatus.OK.value());
 
         assertThat(response.getStations()).extracting("id", "name")
-                        .containsExactly(
-                                tuple(신당역.getId(), 신당역.getName()),
-                                tuple(동묘앞역.getId(), 동묘앞역.getName())
-                        );
+                .containsExactly(
+                        tuple(신당역.getId(), 신당역.getName()),
+                        tuple(동묘앞역.getId(), 동묘앞역.getName())
+                );
     }
 
     @DisplayName("노선을 수정하면 200 OK를 반환한다.")
