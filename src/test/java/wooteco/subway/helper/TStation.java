@@ -1,6 +1,12 @@
 package wooteco.subway.helper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
@@ -22,21 +28,38 @@ public enum TStation {
         this.name = name;
     }
 
-    private static StationResponse requestStation(final StationRequest stationRequest) {
+    public Station 역을등록한다() {
+        StationResponse stationResponse = request(new StationRequest(name));
+        this.id = stationResponse.getId();
+        return new Station(id, stationResponse.getName());
+    }
+
+    public ExtractableResponse<Response> 역을등록한다(int status) {
+        ExtractableResponse<Response> response = requestStation(new StationRequest(name));
+        assertThat(response.statusCode()).isEqualTo(status);
+        return response;
+    }
+
+    private StationResponse request(final StationRequest stationRequest) {
+        return requestStation(stationRequest).as(StationResponse.class);
+    }
+
+    private ExtractableResponse<Response> requestStation(final StationRequest stationRequest) {
         return RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
                 .then().log().all()
-                .extract()
-                .as(StationResponse.class);
+                .extract();
     }
 
-    public Station 역을등록한다() {
-        StationResponse stationResponse = requestStation(new StationRequest(name));
-        this.id = stationResponse.getId();
-        return new Station(id, stationResponse.getName());
+    public StationAddAndRequest 역을등록하고() {
+        return new StationAddAndRequest(this);
+    }
+
+    public StationResponse 역() {
+        return new StationResponse(id, name);
     }
 
     public PathAndRequest 부터(TStation target) {
