@@ -164,9 +164,6 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 
 ### 질문사항
 
-- body/쿼리(ModelAttribute)를 통해 한번에 도메인을 가져오기 위해 request를 만듦.
-    - 이후 path 등 다른 부분에서 추가 정보가 있을때 setter 등을 통해 값을 추가 설정해줘도 되는지?
-
 ### 1단계 피드백
 
 - [x] 한번만 쓰이는 private 메소드의 경우 쓰이는 곳 밑에 두기

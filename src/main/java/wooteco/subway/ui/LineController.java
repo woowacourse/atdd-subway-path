@@ -46,8 +46,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public void updateLine(@PathVariable Long id, @RequestBody LineUpdateRequest request) {
-        request.setId(id);
-        lineService.updateById(request);
+        lineService.updateById(new LineUpdateRequest(id, request.getName(),request.getColor(),request.getExtraFare()));
     }
 
     @DeleteMapping("/{id}")

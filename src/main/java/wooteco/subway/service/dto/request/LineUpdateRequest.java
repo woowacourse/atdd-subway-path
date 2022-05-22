@@ -8,14 +8,7 @@ public class LineUpdateRequest {
     private int extraFare;
 
 
-    public LineUpdateRequest() {
-    }
-
-    public LineUpdateRequest(String name, String color, int extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
-    }
+    public LineUpdateRequest() {}
 
     public LineUpdateRequest(Long id, String name, String color, int extraFare) {
         this.id = id;
@@ -26,10 +19,6 @@ public class LineUpdateRequest {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
