@@ -57,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void createPath() {
         // given
         // when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 15));
+        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 30));
         PathResponse 경로응답 = response.body().jsonPath().getObject(".", PathResponse.class);
         List<String> 실제경로 = 경로응답.getStations().stream()
                 .map(StationResponse::getName)
@@ -78,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //given
         createPostLineResponse(일호선);
         //when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 15));
+        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 30));
         PathResponse 경로응답 = response.body().jsonPath().getObject(".", PathResponse.class);
         List<String> 실제경로 = 경로응답.getStations().stream()
                 .map(StationResponse::getName)

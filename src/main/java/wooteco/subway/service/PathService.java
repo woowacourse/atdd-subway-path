@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
@@ -28,19 +29,21 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponseDto getPath(PathRequestDto pathRequestDto) {
         List<Long> stationIds = getStationIds();
-
         Sections sections = sectionService.findAll();
 
         Path path = Path.of(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
-        List<Section> shortestPathSections = path.getShortestPathSections();
+        Fare fare = getDefaultFare(path.getShortestPathSections());
+
+        Age age = Age.calculateAge(pathRequestDto.getAge());
+        return new PathResponseDto(toStationResponseDto(path), path.getTotalDistance(), fare.calculateFare(path.getTotalDistance(), age));
+    }
+
+    private Fare getDefaultFare(List<Section> shortestPathSections) {
         int maxExtraFare = shortestPathSections.stream()
                 .mapToInt(section -> lineService.getExtraFareByLineId(section.getLineId()))
                 .max()
                 .orElseThrow(() -> new IllegalArgumentException("추가 요금을 찾을 수 없습니다."));
-        Fare fare = new Fare(maxExtraFare);
-        List<StationResponseDto> stations = toStationResponseDto(path);
-
-        return new PathResponseDto(stations, path.getTotalDistance(), fare.calculateFare(path.getTotalDistance()));
+        return new Fare(maxExtraFare);
     }
 
     private List<Long> getStationIds() {

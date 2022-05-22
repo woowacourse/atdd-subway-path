@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.Age;
+
 public class Fare {
 
     private static final int BASIC_FARE = 1250;
@@ -15,7 +17,12 @@ public class Fare {
         this.fare = BASIC_FARE + extraFare;
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, Age age) {
+        int fareByDistance = getFareByDistance(distance);
+        return age.calculateDiscount(fareByDistance);
+    }
+
+    private int getFareByDistance(int distance) {
         if (distance <= FIRST_RESTRICTION_DISTANCE) {
             return fare;
         }
