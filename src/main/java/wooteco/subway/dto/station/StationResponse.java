@@ -1,14 +1,23 @@
-package wooteco.subway.domain;
+package wooteco.subway.dto.station;
 
 import java.util.Objects;
+import wooteco.subway.domain.Station;
 
-public class Station {
+public class StationResponse {
     private Long id;
     private String name;
 
-    public Station(Long id, String name) {
+    public StationResponse() {
+    }
+
+    public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public StationResponse(Station station) {
+        this.id = station.getId();
+        this.name = station.getName();
     }
 
     public Long getId() {
@@ -27,8 +36,8 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
@@ -36,4 +45,3 @@ public class Station {
         return Objects.hash(id, name);
     }
 }
-
