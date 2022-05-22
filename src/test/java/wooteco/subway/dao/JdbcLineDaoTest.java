@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
+import wooteco.subway.exception.NotFoundLineException;
 
 @JdbcTest
 public class JdbcLineDaoTest {
@@ -55,7 +56,8 @@ public class JdbcLineDaoTest {
         final Line expected = new Line("다른분당선", "bg-blue-600");
         final Line savedLine = lineDao.save(expected);
 
-        final Line actual = lineDao.findById(savedLine.getId());
+        final Line actual = lineDao.findById(savedLine.getId()).
+                orElseThrow(() -> new NotFoundLineException("해당하는 노선이 존재하지 않습니다."));
 
         assertThat(actual.getName()).isEqualTo(expected.getName());
     }
@@ -68,7 +70,8 @@ public class JdbcLineDaoTest {
         final String expected = "또다른분당선";
         lineDao.updateById(savedLine.getId(), expected, line3.getColor());
 
-        final Line updatedLine = lineDao.findById(savedLine.getId());
+        final Line updatedLine = lineDao.findById(savedLine.getId()).
+                orElseThrow(() -> new NotFoundLineException("해당하는 노선이 존재하지 않습니다."));
         final String actual = updatedLine.getName();
 
         assertThat(actual).isEqualTo(expected);

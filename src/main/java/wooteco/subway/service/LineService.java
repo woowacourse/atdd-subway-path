@@ -23,6 +23,14 @@ import wooteco.subway.exception.NotFoundStationException;
 @Service
 public class LineService {
 
+    private static final String NOT_FOUND_STATION_ERROR_MESSAGE = "해당하는 역이 존재하지 않습니다.";
+    private static final String NOT_FOUND_LINE_ERROR_MESSAGE = "해당하는 노선이 존재하지 않습니다.";
+    private static final String DUPLICATE_LINE_ERROR_MESSAGE = "같은 이름의 노선이 존재합니다.";
+    private static final String NOT_FOUND_STATION_DELETE_ERROR_MESSAGE = "역이 노선에 등록되어 있지 않다면 삭제할 수 없습니다.";
+    private static final String SECTION_HAS_NOT_ANY_STATION_ERROR_MESSAGE = "등록하려는 구간 중 하나 이상의 역은 무조건 노선에 등록되어 있어야 합니다.";
+    private static final String SECTION_HAS_ALL_STATION_ERROR_MESSAGE = "상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없습니다.";
+    private static final String LAST_SECTION_DELETE_ERROR_MESSAGE = "구간이 하나인 노선에서 마지막 구간을 제거할 수 없습니다.";
+
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -34,13 +42,12 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest lineRequest) {
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
-        final Station upStation = stationDao.findById(lineRequest.getUpStationId());
-        final Station downStation = stationDao.findById(lineRequest.getDownStationId());
-
-        checkNotFoundStation(upStation);
-        checkNotFoundStation(downStation);
         checkDuplicateLine(lineRequest);
+        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        final Station upStation = stationDao.findById(lineRequest.getUpStationId()).
+                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+        final Station downStation = stationDao.findById(lineRequest.getDownStationId()).
+                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
         final Line savedLine = lineDao.save(line);
         final Section section = new Section(savedLine, upStation, downStation,
@@ -65,8 +72,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLine(Long id) {
-        checkNotFoundLine(id);
-        final Line line = lineDao.findById(id);
+        final Line line = lineDao.findById(id).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         final Sections sections = getSections(line);
 
         return LineResponse.of(line, sections.getStations());
@@ -83,13 +90,14 @@ public class LineService {
     }
 
     public void saveSection(Long lineId, SectionRequest sectionRequest) {
-        checkNotFoundLine(lineId);
-
-        final Line line = lineDao.findById(lineId);
+        final Line line = lineDao.findById(lineId).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         final Sections sections = getSections(line);
 
-        final Station upStation = stationDao.findById(sectionRequest.getUpStationId());
-        final Station downStation = stationDao.findById(sectionRequest.getDownStationId());
+        final Station upStation = stationDao.findById(sectionRequest.getUpStationId()).
+                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+        final Station downStation = stationDao.findById(sectionRequest.getDownStationId()).
+                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final int distance = sectionRequest.getDistance();
         Section newSection = new Section(line, upStation, downStation, distance);
 
@@ -104,14 +112,13 @@ public class LineService {
     }
 
     public void deleteSection(Long lineId, Long stationId) {
-        checkNotFoundLine(lineId);
-
-        final Line line = lineDao.findById(lineId);
-        final Station station = stationDao.findById(stationId);
+        final Line line = lineDao.findById(lineId).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
+        final Station station = stationDao.findById(stationId).
+                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final Sections sections = getSections(line);
         checkOnlyOneSection(sections);
         checkNotContainStation(sections, station);
-
 
         Station lastUpStation = sections.getLastUpStation(sections.getSections());
         if (lastUpStation.isSameStation(station)) {
@@ -139,21 +146,13 @@ public class LineService {
     }
 
     private void checkNotFoundLine(Long id) {
-        final Line line = lineDao.findById(id);
-        if (line == null) {
-            throw new NotFoundLineException("해당하는 노선이 존재하지 않습니다.");
-        }
-    }
-
-    private void checkNotFoundStation(Station station) {
-        if (station == null) {
-            throw new NotFoundStationException("해당하는 역이 존재하지 않습니다.");
-        }
+        lineDao.findById(id).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
     }
 
     private void checkDuplicateLine(LineRequest lineRequest) {
         if (lineDao.hasLine(lineRequest.getName())) {
-            throw new DuplicateLineException("같은 이름의 노선이 존재합니다.");
+            throw new DuplicateLineException(DUPLICATE_LINE_ERROR_MESSAGE);
         }
     }
 
@@ -164,27 +163,27 @@ public class LineService {
 
     private void checkNotContainStation(Sections sections, Station station) {
         if (!sections.hasStation(station)) {
-            throw new NotFoundStationException("역이 노선에 등록되어 있지 않다면 삭제할 수 없습니다.");
+            throw new NotFoundStationException(NOT_FOUND_STATION_DELETE_ERROR_MESSAGE);
         }
     }
 
     private void checkSectionHasNotAnyStation(Sections sections, Station upStation,
             Station downStation) {
         if (!sections.hasStation(upStation) && !sections.hasStation(downStation)) {
-            throw new NotFoundStationException("등록하려는 구간 중 하나 이상의 역은 무조건 노선에 등록되어 있어야 합니다.");
+            throw new NotFoundStationException(SECTION_HAS_NOT_ANY_STATION_ERROR_MESSAGE);
         }
     }
 
     private void checkSectionHasAllStation(Sections sections, Station upStation,
             Station downStation) {
         if (sections.hasSameUpStation(upStation) && sections.hasSameDownStation(downStation)) {
-            throw new IllegalArgumentException("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없습니다.");
+            throw new IllegalArgumentException(SECTION_HAS_ALL_STATION_ERROR_MESSAGE);
         }
     }
 
     private void checkOnlyOneSection(Sections sections) {
         if (sections.hasOnlyOneSection()) {
-            throw new IllegalArgumentException("구간이 하나인 노선에서 마지막 구간을 제거할 수 없습니다.");
+            throw new IllegalArgumentException(LAST_SECTION_DELETE_ERROR_MESSAGE);
         }
     }
 }

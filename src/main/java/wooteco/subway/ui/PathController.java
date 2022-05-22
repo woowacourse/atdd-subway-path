@@ -3,7 +3,6 @@ package wooteco.subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
@@ -20,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> showShortestPath(@ModelAttribute PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> showShortestPath(PathRequest pathRequest) {
         PathResponse pathResponse = pathService.createShortestPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }

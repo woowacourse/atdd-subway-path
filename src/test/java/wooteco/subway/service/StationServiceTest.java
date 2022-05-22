@@ -3,13 +3,13 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.exception.NotFoundStationException;
 import wooteco.subway.service.fakeDao.StationDaoImpl;
 
 public class StationServiceTest {
@@ -45,7 +45,7 @@ public class StationServiceTest {
         final Long invalidStationId = stationResponse.getId() + 1L;
 
         assertThatThrownBy(() -> stationService.deleteStation(invalidStationId))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(NotFoundStationException.class)
                 .hasMessage("해당하는 역이 존재하지 않습니다.");
     }
 }

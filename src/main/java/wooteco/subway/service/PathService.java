@@ -12,10 +12,12 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Service
 public class PathService {
 
+    private static final String NOT_FOUND_STATION_ERROR_MESSAGE = "해당하는 역이 존재하지 않습니다.";
     private static final int BASIC_FARE = 1250;
 
     private final StationDao stationDao;
@@ -36,7 +38,8 @@ public class PathService {
         List<Long> shortestPath = path.createShortestPath(source, target);
 
         List<Station> stations = shortestPath.stream()
-                .map(station -> stationDao.findById(station))
+                .map(station -> stationDao.findById(station)
+                        .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)))
                 .collect(Collectors.toList());
 
         int distance = path.calculateDistance(source, target);

@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
@@ -30,11 +31,10 @@ public class StationDaoImpl implements StationDao {
     }
 
     @Override
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         return stations.stream()
                 .filter(station -> station.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역이 존재하지 않습니다."));
+                .findFirst();
     }
 
     @Override

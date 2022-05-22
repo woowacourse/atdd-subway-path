@@ -4,9 +4,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
+import wooteco.subway.exception.NotFoundLineException;
 
 public class LineDaoImpl implements LineDao {
 
@@ -30,11 +32,10 @@ public class LineDaoImpl implements LineDao {
     }
 
     @Override
-    public Line findById(Long id) {
+    public Optional<Line> findById(Long id) {
         return lines.stream()
                 .filter(line -> line.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
+                .findFirst();
     }
 
     @Override
@@ -50,7 +51,8 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public void updateById(Long id, String name, String color) {
-        Line line = findById(id);
+        Line line = findById(id).
+                orElseThrow(() -> new NotFoundLineException("해당하는 노선이 존재하지 않습니다."));
         line.setName(name);
         line.setColor(color);
     }

@@ -14,6 +14,9 @@ import wooteco.subway.exception.NotFoundStationException;
 @Service
 public class StationService {
 
+    private static final String NOT_FOUND_STATION_ERROR_MESSAGE = "해당하는 역이 존재하지 않습니다.";
+    private static final String DUPLICATE_STATION_ERROR_MESSAGE = "같은 이름의 역이 존재합니다.";
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -23,7 +26,7 @@ public class StationService {
     public StationResponse saveStation(StationRequest stationRequest) {
         final Station station = new Station(stationRequest.getName());
         if (stationDao.hasStation(stationRequest.getName())) {
-            throw new IllegalArgumentException("같은 이름의 역이 존재합니다.");
+            throw new IllegalArgumentException(DUPLICATE_STATION_ERROR_MESSAGE);
         }
         final Station savedStation = stationDao.save(station);
         return StationResponse.of(savedStation);
@@ -39,8 +42,8 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationResponse findStation(Long id) {
-        checkNotFoundStation(id);
-        final Station station = stationDao.findById(id);
+        final Station station = stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
         return new StationResponse(station.getId(), station.getName());
     }
 
@@ -50,9 +53,10 @@ public class StationService {
     }
 
     private void checkNotFoundStation(Long id) {
-        final Station station = stationDao.findById(id);
+        final Station station = stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
         if (station == null) {
-            throw new NotFoundStationException("해당하는 역이 존재하지 않습니다.");
+            throw new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE);
         }
     }
 }

@@ -19,12 +19,16 @@ import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundLineException;
 import wooteco.subway.exception.NotFoundStationException;
 import wooteco.subway.service.fakeDao.LineDaoImpl;
 import wooteco.subway.service.fakeDao.SectionDaoImpl;
 import wooteco.subway.service.fakeDao.StationDaoImpl;
 
 public class LineServiceTest {
+
+    private static final String NOT_FOUND_LINE_ERROR_MESSAGE = "해당하는 노선이 존재하지 않습니다.";
+    private static final String DUPLICATE_LINE_ERROR_MESSAGE = "같은 이름의 노선이 존재합니다.";
 
     private final LineDao lineDao = LineDaoImpl.getInstance();
     private final StationDao stationDao = StationDaoImpl.getInstance();
@@ -52,7 +56,7 @@ public class LineServiceTest {
 
         assertThatThrownBy(() -> lineService.saveLine(lineRequest2))
                 .isInstanceOf(DuplicateLineException.class)
-                .hasMessage("같은 이름의 노선이 존재합니다.");
+                .hasMessage(DUPLICATE_LINE_ERROR_MESSAGE);
     }
 
     @Test
@@ -67,8 +71,8 @@ public class LineServiceTest {
         final Long invalidLineId = lineResponse.getId() + 1L;
 
         assertThatThrownBy(() -> lineService.deleteLine(invalidLineId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당하는 노선이 존재하지 않습니다.");
+                .isInstanceOf(NotFoundLineException.class)
+                .hasMessage(NOT_FOUND_LINE_ERROR_MESSAGE);
     }
 
     @Test
@@ -89,7 +93,8 @@ public class LineServiceTest {
         lineService.saveSection(lineResponse.getId(), sectionRequest);
 
         // then
-        final Line updatedLine = lineDao.findById(lineResponse.getId());
+        final Line updatedLine = lineDao.findById(lineResponse.getId()).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         Sections sections = getSections(updatedLine);
         final Long actual = sections.getLastUpStation(sections.getSections()).getId();
         assertThat(actual).isEqualTo(expected);
@@ -113,7 +118,8 @@ public class LineServiceTest {
         lineService.saveSection(lineResponse.getId(), sectionRequest);
 
         // then
-        final Line updatedLine = lineDao.findById(lineResponse.getId());
+        final Line updatedLine = lineDao.findById(lineResponse.getId()).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         Sections sections = getSections(updatedLine);
         final Long actual = getSections(updatedLine).getLastDownStation(sections.getSections()).getId();
         assertThat(actual).isEqualTo(expected);
@@ -172,7 +178,8 @@ public class LineServiceTest {
         lineService.saveSection(lineResponse.getId(), sectionRequest);
 
         // then
-        final Line updatedLine = lineDao.findById(lineResponse.getId());
+        final Line updatedLine = lineDao.findById(lineResponse.getId()).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         Sections sections = getSections(updatedLine);
         List<Station> stations = sections.getStations();
         assertAll(() -> assertThat(stations.contains(station1)).isTrue(),
@@ -197,7 +204,8 @@ public class LineServiceTest {
         lineService.saveSection(lineResponse.getId(), sectionRequest);
 
         // then
-        final Line updatedLine = lineDao.findById(lineResponse.getId());
+        final Line updatedLine = lineDao.findById(lineResponse.getId()).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
         Sections sections = getSections(updatedLine);
         List<Station> stations = sections.getStations();
         assertAll(() -> assertThat(stations.contains(station1)).isTrue(),
@@ -267,7 +275,8 @@ public class LineServiceTest {
         lineService.deleteSection(lineId, station2.getId());
 
         // then
-        Sections sections = getSections(lineDao.findById(lineId));
+        Sections sections = getSections(lineDao.findById(lineId).
+                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)));
         Long upStationId = sections.getLastUpStation(sections.getSections()).getId();
         Long downStationId = sections.getLastDownStation(sections.getSections()).getId();
 
