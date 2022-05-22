@@ -88,7 +88,7 @@ public class LineService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow((throwEmptyStationException()));
+                .orElseThrow((throwEmptyStationException(id)));
     }
 
     public Line findLineById(Long id) {
@@ -102,8 +102,8 @@ public class LineService {
         }
     }
 
-    private Supplier<EmptyResultException> throwEmptyStationException() {
-        return () -> new EmptyResultException("해당 역을 찾을 수 없습니다.");
+    private Supplier<EmptyResultException> throwEmptyStationException(long id) {
+        return () -> new EmptyResultException(String.format("아이디 값이 %s인 역을 찾을 수 없습니다.", id));
     }
 
     private Supplier<EmptyResultException> throwEmptyLineResultException() {

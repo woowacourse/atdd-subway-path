@@ -59,8 +59,4 @@ public class PathService {
             throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
         }
     }
-
-    private Supplier<EmptyResultException> throwEmptyStationException(Long id) {
-        return () -> new EmptyResultException(String.format("아이디 값이 %s인 역을 찾을 수 없습니다.", id));
-    }
 }
