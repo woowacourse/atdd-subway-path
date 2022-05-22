@@ -18,7 +18,6 @@ import wooteco.subway.exception.NotFoundStationException;
 public class PathService {
 
     private static final String NOT_FOUND_STATION_ERROR_MESSAGE = "해당하는 역이 존재하지 않습니다.";
-    private static final int BASIC_FARE = 1250;
 
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -43,7 +42,7 @@ public class PathService {
                 .collect(Collectors.toList());
 
         int distance = path.calculateDistance(source, target);
-        Fare fare = new Fare(BASIC_FARE);
+        Fare fare = new Fare();
 
         return new PathResponse(stations, distance,
                 fare.calculateFare(distance, new BasicFareStrategy()));

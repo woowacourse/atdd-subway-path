@@ -138,7 +138,7 @@ class PathTest {
         Path path = new Path(sections);
         List<Long> shortestPath = path.createShortestPath(성수역.getId(), 홍대.getId());
         int distance = path.calculateDistance(성수역.getId(), 홍대.getId());
-        Fare fare = new Fare(1250);
+        Fare fare = new Fare();
         int actual = fare.calculateFare(distance, new BasicFareStrategy());
 
         assertThat(actual).isEqualTo(1650);
