@@ -25,9 +25,8 @@ public class SubwayGraph {
         return (int) path.getWeight();
     }
 
-    public int calculateFare(Station source, Station target) {
-        SubwayFare fare = new SubwayFare(subwayMap.getPath(source, target));
-        return fare.calculateFare();
+    public SubwayFare getFare(Station source, Station target) {
+        return new SubwayFare(subwayMap.getPath(source, target));
     }
 
     private DijkstraShortestPath<Station, LineWeightedEdge> create(List<Section> sections) {

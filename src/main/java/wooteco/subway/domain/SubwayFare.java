@@ -20,7 +20,7 @@ public class SubwayFare {
         this.path = path;
     }
 
-    public int calculateFare() {
+    public int calculate() {
         int basicFare = calculateOverFare((int) path.getWeight());
         int extraFare = getExtraFare(path.getEdgeList());
         return basicFare + extraFare;

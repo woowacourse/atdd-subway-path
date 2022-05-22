@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwayFare;
 import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -31,8 +32,8 @@ public class PathService {
         SubwayGraph subwayGraph = new SubwayGraph(sections);
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
-        int fare = subwayGraph.calculateFare(source, target);
-        return new PathResponse(toStationResponse(route), distance, fare);
+        SubwayFare fare = subwayGraph.getFare(source, target);
+        return new PathResponse(toStationResponse(route), distance, fare.calculate());
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {

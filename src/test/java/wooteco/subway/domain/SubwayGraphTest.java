@@ -67,9 +67,9 @@ public class SubwayGraphTest {
     void extraFare() {
         SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
-        int fare = graph.calculateFare(삼성, 성수);
+        SubwayFare fare = graph.getFare(삼성, 성수);
 
-        assertThat(fare).isEqualTo(1450 + 1000);
+        assertThat(fare.calculate()).isEqualTo(1450 + 1000);
     }
 
     @Test
@@ -77,9 +77,9 @@ public class SubwayGraphTest {
     void compareExtraFare() {
         SubwayGraph graph = new SubwayGraph(List.of(성수_강남, 강남_건대));
 
-        int fare = graph.calculateFare(성수, 건대);
+        SubwayFare fare = graph.getFare(성수, 건대);
 
-        assertThat(fare).isEqualTo(1450 + 2000);
+        assertThat(fare.calculate()).isEqualTo(1450 + 2000);
     }
 
     @Test
@@ -111,7 +111,8 @@ public class SubwayGraphTest {
         SubwayGraph subwayGraph = new SubwayGraph(
                 List.of(강남_삼성, 삼성_건대, 건대_성수, 합정_왕십리, 합정_성수, 창동_당고개, 왕십리_당고개, 사당_당고개, 잠실_당고개));
 
-        assertThat(subwayGraph.calculateFare(source, target)).isEqualTo(fare);
+        SubwayFare subwayFare = subwayGraph.getFare(source, target);
+        assertThat(subwayFare.calculate()).isEqualTo(fare);
     }
 
     private static List<Arguments> getSections() {
