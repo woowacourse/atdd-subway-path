@@ -18,9 +18,9 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class LinesTest {
 
-    private final LineInfo LINE1 = new LineInfo(1L, "노선", "색상");
-    private final LineInfo LINE2 = new LineInfo(2L, "노선2", "색상");
-    private final LineInfo LINE3 = new LineInfo(3L, "노선2", "색상");
+    private final LineInfo LINE1 = new LineInfo(1L, "노선", "색상", 10);
+    private final LineInfo LINE2 = new LineInfo(2L, "노선2", "색상", 10);
+    private final LineInfo LINE3 = new LineInfo(3L, "노선2", "색상", 10);
 
     private final Station STATION1 = new Station(1L, "역1");
     private final Station STATION2 = new Station(2L, "역2");

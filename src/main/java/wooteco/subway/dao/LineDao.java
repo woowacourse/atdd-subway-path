@@ -19,7 +19,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (resultSet, rowNum) ->
             new LineEntity(resultSet.getLong("id"),
                     resultSet.getString("name"),
-                    resultSet.getString("color"));
+                    resultSet.getString("color"),
+                    resultSet.getInt("extraFare"));
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -60,7 +61,7 @@ public class LineDao {
 
         jdbcTemplate.update(sql, paramSource, keyHolder);
         Number generatedId = keyHolder.getKey();
-        return new LineEntity(generatedId.longValue(), lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(generatedId.longValue(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare());
     }
 
     public void update(LineEntity lineEntity) {

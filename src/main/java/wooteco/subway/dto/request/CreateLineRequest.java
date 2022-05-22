@@ -21,6 +21,9 @@ public class CreateLineRequest {
     @Min(value = 1, message = "구간 간 거리는 최소 1이어야합니다.")
     private int distance;
 
+    @NotNull(message = "노선의 추가요금 정보가 입력되지 않았습니다.")
+    private int extraFare;
+
     public CreateLineRequest() {
     }
 
@@ -28,12 +31,14 @@ public class CreateLineRequest {
                              String color,
                              Long upStationId,
                              Long downStationId,
-                             int distance) {
+                             int distance,
+                             int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -56,6 +61,10 @@ public class CreateLineRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -74,6 +83,10 @@ public class CreateLineRequest {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public void setExtraFare(int extraFare) {
+        this.extraFare = extraFare;
     }
 
     @Override

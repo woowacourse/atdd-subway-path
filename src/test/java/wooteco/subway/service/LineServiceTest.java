@@ -85,7 +85,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveStations("강남역", "선릉역");
 
             LineResponse actual = service.save(new CreateLineRequest(
-                    "새로운 노선명", "색깔", 1L, 2L, 10));
+                    "새로운 노선명", "색깔", 1L, 2L, 10, 10));
             LineResponse expected = new LineResponse(1L, "새로운 노선명", "색깔",
                     List.of(new StationResponse(1L, "강남역"), new StationResponse(2L, "선릉역")));
 
@@ -99,7 +99,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest duplicateLineNameRequest = new CreateLineRequest(
-                    "존재하는 노선명", "색깔", 1L, 3L, 10);
+                    "존재하는 노선명", "색깔", 1L, 3L, 10, 10);
             assertThatThrownBy(() -> service.save(duplicateLineNameRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -111,7 +111,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingUpStationRequest = new CreateLineRequest(
-                    "유효 노선명", "유효한 색", 999L, 1L, 10);
+                    "유효 노선명", "유효한 색", 999L, 1L, 10, 10);
             assertThatThrownBy(() -> service.save(noneExistingUpStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -123,7 +123,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
-                    "유효한 노선명", "유효한 색상", 1L, 999L, 10);
+                    "유효한 노선명", "유효한 색상", 1L, 999L, 10, 10);
             assertThatThrownBy(() -> service.save(noneExistingDownStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -133,7 +133,7 @@ class LineServiceTest extends ServiceTest {
             testFixtureManager.saveStations("강남역", "선릉역");
 
             CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
-                    "유효한 노선명", "색깔", 1L, 2L, 0);
+                    "유효한 노선명", "색깔", 1L, 2L, 0, 10);
             assertThatThrownBy(() -> service.save(zeroDistanceRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }

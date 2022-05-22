@@ -18,7 +18,7 @@ public class TestFixtureManager {
     }
 
     public void saveLine(String name, String color) {
-        String sql = "INSERT INTO line(name, color) VALUES (?, ?)";
+        String sql = "INSERT INTO line(name, color, extraFare) VALUES (?, ?, 10)";
         jdbcTemplate.update(sql, name, color);
     }
 
