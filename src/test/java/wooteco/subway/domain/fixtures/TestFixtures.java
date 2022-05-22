@@ -19,13 +19,13 @@ public class TestFixtures {
 
     public static final Line 이호선 = new Line(1L, "2호선", "green");
     public static final Line 분당선 = new Line(2L, "분당선", "yellow", 1000);
+    public static final Line 신분당선 = new Line(2L, "분당선", "yellow", 2000);
     public static final Line 사호선 = new Line(3L, "4호선", "blue");
 
     public static final Section 강남_삼성 = new Section(10L, 이호선, 강남, 삼성, 10);
     public static final Section 삼성_건대 = new Section(20L, 이호선, 삼성, 건대, 15);
     public static final Section 건대_성수 = new Section(30L, 이호선, 건대, 성수, 20);
     public static final Section 합정_왕십리 = new Section(30L, 이호선, 합정, 왕십리, 50);
-
 
     public static final Section 왕십리_합정 = new Section(40L, 분당선, 왕십리, 합정, 50);
     public static final Section 합정_성수 = new Section(50L, 분당선, 합정, 성수, 10);
@@ -35,4 +35,6 @@ public class TestFixtures {
     public static final Section 왕십리_당고개 = new Section(80L, 사호선, 왕십리, 당고개, 64);
     public static final Section 사당_당고개 = new Section(90L, 사호선, 사당, 당고개, 178);
     public static final Section 잠실_당고개 = new Section(100L, 사호선, 잠실, 당고개, 200);
+
+    public static final Section 강남_건대 = new Section(110L, 신분당선, 강남, 건대, 10);
 }

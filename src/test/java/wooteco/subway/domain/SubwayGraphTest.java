@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.domain.fixtures.TestFixtures.강남;
+import static wooteco.subway.domain.fixtures.TestFixtures.강남_건대;
 import static wooteco.subway.domain.fixtures.TestFixtures.강남_삼성;
 import static wooteco.subway.domain.fixtures.TestFixtures.건대;
 import static wooteco.subway.domain.fixtures.TestFixtures.건대_성수;
@@ -68,7 +69,17 @@ public class SubwayGraphTest {
 
         int fare = graph.calculateFare(삼성, 성수);
 
-        assertThat(fare).isEqualTo(2450);
+        assertThat(fare).isEqualTo(1450 + 1000);
+    }
+
+    @Test
+    @DisplayName("추가요금이 있는 노선중 가장 높은 노선의 금액으로 기본 금액에 추가한다.")
+    void compareExtraFare() {
+        SubwayGraph graph = new SubwayGraph(List.of(성수_강남, 강남_건대));
+
+        int fare = graph.calculateFare(성수, 건대);
+
+        assertThat(fare).isEqualTo(1450 + 2000);
     }
 
     @Test
