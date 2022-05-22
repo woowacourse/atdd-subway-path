@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public enum AgeDiscountPolicy {
+public enum DiscountTypeByAge {
     BABY(age -> age >= 0 && age <= 5, discountFare -> 0),
     CHILDREN(age -> age >= 6 && age <= 12, discountFare -> (int) ((discountFare - 350) * 0.5)),
     TEENAGER(age -> age >= 13 && age <= 18, discountFare -> (int) ((discountFare - 350) * 0.2)),
@@ -13,12 +13,12 @@ public enum AgeDiscountPolicy {
     private final Predicate<Integer> agePredicates;
     private final Function<Integer, Integer> discountPolicy;
 
-    AgeDiscountPolicy(Predicate<Integer> agePredicates, Function<Integer, Integer> discountPolicy) {
+    DiscountTypeByAge(Predicate<Integer> agePredicates, Function<Integer, Integer> discountPolicy) {
         this.agePredicates = agePredicates;
         this.discountPolicy = discountPolicy;
     }
 
-    public static AgeDiscountPolicy from(int age) {
+    public static DiscountTypeByAge from(int age) {
         return Arrays.stream(values())
                 .filter(it -> it.agePredicates.test(age))
                 .findFirst()

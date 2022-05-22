@@ -34,7 +34,7 @@ public class Fare {
     }
 
     private static int discountForYouth(int fare, int age) {
-        return AgeDiscountPolicy.from(age).discountFare(fare);
+        return DiscountTypeByAge.from(age).discountFare(fare);
     }
 
     public int getValue() {
