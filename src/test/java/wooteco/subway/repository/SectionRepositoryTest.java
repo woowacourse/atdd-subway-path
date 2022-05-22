@@ -161,7 +161,7 @@ class SectionRepositoryTest {
 	@Test
 	void removeFailBySection() {
 		Section section = new Section(upStation, downStation, 10);
-		lineRepository.save(new Line("신분당선", "red", List.of(section)));
+		lineRepository.save(new Line(0L, "신분당선", "red", List.of(section)));
 		assertAll(
 			() -> assertThat(
 				sectionRepository.existByStation(upStation.getId())).isTrue(),

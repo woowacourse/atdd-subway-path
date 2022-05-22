@@ -1,9 +1,9 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -13,39 +13,60 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Lines {
 
-	private final List<Line> values;
+	private final Map<Section, Line> values;
 
-	public Lines(List<Line> values) {
-		this.values = new ArrayList<>(values);
+	public Lines(List<Line> lines) {
+		values = new HashMap<>();
+		for (Line line : lines) {
+			line.getSections()
+				.forEach(section -> values.put(section, line));
+		}
 	}
 
 	public Path findPath(Station source, Station target) {
-		List<Section> sections = getSections();
-		GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(initGraph(sections))
+		GraphPath<Station, SectionEdge> path = new DijkstraShortestPath<>(initGraph(values.keySet()))
 			.getPath(source, target);
-		return new Path(path.getVertexList(), path.getWeight());
+		return new Path(
+			path.getVertexList(),
+			path.getWeight(),
+			Fare.of((int) path.getWeight(), getMaxExtraFare(path))
+		);
 	}
 
-	private List<Section> getSections() {
-		return values.stream()
-			.map(Line::getSections)
-			.flatMap(Collection::stream)
-			.collect(Collectors.toList());
-	}
-
-	private Graph<Station, DefaultWeightedEdge> initGraph(List<Section> sections) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph
-			= new WeightedMultigraph<>(DefaultWeightedEdge.class);
+	private Graph<Station, SectionEdge> initGraph(Set<Section> sections) {
+		WeightedMultigraph<Station, SectionEdge> graph
+			= new WeightedMultigraph<>(SectionEdge.class);
 		sections.forEach(section -> addSection(graph, section));
 		return graph;
 	}
 
-	private void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+	private void addSection(WeightedMultigraph<Station, SectionEdge> graph, Section section) {
 		graph.addVertex(section.getUpStation());
 		graph.addVertex(section.getDownStation());
-		graph.setEdgeWeight(
-			graph.addEdge(section.getUpStation(), section.getDownStation()),
-			section.getDistance()
-		);
+		graph.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section));
+	}
+
+	private int getMaxExtraFare(GraphPath<Station, SectionEdge> path) {
+		return path.getEdgeList().stream()
+			.mapToInt(edge -> values.get(edge.getValue()).getExtraFare())
+			.max()
+			.orElseThrow();
+	}
+
+	private static class SectionEdge extends DefaultWeightedEdge {
+		private final Section value;
+
+		private SectionEdge(Section section) {
+			this.value = section;
+		}
+
+		@Override
+		protected double getWeight() {
+			return value.getDistance();
+		}
+
+		private Section getValue() {
+			return value;
+		}
 	}
 }

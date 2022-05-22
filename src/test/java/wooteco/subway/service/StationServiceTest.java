@@ -74,7 +74,7 @@ public class StationServiceTest {
 		Station downStation = stationService.create("역삼역");
 		Section section = new Section(upStation, downStation, 10);
 
-		lineService.create("2호선", "red", section);
+		lineService.create("2호선", "red", section, 0);
 
 		assertAll(
 			() -> assertThatThrownBy(() -> stationService.remove(upStation.getId()))

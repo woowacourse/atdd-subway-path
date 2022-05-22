@@ -87,17 +87,31 @@ class LinesTest {
 			.containsExactly("내방역", "고속터미널역", "서초역", "사평역");
 	}
 
-	@DisplayName("최단 경로 거리를 반환한다.")
+	@DisplayName("7호선(700원) 환승 차액을 고려한 금액을 계산한다.")
 	@Test
-	void pathDistance() {
+	void calculateFare() {
 		// given
 		Station source = new Station("내방역");
-		Station target = new Station("논현역");
+		Station target = new Station("사평역");
 
 		// when
 		Path path = lines.findPath(source, target);
 
 		// then
-		assertThat(path.getDistance()).isEqualTo(30);
+		assertThat(path.getFare()).isEqualTo(2250);
+	}
+
+	@DisplayName("3호선(300원) 환승 차액을 고려한 금액을 계산한다.")
+	@Test
+	void calculateFare9() {
+		// given
+		Station source = new Station("신사역");
+		Station target = new Station("서초역");
+
+		// when
+		Path path = lines.findPath(source, target);
+
+		// then
+		assertThat(path.getFare()).isEqualTo(2050);
 	}
 }

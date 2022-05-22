@@ -24,9 +24,9 @@ public class LineService {
 	}
 
 	@Transactional
-	public Line create(String name, String color, Section section) {
+	public Line create(String name, String color, Section section, int extraFare) {
 		validateNameNotDuplicated(name);
-		Long lineId = lineRepository.save(new Line(name, color, List.of(section)));
+		Long lineId = lineRepository.save(new Line(name, color, extraFare, List.of(section)));
 		return lineRepository.findById(lineId);
 	}
 

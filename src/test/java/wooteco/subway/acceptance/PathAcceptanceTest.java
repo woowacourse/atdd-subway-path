@@ -43,7 +43,7 @@ public class PathAcceptanceTest {
 		ExtractableResponse<Response> lineResponse = RestUtil.post(new LineRequest(
 			"신분당선", "bg-red-600",
 			stations.get("강남역").getId(),
-			stations.get("역삼역").getId(), 11)
+			stations.get("역삼역").getId(), 11, 1000)
 		);
 		Long lineId = RestUtil.getIdFromLine(lineResponse);
 		RestUtil.post(lineId,
@@ -55,7 +55,7 @@ public class PathAcceptanceTest {
 		ExtractableResponse<Response> lineResponse2 = RestUtil.post( new LineRequest(
 			"2호선", "bg-red-600",
 			stations.get("교대역").getId(),
-			stations.get("역삼역").getId(), 11)
+			stations.get("역삼역").getId(), 11, 0)
 		);
 		Long lineId2 = RestUtil.getIdFromLine(lineResponse2);
 		RestUtil.post(lineId2,
@@ -97,7 +97,7 @@ public class PathAcceptanceTest {
 				.map(StationResponse::getName)
 				.containsExactly("강남역", "역삼역", "잠실역"),
 			() -> assertThat(pathResponse.getDistance()).isEqualTo(21),
-			() -> assertThat(pathResponse.getFare()).isEqualTo(1550)
+			() -> assertThat(pathResponse.getFare()).isEqualTo(2550)
 		);
 	}
 

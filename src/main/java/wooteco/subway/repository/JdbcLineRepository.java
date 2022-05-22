@@ -29,10 +29,11 @@ public class JdbcLineRepository implements LineRepository {
 
 	@Override
 	public List<Line> findAll() {
-		return lineDao.findAll().stream()
+		List<Line> collect = lineDao.findAll().stream()
 			.map(LineTable::toEntity)
 			.map(line -> line.createWithSection(sectionRepository.findByLineId(line.getId())))
 			.collect(Collectors.toList());
+		return collect;
 	}
 
 	@Override

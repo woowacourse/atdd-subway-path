@@ -39,7 +39,7 @@ public class SectionAcceptanceTest {
 			"신분당선", "bg-red-600",
 			RestUtil.getIdFromStation(stationResponse1),
 			RestUtil.getIdFromStation(stationResponse2),
-			10);
+			10, 0);
 		ExtractableResponse<Response> lineResponse = RestUtil.post(lineRequest);
 
 		upStationId = RestUtil.getIdFromStation(stationResponse1);

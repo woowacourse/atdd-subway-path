@@ -26,14 +26,6 @@ class PathServiceTest {
 	private LinesFixture linesFixture;
 	private Map<String, Station> stations;
 
-	//            신사 (3호선)
-	//            |10|
-	// 신반포 (9호선) 잠원
-	//       \10\ |10|
-	// 내방 >10> 고속터미널 >10> 반포 >10> 논현 (7호선)
-	//            |10| \14\
-	//            서초 >3> 사평 (새호선)
-
 	@BeforeEach
 	void init() {
 		stations = linesFixture.initAndReturnStationMap();
@@ -106,21 +98,7 @@ class PathServiceTest {
 			.containsExactly("내방역", "고속터미널역", "서초역", "사평역");
 	}
 
-	@DisplayName("최단 경로 거리를 반환한다.")
-	@Test
-	void pathDistance() {
-		// given
-		Station source = stations.get("내방역");
-		Station target = stations.get("논현역");
-
-		// when
-		Path path = pathService.findPath(source, target);
-
-		// then
-		assertThat(path.getDistance()).isEqualTo(30);
-	}
-
-	@DisplayName("최단 경로의 요금을 계산한다.")
+	@DisplayName("700원 추가 요금 노선을 지나 최단 경로의 요금을 계산한다.")
 	@Test
 	void fare() {
 		// given
@@ -131,6 +109,7 @@ class PathServiceTest {
 		Path path = pathService.findPath(source, target);
 
 		// then
-		assertThat(path.calculateFare()).isEqualTo(1950);
+		System.out.println(path.getStations());
+		assertThat(path.getFare()).isEqualTo(2650);
 	}
 }

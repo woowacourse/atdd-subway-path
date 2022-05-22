@@ -40,7 +40,9 @@ class LineRepositoryTest {
 	@DisplayName("지하철 노선을 저장한다.")
 	@Test
 	void save() {
-		Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
+		Long lineId = lineRepository.save(
+			new Line(0L, "신분당선", "bg-red-600")
+		);
 		assertThat(lineId).isGreaterThan(0);
 	}
 
@@ -73,7 +75,9 @@ class LineRepositoryTest {
 		Section section = new Section(
 			new Station(upStationId, "강남역"), new Station(downStationId, "역삼역"),
 			10);
-		Long lineId = lineRepository.save(new Line("신분당선", "bg-red-600", List.of(section)));
+		Long lineId = lineRepository.save(
+			new Line(0L, "신분당선", "bg-red-600", List.of(section))
+		);
 
 		Line foundLine = lineRepository.findById(lineId);
 		assertThat(foundLine.getSections())

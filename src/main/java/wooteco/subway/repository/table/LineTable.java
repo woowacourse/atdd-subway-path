@@ -21,7 +21,7 @@ public class LineTable {
 	}
 
 	public Line toEntity() {
-		return new Line(id, name, color);
+		return new Line(id, name, color, extraFare);
 	}
 
 	public Long getId() {

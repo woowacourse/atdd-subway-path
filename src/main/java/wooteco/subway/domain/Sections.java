@@ -156,4 +156,8 @@ public class Sections {
 				each -> each.hasSameUpStation(section)
 					&& each.hasSameDownStation(section));
 	}
+
+	public boolean contains(Section section) {
+		return values.contains(section);
+	}
 }
