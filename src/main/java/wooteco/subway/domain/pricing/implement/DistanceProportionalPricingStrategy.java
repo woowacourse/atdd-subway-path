@@ -7,6 +7,14 @@ import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
+    private static final DistanceProportionalPricingStrategy strategy = new DistanceProportionalPricingStrategy();
+
+    private DistanceProportionalPricingStrategy() {}
+
+    public static DistanceProportionalPricingStrategy of() {
+        return strategy;
+    }
+
     @Override
     public int calculateFee(List<Section> sections) {
         int distance = calculateDistance(sections);

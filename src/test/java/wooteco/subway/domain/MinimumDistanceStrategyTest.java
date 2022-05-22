@@ -56,7 +56,7 @@ class MinimumDistanceStrategyTest {
     @CsvSource(value = {"1, 2, 5", "1, 3, 10", "1, 4, 9", "2, 4, 4", "3, 5, 7"})
     void calculateMinimumDistance(Long fromId, Long toId, int distance) {
         // given
-        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
+        PathFindStrategy strategy = MinimumDistanceFindStrategy.of();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -73,7 +73,7 @@ class MinimumDistanceStrategyTest {
     @MethodSource("provideStationsInPath")
     void getStationsInPath(Long fromId, Long toId, List<Station> expectedStations) {
         // given
-        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
+        PathFindStrategy strategy = MinimumDistanceFindStrategy.of();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -99,7 +99,7 @@ class MinimumDistanceStrategyTest {
     @MethodSource("provideSectionsInPath")
     void getSectionsInPath(Long fromId, Long toId, List<Section> expectedSections) {
         // given
-        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
+        PathFindStrategy strategy = MinimumDistanceFindStrategy.of();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -124,7 +124,7 @@ class MinimumDistanceStrategyTest {
     @Test
     void getPath_Fail() {
         // given
-        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
+        PathFindStrategy strategy = MinimumDistanceFindStrategy.of();
         Station from = stationMap.get(1L);
         Station to = stationMap.get(7L);
 

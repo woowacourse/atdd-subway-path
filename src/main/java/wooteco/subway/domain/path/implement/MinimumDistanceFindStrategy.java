@@ -15,6 +15,13 @@ import wooteco.subway.domain.path.PathFindStrategy;
 public class MinimumDistanceFindStrategy implements PathFindStrategy {
 
     private static final String UNCONNECTED_STATION_EXCEPTION = "연결되지 않은 두 역입니다.";
+    private static final MinimumDistanceFindStrategy strategy = new MinimumDistanceFindStrategy();
+
+    private MinimumDistanceFindStrategy() {}
+
+    public static MinimumDistanceFindStrategy of() {
+        return strategy;
+    }
 
     @Override
     public Path findPath(List<Station> stations, List<Section> sections, Station from, Station to) {

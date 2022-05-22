@@ -18,7 +18,7 @@ public class DistanceProportionalPricingStrategyTest {
     void calculateScore2(int distance, int expected) {
         // given
         List<Section> sections = List.of(new Section(1L, 1L, 1L, 2L, distance));
-        PricingStrategy strategy = new DistanceProportionalPricingStrategy();
+        PricingStrategy strategy = DistanceProportionalPricingStrategy.of();
 
         // when
         int result = strategy.calculateFee(sections);
