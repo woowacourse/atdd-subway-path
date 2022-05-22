@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.FeeException;
 
 public class Fare {
     private final static Fare DEFAULT_FARE = new Fare(1250L);
@@ -22,7 +22,7 @@ public class Fare {
 
     public static Fare from(int distance) {
         if (distance <= MINIMUM_DISTANCE) {
-            throw new FeeException(ExceptionMessage.UNDER_MIN_DISTANCE.getContent());
+            throw new DomainException(ExceptionMessage.UNDER_MIN_DISTANCE.getContent());
         }
         if (distance <= MAXIMUM_DEFAULT_DISTANCE) {
             return DEFAULT_FARE;

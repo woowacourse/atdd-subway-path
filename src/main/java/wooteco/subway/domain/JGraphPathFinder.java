@@ -6,8 +6,8 @@ import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.PathException;
 
 public class JGraphPathFinder implements PathFinder {
 
@@ -47,7 +47,7 @@ public class JGraphPathFinder implements PathFinder {
         try {
             return (int) dijkstraShortestPath.getPath(from, to).getWeight();
         } catch (IllegalArgumentException | NullPointerException exception) {
-            throw new PathException(ExceptionMessage.NOT_FOUND_PATH.getContent());
+            throw new DomainException(ExceptionMessage.NOT_FOUND_PATH.getContent());
         }
     }
 
@@ -57,7 +57,7 @@ public class JGraphPathFinder implements PathFinder {
         try {
             return dijkstraShortestPath.getPath(from, to).getVertexList();
         } catch (IllegalArgumentException | NullPointerException exception) {
-            throw new PathException(ExceptionMessage.NOT_FOUND_PATH.getContent());
+            throw new DomainException(ExceptionMessage.NOT_FOUND_PATH.getContent());
         }
     }
 }

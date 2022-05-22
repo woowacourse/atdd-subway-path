@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.exception.domain.FeeException;
+import wooteco.subway.exception.DomainException;
 
 public class FareTest {
 
@@ -44,6 +44,6 @@ public class FareTest {
     void fee_underMinimum() {
         // given
         assertThatThrownBy(() -> Fare.from(0))
-                .isInstanceOf(FeeException.class);
+                .isInstanceOf(DomainException.class);
     }
 }

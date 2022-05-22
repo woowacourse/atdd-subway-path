@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.exception.domain.PathException;
+import wooteco.subway.exception.DomainException;
 
 class PathFinderTest {
 
@@ -53,7 +53,7 @@ class PathFinderTest {
 
         // then
         assertThatThrownBy(() -> path.calculateDistance(station1, station4))
-                .isInstanceOf(PathException.class);
+                .isInstanceOf(DomainException.class);
     }
 
     @Test
@@ -64,7 +64,7 @@ class PathFinderTest {
 
         // then
         assertThatThrownBy(() -> path.calculateDistance(station1, station4))
-                .isInstanceOf(PathException.class);
+                .isInstanceOf(DomainException.class);
     }
 
     @Test
