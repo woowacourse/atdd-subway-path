@@ -55,7 +55,7 @@ class SectionServiceTest {
         stationResponse5 = stationService.createStation(new StationRequest("잠실역"));
 
         lineResponse = lineService.createLine(
-                new LineRequest("2호선", "bg-green-600", stationResponse2.getId(), stationResponse4.getId(), 10));
+                new LineRequest("2호선", "bg-green-600", 500, stationResponse2.getId(), stationResponse4.getId(), 10));
     }
 
     @DisplayName("노선에 새로운 구간을 상행선 방향으로 추가")

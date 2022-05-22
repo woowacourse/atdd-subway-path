@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.section.Section;
@@ -54,7 +55,8 @@ class SectionDaoTest {
         Station newStation5 = new Station("잠실역");
         savedStation5 = stationDao.save(newStation5);
 
-        Line newLine = new Line("2호선", "bg-red-600", new Section(newStation1, newStation2, new Distance(10)));
+        Line newLine = new Line("2호선", "bg-red-600", new Fare(500),
+                new Section(newStation1, newStation2, new Distance(10)));
         savedLineId = lineDao.save(newLine).getId();
     }
 

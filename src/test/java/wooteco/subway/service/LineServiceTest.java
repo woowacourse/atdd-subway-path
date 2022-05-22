@@ -53,11 +53,12 @@ class LineServiceTest {
         // given
         String name = "2호선";
         String color = "bg-green-600";
+        Integer extraFare = 500;
         Long upStationId = createdStation1.getId();
         Long downStationId = createdStation2.getId();
         Integer distance = 10;
 
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStationId, downStationId, distance);
 
         // when
         LineResponse actual = lineService.createLine(lineRequest);
@@ -75,11 +76,12 @@ class LineServiceTest {
         // given
         String name = "2호선";
         String color = "bg-green-600";
+        Integer extraFare = 500;
         Long upStationId = createdStation1.getId();
         Long downStationId = createdStation2.getId();
         Integer distance = 10;
 
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStationId, downStationId, distance);
         lineService.createLine(lineRequest);
 
         // when & then
@@ -95,9 +97,10 @@ class LineServiceTest {
         String lineColor1 = "bg-blue-600";
         String lineName2 = "2호선";
         String lineColor2 = "bg-green-600";
-        LineRequest lineRequest1 = new LineRequest(lineName1, lineColor1, createdStation1.getId(),
+        Integer extraFare = 500;
+        LineRequest lineRequest1 = new LineRequest(lineName1, lineColor1, extraFare, createdStation1.getId(),
                 createdStation2.getId(), 10);
-        LineRequest lineRequest2 = new LineRequest(lineName2, lineColor2, createdStation1.getId(),
+        LineRequest lineRequest2 = new LineRequest(lineName2, lineColor2, extraFare, createdStation1.getId(),
                 createdStation2.getId(), 10);
 
         lineService.createLine(lineRequest1);
@@ -130,7 +133,8 @@ class LineServiceTest {
         // given
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(),
+        Integer extraFare = 500;
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
                 createdStation2.getId(), 10);
 
         LineResponse createdLine = lineService.createLine(lineRequest);
@@ -152,7 +156,9 @@ class LineServiceTest {
         // given
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(), createdStation2.getId(),
+        Integer extraFare = 500;
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
+                createdStation2.getId(),
                 10);
         LineResponse createdLine = lineService.createLine(lineRequest);
 
@@ -189,7 +195,9 @@ class LineServiceTest {
         // given
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, createdStation1.getId(), createdStation2.getId(),
+        Integer extraFare = 500;
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
+                createdStation2.getId(),
                 10);
         LineResponse createdLine = lineService.createLine(lineRequest);
 

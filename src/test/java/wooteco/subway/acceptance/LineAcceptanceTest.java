@@ -35,12 +35,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         String name = "2호선";
         String color = "bg-green-600";
+        Integer extraFare = 600;
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
 
         // when
-        ExtractableResponse<Response> response = requestCreateLine(name, color, upStationId, downStationId, distance);
+        ExtractableResponse<Response> response = requestCreateLine(name, color, extraFare, upStationId, downStationId,
+                distance);
 
         // then
         assertAll(
@@ -59,13 +61,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String name2 = "2호선";
         String color2 = "bg-red-600";
 
+        Integer extraFare = 600;
+
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
 
-        ExtractableResponse<Response> createResponse1 = requestCreateLine(name1, color1, upStationId, downStationId,
+        ExtractableResponse<Response> createResponse1 = requestCreateLine(name1, color1, extraFare, upStationId,
+                downStationId,
                 distance);
-        ExtractableResponse<Response> createResponse2 = requestCreateLine(name2, color2, upStationId, downStationId,
+        ExtractableResponse<Response> createResponse2 = requestCreateLine(name2, color2, extraFare, upStationId,
+                downStationId,
                 distance);
 
         // when
@@ -90,11 +96,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         String name = "1호선";
         String color = "bg-green-600";
+        Integer extraFare = 600;
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
 
-        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, upStationId, downStationId,
+        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, extraFare, upStationId,
+                downStationId,
                 distance);
 
         Long createId = createResponse.jsonPath().getLong("id");
@@ -120,11 +128,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         String name = "1호선";
         String color = "bg-green-600";
+        Integer extraFare = 600;
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
 
-        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, upStationId, downStationId,
+        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, extraFare, upStationId,
+                downStationId,
                 distance);
         Long createdId = getIdFromResponse(createResponse);
 
@@ -150,10 +160,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         String name = "1호선";
         String color = "bg-green-600";
+        Integer extraFare = 600;
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
-        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, upStationId, downStationId,
+        ExtractableResponse<Response> createResponse = requestCreateLine(name, color, extraFare, upStationId,
+                downStationId,
                 distance);
 
         Long createdId = getIdFromResponse(createResponse);
@@ -171,14 +183,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         String name = "1호선";
         String color = "bg-green-600";
+        Integer extraFare = 600;
         Long upStationId = createdStationId1;
         Long downStationId = createdStationId2;
         Integer distance = 10;
 
-        requestCreateLine(name, color, upStationId, downStationId, distance);
+        requestCreateLine(name, color, extraFare, upStationId, downStationId, distance);
 
         // when
-        ExtractableResponse<Response> response = requestCreateLine(name, color, upStationId, downStationId, distance);
+        ExtractableResponse<Response> response = requestCreateLine(name, color, extraFare, upStationId, downStationId,
+                distance);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -214,12 +228,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    private ExtractableResponse<Response> requestCreateLine(String name, String color, Long upStationId,
+    private ExtractableResponse<Response> requestCreateLine(String name, String color, Integer extraFare,
+                                                            Long upStationId,
                                                             Long downStationId,
                                                             Integer distance) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
+        params.put("extraFare", extraFare.toString());
         params.put("upStationId", upStationId.toString());
         params.put("downStationId", downStationId.toString());
         params.put("distance", distance.toString());

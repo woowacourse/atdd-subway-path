@@ -29,7 +29,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         createdStationId3 = AcceptanceUtil.createStation("종합운동장역");
         createdStationId4 = AcceptanceUtil.createStation("잠실새내역");
         createdStationId5 = AcceptanceUtil.createStation("잠실역");
-        createdLineId = AcceptanceUtil.createLine("2호선", "bg-red-600", createdStationId2, createdStationId4,
+        createdLineId = AcceptanceUtil.createLine("2호선", "bg-red-600", 600, createdStationId2, createdStationId4,
                 10);
     }
 

@@ -46,7 +46,8 @@ class PathServiceTest {
     void getPath(int distance, int expectedFare) {
         // given
         lineService.createLine(
-                new LineRequest("2호선", "bg-green-600", createdStation1.getId(), createdStation2.getId(), distance));
+                new LineRequest("2호선", "bg-green-600", 500, createdStation1.getId(), createdStation2.getId(),
+                        distance));
 
         // when
         PathResponse pathResponse = pathService.getPath(createdStation1.getId(), createdStation2.getId());

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.section.Section;
@@ -50,14 +51,14 @@ class LineDaoTest {
         Station savedStation4 = stationDao.save(station4);
 
         savedLine = lineService.createLine(
-                new LineRequest("1호선", "bg-blue-600", savedStation1.getId(), savedStation2.getId(), 10));
+                new LineRequest("1호선", "bg-blue-600", 600, savedStation1.getId(), savedStation2.getId(), 10));
         lineService.createLine(
-                new LineRequest("2호선", "bg-green-600", savedStation3.getId(), savedStation4.getId(), 10));
+                new LineRequest("2호선", "bg-green-600", 500, savedStation3.getId(), savedStation4.getId(), 10));
     }
 
     @Test
     void save() {
-        Line line = new Line("신분당선", "bg-red-600", new Section(station1, station2, new Distance(10)));
+        Line line = new Line("신분당선", "bg-red-600", new Fare(400), new Section(station1, station2, new Distance(10)));
         Line savedLine = lineDao.save(line);
 
         assertThat(savedLine).isNotNull();
@@ -95,7 +96,8 @@ class LineDaoTest {
 
         String newLineName = "새로운 노선";
         String newLineColor = "bg-red-500";
-        Line newLine = new Line(newLineName, newLineColor, new Section(station2, station4, new Distance(10)));
+        Line newLine = new Line(newLineName, newLineColor, new Fare(600),
+                new Section(station2, station4, new Distance(10)));
         lineDao.update(targetLineId, newLine);
 
         assertAll(

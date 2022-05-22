@@ -17,10 +17,12 @@ public class AcceptanceUtil {
         return Long.parseLong(response.header("Location").split("stations/")[1]);
     }
 
-    public static Long createLine(String name, String color, Long upStationId, Long downStationId, Integer distance) {
+    public static Long createLine(String name, String color, Integer extraFare, Long upStationId, Long downStationId,
+                                  Integer distance) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
+        params.put("extraFare", extraFare.toString());
         params.put("upStationId", upStationId.toString());
         params.put("downStationId", downStationId.toString());
         params.put("distance", distance.toString());

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.section.Section;
@@ -34,16 +35,23 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
-    public LineResponse createLine(LineRequest line) {
-        Station upStation = stationDao.findById(line.getUpStationId()).orElseThrow(NotFoundStationException::new);
-        Station downStation = stationDao.findById(line.getDownStationId()).orElseThrow(NotFoundStationException::new);
-        Section newSection = new Section(upStation, downStation, new Distance(line.getDistance()));
-        Line newLine = new Line(line.getName(), line.getColor(), newSection);
+    public LineResponse createLine(LineRequest lineRequest) {
+        Section newSection = getSectionFromLineRequest(lineRequest);
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), new Fare(lineRequest.getExtraFare()),
+                newSection);
         validateDuplicateName(newLine);
 
         Line createdLine = lineDao.save(newLine);
         sectionDao.save(createdLine.getId(), newSection);
         return LineResponse.from(createdLine, getStationResponsesByLineId(createdLine.getId()));
+    }
+
+    private Section getSectionFromLineRequest(LineRequest lineRequest) {
+        Station upStation = stationDao.findById(lineRequest.getUpStationId())
+                .orElseThrow(NotFoundStationException::new);
+        Station downStation = stationDao.findById(lineRequest.getDownStationId())
+                .orElseThrow(NotFoundStationException::new);
+        return new Section(upStation, downStation, new Distance(lineRequest.getDistance()));
     }
 
     private void validateDuplicateName(Line line) {
@@ -69,7 +77,7 @@ public class LineService {
 
     public void update(Long id, LineUpdateRequest line) {
         Line foundLine = lineDao.findById(id).orElseThrow(NotFoundLineException::new);
-        Line newLine = new Line(id, line.getName(), line.getColor(), foundLine.getSections());
+        Line newLine = new Line(id, line.getName(), line.getColor(), foundLine.getExtraFare(), foundLine.getSections());
         validateExistById(id);
         lineDao.update(id, newLine);
     }

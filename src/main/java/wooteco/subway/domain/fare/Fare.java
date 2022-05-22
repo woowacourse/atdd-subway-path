@@ -1,7 +1,9 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain.fare;
 
 import java.util.Objects;
+import wooteco.subway.domain.fare.discountstrategy.DiscountStrategyFactory;
 import wooteco.subway.domain.section.Distance;
+import wooteco.subway.exception.NegativeFareException;
 
 public class Fare {
 
@@ -13,10 +15,11 @@ public class Fare {
     public static final int FIRST_OVER_FARE_UNIT_DISTANCE = 5;
     public static final int SECOND_OVER_FARE_UNIT_DISTANCE = 8;
 
-    private final int fare;
+    private final int value;
 
-    private Fare(int fare) {
-        this.fare = fare;
+    public Fare(int value) {
+        validatePositiveFare(value);
+        this.value = value;
     }
 
     public static Fare from(Distance distance) {
@@ -41,8 +44,28 @@ public class Fare {
         return numberOfImposition * OVER_FARE_AMOUNT_PER_UNIT_DISTANCE;
     }
 
+    private void validatePositiveFare(int fare) {
+        if (fare < 0) {
+            throw new NegativeFareException();
+        }
+    }
+
+    public Fare subtract(int operand) {
+        return new Fare(value - operand);
+    }
+
+    public Fare multiply(double rate) {
+        int multiplied = (int) (value * rate);
+        return new Fare(multiplied);
+    }
+
+    public Fare discountWithAge(Age age) {
+        DiscountStrategyFactory discountStrategyFactory = new DiscountStrategyFactory();
+        return discountStrategyFactory.getDiscountStrategy(age).discount(this);
+    }
+
     public int getValue() {
-        return fare;
+        return value;
     }
 
     @Override
@@ -54,18 +77,18 @@ public class Fare {
             return false;
         }
         Fare fare1 = (Fare) o;
-        return fare == fare1.fare;
+        return value == fare1.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fare);
+        return Objects.hash(value);
     }
 
     @Override
     public String toString() {
         return "Fare{" +
-                "fare=" + fare +
+                "fare=" + value +
                 '}';
     }
 }

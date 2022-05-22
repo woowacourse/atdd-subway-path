@@ -21,7 +21,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void init() {
         createdStationId1 = AcceptanceUtil.createStation("강남역");
         createdStationId2 = AcceptanceUtil.createStation("잠실역");
-        AcceptanceUtil.createLine("2호선", "bg-red-600", createdStationId1, createdStationId2, 10);
+        AcceptanceUtil.createLine("2호선", "bg-red-600", 600, createdStationId1, createdStationId2, 10);
     }
 
     @DisplayName("출발역부터 도착역까지의 최단 경로와 요금 및 거리를 조회한다.")
