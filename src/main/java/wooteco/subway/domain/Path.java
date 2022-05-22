@@ -15,7 +15,6 @@ public class Path {
     private static final String NO_REACHABLE = "출발지에서 도착지로 갈 수 없습니다.";
 
     private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
     private final Stations stations;
 
     public Path(Stations stations, Sections sections) {
