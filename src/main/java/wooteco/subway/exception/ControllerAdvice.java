@@ -31,13 +31,13 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> NotFoundExceptionHandler(NotFoundException e) {
+    public ResponseEntity<ErrorResponse> notFoundExceptionHandler(NotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> ExceptionHandler(Exception e) {
+    public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.internalServerError().body(new ErrorResponse("[ERROR] 예상치 못한 에러가 발생했습니다."));
     }
