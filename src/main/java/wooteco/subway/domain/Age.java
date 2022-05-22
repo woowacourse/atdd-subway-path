@@ -20,11 +20,14 @@ public enum Age {
         this.fareCalculator = fareCalculator;
     }
 
-    public static int discountFare(int age, int fare) {
+    public static Age findAge(int age) {
         return Arrays.stream(values())
                 .filter(ageGroup -> ageGroup.ageDiscriminator.test(age))
-                .map(ageGroup -> ageGroup.fareCalculator.apply(fare))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("올바른 연령 값이 아닙니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 연령을 찾을 수 없습니다."));
+    }
+
+    public int discountFare(int fare) {
+        return this.fareCalculator.apply(fare);
     }
 }

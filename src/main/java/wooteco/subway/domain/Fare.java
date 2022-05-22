@@ -23,8 +23,9 @@ public enum Fare {
         this.additionalFare = additionalFare;
     }
 
-    public static int calculate(final Sections sections) {
-        return getMaxExtraFare(sections.getLines()) + calculate(sections.getTotalDistance());
+    public static int calculate(final Sections sections, Age age) {
+        final int fare = getMaxExtraFare(sections.getLines()) + calculateByArea(sections.getTotalDistance());
+        return age.discountFare(fare);
     }
 
     private static int getMaxExtraFare(final List<Line> lines) {
@@ -34,7 +35,7 @@ public enum Fare {
                 .orElse(0);
     }
 
-    private static int calculate(final double distance) {
+    private static int calculateByArea(final double distance) {
         return AREA_0.defaultFare + calculateMoreFare(distance, AREA_1) + calculateMoreFare(distance, AREA_2);
     }
 

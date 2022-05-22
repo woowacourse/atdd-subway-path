@@ -1,13 +1,10 @@
 package wooteco.subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +19,7 @@ class FareTest {
         final Section section2 = new Section(new Station("선릉역"), new Station("잠실역"), secondDistance, line);
         final Sections sections = new Sections(List.of(section1, section2));
 
-        assertThat(Fare.calculate(sections)).isEqualTo(expectedFare);
+        assertThat(Fare.calculate(sections, Age.ADULTS)).isEqualTo(expectedFare);
     }
 
     @DisplayName("노선의 추가요금이 있을 떄의 요금을 계산한다.")
@@ -35,6 +32,6 @@ class FareTest {
         final Section section2 = new Section(new Station("선릉역"), new Station("잠실역"), secondDistance, line2);
         final Sections sections = new Sections(List.of(section1, section2));
 
-        assertThat(Fare.calculate(sections)).isEqualTo(expectedFare);
+        assertThat(Fare.calculate(sections, Age.ADULTS)).isEqualTo(expectedFare);
     }
 }
