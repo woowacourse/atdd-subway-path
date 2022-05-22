@@ -44,7 +44,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         stationId2 = Long.parseLong(stationResponse2.header("Location").split("/")[2]);
         stationId3 = Long.parseLong(stationResponse3.header("Location").split("/")[2]);
 
-        lineId = createLine(new LineRequest("2호선", "bg-green-600", stationId1, stationId2, 10));
+        lineId = createLine(new LineRequest("2호선", "bg-green-600", stationId1, stationId2, 10, 0));
         createSection(new SectionRequest(stationId2, stationId3, 5));
     }
 

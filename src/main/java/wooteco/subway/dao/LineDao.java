@@ -24,26 +24,28 @@ public class LineDao {
         return new Line(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("color")
+                rs.getString("color"),
+                rs.getInt("extra_fare")
         );
     }
 
     public Line save(final Line line) {
-        final String sql = "INSERT INTO LINE (name, color) VALUES (:name, :color)";
+        final String sql = "INSERT INTO LINE (name, color, extra_fare) VALUES (:name, :color, :extraFare)";
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
         final Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extraFare", line.getExtraFare());
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
         final long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Optional<Line> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE id = :id";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE WHERE id = :id";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
@@ -53,16 +55,17 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        final String sql = "SELECT id, name, color FROM LINE";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE";
         return namedParameterJdbcTemplate.query(sql, LineDao::rowMapper);
     }
 
     public void update(final Long id, final Line line) {
-        final String sql = "UPDATE LINE SET name = :name, color = :color WHERE id = :id";
+        final String sql = "UPDATE LINE SET name = :name, color = :color, extra_fare = :extraFare WHERE id = :id";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extraFare", line.getExtraFare());
 
         namedParameterJdbcTemplate.update(sql, params);
     }

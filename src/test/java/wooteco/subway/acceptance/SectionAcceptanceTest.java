@@ -26,7 +26,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         stationId1 = createStation(new StationRequest("아차산역"));
         stationId2 = createStation(new StationRequest("군자역"));
         stationId3 = createStation(new StationRequest("마장역"));
-        lineId = createLine(new LineRequest("5호선", "bg-purple-600", stationId1, stationId2, 10));
+        lineId = createLine(new LineRequest("5호선", "bg-purple-600", stationId1, stationId2, 10, 0));
         sectionRequest = new SectionRequest(stationId2, stationId3, 5);
     }
 
