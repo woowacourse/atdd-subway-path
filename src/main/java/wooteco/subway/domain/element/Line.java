@@ -9,12 +9,12 @@ public class Line {
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 3;
 
-    private final Long id;
+    private final long id;
     private String name;
     private String color;
     private int extraFare;
 
-    public Line(Long id, String name, String color, int extraFare) {
+    public Line(long id, String name, String color, int extraFare) {
         validate(name, color);
         this.id = id;
         this.name = name;
@@ -23,7 +23,7 @@ public class Line {
     }
 
     public Line(String name, String color, int extraFare) {
-        this(null, name, color, extraFare);
+        this(0, name, color, extraFare);
     }
 
     public void update(String name, String color, int extraFare) {
@@ -61,7 +61,7 @@ public class Line {
         }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

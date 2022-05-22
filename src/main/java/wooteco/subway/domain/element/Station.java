@@ -9,10 +9,10 @@ public class Station {
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 2;
 
-    private Long id;
+    private long id;
     private String name;
 
-    public Station(Long id, String name) {
+    public Station(long id, String name) {
         validateNameRange(name);
         validateLanguageType(name);
         this.id = id;
@@ -20,7 +20,7 @@ public class Station {
     }
 
     public Station(String name) {
-        this(null, name);
+        this(0, name);
     }
 
     private void validateNameRange(String name) {
@@ -39,7 +39,7 @@ public class Station {
         }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

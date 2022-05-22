@@ -11,7 +11,7 @@ public class StationEntity {
     }
 
     public StationEntity(String name) {
-        this(null, name);
+        this(0L, name);
     }
 
     public Long getId() {

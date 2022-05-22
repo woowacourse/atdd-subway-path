@@ -28,7 +28,7 @@ public class SectionRepository {
     }
 
     public void save(Section section) {
-        if (section.getId() == null) {
+        if (section.getId() == 0L) {
             sectionDao.save(toEntity(section));
             return;
         }

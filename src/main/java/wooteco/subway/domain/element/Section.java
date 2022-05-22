@@ -7,13 +7,13 @@ public class Section {
 
     private static final int MIN_DISTANCE = 1;
 
-    private final Long id;
+    private final long id;
     private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+    public Section(long id, Line line, Station upStation, Station downStation, int distance) {
         validateMinDistance(distance);
         this.id = id;
         this.line = line;
@@ -23,7 +23,7 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(null, line, upStation, downStation, distance);
+        this(0, line, upStation, downStation, distance);
     }
 
     public List<Section> split(Section other) {
@@ -73,7 +73,7 @@ public class Section {
         }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

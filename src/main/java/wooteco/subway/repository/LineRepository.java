@@ -18,7 +18,7 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        if (line.getId() == null) {
+        if (line.getId() == 0L) {
             return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare())));
         }
         lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));

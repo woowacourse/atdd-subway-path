@@ -24,12 +24,12 @@ public class SectionTest {
         Section 추가할_구간 = new Section(이호선, 삼성, 강남, 4);
 
         List<Section> sections = 기존_구간.split(추가할_구간);
-        assertThat(sections.get(0).getId()).isNotNull();
+        assertThat(sections.get(0).getId()).isNotEqualTo(0L);
         assertThat(sections.get(0).getUpStation()).isEqualTo(삼성);
         assertThat(sections.get(0).getDownStation()).isEqualTo(강남);
         assertThat(sections.get(0).getDistance()).isEqualTo(4);
 
-        assertThat(sections.get(1).getId()).isNull();
+        assertThat(sections.get(1).getId()).isEqualTo(0L);
         assertThat(sections.get(1).getUpStation()).isEqualTo(강남);
         assertThat(sections.get(1).getDownStation()).isEqualTo(성수);
         assertThat(sections.get(1).getDistance()).isEqualTo(6);
@@ -42,12 +42,12 @@ public class SectionTest {
         Section 추가할_구간 = new Section(이호선, 강남, 성수, 4);
 
         List<Section> sections = 기존_구간.split(추가할_구간);
-        assertThat(sections.get(0).getId()).isNotNull();
+        assertThat(sections.get(0).getId()).isNotEqualTo(0L);
         assertThat(sections.get(0).getUpStation()).isEqualTo(삼성);
         assertThat(sections.get(0).getDownStation()).isEqualTo(강남);
         assertThat(sections.get(0).getDistance()).isEqualTo(6);
 
-        assertThat(sections.get(1).getId()).isNull();
+        assertThat(sections.get(1).getId()).isEqualTo(0L);
         assertThat(sections.get(1).getUpStation()).isEqualTo(강남);
         assertThat(sections.get(1).getDownStation()).isEqualTo(성수);
         assertThat(sections.get(1).getDistance()).isEqualTo(4);
@@ -60,7 +60,7 @@ public class SectionTest {
         Section 추가할_구간 = new Section(이호선, 강남, 삼성, 4);
 
         List<Section> sections = 기존_구간.split(추가할_구간);
-        assertThat(sections.get(0).getId()).isNull();
+        assertThat(sections.get(0).getId()).isEqualTo(0L);
         assertThat(sections.get(0).getUpStation()).isEqualTo(강남);
         assertThat(sections.get(0).getDownStation()).isEqualTo(삼성);
         assertThat(sections.get(0).getDistance()).isEqualTo(4);
