@@ -55,7 +55,6 @@ public class SectionDao {
     }
 
     public List<Section> findAll() {
-
         final String sql = "select SC.id, SC.up_station_id, SC.down_station_id, SC.distance, SC.line_id, " +
                 "S1.name as up_name, S2.name as down_name, L.id as line_id, L.name as line_name, L.color, L.extraFare " +
                 "from SECTION SC " +

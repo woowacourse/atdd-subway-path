@@ -38,7 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(distance).isEqualTo(5),
-                () -> assertThat(fare).isEqualTo(1250),
+                () -> assertThat(fare).isEqualTo(720),
                 () -> assertThat(stations).extracting("name")
                         .containsExactly("아차산역", "장한평역")
         );
