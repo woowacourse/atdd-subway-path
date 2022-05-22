@@ -29,6 +29,7 @@ public class Dijkstra implements PathFactory {
         }
     }
 
+    @Override
     public int findShortestDistance(Long source, Long target) {
         try {
             double weight = dijkstraShortestPath.getPath(source, target).getWeight();
@@ -40,6 +41,7 @@ public class Dijkstra implements PathFactory {
         }
     }
 
+    @Override
     public List<Long> findShortestPath(Long source, Long target) {
         try {
             return dijkstraShortestPath.getPath(source, target).getVertexList();
