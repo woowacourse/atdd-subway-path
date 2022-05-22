@@ -1,5 +1,8 @@
 package wooteco.subway.domain;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.ClientException;
 
 import java.util.*;
@@ -15,10 +18,37 @@ public class Path {
     private final int distance;
     private final Age age;
 
-    public Path(List<SectionWeightEdge> edges, int distance, Long age) {
+    private Path(List<SectionWeightEdge> edges, int distance, Age age) {
         this.edges = edges;
         this.distance = distance;
-        this.age = Age.find(age);
+        this.age = age;
+    }
+
+    public static Path of(List<Section> sections, Long source, Long target, Long age) {
+        WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
+        initPathGraph(sections, graph, gatherStationIds(sections));
+        GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
+        return new Path(path.getEdgeList(), (int) path.getWeight(), Age.find(age));
+    }
+
+    private static Set<Long> gatherStationIds(List<Section> sections) {
+        Set<Long> ids = new HashSet<>();
+        for (Section section : sections) {
+            ids.add(section.getUpStationId());
+            ids.add(section.getDownStationId());
+        }
+        return ids;
+    }
+
+    private static void initPathGraph(List<Section> sections, WeightedMultigraph<Long, SectionWeightEdge> graph, Set<Long> ids) {
+        for (Long id : ids) {
+            graph.addVertex(id);
+        }
+
+        for (Section section : sections) {
+            graph.addEdge(section.getUpStationId(), section.getDownStationId(),
+                    new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
+        }
     }
 
     public double calculateFare(List<Line> lines) {

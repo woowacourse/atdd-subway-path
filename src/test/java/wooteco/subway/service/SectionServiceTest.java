@@ -84,17 +84,4 @@ class SectionServiceTest {
                 .isInstanceOf(ClientException.class)
                 .hasMessageContaining("존재하지 않는 노선입니다.");
     }
-
-    @Test
-    @DisplayName("최단 경로를 찾는다.")
-    void findShortestPath() {
-        StationResponse firstStation = stationService.save(new StationRequest("역삼역"));
-        StationResponse secondStation = stationService.save(new StationRequest("삼성역"));
-        LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
-        lineService.save(line);
-
-        PathResponse shortestPath = sectionService.findShortestPath(firstStation.getId(), secondStation.getId(), 0L);
-
-        assertThat(shortestPath.getDistance()).isEqualTo(10);
-    }
 }
