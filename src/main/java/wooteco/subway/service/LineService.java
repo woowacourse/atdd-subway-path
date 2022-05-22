@@ -55,7 +55,7 @@ public class LineService {
     @Transactional
     public LineResponseDto create(LineRequestDto lineRequestDto) {
         validateDuplicate(lineRequestDto);
-        Line line = lineDao.create(new Line(lineRequestDto.getName(), lineRequestDto.getColor()));
+        Line line = lineDao.create(new Line(lineRequestDto.getName(), lineRequestDto.getColor(), lineRequestDto.getExtraFare()));
         sectionService.create(new SectionRequestDto(line.getId(), lineRequestDto.getUpStationId(), lineRequestDto.getDownStationId(), lineRequestDto.getDistance()));
 
         return makeLineResponseDto(line);
@@ -105,7 +105,7 @@ public class LineService {
         validateExistName(id, lineRequestDto.getName());
         validateExistColor(id, lineRequestDto.getColor());
 
-        lineDao.update(id, lineRequestDto.getName(), lineRequestDto.getColor());
+        lineDao.update(id, lineRequestDto.getName(), lineRequestDto.getColor(), lineRequestDto.getExtraFare());
     }
 
     @Transactional

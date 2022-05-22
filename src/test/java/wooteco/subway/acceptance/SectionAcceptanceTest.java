@@ -211,7 +211,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
-        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), List.of(stationResponses));
+        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), List.of(stationResponses), 이호선.getExtraFare());
         final LineResponse actual = response.body().jsonPath().getObject(".", LineResponse.class);
 
         assertThat(expected)

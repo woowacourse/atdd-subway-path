@@ -20,8 +20,10 @@ public class JdbcLineDao implements LineDao {
     private static final RowMapper<Line> LINE_ROW_MAPPER = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extra_fare")
     );
+
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
@@ -37,9 +39,10 @@ public class JdbcLineDao implements LineDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", line.getName());
         parameters.put("color", line.getColor());
+        parameters.put("extra_fare", line.getExtraFare());
 
         final Number number = simpleJdbcInsert.executeAndReturnKey(parameters);
-        return new Line(number.longValue(), line.getName(), line.getColor());
+        return new Line(number.longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
@@ -55,9 +58,9 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public void update(Long id, String name, String color) {
-        String sql = "UPDATE line SET name=?, color=? WHERE id=?";
-        jdbcTemplate.update(sql, name, color, id);
+    public void update(Long id, String name, String color, int extraFare) {
+        String sql = "UPDATE line SET name=?, color=?, extra_fare=? WHERE id=?";
+        jdbcTemplate.update(sql, name, color, extraFare, id);
     }
 
     @Override

@@ -10,6 +10,7 @@ public class LineResponseDto {
     private String name;
     private String color;
     private List<StationResponseDto> stations;
+    private int extraFare;
 
     private LineResponseDto() {
     }
@@ -19,6 +20,7 @@ public class LineResponseDto {
         this.name = line.getName();
         this.color = line.getColor();
         this.stations = stations;
+        this.extraFare = line.getExtraFare();
     }
 
     public Long getId() {
@@ -35,5 +37,9 @@ public class LineResponseDto {
 
     public List<StationResponseDto> getStations() {
         return stations;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
