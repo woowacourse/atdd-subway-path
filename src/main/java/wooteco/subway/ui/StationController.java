@@ -1,38 +1,47 @@
 package wooteco.subway.ui;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
-
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import wooteco.subway.service.StationService;
+import wooteco.subway.service.dto.StationServiceResponse;
+import wooteco.subway.ui.dto.StationRequest;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
-    @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        Station station = new Station(stationRequest.getName());
-        Station newStation = StationDao.save(station);
-        StationResponse stationResponse = new StationResponse(newStation.getId(), newStation.getName());
-        return ResponseEntity.created(URI.create("/stations/" + newStation.getId())).body(stationResponse);
+
+    private final StationService stationService;
+
+    public StationController(StationService stationService) {
+        this.stationService = stationService;
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations() {
-        List<Station> stations = StationDao.findAll();
-        List<StationResponse> stationResponses = stations.stream()
-                .map(it -> new StationResponse(it.getId(), it.getName()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().body(stationResponses);
+    @PostMapping
+    public ResponseEntity<StationServiceResponse> createStation(
+            @Validated @RequestBody StationRequest stationRequest) {
+        StationServiceResponse stationServiceResponse = stationService.save(
+                stationRequest.toServiceRequest());
+        return ResponseEntity.created(URI.create("/stations/" + stationServiceResponse.getId()))
+                .body(
+                        stationServiceResponse);
     }
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    @GetMapping
+    public ResponseEntity<List<StationServiceResponse>> showStations() {
+        List<StationServiceResponse> stations = stationService.findAll();
+        return ResponseEntity.ok().body(stations);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+        if (stationService.deleteById(id)) {
+            return ResponseEntity.ok().build();
+        }
         return ResponseEntity.noContent().build();
     }
 }
