@@ -15,7 +15,7 @@ class FareDiscountPolicyTest {
 
         int discountAmount = discountPolicy.calculateDiscountAmount(1350);
 
-        Assertions.assertThat(discountAmount).isEqualTo(550);
+        Assertions.assertThat(discountAmount).isEqualTo(200);
     }
 
     @DisplayName("어린이는 운임에서 350원을 공제한 금액의 50%를 할인한다.")
@@ -25,12 +25,12 @@ class FareDiscountPolicyTest {
 
         int discountAmount = discountPolicy.calculateDiscountAmount(1350);
 
-        Assertions.assertThat(discountAmount).isEqualTo(850);
+        Assertions.assertThat(discountAmount).isEqualTo(500);
     }
 
-    @DisplayName("운임 요금이 기본 공제 금액인 350원 이하인 경우 운임 요금만큼 할인한다(청소년).")
+    @DisplayName("기본 운임요금 이하인 경우 할인하지 않는다(청소년).")
     @ParameterizedTest
-    @CsvSource(value = {"350,350", "349,349", "400,360"})
+    @CsvSource(value = {"1249,0", "1250,180"})
     void discountWhenLessThanBaseDiscountAmountWhenTeenager(int amount, int expectedDiscountAmount) {
         FareDiscountPolicy discountPolicy = new TeenagerDiscountPolicy();
 
@@ -39,9 +39,9 @@ class FareDiscountPolicyTest {
         Assertions.assertThat(discountAmount).isEqualTo(expectedDiscountAmount);
     }
 
-    @DisplayName("운임 요금이 기본 공제 금액인 350원 이하인 경우 운임 요금만큼 할인한다(어린이).")
+    @DisplayName("기본 운임요금 이하인 경우 할인하지 않는다(어린이).")
     @ParameterizedTest
-    @CsvSource(value = {"350,350", "349,349", "400,375"})
+    @CsvSource(value = {"1249,0", "1250,450"})
     void discountWhenLessThanBaseDiscountAmountWhenChile(int amount, int expectedDiscountAmount) {
         FareDiscountPolicy discountPolicy = new ChildDiscountPolicy();
 

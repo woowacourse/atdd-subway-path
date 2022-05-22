@@ -283,7 +283,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 12, 1520);
+        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 12, 1870);
         PathResponse actual = pathResponse.as(PathResponse.class);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -340,7 +340,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        PathResponse expected = new PathResponse(List.of(station1, station2, station3, station4, station5), 58, 1250);
+        PathResponse expected = new PathResponse(List.of(station1, station2, station3, station4, station5), 58, 1600);
         PathResponse actual = pathResponse.as(PathResponse.class);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
