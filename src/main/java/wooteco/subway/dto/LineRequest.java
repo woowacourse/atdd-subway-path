@@ -1,5 +1,6 @@
 package wooteco.subway.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -22,14 +23,11 @@ public class LineRequest {
 
     private final int extraFare;
 
-    public LineRequest() {
-        this(null, null, null, null, 0, 0);
-    }
-
     public LineRequest(final String name, final String color) {
         this(name, color, null, null, 0, 0);
     }
 
+    @JsonCreator
     public LineRequest(final String name,
                        final String color,
                        final Long upStationId,

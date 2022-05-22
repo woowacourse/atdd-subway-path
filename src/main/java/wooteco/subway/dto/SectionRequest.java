@@ -1,5 +1,6 @@
 package wooteco.subway.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
@@ -17,10 +18,7 @@ public class SectionRequest {
     @Min(value = 1, message = "거리는 양수이어야 합니다.")
     private final int distance;
 
-    public SectionRequest() {
-        this(null, null, 0);
-    }
-
+    @JsonCreator
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
