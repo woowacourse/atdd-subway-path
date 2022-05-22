@@ -169,4 +169,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
     }
 
+    @DisplayName("출발지 또는 도착지의 id로 1보다 작은 값이 들어올 수 없다.")
+    @Test
+    void notAllowLessThan1StationId() {
+        ExtractableResponse<Response> response = requestGetPath(0L, 0L, 1);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).contains("id는 1보다 작을 수 없습니다.");
+    }
+
+    @DisplayName("나이로 1보다 작은 숫자가 들어올 수 없다.")
+    @Test
+    void notAllowLessThan1Age() {
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo("나이는 1보다 작을 수 없습니다.");
+    }
+
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleInvalidArguments(MethodArgumentNotValidException e) {
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<String> handleInvalidArguments(BindException e) {
         String exceptionMessage = e.getBindingResult()
                 .getAllErrors()
                 .stream()
