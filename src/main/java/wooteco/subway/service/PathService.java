@@ -6,9 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathGraph;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 
@@ -26,11 +25,10 @@ public class PathService {
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Line> lines = lineDao.findAll();
-        PathGraph pathGraph = new PathGraph(lines);
 
         Station sourceStation = findStationById(pathRequest.getSource());
         Station targetStation = findStationById(pathRequest.getTarget());
-        Path path = pathGraph.findShortestPath(sourceStation, targetStation);
+        Path path = Path.of(lines, sourceStation, targetStation);
 
         return PathResponse.of(path);
     }
