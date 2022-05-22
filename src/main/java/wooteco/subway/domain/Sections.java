@@ -3,7 +3,6 @@ package wooteco.subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +32,8 @@ public class Sections {
         return Collections.unmodifiableList(sortStations(goesDownStations, goesUpStations));
     }
 
-    private LinkedList<Station> sortStations(Map<Station, Station> goesDownStations,
-                                             Map<Station, Station> goesUpStations) {
+    private List<Station> sortStations(Map<Station, Station> goesDownStations,
+                                       Map<Station, Station> goesUpStations) {
         LinkedList<Station> stations = new LinkedList<>();
         Station station = values.get(0).getUpStation();
         stations.add(station);
@@ -217,13 +216,21 @@ public class Sections {
     }
 
     public Set<Station> getDistinctStations() {
-        Set<Station> stations = new HashSet<>();
-        for (Section section : values) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-
+        Set<Station> stations = getUpStations();
+        stations.addAll(getDownStations());
         return stations;
+    }
+
+    private Set<Station> getUpStations() {
+        return values.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Station> getDownStations() {
+        return values.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toSet());
     }
 
     public List<Section> getValues() {
