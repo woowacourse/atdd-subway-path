@@ -31,8 +31,8 @@ public class SpringPathService implements PathService {
     public PathServiceResponse findPath(PathServiceRequest pathServiceRequest) {
         final List<Section> allSections = findAllSections();
 
-        final Station source = stationService.findById((long) pathServiceRequest.getSource());
-        final Station target = stationService.findById((long) pathServiceRequest.getTarget());
+        final Station source = stationService.findById(pathServiceRequest.getSource());
+        final Station target = stationService.findById(pathServiceRequest.getTarget());
 
         final Path path = pathFinder.searchShortestPath(allSections, source, target);
         final Long fare = fareCalculator.calculate(path.getDistance());
