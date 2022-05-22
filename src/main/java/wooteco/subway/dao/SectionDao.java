@@ -27,11 +27,14 @@ public class SectionDao {
         final long upStationId = rs.getLong("up_station_id");
         final long downStationId = rs.getLong("down_station_id");
         final int distance = rs.getInt("distance");
+
         final String lineName = rs.getString("line_name");
         final String lineColor = rs.getString("color");
         final int extraFare = rs.getInt("extraFare");
+
         return new Section(id, new Station(upStationId, rs.getString("up_name")),
-                new Station(downStationId, rs.getString("down_name")), distance, new Line(lineId, lineName, lineColor, extraFare));
+                new Station(downStationId, rs.getString("down_name")), distance,
+                new Line(lineId, lineName, lineColor, extraFare));
     };
 
     public SectionDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
