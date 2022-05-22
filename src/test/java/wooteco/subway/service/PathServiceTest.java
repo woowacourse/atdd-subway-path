@@ -44,7 +44,7 @@ class PathServiceTest {
         stationService.createStation("서초");
         stationService.createStation("교대");
         stationService.createStation("선릉");
-        lineService.create(new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 50));
+        lineService.create(new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 50, 200));
         sectionService.create(new SectionRequestDto(1L, 1L, 3L, 10));
         sectionService.create(new SectionRequestDto(1L, 3L, 5L, 20));
         sectionService.create(new SectionRequestDto(1L, 4L, 5L, 10));
@@ -63,7 +63,7 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
                 () -> assertThat(pathResponseDto.getDistance()).isEqualTo(30),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1650)
+                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1850)
         );
     }
 
@@ -71,7 +71,7 @@ class PathServiceTest {
     @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
     void FindPathWithDuplicatedNodes() {
         //given
-        lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5));
+        lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5, 300));
         Long source = 1L;
         Long target = 5L;
         int age = 30;
@@ -81,7 +81,7 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
                 () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1550)
+                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1850)
         );
     }
 
@@ -126,7 +126,7 @@ class PathServiceTest {
         int age = 15;
         stationService.createStation("Station6");
         stationService.createStation("Station7");
-        lineService.create(new LineRequestDto("3호선", "bg-black-100", 6L, 7L, 5));
+        lineService.create(new LineRequestDto("3호선", "bg-black-100", 6L, 7L, 5, 300));
         //when
         //then
         assertThatThrownBy(() -> pathService.getPath(new PathRequestDto(source, target, age)))

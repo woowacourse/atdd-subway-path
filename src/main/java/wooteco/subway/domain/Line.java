@@ -9,17 +9,6 @@ public class Line {
     private String color;
     private int extraFare;
 
-    public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
     public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;

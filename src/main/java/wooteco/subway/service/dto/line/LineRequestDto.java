@@ -9,15 +9,7 @@ public class LineRequestDto {
     private int distance;
     private int extraFare;
 
-    public LineRequestDto() {
-    }
-
-    public LineRequestDto(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this.name = name;
-        this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
+    private LineRequestDto() {
     }
 
     public LineRequestDto(String name, String color, Long upStationId, Long downStationId, int distance,

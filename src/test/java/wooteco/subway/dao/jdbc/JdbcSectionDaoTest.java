@@ -14,6 +14,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 class JdbcSectionDaoTest {
@@ -42,12 +43,14 @@ class JdbcSectionDaoTest {
     void createSection(){
         //given
         //when
-        Section actual = sectionDao.create(new Section(1L, 1L, 2L, 10));
-        Section expected = new Section(1L, 1L, 1L, 2L, 10);
+        Section section = sectionDao.create(new Section(1L, 1L, 2L, 10));
         //then
-        assertThat(expected)
-                .usingRecursiveComparison()
-                .isEqualTo(actual);
+        assertAll(
+                () -> assertThat(section.getLineId()).isEqualTo(1L),
+                () -> assertThat(section.getUpStationId()).isEqualTo(1L),
+                () -> assertThat(section.getDownStationId()).isEqualTo(2L),
+                () -> assertThat(section.getDistance()).isEqualTo(10)
+        );
     }
 
     @Test
