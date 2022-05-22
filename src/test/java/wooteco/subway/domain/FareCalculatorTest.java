@@ -83,7 +83,7 @@ class FareCalculatorTest {
     @ParameterizedTest
     @CsvSource({"10, 0", "11, 0", "16, 0", "51, 0"})
     void calculatePreferentialFareWithExtraFare(int distance, int expected) {
-        FareCalculator fareCalculator = new FareCalculator(FarePolicy.of(3));
+        FareCalculator fareCalculator = new FareCalculator(FarePolicy.of(5));
         int fare = fareCalculator.calculate(distance, 900);
 
         assertThat(fare).isEqualTo(expected);
