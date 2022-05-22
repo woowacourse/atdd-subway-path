@@ -1,4 +1,4 @@
-package wooteco.subway.controller;
+package wooteco.subway.controlleradvice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
