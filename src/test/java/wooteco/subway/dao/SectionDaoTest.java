@@ -25,7 +25,7 @@ public class SectionDaoTest {
     @Test
     @DisplayName("구간 저장")
     void save() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
         SectionEntity entity = sectionDao.save(new SectionEntity(line.getId(), 성수.getId(), 합정.getId(), 10));
 
         assertThat(entity.getUpStationId()).isEqualTo(성수.getId());
@@ -36,7 +36,7 @@ public class SectionDaoTest {
     @Test
     @DisplayName("구간 전체 조회")
     void findAll() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
         SectionEntity 성수_합정 = sectionDao.save(new SectionEntity(line.getId(), 성수.getId(), 합정.getId(), 10));
         SectionEntity 합정_강남 = sectionDao.save(new SectionEntity(line.getId(), 합정.getId(), 강남.getId(), 10));
 
@@ -51,7 +51,7 @@ public class SectionDaoTest {
     @Test
     @DisplayName("구간 변경")
     void update() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
         SectionEntity save = sectionDao.save(new SectionEntity(line.getId(), 성수.getId(), 합정.getId(), 10));
 
         sectionDao.update(new SectionEntity(save.getId(), line.getId(), 성수.getId(), 왕십리.getId(), 10));
@@ -66,7 +66,7 @@ public class SectionDaoTest {
     @Test
     @DisplayName("구간 삭제")
     void delete() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
         SectionEntity save = sectionDao.save(new SectionEntity(line.getId(), 성수.getId(), 합정.getId(), 10));
 
         sectionDao.deleteById(save.getId());

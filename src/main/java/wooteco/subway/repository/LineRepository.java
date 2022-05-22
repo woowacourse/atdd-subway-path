@@ -26,7 +26,7 @@ public class LineRepository {
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
     public Line findById(Long id) {

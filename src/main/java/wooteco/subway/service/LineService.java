@@ -42,7 +42,7 @@ public class LineService {
 
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Station upStation = findStation(lineRequest.getUpStationId());
         Station downStation = findStation(lineRequest.getDownStationId());
 

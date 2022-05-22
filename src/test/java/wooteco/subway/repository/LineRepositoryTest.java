@@ -27,7 +27,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("노선을 생성한다.")
     void create() {
-        Line line = lineRepository.save(new Line("1호선", "blue"));
+        Line line = lineRepository.save(new Line("1호선", "blue", 0));
 
         assertThat(line.getId()).isNotNull();
     }
@@ -35,7 +35,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("노선을 id로 조회한다")
     void findById() {
-        Line line = lineRepository.save(new Line("1호선", "blue"));
+        Line line = lineRepository.save(new Line("1호선", "blue", 0));
 
         assertThat(lineRepository.findById(line.getId())).isEqualTo(line);
     }
@@ -43,9 +43,9 @@ class LineRepositoryTest {
     @Test
     @DisplayName("저장된 노선들을 조회한다.")
     void findAll() {
-        lineRepository.save(new Line("1호선", "blue"));
-        lineRepository.save(new Line("2호선", "green"));
-        lineRepository.save(new Line("3호선", "orange"));
+        lineRepository.save(new Line("1호선", "blue", 0));
+        lineRepository.save(new Line("2호선", "green", 0));
+        lineRepository.save(new Line("3호선", "orange", 0));
 
         assertThat(lineRepository.findAll()).hasSize(3);
     }
@@ -53,7 +53,7 @@ class LineRepositoryTest {
     @Test
     @DisplayName("id로 노선을 삭제한다.")
     void deleteById() {
-        Line line = lineRepository.save(new Line("1호선", "blue"));
+        Line line = lineRepository.save(new Line("1호선", "blue", 0));
 
         lineRepository.deleteById(line.getId());
 

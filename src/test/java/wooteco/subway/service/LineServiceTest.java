@@ -49,7 +49,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
 
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 4);
@@ -72,7 +72,7 @@ class LineServiceTest {
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
         Station 판교 = stationRepository.save(new Station("판교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest1);
@@ -96,7 +96,7 @@ class LineServiceTest {
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
         Station 판교 = stationRepository.save(new Station("판교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest1);
@@ -119,7 +119,7 @@ class LineServiceTest {
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
         Station 강남 = stationRepository.save(new Station("강남"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 양재, 광교, 10));
 
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 5);
@@ -141,7 +141,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 양재, 10));
 
         SectionRequest sectionRequest = new SectionRequest(양재.getId(), 광교.getId(), 5);
@@ -162,7 +162,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest);
@@ -182,7 +182,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest);
@@ -200,7 +200,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest);
@@ -219,7 +219,7 @@ class LineServiceTest {
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
         Station 창동 = stationRepository.save(new Station("창동"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
 
         SectionRequest sectionRequest = new SectionRequest(양재.getId(), 창동.getId(), 4);
@@ -234,7 +234,7 @@ class LineServiceTest {
     void addSectionDuplicateStation() {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
 
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 광교.getId(), 4);
@@ -250,7 +250,7 @@ class LineServiceTest {
         Station 강남 = stationRepository.save(new Station("강남"));
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
 
         SectionRequest sectionRequest = new SectionRequest(강남.getId(), 양재.getId(), 10);

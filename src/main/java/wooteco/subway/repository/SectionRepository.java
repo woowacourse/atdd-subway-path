@@ -53,7 +53,7 @@ public class SectionRepository {
     private Line toLine(Long id) {
         LineEntity entity = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
     public List<Section> findSectionByLine(Line line) {

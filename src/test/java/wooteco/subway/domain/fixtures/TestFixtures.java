@@ -16,9 +16,9 @@ public class TestFixtures {
     public static final Station 창동 = new Station(8L, "창동");
     public static final Station 당고개 = new Station(9L, "당고개");
 
-    public static final Line 이호선 = new Line(1L, "2호선", "green");
-    public static final Line 분당선 = new Line(1L, "분당선", "yellow");
-    public static final Line 사호선 = new Line(1L, "4호선", "blue");
+    public static final Line 이호선 = new Line(1L, "2호선", "green", 100);
+    public static final Line 분당선 = new Line(1L, "분당선", "yellow", 200);
+    public static final Line 사호선 = new Line(1L, "4호선", "blue", 300);
 
     public static final Section 강남_삼성 = new Section(1L, 이호선, 강남, 삼성, 10);
     public static final Section 삼성_건대 = new Section(2L, 이호선, 삼성, 건대, 12);

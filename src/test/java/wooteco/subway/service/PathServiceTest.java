@@ -54,7 +54,7 @@ class PathServiceTest {
         Station 양재 = stationRepository.save(new Station("양재"));
         Station 판교 = stationRepository.save(new Station("판교"));
         Station 광교 = stationRepository.save(new Station("광교"));
-        Line 신분당선 = lineRepository.save(new Line("신분당선", "red"));
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
         sectionRepository.save(new Section(신분당선, 강남, 광교, 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남.getId(), 양재.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest1);
