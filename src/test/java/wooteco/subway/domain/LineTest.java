@@ -14,7 +14,7 @@ class LineTest {
     @ValueSource(strings = {"", "aaaaaaaaaaaaaaaaaaaaa"})
     void throwsExceptionWithInvalidNameLength(final String name) {
 
-        assertThatThrownBy(() -> new Line(name, "red"))
+        assertThatThrownBy(() -> new Line(name, "red", 500))
                 .isInstanceOf(DataLengthException.class);
     }
 
@@ -23,7 +23,16 @@ class LineTest {
     @ValueSource(strings = {"", "yellowYellowYellowYellowYellow"})
     void throwsExceptionWithInvalidColorLength(final String color) {
 
-        assertThatThrownBy(() -> new Line("신분당선", color))
+        assertThatThrownBy(() -> new Line("신분당선", color, 500))
                 .isInstanceOf(DataLengthException.class);
+    }
+
+    @DisplayName("노선의 추가요금이 빈 값이거나 양의 정수가 아닌 경우 예외를 발생한다.")
+    @ParameterizedTest(name = "{displayName} extraFare: {0}")
+    @ValueSource(ints = {-1, -10})
+    void throwsExceptionWithNegativeExtraFare(final int extraFare) {
+
+        assertThatThrownBy(() -> new Line("신분당선", "red", extraFare))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

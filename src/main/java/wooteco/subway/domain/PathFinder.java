@@ -4,59 +4,70 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PathFinder {
 
     private final List<Section> values;
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder(List<Section> values) {
-        this.values = values;
-        this.dijkstraShortestPath = initDijkstraShortestPath(values);
+    public PathFinder(List<Section> stations) {
+        this.values = stations;
+        this.dijkstraShortestPath = initDijkstraShortestPath();
     }
 
-    public List<Long> findPath(Long from, Long to) {
-        return dijkstraShortestPath.getPath(from, to).getVertexList();
-    }
-
-    public int findDistance(Long from, Long to) {
-        return (int) dijkstraShortestPath.getPathWeight(from, to);
-    }
-
-
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath(List<Section> sections) {
+    private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath() {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        Set<Long> stationIds = findNonDuplicateStationIds(sections);
-        fillVertexes(graph, stationIds);
-        fillEdges(sections, graph);
+        fillVertexesAndEdges(graph, values);
         return new DijkstraShortestPath<>(graph);
     }
 
-    private Set<Long> findNonDuplicateStationIds(List<Section> sections) {
-        Set<Long> stationIds = new HashSet<>();
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-        return stationIds;
-    }
-
-    private void fillVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Set<Long> stationIds) {
-        for (Long stationId : stationIds) {
-            graph.addVertex(stationId);
-        }
-    }
-
-    private void fillEdges(List<Section> sections, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    private void fillVertexesAndEdges(WeightedMultigraph<Long, DefaultWeightedEdge> graph, List<Section> sections) {
         for (Section section : sections) {
             Long upStationId = section.getUpStationId();
             Long downStationId = section.getDownStationId();
 
+            graph.addVertex(upStationId);
+            graph.addVertex(downStationId);
+
             DefaultWeightedEdge edge = graph.addEdge(upStationId, downStationId);
             graph.setEdgeWeight(edge, section.getDistance());
+        }
+    }
+
+    public List<Long> findPath(Long from, Long to) {
+        validateNotSameFromAndTo(from, to);
+        validateNotConnectedStation(from, to);
+        try {
+            return dijkstraShortestPath.getPath(from, to).getVertexList();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("해당 경로는 이동할 수 없습니다.");
+        }
+    }
+
+    public int findDistance(Long from, Long to) {
+        validateNotSameFromAndTo(from, to);
+        validateNotConnectedStation(from, to);
+        int pathWeight = (int) dijkstraShortestPath.getPathWeight(from, to);
+        if (pathWeight == Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("해당 경로는 이동할 수 없습니다.");
+        }
+        return pathWeight;
+    }
+
+    private void validateNotSameFromAndTo(Long from, Long to) {
+        if (from.equals(to)) {
+            throw new IllegalArgumentException("출발지와 목적지는 서로 달라야 합니다.");
+        }
+    }
+
+    private void validateNotConnectedStation(Long from, Long to) {
+        boolean isFromStationConnected = values.stream()
+                .noneMatch(v -> v.isUpStation(from) || v.isDownStation(from));
+        boolean isToStationConnected = values.stream()
+                .noneMatch(v -> v.isUpStation(to) || v.isDownStation(to));
+        if (isFromStationConnected || isToStationConnected) {
+            throw new IllegalArgumentException("어떠한 노선에도 등록되지 않은 역이 존재합니다.");
         }
     }
 }

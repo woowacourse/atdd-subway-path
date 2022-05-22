@@ -54,7 +54,7 @@ class SectionServiceTest {
         기흥역 = stationService.create(new StationRequest("기흥역"));
 
         분당선 = lineService.create(new LineRequest("분당선", "yellow", 선릉역.getId(),
-                선정릉역.getId(), 10));
+                선정릉역.getId(), 10, 0));
         sectionDao.insert(new Section(분당선.getId(), 선정릉역.getId(), 한티역.getId(), 10));
     }
 

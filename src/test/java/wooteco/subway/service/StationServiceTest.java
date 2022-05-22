@@ -56,7 +56,7 @@ class StationServiceTest {
         StationResponse 선정릉역 = stationService.create(new StationRequest("선정릉역"));
 
         lineService.create(new LineRequest("분당선", "yellow", 선릉역.getId(),
-                선정릉역.getId(), 10));
+                선정릉역.getId(), 10, 0));
 
         assertThatThrownBy(() -> stationService.delete(선릉역.getId()))
                 .isInstanceOf(DeleteUsingDateException.class);
