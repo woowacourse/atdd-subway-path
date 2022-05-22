@@ -3,7 +3,6 @@ package wooteco.subway.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +47,7 @@ public class JdbcSectionDao implements SectionDao {
 
     @Override
     public void save(Sections sections, Long lineId) {
-        LinkedList<Section> values = sections.getSections();
+        List<Section> values = sections.getSections();
         for (int i = 0; i < values.size(); i++) {
             Section section = values.get(i);
             update(section, lineId, i);

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +59,7 @@ public class SectionsTest {
         Station station = new Station(3L, "새로운역");
         Section section = new Section(station, downTermination, Distance.fromMeter(3));
         sections.add(section);
-        LinkedList<Section> sectionValues = this.sections.getSections();
+        List<Section> sectionValues = this.sections.getSections();
 
         assertAll(
                 () -> assertThat(sectionValues.get(0).getDistance()).isEqualTo(0.007),
@@ -74,7 +73,7 @@ public class SectionsTest {
         Station station = new Station(3L, "새로운역");
         Section section = new Section(upTermination, station, Distance.fromMeter(3));
         sections.add(section);
-        LinkedList<Section> sectionValues = sections.getSections();
+        List<Section> sectionValues = sections.getSections();
 
         assertAll(
                 () -> assertThat(sectionValues.get(1).getDistance()).isEqualTo(0.007),
@@ -114,7 +113,7 @@ public class SectionsTest {
         sections.add(section);
         sections.delete(station);
 
-        LinkedList<Section> resultSections = sections.getSections();
+        List<Section> resultSections = sections.getSections();
         List<Station> allStations = sections.getAllStations();
 
         assertAll(

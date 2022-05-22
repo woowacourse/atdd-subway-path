@@ -121,10 +121,10 @@ public class Sections {
                 .map(Section::getUpStation)
                 .collect(Collectors.toList());
         stations.add(getDownTermination());
-        return stations;
+        return List.copyOf(stations);
     }
 
-    public LinkedList<Section> getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return List.copyOf(sections);
     }
 }

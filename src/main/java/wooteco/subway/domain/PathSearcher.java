@@ -31,7 +31,8 @@ public class PathSearcher {
     }
 
     public List<Station> searchShortestPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        List<Station> vertexList = dijkstraShortestPath.getPath(source, target).getVertexList();
+        return List.copyOf(vertexList);
     }
 
     public Distance calculateShortestDistance(Station source, Station target) {
