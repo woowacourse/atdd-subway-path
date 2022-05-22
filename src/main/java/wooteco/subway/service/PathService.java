@@ -27,7 +27,7 @@ public class PathService {
         final PathFinder pathFinder = createPathFinder();
         final Station source = stationRepository.findById(sourceId);
         final Station target = stationRepository.findById(targetId);
-        final Path path = pathFinder.findPath(source, target);
+        final Path path = pathFinder.find(source, target);
         return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare());
     }
 

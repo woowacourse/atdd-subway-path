@@ -31,7 +31,7 @@ public class PathFinder {
         }
     }
 
-    public Path findPath(final Station source, final Station target) {
+    public Path find(final Station source, final Station target) {
         validateSameStation(source, target);
         final GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         validateGraphPath(graphPath);
