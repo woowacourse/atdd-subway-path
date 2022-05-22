@@ -1,38 +1,30 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.Min;
+
 public class PathRequest {
 
-    private Long source;
-    private Long target;
-    private int age;
+    private final long source;
+    private final long target;
 
-    public PathRequest(Long source, Long target, int age) {
+    @Min(value = 0, message = "연령은 양수이어야 합니다.")
+    private final int age;
+
+    public PathRequest(final long source, final long target, final int age) {
         this.source = source;
         this.target = target;
         this.age = age;
     }
 
-    public Long getSource() {
+    public long getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public long getTarget() {
         return target;
     }
 
     public int getAge() {
         return age;
-    }
-
-    public void setSource(Long source) {
-        this.source = source;
-    }
-
-    public void setTarget(Long target) {
-        this.target = target;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 }

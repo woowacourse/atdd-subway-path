@@ -1,10 +1,12 @@
 package wooteco.subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.dto.ErrorMessageResponse;
+
+import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -17,14 +19,16 @@ public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> exceptionHandler(final Exception e) {
+        System.err.println(e.getMessage());
         final ErrorMessageResponse errorMessageResponse = new ErrorMessageResponse("서버 에러가 발생했습니다.");
         return ResponseEntity.internalServerError().body(errorMessageResponse);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ErrorMessageResponse> validExceptionHandler(final MethodArgumentNotValidException ex) {
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorMessageResponse> validExceptionHandler(final BindException e) {
         final ErrorMessageResponse errorMessageResponse = new ErrorMessageResponse(
-                ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+                Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
         return ResponseEntity.badRequest().body(errorMessageResponse);
     }
+
 }

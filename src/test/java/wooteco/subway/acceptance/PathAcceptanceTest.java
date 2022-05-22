@@ -43,4 +43,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         .containsExactly("아차산역", "장한평역")
         );
     }
+
+    @DisplayName("연령값이 올바르지 않으면 예외를 반환한다.")
+    @Test
+    void thrown_invalidRequest() {
+        final String uri = "/paths?source=1&target=3&age=-1";
+        final ExtractableResponse<Response> response = AcceptanceTestFixture.get(uri);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo("연령은 양수이어야 합니다.")
+        );
+    }
 }
