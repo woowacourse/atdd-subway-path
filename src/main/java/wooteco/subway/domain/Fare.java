@@ -15,19 +15,17 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(final int distance, final int lineExtraFare) {
+    public static Fare of(final int distance, final int lineExtraFare, final DiscountPolicy discountPolicy) {
         if (distance <= STANDARD_DISTANCE) {
-            return new Fare(STANDARD_FARE + lineExtraFare);
+            return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare));
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return new Fare(STANDARD_FARE
-                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
-                    + lineExtraFare);
+            return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare)
+                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
         }
-        return new Fare(STANDARD_FARE
+        return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare)
                 + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
-                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT)
-                + lineExtraFare);
+                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
     }
 
     private static int calculateOverFare(final int distance, final int unit) {

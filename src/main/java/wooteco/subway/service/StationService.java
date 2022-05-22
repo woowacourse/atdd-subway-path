@@ -48,7 +48,7 @@ public class StationService {
         final Map<Long, Station> stations = stationDao.findAll()
                 .stream()
                 .filter(station -> stationIds.contains(station.getId()))
-                .collect(Collectors.toMap(station -> station.getId(), station -> station));
+                .collect(Collectors.toMap(Station::getId, station -> station));
 
         return stationIds.stream()
                 .map(stationId -> createStationResponse(stations.get(stationId)))
