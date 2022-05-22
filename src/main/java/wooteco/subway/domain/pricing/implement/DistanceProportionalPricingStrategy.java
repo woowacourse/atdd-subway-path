@@ -7,12 +7,12 @@ import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
-    private static final DistanceProportionalPricingStrategy strategy = new DistanceProportionalPricingStrategy();
+    private static final DistanceProportionalPricingStrategy STRATEGY = new DistanceProportionalPricingStrategy();
 
     private DistanceProportionalPricingStrategy() {}
 
     public static DistanceProportionalPricingStrategy of() {
-        return strategy;
+        return STRATEGY;
     }
 
     @Override

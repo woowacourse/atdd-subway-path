@@ -7,12 +7,12 @@ public final class PricingInThirdSection extends PricingBySection {
     private static final int UNDER_LIMIT = 50;
     private static final int UNIT_DISTANCE = 8;
     private static final int UNIT_MONEY = 100;
-    private static final PricingInThirdSection PRICING_IN_THIRD_SECTION = new PricingInThirdSection();
+    private static final PricingInThirdSection STRATEGY = new PricingInThirdSection();
 
     private PricingInThirdSection() {}
 
     public static PricingInThirdSection of() {
-        return PRICING_IN_THIRD_SECTION;
+        return STRATEGY;
     }
 
     @Override
