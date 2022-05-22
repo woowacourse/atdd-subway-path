@@ -32,7 +32,7 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPaths(Long sourceId, Long targetId) {
+    public PathResponse searchPaths(Long sourceId, Long targetId, int age) {
         validRequest(sourceId, targetId);
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
@@ -43,7 +43,7 @@ public class PathService {
 
         int distance = pathStrategy.calculateDistance(source, target);
         int extraFare = findMaxExtraFare(pathStrategy.findLineIds(source, target));
-        FareCalculator fareCalculator = new FareCalculator(distance, extraFare);
+        FareCalculator fareCalculator = new FareCalculator(distance, extraFare, age);
 
         return new PathResponse(
                 distance,

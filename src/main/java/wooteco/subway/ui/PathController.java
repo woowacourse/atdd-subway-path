@@ -19,6 +19,6 @@ public class PathController {
 
     @GetMapping
     public PathResponse searchPaths(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
-        return pathService.searchPaths(source, target);
+        return pathService.searchPaths(source, target, age);
     }
 }

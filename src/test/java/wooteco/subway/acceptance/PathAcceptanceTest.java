@@ -43,7 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void searchPath() {
         //given
-        String url = "/paths?source=" + sourceId + "&target=" + targetId + "&age=15";
+        String url = "/paths?source=" + sourceId + "&target=" + targetId + "&age=20";
 
         //when
         ExtractableResponse<Response> response = RestAssuredUtil.get(url);
