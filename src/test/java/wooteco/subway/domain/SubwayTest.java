@@ -106,6 +106,14 @@ public class SubwayTest {
     }
 
     @Test
+    @DisplayName("출발역과 도착역이 같으면 예외를 던져야 한다.")
+    void findSameStationsPath() {
+        assertThatThrownBy(() -> subway.findShortestPath(stations.get(0), stations.get(0)))
+            .hasMessage("출발역과 도착역이 동일합니다.")
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("0 -> 1 경로의 요금은 1250원이어야 한다.")
     void calculateFare1() {
         Path path = subway.findShortestPath(stations.get(0), stations.get(1));

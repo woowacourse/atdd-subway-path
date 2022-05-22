@@ -23,8 +23,6 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
-        validateSameStation(sourceStationId, targetStationId);
-
         List<Line> lines = lineService.findAllLines();
         Subway subway = Subway.of(lines);
         Station source = stationService.findById(sourceStationId);
@@ -32,11 +30,5 @@ public class PathService {
 
         Path path = subway.findShortestPath(source, target);
         return PathResponse.of(path, subway.calculateFare(path.getDistance()));
-    }
-
-    private void validateSameStation(Long sourceStationId, Long targetStationId) {
-        if (sourceStationId.equals(targetStationId)) {
-            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
-        }
     }
 }

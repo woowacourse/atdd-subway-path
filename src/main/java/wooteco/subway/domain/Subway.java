@@ -52,10 +52,17 @@ public class Subway {
     }
 
     public Path findShortestPath(Station source, Station target) {
+        validateSameStation(source, target);
         GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
 
         validateEmptyPath(path);
         return Path.of(path.getVertexList(), path.getWeight());
+    }
+
+    private void validateSameStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+        }
     }
 
     private void validateEmptyPath(GraphPath<Station, DefaultWeightedEdge> path) {
