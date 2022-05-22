@@ -26,16 +26,11 @@ public class Lines {
 	public Path findPath(Station source, Station target) {
 		GraphPath<Station, SectionEdge> path = new DijkstraShortestPath<>(initGraph(values.keySet()))
 			.getPath(source, target);
-		return new Path(
-			path.getVertexList(),
-			path.getWeight(),
-			Fare.of((int) path.getWeight(), getMaxExtraFare(path))
-		);
+		return new Path(path.getVertexList(), (int) path.getWeight(), getMaxExtraFare(path));
 	}
 
 	private Graph<Station, SectionEdge> initGraph(Set<Section> sections) {
-		WeightedMultigraph<Station, SectionEdge> graph
-			= new WeightedMultigraph<>(SectionEdge.class);
+		WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 		sections.forEach(section -> addSection(graph, section));
 		return graph;
 	}

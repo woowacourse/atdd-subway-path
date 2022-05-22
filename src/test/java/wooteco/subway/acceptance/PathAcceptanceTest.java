@@ -85,7 +85,7 @@ public class PathAcceptanceTest {
 		// when
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
 			.when()
-			.get("/paths?source=" + source + "&target=" + target + "&age=15")
+			.get("/paths?source=" + source + "&target=" + target + "&age=20")
 			.then().log().all()
 			.extract();
 

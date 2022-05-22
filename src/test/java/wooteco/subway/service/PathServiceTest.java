@@ -39,7 +39,7 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target);
+		Path path = pathService.findPath(source, target, 20);
 
 		// then
 		assertThat(path.getStations())
@@ -55,7 +55,7 @@ class PathServiceTest {
 		Station target = stations.get("내방역");
 
 		// when
-		List<Station> stations = pathService.findPath(source, target)
+		List<Station> stations = pathService.findPath(source, target, 20)
 				.getStations();
 
 		// then
@@ -72,7 +72,7 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		List<Station> stations = pathService.findPath(source, target)
+		List<Station> stations = pathService.findPath(source, target, 20)
 			.getStations();
 
 		// then
@@ -89,7 +89,7 @@ class PathServiceTest {
 		Station target = stations.get("사평역");
 
 		// when
-		List<Station> stations = pathService.findPath(source, target)
+		List<Station> stations = pathService.findPath(source, target, 20)
 			.getStations();
 
 		// then
@@ -106,10 +106,40 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target);
+		Path path = pathService.findPath(source, target, 20);
 
 		// then
 		System.out.println(path.getStations());
 		assertThat(path.getFare()).isEqualTo(2650);
+	}
+
+	@DisplayName("청소년 할인을 적용한다.")
+	@Test
+	void discountFareTeen() {
+		// given
+		Station source = stations.get("신사역");
+		Station target = stations.get("논현역");
+
+		// when
+		Path path = pathService.findPath(source, target, 18);
+
+		// then
+		System.out.println(path.getStations());
+		assertThat(path.getFare()).isEqualTo(2190);
+	}
+
+	@DisplayName("어린이 할인을 적용한다.")
+	@Test
+	void discountFareChile() {
+		// given
+		Station source = stations.get("신사역");
+		Station target = stations.get("논현역");
+
+		// when
+		Path path = pathService.findPath(source, target, 12);
+
+		// then
+		System.out.println(path.getStations());
+		assertThat(path.getFare()).isEqualTo(1500);
 	}
 }

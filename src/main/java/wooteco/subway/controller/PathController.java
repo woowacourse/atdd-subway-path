@@ -29,7 +29,7 @@ public class PathController {
 	public ResponseEntity<PathResponse> findPath(@ModelAttribute @Valid PathRequest pathRequest) {
 		Station source = stationService.findOne(pathRequest.getSource());
 		Station target = stationService.findOne(pathRequest.getTarget());
-		Path path = pathService.findPath(source, target);
+		Path path = pathService.findPath(source, target, pathRequest.getAge());
 		return ResponseEntity.ok().body(PathResponse.from(path));
 	}
 }

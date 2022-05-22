@@ -9,11 +9,18 @@ public class Path {
 	private final int distance;
 	private final Fare fare;
 
-	public Path(List<Station> stations, Number distance, Fare fare) {
+	public Path(List<Station> stations, int distance, int extraFare) {
+		validateOverZero(distance);
+		this.stations = new ArrayList<>(stations);
+		this.distance = distance;
+		this.fare = Fare.of(distance, extraFare);
+	}
+
+	public Path(List<Station> stations, Number distance, Fare extraFare) {
 		validateOverZero(distance.intValue());
 		this.stations = new ArrayList<>(stations);
 		this.distance = distance.intValue();
-		this.fare = fare;
+		this.fare = extraFare;
 	}
 
 	private void validateOverZero(int value) {
@@ -32,5 +39,9 @@ public class Path {
 
 	public int getDistance() {
 		return distance;
+	}
+
+	public Path disCountByAge(int age) {
+		return new Path(stations, distance, fare.discountByAge(age));
 	}
 }

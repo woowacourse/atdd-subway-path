@@ -43,6 +43,24 @@ public class Fare {
 		return 0;
 	}
 
+	public Fare discountByAge(int age) {
+		if (isTeenager(age)) {
+			return new Fare((int)(350 + (value - 350) * 0.8));
+		}
+		if (isChile(age)) {
+			return new Fare((int)(350 + (value - 350) * 0.5));
+		}
+		return this;
+	}
+
+	private boolean isChile(int age) {
+		return age >= 6 && age < 13;
+	}
+
+	private boolean isTeenager(int age) {
+		return age >= 13 && age < 19;
+	}
+
 	public int getValue() {
 		return value;
 	}

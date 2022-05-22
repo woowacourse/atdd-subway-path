@@ -8,6 +8,7 @@ public class PathRequest {
 	private final Long source;
 	@NotNull
 	private final Long target;
+	@NotNull
 	private final int age;
 
 	public PathRequest(Long source, Long target, int age) {

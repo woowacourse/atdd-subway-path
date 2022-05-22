@@ -18,8 +18,9 @@ public class PathService {
 		this.lineRepository = lineRepository;
 	}
 
-	public Path findPath(Station source, Station target) {
+	public Path findPath(Station source, Station target, int age) {
 		Lines lines = new Lines(lineRepository.findAll());
-		return lines.findPath(source, target);
+		Path path = lines.findPath(source, target);
+		return path.disCountByAge(age);
 	}
 }

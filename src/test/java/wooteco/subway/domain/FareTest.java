@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -30,5 +31,31 @@ class FareTest {
 		Fare fare = Fare.of(distance, 1000);
 		// then
 		assertThat(fare.getValue()).isEqualTo(result + 1000);
+	}
+
+	@DisplayName("1250원에 청소년 할인을 적용한다.")
+	@Test
+	void discountTeen() {
+		// given
+		Fare fare = Fare.of(9, 0);
+
+		// when
+		Fare discountedFare = fare.discountByAge(15);
+
+		// then
+		assertThat(discountedFare.getValue()).isEqualTo(1070);
+	}
+
+	@DisplayName("1250원에 어린이 할인을 적용한다.")
+	@Test
+	void discountChile() {
+		// given
+		Fare fare = Fare.of(9, 0);
+
+		// when
+		Fare discountedFare = fare.discountByAge(12);
+
+		// then
+		assertThat(discountedFare.getValue()).isEqualTo(800);
 	}
 }
