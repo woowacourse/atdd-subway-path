@@ -71,11 +71,6 @@ public class Section {
         return downStation.equals(station);
     }
 
-    void setEdgeWeightTo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        DefaultWeightedEdge edge = graph.addEdge(upStation, downStation);
-        distance.consumeValueTo((value) -> graph.setEdgeWeight(edge, value));
-    }
-
     public Long getId() {
         return id;
     }

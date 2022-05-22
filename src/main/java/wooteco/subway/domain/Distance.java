@@ -36,10 +36,6 @@ public class Distance {
         return ExtraFare.calculateTotalFare(value);
     }
 
-    public void consumeValueTo(Consumer<Double> consumer) {
-        consumer.accept(value);
-    }
-
     public double getValue() {
         return value;
     }

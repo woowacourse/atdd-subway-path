@@ -47,17 +47,4 @@ public class DistanceTest {
     void smallerThan_true() {
         assertThat(fiveKilometer.isSmallerThan(tenKilometer)).isTrue();
     }
-
-    @DisplayName("value가 5이면 예외를 터뜨리는 consumer를 5km에 적용하면 예외가 발생한다.")
-    @Test
-    void consumeValueTo_15() {
-        Consumer<Double> consumer = (value) -> {
-            if (value == 5) {
-                throw new RuntimeException("값이 5입니다.");
-            }
-        };
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> fiveKilometer.consumeValueTo(consumer))
-                .withMessage("값이 5입니다.");
-    }
 }

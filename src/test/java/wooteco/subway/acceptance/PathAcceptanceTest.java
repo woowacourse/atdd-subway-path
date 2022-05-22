@@ -47,6 +47,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
 
+        // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .queryParams(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .get("/paths")
                 .then().log().all().extract();
 
+        // then
         JsonPath jsonPath = response.body().jsonPath();
         PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
 
