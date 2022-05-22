@@ -28,7 +28,6 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.service.LineService;
-import wooteco.subway.ui.LineController;
 
 @WebMvcTest(LineController.class)
 class LineControllerUnitTest {
