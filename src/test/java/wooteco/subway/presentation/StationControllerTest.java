@@ -33,7 +33,7 @@ class StationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @DisplayName("역 생성 요청시 빈 값이 들어오면 예외 응답을 반환한다")
+    @DisplayName("역 생성 요청시 이름에 빈 값이 들어오면 예외 응답을 반환한다")
     @Test
     void sendErrorResponseWithBlankName() throws Exception {
         String blank = " ";
@@ -47,7 +47,23 @@ class StationControllerTest {
                 .andExpectAll(
                         status().isBadRequest(),
                         jsonPath("$.messages", Matchers.containsInAnyOrder(environment.getProperty("name.notBlank")))
-                )
-                .andDo(print());
+                );
+    }
+
+    @DisplayName("역 생성 요청시 이름이 최대 길이(10자)를 넘으면 예외 응답을 반환한다")
+    @Test
+    void sendErrorResponseWithTooLongName() throws Exception {
+        String tooLong = "12345678910";
+        StationRequest request = new StationRequest(tooLong);
+
+        String requestString = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestString))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        jsonPath("$.messages", Matchers.containsInAnyOrder(environment.getProperty("name.tooLong")))
+                );
     }
 }

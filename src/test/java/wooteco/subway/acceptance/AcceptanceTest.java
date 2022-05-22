@@ -33,6 +33,9 @@ class AcceptanceTest {
     @Value("${name.notBlank}")
     protected String NAME_NOT_BLANK_ERROR_MESSAGE;
 
+    @Value("${name.tooLong}")
+    protected String NAME_TOO_LONG_ERROR_MESSAGE;
+
     @LocalServerPort
     int port;
 

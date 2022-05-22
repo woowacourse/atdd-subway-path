@@ -71,6 +71,18 @@ class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NAME_NOT_BLANK_ERROR_MESSAGE);
     }
 
+    @DisplayName("지하철역 이름이 최대 길이(10자)가 넘도록 지하철역을 생성한다.")
+    @Test
+    void createStationWithTooLongName() {
+        // given && when
+        String name = "가나바라마바사아자차카";
+        ExtractableResponse<Response> response = createStationAndReturnResponse(name);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NAME_TOO_LONG_ERROR_MESSAGE);
+    }
+
     @DisplayName("지하철역을 조회한다.")
     @Test
     void getStations() {
