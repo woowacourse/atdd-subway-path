@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.controller.converter.PathConverter;
 import wooteco.subway.dto.info.PathServiceRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.service.PathService;

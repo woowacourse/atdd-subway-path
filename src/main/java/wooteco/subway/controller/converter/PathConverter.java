@@ -1,4 +1,4 @@
-package wooteco.subway.controller;
+package wooteco.subway.controller.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,11 +9,11 @@ import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 
 public class PathConverter {
-    static PathServiceRequest toInfo(Long source, Long target, int age) {
+    public static PathServiceRequest toInfo(Long source, Long target, int age) {
         return new PathServiceRequest(source, target, age);
     }
 
-    static PathResponse toResponse(PathServiceResponse pathServiceResponse) {
+    public static PathResponse toResponse(PathServiceResponse pathServiceResponse) {
         List<StationResponse> stationResponses = pathServiceResponse.getStations()
             .stream()
             .map(stationDto -> new StationResponse(stationDto.getId(), stationDto.getName()))
