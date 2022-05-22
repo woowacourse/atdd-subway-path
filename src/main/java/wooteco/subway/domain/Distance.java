@@ -12,6 +12,13 @@ public class Distance {
     private static final int STANDARD_DISTANCE_OF_OVER_FARE = 5;
     private static final int MAX_STANDARD_DISTANCE_OF_OVER_FARE = 8;
     private static final int STANDARD_OF_OVER_FARE = 100;
+    private static final double TEENAGER_DISCOUNT_RATE = 0.8;
+    private static final double CHILD_DISCOUNT_RATE = 0.5;
+    private static final int CHILD_AGE_LOWER_BOUND = 6;
+    private static final int CHILD_AGE_UPPER_BOUND = 13;
+    private static final int TEENAGER_AGE_LOWE_BOUND = 13;
+    private static final int TEENAGER_AGE_UPPER_BOUND = 19;
+    private static final int DEDUCTIBLE_AMOUNT = 350;
 
     private final int value;
 
@@ -40,23 +47,23 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
-    public Fare calculateFare(final int extraFare) {
+    public Fare calculateFare(final int extraFare, final int age) {
         if (isLessThanOrEqual(DISTANCE_OF_BASIC_FARE)) {
-            return new Fare(BASIC_FARE + extraFare);
+            return new Fare(discountFare(BASIC_FARE + extraFare, age));
         }
         if (isLessThanOrEqual(DISTANCE_OF_OVER_FARE)) {
             return new Fare(
-                    BASIC_FARE +
+                    discountFare(BASIC_FARE +
                             extraFare +
-                            calculateOverFare(value - DISTANCE_OF_BASIC_FARE, STANDARD_DISTANCE_OF_OVER_FARE)
+                            calculateOverFare(value - DISTANCE_OF_BASIC_FARE, STANDARD_DISTANCE_OF_OVER_FARE), age)
             );
         }
         return new Fare(
-                BASIC_FARE +
+                discountFare(BASIC_FARE +
                         extraFare +
                         calculateOverFare(DISTANCE_OF_OVER_FARE - DISTANCE_OF_BASIC_FARE,
                                 STANDARD_DISTANCE_OF_OVER_FARE) +
-                        calculateOverFare(value - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE)
+                        calculateOverFare(value - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE), age)
         );
     }
 
@@ -66,6 +73,24 @@ public class Distance {
 
     private int calculateOverFare(final int value, final int standardValue) {
         return (int) ((Math.ceil((value - 1) / standardValue) + 1) * STANDARD_OF_OVER_FARE);
+    }
+
+    private int discountFare(final int fare, final int age) {
+        if (isChild(age)) {
+            return (int) ((fare - DEDUCTIBLE_AMOUNT) * CHILD_DISCOUNT_RATE);
+        }
+        if (isTeenager(age)) {
+            return (int) ((fare - DEDUCTIBLE_AMOUNT) * TEENAGER_DISCOUNT_RATE);
+        }
+        return fare;
+    }
+
+    private boolean isChild(final int age) {
+        return CHILD_AGE_LOWER_BOUND <= age && age < CHILD_AGE_UPPER_BOUND;
+    }
+
+    private boolean isTeenager(final int age) {
+        return TEENAGER_AGE_LOWE_BOUND <= age && age < TEENAGER_AGE_UPPER_BOUND;
     }
 
     public int getValue() {

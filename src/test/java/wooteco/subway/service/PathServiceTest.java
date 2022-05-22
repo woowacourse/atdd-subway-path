@@ -7,7 +7,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
@@ -23,9 +24,10 @@ class PathServiceTest extends ServiceTest {
     @InjectMocks
     private PathService pathService;
 
-    @Test
+    @ParameterizedTest
     @DisplayName("출발역과 도착역의 최단 경로에 대한 정보를 조회한다.")
-    void Find() {
+    @CsvSource(value = {"6:700", "12:700", "13:1120", "18:1120", "19:1750"}, delimiter = ':')
+    void Find(final int age, final int expectedFare) {
         // given
         final Station gangnam = new Station(1L, "강남역");
         final Station yeoksam = new Station(2L, "역삼역");
@@ -84,10 +86,10 @@ class PathServiceTest extends ServiceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(20);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1750));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(expectedFare));
 
         // when
-        final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId());
+        final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId(), age);
 
         // then
         assertThat(actual).isEqualTo(expected);

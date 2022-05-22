@@ -26,7 +26,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse find(final Long sourceStationId, final Long targetStationId) {
+    public PathResponse find(final Long sourceStationId, final Long targetStationId, final int age) {
         final SubwayMap subwayMap = toSubwayMap();
         final Station sourceStation = findStationById(sourceStationId);
         final Station targetStation = findStationById(targetStationId);
@@ -34,7 +34,7 @@ public class PathService {
         final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
         final int extraFare = subwayMap.calculateMaxExtraFare(sourceStation, targetStation);
-        final Fare fare = distance.calculateFare(extraFare);
+        final Fare fare = distance.calculateFare(extraFare, age);
 
         return PathResponse.of(stations, distance, fare);
     }

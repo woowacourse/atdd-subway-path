@@ -7,12 +7,15 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.path.NoSuchPathException;
@@ -80,9 +83,10 @@ class PathControllerTest extends ControllerTest {
     void ShowPath_SameStation_ExceptionThrown() {
         // given
         final Long stationId = gangnam.getId();
+        final PathRequest request = new PathRequest(stationId, stationId, 25);
 
         // when, then
-        assertThatThrownBy(() -> pathController.showPath(stationId, stationId))
+        assertThatThrownBy(() -> pathController.showPath(request))
                 .isInstanceOf(IllegalInputException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
     }
@@ -91,20 +95,19 @@ class PathControllerTest extends ControllerTest {
     @DisplayName("출발 역에서 도착 역으로 이동할 수 없으면 예외를 던진다.")
     void ShowPath_NotExistPath_ExceptionThrown() {
         // given
-        final Long sourceStationId = gangnam.getId();
-        final Long targetStationId = yacksu.getId();
+        final PathRequest request = new PathRequest(gangnam.getId(), yacksu.getId(), 25);
 
         // when, then
-        assertThatThrownBy(() -> pathController.showPath(sourceStationId, targetStationId))
+        assertThatThrownBy(() -> pathController.showPath(request))
                 .isInstanceOf(NoSuchPathException.class);
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("출발 역에서 도착 역으로 최단 경로를 계산한다.")
-    void ShowPath() {
+    @CsvSource(value = {"6:1200", "12:1200", "13:1920", "18:1920", "19:2750"}, delimiter = ':')
+    void ShowPath(final int age, final int expectedFare) {
         // given
-        final Long sourceStationId = gangnam.getId();
-        final Long targetStationId = dapsimni.getId();
+        final PathRequest request = new PathRequest(gangnam.getId(), dapsimni.getId(), age);
 
         final List<Station> expectedStations = List.of(
                 gangnam,
@@ -115,10 +118,10 @@ class PathControllerTest extends ControllerTest {
                 majang,
                 dapsimni
         );
-        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69), new Fare(2750));
+        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69), new Fare(expectedFare));
 
         // when
-        final PathResponse actual = pathController.showPath(sourceStationId, targetStationId)
+        final PathResponse actual = pathController.showPath(request)
                 .getBody();
 
         // then

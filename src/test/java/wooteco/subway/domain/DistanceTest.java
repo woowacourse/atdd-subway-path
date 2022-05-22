@@ -17,7 +17,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare(0);
+        final Fare actual = distance.calculateFare(0, 25);
 
         // then
         assertThat(actual.getValue()).isEqualTo(1_250);
@@ -31,7 +31,7 @@ class DistanceTest {
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare(0);
+        final Fare actual = distance.calculateFare(0, 25);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
@@ -39,13 +39,14 @@ class DistanceTest {
 
     @ParameterizedTest
     @DisplayName("50km 초과 거리에 대한 요금을 계산한다.")
-    @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
-    void Calculate_MoreThan50_ExtraFareReturned(final int distanceValue, final int expected) {
+    @CsvSource(value = {"51:6:900", "51:12:900", "51:13:1440", "51:18:1440", "51:19:2150",
+            "58:25:2150", "59:25:2250"}, delimiter = ':')
+    void Calculate_MoreThan50_ExtraFareReturned(final int distanceValue, final int age, final int expected) {
         // given
         final Distance distance = new Distance(distanceValue);
 
         // when
-        final Fare actual = distance.calculateFare(0);
+        final Fare actual = distance.calculateFare(0, age);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
