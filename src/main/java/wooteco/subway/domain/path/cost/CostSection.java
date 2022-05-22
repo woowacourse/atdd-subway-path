@@ -38,7 +38,7 @@ public class CostSection implements Comparable<CostSection> {
     }
 
     private boolean isInfinite() {
-        if (threshold == -1) {
+        if (threshold == INFINITY) {
             return true;
         }
         return false;

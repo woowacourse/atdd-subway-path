@@ -67,11 +67,12 @@ public class CostManagerTest {
         assertThat(result).isEqualTo(fare);
     }
 
-    @Test
-    void 어린이보다_어린_나이인_경우_예외발생() {
+    @ParameterizedTest
+    @ValueSource(ints = {5,201})
+    void 어린이보다_나이가_적거나_200세보다_나이가_많으면_예외발생(int age) {
         CostManager costManager = new CostManager(List.of(new CostSection(50, 8, 100),
                 new CostSection(10, 5, 100)));
-        assertThatThrownBy(() -> costManager.calculateFare(60, 0, 5))
+        assertThatThrownBy(() -> costManager.calculateFare(60, 0, age))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
