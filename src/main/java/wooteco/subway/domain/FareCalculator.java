@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.domain.farepolicy.FarePolicy;
+
 public class FareCalculator {
 
     private static final int BASIC_FARE = 1250;
@@ -9,19 +11,14 @@ public class FareCalculator {
     private static final int LONG_RANGE_DISTANCE_RATE = 8;
     private static final int OVER_FARE = 100;
 
-    private FareCalculator() {
+    private final FarePolicy farePolicy;
+
+    public FareCalculator(FarePolicy farePolicy) {
+        this.farePolicy = farePolicy;
     }
 
-    private static class Holder {
-        private static final FareCalculator instance = new FareCalculator();
-    }
-
-    public static FareCalculator getInstance() {
-        return Holder.instance;
-    }
-
-    public int calculate(int distance) {
-        return BASIC_FARE + calculateOverFare(distance);
+    public int calculate(int distance, int extraFare) {
+        return farePolicy.calculate(BASIC_FARE + calculateOverFare(distance) + extraFare);
     }
 
     private int calculateOverFare(int distance) {
