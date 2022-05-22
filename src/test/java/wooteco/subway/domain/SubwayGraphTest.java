@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,6 +34,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.fare.SubwayFare;
 
 public class SubwayGraphTest {
 

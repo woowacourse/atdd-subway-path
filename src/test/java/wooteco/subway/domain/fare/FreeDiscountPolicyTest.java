@@ -5,14 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class TeenagerDiscountPolicyTest {
+public class FreeDiscountPolicyTest {
 
     @Test
-    @DisplayName("청소년은 350원을 공제한 금액의 20%를 할인한다.")
+    @DisplayName("유아, 노인은 무임이 적용된다.")
     void teenagerDiscountPolicy() {
-        DiscountPolicy policy = new TeenagerDiscountPolicy();
+        DiscountPolicy policy = new FreeDiscountPolicy();
         int result = policy.calculate(1250);
 
-        assertThat(result).isEqualTo(720);
+        assertThat(result).isEqualTo(0);
     }
 }

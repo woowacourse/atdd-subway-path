@@ -1,7 +1,5 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.DiscountPolicy;
-
 public class ChildrenDiscountPolicy implements DiscountPolicy {
 
     @Override

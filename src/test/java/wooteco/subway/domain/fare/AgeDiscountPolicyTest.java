@@ -40,4 +40,13 @@ class AgeDiscountPolicyTest {
     void childrenFare(int fare, int result) {
         assertThat(AgeDiscountPolicy.CHILDREN.calculate(fare)).isEqualTo(result);
     }
+
+    @ParameterizedTest(name = "나이 : {0}")
+    @ValueSource(ints = {1, 5, 65})
+    @DisplayName("무임 요금 정책을 조회한다.")
+    void freeDiscountPolicy(int age) {
+        AgeDiscountPolicy policy = AgeDiscountPolicy.find(age);
+
+        assertThat(policy).isEqualTo(AgeDiscountPolicy.FREE);
+    }
 }

@@ -1,9 +1,9 @@
 package wooteco.subway.domain.fare;
 
-public class DefaultDiscountPolicy implements DiscountPolicy {
+public class FreeDiscountPolicy implements DiscountPolicy {
 
     @Override
     public int calculate(int fare) {
-        return fare;
+        return 0;
     }
 }

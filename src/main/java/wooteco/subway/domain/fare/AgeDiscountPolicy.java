@@ -1,16 +1,17 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.DiscountPolicy;
-
 public enum AgeDiscountPolicy {
     CHILDREN(new ChildrenDiscountPolicy()),
     TEENAGER(new TeenagerDiscountPolicy()),
-    DEFAULT(new DefaultDiscountPolicy());
+    DEFAULT(new DefaultDiscountPolicy()),
+    FREE(new FreeDiscountPolicy());
 
     private static final int MAX_TEENAGER = 18;
     private static final int MIN_TEENAGER = 13;
     private static final int MAX_CHILDREN = 12;
     private static final int MIN_CHILDREN = 6;
+    private static final int MAX_FREE = 65;
+    private static final int MIN_FREE = 5;
 
     private final DiscountPolicy discountPolicy;
 
@@ -24,6 +25,9 @@ public enum AgeDiscountPolicy {
         }
         if (MIN_TEENAGER <= age && age <= MAX_TEENAGER) {
             return TEENAGER;
+        }
+        if (age <= MIN_FREE || age >= MAX_FREE) {
+            return FREE;
         }
         return DEFAULT;
     }

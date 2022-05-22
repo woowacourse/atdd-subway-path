@@ -10,7 +10,7 @@ class ChildrenDiscountPolicyTest {
     @Test
     @DisplayName("어린이는 350원을 공제한 금액의 20%를 할인한다.")
     void teenagerDiscountPolicy() {
-        ChildrenDiscountPolicy policy = new ChildrenDiscountPolicy();
+        DiscountPolicy policy = new ChildrenDiscountPolicy();
         int result = policy.calculate(1250);
 
         assertThat(result).isEqualTo(450);
