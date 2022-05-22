@@ -1,5 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.SubwayException;
 
 public class Path {

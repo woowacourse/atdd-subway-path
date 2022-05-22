@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.common.TestFixtures.신당역;
