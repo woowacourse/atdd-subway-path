@@ -34,7 +34,7 @@ class SectionDaoTest {
     @DisplayName("구간을 저장한다.")
     @Test
     void 구간_저장() {
-        Line line2 = generateLine("2호선", "bg-green-600");
+        Line line2 = generateLine("2호선", "bg-green-600", 0);
         Station 선릉역 = generateStation("선릉역");
         Station 잠실역 = generateStation("잠실역");
         Integer distance = 10;
@@ -52,7 +52,7 @@ class SectionDaoTest {
     @DisplayName("구간 조작 기능을 확인한다.")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromLine() {
-        Line line = generateLine("2호선", "bg-green-600");
+        Line line = generateLine("2호선", "bg-green-600", 0);
         Station 선릉역 = generateStation("선릉역");
         Station 잠실역 = generateStation("잠실역");
         int distance1 = 10;
@@ -85,8 +85,10 @@ class SectionDaoTest {
         );
     }
 
-    private Line generateLine(String name, String color) {
-        return lineDao.save(new Line(name, color));
+
+
+    private Line generateLine(String name, String color, int extraFare) {
+        return lineDao.save(new Line(name, color, extraFare));
     }
 
     private Station generateStation(String name) {

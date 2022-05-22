@@ -16,12 +16,8 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, 0);
-    }
-
-    public Line(String name, String color) {
-        this(null, name, color, 0);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public boolean isNotSameName(String name) {

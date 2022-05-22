@@ -28,7 +28,7 @@ public class LineDaoTest {
     @DisplayName("이름과 색깔을 활용하여 노선을 저장한다.")
     @Test
     void 노선_저장() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
         Line savedLine = lineDao.save(line);
 
@@ -42,7 +42,7 @@ public class LineDaoTest {
     @ParameterizedTest
     @CsvSource({"2호선,true", "3호선,false"})
     void 노선_이름_유무(String name, boolean expected) {
-        lineDao.save(new Line("2호선", "bg-green-600"));
+        lineDao.save(new Line("2호선", "bg-green-600", 0));
 
         boolean result = lineDao.existsByName(name);
 
@@ -52,7 +52,7 @@ public class LineDaoTest {
     @DisplayName("중복된 노선을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_노선_예외발생() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
         lineDao.save(line);
 
@@ -71,10 +71,10 @@ public class LineDaoTest {
     @DisplayName("저장된 노선을 수정한다.")
     @Test
     void 노선_수정() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
         Line savedLine = lineDao.save(line);
 
-        lineDao.update(savedLine.getId(), new Line("2호선", "bg-yellow-600"));
+        lineDao.update(savedLine.getId(), new Line("2호선", "bg-yellow-600", 0));
         Line updatedLine = lineDao.findById(savedLine.getId()).get();
 
         assertAll(
@@ -86,9 +86,9 @@ public class LineDaoTest {
     @DisplayName("저장된 모든 노선을 조회한다.")
     @Test
     void 모든_노선_조회() {
-        lineDao.save(new Line("2호선", "bg-green-600"));
-        lineDao.save(new Line("1호선", "bg-darkblue-600"));
-        lineDao.save(new Line("3호선", "bg-orange-600"));
+        lineDao.save(new Line("2호선", "bg-green-600", 0));
+        lineDao.save(new Line("1호선", "bg-darkblue-600", 0));
+        lineDao.save(new Line("3호선", "bg-orange-600", 0));
 
         assertThat(lineDao.findAll().size()).isEqualTo(3);
     }
@@ -96,7 +96,7 @@ public class LineDaoTest {
     @DisplayName("생서된 노선을 삭제한다.")
     @Test
     void 노선_삭제() {
-        Line line = lineDao.save(new Line("4호선", "bg-skyblue-600"));
+        Line line = lineDao.save(new Line("4호선", "bg-skyblue-600", 0));
 
         lineDao.deleteById(line.getId());
 
