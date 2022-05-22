@@ -12,7 +12,37 @@ public class FareTest {
     @DisplayName("1km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원")
     void calculate_1Km() {
         // when
-        int result = Fare.calculateFare(1, 0);
+        int result = Fare.calculateFare(1, 0, 20);
+
+        // then
+        assertThat(result).isEqualTo(1250);
+    }
+
+    @Test
+    @DisplayName("1km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원. 6세")
+    void calculate_1Km_age_6() {
+        // when
+        int result = Fare.calculateFare(1, 0, 6);
+
+        // then
+        assertThat(result).isEqualTo(800);
+    }
+
+    @Test
+    @DisplayName("1km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원. 13세")
+    void calculate_1Km_age_13() {
+        // when
+        int result = Fare.calculateFare(1, 0, 13);
+
+        // then
+        assertThat(result).isEqualTo(1070);
+    }
+
+    @Test
+    @DisplayName("1km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원. 19세")
+    void calculate_1Km_age_19() {
+        // when
+        int result = Fare.calculateFare(1, 0, 19);
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -22,7 +52,7 @@ public class FareTest {
     @DisplayName("1km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원 + 추가요금 100원")
     void calculate_1Km_extra_100_Won() {
         // when
-        int result = Fare.calculateFare(1, 100);
+        int result = Fare.calculateFare(1, 100, 20);
 
         // then
         assertThat(result).isEqualTo(1350);
@@ -33,7 +63,7 @@ public class FareTest {
     @DisplayName("10km = 1250원. 기본운임(10㎞ 이내): 기본운임 1,250원")
     void calculate_10Km() {
         // when
-        int result = Fare.calculateFare(10, 0);
+        int result = Fare.calculateFare(10, 0, 20);
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -43,7 +73,7 @@ public class FareTest {
     @DisplayName("15km = 10km + 5km = 1350원. 10km~50km: 5km 까지 마다 100원 추가")
     void calculate_15km() {
         // when
-        int result = Fare.calculateFare(15, 0);
+        int result = Fare.calculateFare(15, 0, 20);
 
         // then
         assertThat(result).isEqualTo(1350);
@@ -53,7 +83,7 @@ public class FareTest {
     @DisplayName("15km = 10km + 5km = 1350원. 10km~50km: 5km 까지 마다 100원 추가 + 추가요금 100원")
     void calculate_15km_extra_100() {
         // when
-        int result = Fare.calculateFare(15, 100);
+        int result = Fare.calculateFare(15, 100, 20);
 
         // then
         assertThat(result).isEqualTo(1450);
@@ -63,7 +93,7 @@ public class FareTest {
     @DisplayName("20km = 10km + 5km * 2 = 2150원. 10km~50km: 5km 까지 마다 100원 추가 50km 초과: 8km 까지 마다 100원 추가")
     void calculate_20km() {
         // when
-        int result = Fare.calculateFare(20, 0);
+        int result = Fare.calculateFare(20, 0, 20);
 
         // then
         assertThat(result).isEqualTo(1450);
@@ -73,7 +103,7 @@ public class FareTest {
     @DisplayName("50km = 10km + 5km * 8 = 2150원. 50km 초과: 8km 까지 마다 100원 추가")
     void calculate_50km() {
         // when
-        int result = Fare.calculateFare(50, 0);
+        int result = Fare.calculateFare(50, 0, 20);
 
         // then
         assertThat(result).isEqualTo(2050);
@@ -83,7 +113,7 @@ public class FareTest {
     @DisplayName("50km = 10km + 5km * 8 = 2150원. 50km 초과: 8km 까지 마다 100원 추가")
     void calculate_50km_extra_100() {
         // when
-        int result = Fare.calculateFare(50, 100);
+        int result = Fare.calculateFare(50, 100, 20);
 
         // then
         assertThat(result).isEqualTo(2150);
@@ -93,7 +123,7 @@ public class FareTest {
     @DisplayName("58km = 10km + 5km * 8 + 8km = 2250원. 50km 초과: 8km 까지 마다 100원 추가")
     void calculate_58km() {
         // when
-        int result = Fare.calculateFare(58, 0);
+        int result = Fare.calculateFare(58, 0, 20);
 
         // then
         assertThat(result).isEqualTo(2150);
@@ -103,7 +133,7 @@ public class FareTest {
     @DisplayName("거리가 0 미만일 경우 예외를 발생시킨다.")
     void calculate_exception_distance() {
         assertThatThrownBy(() ->
-                Fare.calculateFare(-1, 0))
+                Fare.calculateFare(-1, 0, 20))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리 또는 추가요금은 음수일 수 없습니다.");
     }
@@ -112,8 +142,17 @@ public class FareTest {
     @DisplayName("추가요금이 0 미만일 경우 예외를 발생시킨다.")
     void calculate_exception_fee() {
         assertThatThrownBy(() ->
-                Fare.calculateFare(10, -1))
+                Fare.calculateFare(10, -1, 20))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리 또는 추가요금은 음수일 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("나이가 0 미만일 경우 예외를 발생시킨다.")
+    void calculate_exception_age() {
+        assertThatThrownBy(() ->
+                Fare.calculateFare(10, 0, -1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("나이는 음수일 수 없습니다.");
     }
 }

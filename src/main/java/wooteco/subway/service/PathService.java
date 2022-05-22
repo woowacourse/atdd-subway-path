@@ -32,7 +32,7 @@ public class PathService {
         Path path = Path.of(new Dijkstra(new Sections(sectionDao.findAll())), pathRequest.getSource(), pathRequest.getTarget());
         final Lines lines = new Lines(lineDao.findByIds(new ArrayList<>(path.getLineIds())));
         final Line line = lines.maxExtraFare();
-        int fee = Fare.calculateFare(path.getShortestDistance(), line.getExtraFare());
+        int fee = Fare.calculateFare(path.getShortestDistance(), line.getExtraFare(), pathRequest.getAge());
 
         return new PathServiceResponse(getShortestPathStations(path.getShortestPath()), path.getShortestDistance(), fee);
     }

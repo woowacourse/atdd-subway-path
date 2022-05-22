@@ -1,5 +1,7 @@
 package wooteco.subway.service.dto;
 
+import javax.validation.constraints.Positive;
+
 public class PathServiceRequest {
 
     private final Long source;
