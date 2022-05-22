@@ -22,7 +22,7 @@ public class CostManager {
         }
     }
 
-    public int calculateFare(int totalDistance) {
+    public int calculateFare(int totalDistance, int extraFare) {
         if (totalDistance <= 0) {
             return 0;
         }
@@ -35,6 +35,6 @@ public class CostManager {
         }
         CostSection lastSection = costSections.get(lastIndex);
         totalFare += lastSection.calculateFareWithBound(CostSection.ofInfinity(), totalDistance);
-        return totalFare + BASIC_FARE;
+        return totalFare + BASIC_FARE + extraFare;
     }
 }

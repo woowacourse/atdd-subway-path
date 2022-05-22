@@ -40,7 +40,7 @@ class PathServiceTest extends ServiceTest {
 
             PathResponse actual = service.findShortestPath(1L, 3L);
             PathResponse expected = new PathResponse(
-                    List.of(STATION_RESPONSE1, STATION_RESPONSE2, STATION_RESPONSE3), 10, 1250);
+                    List.of(STATION_RESPONSE1, STATION_RESPONSE2, STATION_RESPONSE3), 10, 1260);
 
             assertThat(actual).isEqualTo(expected);
         }
