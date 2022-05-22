@@ -12,18 +12,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.dto.request.LineCreateRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-
-    @Autowired
-    StationDao stationDao;
 
     @DisplayName("지하철역을 생성한다.")
     @Test

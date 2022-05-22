@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,11 +23,18 @@ import wooteco.subway.dto.response.StationResponse;
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
 
+    private Long gangnamId;
+    private Long yeoksamId;
+
+    @BeforeEach
+    void setStations() {
+        gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
+        yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
@@ -38,8 +46,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         requestPostLine(lineCreateRequest);
 
@@ -53,8 +59,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 색상으로 노선을 생성한다.")
     @Test
     void createLineWithDuplicateColor() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         requestPostLine(lineCreateRequest);
 
@@ -68,8 +72,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 지하철 노선을 조회한다.")
     @Test
     void getLines() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
         Long id1 = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -93,8 +95,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 id로 조회한다.")
     @Test
     void getLine() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
@@ -119,8 +119,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 id를 가지는 노선을 수정한다.")
     @Test
     void updateLine() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
@@ -152,8 +150,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 id의 노선을 삭제한다.")
     @Test
     void deleteLine() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
@@ -175,8 +171,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @CsvSource(value = {",", "'',''", "' ',' '"})
     void notAllowNullOrBlankNameAndColor(String name, String color) {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest(name, color, gangnamId, yeoksamId, 1);
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
@@ -209,8 +203,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선 거리로 1보다 작은 값이 올 수 없다.")
     @Test
     void notAllowLessThan1distance() {
-        Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
-        Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);

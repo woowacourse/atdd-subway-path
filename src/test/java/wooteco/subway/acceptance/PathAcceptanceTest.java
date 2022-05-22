@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,14 +15,22 @@ import wooteco.subway.dto.request.StationRequest;
 @DisplayName("최단 경로 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    private Long seolleungId;
+    private Long sportscomplexId;
+    private Long seonjeongneungId;
+    private Long samjeonId;
+
+    @BeforeEach
+    void setStations() {
+        seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
+        sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
+        seonjeongneungId = requestPostStationAndReturnId(new StationRequest("선정릉역"));
+        samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
+    }
+
     @DisplayName("최단 경로를 계산해서 보여준다.")
     @Test
     void showShortestPath() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-        Long seonjeongneungId = requestPostStationAndReturnId(new StationRequest("선정릉역"));
-        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 10));
         requestPostLine(new LineCreateRequest("수인분당선", "노란색", seolleungId, seonjeongneungId, 15));
         Long line9Id = requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5)).jsonPath()
@@ -39,10 +48,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이어져 있지 않은 경로를 조회할 경우 조회에 실패한다.")
     @Test
     void showDisconnectedPath() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 10));
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
@@ -54,9 +59,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 같을 경우 경로 조회에 실패한다.")
     @Test
     void showSameSourceAndTarget() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 10));
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, seolleungId, 20);
@@ -68,10 +70,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("거리가 10km 이내인 경우 기본 요금이 발생한다.")
     @Test
     void showBasicFare() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5));
         requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5));
 
@@ -86,10 +84,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("총 거리가 10km 초과 50km 이하인 경우 5km마다 100원씩 추가되어 계산된다.")
     @Test
     void showFareUnder50km() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 40));
         requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 10));
 
@@ -104,10 +98,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("총 거리가 50km 초과인 경우 8km마다 100원씩 추가되어 계산된다.")
     @Test
     void showFareOver50km() {
-        Long seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
-        Long sportscomplexId = requestPostStationAndReturnId(new StationRequest("종합운동장역"));
-        Long samjeonId = requestPostStationAndReturnId(new StationRequest("삼전역"));
-
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 50));
         requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 9));
 
