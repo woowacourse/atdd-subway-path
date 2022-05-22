@@ -141,7 +141,7 @@ class SectionsTest {
     @ParameterizedTest
     @ValueSource(ints = {2, 3})
     @DisplayName("상행역과 일치하는 역의 사이에 들어갈 때 더 크거나 같은 길이의 Section이면 예외가 발생한다.")
-    void addSectionBetweenEqualsUpStationExceptionByEqualsOrLargerDistance(int distance) {
+    void addSectionBetweenEqualsUpStationExceptionByEqualsOrLargerDistance(final int distance) {
         // given
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
@@ -180,7 +180,7 @@ class SectionsTest {
     @ParameterizedTest
     @ValueSource(ints = {2, 3})
     @DisplayName("하행역과 일치하는 역의 사이에 들어갈 때 더 크거나 같은 길이의 Section이면 예외가 발생한다.")
-    void addSectionBetweenEqualsDownStationExceptionByEqualsOrLargerDistance(int distance) {
+    void addSectionBetweenEqualsDownStationExceptionByEqualsOrLargerDistance(final int distance) {
         // given
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");

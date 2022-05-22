@@ -1,5 +1,6 @@
 package wooteco.subway.controller;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,7 +19,7 @@ public class PathFindController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathFindResponse> findPath(@ModelAttribute PathFindRequest pathFindRequest) {
+    public ResponseEntity<PathFindResponse> findPath(@ModelAttribute @Valid PathFindRequest pathFindRequest) {
         PathFindResponse response = pathService.findPath(pathFindRequest);
         return ResponseEntity.ok(response);
     }

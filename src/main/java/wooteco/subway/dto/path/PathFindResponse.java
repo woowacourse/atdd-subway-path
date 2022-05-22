@@ -9,15 +9,15 @@ public class PathFindResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private int extraFare;
+    private int fare;
 
     private PathFindResponse() {
     }
 
-    public PathFindResponse(final List<StationResponse> stations, final int distance, final int extraFare) {
+    public PathFindResponse(final List<StationResponse> stations, final int distance, final int fare) {
         this.stations = stations;
         this.distance = distance;
-        this.extraFare = extraFare;
+        this.fare = fare;
     }
 
     public static PathFindResponse from(Path path, int age) {
@@ -36,7 +36,7 @@ public class PathFindResponse {
         return distance;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public int getFare() {
+        return fare;
     }
 }

@@ -87,6 +87,16 @@ class PathTest {
 
         assertThat(path.calculateFinalFare(20)).isEqualTo(2150);
     }
+
+    @Test
+    @DisplayName("영유아 요금은 0원이다.")
+    void calculateInfantFare() {
+        List<Station> stations = List.of(new Station(1L, "강남역"), new Station(2L, "선릉역"), new Station(3L, "선정릉역"));
+        List<Line> lines = List.of(new Line("1호선", "bg-red-600", 900));
+        Path path = new Path(stations, 8, lines);
+
+        assertThat(path.calculateFinalFare(5)).isEqualTo(0);
+    }
     
     @Test
     @DisplayName("어린이 요금으로 할인할 수 있다.")
