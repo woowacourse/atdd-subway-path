@@ -195,21 +195,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "  ", "     "})
     void canNotUpdateLineWithEmptyColor(String lineColor) {
         // given
-        long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
-        long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10, 0);
-        long createdId = response.jsonPath().getLong("id");
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id,
+            10, 0).jsonPath().getLong("id");
 
         // when & then
-        RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(Map.of("name", "신분당선", "color", lineColor))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .put("/lines/" + createdId)
+            .put("/lines/" + 신분당선_id)
             .then().log().all()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("지하철 노선 수정")
@@ -252,24 +253,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void canNotUpdateByDuplicationName() {
         // given
-        long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
-        long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600",
-            upStationId, downStationId, 10, 0);
-
-        requestCreateLine("1호선", "bg-red-600", upStationId, downStationId, 10, 0);
-
-        long createdId = response.jsonPath().getLong("id");
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id,
+            10, 0).jsonPath().getLong("id");
+        requestCreateLine("1호선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0);
 
         // when
-        RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(Map.of("name", "1호선", "color", "bg-red-600"))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .put("/lines/" + createdId)
+            .put("/lines/" + 신분당선_id)
             .then().log().all()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("존재하지 않는 노선 수정 시도")

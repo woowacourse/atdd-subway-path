@@ -68,6 +68,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             upStationId, 8);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("정상적인 구간 추가")
@@ -100,6 +101,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             newStationId, 10);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("노선에 추가되지 않은 상행, 하행 지하철역을 구간으로 사용 시 실패")
@@ -117,6 +119,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             notFoundStationId2, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("동일한 상행, 하행 역으로 구간 등록 시 실패")
@@ -133,6 +136,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             newStationId, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("구간 삭제 시 지하철 노선이 존재하지 않는 경우")
@@ -179,6 +183,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .then().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("구간 한 개만 있는 노선에서는 구간 삭제 실패")
@@ -195,6 +200,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .then().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("상행 종점 구간 제거")

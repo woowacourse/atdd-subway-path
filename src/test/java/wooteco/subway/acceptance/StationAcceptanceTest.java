@@ -39,6 +39,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("지하철 역 이름에 빈 문자열을 사용할 수 없다")
@@ -50,6 +51,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("지하철 역을 조회한다.")

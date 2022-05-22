@@ -35,27 +35,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 경로 탐색")
     @Test
     void searchPath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
 
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0).jsonPath()
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0).jsonPath()
             .getLong("id");
-
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 0).jsonPath()
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 0).jsonPath()
             .getLong("id");
-        requestAddSection(line1, station2, station3, 10);
-        requestAddSection(line2, station3, station1, 5);
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
 
-        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 21);
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 21);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int fare = response.jsonPath().getObject("fare", Integer.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450);
     }
@@ -63,40 +62,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("source에서 target으로 가는 경로가 없는 경우 400 에러를 반환한다.")
     @Test
     void searchUnreachablePath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0);
-        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10, 0);
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 부산역_id = requestCreateStation("부산역").jsonPath().getLong("id");
+        long 서면역_id = requestCreateStation("서면역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0);
+        requestCreateLine("1호선", "bg-blue-600", 부산역_id, 서면역_id, 10, 0);
 
-        ExtractableResponse<Response> response = requestSearchPath(station1, station4, 21);
+        ExtractableResponse<Response> response = requestSearchPath(강남역_id, 서면역_id, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("추가 요금이 있는 지하철 노선 경로 탐색")
     @Test
     void searchPathHasExtraFareLine() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 1000).jsonPath()
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 1000).jsonPath()
             .getLong("id");
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 900).jsonPath()
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 900).jsonPath()
             .getLong("id");
-        requestAddSection(line1, station2, station3, 10);
-        requestAddSection(line2, station3, station1, 5);
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
 
-        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 21);
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 21);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int fare = response.jsonPath().getObject("fare", Integer.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(2450);
     }
@@ -104,27 +104,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("청소년 지하철 경로 탐색")
     @Test
     void searchPathByYouth() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
 
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10, 0).jsonPath()
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0).jsonPath()
             .getLong("id");
-
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10, 0).jsonPath()
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 0).jsonPath()
             .getLong("id");
-        requestAddSection(line1, station2, station3, 10);
-        requestAddSection(line2, station3, station1, 5);
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
 
-        ExtractableResponse<Response> response = requestSearchPath(station4, station2, 15);
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 15);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int fare = response.jsonPath().getObject("fare", Integer.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(880);
     }
