@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -40,8 +40,8 @@ public class SectionDaoTest {
     @DisplayName("지하철 구간을 저장한다.")
     void save() {
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
-        final Long downStationId = stationDao.save(new StationEntity(SINSA));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final SectionEntity SectionEntity = new SectionEntity(lineId, upStationId, downStationId, 10);
 
         final Long id = sectionDao.save(SectionEntity);
@@ -60,9 +60,9 @@ public class SectionDaoTest {
     void batchSave() {
         // given
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
-        final Long stationId2 = stationDao.save(new StationEntity(SINSA));
+        final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final List<SectionEntity> sections = List.of(new SectionEntity(lineId, stationId1, stationId2, 10),
                 new SectionEntity(lineId, stationId2, stationId3, 10));
 
@@ -78,9 +78,9 @@ public class SectionDaoTest {
     @DisplayName("지하철 역 ID로 모든 구간을 조회한다.")
     void findAllByLineId() {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
-        final Long stationId2 = stationDao.save(new StationEntity(SINSA));
+        final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final SectionEntity section1 = new SectionEntity(lineId, stationId1, stationId2, 10);
         final SectionEntity section2 = new SectionEntity(lineId, stationId2, stationId3, 10);
 
@@ -97,8 +97,8 @@ public class SectionDaoTest {
     void findById() {
         // given
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
-        final Long downStationId = stationDao.save(new StationEntity(SINSA));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final SectionEntity SectionEntity = new SectionEntity(lineId, upStationId, downStationId, 10);
         final Long id = sectionDao.save(SectionEntity);
 
@@ -119,8 +119,8 @@ public class SectionDaoTest {
     void deleteById() {
         // given
         final Long upStationId = stationDao.save(new StationEntity(HYEHWA));
-        final Long downStationId = stationDao.save(new StationEntity(SINSA));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long downStationId = stationDao.save(new StationEntity(SUNGSHIN));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final Long sectionId = sectionDao.save(new SectionEntity(lineId, upStationId, downStationId, 10));
 
         // when
@@ -135,9 +135,9 @@ public class SectionDaoTest {
     void batchDelete() {
         // given
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
-        final Long stationId2 = stationDao.save(new StationEntity(SINSA));
+        final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final List<SectionEntity> sections = List.of(new SectionEntity(lineId, stationId1, stationId2, 10),
                 new SectionEntity(lineId, stationId2, stationId3, 10));
 
@@ -154,9 +154,9 @@ public class SectionDaoTest {
     void findAll() {
         //given
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
-        final Long stationId2 = stationDao.save(new StationEntity(SINSA));
+        final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
         final SectionEntity section1 = new SectionEntity(lineId, stationId1, stationId2, 10);
         final SectionEntity section2 = new SectionEntity(lineId, stationId2, stationId3, 10);
         sectionDao.save(section1);

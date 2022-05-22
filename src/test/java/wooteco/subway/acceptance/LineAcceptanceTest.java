@@ -2,14 +2,14 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.Fixtures.BLUE;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.JAMSIL;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -40,11 +40,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void create() {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
-        params.put("color", RED);
+        params.put("name", LINE_4);
+        params.put("color", SKY_BLUE);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
@@ -64,11 +64,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
             assertThat(response.header("Location")).isNotBlank();
-            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_2);
-            assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED);
+            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_4);
+            assertThat(response.body().jsonPath().getString("color")).isEqualTo(SKY_BLUE);
             assertThat(stationResponses).hasSize(2);
             assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(stationResponses.get(1).getName()).isEqualTo(SINSA);
+            assertThat(stationResponses.get(1).getName()).isEqualTo(SUNGSHIN);
         });
     }
 
@@ -83,11 +83,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createWithDuplicateName() {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
-        params.put("color", RED);
+        params.put("name", LINE_4);
+        params.put("color", SKY_BLUE);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
@@ -122,14 +122,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     void showAll() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        final Long stationId3 = createStation(GANGNAM);
+        final Long stationId4 = createStation(JAMSIL);
 
         final Map<String, Object> params1 = new HashMap<>();
-        params1.put("name", LINE_2);
-        params1.put("color", RED);
-        params1.put("upStationId", upStationId);
-        params1.put("downStationId", downStationId);
+        params1.put("name", LINE_4);
+        params1.put("color", SKY_BLUE);
+        params1.put("upStationId", stationId1);
+        params1.put("downStationId", stationId2);
         params1.put("distance", 10);
         RestAssured.given().log().all()
                 .body(params1)
@@ -139,10 +141,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all();
 
         final Map<String, Object> params2 = new HashMap<>();
-        params2.put("name", LINE_4);
-        params2.put("color", BLUE);
-        params2.put("upStationId", upStationId);
-        params2.put("downStationId", downStationId);
+        params2.put("name", LINE_2);
+        params2.put("color", GREEN);
+        params2.put("upStationId", stationId3);
+        params2.put("downStationId", stationId4);
         params2.put("distance", 10);
         RestAssured.given().log().all()
                 .body(params2)
@@ -162,14 +164,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(lineResponses.get(0).getName()).isEqualTo(LINE_2);
-            assertThat(lineResponses.get(0).getColor()).isEqualTo(RED);
+            assertThat(lineResponses.get(0).getName()).isEqualTo(LINE_4);
+            assertThat(lineResponses.get(0).getColor()).isEqualTo(SKY_BLUE);
             assertThat(lineResponses.get(0).getStations().get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(lineResponses.get(0).getStations().get(1).getName()).isEqualTo(SINSA);
-            assertThat(lineResponses.get(1).getName()).isEqualTo(LINE_4);
-            assertThat(lineResponses.get(1).getColor()).isEqualTo(BLUE);
-            assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo(SINSA);
+            assertThat(lineResponses.get(0).getStations().get(1).getName()).isEqualTo(SUNGSHIN);
+            assertThat(lineResponses.get(1).getName()).isEqualTo(LINE_2);
+            assertThat(lineResponses.get(1).getColor()).isEqualTo(GREEN);
+            assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo(GANGNAM);
+            assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo(JAMSIL);
         });
     }
 
@@ -183,11 +185,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void show() {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
-        params.put("color", RED);
+        params.put("name", LINE_4);
+        params.put("color", SKY_BLUE);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
@@ -212,11 +214,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_2);
-            assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED);
+            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_4);
+            assertThat(response.body().jsonPath().getString("color")).isEqualTo(SKY_BLUE);
             assertThat(stationResponses).hasSize(2);
             assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(stationResponses.get(1).getName()).isEqualTo(SINSA);
+            assertThat(stationResponses.get(1).getName()).isEqualTo(SUNGSHIN);
         });
     }
 
@@ -253,11 +255,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void update() {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
         final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_2);
-        saveParams.put("color", RED);
+        saveParams.put("name", LINE_4);
+        saveParams.put("color", SKY_BLUE);
         saveParams.put("upStationId", upStationId);
         saveParams.put("downStationId", downStationId);
         saveParams.put("distance", 10);
@@ -271,8 +273,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .header("Location").split("/")[2]);
 
         final Map<String, String> params = new HashMap<>();
-        params.put("name", LINE_4);
-        params.put("color", BLUE);
+        params.put("name", LINE_2);
+        params.put("color", GREEN);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -298,8 +300,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         final long id = 100L;
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "분당선");
-        params.put("color", "bg-blue-500");
+        params.put("name", LINE_4);
+        params.put("color", SKY_BLUE);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -325,11 +327,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void delete() {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
         final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_2);
-        saveParams.put("color", RED);
+        saveParams.put("name", LINE_4);
+        saveParams.put("color", SKY_BLUE);
         saveParams.put("upStationId", upStationId);
         saveParams.put("downStationId", downStationId);
         saveParams.put("distance", 10);
@@ -390,9 +392,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection1() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -417,9 +419,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection2() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId2, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId2, stationId3, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -444,9 +446,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection3() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -471,9 +473,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection4() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -498,9 +500,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection5() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId3, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -525,7 +527,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection6() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final long lineId = 10L;
 
             final Map<String, Object> params = new HashMap<>();
@@ -551,8 +553,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection7() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId2 = createStation(SUNGSHIN);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -577,10 +579,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void createSection8() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
             final Long stationId4 = createStation(JAMSIL);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId3);
@@ -617,9 +619,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void deleteSection1() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -655,9 +657,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void deleteSections3() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId2 = createStation(SUNGSHIN);
             final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -676,8 +678,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void deleteSections4() {
             // given
             final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId2 = createStation(SUNGSHIN);
+            final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
 
             // when
             final ExtractableResponse<Response> response = RestAssured.given().log().all()

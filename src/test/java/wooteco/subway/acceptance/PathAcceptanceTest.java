@@ -3,9 +3,9 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.LINE_4;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -32,9 +32,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void find() {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -55,9 +55,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void find_sameStation() {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -78,9 +78,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void find_noPath() {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        createLine(LINE_2, RED, stationId1, stationId2, 10);
+        createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
 
         // when
         final ExtractableResponse<Response> response = getPath(stationId1, stationId3, 29);

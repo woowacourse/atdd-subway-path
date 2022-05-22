@@ -3,10 +3,10 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.Fixtures.BLUE;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
-import static wooteco.subway.Fixtures.RED;
+import static wooteco.subway.Fixtures.SKY_BLUE;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -36,14 +36,14 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 저장한다.")
     void save() {
         // when
-        final Long id = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // then
         final LineEntity savedLine = lineDao.findById(id);
         assertAll(() -> {
             assertThat(savedLine.getId()).isNotNull();
             assertThat(savedLine.getName()).isEqualTo(LINE_2);
-            assertThat(savedLine.getColor()).isEqualTo(RED);
+            assertThat(savedLine.getColor()).isEqualTo(SKY_BLUE);
         });
     }
 
@@ -51,10 +51,10 @@ public class LineDaoTest {
     @DisplayName("같은 이름의 노선을 저장하는 경우, 예외가 발생한다.")
     void saveDuplicateName() {
         // given
-        lineDao.save(new LineEntity(LINE_2, RED));
+        lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when & then
-        assertThatThrownBy(() -> lineDao.save(new LineEntity(LINE_2, BLUE)))
+        assertThatThrownBy(() -> lineDao.save(new LineEntity(LINE_2, GREEN)))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -62,10 +62,10 @@ public class LineDaoTest {
     @DisplayName("같은 색상의 노선을 저장하는 경우, 예외가 발생한다.")
     void saveDuplicateColor() {
         // given
-        lineDao.save(new LineEntity(LINE_2, RED));
+        lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when & then
-        assertThatThrownBy(() -> lineDao.save(new LineEntity(LINE_4, RED)))
+        assertThatThrownBy(() -> lineDao.save(new LineEntity(LINE_4, SKY_BLUE)))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -73,8 +73,8 @@ public class LineDaoTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     void findAll() {
         // given
-        lineDao.save(new LineEntity(LINE_2, RED));
-        lineDao.save(new LineEntity(LINE_4, BLUE));
+        lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
+        lineDao.save(new LineEntity(LINE_4, GREEN));
 
         // when
         final List<LineEntity> lines = lineDao.findAll();
@@ -86,7 +86,7 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 조회한다.")
     void find() {
         // given
-        final Long id = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when
         final LineEntity foundLine = lineDao.findById(id);
@@ -94,7 +94,7 @@ public class LineDaoTest {
         // then
         assertAll(() -> {
             assertThat(foundLine.getName()).isEqualTo(LINE_2);
-            assertThat(foundLine.getColor()).isEqualTo(RED);
+            assertThat(foundLine.getColor()).isEqualTo(SKY_BLUE);
         });
     }
 
@@ -110,16 +110,16 @@ public class LineDaoTest {
     @DisplayName("노선 정보를 업데이트 한다.")
     void update() {
         // given
-        final Long id = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when
-        lineDao.updateById(new LineEntity(id, LINE_4, BLUE));
+        lineDao.updateById(new LineEntity(id, LINE_4, GREEN));
 
         // then
         final LineEntity updatedLine = lineDao.findById(id);
         assertAll(() -> {
             assertThat(updatedLine.getName()).isEqualTo(LINE_4);
-            assertThat(updatedLine.getColor()).isEqualTo(BLUE);
+            assertThat(updatedLine.getColor()).isEqualTo(GREEN);
         });
     }
 
@@ -127,7 +127,7 @@ public class LineDaoTest {
     @DisplayName("노선을 삭제한다.")
     void delete() {
         // given
-        final Long id = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when
         lineDao.deleteById(id);
@@ -140,7 +140,7 @@ public class LineDaoTest {
     @DisplayName("ID를 이용해 지하철 노선이 있는지 확인한다.")
     void existsById() {
         // given
-        final Long id = lineDao.save(new LineEntity(LINE_2, RED));
+        final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE));
 
         // when
         final boolean isExist = lineDao.existsById(id);

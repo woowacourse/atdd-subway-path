@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
@@ -42,9 +42,9 @@ public class PathControllerIntegrationTest {
     void find() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -57,7 +57,7 @@ public class PathControllerIntegrationTest {
                 .andExpect(jsonPath("stations[0].id").value(stationId1))
                 .andExpect(jsonPath("stations[0].name").value(HYEHWA))
                 .andExpect(jsonPath("stations[1].id").value(stationId2))
-                .andExpect(jsonPath("stations[1].name").value(SINSA))
+                .andExpect(jsonPath("stations[1].name").value(SUNGSHIN))
                 .andExpect(jsonPath("stations[2].id").value(stationId3))
                 .andExpect(jsonPath("stations[2].name").value(GANGNAM))
                 .andExpect(jsonPath("distance").value(20))

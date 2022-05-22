@@ -2,13 +2,13 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.Fixtures.BLUE;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
 import static wooteco.subway.Fixtures.LEFT;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
-import static wooteco.subway.Fixtures.RED;
+import static wooteco.subway.Fixtures.SKY_BLUE;
 import static wooteco.subway.Fixtures.RIGHT;
 import static wooteco.subway.Fixtures.UP;
 
@@ -60,8 +60,8 @@ public class PathServiceTest {
         right = stationRepository.findById(rightId);
         down = stationRepository.findById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_2, RED));
-        final Long line4Id = lineRepository.save(new Line(LINE_4, BLUE));
+        final Long line2Id = lineRepository.save(new Line(LINE_2, SKY_BLUE));
+        final Long line4Id = lineRepository.save(new Line(LINE_4, GREEN));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));

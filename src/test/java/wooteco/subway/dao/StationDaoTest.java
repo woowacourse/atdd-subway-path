@@ -3,7 +3,7 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -64,7 +64,7 @@ class StationDaoTest {
     void findAll() {
         // given
         stationDao.save(new StationEntity(HYEHWA));
-        stationDao.save(new StationEntity(SINSA));
+        stationDao.save(new StationEntity(SUNGSHIN));
 
         // when
         final List<StationEntity> stations = stationDao.findAll();
