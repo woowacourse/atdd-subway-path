@@ -53,12 +53,6 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
         }
     }
 
-//    private void addEdgeWeight(Sections sections, WeightedMultigraph<Station, ShortestPathCustomEdge> graph) {
-//        for (Section value : sections.getValues()) {
-//            graph.setEdgeWeight(graph.addEdge(value.getUpStation(), value.getDownStation()), value.getDistance());
-//        }
-//    }
-
     private void addEdge(Sections sections, WeightedMultigraph<Station, ShortestPathCustomEdge> graph) {
         for (Section section : sections.getValues()) {
             graph.addEdge(section.getUpStation(), section.getDownStation(),
