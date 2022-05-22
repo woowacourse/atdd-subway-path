@@ -52,7 +52,7 @@ public class PathServiceTest {
         SectionDto 잠실_홍대 = sectionDao.save(new SectionDto(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 5));
 
         //when
-        PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 10);
+        PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 25);
 
         //then
         assertAll(() -> {

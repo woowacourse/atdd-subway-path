@@ -98,7 +98,7 @@ public class Line {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color, sections);
+        return Objects.hash(name, color, sections, extraFare);
     }
 
     private static class ExtraFare {
@@ -120,5 +120,21 @@ public class Line {
             return extraFare;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ExtraFare extraFare1 = (ExtraFare) o;
+            return extraFare == extraFare1.extraFare;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(extraFare);
+        }
     }
 }
