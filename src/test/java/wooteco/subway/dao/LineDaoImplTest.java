@@ -78,6 +78,23 @@ class LineDaoImplTest {
     }
 
     @Test
+    void findByIds() {
+        // given
+        Line line1 = new Line("1호선", "bg-red-600");
+        Line line2 = new Line("2호선", "bg-green-600");
+
+        // when
+        lineDaoImpl.save(line1);
+        lineDaoImpl.save(line2);
+
+        // then
+        List<Line> lines = lineDaoImpl.findByIds(List.of(1L, 2L));
+        final int result = lines.size();
+
+        assertThat(result).isEqualTo(2);
+    }
+
+    @Test
     void delete() {
         // given
         Line line = new Line("1호선", "bg-red-600");

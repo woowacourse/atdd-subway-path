@@ -10,7 +10,7 @@ public class Lines {
         this.lines = lines;
     }
 
-    public Line maxExtraFare() {
+    public Line getMaxExtraFare() {
         Line maxLine = null;
         for (final Line line : lines) {
             maxLine = line.comparesMoreExpensiveExtraFare(maxLine);
