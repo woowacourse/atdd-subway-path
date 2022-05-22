@@ -21,10 +21,6 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this(name, color, upStationId, downStationId, distance, 0);
-    }
-
     public String getName() {
         return name;
     }

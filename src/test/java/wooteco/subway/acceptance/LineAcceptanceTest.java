@@ -35,7 +35,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Integer distance = 7;
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(new LineRequest("2호선", "bg-green-600", 선릉역Id, 잠실역Id, distance))
+                .body(new LineRequest("2호선", "bg-green-600", 선릉역Id, 잠실역Id, distance, 0))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
@@ -102,7 +102,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
                 dynamicTest("노선의 이름와 색깔을 활용하여 노선을 수정한다.", () -> {
                     ExtractableResponse<Response> response = RestAssured.given().log().all()
-                            .body(new LineUpdateRequest("1호선", "bg-green-600"))
+                            .body(new LineUpdateRequest("1호선", "bg-green-600", 0))
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .when()
                             .put("/lines/" + line1Id)
@@ -114,7 +114,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
                 dynamicTest("존재하지 않는 노선을 수정할 경우 404를 반환한다.", () -> {
                     ExtractableResponse<Response> response = RestAssured.given().log().all()
-                            .body(new LineUpdateRequest("2호선", "bg-blue-600"))
+                            .body(new LineUpdateRequest("2호선", "bg-blue-600", 0))
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .when()
                             .put("/lines/" + 0)
@@ -126,7 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
                 dynamicTest("중복된 이름을 가진 노선으로 수정할 경우 예외를 던진다.", () -> {
                     ExtractableResponse<Response> response = RestAssured.given().log().all()
-                            .body(new LineUpdateRequest("2호선", "bg-green-600"))
+                            .body(new LineUpdateRequest("2호선", "bg-green-600", 0))
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .when()
                             .put("/lines/" + line1Id)
@@ -425,7 +425,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private Long generateLineId(String name, String color, Long upStationId, Long downStationId, Integer distance) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(new LineRequest(name, color, upStationId, downStationId, distance))
+                .body(new LineRequest(name, color, upStationId, downStationId, distance, 0))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")

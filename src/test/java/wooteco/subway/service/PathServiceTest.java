@@ -38,7 +38,8 @@ class PathServiceTest {
         StationResponse 강남역 = stationService.save(new StationRequest("강남역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         StationResponse 신대방역 = stationService.save(new StationRequest("신대방역"));
-        LineRequest lineRequest = new LineRequest("2호선", "green", 선릉역.getId(), 강남역.getId(), 10);
+        LineRequest lineRequest = new LineRequest(
+                "2호선", "green", 선릉역.getId(), 강남역.getId(), 10, 0);
         LineResponse lineResponse = lineService.save(lineRequest);
         SectionRequest sectionRequest1 = new SectionRequest(강남역.getId(), 낙성대역.getId(), 10);
         SectionRequest sectionRequest2 = new SectionRequest(낙성대역.getId(), 신대방역.getId(), 10);
@@ -62,15 +63,15 @@ class PathServiceTest {
         StationResponse 대림역 = stationService.save(new StationRequest("대림역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
         LineResponse line7Response = lineService.save(line7);
         lineService.addSection(line7Response.getId(), new SectionRequest(강남구청역.getId(), 대림역.getId(), 10));
         LineRequest line2 = new LineRequest(
-                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5);
+                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5, 0);
         LineResponse line2Response = lineService.save(line2);
         lineService.addSection(line2Response.getId(), new SectionRequest(낙성대역.getId(), 대림역.getId(), 5));
 
-        PathResponse pathResponse = pathService.findPath(건대입구역.getId(), 대림역.getId(), 24);
+        PathResponse pathResponse = pathService.findPath(건대입구역.getId(), 대림역.getId(), 24);       
 
         assertAll(
                 () -> assertThat(pathResponse.getStations().size()).isEqualTo(3),
@@ -88,10 +89,10 @@ class PathServiceTest {
         StationResponse 부천역 = stationService.save(new StationRequest("부천역"));
         StationResponse 중동역 = stationService.save(new StationRequest("중동역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
         lineService.save(line7);
         LineRequest line1 = new LineRequest(
-                "1호선", "blue", 부천역.getId(), 중동역.getId(), 5);
+                "1호선", "blue", 부천역.getId(), 중동역.getId(), 5, 0);
         lineService.save(line1);
 
         assertThatThrownBy(() -> pathService.findPath(건대입구역.getId(), 부천역.getId(), 24))
@@ -104,7 +105,7 @@ class PathServiceTest {
         StationResponse 건대입구역 = stationService.save(new StationRequest("건대입구역"));
         StationResponse 강남구청역 = stationService.save(new StationRequest("강남구청역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
         lineService.save(line7);
 
         StationResponse 센트럴파트역 = stationService.save(new StationRequest("센트럴파트역"));

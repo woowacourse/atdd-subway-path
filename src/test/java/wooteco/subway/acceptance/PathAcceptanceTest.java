@@ -109,7 +109,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private Long generateLineId(String name, String color, Long upStationId, Long downStationId, Integer distance) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(new LineRequest(name, color, upStationId, downStationId, distance))
+                .body(new LineRequest(name, color, upStationId, downStationId, distance, 0))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
