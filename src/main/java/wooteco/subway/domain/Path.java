@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -87,5 +88,9 @@ public class Path {
         }
         stationIds.add(targetId);
         return stationIds;
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(path);
     }
 }

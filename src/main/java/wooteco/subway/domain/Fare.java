@@ -15,17 +15,19 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(final int distance) {
+    public static Fare of(final int distance, final int lineExtraFare) {
         if (distance <= STANDARD_DISTANCE) {
-            return new Fare(STANDARD_FARE);
+            return new Fare(STANDARD_FARE + lineExtraFare);
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
             return new Fare(STANDARD_FARE
-                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
+                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
+                    + lineExtraFare);
         }
         return new Fare(STANDARD_FARE
                 + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
-                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
+                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT)
+                + lineExtraFare);
     }
 
     private static int calculateOverFare(final int distance, final int unit) {

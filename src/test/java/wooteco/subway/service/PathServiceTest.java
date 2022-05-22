@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.request.PathRequest;
+import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.NotFoundStationException;
 
@@ -22,6 +23,8 @@ class PathServiceTest {
 
     @Autowired
     private PathService pathService;
+
+    @Autowired SectionService sectionService;
 
     @Test
     @DisplayName("출발지와 도착지가 주어질 때 경로와 요금을 계산한다.")
@@ -36,7 +39,27 @@ class PathServiceTest {
                                 tuple(6L, "청계산입구역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2250)
+        );
+    }
+
+    @Test
+    @DisplayName("출발지와 도착지가 주어질 때 경로와 요금을 계산한다. - 추가요금이 있는 노선 이용")
+    void findPathWithLineExtraFare() {
+        sectionService.save(2L, new SectionRequest(5L, 2L, 20));
+
+        final PathResponse pathResponse = pathService.findShortestPath(new PathRequest(2L, 6L, 10));
+
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting("id", "name")
+                        .containsExactly(
+                                tuple(2L, "왕십리역"),
+                                tuple(5L, "강남역"),
+                                tuple(6L, "청계산입구역")
+                        ),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(30),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2650)
         );
     }
 
