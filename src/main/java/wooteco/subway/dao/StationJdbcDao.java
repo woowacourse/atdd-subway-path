@@ -1,12 +1,14 @@
 package wooteco.subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -17,6 +19,10 @@ public class StationJdbcDao implements StationDao{
     public StationJdbcDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    private static final RowMapper<Station> stationRowMapper = (resultSet, rowNum) ->
+            new Station(resultSet.getLong("id"),
+                    resultSet.getString("name"));
 
     @Override
     public Station save(Station station) {
@@ -35,6 +41,14 @@ public class StationJdbcDao implements StationDao{
         final String sql = "select * from station where id = (?)";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
                 new Station(rs.getLong("id"), rs.getString("name")), id);
+    }
+
+    public List<Station> findByIds(List<Long> ids) {
+        String sql = String.join(",", Collections.nCopies(ids.size(), "?"));
+
+        return jdbcTemplate.query(
+                String.format("select * from station where id in (%s)", sql),
+                ids.toArray(), stationRowMapper);
     }
 
     @Override
