@@ -23,8 +23,8 @@ class LineDaoTest extends DaoTest {
 
     @BeforeEach
     void setUpData() {
-        redLine = new Line(RED_LINE_NAME, RED);
-        blueLine = new Line(BLUE_LINE_NAME, BLUE);
+        redLine = new Line(RED_LINE_NAME, RED, 1000);
+        blueLine = new Line(BLUE_LINE_NAME, BLUE, 900);
     }
 
     @Test
@@ -44,7 +44,7 @@ class LineDaoTest extends DaoTest {
         lineDao.insert(redLine).orElseThrow();
 
         // when
-        final Line duplicateLine = new Line(RED_LINE_NAME, BLUE);
+        final Line duplicateLine = new Line(RED_LINE_NAME, BLUE, 900);
 
         // then
         final Optional<Line> possibleLine = lineDao.insert(duplicateLine);

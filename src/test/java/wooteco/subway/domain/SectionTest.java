@@ -24,7 +24,7 @@ class SectionTest {
 
     @BeforeEach
     void setUpData() {
-        line = new Line(1L, "2호선", "bg-green-600");
+        line = new Line(1L, "2호선", "bg-green-600", 1000);
 
         seolleung = new Station(1L, "선릉역");
         samseong = new Station(2L, "삼성역");

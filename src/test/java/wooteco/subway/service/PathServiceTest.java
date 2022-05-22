@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
@@ -43,27 +44,30 @@ class PathServiceTest extends ServiceTest {
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
-        greenLine = new Line(1L, new Name("2호선"), "green", new Sections(List.of(
-                greenSectionA,
-                greenSectionB,
-                greenSectionC
-        )));
+        greenLine = new Line(1L, new Name("2호선"), "green", new ExtraFare(1000),
+                new Sections(List.of(
+                        greenSectionA,
+                        greenSectionB,
+                        greenSectionC
+                )));
 
         Line yellowLine = null;
         final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
         final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
-        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", new Sections(List.of(
-                yellowSectionA,
-                yellowSectionB
-        )));
+        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", new ExtraFare(1000),
+                new Sections(List.of(
+                        yellowSectionA,
+                        yellowSectionB
+                )));
 
         Line orangeLine = null;
         final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
         final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
-        orangeLine = new Line(2L, new Name("3호선"), "orange", new Sections(List.of(
-                orangeSectionA,
-                orangeSectionB
-        )));
+        orangeLine = new Line(2L, new Name("3호선"), "orange", new ExtraFare(1000),
+                new Sections(List.of(
+                        orangeSectionA,
+                        orangeSectionB
+                )));
 
         given(stationDao.findById(any(Long.class)))
                 .willReturn(Optional.of(gangnam))

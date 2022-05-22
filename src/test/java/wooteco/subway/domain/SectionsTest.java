@@ -33,7 +33,7 @@ class SectionsTest {
 
     @BeforeEach
     void setUpDate() {
-        line = new Line(1L, "red-line", "red");
+        line = new Line(1L, "red-line", "red", 1000);
         distance = new Distance(7);
 
         station1 = new Station(1L, "station1");

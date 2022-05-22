@@ -27,7 +27,7 @@ class SectionDaoTest extends DaoTest {
 
     @BeforeEach
     void setUpData() {
-        line = lineDao.insert(new Line("2호선", "green"))
+        line = lineDao.insert(new Line("2호선", "green", 1000))
                 .orElseThrow();
 
         redUpStation = stationDao.insert(new Station("red-up"))

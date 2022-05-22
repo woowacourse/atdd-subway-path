@@ -89,10 +89,10 @@ class StationDaoTest extends DaoTest {
         // given
         final String lineName = "2호선";
         final String lineColor = "bg-green-600";
-        final Long lineId = lineDao.insert(new Line(lineName, lineColor))
+        final Long lineId = lineDao.insert(new Line(lineName, lineColor, 1000))
                 .orElseThrow()
                 .getId();
-        final Line line = new Line(lineId, lineName, lineColor);
+        final Line line = new Line(lineId, lineName, lineColor, 1000);
 
         final Station upStation = stationDao.insert(redStation)
                 .orElseThrow();

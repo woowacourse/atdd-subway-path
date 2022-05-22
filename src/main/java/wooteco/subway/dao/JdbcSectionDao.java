@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;
@@ -24,7 +25,7 @@ import wooteco.subway.domain.Station;
 public class JdbcSectionDao implements SectionDao {
 
     private static final String LINE_QUERY_SQL = "SELECT s.id AS id, s.distance AS distance, "
-            + "l.id AS line_id, l.name AS line_name, l.color AS line_color, "
+            + "l.id AS line_id, l.name AS line_name, l.color AS line_color, l.extra_fare AS line_extra_fare, "
             + "us.id AS up_station_id, us.name AS up_station_name, "
             + "ds.id AS down_station_id, ds.name AS down_station_name "
             + "FROM section AS s "
@@ -36,7 +37,7 @@ public class JdbcSectionDao implements SectionDao {
     private final RowMapper<Section> rowMapper = (resultSet, rowNumber) -> new Section(
             resultSet.getLong("id"),
             new Line(resultSet.getLong("line_id"), new Name(resultSet.getString("line_name")),
-                    resultSet.getString("line_color")),
+                    resultSet.getString("line_color"), new ExtraFare(resultSet.getInt("line_extra_fare"))),
             new Station(resultSet.getLong("up_station_id"), resultSet.getString("up_station_name")),
             new Station(resultSet.getLong("down_station_id"), resultSet.getString("down_station_name")),
             new Distance(resultSet.getInt("distance"))
