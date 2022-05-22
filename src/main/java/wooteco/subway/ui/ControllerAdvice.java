@@ -19,7 +19,6 @@ public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> exceptionHandler(final Exception e) {
-        System.err.println(e.getMessage());
         final ErrorMessageResponse errorMessageResponse = new ErrorMessageResponse("서버 에러가 발생했습니다.");
         return ResponseEntity.internalServerError().body(errorMessageResponse);
     }

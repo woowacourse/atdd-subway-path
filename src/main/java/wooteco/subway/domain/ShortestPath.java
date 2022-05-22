@@ -1,8 +1,5 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import java.util.List;
 
 public class ShortestPath {
