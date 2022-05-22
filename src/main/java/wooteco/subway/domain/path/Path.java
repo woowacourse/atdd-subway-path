@@ -8,7 +8,6 @@ import wooteco.subway.domain.station.Station;
 
 public class Path {
 
-    private static final String NOT_REGISTERED_STATION_EXCEPTION = "노선에 등록되지 않은 역을 입력하였습니다.";
     private static final String SELF_LOOP_EXCEPTION = "출발점과 도착점은 동일할 수 없습니다.";
 
     private final Station source;
@@ -19,26 +18,14 @@ public class Path {
         this.route = route;
     }
 
-    public static Path of(Station source, Station target, List<Section> sections) {
+    public static Path of(Station source, Station target, Navigator<Station, Section> navigator) {
         validateNonSelfLoop(source, target);
-        validateRegisteredStations(source, target, sections);
-        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
         return new Path(source, navigator.calculateShortestPath(source, target));
     }
 
     private static void validateNonSelfLoop(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException(SELF_LOOP_EXCEPTION);
-        }
-    }
-
-    private static void validateRegisteredStations(Station source, Station target, List<Section> sections) {
-        boolean sourceNotRegistered = sections.stream()
-                .noneMatch(station -> station.hasStationOf(source));
-        boolean targetNotRegistered = sections.stream()
-                .noneMatch(station -> station.hasStationOf(target));
-        if (sourceNotRegistered || targetNotRegistered) {
-            throw new IllegalArgumentException(NOT_REGISTERED_STATION_EXCEPTION);
         }
     }
 

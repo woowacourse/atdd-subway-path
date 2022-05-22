@@ -3,6 +3,8 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.path.Navigator;
+import wooteco.subway.domain.path.NavigatorJgraphtAdapter;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.fare.AgeDiscountFare;
 import wooteco.subway.domain.fare.BasicFare;
@@ -31,7 +33,8 @@ public class PathService {
         Station endStation = stationRepository.findExistingStation(targetStationId);
         List<Section> sections = subwayRepository.findAllSections();
 
-        Path path = Path.of(startStation, endStation, sections);
+        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        Path path = Path.of(startStation, endStation, navigator);
         int distance = path.getDistance();
         List<LineInfo> lines = subwayRepository.findAllLinesByIds(path.getPassingLineIds());
         Fare fare = new AgeDiscountFare(new LineOverFare(new DistanceOverFare(new BasicFare(), distance), lines), age);
