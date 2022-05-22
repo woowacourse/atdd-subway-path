@@ -1,28 +1,28 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Path {
 
     private static final int BASIC_FARE = 1250;
-    private final GraphPath<Station, DefaultWeightedEdge> graphPath;
+    private List<Station> stations;
+    private int extraFare;
+    private int distance;
 
-    public Path(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        this.graphPath = graphPath;
+    public Path(List<Station> stations, int extraFare, int distance) {
+        this.stations = stations;
+        this.extraFare = extraFare;
+        this.distance = distance;
     }
 
     public int chargeFare() {
-        double distance = graphPath.getWeight();
-
         if (isUnder10km(distance)) {
-            return BASIC_FARE;
+            return BASIC_FARE + extraFare;
         }
         if (isBetween10kmAnd50km(distance)) {
-            return calculateOverFareUnder50(distance);
+            return calculateOverFareUnder50(distance) + extraFare;
         }
-        return calculateOverFareOver50(distance);
+        return calculateOverFareOver50(distance) + extraFare;
     }
 
     private boolean isBetween10kmAnd50km(double distance) {
@@ -39,14 +39,14 @@ public class Path {
 
     private int calculateOverFareOver50(double distance) {
         return calculateOverFareUnder50(50) +
-         (int) (Math.ceil((distance - 50) / 8) * 100);
+                (int) (Math.ceil((distance - 50) / 8) * 100);
     }
 
     public List<Station> findStationsOnPath() {
-        return graphPath.getVertexList();
+        return stations;
     }
 
     public int calculateShortestDistance() {
-        return (int) graphPath.getWeight();
+        return distance;
     }
 }

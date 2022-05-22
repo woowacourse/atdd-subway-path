@@ -1,18 +1,10 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import org.jgrapht.graph.WeightedPseudograph;
 
 public class Sections {
 
@@ -156,27 +148,6 @@ public class Sections {
                 sections.add(i, combined);
                 return;
             }
-        }
-    }
-
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addAllStationsAsVertex(graph);
-        addAllSectionsAsEdge(graph);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target);
-    }
-
-    private void addAllSectionsAsEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUp(), section.getDown()), section.getDistance());
-        }
-    }
-
-    private void addAllStationsAsVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Station> stations = getStations();
-        for (Station station : stations) {
-            graph.addVertex(station);
         }
     }
 

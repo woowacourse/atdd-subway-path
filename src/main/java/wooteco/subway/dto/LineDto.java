@@ -15,6 +15,7 @@ public class LineDto {
     public LineDto(String name, String color) {
         this.name = name;
         this.color = color;
+        this.extraFare = 0;
     }
 
     public LineDto(Long id, String name, String color, int extraFare) {
