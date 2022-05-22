@@ -30,7 +30,12 @@ public class PathService {
         Station source = stationRepository.findById(pathsRequest.getSource());
         Station target = stationRepository.findById(pathsRequest.getTarget());
         Age age = new Age(pathsRequest.getAge());
+        return getPathResponse(sections, source, target, age);
+    }
 
+    private PathResponse getPathResponse(
+            List<Section> sections, Station source, Station target, Age age
+    ) {
         SubwayGraph subwayGraph = new SubwayGraph(sections);
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
