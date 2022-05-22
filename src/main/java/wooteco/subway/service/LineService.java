@@ -35,7 +35,7 @@ public class LineService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        var line = lineDao.findById(lineId);
+        var line = lineDao.find(lineId);
 
         return new LineResponse(line, stations);
     }
@@ -63,7 +63,7 @@ public class LineService {
     }
 
     public void update(Long id, LineRequest lineRequest) {
-        lineDao.update(id, lineRequest.getName(), lineRequest.getColor());
+        lineDao.update(id, lineRequest);
     }
 
     public void deleteById(Long id) {

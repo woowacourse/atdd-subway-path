@@ -18,7 +18,8 @@ public class LineDao {
     private final RowMapper<LineResponse> lineRowMapper = (rs, rowNum) -> new LineResponse(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extraFare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,10 +29,10 @@ public class LineDao {
     }
 
     public LineResponse create(LineRequest line) {
-        var sql = "INSERT INTO line (name, color) VALUES(?, ?)";
+        var sql = "INSERT INTO line (name, color, extraFare) VALUES(?, ?, ?)";
         var keyHolder = new GeneratedKeyHolder();
         create(line, sql, keyHolder);
-        return new LineResponse(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new LineResponse(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     private void create(LineRequest line, String sql, KeyHolder keyHolder) {
@@ -40,6 +41,7 @@ public class LineDao {
                 var statement = connection.prepareStatement(sql, new String[]{"id"});
                 statement.setString(1, line.getName());
                 statement.setString(2, line.getColor());
+                statement.setInt(3, line.getExtraFare());
                 return statement;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
@@ -47,10 +49,9 @@ public class LineDao {
         }
     }
 
-
-    public LineResponse findById(Long id) {
+    public LineResponse find(Long id) {
         var sql = "SELECT * FROM line WHERE id=?";
-      
+
         try {
             return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
@@ -63,16 +64,19 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public void update(Long id, String name, String color) {
-        var sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+    public void update(Long id, LineRequest lineRequest) {
+        var sql = "UPDATE line SET name = ?, color = ?, extraFare = ? WHERE id = ?";
         var updatedRowCount = 0;
-      
+
         try {
-            updatedRowCount = jdbcTemplate.update(sql, name, color, id);
+            var name = lineRequest.getName();
+            var color = lineRequest.getColor();
+            var extraFare = lineRequest.getExtraFare();
+            updatedRowCount = jdbcTemplate.update(sql, name, color, extraFare, id);
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("[ERROR] 이미 존재하는 노선 정보 입니다.");
         }
-      
+
         checkUpdatedRow(updatedRowCount);
     }
 

@@ -13,13 +13,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("5개의 역을 생성한다 -> 2개의 노선을 생성한다 -> 구간을 추가한다 -> 경로를 검색한다")
     void showPath() {
         //given
-        var stationResponse1 = requestCreate("/stations", Map.of("name", "테스트1역"));
-        var stationResponse2 = requestCreate("/stations", Map.of("name", "테스트2역"));
-        var stationResponse3 = requestCreate("/stations", Map.of("name", "테스트3역"));
-        var stationResponse4 = requestCreate("/stations", Map.of("name", "테스트4역"));
-        var stationResponse5 = requestCreate("/stations", Map.of("name", "테스트5역"));
+        var stationResponse1 = create("/stations", Map.of("name", "테스트1역"));
+        var stationResponse2 = create("/stations", Map.of("name", "테스트2역"));
+        var stationResponse3 = create("/stations", Map.of("name", "테스트3역"));
+        var stationResponse4 = create("/stations", Map.of("name", "테스트4역"));
+        var stationResponse5 = create("/stations", Map.of("name", "테스트5역"));
 
-        var lineResponse1 = requestCreate("/lines", Map.of(
+        var lineResponse1 = create("/lines", Map.of(
                         "name", "테스트1호선",
                         "color", "테스트1색상",
                         "upStationId", getId(stationResponse1),
@@ -28,7 +28,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 )
         );
 
-        var lineResponse2 = requestCreate("/lines", Map.of(
+        var lineResponse2 = create("/lines", Map.of(
                         "name", "테스트2호선",
                         "color", "테스트2색상",
                         "upStationId", getId(stationResponse1),
@@ -37,28 +37,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 )
         );
 
-        requestCreate("/lines/" + getId(lineResponse1) + "/sections", Map.of(
+        create("/lines/" + getId(lineResponse1) + "/sections", Map.of(
                         "upStationId", getId(stationResponse2),
                         "downStationId", getId(stationResponse3),
                         "distance", "100"
                 )
         );
 
-        requestCreate("/lines/" + getId(lineResponse2) + "/sections", Map.of(
+        create("/lines/" + getId(lineResponse2) + "/sections", Map.of(
                         "upStationId", getId(stationResponse2),
                         "downStationId", getId(stationResponse4),
                         "distance", "4"
                 )
         );
 
-        requestCreate("/lines/" + getId(lineResponse2) + "/sections", Map.of(
+        create("/lines/" + getId(lineResponse2) + "/sections", Map.of(
                         "upStationId", getId(stationResponse4),
                         "downStationId", getId(stationResponse5),
                         "distance", "4"
                 )
         );
 
-        requestCreate("/lines/" + getId(lineResponse2) + "/sections", Map.of(
+        create("/lines/" + getId(lineResponse2) + "/sections", Map.of(
                         "upStationId", getId(stationResponse5),
                         "downStationId", getId(stationResponse3),
                         "distance", "4"
@@ -66,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
 
         //when
-        var pathResponse = requestGet(
+        var pathResponse = find(
                 "/paths?source=" + getId(stationResponse1) + "&target=" + getId(stationResponse3) + "&age=0"
         );
 

@@ -41,7 +41,7 @@ class LineServiceTest {
 
         var upStationId = insertStation("테스트1역");
         var downStationId = insertStation("테스트2역");
-        var lineRequest = new LineRequest(LINE_NAME, LINE_COLOR, upStationId, downStationId, 2);
+        var lineRequest = new LineRequest(LINE_NAME, LINE_COLOR, upStationId, downStationId, 2, 0);
 
         var lineResponse = lineService.create(lineRequest);
 
@@ -67,7 +67,7 @@ class LineServiceTest {
         //given
         var station3Id = insertStation("테스트3역");
         var station4Id = insertStation("테스트4역");
-        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2);
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2, 0);
 
         //when
         var lineResponse = lineService.create(lineRequest);
@@ -108,7 +108,7 @@ class LineServiceTest {
         //given
         var station3Id = insertStation("테스트3역");
         var station4Id = insertStation("테스트4역");
-        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2);
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색", station3Id, station4Id, 2, 0);
         lineService.create(lineRequest);
 
         //when
@@ -137,7 +137,7 @@ class LineServiceTest {
     @Test
     void updateLine() {
         //given
-        var lineRequest = new LineRequest("테스트2호선", "테스트2색");
+        var lineRequest = new LineRequest("테스트2호선", "테스트2색", 0);
 
         //when
         lineService.update(lineId, lineRequest);
@@ -158,7 +158,8 @@ class LineServiceTest {
             var id = rs.getLong("id");
             var name = rs.getString("name");
             var color = rs.getString("color");
-            return new LineResponse(id, name, color);
+            var extraFare = rs.getInt("extraFare");
+            return new LineResponse(id, name, color, extraFare);
         };
 
         return jdbcTemplate.query(sql, rowMapper);

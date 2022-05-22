@@ -30,8 +30,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> insertLine(String name, String color, List<String> stationNames) {
-        var response1 = requestCreate("/stations", Map.of("name", stationNames.get(0)));
-        var response2 = requestCreate("/stations", Map.of("name", stationNames.get(1)));
+        var response1 = create("/stations", Map.of("name", stationNames.get(0)));
+        var response2 = create("/stations", Map.of("name", stationNames.get(1)));
 
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -40,7 +40,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("downStationId", getId(response2));
         params.put("distance", "4");
 
-        return requestCreate("/lines", params);
+        return create("/lines", params);
     }
 
     @DisplayName("새로운 노선 생성한다.")
@@ -63,7 +63,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 노선을 조회한다.")
     @Test
     void showLine() {
-        var response = requestGet("/lines/" + getId(responseCreateLine));
+        var response = find("/lines/" + getId(responseCreateLine));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -148,7 +148,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존 노선을 삭제한다.")
     @Test
     void deleteLine() {
-        var response = requestDelete("/lines/" + getId(responseCreateLine));
+        var response = delete("/lines/" + getId(responseCreateLine));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -161,7 +161,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         var invalidId = "-1";
 
         // when
-        var response = requestDelete("/lines/" + invalidId);
+        var response = delete("/lines/" + invalidId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -182,7 +182,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("downStationId", "100");
         params.put("distance", "3");
 
-        return requestCreate(path, params);
+        return create(path, params);
     }
 
     @Test
@@ -190,7 +190,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         requestCreateSection();
 
         var path = "/lines/" + getId(responseCreateLine) + "/sections?stationId=1";
-        var response = requestDelete(path);
+        var response = delete(path);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

@@ -8,7 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
     public Path(List<Station> stations, List<Section> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);

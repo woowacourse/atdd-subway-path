@@ -30,7 +30,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> insertStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        return requestCreate("/stations", params);
+        return create("/stations", params);
     }
 
     @DisplayName("새로운 지하철역을 생성한다.")
@@ -57,7 +57,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         var responseCreateStation2 = insertStation("테스트2역");
 
         // when
-        var response = requestGet("/stations");
+        var response = find("/stations");
 
         // then
         var ids = getIds(response);
@@ -79,7 +79,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
-        var response = requestDelete("/stations/" + getId(responseCreateStation));
+        var response = delete("/stations/" + getId(responseCreateStation));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
