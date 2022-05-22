@@ -21,10 +21,6 @@ public class Fare {
         this.extraFare = extraFare;
     }
 
-    public Fare(int distance) {
-        this(distance, 0, 0);
-    }
-
     public int calculateFare() {
         if (distance > FIRST_STANDARD_FARE_DISTANCE && distance <= SECOND_STANDARD_FARE_DISTANCE) {
             int fare = FIRST_DEFAULT_FARE + calculateFirstOverFare(distance - FIRST_STANDARD_FARE_DISTANCE);
