@@ -1,5 +1,6 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +12,7 @@ public class UpdateLineRequest {
     @NotBlank(message = "노선의 색상이 입력되지 않았습니다.")
     private String color;
 
-    @NotNull(message = "노선의 추가 금액이 입력되지 않았습니다.")
+    @Min(value = 0, message = "노선의 추가요금은 음수가 될 수 없습니다.")
     private int extraFare;
 
     public UpdateLineRequest() {
