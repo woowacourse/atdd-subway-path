@@ -75,8 +75,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
 
-        assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("선릉역", "종합운동장역", "삼전역");
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
     }
@@ -89,8 +87,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
 
-        assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("선릉역", "종합운동장역", "삼전역");
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(50);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(2050);
     }
@@ -103,8 +99,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
 
-        assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("선릉역", "종합운동장역", "삼전역");
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(59);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(2250);
     }
@@ -117,9 +111,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
 
-        assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("선릉역", "종합운동장역", "삼전역");
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1750);
     }
 
@@ -131,10 +122,51 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
 
-        assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("선릉역", "종합운동장역", "삼전역");
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150);
+    }
+
+    @DisplayName("6세 미만의 어린이는 운임을 받지 않는다.")
+    @Test
+    void showBabyFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 0));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 0));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 5);
+
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(0);
+    }
+
+    @DisplayName("6세 이상 13세 미만의 어린이는 총 요금에서 350원을 뺀 금액의 50% 만큼을 할인받는다.")
+    @Test
+    void showChildrenFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 0));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 0));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 12);
+
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(800);
+    }
+
+    @DisplayName("13세 이상 19세 미만의 청소년은 총 요금에서 350원을 뺀 금액의 20% 만큼을 할인받는다.")
+    @Test
+    void showTeenagerFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 0));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 0));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 18);
+
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1070);
+    }
+
+    @DisplayName("19세 이상의 성인은 할인받지 않는다.")
+    @Test
+    void showAdultFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 0));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 0));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 19);
+
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
     }
 
 }
