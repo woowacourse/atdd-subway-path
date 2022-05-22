@@ -20,41 +20,30 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceTest extends AcceptanceTest {
-    /*
-     * // given
-     * 노선 두 개가 등록되어 있다.
-     *
-     * // when
-     * 경로를 조회한다.
-     *
-     * // then
-     * 경로 응답을 반환한다.
-     * */
 
     @Test
     @DisplayName("출발 역과 도착 역의 경로를 조회하면 200-OK가 발생한다.")
     void findPath() {
+        //given
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");
         StationResponse station4 = createStation("station4");
         StationResponse station5 = createStation("station5");
 
-        // when
         LineResponse createdLine = createLine("line1", "color1", station1.getId(),
                 station2.getId(), 10, 0);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-
         createSection(sectionRequest, createdLine);
 
         LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
                 station4.getId(), 10, 0);
 
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
-
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -66,6 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1550);
         PathResponse response = pathResponse.as(PathResponse.class);
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -75,27 +65,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발 역 id와 도착 역 id가 null이 들어오면 400-badRequest가 발생한다.")
     void findPathFailure() {
+        //given
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");
         StationResponse station4 = createStation("station4");
         StationResponse station5 = createStation("station5");
 
-        // when
         LineResponse createdLine = createLine("line1", "color1", station1.getId(),
                 station2.getId(), 10, 0);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-
         createSection(sectionRequest, createdLine);
 
         LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
                 station4.getId(), 10, 0);
 
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
-
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -107,19 +96,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @DisplayName("나이가 음수로 들어오면 400-badRequest가 발생한다.")
     void findPathFailureWhenAgeIsNull() {
+        //given
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
         StationResponse station3 = createStation("station3");
         StationResponse station4 = createStation("station4");
         StationResponse station5 = createStation("station5");
 
-        // when
         LineResponse createdLine = createLine("line1", "color1", station1.getId(),
                 station2.getId(), 10, 0);
 
@@ -134,6 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -145,6 +136,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(pathResponse.body().jsonPath().getString("message")).contains("나이는 0이하이면 안됩니다.");
     }
@@ -172,6 +164,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -183,6 +176,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 2450);
         PathResponse response = pathResponse.as(PathResponse.class);
 
@@ -214,6 +208,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -225,6 +220,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1680);
         PathResponse response = pathResponse.as(PathResponse.class);
 
@@ -256,6 +252,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -267,6 +264,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1050);
         PathResponse response = pathResponse.as(PathResponse.class);
 
@@ -298,6 +296,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
         createSection(sectionRequest2, createdLine2);
 
+        //when
         ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -309,6 +308,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
+        //then
         PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 2450);
         PathResponse response = pathResponse.as(PathResponse.class);
 
