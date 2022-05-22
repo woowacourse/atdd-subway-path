@@ -50,7 +50,7 @@ public class ShortestPathFindable implements PathFindable {
         }
     }
 
-    public List<Station> getStations(
+    private List<Station> getStations(
             Station source, Station target, DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
         validateExistPath(shortestPath);
@@ -58,7 +58,7 @@ public class ShortestPathFindable implements PathFindable {
         return shortestPath.getVertexList();
     }
 
-    public int getDistance(
+    private int getDistance(
             Station source, Station target, DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
         validateExistPath(shortestPath);
@@ -66,7 +66,7 @@ public class ShortestPathFindable implements PathFindable {
         return (int) shortestPath.getWeight();
     }
 
-    public List<Section> getSections(
+    private List<Section> getSections(
             Station source, Station target, DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
         GraphPath<Station, SectionEdge> shortestPath = getPath(source, target, dijkstraShortestPath);
         return shortestPath.getEdgeList()
