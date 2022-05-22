@@ -32,7 +32,7 @@ public class PathService {
     }
 
     @Transactional
-    public PathResponse calculateMinDistance(final PathRequest pathRequest) {
+    public PathResponse calculateShortestPath(final PathRequest pathRequest) {
         Station startStation = stationRepository.findById(pathRequest.getSource());
         Station endStation = stationRepository.findById(pathRequest.getTarget());
         Sections sections = new Sections(sectionRepository.findAll());

@@ -21,7 +21,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPaths(@ModelAttribute PathRequest pathRequest) {
-        PathResponse pathResponse = pathService.calculateMinDistance(pathRequest);
+        PathResponse pathResponse = pathService.calculateShortestPath(pathRequest);
         return ResponseEntity.ok(pathResponse);
     }
 }
