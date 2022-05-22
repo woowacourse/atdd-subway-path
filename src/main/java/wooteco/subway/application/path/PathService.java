@@ -33,37 +33,29 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse searchPath(Long source, Long target, Integer age) {
-
-        //TODO: 도메인으로 옮기기
-        if (age <= 0 || age > 150) {
-            throw new RidiculousAgeException();
-        }
-
         validate(source, target);
 
         List<Station> stations = stationRepository.findAll();
         List<Section> sections = sectionRepository.findAll();
 
         Graph graph = new JGraphtAdapter(stations, sections);
-        FareCalculator fareCalculator = new FareCalculator();
-
         List<Station> path = graph.findPath(source, target);
-
         if (path.isEmpty()) {
             throw new UnreachablePathException(source, target);
         }
 
         int distance = graph.findDistance(source, target);
+        List<Line> relatedLines = getLines(graph.findLineIdsRelatedPath(source, target));
+        int fare = new FareCalculator().findFare(distance, relatedLines, age);
 
-        //TODO: 메서드 분리 및 Graph 추상화 함수 생각
-        List<Long> lineIds = graph.findLineIdsRelatedPath(source, target);
-        List<Line> relatedLines = lineIds.stream()
+        return new PathResponse(path, distance, fare);
+    }
+
+    private List<Line> getLines(List<Long> lineIds) {
+        return lineIds.stream()
                 .map(lineId -> lineRepository.findById(lineId)
                         .orElseThrow(() -> new IllegalArgumentException("말도 안되는 노선 아이디 입니다.")))
                 .collect(Collectors.toUnmodifiableList());
-
-        int fare = fareCalculator.findFare(distance, relatedLines);
-        return new PathResponse(path, distance, fare);
     }
 
     private void validate(Long source, Long target) {

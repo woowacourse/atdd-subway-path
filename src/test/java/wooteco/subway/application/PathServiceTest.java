@@ -140,7 +140,7 @@ class PathServiceTest {
     @ParameterizedTest
     @CsvSource({"151", "1000", "0", "-1", " -1000"})
     void searchPathWithRidiculousException(int age) {
-        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 서면역.getId(), age))
+        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 잠실역.getId(), age))
                 .isInstanceOf(RidiculousAgeException.class);
     }
 
@@ -165,10 +165,4 @@ class PathServiceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(8);
         assertThat(pathResponse.getFare()).isEqualTo(1250 + 1000);
     }
-
-    // 나이가 청소년인 걍우
-
-    // 나이가 어린이인 경우
-
-    // 나이가 청소년 + 추가 요금 있는 경로인 경우
 }
