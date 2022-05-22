@@ -45,8 +45,8 @@ class PathServiceTest {
         station1 = stationDao.save(new Station("강남역"));
         station2 = stationDao.save(new Station("역삼역"));
         station3 = stationDao.save(new Station("선릉역"));
-        sectionDao.save(new Section(station1, station2, 10, savedLine.getId()));
-        sectionDao.save(new Section(station2, station3, 10, savedLine.getId()));
+        sectionDao.save(new Section(station1, station2, 10, savedLine));
+        sectionDao.save(new Section(station2, station3, 10, savedLine));
     }
 
     @DisplayName("경로를 생성한다.")
@@ -80,7 +80,7 @@ class PathServiceTest {
         final Station station4 = stationDao.save(new Station("교대역"));
         final Station station5 = stationDao.save(new Station("양재역"));
         final Line line = lineDao.save(new Line("3호선", "bg-orange-600"));
-        sectionDao.save(new Section(station4, station5, 10, line.getId()));
+        sectionDao.save(new Section(station4, station5, 10, line));
 
         assertThatThrownBy(() -> pathService.createPath(station1.getId(), station5.getId(), 15))
                 .isInstanceOf(PathNotExistsException.class)

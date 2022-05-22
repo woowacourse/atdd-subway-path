@@ -58,7 +58,7 @@ class SectionTest {
                         section1.getUpStation(),
                         section2.getUpStation(),
                         section1.getDistance() - section2.getDistance(),
-                        section1.getLineId()));
+                        section1.getLine()));
     }
 
     @DisplayName("상행역들로 구간을 생성한다.")
@@ -75,7 +75,7 @@ class SectionTest {
                         section2.getDownStation(),
                         section1.getDownStation(),
                         section1.getDistance() - section2.getDistance(),
-                        section1.getLineId()));
+                        section1.getLine()));
     }
 
     @DisplayName("(갈래길일 경우) 상행역이 일치한다면 하행역을 기준으로 새로운 구간을 생성한다.")

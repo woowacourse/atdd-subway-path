@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -26,14 +27,12 @@ public class SectionService {
 
     @Transactional
     public Section addSection(final long lineId, final Section requestSection) {
-        final Station upStation = stationDao.findById(requestSection.getUpStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station downStation = stationDao.findById(requestSection.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        lineDao.findById(lineId)
+        final Station upStation = findStationById(requestSection.getUpStation());
+        final Station downStation = findStationById(requestSection.getDownStation());
+        final Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
 
-        Section section = new Section(upStation, downStation, requestSection.getDistance(), lineId);
+        Section section = new Section(upStation, downStation, requestSection.getDistance(), line);
         final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
         sections.add(section);
 
@@ -56,5 +55,10 @@ public class SectionService {
         final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
         final Sections sections = new Sections(lineSections);
         return sections.extractStations();
+    }
+
+    private Station findStationById(final Station station) {
+        return stationDao.findById(station.getId())
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
     }
 }

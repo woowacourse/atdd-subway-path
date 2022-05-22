@@ -44,12 +44,12 @@ class LineServiceTest {
     void createLine() {
         final String lineName = "신분당선";
         final String lineColor = "bg-red-600";
-        final Line line = new Line(lineName, lineColor);
+        final Line line = new Line(1L, lineName, lineColor, 0);
         final Station station1 = new Station(1L, "선릉역");
         final Station station2 = new Station(2L, "강남역");
-        final Section section = new Section(station1, station2, 3, 1L);
+        final Section section = new Section(station1, station2, 3, line);
 
-        given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor, 0));
+        given(lineDao.save(line)).willReturn(line);
         given(sectionDao.save(section)).willReturn(section);
         given(stationDao.findById(section.getUpStation().getId())).willReturn(Optional.of(station1));
         given(stationDao.findById(section.getDownStation().getId())).willReturn(Optional.of(station2));
@@ -71,7 +71,7 @@ class LineServiceTest {
         final Line line = new Line(lineName, lineColor);
         given(lineDao.existByName("신분당선")).willReturn(true);
 
-        assertThatThrownBy(() -> lineService.createLine(line, new Section(new Station(1L, null), new Station(2L, null), 3, 4L)))
+        assertThatThrownBy(() -> lineService.createLine(line, new Section(new Station(1L, null), new Station(2L, null), 3, line)))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
     }
