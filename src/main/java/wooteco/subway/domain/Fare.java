@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.domain.discountpolicy.AgeDiscountPolicy;
 
 public class Fare {
 
@@ -12,18 +13,24 @@ public class Fare {
     private static final int DISTANCE_UNIT_OVER_50 = 8;
     private static final int ADDITIONAL_AMOUNT = 100;
 
+    private final AgeDiscountPolicy ageDiscountPolicy;
+
+    public Fare(AgeDiscountPolicy ageDiscountPolicy) {
+        this.ageDiscountPolicy = ageDiscountPolicy;
+    }
+
     public int calculate(final int distance, final List<Station> stations, final List<Line> lines) {
         final int extraLineFare = calculateExtraLineFare(stations, lines);
         int fare = DEFAULT_FARE + extraLineFare;
         if (distance >= ADDITIONAL_DISTANCE_PER_5KM && distance < ADDITIONAL_DISTANCE_PER_8KM) {
-            return fare + addExtraFare(distance, DISTANCE_UNIT_UNDER_50, ADDITIONAL_DISTANCE_PER_5KM);
+             fare += addExtraFare(distance, DISTANCE_UNIT_UNDER_50, ADDITIONAL_DISTANCE_PER_5KM);
         }
         if (distance >= ADDITIONAL_DISTANCE_PER_8KM) {
-            return fare
+            fare = fare
                     + addExtraFare(ADDITIONAL_DISTANCE_PER_8KM - 1, DISTANCE_UNIT_UNDER_50, ADDITIONAL_DISTANCE_PER_5KM)
                     + addExtraFare(distance, DISTANCE_UNIT_OVER_50, ADDITIONAL_DISTANCE_PER_8KM - 1);
         }
-        return fare;
+        return ageDiscountPolicy.discount(fare);
     }
 
     private int calculateExtraLineFare(final List<Station> stations, final List<Line> lines) {

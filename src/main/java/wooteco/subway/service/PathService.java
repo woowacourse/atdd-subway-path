@@ -8,6 +8,8 @@ import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.discountpolicy.AgeDiscountFactory;
+import wooteco.subway.domain.discountpolicy.AgeDiscountPolicy;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
@@ -23,7 +25,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+    public PathResponse findShortestPath(final Long sourceId, final Long targetId, final int age) {
         final Station source = stationRepository.findById(sourceId);
         final Station target = stationRepository.findById(targetId);
         final List<Line> lines = lineRepository.findAll();
@@ -32,7 +34,7 @@ public class PathService {
         final GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(source, target);
         final List<Station> stations = path.getVertexList();
         final int distance = (int) path.getWeight();
-        final int fare = (new Fare()).calculate(distance, stations, lines);
+        final int fare = (new Fare(AgeDiscountFactory.from(age))).calculate(distance, stations, lines);
 
         return new PathResponse(stations, distance, fare);
     }

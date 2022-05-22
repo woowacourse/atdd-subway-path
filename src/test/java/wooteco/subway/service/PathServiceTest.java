@@ -54,7 +54,7 @@ class PathServiceTest {
         lineRepository.save(new LineDto("신분당선", "bg-red-600", upStationId,
                 downStationId, 10));
 
-        final PathResponse actualPathResponse = pathService.findShortestPath(upStationId, downStationId);
+        final PathResponse actualPathResponse = pathService.findShortestPath(upStationId, downStationId, 30);
         final List<String> stationNames = actualPathResponse.getStations().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList());
