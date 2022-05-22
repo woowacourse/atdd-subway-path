@@ -57,7 +57,7 @@ class PathServiceTest {
         // then
         assertThat(pathResponse).usingRecursiveComparison()
                 .ignoringFields("stations")
-                .isEqualTo(new PathResponse(null, 25, 1550));
+                .isEqualTo(new PathResponse(null, 25, 2550));
         assertThat(pathResponse.getStations()).hasSize(6)
                 .extracting("name")
                 .containsExactly(강남역.getName(), 역삼역.getName(), 선릉역.getName(), 삼성역.getName(), 종합운동장역.getName(),

@@ -7,7 +7,8 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.fare.FareStrategy;
+import wooteco.subway.domain.strategy.fare.FarePolicy;
+import wooteco.subway.domain.strategy.fare.distance.FareDistanceStrategyFactory;
 import wooteco.subway.domain.strategy.path.PathFindStrategy;
 
 import wooteco.subway.dto.PathRequest;
@@ -20,15 +21,12 @@ public class PathService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final PathFindStrategy pathFindStrategy;
-    private final FareStrategy fareStrategy;
 
-    public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
-                       PathFindStrategy pathFindStrategy, FareStrategy fareStrategy) {
+    public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, PathFindStrategy pathFindStrategy) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.pathFindStrategy = pathFindStrategy;
-        this.fareStrategy = fareStrategy;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
@@ -37,9 +35,14 @@ public class PathService {
         Sections sections = new Sections(sectionDao.findAll());
 
         Path path = pathFindStrategy.calculatePath(source, target, sections);
-        int fare = fareStrategy.calculateFare(path.getDistance());
         int maxExtraFare = lineDao.findMaxExtraFareByLineId(path.getLines());
 
-        return new PathResponse(path, fare + maxExtraFare);
+        FarePolicy farePolicy = new FarePolicy(
+                FareDistanceStrategyFactory.getStrategy(path.getDistance())
+        );
+
+        int fare = farePolicy.getFare(path.getDistance(), maxExtraFare);
+
+        return new PathResponse(path, fare);
     }
 }
