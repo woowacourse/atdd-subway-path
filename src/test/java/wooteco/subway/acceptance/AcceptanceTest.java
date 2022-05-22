@@ -8,10 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.*;
 
 @Sql("/truncate.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,9 +45,11 @@ class AcceptanceTest {
     }
 
     protected LineResponse createLine(
-            final String name, final String color, final long upStationId, final long downStationId, final int distance
+            final String name, final String color,
+            final long upStationId, final long downStationId,
+            final int distance, final int extraFare
     ) {
-        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, 0);
+        LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, extraFare);
         return RestAssured
                 .given()
                 .body(lineRequest)
@@ -62,7 +61,8 @@ class AcceptanceTest {
     }
 
     protected ExtractableResponse<Response> createLineAndReturnResponse(
-            final String name, final String color, final long upStationId, final long downStationId, final int distance
+            final String name, final String color, final long upStationId, final long downStationId, final int distance,
+            final int extraFare
     ) {
         LineSaveRequest lineRequest = new LineSaveRequest(name, color, upStationId, downStationId, distance, 0);
         return RestAssured
@@ -72,6 +72,16 @@ class AcceptanceTest {
                 .when()
                 .post("/lines")
                 .then()
+                .extract();
+    }
+
+    protected void createSection(final SectionRequest sectionRequest, final LineResponse createdLine) {
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().log().all()
+                .post("/lines/" + createdLine.getId() + "/sections")
+                .then().log().all()
                 .extract();
     }
 }
