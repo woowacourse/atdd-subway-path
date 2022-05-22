@@ -24,7 +24,7 @@ public class LineService {
 
     public LineResponse save(LineRequest lineRequest) {
         LineSeries lineSeries = new LineSeries(lineRepository.findAllLines());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         line.addSection(sectionService.create(
                 lineRequest.getUpStationId(),
                 lineRequest.getDownStationId(),
@@ -47,7 +47,7 @@ public class LineService {
 
     public void update(Long id, LineRequest lineRequest) {
         LineSeries lineSeries = new LineSeries(lineRepository.findAllLines());
-        lineSeries.update(new Line(id, lineRequest.getName(), lineRequest.getColor()));
+        lineSeries.update(new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
         lineRepository.persist(lineSeries);
     }
 

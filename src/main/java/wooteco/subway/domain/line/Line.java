@@ -15,29 +15,31 @@ public class Line {
     private final Long id;
     private final Name name;
     private final Color color;
+    private final Integer extraFare;
     private final SectionSeries sectionSeries;
 
-    public Line(Long id, Name name, Color color, SectionSeries sectionSeries) {
+    public Line(Long id, Name name, Color color, Integer extraFare, SectionSeries sectionSeries) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sectionSeries = sectionSeries;
     }
 
-    public Line(Long id, String name, String color, List<Section> sections) {
-        this(id, new Name(name), new Color(color), new SectionSeries(sections));
+    public Line(Long id, String name, String color, Integer extraFare, List<Section> sections) {
+        this(id, new Name(name), new Color(color), extraFare, new SectionSeries(sections));
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new ArrayList<>());
+    public Line(Long id, String name, String color, Integer extraFare) {
+        this(id, name, color, extraFare, new ArrayList<>());
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, Integer extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public Line update(Line updateLine) {
-        return new Line(id, updateLine.name, updateLine.color, sectionSeries);
+        return new Line(id, updateLine.name, updateLine.color, updateLine.extraFare, sectionSeries);
     }
 
     public void addSection(Section section) {
@@ -60,6 +62,10 @@ public class Line {
         return color.getValue();
     }
 
+    public Integer getExtraFare() {
+        return extraFare;
+    }
+
     public SectionSeries getSectionSeries() {
         return sectionSeries;
     }
@@ -73,4 +79,5 @@ public class Line {
                 ", sectionSeries=" + sectionSeries +
                 '}';
     }
+
 }

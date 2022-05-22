@@ -11,9 +11,10 @@ CREATE TABLE station
 
 CREATE TABLE line
 (
-    id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(255)          NOT NULL UNIQUE,
-    color VARCHAR(20)           NOT NULL,
+    id        BIGINT AUTO_INCREMENT NOT NULL,
+    name      VARCHAR(255)          NOT NULL UNIQUE,
+    color     VARCHAR(20)           NOT NULL,
+    extraFare int,
     PRIMARY KEY (id)
 );
 

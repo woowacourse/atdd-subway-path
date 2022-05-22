@@ -21,7 +21,8 @@ public class JdbcLineDao implements LineDao {
     private static final RowMapper<LineEntity> LINE_ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extraFare")
     );
 
     private final SimpleJdbcInsert jdbcInsert;

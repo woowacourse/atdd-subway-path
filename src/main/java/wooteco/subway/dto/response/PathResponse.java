@@ -19,13 +19,15 @@ public class PathResponse {
         this.fare = fare;
     }
 
+    public PathResponse() {
+        this(null, null, null);
+    }
+
     public static PathResponse of(List<Station> paths, Distance distance, int fare) {
         final List<StationResponse> stations = paths.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        final int distanceValue = distance.getValue();
-        final int fareAmount = fare;
-        return new PathResponse(stations, distanceValue, fareAmount);
+        return new PathResponse(stations, distance.getValue(), fare);
     }
 
     public List<StationResponse> getStations() {

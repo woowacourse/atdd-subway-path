@@ -22,6 +22,7 @@ class LineDaoTest {
 
     private static final String LINE_NAME = "신분당선";
     private static final String LINE_COLOR = "bg-red-600";
+    private static final Integer EXTRA_FARE = 0;
 
     @Autowired
     private DataSource dataSource;
@@ -40,7 +41,7 @@ class LineDaoTest {
     @DisplayName("노선을 저장한다.")
     public void save() {
         // given
-        LineEntity entity = new LineEntity(LINE_NAME, LINE_COLOR);
+        LineEntity entity = new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE);
         // when
         final Long id = dao.save(entity);
         // then
@@ -51,7 +52,7 @@ class LineDaoTest {
     @DisplayName("중복된 이름을 저장하는 경우 예외가 발생한다.")
     public void save_throwsExceptionWithDuplicatedName() {
         // given
-        LineEntity entity = new LineEntity(LINE_NAME, LINE_COLOR);
+        LineEntity entity = new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE);
         // when
         dao.save(entity);
         // then
@@ -72,7 +73,7 @@ class LineDaoTest {
     @DisplayName("노선을 하나 추가한 뒤, 전체 노선을 조회한다")
     public void findAll_afterSaveOneLine() {
         // given
-        dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         // when
         List<LineEntity> lines = dao.findAll();
         // then
@@ -83,7 +84,7 @@ class LineDaoTest {
     @DisplayName("ID 값으로 노선을 조회한다")
     public void findById() {
         // given
-        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         // when
         final Optional<LineEntity> foundLine = dao.findById(id);
         // then
@@ -94,7 +95,7 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 ID 값으로 노선을 조회하면 빈 Optional을 돌려준다.")
     public void findById_invalidID() {
         // given
-        dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         // when
         final Optional<LineEntity> found = dao.findById(2L);
         // then
@@ -105,9 +106,9 @@ class LineDaoTest {
     @DisplayName("노선 정보를 수정한다.")
     public void update() {
         // given
-        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         // when
-        final Long updatedId = dao.update(new LineEntity(id, "구분당선", LINE_COLOR));
+        final Long updatedId = dao.update(new LineEntity(id, "구분당선", LINE_COLOR, EXTRA_FARE));
         // then
         assertThat(updatedId).isEqualTo(id);
     }
@@ -116,8 +117,8 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 ID값을 수정하는 경우 null을 반환한다.")
     public void update_throwsExceptionWithInvalidId() {
         // given
-        dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
-        LineEntity updateLine = new LineEntity(100L, "사랑이넘치는", "우테코");
+        dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
+        LineEntity updateLine = new LineEntity(100L, "사랑이넘치는", "우테코", 200);
         // when
         final Long id = dao.update(updateLine);
         // then
@@ -128,7 +129,7 @@ class LineDaoTest {
     @DisplayName("ID값으로 노선을 삭제한다.")
     public void delete() {
         // given
-        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        final Long id = dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         // when
         final Long deletedId = dao.delete(id);
         // then
@@ -139,7 +140,7 @@ class LineDaoTest {
     @DisplayName("존재하지않는 ID값을 삭제하는 경우 null을 반환한다.")
     public void delete_throwsExceptionWithInvalidId() {
         // given
-        dao.save(new LineEntity(LINE_NAME, LINE_COLOR));
+        dao.save(new LineEntity(LINE_NAME, LINE_COLOR, EXTRA_FARE));
         Long deleteId = 100L;
         // when
         final Long deletedId = dao.delete(deleteId);

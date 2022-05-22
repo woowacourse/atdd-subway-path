@@ -10,12 +10,13 @@ public class LineFixture {
         return new Line(1L,
                 "분당선",
                 "RED",
+                0,
                 List.of(SectionFixture.getSectionAb())
         );
     }
 
     public static Line getNewLine() {
-        final Line line = new Line("새로운역", "새로운색");
+        final Line line = new Line("새로운역", "새로운색",0);
         line.addSection(SectionFixture.getSectionAc());
         return line;
     }

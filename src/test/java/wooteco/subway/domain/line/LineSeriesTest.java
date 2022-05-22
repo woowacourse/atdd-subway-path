@@ -21,7 +21,7 @@ class LineSeriesTest {
         // given
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
         // when
-        Line line = new Line("분당선", "color3");
+        Line line = new Line("분당선", "color3",0);
         // then
         assertThatExceptionOfType(RowDuplicatedException.class)
                 .isThrownBy(() -> series.add(line));
@@ -34,7 +34,7 @@ class LineSeriesTest {
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
 
         // when
-        series.add(new Line("새로운 역", "새로운 색"));
+        series.add(new Line("새로운 역", "새로운 색",0));
 
         // then
         assertThat(series.getLines()).hasSize(2);
@@ -70,7 +70,7 @@ class LineSeriesTest {
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
 
         // when
-        series.update(new Line(LineFixture.getLineAb().getId(), "뉴네임", "뉴컬러"));
+        series.update(new Line(LineFixture.getLineAb().getId(), "뉴네임", "뉴컬러",0));
 
         // then
         assertThat(series.getLines().get(0).getName()).isEqualTo("뉴네임");
@@ -83,6 +83,6 @@ class LineSeriesTest {
         LineSeries series = new LineSeries(List.of(LineFixture.getLineAb()));
         // then
         assertThatExceptionOfType(RowNotFoundException.class)
-                .isThrownBy(() -> series.update(new Line(999L, "뉴네임", "뉴컬러")));
+                .isThrownBy(() -> series.update(new Line(999L, "뉴네임", "뉴컬러",0)));
     }
 }

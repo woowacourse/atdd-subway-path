@@ -36,7 +36,7 @@ public class PathServiceTest {
         stationService.save(new StationRequest("B역"));
         stationService.save(new StationRequest("C역"));
 
-        lineService.save(new LineRequest("1호선", "green", 1L, 2L, 5));
+        lineService.save(new LineRequest("1호선", "green", 1L, 2L, 5,0));
 
         sectionService.enroll(1L, new SectionRequest(2L, 3L, 2));
     }
