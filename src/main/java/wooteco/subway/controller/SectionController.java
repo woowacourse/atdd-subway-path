@@ -6,6 +6,9 @@ import wooteco.subway.controller.dto.ControllerDtoAssembler;
 import wooteco.subway.controller.dto.section.SectionRequest;
 import wooteco.subway.service.SectionService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
 public class SectionController {
@@ -17,13 +20,13 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest){
+    public ResponseEntity<Void> createSection(@PathVariable @Positive Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
         sectionService.create(ControllerDtoAssembler.sectionRequestDto(lineId, sectionRequest));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId){
+    public ResponseEntity<Void> deleteSection(@PathVariable @Positive Long lineId, @RequestParam @Positive Long stationId) {
         sectionService.delete(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
