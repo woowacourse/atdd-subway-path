@@ -1,8 +1,12 @@
 package wooteco.subway.ui;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ui.dto.ExceptionResponse;
@@ -23,6 +27,15 @@ public class ExceptionAdvisor {
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Void> handleEmptyResultDataAccessException() {
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult()
+                .getAllErrors()
+                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})

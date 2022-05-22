@@ -183,7 +183,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         long savedLineId = Long.parseLong(response.header("Location").split("/")[2]);
 
-        LineRequest updateRequest = new LineRequest("3호선", "orange", null, null, 0);
+        LineRequest updateRequest = new LineRequest("3호선", "orange", 1L, 2L, 1);
 
         ExtractableResponse<Response> updateResponse = updateLine(savedLineId, updateRequest);
 

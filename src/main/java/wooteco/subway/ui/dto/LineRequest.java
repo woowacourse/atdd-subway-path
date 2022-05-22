@@ -1,13 +1,25 @@
 package wooteco.subway.ui.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import wooteco.subway.service.dto.LineServiceRequest;
 
 public class LineRequest {
 
+    @NotBlank(message = "노선 이름이 필요합니다.")
     private String name;
+
+    @NotBlank(message = "노선 색상이 필요합니다.")
     private String color;
+
+    @NotNull(message = "상행종점 id기 필요합니다.")
     private Long upStationId;
+
+    @NotNull(message = "하행종점 id기 필요합니다.")
     private Long downStationId;
+
+    @Positive(message = "거리는 1 이상이어야 합니다.")
     private int distance;
 
     private LineRequest() {
