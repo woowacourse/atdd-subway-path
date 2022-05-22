@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
@@ -27,6 +28,7 @@ public class PathService {
         this.strategy = strategy;
     }
 
+    @Transactional(readOnly = true)
     public Path createPath(final long sourceId, final long targetId, final int age) {
         validateDuplicatedSourceAndTarget(sourceId, targetId);
         final Station source = findStationById(sourceId);
