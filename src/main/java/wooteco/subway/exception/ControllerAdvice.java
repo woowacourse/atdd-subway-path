@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.dto.ErrorResponse;
-import wooteco.subway.exception.NotFoundException;
-import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -20,19 +18,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> subwayExceptionHandler(SubwayException e) {
-        logger.error(e.getMessage(), e);
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ErrorResponse> nullPointerExceptionHandler(NullPointerException e) {
-        logger.error(e.getMessage(), e);
+        logger.info(e.getMessage(), e);
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFoundExceptionHandler(NotFoundException e) {
-        logger.error(e.getMessage(), e);
+        logger.info(e.getMessage(), e);
         return ResponseEntity.notFound().build();
     }
 
