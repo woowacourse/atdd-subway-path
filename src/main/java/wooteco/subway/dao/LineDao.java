@@ -62,8 +62,8 @@ public class LineDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public boolean existByNameAndColor(String name, String color) {
-        String sql = "select exists (select * from line where name = ? and color = ? limit 1) as success";
+    public boolean existByNameOrColor(String name, String color) {
+        String sql = "select exists (select * from line where name = ? or color = ? limit 1) as success";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name, color);
     }
 }

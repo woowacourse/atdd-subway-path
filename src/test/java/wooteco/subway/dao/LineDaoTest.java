@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
@@ -27,12 +29,13 @@ public class LineDaoTest {
         assertThat(savedLine.getExtraFare()).isEqualTo(0);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({"1호선, blue", "1호선, green ", "2호선, blue"})
     @DisplayName("노선 이름, 색깔 중복 여부 조회")
-    void duplicateNameAndColor() {
+    void duplicateNameOrColor(String name, String color) {
         LineEntity line = new LineEntity("1호선", "blue", 0);
         lineDao.save(line);
-        assertThat(lineDao.existByNameAndColor("1호선", "blue")).isTrue();
+        assertThat(lineDao.existByNameOrColor(name, color)).isTrue();
     }
 
     @Test

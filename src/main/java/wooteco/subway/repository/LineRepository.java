@@ -42,8 +42,8 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    public boolean existByNameAndColor(String name, String color) {
-        return lineDao.existByNameAndColor(name, color);
+    public boolean existByNameOrColor(String name, String color) {
+        return lineDao.existByNameOrColor(name, color);
     }
 
     private Line toLine(LineEntity entity) {

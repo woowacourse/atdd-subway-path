@@ -35,7 +35,7 @@ public class LineService {
     }
 
     public LineResponse create(LineRequest lineRequest) {
-        validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
+        validateDuplicateNameOrColor(lineRequest.getName(), lineRequest.getColor());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Station upStation = getStation(lineRequest.getUpStationId());
         Station downStation = getStation(lineRequest.getDownStationId());
@@ -59,7 +59,7 @@ public class LineService {
     }
 
     public void updateById(Long id, LineUpdateRequest request) {
-        validateDuplicateNameAndColor(request.getName(), request.getColor());
+        validateDuplicateNameOrColor(request.getName(), request.getColor());
         Line line = getLine(id);
         line.update(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.save(line);
@@ -93,8 +93,8 @@ public class LineService {
         }
     }
 
-    private void validateDuplicateNameAndColor(String name, String color) {
-        if (lineRepository.existByNameAndColor(name, color)) {
+    private void validateDuplicateNameOrColor(String name, String color) {
+        if (lineRepository.existByNameOrColor(name, color)) {
             throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
         }
     }
