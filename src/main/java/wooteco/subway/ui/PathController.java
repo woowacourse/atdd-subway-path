@@ -20,7 +20,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> showPaths(@ModelAttribute PathsRequest pathsRequest) {
+    public ResponseEntity<PathResponse> showPaths(PathsRequest pathsRequest) {
         return ResponseEntity.ok(pathService.showPaths(pathsRequest));
     }
 

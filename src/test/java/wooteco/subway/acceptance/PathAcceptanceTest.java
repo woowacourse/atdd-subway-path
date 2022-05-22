@@ -52,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         .extracting("name")
                         .containsExactly("강남", "성수", "합정");
                 assertThat(distance).isEqualTo(20);
-                assertThat(fare).isEqualTo(1450);
+                assertThat(fare).isEqualTo(1950);
             }
 
             private void setUp() {
