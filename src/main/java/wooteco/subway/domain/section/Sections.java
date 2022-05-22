@@ -118,7 +118,15 @@ public class Sections {
                 .orElseThrow(() -> new DataNotExistException("존재하지 않는 구간입니다."));
     }
 
-    public void validateDelete(Long stationId) {
+    public Optional<Section> getUpdatedSectionForDeleteIfRequired(Long stationId) {
+        validateDelete(stationId);
+        if(isRequireUpdateForDelete(stationId)) {
+            return Optional.of(getUpdatedSectionForDelete(stationId));
+        }
+        return Optional.empty();
+    }
+
+    private void validateDelete(Long stationId) {
         validateNotExistStation(stationId);
         validateLastSection();
     }
@@ -135,11 +143,11 @@ public class Sections {
         }
     }
 
-    public boolean isRequireUpdateForDelete(Long stationId) {
+    private boolean isRequireUpdateForDelete(Long stationId) {
         return !(isTopStation(stationId) || isBottomStation(stationId));
     }
 
-    public Section getUpdatedSectionForDelete(Long stationId) {
+    private Section getUpdatedSectionForDelete(Long stationId) {
         Section upSection = getSectionByFilter(section -> section.equalsDownStationId(stationId));
         Section downSection = getSectionByFilter(section -> section.equalsUpStationId(stationId));
 

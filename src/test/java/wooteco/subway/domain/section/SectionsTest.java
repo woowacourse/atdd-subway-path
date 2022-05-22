@@ -98,7 +98,7 @@ public class SectionsTest {
     @DisplayName("노선에 등록되지 않은 역을 삭제하는 경우 예외가 발생한다.")
     @Test
     void validateDeleteForNotExistStation() {
-        assertThatThrownBy(() -> SECTIONS.validateDelete(4L))
+        assertThatThrownBy(() -> SECTIONS.getUpdatedSectionForDeleteIfRequired(4L))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("해당 노선에 등록되지 않은 역입니다.");
     }
@@ -110,7 +110,7 @@ public class SectionsTest {
                 new Section(1L, 1L, 1L, 2L, 4)
         ));
 
-        assertThatThrownBy(() -> sections.validateDelete(2L))
+        assertThatThrownBy(() -> sections.getUpdatedSectionForDeleteIfRequired(2L))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("구간이 하나인 노선에서 마지막 구간을 삭제할 수 없습니다.");
     }
@@ -118,7 +118,8 @@ public class SectionsTest {
     @DisplayName("구간 삭제시 수정할 구간을 가져온다.")
     @Test
     void getUpdatedSectionForDelete() {
-        Section updatedSection = SECTIONS.getUpdatedSectionForDelete(2L);
+        Section updatedSection = SECTIONS.getUpdatedSectionForDeleteIfRequired(2L)
+                .orElseThrow();
 
         assertThat(updatedSection)
                 .usingRecursiveComparison()
