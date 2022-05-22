@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.Fixtures.BLUE;
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.JAMSIL;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
@@ -569,6 +570,34 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("연결되지 않은 구간일 경우 - 실패 400")
+        void createSection8() {
+            // given
+            final Long stationId1 = createStation(HYEHWA);
+            final Long stationId2 = createStation(SINSA);
+            final Long stationId3 = createStation(GANGNAM);
+            final Long stationId4 = createStation(JAMSIL);
+            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+
+            final Map<String, Object> params = new HashMap<>();
+            params.put("upStationId", stationId3);
+            params.put("downStationId", stationId4);
+            params.put("distance", 15);
+
+            // when
+            final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                    .body(params)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when()
+                    .post("/lines/" + lineId + "/sections")
+                    .then().log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
     }
 

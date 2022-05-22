@@ -57,6 +57,7 @@ public class Sections {
 
     public void add(final Section section) {
         validateDuplicateSection(section);
+        validateDisConnected(section);
         final Optional<Section> foundSection = findSameUpOrDownStationSection(section);
         if (foundSection.isPresent()) {
             addAtMiddle(section, foundSection.get());
@@ -72,6 +73,13 @@ public class Sections {
                 .ifPresent(value -> {
                     throw new IllegalArgumentException("이미 있는 구간은 추가할 수 없습니다.");
                 });
+    }
+
+    private void validateDisConnected(final Section section) {
+        values.stream()
+                .filter(s -> s.hasSameStation(section.getUpStation()) || s.hasSameStation(section.getDownStation()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("기존의 구간과 연결되는 구간만 추가할 수 있습니다."));
     }
 
     private Optional<Section> findSameUpOrDownStationSection(final Section section) {

@@ -13,11 +13,11 @@ import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SECTION_1_2;
-import static wooteco.subway.Fixtures.SECTION_1_2_SHORT;
-import static wooteco.subway.Fixtures.SECTION_1_3;
-import static wooteco.subway.Fixtures.SECTION_2_3;
-import static wooteco.subway.Fixtures.SECTION_2_3_SHORT;
+import static wooteco.subway.Fixtures.SECTION_1_2_10;
+import static wooteco.subway.Fixtures.SECTION_1_2_5;
+import static wooteco.subway.Fixtures.SECTION_1_3_10;
+import static wooteco.subway.Fixtures.SECTION_2_3_10;
+import static wooteco.subway.Fixtures.SECTION_2_3_5;
 import static wooteco.subway.Fixtures.SINSA;
 
 import java.util.List;
@@ -61,9 +61,9 @@ class LineServiceTest {
     @DisplayName("지하철 노선을 생성한다. 이때 관련 구간을 같이 생성한다.")
     void create() {
         // given
-        final Line savedLine = new Line(1L, LINE_2, RED, new Sections(SECTION_1_2));
+        final Line savedLine = new Line(1L, LINE_2, RED, new Sections(SECTION_1_2_10));
         final CreateLineRequest request = new CreateLineRequest(LINE_2, RED, 1L, 2L, 10);
-        final Sections sections = new Sections(SECTION_1_2);
+        final Sections sections = new Sections(SECTION_1_2_10);
 
         // mocking
         given(lineRepository.save(any(Line.class))).willReturn(1L);
@@ -104,8 +104,8 @@ class LineServiceTest {
     @DisplayName("지하철 노선 목록을 조회한다. 관련 역들도 함께 조회한다.")
     void showAll() {
         // given
-        final List<Line> lines = List.of(new Line(1L, LINE_2, RED, new Sections(SECTION_1_2)),
-                new Line(2L, LINE_4, BLUE, new Sections(SECTION_1_2)));
+        final List<Line> lines = List.of(new Line(1L, LINE_2, RED, new Sections(SECTION_1_2_10)),
+                new Line(2L, LINE_4, BLUE, new Sections(SECTION_1_2_10)));
 
         // mocking
         given(lineRepository.findAll()).willReturn(lines);
@@ -121,7 +121,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회한다. 관련 역들도 함께 조회한다.")
     void show() {
         // mocking
-        given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_2, RED, new Sections(SECTION_1_2)));
+        given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_2, RED, new Sections(SECTION_1_2_10)));
         // when
         final LineResponse response = lineService.find(1L);
         final StationResponse stationResponse1 = response.getStations().get(0);
@@ -216,7 +216,7 @@ class LineServiceTest {
 
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(lineId)).willReturn(new Sections(SECTION_1_2));
+        given(sectionRepository.findAllByLineId(lineId)).willReturn(new Sections(SECTION_1_2_10));
         given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
         given(stationService.find(3L)).willReturn(new Station(3L, GANGNAM));
 
@@ -224,7 +224,7 @@ class LineServiceTest {
         lineService.createSection(lineId, new CreateSectionRequest(2L, 3L, 10));
 
         // then
-        verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3));
+        verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3_10));
     }
 
     @Test
@@ -233,7 +233,7 @@ class LineServiceTest {
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_2_3));
+        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_2_3_10));
         given(stationService.find(1L)).willReturn(new Station(1L, HYEHWA));
         given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
 
@@ -241,7 +241,7 @@ class LineServiceTest {
         lineService.createSection(1L, new CreateSectionRequest(1L, 2L, 10));
 
         // then
-        verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2));
+        verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2_10));
     }
 
     @Test
@@ -253,7 +253,7 @@ class LineServiceTest {
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(lineId)).willReturn(new Sections(SECTION_1_3));
+        given(sectionRepository.findAllByLineId(lineId)).willReturn(new Sections(SECTION_1_3_10));
         given(stationService.find(1L)).willReturn(new Station(1L, HYEHWA));
         given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
 
@@ -261,8 +261,8 @@ class LineServiceTest {
         lineService.createSection(lineId, new CreateSectionRequest(1L, 2L, 5));
 
         // then
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3));
-        verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2_SHORT, SECTION_2_3_SHORT));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3_10));
+        verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2_5, SECTION_2_3_5));
     }
 
     @Test
@@ -270,7 +270,7 @@ class LineServiceTest {
     void createSectionMiddleSameDown() {
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_3));
+        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_3_10));
         given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
         given(stationService.find(3L)).willReturn(new Station(3L, GANGNAM));
 
@@ -278,8 +278,8 @@ class LineServiceTest {
         lineService.createSection(1L, new CreateSectionRequest(2L, 3L, 5));
 
         // then
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3));
-        verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3_SHORT, SECTION_1_2_SHORT));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3_10));
+        verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3_5, SECTION_1_2_5));
     }
 
     @Test
@@ -323,14 +323,15 @@ class LineServiceTest {
     void deleteSection() {
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_2, SECTION_2_3));
+        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_2_10,
+                SECTION_2_3_10));
 
         // when
         lineService.deleteSection(1L, 1L);
 
         // then
         verify(sectionRepository).batchSave(1L, List.of());
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_2));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_2_10));
     }
 
     @Test
@@ -338,7 +339,7 @@ class LineServiceTest {
     void deleteWhenRemainOneSection() {
         // mocking
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
-        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_2));
+        given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(new Sections(SECTION_1_2_10));
 
         // when
         assertThatThrownBy(() -> lineService.deleteSection(1L, 1L))

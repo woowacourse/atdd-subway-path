@@ -16,13 +16,13 @@ public class Fixtures {
     public static final String RED = "bg-red-600";
     public static final String BLUE = "bg-blue-500";
 
-    public static final Section SECTION_1_2 = new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 10);
-    public static final Section SECTION_2_3 = new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 10);
-    public static final Section SECTION_3_4 = new Section(new Station(3L, GANGNAM), new Station(4L, JAMSIL), 10);
-    public static final Section SECTION_1_3 = new Section(new Station(1L, HYEHWA), new Station(3L, GANGNAM), 10);
+    public static final Section SECTION_1_2_10 = new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 10);
+    public static final Section SECTION_2_3_10 = new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 10);
+    public static final Section SECTION_3_4_10 = new Section(new Station(3L, GANGNAM), new Station(4L, JAMSIL), 10);
+    public static final Section SECTION_1_3_10 = new Section(new Station(1L, HYEHWA), new Station(3L, GANGNAM), 10);
 
-    public static final Section SECTION_1_2_SHORT = new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 5);
-    public static final Section SECTION_2_3_SHORT = new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 5);
+    public static final Section SECTION_1_2_5 = new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 5);
+    public static final Section SECTION_2_3_5 = new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 5);
 
     public static Station UP = new Station("U");
     public static Station LEFT = new Station("L");
