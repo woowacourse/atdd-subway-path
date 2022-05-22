@@ -1,15 +1,15 @@
-package wooteco.subway.domain.policy;
+package wooteco.subway.domain.policy.line;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import wooteco.subway.domain.element.Line;
-import wooteco.subway.domain.fare.FarePolicy;
+import wooteco.subway.domain.policy.FarePolicy;
 
-public class LinePolicy implements FarePolicy {
+public class LineExtraFeePolicy implements FarePolicy {
     private final List<Line> lines;
 
-    public LinePolicy(List<Line> lines) {
+    public LineExtraFeePolicy(List<Line> lines) {
         this.lines = lines;
     }
 

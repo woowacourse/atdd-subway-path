@@ -2,7 +2,7 @@ package wooteco.subway.domain.fare;
 
 import java.util.ArrayList;
 import java.util.List;
-import wooteco.subway.domain.policy.PolicyFactory;
+import wooteco.subway.domain.policy.FarePolicy;
 
 public class Fare {
     private final List<FarePolicy> policies;
@@ -16,9 +16,7 @@ public class Fare {
     }
 
     public int getFare(int distance) {
-        return (int) getConditionAppliedFare(
-                PolicyFactory.createDistance(distance).getFare()
-        );
+        return (int) getConditionAppliedFare(PolicyFactory.createDistance(distance).getFare());
     }
 
     private double getConditionAppliedFare(int baseFare) {

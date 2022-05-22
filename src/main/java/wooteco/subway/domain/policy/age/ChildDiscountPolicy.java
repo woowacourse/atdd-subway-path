@@ -1,6 +1,6 @@
 package wooteco.subway.domain.policy.age;
 
-import wooteco.subway.domain.policy.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.AgeDiscountPolicy;
 
 public class ChildDiscountPolicy implements AgeDiscountPolicy {
     private static final int DEDUCTION_FARE = 350;

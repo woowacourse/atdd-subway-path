@@ -1,11 +1,11 @@
-package wooteco.subway.domain.policy;
+package wooteco.subway.domain.fare;
 
 import java.util.List;
 import wooteco.subway.domain.element.Line;
-import wooteco.subway.domain.fare.DistancePolicy;
+import wooteco.subway.domain.policy.line.LineExtraFeePolicy;
 import wooteco.subway.domain.policy.age.BabyDiscountPolicy;
 import wooteco.subway.domain.policy.age.ChildDiscountPolicy;
-import wooteco.subway.domain.policy.age.DefaultDiscountPolicy;
+import wooteco.subway.domain.policy.age.AdultDiscountPolicy;
 import wooteco.subway.domain.policy.age.TeenagerDiscountPolicy;
 import wooteco.subway.domain.policy.distance.OverFiftyKMPolicy;
 import wooteco.subway.domain.policy.distance.TenToFiftyKMPolicy;
@@ -39,10 +39,10 @@ public class PolicyFactory {
         if (age < TEENAGER_MAX_AGE) {
             return new TeenagerDiscountPolicy();
         }
-        return new DefaultDiscountPolicy();
+        return new AdultDiscountPolicy();
     }
 
-    public static LinePolicy createLineFee(List<Line> lines) {
-        return new LinePolicy(lines);
+    public static LineExtraFeePolicy createLineFee(List<Line> lines) {
+        return new LineExtraFeePolicy(lines);
     }
 }
