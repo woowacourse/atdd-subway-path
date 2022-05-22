@@ -13,11 +13,11 @@ public class Line {
         this(null, name, color, 0);
     }
 
-    public Line(String name, String color, int extraFare) {
+    public Line(final String name, final String color, final int extraFare) {
         this(null, name, color, extraFare);
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;

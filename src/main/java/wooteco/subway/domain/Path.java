@@ -66,7 +66,7 @@ public class Path {
         return path;
     }
 
-    private List<Section> getConnectedSections(List<Station> stations) {
+    private List<Section> getConnectedSections(final List<Station> stations) {
         List<Section> connectedSections = new ArrayList<>();
         for (int i = 0; i < stations.size() - 1; i++) {
             final Section connectedSection = sections.findConnectedSection(stations.get(i), stations.get(i + 1), (int) shortestPath.getPathWeight(stations.get(i), stations.get(i + 1)));
