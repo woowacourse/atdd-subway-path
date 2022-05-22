@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -43,15 +44,21 @@ public class StationService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<StationResponse> findByStationIds(final List<Long> stationsId) {
-        return stationsId.stream()
-                .map(id -> createStationResponse(stationDao.findById(id)))
+    public List<StationResponse> findByStationIds(final List<Long> stationIds) {
+        final Map<Long, Station> stations = stationDao.findAll()
+                .stream()
+                .filter(station -> stationIds.contains(station.getId()))
+                .collect(Collectors.toMap(station -> station.getId(), station -> station));
+
+        return stationIds.stream()
+                .map(stationId -> createStationResponse(stations.get(stationId)))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<StationResponse> findAll() {
-        return stationDao.findAll().stream()
+        return stationDao.findAll()
+                .stream()
                 .map(this::createStationResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
