@@ -1,5 +1,8 @@
 package wooteco.subway.domain.fare;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Fare {
     static final int BASE_FEE = 1250;
     private static final int OVER_TEN_DISTANCE = 10;
@@ -7,11 +10,20 @@ public class Fare {
     private static final int OVER_FIFTY_DISTANCE = 50;
     private static final int OVER_FIFTY_RATE = 8;
 
+    private final List<FarePolicy> policies;
+
+    public Fare(List<FarePolicy> policies) {
+        this.policies = policies;
+    }
+
     public Fare() {
+        this(new ArrayList<>());
     }
 
     public int getFare(int distance) {
-        return calculateOverFare(distance);
+        int baseFare = calculateOverFare(distance);
+        baseFare = (int) getConditionAppliedFare(baseFare);
+        return baseFare;
     }
 
     private int calculateOverFare(int distance) {
@@ -26,5 +38,13 @@ public class Fare {
 
     private int getAddedFare(int distance, int overDistance, int overRate) {
         return (int) ((Math.ceil((distance - overDistance - 1) / overRate) + 1) * 100);
+    }
+
+    private double getConditionAppliedFare(int baseFare) {
+        double result = baseFare;
+        for (FarePolicy policy : policies) {
+            result = policy.calculate(result);
+        }
+        return result;
     }
 }
