@@ -6,7 +6,14 @@ import java.util.Objects;
 public class Path {
 
     private final List<Station> stations;
+    private List<Section> passedSections;
     private final int distance;
+
+    public Path(List<Station> stations, List<Section> passedSections, int distance) {
+        this.stations = stations;
+        this.passedSections = passedSections;
+        this.distance = distance;
+    }
 
     public Path(List<Station> stations, int distance) {
         this.stations = stations;
@@ -19,6 +26,10 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public List<Section> getPassedSections() {
+        return passedSections;
     }
 
     @Override

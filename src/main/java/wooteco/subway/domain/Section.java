@@ -88,7 +88,11 @@ public class Section {
         if (isSameDownStation(section.upStation)) {
             return new Section(lineId, upStation, section.downStation, sumDistance);
         }
-        return new Section(lineId, section.downStation, upStation, sumDistance);
+        return new Section(lineId, section.upStation, this.downStation, sumDistance);
+    }
+
+    public boolean hasSameUpDownStation(Station upStation, Station downStation) {
+        return this.upStation.equals(upStation) && this.downStation.equals(downStation);
     }
 
     public Long getId() {

@@ -146,6 +146,19 @@ public class Sections {
                 .findFirst();
     }
 
+    public List<Section> findSectionsByStations(List<Station> stations) {
+        List<Section> result = new ArrayList<>();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            int index = i;
+            Section section = values.stream()
+                    .filter(it -> it.hasSameUpDownStation(stations.get(index), stations.get(index + 1)))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("해당 구간을 찾을 수 없습니다"));
+            result.add(section);
+        }
+        return  result;
+    }
+
     public Set<Station> getDistinctStations() {
         Set<Station> stations = new HashSet<>();
         for (Section section : values) {

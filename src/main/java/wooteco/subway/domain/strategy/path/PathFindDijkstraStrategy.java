@@ -1,5 +1,6 @@
 package wooteco.subway.domain.strategy.path;
 
+import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -23,8 +24,8 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
         addEdgeWeight(sections, graph);
 
         GraphPath<Station, DefaultWeightedEdge> shortPath = createShortestPath(source, target, graph);
-
-        return new Path(shortPath.getVertexList(), (int) shortPath.getWeight());
+        List<Section> passedSections = sections.findSectionsByStations(shortPath.getVertexList());
+        return new Path(shortPath.getVertexList(), passedSections, (int) shortPath.getWeight());
     }
 
     private GraphPath<Station, DefaultWeightedEdge> createShortestPath(
