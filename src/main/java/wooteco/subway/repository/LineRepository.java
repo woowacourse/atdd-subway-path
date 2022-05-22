@@ -29,6 +29,32 @@ public class LineRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final RowMapper<LineSection> lineSectionMapper = (resultSet, rowNum) -> {
+        long lineId = resultSet.getLong("line_id");
+        String name = resultSet.getString("name");
+        String color = resultSet.getString("color");
+        Line line = new Line(lineId, name, color);
+        long sectionId = resultSet.getLong("section_id");
+        long upStationId = resultSet.getLong("up_station_id");
+        long downStationId = resultSet.getLong("down_station_id");
+        String upStationName = resultSet.getString("up_station_name");
+        String downStationName = resultSet.getString("down_station_name");
+        int distance = resultSet.getInt("distance");
+        Section section = new Section(sectionId,
+                lineId,
+                new Station(upStationId, upStationName),
+                new Station(downStationId, downStationName),
+                distance);
+        return new LineSection(line, section);
+    };
+
+    private final RowMapper<Line> lineMapper = (resultSet, rowNum) -> {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        String color = resultSet.getString("color");
+        return new Line(id, name, color);
+    };
+
     public LineRepository(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -59,7 +85,7 @@ public class LineRepository {
                 + "LEFT JOIN station AS us ON us.id = s.up_station_id "
                 + "LEFT JOIN station AS ds ON ds.id = s.down_station_id";
 
-        List<LineSection> lineSections = namedParameterJdbcTemplate.query(sql, joinRowMapper());
+        List<LineSection> lineSections = namedParameterJdbcTemplate.query(sql, lineSectionMapper);
         Map<Line, List<LineSection>> groupByLine = lineSections.stream()
                 .collect(Collectors.groupingBy(LineSection::getLine));
         return groupByLine.keySet()
@@ -72,7 +98,7 @@ public class LineRepository {
         String sql = "SELECT * FROM line WHERE id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
+            return namedParameterJdbcTemplate.queryForObject(sql, parameters, lineMapper);
         } catch (EmptyResultDataAccessException e) {
             throw new IdNotFoundException(id);
         }
@@ -88,36 +114,6 @@ public class LineRepository {
         String sql = "SELECT EXISTS (SELECT * FROM line WHERE name = :name)";
         SqlParameterSource parameters = new MapSqlParameterSource("name", name);
         return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
-    }
-
-    private RowMapper<Line> rowMapper() {
-        return (resultSet, rowNum) -> {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            String color = resultSet.getString("color");
-            return new Line(id, name, color);
-        };
-    }
-
-    private RowMapper<LineSection> joinRowMapper() {
-        return (resultSet, rowNum) -> {
-            long lineId = resultSet.getLong("line_id");
-            String name = resultSet.getString("name");
-            String color = resultSet.getString("color");
-            Line line = new Line(lineId, name, color);
-            long sectionId = resultSet.getLong("section_id");
-            long upStationId = resultSet.getLong("up_station_id");
-            long downStationId = resultSet.getLong("down_station_id");
-            String upStationName = resultSet.getString("up_station_name");
-            String downStationName = resultSet.getString("down_station_name");
-            int distance = resultSet.getInt("distance");
-            Section section = new Section(sectionId,
-                    lineId,
-                    new Station(upStationId, upStationName),
-                    new Station(downStationId, downStationName),
-                    distance);
-            return new LineSection(line, section);
-        };
     }
 
     public void update(final Line line) {

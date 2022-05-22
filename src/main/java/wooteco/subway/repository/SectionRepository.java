@@ -24,6 +24,20 @@ public class SectionRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final RowMapper<Section> sectionMapper = (resultSet, rowNum) -> {
+        long id = resultSet.getLong("section_id");
+        long lineId = resultSet.getLong("line_id");
+        long upStationId = resultSet.getLong("up_station_id");
+        long downStationId = resultSet.getLong("down_station_id");
+        int distance = resultSet.getInt("distance");
+        return new Section(id,
+                lineId,
+                new Station(upStationId, resultSet.getString("up_station_name")),
+                new Station(downStationId, resultSet.getString("down_station_name")),
+                distance
+        );
+    };
+
     public SectionRepository(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -53,7 +67,7 @@ public class SectionRepository {
 
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
+            return namedParameterJdbcTemplate.queryForObject(sql, parameters, sectionMapper);
         } catch (EmptyResultDataAccessException e) {
             throw new IdNotFoundException(id);
         }
@@ -68,27 +82,12 @@ public class SectionRepository {
                 + "WHERE s.line_id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.query(sql, parameters, rowMapper());
+            return namedParameterJdbcTemplate.query(sql, parameters, sectionMapper);
         } catch (EmptyResultDataAccessException e) {
             throw new IdNotFoundException(id);
         }
     }
 
-    private RowMapper<Section> rowMapper() {
-        return ((rs, rowNum) -> {
-            long id = rs.getLong("section_id");
-            long lineId = rs.getLong("line_id");
-            long upStationId = rs.getLong("up_station_id");
-            long downStationId = rs.getLong("down_station_id");
-            int distance = rs.getInt("distance");
-            return new Section(id,
-                    lineId,
-                    new Station(upStationId, rs.getString("up_station_name")),
-                    new Station(downStationId, rs.getString("down_station_name")),
-                    distance
-            );
-        });
-    }
 
     public void update(final Section section) {
         String sql = "UPDATE section SET "
@@ -123,7 +122,7 @@ public class SectionRepository {
         String sql = "SELECT EXISTS(SELECT id FROM section WHERE up_station_id = :id OR down_station_id = :id)";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
-       return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
+        return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
     }
 
     public List<Section> findAll() {
@@ -132,6 +131,6 @@ public class SectionRepository {
                 + "FROM section AS s "
                 + "LEFT JOIN station AS us ON us.id = s.up_station_id "
                 + "LEFT JOIN station AS ds ON ds.id = s.down_station_id ";
-        return namedParameterJdbcTemplate.query(sql, rowMapper());
+        return namedParameterJdbcTemplate.query(sql, sectionMapper);
     }
 }

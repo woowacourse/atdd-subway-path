@@ -22,6 +22,12 @@ public class StationRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final RowMapper<Station> stationMapper = (resultSet, rowNum) -> {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        return new Station(id, name);
+    };
+
     public StationRepository(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -43,8 +49,7 @@ public class StationRepository {
 
     public List<Station> findAll() {
         String sql = "SELECT * FROM station";
-        RowMapper<Station> stationRowMapper = rowMapper();
-        return namedParameterJdbcTemplate.query(sql, stationRowMapper);
+        return namedParameterJdbcTemplate.query(sql, stationMapper);
     }
 
     public void deleteById(final Long id) {
@@ -65,17 +70,9 @@ public class StationRepository {
         String sql = "SELECT * FROM station WHERE id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
+            return namedParameterJdbcTemplate.queryForObject(sql, parameters, stationMapper);
         } catch (EmptyResultDataAccessException e) {
             throw new IdNotFoundException(id);
         }
-    }
-
-    private RowMapper<Station> rowMapper() {
-        return (resultSet, rowNum) -> {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            return new Station(id, name);
-        };
     }
 }
