@@ -191,7 +191,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        LINE_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -209,7 +210,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        LINE_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -227,7 +229,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        LINE_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -245,7 +248,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        LINE_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 

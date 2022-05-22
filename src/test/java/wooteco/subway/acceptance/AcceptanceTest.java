@@ -4,10 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -16,14 +20,18 @@ import wooteco.subway.dto.line.LineSaveRequest;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:/errors.properties")
 class AcceptanceTest {
 
     protected static final String ERROR_MESSAGE_PATH = "messages";
+    protected static final String LINE_NOT_BLANK_ERROR_MESSAGE = "빈 값";
     protected static final String NOT_FOUND_ERROR_MESSAGE = "존재하지 않습니다";
-    protected static final String BLANK_OR_NULL_ERROR_MESSAGE = "빈 값";
     private static final String LINE_BASE_URI = "/lines";
     private static final String STATION_BASE_URI = "/stations";
     private static final String SECTION_BASE_URI = "/sections";
+
+    @Value("${name.notBlank}")
+    protected String NAME_NOT_BLANK_ERROR_MESSAGE;
 
     @LocalServerPort
     int port;

@@ -1,6 +1,9 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationRequest {
+    @NotBlank(message = "{name.notBlank}")
     private String name;
 
     public StationRequest() {

@@ -6,10 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
@@ -52,7 +56,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NAME_NOT_BLANK_ERROR_MESSAGE);
     }
 
     @DisplayName("지하철역 이름을 null로 지하철역을 생성한다.")
@@ -64,7 +68,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(BLANK_OR_NULL_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NAME_NOT_BLANK_ERROR_MESSAGE);
     }
 
     @DisplayName("지하철역을 조회한다.")
