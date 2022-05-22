@@ -35,7 +35,7 @@ class LineDaoTest {
     @DisplayName("노선을 등록할 수 있다.")
     void save() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 900);
 
         // when
         final Long savedId = lineDao.save(line);
@@ -56,8 +56,8 @@ class LineDaoTest {
         Station 강남역 = stationDao.findById(강남역_id).get();
         Station 역삼역 = stationDao.findById(역삼역_id).get();
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 분당선 = new Line("분당선", "bg-green-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 900);
+        Line 분당선 = new Line("분당선", "bg-green-600", 900);
         Long 신분당선_id = lineDao.save(신분당선);
         Long 분당선_id = lineDao.save(분당선);
 
@@ -86,7 +86,7 @@ class LineDaoTest {
         Station 강남역 = stationDao.findById(강남역_id).get();
         Station 역삼역 = stationDao.findById(역삼역_id).get();
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 900);
         Long 신분당선_id = lineDao.save(신분당선);
         sectionDao.save(new Section(신분당선_id, 강남역, 역삼역, 10));
 
@@ -103,11 +103,11 @@ class LineDaoTest {
     @DisplayName("기존 노선의 이름과 색상을 변경할 수 있다.")
     void updateById() {
         // given
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 900);
         Long 신분당선_id = lineDao.save(신분당선);
 
         // when
-        final Line updateLine = new Line(신분당선_id, "다른분당선", "bg-red-600");
+        final Line updateLine = new Line(신분당선_id, "다른분당선", "bg-red-600", 900);
         lineDao.updateByLine(updateLine);
 
         // then
@@ -120,7 +120,7 @@ class LineDaoTest {
     @DisplayName("노선을 삭제할 수 있다.")
     void deleteById() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 900);
         final Long savedId = lineDao.save(line);
 
         // when & then

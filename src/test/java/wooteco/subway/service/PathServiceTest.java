@@ -84,7 +84,7 @@ class PathServiceTest {
         Long 봉은사_id = stationDao.save(봉은사역);
         삼전_id = stationDao.save(삼전역);
 
-        Long 이호선_id = lineDao.save(new Line("2호선", "초록섹"));
+        Long 이호선_id = lineDao.save(new Line("2호선", "초록색", 900));
 
         sectionDao.save(new Section(이호선_id, new Station(강남_id, "강남역"), new Station(역삼_id, "역삼역"), 5));
         sectionDao.save(new Section(이호선_id, new Station(역삼_id, "역삼역"), new Station(선릉_id, "선릉역"), 5));

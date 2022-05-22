@@ -1,4 +1,4 @@
-package wooteco.subway.ui;
+package wooteco.subway.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -28,6 +28,7 @@ public class LineController {
         final Long savedId = lineService.save(request);
         final LineResponse response = lineService.findById(savedId);
 
+        System.out.println(response.getExtraFare());
         return ResponseEntity.created(URI.create("/lines/" + savedId)).body(response);
     }
 

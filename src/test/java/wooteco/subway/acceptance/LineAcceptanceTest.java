@@ -33,6 +33,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
                 () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo("신분당선"),
+                () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(900),
                 () -> assertThat(response.body().jsonPath().getList("stations", LineResponse.class))
                         .extracting("name")
                         .containsExactly("강남역", "역삼역")

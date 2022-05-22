@@ -10,19 +10,30 @@ public class Line {
     private Integer extraFare;
     private Sections sections;
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(Long id, String name, String color, Integer extraFare, Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        this.sections = sections;
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, null);
-    }
-
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;
         this.name = Objects.requireNonNull(name, "값을 입력해주세요" + "name");
         this.color = Objects.requireNonNull(color, "값을 입력해주세요" + "color");
+        this.extraFare = extraFare;
         this.sections = sections;
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this.name = Objects.requireNonNull(name, "값을 입력해주세요" + "name");
+        this.color = Objects.requireNonNull(color, "값을 입력해주세요" + "color");
+        this.extraFare = extraFare;
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, null);
     }
 
     public Long getId() {
@@ -39,6 +50,10 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     @Override
