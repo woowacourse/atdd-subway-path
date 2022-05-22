@@ -6,12 +6,12 @@ import java.util.Objects;
 public class Path {
 
     private final List<Station> stations;
-    private List<Section> passedSections;
+    private List<Long> lineIds;
     private final int distance;
 
-    public Path(List<Station> stations, List<Section> passedSections, int distance) {
+    public Path(List<Station> stations, List<Long> lineIds, int distance) {
         this.stations = stations;
-        this.passedSections = passedSections;
+        this.lineIds = lineIds;
         this.distance = distance;
     }
 
@@ -28,8 +28,8 @@ public class Path {
         return distance;
     }
 
-    public List<Section> getPassedSections() {
-        return passedSections;
+    public List<Long> getLineIds() {
+        return lineIds;
     }
 
     @Override
