@@ -1,8 +1,9 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.BothUpAndDownStationDoNotExistException;
 import wooteco.subway.exception.BothUpAndDownStationExistException;
 import wooteco.subway.exception.CanNotInsertSectionException;

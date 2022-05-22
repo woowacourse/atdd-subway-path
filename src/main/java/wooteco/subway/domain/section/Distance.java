@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 public class Distance {
     public static final int MINIMUM_DISTANCE = 1;

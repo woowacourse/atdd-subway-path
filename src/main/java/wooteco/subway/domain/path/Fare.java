@@ -1,6 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.Objects;
+import wooteco.subway.domain.section.Distance;
 
 public class Fare {
 

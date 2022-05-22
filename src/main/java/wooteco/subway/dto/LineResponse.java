@@ -1,7 +1,7 @@
 package wooteco.subway.dto;
 
 import java.util.List;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineResponse {
     private Long id;

@@ -1,10 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.domain.section.Distance;
 
 class FareTest {
     @DisplayName("거리를 전달받아 요금을 계산한다.")
