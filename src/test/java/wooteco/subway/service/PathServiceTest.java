@@ -12,12 +12,12 @@ import wooteco.subway.dao.line.InmemoryLineDao;
 import wooteco.subway.dao.section.InmemorySectionDao;
 import wooteco.subway.dao.station.InmemoryStationDao;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.FindDijkstraShortestPathStrategy;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.path.PathFindRequest;
 import wooteco.subway.dto.path.PathFindResponse;
 import wooteco.subway.exception.NotFoundException;
-import wooteco.subway.infrastructure.path.FindDijkstraShortestPathStrategy;
 
 class PathServiceTest {
 

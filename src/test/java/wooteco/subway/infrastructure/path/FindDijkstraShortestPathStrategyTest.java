@@ -8,6 +8,7 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.FindDijkstraShortestPathStrategy;
 import wooteco.subway.domain.path.FindPathStrategy;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
