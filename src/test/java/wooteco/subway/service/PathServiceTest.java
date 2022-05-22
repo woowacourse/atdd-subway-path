@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -56,14 +58,15 @@ class PathServiceTest {
     }
 
     @DisplayName("서로 다른 노선을 포함한 경로를 조회한다.")
-    @Test
-    void findPathWithCrossLine() {
+    @ParameterizedTest
+    @CsvSource({"0,24,1250", "900,24,2150", "0,13,720", "0,18,720", "900,13,1440", "900,18,1440"})
+    void findPathWithCrossLine(int extraFare, int age, int fare) {
         StationResponse 건대입구역 = stationService.save(new StationRequest("건대입구역"));
         StationResponse 강남구청역 = stationService.save(new StationRequest("강남구청역"));
         StationResponse 대림역 = stationService.save(new StationRequest("대림역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, extraFare);
         LineResponse line7Response = lineService.save(line7);
         lineService.addSection(line7Response.getId(), new SectionRequest(강남구청역.getId(), 대림역.getId(), 10));
         LineRequest line2 = new LineRequest(
@@ -71,12 +74,12 @@ class PathServiceTest {
         LineResponse line2Response = lineService.save(line2);
         lineService.addSection(line2Response.getId(), new SectionRequest(낙성대역.getId(), 대림역.getId(), 5));
 
-        PathResponse pathResponse = pathService.findPath(건대입구역.getId(), 대림역.getId(), 24);       
+        PathResponse pathResponse = pathService.findPath(건대입구역.getId(), 대림역.getId(), age);
 
         assertAll(
                 () -> assertThat(pathResponse.getStations().size()).isEqualTo(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(fare)
         );
     }
 

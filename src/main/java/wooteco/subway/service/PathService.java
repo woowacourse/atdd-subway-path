@@ -17,10 +17,12 @@ import wooteco.subway.dto.StationResponse;
 public class PathService {
 
     private final SectionDao sectionDao;
+    private final LineService lineService;
     private final StationService stationService;
 
-    public PathService(SectionDao sectionDao, StationService stationService) {
+    public PathService(SectionDao sectionDao, LineService lineService, StationService stationService) {
         this.sectionDao = sectionDao;
+        this.lineService = lineService;
         this.stationService = stationService;
     }
 
@@ -31,9 +33,10 @@ public class PathService {
         Path shortestPath = new Path(sectionDao.findAll());
 
         List<StationResponse> stationResponses = convertToStationResponse(source, target, shortestPath);
-
+        int maxExtraFare = lineService.getMaxExtraFare(shortestPath.getStations(source, target));
         int shortestDistance = shortestPath.getDistance(source, target);
-        Fare fare = new Fare(shortestDistance);
+        Fare fare = new Fare(shortestDistance, age, maxExtraFare);
+
         return new PathResponse(stationResponses, shortestDistance, fare.calculateFare());
     }
 
