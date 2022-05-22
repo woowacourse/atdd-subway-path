@@ -28,7 +28,7 @@ import wooteco.subway.domain.Station;
 
 @DisplayName("경로 조회 인수 테스트")
 @SpringBootAcceptanceTest
-public class PathAcceptanceTest {
+class PathAcceptanceTest {
 
     private final Map<String, Station> stations = new HashMap<>();
 

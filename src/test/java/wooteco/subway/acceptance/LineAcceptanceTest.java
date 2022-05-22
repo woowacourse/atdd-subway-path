@@ -26,7 +26,7 @@ import wooteco.subway.controller.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 인수 테스트")
 @SpringBootAcceptanceTest
-public class LineAcceptanceTest {
+class LineAcceptanceTest {
 
     private LineRequest lineRequest;
 

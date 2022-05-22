@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import wooteco.subway.domain.path.Fare;
 
-public class FareTest {
+class FareTest {
 
     @DisplayName("거리에 따른 요금 정책에 따라 요금을 계산한다.")
     @ParameterizedTest

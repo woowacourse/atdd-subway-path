@@ -16,7 +16,7 @@ import wooteco.subway.domain.Station;
 
 @SpringBootTest
 @Transactional
-public class StationServiceTest {
+class StationServiceTest {
 
     @Autowired
     private StationService stationService;

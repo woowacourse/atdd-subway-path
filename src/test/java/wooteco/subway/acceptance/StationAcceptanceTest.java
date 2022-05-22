@@ -23,7 +23,7 @@ import wooteco.subway.controller.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능 인수 테스트")
 @SpringBootAcceptanceTest
-public class StationAcceptanceTest {
+class StationAcceptanceTest {
 
     private final StationRequest stationRequest = new StationRequest("강남역");
 
