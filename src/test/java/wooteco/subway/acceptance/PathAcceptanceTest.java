@@ -8,6 +8,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -16,12 +18,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void searchPathByNotFoundStation() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", 1L)
-            .param("target", 2L)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+                .param("source", 1L)
+                .param("target", 2L)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -31,15 +34,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void searchPathBySourceSameAsTarget() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10,900);
+        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 900);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", upStationId)
-            .param("target", upStationId)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+                .param("source", upStationId)
+                .param("target", upStationId)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -51,20 +55,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long 잠실역 = requestCreateStation("잠실역").jsonPath().getLong("id");
         long 선릉역 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10,900).jsonPath()
-            .getLong("id");
-        long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10,0).jsonPath()
-            .getLong("id");
+        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 900).jsonPath()
+                .getLong("id");
+        long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10, 0).jsonPath()
+                .getLong("id");
         requestAddSection(신분당선, 역삼역, 잠실역, 10);
         requestAddSection(일호선, 잠실역, 강남역, 5);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", 선릉역)
-            .param("target", 역삼역)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+                .param("source", 선릉역)
+                .param("target", 역삼역)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
@@ -79,23 +84,44 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("source에서 target으로 가는 경로가 없는 경우 400 에러를 반환한다.")
     @Test
     void searchUnreachablePath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 부산역 = requestCreateStation("부산역").jsonPath().getLong("id");
+        long 서면역 = requestCreateStation("서면역").jsonPath().getLong("id");
 
-        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10,900);
-        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10,0);
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 900);
+        requestCreateLine("1호선", "bg-blue-600", 부산역, 서면역, 10, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station1)
-            .param("target", station4)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+                .param("source", 강남역)
+                .param("target", 서면역)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("age가 음수이거나 150초과이면 400 에러를 발생시킨다.")
+    @ParameterizedTest
+    @CsvSource({"151", "1000", "0", "-1"," -1000"})
+            void searchPathWithRidiculousAge(int age) {
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 900);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("source", 강남역)
+                .param("target", 역삼역)
+                .param("age", age)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

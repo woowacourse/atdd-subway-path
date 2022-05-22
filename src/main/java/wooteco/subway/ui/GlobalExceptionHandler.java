@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.application.exception.DuplicateException;
 import wooteco.subway.application.exception.NotFoundException;
+import wooteco.subway.application.exception.RidiculousAgeException;
 import wooteco.subway.application.exception.UnaddableSectionException;
 import wooteco.subway.application.exception.UndeletableSectionException;
 import wooteco.subway.application.exception.UnreachablePathException;
@@ -18,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({DuplicateException.class, BlankArgumentException.class,
             UnaddableSectionException.class, UndeletableSectionException.class, UnreachablePathException.class,
-            UnsplittableException.class, UnmergeableException.class})
+            UnsplittableException.class, UnmergeableException.class, RidiculousAgeException.class})
     private ResponseEntity<ErrorResponse> handleExceptionToBadRequest(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }

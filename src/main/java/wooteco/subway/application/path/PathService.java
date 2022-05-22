@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
+import wooteco.subway.application.exception.RidiculousAgeException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -26,7 +27,13 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse searchPath(Long source, Long target) {
+    public PathResponse searchPath(Long source, Long target, Integer age) {
+
+        //TODO: 도메인으로 옮기기
+        if (age <= 0 || age > 150) {
+            throw new RidiculousAgeException();
+        }
+
         validate(source, target);
 
         List<Station> stations = stationRepository.findAll();
