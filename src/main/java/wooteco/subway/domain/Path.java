@@ -5,6 +5,7 @@ import java.util.List;
 public class Path {
 
     private static final int BASIC_FARE = 1250;
+
     private List<Station> stations;
     private int extraFare;
     private int distance;
@@ -42,11 +43,15 @@ public class Path {
                 (int) (Math.ceil((distance - 50) / 8) * 100);
     }
 
-    public List<Station> findStationsOnPath() {
+    public List<Station> getStations() {
         return stations;
     }
 
-    public int calculateShortestDistance() {
+    public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

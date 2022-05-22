@@ -30,6 +30,6 @@ public class PathService {
         Station source = stationRepository.findById(sourceId);
         Station target = stationRepository.findById(targetId);
         Path path = pathFinder.findShortest(lines, source, target);
-        return new PathResponse(path.findStationsOnPath(), path.calculateShortestDistance(), path.chargeFare());
+        return new PathResponse(path.getStations(), path.getDistance(), path.chargeFare());
     }
 }
