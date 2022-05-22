@@ -25,9 +25,9 @@ class StationRepositoryTest extends RepositoryTest {
         );
     }
 
-    @DisplayName("역 저장 시 유니크 키 이름에 접근하면 에러가 발생한다.")
+    @DisplayName("중복된 이름을 가진 역을 저장하면 에러가 발생한다.")
     @Test
-    void saveUniqueException() {
+    void saveDuplicateException() {
         Station station = new Station("신림역");
         stationRepository.save(station);
 
