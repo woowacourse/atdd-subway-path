@@ -57,14 +57,14 @@ class PathServiceTest {
         서면역 = stationService.save(new StationRequest("서면역"));
 
         신분당선 = lineService.save(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5));
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5,900));
         sectionService.addSection(신분당선.getId(), new AddSectionRequest(역삼역.getId(), 잠실역.getId(), 4));
 
         분당선 = lineService.save(
-                new LineRequest("분당선", "bg-green-600", 역삼역.getId(), 선릉역.getId(), 3));
+                new LineRequest("분당선", "bg-green-600", 역삼역.getId(), 선릉역.getId(), 3,0));
 
         일호선 = lineService.save(
-                new LineRequest("1호선", "bg-yellow-600", 부산역.getId(), 서면역.getId(), 6));
+                new LineRequest("1호선", "bg-yellow-600", 부산역.getId(), 서면역.getId(), 6,0));
     }
 
     @DisplayName("source와 target이 같은 경우 예외 발생")

@@ -31,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void searchPathBySourceSameAsTarget() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10,900);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .param("source", upStationId)
@@ -51,9 +51,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long 잠실역 = requestCreateStation("잠실역").jsonPath().getLong("id");
         long 선릉역 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10).jsonPath()
+        long 신분당선 = requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10,900).jsonPath()
             .getLong("id");
-        long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10).jsonPath()
+        long 일호선 = requestCreateLine("1호선", "bg-blue-600", 강남역, 선릉역, 10,0).jsonPath()
             .getLong("id");
         requestAddSection(신분당선, 역삼역, 잠실역, 10);
         requestAddSection(일호선, 잠실역, 강남역, 5);
@@ -84,8 +84,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
         long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
 
-        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10);
-        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10);
+        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10,900);
+        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10,0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .param("source", station1)
