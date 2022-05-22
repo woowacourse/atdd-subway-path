@@ -70,6 +70,32 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(상계_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         });
     }
+    
+    @Test
+    @DisplayName("추가 요금이 존재하는 노선을 등록한다")
+    void createLine_extraFare() {
+        // given
+        하계역_상계역_등록();
+
+        // when 노선을 추가 요금을 포함해서 등록 요청한다.
+        String name = "7호선";
+        String color = "red";
+        long extraFare = 100L;
+        LineRequest 칠호선_요청 = new LineRequest(name, color, 상계_id, 하계_id, 10, extraFare);
+        ExtractableResponse<Response> 칠호선_생성_응답 = postWithBody("/lines", 칠호선_요청);
+
+        // then 노선 등록 요청에 성공한다.
+        // and 노선 이름, 색, 역 목록 2개와 추가 요금이 요청한 바와 일치한다.
+        LineResponse 칠호선_생성_응답_바디 = 칠호선_생성_응답.body().as(LineResponse.class);
+
+        assertAll(() -> {
+            assertThat(칠호선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            assertThat(칠호선_생성_응답_바디.getName()).isEqualTo(name);
+            assertThat(칠호선_생성_응답_바디.getColor()).isEqualTo(color);
+            assertThat(칠호선_생성_응답_바디.getStations()).hasSize(2);
+            assertThat(칠호선_생성_응답_바디.getExtraFare()).isEqualTo(extraFare);
+        });
+    }
 
     @Test
     @DisplayName("잘못된 값 입력해서 노선 생성 시도")

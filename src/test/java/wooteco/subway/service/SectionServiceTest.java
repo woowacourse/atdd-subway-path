@@ -38,7 +38,7 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        LineEntity firstLine = lineDao.save(new LineEntity(null, "1호선", "red"));
+        LineEntity firstLine = lineDao.save(new LineEntity(null, "1호선", "red", 100L));
         lineId = firstLine.getId();
 
         first = stationDao.save(new StationEntity(null, "first"));

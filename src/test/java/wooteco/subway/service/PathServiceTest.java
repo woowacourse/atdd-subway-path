@@ -42,8 +42,8 @@ public class PathServiceTest {
         one = stationDao.save(new StationEntity(null, "one"));
         two = stationDao.save(new StationEntity(null, "two"));
         three = stationDao.save(new StationEntity(null, "three"));
-        line1 = lineDao.save(new LineEntity(null, "oneLine", "red"));
-        line2 = lineDao.save(new LineEntity(null, "twoLine", "blue"));
+        line1 = lineDao.save(new LineEntity(null, "oneLine", "red", 100L));
+        line2 = lineDao.save(new LineEntity(null, "twoLine", "blue", 100L));
         section1 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), two.getId(), 46));
         section2 = sectionDao.save(new SectionEntity(null, line2.getId(), two.getId(), three.getId(), 2));
         section3 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), three.getId(), 1000));

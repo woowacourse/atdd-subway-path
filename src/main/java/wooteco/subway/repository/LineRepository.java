@@ -55,7 +55,7 @@ public class LineRepository {
                         section.getDistance()))
                 .collect(Collectors.toList());
         sectionRepository.saveAll(sections);
-        return new Line(saved.getId(), saved.getName(), saved.getColor(), sections);
+        return new Line(saved.getId(), saved.getName(), saved.getColor(), sections, saved.getExtraFare());
     }
 
     public void deleteById(Long id) {

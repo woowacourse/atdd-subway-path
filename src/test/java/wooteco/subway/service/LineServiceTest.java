@@ -47,6 +47,20 @@ class LineServiceTest {
     }
 
     @Test
+    @DisplayName("추가 요금을 가진 노선을 생성한다")
+    void createLine_extraFare() {
+        // given
+        long extraFare = 100L;
+        final LineRequest request = new LineRequest("7호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10, extraFare);
+
+        // when
+        final LineResponse response = lineService.save(request);
+
+        // then
+        assertThat(response.getExtraFare()).isEqualTo(extraFare);
+    }
+
+    @Test
     @DisplayName("모든 노선을 조회한다.")
     void showLines() {
         // given
