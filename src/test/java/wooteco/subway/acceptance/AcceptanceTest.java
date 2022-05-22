@@ -18,9 +18,9 @@ import wooteco.subway.dao.LineDaoImpl;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.ui.dto.LineRequest;
+import wooteco.subway.ui.dto.SectionRequest;
+import wooteco.subway.ui.dto.StationRequest;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

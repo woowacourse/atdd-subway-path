@@ -12,8 +12,8 @@ import org.springframework.dao.DuplicateKeyException;
 import wooteco.subway.dao.FakeStationDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.ui.dto.StationRequest;
+import wooteco.subway.ui.dto.StationResponse;
 
 class StationServiceTest {
 

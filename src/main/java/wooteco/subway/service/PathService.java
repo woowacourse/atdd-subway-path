@@ -9,7 +9,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.Subway;
 import wooteco.subway.domain.vo.Path;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.ui.dto.PathResponse;
 
 @Service
 @Transactional(readOnly = true)

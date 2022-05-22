@@ -23,11 +23,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.ui.dto.LineRequest;
+import wooteco.subway.ui.dto.PathResponse;
+import wooteco.subway.ui.dto.SectionRequest;
+import wooteco.subway.ui.dto.StationRequest;
+import wooteco.subway.ui.dto.StationResponse;
 
 @DisplayName("경로 조회 기능")
 public class PathAcceptanceTest extends AcceptanceTest {

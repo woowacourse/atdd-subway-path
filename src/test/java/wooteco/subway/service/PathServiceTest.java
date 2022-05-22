@@ -18,8 +18,8 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.ui.dto.PathResponse;
+import wooteco.subway.ui.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
