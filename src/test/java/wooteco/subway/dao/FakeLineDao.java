@@ -18,7 +18,7 @@ public class FakeLineDao implements LineDao {
     @Override
     public Long save(Line line) {
         validateDuplicateName(line);
-        Line newLine = new Line(++seq, line.getName(), line.getColor());
+        Line newLine = new Line(++seq, line.getName(), line.getColor(), line.getExtraFare());
         lines.put(seq, newLine);
         return seq;
     }
@@ -52,7 +52,7 @@ public class FakeLineDao implements LineDao {
     @Override
     public boolean updateById(Long savedId, Line line) {
         if (lines.containsKey(savedId)) {
-            lines.replace(savedId, new Line(savedId, line.getName(), line.getColor()));
+            lines.replace(savedId, new Line(savedId, line.getName(), line.getColor(), 0));
             return true;
         }
 

@@ -32,7 +32,7 @@ public class LineService {
     }
 
     public LineResponse save(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Long savedLineId = lineDao.save(line);
 
         Station upStation = findStationById(lineRequest.getUpStationId());
@@ -87,12 +87,12 @@ public class LineService {
         sectionDao.delete(sectionId);
     }
 
-    private Station findStationById(Long id) {
+    public Station findStationById(Long id) {
         return stationDao.findById(id)
             .orElseThrow((throwEmptyStationException()));
     }
 
-    private Line findLineById(Long id) {
+    public Line findLineById(Long id) {
         return lineDao.findById(id)
             .orElseThrow(throwEmptyLineResultException());
     }

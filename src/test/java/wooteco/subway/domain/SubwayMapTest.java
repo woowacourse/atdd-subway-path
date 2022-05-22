@@ -35,7 +35,7 @@ public class SubwayMapTest {
         sections1.add(new Section(stations.get(0), stations.get(1), 5));
         sections1.add(new Section(stations.get(1), stations.get(2), 15));
         sections1.add(new Section(stations.get(2), stations.get(3), 10));
-        return Line.from(new Line(1L, "1", "red"), sections1);
+        return Line.from(new Line(1L, "1", "red", 0), sections1);
     }
 
     private static Line createLine2() {
@@ -43,7 +43,7 @@ public class SubwayMapTest {
         sections2.add(new Section(stations.get(1), stations.get(4), 4));
         sections2.add(new Section(stations.get(4), stations.get(5), 7));
         sections2.add(new Section(stations.get(5), stations.get(6), 4));
-        return Line.from(new Line(2L, "2", "green"), sections2);
+        return Line.from(new Line(2L, "2", "green",0 ), sections2);
     }
 
     private static Line createLine3() {
@@ -51,13 +51,13 @@ public class SubwayMapTest {
         sections3.add(new Section(stations.get(6), stations.get(2), 10));
         sections3.add(new Section(stations.get(2), stations.get(7), 15));
         sections3.add(new Section(stations.get(7), stations.get(8), 23));
-        return Line.from(new Line(3L, "3", "orange"), sections3);
+        return Line.from(new Line(3L, "3", "orange", 0), sections3);
     }
 
     private static Line createLine4() {
         List<Section> sections4 = new ArrayList<>();
         sections4.add(new Section(stations.get(9), stations.get(10), 10));
-        return Line.from(new Line(4L, "4", "blue"), sections4);
+        return Line.from(new Line(4L, "4", "blue", 0), sections4);
     }
 
     @Test

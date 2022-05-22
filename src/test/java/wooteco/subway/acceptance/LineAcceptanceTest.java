@@ -204,7 +204,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("name을 지정하지 않고 요청하면 bad request 예외를 반환해야 한다.")
     void emptyName() {
-        LineRequest lineRequest = new LineRequest(null, "bg-red-600", stationId1, stationId2, 10);
+        LineRequest lineRequest = new LineRequest(null, "bg-red-600", stationId1, stationId2, 10, 0);
         createLineRequest(lineRequest)
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -212,7 +212,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("color를 지정하지 않고 요청하면 bad request 예외를 반환해야 한다.")
     void emptyColor() {
-        LineRequest lineRequest = new LineRequest("1호선", null, stationId1, stationId2, 10);
+        LineRequest lineRequest = new LineRequest("1호선", null, stationId1, stationId2, 10, 0);
         createLineRequest(lineRequest)
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -220,7 +220,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("upStationId를 지정하지 않고 요청하면 bad request 예외를 반환해야 한다.")
     void emptyUpStationId() {
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", null, stationId2, 10);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", null, stationId2, 10, 0);
         createLineRequest(lineRequest)
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -228,7 +228,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("downStationId를 지정하지 않고 요청하면 bad request 예외를 반환해야 한다.")
     void emptyDownStationId() {
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, null, 10);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, null, 10, 0);
         createLineRequest(lineRequest)
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -236,7 +236,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("distance가 1보다 작으면 bad request 예외를 반환해야 한다.")
     void notPositiveDistance() {
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 0);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 0, 0);
         createLineRequest(lineRequest)
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -244,7 +244,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("section 삽입이 성공하면 상태코드 200을 반환해야 한다.")
     void insertSection() {
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 0);
         ExtractableResponse<Response> createResponse = extractCreateLineRequest(lineRequest);
 
         StationRequest newStationRequest = new StationRequest("교대역");
@@ -261,7 +261,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("section 삽입이 실패하면 bad request를 반환해야 한다.")
     void insertInvalidSection() {
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 0);
         ExtractableResponse<Response> createResponse = extractCreateLineRequest(lineRequest);
 
         Long newUpStationId = createNewStation("잠실역");
@@ -278,7 +278,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간 삭제가 성공하면 상태코드 200을 반환해야 한다.")
     void deleteSection() {
         //given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 0);
         ExtractableResponse<Response> createResponse = extractCreateLineRequest(lineRequest);
 
         StationRequest newStationRequest = new StationRequest("교대역");
@@ -303,7 +303,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간 삭제가 실패하면 bad request을 반환해야 한다.")
     void deleteInvalidSection() {
         //given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 0);
         ExtractableResponse<Response> createResponse = extractCreateLineRequest(lineRequest);
 
         StationRequest newStationRequest = new StationRequest("교대역");
@@ -357,7 +357,8 @@ class LineAcceptanceTest extends AcceptanceTest {
             "bg-red-600",
             stationId1,
             stationId2,
-            10
+            10,
+            0
         );
     }
 
@@ -367,7 +368,8 @@ class LineAcceptanceTest extends AcceptanceTest {
             "bg-green-600",
             stationId1,
             stationId2,
-            10
+            10,
+            0
         );
     }
 
@@ -377,7 +379,8 @@ class LineAcceptanceTest extends AcceptanceTest {
             "bg-orange-600",
             stationId1,
             stationId2,
-            10
+            10,
+            0
         );
     }
 }

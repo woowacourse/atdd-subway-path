@@ -58,7 +58,7 @@ class LineDaoImplTest {
     @Test
     void save() {
         // given
-        Line line = new Line("1호선", "bg-red-600");
+        Line line = new Line("1호선", "bg-red-600", 0);
 
         // when
         Long savedId = lineDao.save(line);
@@ -70,8 +70,8 @@ class LineDaoImplTest {
     @Test
     void validateDuplication() {
         // given
-        Line line1 = new Line("1호선", "bg-red-600");
-        Line line2 = new Line("1호선", "bg-red-600");
+        Line line1 = new Line("1호선", "bg-red-600", 0);
+        Line line2 = new Line("1호선", "bg-red-600", 0);
 
         // when
         lineDao.save(line1);
@@ -85,7 +85,7 @@ class LineDaoImplTest {
     @DisplayName("id로 지하철 노선을 조회할 수 있어야 한다.")
     void findById() {
         // given
-        Line line = new Line("1호선", "bg-red-600");
+        Line line = new Line("1호선", "bg-red-600", 0);
 
         // when
         Long savedId = lineDao.save(line);
@@ -106,8 +106,8 @@ class LineDaoImplTest {
     @Test
     void findAll() {
         // given
-        Line line1 = new Line("1호선", "bg-red-600");
-        Line line2 = new Line("2호선", "bg-green-600");
+        Line line1 = new Line("1호선", "bg-red-600", 0);
+        Line line2 = new Line("2호선", "bg-green-600", 0);
 
         // when
         Long savedId1 = lineDao.save(line1);
@@ -129,7 +129,7 @@ class LineDaoImplTest {
     @Test
     void delete() {
         // given
-        Line line = new Line("1호선", "bg-red-600");
+        Line line = new Line("1호선", "bg-red-600", 0);
         Long savedId = lineDao.save(line);
 
         // when
@@ -149,11 +149,11 @@ class LineDaoImplTest {
     @Test
     void update() {
         // given
-        Line originLine = new Line("1호선", "bg-red-600");
+        Line originLine = new Line("1호선", "bg-red-600",0);
         Long savedId = lineDao.save(originLine);
 
         // when
-        Line newLine = new Line("2호선", "bg-green-600");
+        Line newLine = new Line("2호선", "bg-green-600", 0);
         lineDao.updateById(savedId, newLine);
         sectionDao.save(new Section(station1, station2, 10), savedId);
         Line line = lineDao.findById(savedId).get();

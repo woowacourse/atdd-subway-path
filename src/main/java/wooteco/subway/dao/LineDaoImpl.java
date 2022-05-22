@@ -30,13 +30,14 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Long save(Line line) {
-        final String sql = "INSERT INTO LINE (name, color) VALUES (?, ?)";
+        final String sql = "INSERT INTO LINE (name, color, extraFare) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
@@ -74,7 +75,7 @@ public class LineDaoImpl implements LineDao {
             final Long lineId = resultSet.getLong("line_id");
             final String name = resultSet.getString("line_name");
             final String color = resultSet.getString("line_color");
-            Line line = new Line(lineId, name, color);
+            Line line = new Line(lineId, name, color, 0);
 
             Section section = serializeSection(resultSet);
             return new LineSection(line, section);

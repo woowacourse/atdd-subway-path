@@ -10,47 +10,47 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.EmptyResultException;
 
 public class SubwayMap {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder;
+    private final DijkstraShortestPath<Station, CustomEdge> pathFinder;
 
-    private SubwayMap(DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder) {
+    private SubwayMap(DijkstraShortestPath<Station, CustomEdge> pathFinder) {
         this.pathFinder = pathFinder;
     }
 
     public static SubwayMap of(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
 
         for(Line line : lines){
-            addEdge(graph, line.getSections());
+            addEdge(graph, line.getSections(), line.getId());
         }
 
-        return new SubwayMap(new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph));
+        return new SubwayMap(new DijkstraShortestPath<Station, CustomEdge>(graph));
     }
 
-    private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Station> stations) {
+    private static void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private static void addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
+    private static void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-            graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()), section.getDistance());
+            graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
+            graph.addEdge(section.getDownStation(), section.getUpStation(), new CustomEdge(lineId, section.getDistance()));
         }
     }
 
     public Path findShortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
+        GraphPath<Station, CustomEdge> path = pathFinder.getPath(source, target);
 
         checkNoPath(path);
-        return Path.of(path.getVertexList(), path.getWeight());
+        return Path.of(path.getVertexList(), path.getWeight(), path.getEdgeList());
     }
 
-    private void checkNoPath(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void checkNoPath(GraphPath<Station, CustomEdge> path) {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }

@@ -54,7 +54,7 @@ class LineServiceTest {
     @Test
     void save() {
         // given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 1);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 1, 0);
 
         // when
         LineResponse lineResponse = lineService.save(lineRequest);
@@ -70,8 +70,8 @@ class LineServiceTest {
     @Test
     void validateDuplication() {
         // given
-        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
-        LineRequest lineRequest2 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
+        LineRequest lineRequest2 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
 
         // when
         lineService.save(lineRequest1);
@@ -84,8 +84,8 @@ class LineServiceTest {
     @Test
     void findAll() {
         // given
-        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
-        LineRequest lineRequest2 = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5);
+        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
+        LineRequest lineRequest2 = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5, 0);
 
         // when
         lineService.save(lineRequest1);
@@ -105,7 +105,7 @@ class LineServiceTest {
     @Test
     void delete() {
         // given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(lineRequest);
 
         // when
@@ -125,11 +125,11 @@ class LineServiceTest {
     @Test
     void update() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
-        LineRequest newLine = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5);
+        LineRequest newLine = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5, 0);
         lineService.updateById(lineResponse.getId(), newLine);
         Line line = lineDao.findById(lineResponse.getId()).get();
 
@@ -140,7 +140,7 @@ class LineServiceTest {
     @Test
     void insertSection() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
@@ -165,7 +165,7 @@ class LineServiceTest {
     @Test
     void insertInvalidSection() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
@@ -182,7 +182,7 @@ class LineServiceTest {
     @Test
     void deleteStation() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
         Long newDownStationId = stationDao.save(new Station("교대역")).getId();
         SectionRequest sectionRequest = new SectionRequest(upStationId, newDownStationId, 3);
@@ -209,7 +209,7 @@ class LineServiceTest {
     @DisplayName("삭제할 구간을 찾지 못했을 경우 예외를 반환해야 합니다.")
     void deleteNone() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
         Long newDownStationId = stationDao.save(new Station("교대역")).getId();
         SectionRequest sectionRequest = new SectionRequest(upStationId, newDownStationId, 3);
