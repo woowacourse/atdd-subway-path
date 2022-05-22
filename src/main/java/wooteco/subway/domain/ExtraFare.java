@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.function.Function;
+
 public enum ExtraFare {
     OVER_TEN_KM(10, 5, 100),
     OVER_FIFTY_KM(50, 8, 100)
@@ -17,8 +19,8 @@ public enum ExtraFare {
         this.amount = amount;
     }
 
-    public static int calculateTotalFare(double distance) {
-        return BASIC_FARE + calculateTotalExtra(distance);
+    public static Function<Double, Integer> fareCalculator() {
+        return (distance) -> BASIC_FARE + calculateTotalExtra(distance);
     }
 
     private static int calculateTotalExtra(double distance) {

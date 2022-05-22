@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,7 +13,8 @@ public class ExtraFareTest {
     @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
     @MethodSource("provideDistanceAndFare")
     void calculate(double distance, int expected) {
-        int fare = ExtraFare.calculateTotalFare(distance);
+        Function<Double, Integer> fareCalculator = ExtraFare.fareCalculator();
+        int fare = fareCalculator.apply(distance);
 
         assertThat(fare).isEqualTo(expected);
     }

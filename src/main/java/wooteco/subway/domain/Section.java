@@ -1,8 +1,5 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 public class Section {
     private final Long id;
     private final Station upStation;

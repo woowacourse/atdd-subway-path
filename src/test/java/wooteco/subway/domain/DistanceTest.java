@@ -3,7 +3,6 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.function.Consumer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +15,14 @@ public class DistanceTest {
     void fromMeter_100() {
         Distance distance = Distance.fromMeter(100);
         assertThat(distance.getValue()).isEqualTo(0.1);
+    }
+
+    @DisplayName("음수 값으로 거리를 생성하면 예외가 발생한다")
+    @Test
+    void fromKilometer_negative() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Distance.fromKilometer(-1))
+                .withMessageContaining("음수");
     }
 
     @DisplayName("10km에 5km를 더하면 15km이다.")

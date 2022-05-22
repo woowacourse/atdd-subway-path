@@ -1,12 +1,19 @@
 package wooteco.subway.domain;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Distance {
     private final double value;
 
     private Distance(double value) {
+        checkValue(value);
         this.value = value;
+    }
+
+    private void checkValue(double value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("거리는 음수일 수 없습니다.");
+        }
     }
 
     public static Distance fromKilometer(double value) {
@@ -33,7 +40,8 @@ public class Distance {
     }
 
     public int calculateFare() {
-        return ExtraFare.calculateTotalFare(value);
+        Function<Double, Integer> fareCalculator = ExtraFare.fareCalculator();
+        return fareCalculator.apply(value);
     }
 
     public double getValue() {
