@@ -31,10 +31,13 @@ class PathServiceTest {
 
     @Autowired
     private LineRepository lineRepository;
+
     @Autowired
     private StationRepository stationRepository;
+
     @Autowired
     private SectionRepository sectionRepository;
+
     @Autowired
     private PathService pathService;
 
