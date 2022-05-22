@@ -104,7 +104,7 @@ public class Sections {
 
     @Override
     public String toString() {
-        return "SectionsDomain{" +
+        return "Sections{" +
                 "values=" + values +
                 '}';
     }

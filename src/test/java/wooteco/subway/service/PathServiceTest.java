@@ -39,28 +39,28 @@ class PathServiceTest extends ServiceTest {
         final Station geumho = new Station(8L, "금호역");
         final Station oksu = new Station(9L, "옥수역");
 
-        Line greenLine = null;
+        Line greenLine = new Line(1L, new Name("2호선"), "green", 0);
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
-        greenLine = new Line(1L, new Name("2호선"), "green", 0, new Sections(List.of(
+        greenLine = greenLine.addSections(new Sections(List.of(
                 greenSectionA,
                 greenSectionB,
                 greenSectionC
         )));
 
-        Line yellowLine = null;
+        Line yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 0);
         final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
         final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
-        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 0, new Sections(List.of(
+        yellowLine = yellowLine.addSections(new Sections(List.of(
                 yellowSectionA,
                 yellowSectionB
         )));
 
-        Line orangeLine = null;
+        Line orangeLine = new Line(3L, new Name("3호선"), "orange", 0);
         final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
         final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
-        orangeLine = new Line(2L, new Name("3호선"), "orange", 0, new Sections(List.of(
+        orangeLine = orangeLine.addSections(new Sections(List.of(
                 orangeSectionA,
                 orangeSectionB
         )));

@@ -140,7 +140,7 @@ public class Section {
 
     @Override
     public String toString() {
-        return "SectionDomain{" +
+        return "Section{" +
                 "id=" + id +
                 ", line=" + line +
                 ", upStation=" + upStation +

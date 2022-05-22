@@ -39,7 +39,7 @@ public class Line {
     }
 
     public Line addSections(final Sections sections) {
-        return new Line(id, name, color, 0, sections);
+        return new Line(id, name, color, extraFare, sections);
     }
 
     public Long getId() {
