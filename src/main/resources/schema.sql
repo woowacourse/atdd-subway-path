@@ -11,6 +11,7 @@ create table if not exists LINE
     name  varchar(255)          not null unique,
     color varchar(20)           not null,
     up_station_id bigint        not null,
+    extra_fare int              default 0,
     primary key (id)
 );
 
