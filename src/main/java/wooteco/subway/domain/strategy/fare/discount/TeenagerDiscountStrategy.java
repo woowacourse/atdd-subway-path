@@ -4,6 +4,6 @@ public class TeenagerDiscountStrategy implements DiscountStrategy{
 
     @Override
     public int calculateDiscount(int price) {
-        return (int) ((price - 350) * 0.8);
+        return (int) ((price - 350) * 0.2);
     }
 }

@@ -7,11 +7,11 @@ public abstract class FarePolicy {
     public int calculateFare(int distance, List<Integer> extraPrices, int age) {
         int fare = calculateBasicFare(distance);
         fare += calculateExtraFare(extraPrices);
-        fare -= calculateDiscountFare(age);
+        fare -= calculateDiscountFare(fare, age);
         return fare;
     }
 
-    protected abstract int calculateDiscountFare(int age);
+    protected abstract int calculateDiscountFare(int price, int age);
 
     protected abstract int calculateExtraFare(List<Integer> extraPrices);
 

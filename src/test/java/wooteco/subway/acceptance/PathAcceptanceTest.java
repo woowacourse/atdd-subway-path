@@ -116,4 +116,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
         );
     }
+
+    @Test
+    @DisplayName("청소년이 추가 요금이 있는 노선과 없는 노선을 환승했을 때 최단 경로와 요금을 구한다.")
+    void showTransferLowestExtraShortestPath_Teenager() {
+        // given
+        Long 교대역_id = httpPost("/stations", new StationRequest("교대역")).jsonPath().getLong("id");
+        Long 강남역_id = httpPost("/stations", new StationRequest("강남역")).jsonPath().getLong("id");
+        Long 양재역_id = httpPost("/stations", new StationRequest("양재역")).jsonPath().getLong("id");
+
+        Long 이호선_id = httpPost("/lines", new LineRequest("2호선", "초록색", 교대역_id, 강남역_id, 5))
+                .jsonPath().getLong("id");
+        Long 신분당선_id = httpPost("/lines", new LineRequest("신분당선", "빨간색", 강남역_id, 양재역_id, 5, 900))
+                .jsonPath().getLong("id");
+
+        //httpPost("/lines/" + 이호선_id + "/sections", new SectionRequest(교대역_id, 강남역_id, 5));
+        //httpPost("/lines/" + 신분당선_id + "/sections", new SectionRequest(강남역_id, 양재역_id, 5));
+
+        // when
+        ExtractableResponse<Response> response = httpGet("/paths?source=" + 교대역_id + "&target=" + 양재역_id + "&age=18");
+
+        // then
+        assertAll(
+                () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
+                        .containsExactly("교대역", "강남역", "양재역"),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo((int)(2150 - (2150 - 350) * 0.2))
+        );
+    }
 }

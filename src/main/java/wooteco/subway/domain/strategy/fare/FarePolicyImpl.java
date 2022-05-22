@@ -25,8 +25,8 @@ public class FarePolicyImpl extends FarePolicy{
     }
 
     @Override
-    protected int calculateDiscountFare(int age) {
+    protected int calculateDiscountFare(int price, int age) {
         DiscountStrategy discountStrategy = DiscountStrategyFactory.getDiscountStrategy(age);
-        return discountStrategy.calculateDiscount(age);
+        return discountStrategy.calculateDiscount(price);
     }
 }
