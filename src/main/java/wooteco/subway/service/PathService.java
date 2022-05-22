@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayFare;
+import wooteco.subway.domain.fare.SubwayFare;
 import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;

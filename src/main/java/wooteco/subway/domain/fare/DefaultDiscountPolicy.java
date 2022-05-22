@@ -1,4 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
+
+import wooteco.subway.domain.DiscountPolicy;
 
 public class DefaultDiscountPolicy implements DiscountPolicy {
 

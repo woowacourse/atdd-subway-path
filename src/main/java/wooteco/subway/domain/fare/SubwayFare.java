@@ -1,7 +1,9 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import java.util.List;
 import org.jgrapht.GraphPath;
+import wooteco.subway.domain.LineWeightedEdge;
+import wooteco.subway.domain.Station;
 
 public class SubwayFare {
 

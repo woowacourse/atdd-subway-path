@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,5 +23,21 @@ class AgeDiscountPolicyTest {
     @DisplayName("청소년 요금을 계산한다.")
     void teenagerFare(int fare, int result) {
         assertThat(AgeDiscountPolicy.TEENAGER.calculate(fare)).isEqualTo(result);
+    }
+
+    @ParameterizedTest(name = "나이 : {0}")
+    @ValueSource(ints = {6, 12})
+    @DisplayName("어린이 할인 정책을 조회한다.")
+    void childrenDiscountPolicy(int age) {
+        AgeDiscountPolicy policy = AgeDiscountPolicy.find(age);
+
+        assertThat(policy).isEqualTo(AgeDiscountPolicy.CHILDREN);
+    }
+
+    @ParameterizedTest(name = "일반 요금 : {0}, 어린이 할인 요금 : {1}")
+    @CsvSource({"1250, 450", "1350, 500", "1450, 550", "1650, 650", "2750, 1200", "3650, 1650"})
+    @DisplayName("청소년 요금을 계산한다.")
+    void childrenFare(int fare, int result) {
+        assertThat(AgeDiscountPolicy.CHILDREN.calculate(fare)).isEqualTo(result);
     }
 }
