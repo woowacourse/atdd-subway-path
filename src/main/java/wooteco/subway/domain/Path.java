@@ -14,18 +14,18 @@ public class Path {
     }
 
     public int getShortestDistance(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath();
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
 
         return (int)dijkstraShortestPath.getPath(source, target).getWeight();
     }
 
     public List<Station> getShortestPath(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath();
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
 
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    private DijkstraShortestPath getDijkstraShortestPath() {
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Station station : sections.getStations()) {
             graph.addVertex(station);
@@ -33,7 +33,6 @@ public class Path {
         sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
             section.getDistance()));
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath;
+        return new DijkstraShortestPath<>(graph);
     }
 }
