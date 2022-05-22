@@ -10,6 +10,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -82,13 +83,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public void update(final Long id, final LineRequest lineRequest) {
+    public void update(final Long id, final LineUpdateRequest lineUpdateRequest) {
         Line currentLine = lineRepository.findById(id);
-        String name = lineRequest.getName();
+        String name = lineUpdateRequest.getName();
         if (!currentLine.isSameName(name)) {
             validateDuplicateName(lineRepository.isNameExists(name), name);
         }
-        lineRepository.update(new Line(id, name, lineRequest.getColor()));
+        lineRepository.update(new Line(id, name, lineUpdateRequest.getColor()));
     }
 
     public void delete(final Long id) {

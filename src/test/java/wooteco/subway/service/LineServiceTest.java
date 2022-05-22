@@ -22,10 +22,11 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
+import wooteco.subway.exception.NameDuplicatedException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.NameDuplicatedException;
 
 @Transactional
 @SpringBootTest
@@ -119,7 +120,7 @@ public class LineServiceTest {
     @Test
     void update() {
         Long id = lineRepository.save(new Line("분당선", LINE_COLOR));
-        lineService.update(id, new LineRequest("신분당선", "bg-yellow-600"));
+        lineService.update(id, new LineUpdateRequest("신분당선", "bg-yellow-600"));
 
         Line findUpdateLine = lineRepository.findById(id);
         assertAll(
