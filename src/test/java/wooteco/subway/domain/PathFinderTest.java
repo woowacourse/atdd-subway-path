@@ -59,7 +59,7 @@ class PathFinderTest {
         line2.addSection(section2To4);
 
         SubwayGraph subwayGraphFinder = new SubwayGraph(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
-        List<Station> path = subwayGraphFinder.getPath(station1, station5, 0).getStations();
+        List<Station> path = subwayGraphFinder.getPath(station1, station5, new Fare(0), 50).getStations();
 
         assertThat(path).containsExactly(station1, station2, station4, station5);
     }
@@ -75,9 +75,9 @@ class PathFinderTest {
 
         // when
         SubwayGraph subwayGraphFinder = new SubwayGraph(List.of(section1To2, section2To3));
-        int fare = subwayGraphFinder.getPath(station1, station3, 0).getFare();
+        double fare = subwayGraphFinder.getPath(station1, station3, new Fare(0), 50).getFare();
         // then
-        assertThat(fare).isEqualTo(1250);
+        assertThat(fare).isEqualTo(1250D);
     }
 
     @DisplayName("거리가 10km ~ 50km 사이인 경우 추가로 5km마다 100원을 추가한다")
@@ -88,7 +88,7 @@ class PathFinderTest {
 
         // when
         SubwayGraph subwayGraphFinder = new SubwayGraph(List.of(section1To2, section2To3));
-        int fare = subwayGraphFinder.getPath(station1, station3, 0).getFare();
+        double fare = subwayGraphFinder.getPath(station1, station3, new Fare(0), 50).getFare();
 
         // then
         assertThat(fare).isEqualTo(1450);
@@ -106,7 +106,7 @@ class PathFinderTest {
 
         // when
         SubwayGraph subwayGraphFinder = new SubwayGraph(List.of(section1To2, section2To3));
-        int fare = subwayGraphFinder.getPath(station1, station3, 0).getFare();
+        double fare = subwayGraphFinder.getPath(station1, station3, new Fare(0), 50).getFare();
 
         // then
         assertThat(fare).isEqualTo(2150);

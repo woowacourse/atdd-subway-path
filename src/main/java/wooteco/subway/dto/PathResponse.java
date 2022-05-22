@@ -9,7 +9,7 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private int fare;
+    private double fare;
 
     private PathResponse() {
     }
@@ -21,7 +21,7 @@ public class PathResponse {
         return new PathResponse(stationResponses, path.getDistance(), path.getFare());
     }
 
-    public PathResponse(final List<StationResponse> stations, final int distance, final int fare) {
+    public PathResponse(final List<StationResponse> stations, final int distance, final double fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
@@ -35,7 +35,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getFare() {
+    public double getFare() {
         return fare;
     }
 }

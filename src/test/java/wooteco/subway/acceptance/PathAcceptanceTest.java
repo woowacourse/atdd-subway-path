@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineResponse;
@@ -58,7 +60,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when()
                 .queryParam("source", station1.getId())
                 .queryParam("target", station5.getId())
-                .queryParam("age", 18)
+                .queryParam("age", 50)
                 .log().all()
                 .get("/paths")
                 .then().log().all()
@@ -186,6 +188,131 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
+    @ParameterizedTest
+    @ValueSource(ints = {13, 14, 17, 18})
+    @DisplayName("13세 이상 19세 미만 청소년이 이용하면 350원 공제후 20% 할인이 적용되고 200-ok를 반환한다.")
+    void getPathFareWithTeenager(int age) {
+
+        //given
+        StationResponse station1 = createStation("station1");
+        StationResponse station2 = createStation("station2");
+        StationResponse station3 = createStation("station3");
+        StationResponse station4 = createStation("station4");
+        StationResponse station5 = createStation("station5");
+
+        LineResponse createdLine = createLine("line1", "color1", station1.getId(),
+                station2.getId(), 10, 500);
+
+        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        createSection(sectionRequest, createdLine);
+
+        LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
+                station4.getId(), 10, 900);
+
+        SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
+        createSection(sectionRequest2, createdLine2);
+
+        ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .queryParam("source", station1.getId())
+                .queryParam("target", station5.getId())
+                .queryParam("age", age)
+                .log().all()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1680);
+        PathResponse response = pathResponse.as(PathResponse.class);
+
+        assertThat(response).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {6, 7, 11, 12})
+    @DisplayName("6세 이상 13세 미만 어린이가 이용하면 350원 공제후 50% 할인이 적용되고 200-ok를 반환한다.")
+    void getPathFareWithChildern(int age) {
+
+        //given
+        StationResponse station1 = createStation("station1");
+        StationResponse station2 = createStation("station2");
+        StationResponse station3 = createStation("station3");
+        StationResponse station4 = createStation("station4");
+        StationResponse station5 = createStation("station5");
+
+        LineResponse createdLine = createLine("line1", "color1", station1.getId(),
+                station2.getId(), 10, 500);
+
+        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        createSection(sectionRequest, createdLine);
+
+        LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
+                station4.getId(), 10, 900);
+
+        SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
+        createSection(sectionRequest2, createdLine2);
+
+        ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .queryParam("source", station1.getId())
+                .queryParam("target", station5.getId())
+                .queryParam("age", age)
+                .log().all()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1050);
+        PathResponse response = pathResponse.as(PathResponse.class);
+
+        assertThat(response).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {4, 5, 19, 20})
+    @DisplayName("할인 대상이 아닌 나이면 노선별 요금에 따라서만 가격이 적용되고 200-ok를 반환한다.")
+    void getPathFareWithOther(int age) {
+
+        //given
+        StationResponse station1 = createStation("station1");
+        StationResponse station2 = createStation("station2");
+        StationResponse station3 = createStation("station3");
+        StationResponse station4 = createStation("station4");
+        StationResponse station5 = createStation("station5");
+
+        LineResponse createdLine = createLine("line1", "color1", station1.getId(),
+                station2.getId(), 10, 500);
+
+        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        createSection(sectionRequest, createdLine);
+
+        LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
+                station4.getId(), 10, 900);
+
+        SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
+        createSection(sectionRequest2, createdLine2);
+
+        ExtractableResponse<Response> pathResponse = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .queryParam("source", station1.getId())
+                .queryParam("target", station5.getId())
+                .queryParam("age", age)
+                .log().all()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 2450);
+        PathResponse response = pathResponse.as(PathResponse.class);
+
+        assertThat(response).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

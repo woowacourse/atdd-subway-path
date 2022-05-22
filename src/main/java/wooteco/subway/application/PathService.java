@@ -5,10 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.*;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchStationException;
@@ -36,7 +33,8 @@ public class PathService {
 
         Long lineId = subwayGraph.getExpensiveLineId(sourceStation, targetStation);
         Line line = lineDao.findById(lineId).orElseThrow(() -> new NoSuchLineException(lineId));
-        Path path = subwayGraph.getPath(sourceStation, targetStation, line.getExtraFare());
+
+        Path path = subwayGraph.getPath(sourceStation, targetStation, new Fare(line.getExtraFare()), age);
 
         return PathResponse.from(path);
     }
