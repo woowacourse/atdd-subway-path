@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.element;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

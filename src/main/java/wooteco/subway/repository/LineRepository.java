@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.entity.LineEntity;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.element.Line;
 import wooteco.subway.exception.NotFoundException;
 
 @Repository

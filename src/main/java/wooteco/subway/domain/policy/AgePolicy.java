@@ -1,6 +1,8 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.policy;
 
-public class AgePolicy implements FarePolicy{
+import wooteco.subway.domain.fare.FarePolicy;
+
+public class AgePolicy implements FarePolicy {
     private static final int DEDUCTION_FARE = 350;
     private static final int BABY_MAX_AGE = 6;
     private static final int CHILD_MAX_AGE = 13;

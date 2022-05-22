@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
+import wooteco.subway.domain.element.Station;
 
 public class SubwayGraph {
 
@@ -20,7 +23,9 @@ public class SubwayGraph {
         for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            LineWeightEdge lineWeightEdge = new LineWeightEdge(section.getLine());
+            graph.setEdgeWeight(lineWeightEdge, section.getDistance());
+            graph.addEdge(section.getUpStation(), section.getDownStation(), lineWeightEdge);
         }
         return new DijkstraShortestPath<>(graph);
     }
@@ -39,5 +44,17 @@ public class SubwayGraph {
 
     public int getShortestDistance(Station source, Station target) {
         return (int) path.getPath(source, target).getWeight();
+    }
+
+    private static class LineWeightEdge extends DefaultWeightedEdge {
+        private final Line line;
+
+        public LineWeightEdge(Line line) {
+            this.line = line;
+        }
+
+        public Line getLine() {
+            return line;
+        }
     }
 }

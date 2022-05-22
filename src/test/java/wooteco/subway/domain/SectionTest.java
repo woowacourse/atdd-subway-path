@@ -9,6 +9,8 @@ import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
 
 public class SectionTest {
 

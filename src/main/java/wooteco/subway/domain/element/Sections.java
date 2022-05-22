@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.element;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

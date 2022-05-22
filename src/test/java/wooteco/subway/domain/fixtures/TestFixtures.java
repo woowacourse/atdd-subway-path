@@ -1,8 +1,8 @@
 package wooteco.subway.domain.fixtures;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
+import wooteco.subway.domain.element.Station;
 
 public class TestFixtures {
 

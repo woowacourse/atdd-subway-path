@@ -9,9 +9,9 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.dao.entity.StationEntity;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
+import wooteco.subway.domain.element.Station;
 import wooteco.subway.exception.NotFoundException;
 
 @Repository
