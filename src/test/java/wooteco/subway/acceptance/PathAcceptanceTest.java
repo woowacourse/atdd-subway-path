@@ -60,24 +60,24 @@ class PathAcceptanceTest extends AcceptanceTest {
         oksu = requestPost(new StationRequest(OKSU), STATION_URL_PREFIX).extract().as(Station.class);
 
         final long greenLineId = createAndGetId(
-                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10),
+                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10, 0),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(yeoksam.getId(), seolleung.getId(), 8), greenLineId);
         requestPostSection(new SectionRequest(seolleung.getId(), samsung.getId(), 5), greenLineId);
 
         final long yellowLineId = createAndGetId(
-                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12),
+                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12, 0),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(seoulForest.getId(), wangsimni.getId(), 7), yellowLineId);
 
         final long purpleLineId = createAndGetId(
-                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11),
+                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11, 0),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(wangsimni.getId(), majang.getId(), 17), purpleLineId);
         requestPostSection(new SectionRequest(majang.getId(), dapsimni.getId(), 15), purpleLineId);
 
         final long orangeLineId = createAndGetId(
-                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7),
+                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7, 0),
                 LINE_URL_PREFIX);
         requestPostSection(new SectionRequest(geumho.getId(), oksu.getId(), 12), orangeLineId);
     }

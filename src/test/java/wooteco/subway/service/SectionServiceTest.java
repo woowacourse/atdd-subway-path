@@ -42,7 +42,7 @@ class SectionServiceTest extends ServiceTest {
         downStation = new Station(2L, "왕십리역");
         final Section section = new Section(1L, line, upStation, downStation, new Distance(10));
         sections = new Sections(List.of(section));
-        line = new Line(1L, new Name("수인분당선"), "bg-yellow-600", sections);
+        line = new Line(1L, new Name("수인분당선"), "bg-yellow-600", 0, sections);
     }
 
     @Test

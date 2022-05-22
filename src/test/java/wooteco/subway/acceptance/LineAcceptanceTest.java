@@ -48,14 +48,16 @@ class LineAcceptanceTest extends AcceptanceTest {
                 RED_LINE_COLOR,
                 seolleung.getId(),
                 yeoksam.getId(),
-                10
+                10,
+                0
         );
         greenLineRequest = new LineRequest(
                 GREEN_LINE_NAME,
                 GREEN_LINE_COLOR,
                 wangsimni.getId(),
                 dapsimni.getId(),
-                7
+                7,
+                0
         );
     }
 

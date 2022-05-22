@@ -7,29 +7,39 @@ public class Line {
     private final Long id;
     private final Name name;
     private final String color;
+    private final int extraFare;
     private final Sections sections;
 
-    public Line(final Long id, final Name name, final String color, final Sections sections) {
+    public Line(final Long id, final Name name, final String color, final int extraFare, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
     public Line(final Long id, final Name name, final String color) {
-        this(id, name, color, null);
+        this(id, name, color, 0, null);
     }
 
     public Line(final String name, final String color) {
-        this(null, new Name(name), color, null);
+        this(null, new Name(name), color, 0, null);
     }
 
     public Line(final Long id, final String name, final String color) {
-        this(id, new Name(name), color, null);
+        this(id, new Name(name), color, 0, null);
+    }
+
+    public Line(final String name, final String color, final int extraFare) {
+        this(null, new Name(name), color, extraFare, null);
+    }
+
+    public Line(final long id, final Name name, final String color, final int extraFare) {
+        this(id, name, color, extraFare, null);
     }
 
     public Line addSections(final Sections sections) {
-        return new Line(id, name, color, sections);
+        return new Line(id, name, color, 0, sections);
     }
 
     public Long getId() {
@@ -42,6 +52,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {
@@ -71,6 +85,7 @@ public class Line {
                 "id=" + id +
                 ", name=" + name +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 ", sections=" + sections +
                 '}';
     }

@@ -47,7 +47,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -71,7 +72,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -97,7 +99,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -118,7 +121,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -141,7 +145,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -162,7 +167,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -186,7 +192,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -209,7 +216,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         requestPostSection(new SectionRequest(samsung.getId(), seolleung.getId(), 7), lineId);
@@ -234,7 +242,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         requestPostSection(new SectionRequest(samsung.getId(), seolleung.getId(), 7), lineId);
@@ -259,7 +268,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         requestPostSection(new SectionRequest(samsung.getId(), seolleung.getId(), 7), lineId);
@@ -284,7 +294,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         // when
@@ -304,7 +315,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samsung.getId(),
-                10
+                10,
+                0
         ), LINE_URL_PREFIX);
 
         requestPostSection(new SectionRequest(samsung.getId(), seolleung.getId(), 7), lineId);

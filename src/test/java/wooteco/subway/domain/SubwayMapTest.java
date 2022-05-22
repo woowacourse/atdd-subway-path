@@ -41,7 +41,7 @@ class SubwayMapTest {
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
-        greenLine = new Line(1L, new Name("2호선"), "green", new Sections(List.of(
+        greenLine = new Line(1L, new Name("2호선"), "green", 0, new Sections(List.of(
                 greenSectionA,
                 greenSectionB,
                 greenSectionC
@@ -50,7 +50,7 @@ class SubwayMapTest {
         Line yellowLine = null;
         final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
         final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
-        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", new Sections(List.of(
+        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 0, new Sections(List.of(
                 yellowSectionA,
                 yellowSectionB
         )));
@@ -58,7 +58,7 @@ class SubwayMapTest {
         Line orangeLine = null;
         final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
         final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
-        orangeLine = new Line(2L, new Name("3호선"), "orange", new Sections(List.of(
+        orangeLine = new Line(2L, new Name("3호선"), "orange", 0, new Sections(List.of(
                 orangeSectionA,
                 orangeSectionB
         )));

@@ -43,7 +43,7 @@ class LineServiceTest extends ServiceTest {
     void setUpData() {
         upStation = new Station(1L, "선릉역");
         downStation = new Station(2L, "삼성역");
-        request = new LineRequest(LINE_NAME, LINE_COLOR, upStation.getId(), downStation.getId(), 10);
+        request = new LineRequest(LINE_NAME, LINE_COLOR, upStation.getId(), downStation.getId(), 10, 0);
     }
 
     @Test

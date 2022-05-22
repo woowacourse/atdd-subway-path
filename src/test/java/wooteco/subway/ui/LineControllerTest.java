@@ -42,7 +42,7 @@ class LineControllerTest extends ControllerTest {
         seolleung = stationDao.insert(new Station("선릉역")).orElseThrow();
         samsung = stationDao.insert(new Station("삼성역")).orElseThrow();
 
-        greenLine = new Line(LINE_NAME, LINE_COLOR);
+        greenLine = new Line(LINE_NAME, LINE_COLOR, 300);
     }
 
     @Test
@@ -54,7 +54,8 @@ class LineControllerTest extends ControllerTest {
                 LINE_COLOR,
                 gangnam.getId(),
                 yeoksam.getId(),
-                10
+                10,
+                0
         );
 
         final List<StationResponse> expectedStations = Stream.of(this.gangnam, yeoksam)
@@ -84,7 +85,8 @@ class LineControllerTest extends ControllerTest {
                 LINE_COLOR,
                 gangnam.getId(),
                 yeoksam.getId(),
-                10
+                10,
+                0
         );
 
         // when, then
@@ -132,7 +134,8 @@ class LineControllerTest extends ControllerTest {
                 LINE_COLOR,
                 gangnam.getId(),
                 yeoksam.getId(),
-                10
+                10,
+                0
         );
         final Long id = lineController.createLine(request)
                 .getBody()
@@ -174,7 +177,7 @@ class LineControllerTest extends ControllerTest {
                 .orElseThrow()
                 .getId();
 
-        final LineRequest request = new LineRequest("5호선", "purple", null, null, 10);
+        final LineRequest request = new LineRequest("5호선", "color", null, null, 10, 1000);
 
         // when
         final ResponseEntity<Void> response = lineController.updateLine(id, request);
@@ -195,7 +198,7 @@ class LineControllerTest extends ControllerTest {
                 .orElseThrow()
                 .getId();
 
-        final LineRequest request = new LineRequest(name, LINE_COLOR, null, null, 10);
+        final LineRequest request = new LineRequest(name, LINE_COLOR, null, null, 10, 0);
 
         // when, then
         assertThatThrownBy(() -> lineController.updateLine(id, request))
