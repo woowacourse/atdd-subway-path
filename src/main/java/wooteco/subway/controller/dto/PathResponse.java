@@ -3,19 +3,16 @@ package wooteco.subway.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathDto;
+import wooteco.subway.service.dto.StationDto;
 
 public class PathResponse {
 
-    private List<StationResponse> stations;
-    private int distance;
-    private int fare;
+    private final List<StationResponse> stations;
+    private final int distance;
+    private final int fare;
 
-    public PathResponse() {
-    }
-
-    public PathResponse(List<Station> stations, int distance, int fare) {
+    public PathResponse(List<StationDto> stations, int distance, int fare) {
         this.stations = stations.stream()
             .map(StationResponse::from)
             .collect(Collectors.toList());

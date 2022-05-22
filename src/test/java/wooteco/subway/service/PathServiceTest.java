@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.SectionRequest;
-import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineDto;
 import wooteco.subway.service.dto.PathDto;
 import wooteco.subway.service.dto.StationDto;
@@ -91,7 +90,7 @@ class PathServiceTest {
 
         // then
         assertThat(path.getStations())
-            .map(Station::getName)
+            .map(StationDto::getName)
             .containsExactly("내방역", "고속터미널역", "반포역", "논현역");
     }
 
@@ -103,12 +102,12 @@ class PathServiceTest {
         Long targetStationId = stations.get("내방역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
+        List<StationDto> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationDto::getName)
             .containsExactly("논현역", "반포역", "고속터미널역", "내방역");
     }
 
@@ -120,12 +119,12 @@ class PathServiceTest {
         Long targetStationId = stations.get("논현역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
+        List<StationDto> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationDto::getName)
             .containsExactly("신사역", "잠원역", "고속터미널역", "반포역", "논현역");
     }
 
@@ -137,12 +136,12 @@ class PathServiceTest {
         Long targetStationId = stations.get("사평역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(sourceStationId, targetStationId, 0)
+        List<StationDto> stations = pathService.findPath(sourceStationId, targetStationId, 0)
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationDto::getName)
             .containsExactly("내방역", "고속터미널역", "서초역", "사평역");
     }
 
