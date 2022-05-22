@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.repository.LineRepository;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.service.dto.PathDto;
 
 @Service
