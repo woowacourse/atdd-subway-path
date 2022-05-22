@@ -66,7 +66,7 @@ class JgraphtPathfinderTest {
 
         Path path = pathFinder.findShortest(List.of(이호선, 사호선, 육호선, 구호선), 합정, 사당);
 
-        assertThat(path.getExtraFare()).isEqualTo(1000);
+        assertThat(path.getLineExtraFare()).isEqualTo(1000);
     }
     
     @DisplayName("10km 이하인 경우 요금 1250원을 부과한다.")
@@ -90,7 +90,7 @@ class JgraphtPathfinderTest {
 
         Path path = pathFinder.findShortest(List.of(일호선, 이호선, 삼호선), 강남, 홍대);
 
-        int fare = path.chargeFare();
+        int fare = path.finalFare(25);
 
         assertThat(fare).isEqualTo(1250);
     }
@@ -116,7 +116,7 @@ class JgraphtPathfinderTest {
 
         Path path = pathFinder.findShortest(List.of(일호선, 이호선, 삼호선), 강남, 홍대);
 
-        int fare = path.chargeFare();
+        int fare = path.finalFare(25);
 
         assertThat(fare).isEqualTo(2050);
     }
@@ -142,7 +142,7 @@ class JgraphtPathfinderTest {
 
         Path path = pathFinder.findShortest(List.of(일호선, 이호선, 삼호선), 강남, 홍대);
 
-        int fare = path.chargeFare();
+        int fare = path.finalFare(25);
 
         assertThat(fare).isEqualTo(3650);
     }

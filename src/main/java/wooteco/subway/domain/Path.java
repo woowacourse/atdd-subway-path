@@ -7,18 +7,27 @@ public class Path {
     private static final int BASIC_FARE = 1250;
 
     private List<Station> stations;
-    private int extraFare;
+    private int lineExtraFare;
     private int distance;
 
     public Path(List<Station> stations, int extraFare, int distance) {
         this.stations = stations;
-        this.extraFare = extraFare;
+        this.lineExtraFare = extraFare;
         this.distance = distance;
     }
 
-    public int chargeFare() {
-        int distanceCharge = DistanceCharge.findDistanceCharge(distance).calculate(distance);
-        return BASIC_FARE + distanceCharge;
+    public int finalFare(int age) {
+        int fare = BASIC_FARE + lineExtraFare + distanceExtraFare();
+        int discount = ageDiscount(fare, age);
+        return fare - discount;
+    }
+
+    private int ageDiscount(int fare, int age) {
+        return AgeDiscount.findAgeDiscount(age).calculate(fare);
+    }
+
+    private int distanceExtraFare() {
+        return DistanceCharge.findDistanceCharge(distance).calculate(distance);
     }
 
     public List<Station> getStations() {
@@ -29,7 +38,7 @@ public class Path {
         return distance;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public int getLineExtraFare() {
+        return lineExtraFare;
     }
 }
