@@ -1,6 +1,11 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.helper.TLine.LINE_NO_EXTRA_FARE;
+import static wooteco.subway.helper.TStation.CHANGSIN;
+import static wooteco.subway.helper.TStation.DONGMYO;
+import static wooteco.subway.helper.TStation.SINDANG;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -19,46 +24,41 @@ import wooteco.subway.service.LineService;
 @DisplayName("섹션 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private StationRepository stationRepository;
-
-    @Autowired
-    private LineService lineService;
-
     @DisplayName("섹션을 등록하면 200 Ok를 반환한다.")
     @Test
     void createSection() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Station 선릉역 = stationRepository.save(new Station("선릉역"));
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
 
-        LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 0, 강남역.getId(), 역삼역.getId(), 5));
-        SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
-                "/lines/" + lineResponse.getId() + " /sections");
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
+
+        ExtractableResponse<Response> response = LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(lineService.showLine(lineResponse.getId()).getStations())
+
+        LineResponse lineResponse = LINE_NO_EXTRA_FARE.노선에서().단건노선을조회한다()
+                .as(LineResponse.class);
+        assertThat(lineResponse.getStations())
                 .containsExactly(
-                        new StationResponse(강남역),
-                        new StationResponse(역삼역),
-                        new StationResponse(선릉역)
+                        new StationResponse(신당역),
+                        new StationResponse(동묘앞역),
+                        new StationResponse(창신역)
                 );
     }
 
     @DisplayName("거리가 초과하는 섹션을 등록하면 400 BadRequest를 반환한다.")
     @Test
     void createSectionDistanceFail() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Station 선릉역 = stationRepository.save(new Station("선릉역"));
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
 
-        LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 0, 강남역.getId(), 역삼역.getId(), 5));
-        SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 선릉역.getId(), 6);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
-                "/lines/" + lineResponse.getId() + " /sections");
+        SectionRequest 신당_창신 = createSectionRequest(신당역, 창신역, STANDARD_DISTANCE);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE + 1);
+
+        ExtractableResponse<Response> response = LINE_NO_EXTRA_FARE.노선을등록하고(신당_창신).구간을등록한다(동묘_창신);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -66,15 +66,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("이미 연결된 섹션을 등록하면 400 BadRequest를 반환한다.")
     @Test
     void createSectionAlreadyConnectedFail() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Station 선릉역 = stationRepository.save(new Station("선릉역"));
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
 
-        LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 0, 강남역.getId(), 역삼역.getId(), 5));
-        SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 역삼역.getId(), 6);
-        ExtractableResponse<Response> response = httpPostTest(sectionRequest,
-                "/lines/" + lineResponse.getId() + " /sections");
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        ExtractableResponse<Response> response = LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(신당_동묘);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -82,33 +78,29 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("섹션을 삭제하면 200 Ok를 반환한다.")
     @Test
     void deleteSection() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Station 선릉역 = stationRepository.save(new Station("선릉역"));
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
+        Station 창신역 = CHANGSIN.역을등록한다();
 
-        LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 0, 강남역.getId(), 역삼역.getId(), 5));
-        SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
-        httpPostTest(sectionRequest, "/lines/" + lineResponse.getId() + " /sections");
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
+        SectionRequest 동묘_창신 = createSectionRequest(동묘앞역, 창신역, STANDARD_DISTANCE);
 
-        ExtractableResponse<Response> response = httpDeleteTest(
-                "/lines/" + lineResponse.getId() + "/sections?stationId=" + 선릉역.getId());
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을등록한다(동묘_창신);
+        LINE_NO_EXTRA_FARE.노선에서().구간을삭제한다(동묘앞역, HttpStatus.OK.value());
     }
 
     @DisplayName("섹션을 하나 뿐일 때 삭제하면 400 Bad Request를 반환한다.")
     @Test
     void deleteSectionException() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+        Station 신당역 = SINDANG.역을등록한다();
+        Station 동묘앞역 = DONGMYO.역을등록한다();
 
-        LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 0, 강남역.getId(), 역삼역.getId(), 5));
+        SectionRequest 신당_동묘 = createSectionRequest(신당역, 동묘앞역, STANDARD_DISTANCE);
 
-        ExtractableResponse<Response> response = httpDeleteTest(
-                "/lines/" + lineResponse.getId() + "/sections?stationId=" + 역삼역.getId());
+        LINE_NO_EXTRA_FARE.노선을등록하고(신당_동묘).구간을삭제한다(동묘앞역, HttpStatus.BAD_REQUEST.value());
+    }
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    private SectionRequest createSectionRequest(Station upStation, Station downStation, int distance) {
+        return new SectionRequest(upStation.getId(), downStation.getId(), distance);
     }
 }

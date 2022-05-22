@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Objects;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -58,6 +59,13 @@ public enum TLine {
     public LineAddAndRequest 노선을등록하고(SectionRequest sectionRequest) {
         return new LineAddAndRequest(this,
                 sectionRequest);
+    }
+
+    public LineAddAndRequest 노선에서() {
+        if (Objects.isNull(id)) {
+            throw new IllegalStateException("[ERROR] 노선을 먼저 등록하고 사용하세요");
+        }
+        return new LineAddAndRequest(id, this, null);
     }
 
     private LineRequest createLineRequest(SectionRequest sectionRequest) {
