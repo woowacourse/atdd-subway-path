@@ -24,8 +24,8 @@ public class LineRepository {
 
     public Optional<Line> findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id).orElse(null);
-        if (lineEntity.equals(null)) {
-           return Optional.ofNullable(null);
+        if (lineEntity == null) {
+            return Optional.ofNullable(null);
         }
         return Optional.ofNullable(new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor()));
     }

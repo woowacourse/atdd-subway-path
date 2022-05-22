@@ -27,10 +27,9 @@ public class StationRepository {
 
     public Optional<Station> findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id).orElse(null);
-        if (stationEntity.equals(null)) {
+        if (stationEntity == null) {
            return Optional.ofNullable(null);
         }
-
         return Optional.ofNullable(new Station(stationEntity.getId(), stationEntity.getName()));
     }
 
