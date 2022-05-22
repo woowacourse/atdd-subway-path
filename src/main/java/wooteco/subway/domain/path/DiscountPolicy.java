@@ -27,7 +27,10 @@ enum DiscountPolicy {
     }
 
     static DiscountPolicy from(int age) {
-        return Arrays.stream(values()).filter(it -> it.ageCondition.test(age)).findFirst().orElse(DEFAULT_POLICY);
+        return Arrays.stream(values())
+            .filter(it -> it.ageCondition.test(age))
+            .findFirst()
+            .orElse(DEFAULT_POLICY);
     }
 
     int getFare(int fare) {
@@ -35,6 +38,7 @@ enum DiscountPolicy {
     }
 
     static class Constants {
+
         static final int DEFAULT_DEDUCTION = 350;
 
         static final int MIN_CHILD_AGE = 6;
