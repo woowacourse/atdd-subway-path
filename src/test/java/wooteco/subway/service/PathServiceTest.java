@@ -15,16 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.SectionRequest;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.LineDto;
 import wooteco.subway.service.dto.PathDto;
+import wooteco.subway.service.dto.StationDto;
 
 @SpringBootTest
 @Transactional
 class PathServiceTest {
 
-    private final Map<String, Station> stations = new HashMap<>();
+    private final Map<String, StationDto> stations = new HashMap<>();
     @Autowired
     private StationService stationService;
     @Autowired
@@ -43,8 +45,8 @@ class PathServiceTest {
     void init() {
         stations.putAll(saveStations("내방역", "고속터미널역", "반포역", "논현역"));
 
-        Line line7 = lineService.create("7호선", "red", 700,
-            makeSection(stations.get("내방역"), stations.get("고속터미널역"), 10));
+        LineDto line7 = lineService.create(
+            new LineRequest("7호선", "red", stations.get("내방역").getId(), stations.get("고속터미널역").getId(), 10, 700));
         lineService.addSection(line7.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("반포역"), 10));
         lineService.addSection(line7.getId(),
@@ -52,28 +54,28 @@ class PathServiceTest {
 
         stations.putAll(saveStations("신사역", "잠원역", "서초역"));
 
-        Line line3 = lineService.create("3호선", "red", 300,
-            makeSection(stations.get("신사역"), stations.get("잠원역"), 10));
+        LineDto line3 = lineService.create(new LineRequest("3호선", "red",
+            stations.get("신사역").getId(), stations.get("잠원역").getId(), 10, 300));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("잠원역"), stations.get("고속터미널역"), 10));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("서초역"), 10));
 
-        Station sapyung = stationService.create("사평역");
+        StationDto sapyung = stationService.create("사평역");
         stations.put("사평역", sapyung);
-        lineService.create("9호선", "red", 900,
-            makeSection(stations.get("고속터미널역"), sapyung, 14));
+        lineService.create(new LineRequest("9호선", "red",
+            stations.get("고속터미널역").getId(), sapyung.getId(), 14, 900));
 
-        lineService.create("새호선", "red", 1000,
-            makeSection(stations.get("서초역"), sapyung, 3));
+        lineService.create(new LineRequest("새호선", "red",
+            stations.get("서초역").getId(), sapyung.getId(), 3, 1000));
     }
 
-    private Map<String, Station> saveStations(String... names) {
+    private Map<String, StationDto> saveStations(String... names) {
         return Arrays.stream(names)
             .collect(toMap(name -> name, name -> stationService.create(name)));
     }
 
-    private SectionRequest makeSection(Station source, Station target, int distance) {
+    private SectionRequest makeSection(StationDto source, StationDto target, int distance) {
         return new SectionRequest(source.getId(), target.getId(), distance);
     }
 

@@ -1,4 +1,4 @@
-package wooteco.subway.controller.dto;
+package wooteco.subway.exception;
 
 public class ExceptionResponse {
 

@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.controller.dto.SectionRequest;
-import wooteco.subway.domain.Station;
+import wooteco.subway.controller.dto.LineRequest;
+import wooteco.subway.service.dto.StationDto;
 
 @SpringBootTest
 @Transactional
@@ -26,7 +26,7 @@ class StationServiceTest {
     @DisplayName("이름으로 지하철 역을 저장한다.")
     @Test
     void create() {
-        Station station = stationService.create("강남역");
+        StationDto station = stationService.create("강남역");
         assertThat(station.getId()).isGreaterThan(0);
         assertThat(station.getName()).isEqualTo("강남역");
     }
@@ -43,9 +43,9 @@ class StationServiceTest {
     @DisplayName("지하철 역 하나를 조회한다.")
     @Test
     void findOne() {
-        Station station = stationService.create("강남역");
-        Station findStation = stationService.findOne(station.getId());
-        assertThat(findStation.isSameName("강남역")).isTrue();
+        StationDto station = stationService.create("강남역");
+        StationDto findStation = stationService.findOne(station.getId());
+        assertThat(findStation.getName()).isEqualTo("강남역");
     }
 
     @DisplayName("지하철 역 목록을 조회한다.")
@@ -54,14 +54,14 @@ class StationServiceTest {
         List<String> names = List.of("강남역", "역삼역", "선릉역");
         names.forEach(stationService::create);
 
-        List<Station> stations = stationService.findAllStations();
+        List<StationDto> stations = stationService.findAllStations();
         assertThat(stations).hasSize(3);
     }
 
     @DisplayName("지하철 역을 삭제한다.")
     @Test
     void delete() {
-        Station station = stationService.create("강남역");
+        StationDto station = stationService.create("강남역");
         stationService.remove(station.getId());
 
         assertThat(stationService.findAllStations()).isEmpty();
@@ -70,11 +70,10 @@ class StationServiceTest {
     @DisplayName("구간으로 등록된 역은 삭제면 예외가 발생한다.")
     @Test
     void deleteExceptionBySection() {
-        Station upStation = stationService.create("강남역");
-        Station downStation = stationService.create("역삼역");
-        SectionRequest section = new SectionRequest(upStation.getId(), downStation.getId(), 10);
+        StationDto upStation = stationService.create("강남역");
+        StationDto downStation = stationService.create("역삼역");
 
-        lineService.create("2호선", "red", 200, section);
+        lineService.create(new LineRequest("2호선", "red", upStation.getId(), downStation.getId(), 10, 200));
 
         assertAll(
             () -> assertThatThrownBy(() -> stationService.remove(upStation.getId()))

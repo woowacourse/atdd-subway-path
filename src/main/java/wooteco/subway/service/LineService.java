@@ -1,10 +1,12 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.dao.repository.LineRepository;
 import wooteco.subway.dao.repository.SectionRepository;
@@ -12,6 +14,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionsDirtyChecker;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.LineDto;
+import wooteco.subway.service.dto.StationDto;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,10 +33,11 @@ public class LineService {
     }
 
     @Transactional
-    public Line create(String name, String color, int extraFare, SectionRequest sectionRequest) {
-        validateNameNotDuplicated(name);
-        Long lineId = lineRepository.save(new Line(name, color, extraFare, List.of(getSection(sectionRequest))));
-        return lineRepository.findById(lineId);
+    public LineDto create(LineRequest lineRequest) {
+        validateNameNotDuplicated(lineRequest.getName());
+        Long lineId = lineRepository.save(new Line(lineRequest.getName(), lineRequest.getColor(),
+            lineRequest.getExtraFare(), List.of(getSection(lineRequest.toSectionRequest()))));
+        return LineDto.from(lineRepository.findById(lineId));
     }
 
     private void validateNameNotDuplicated(String name) {
@@ -41,16 +46,18 @@ public class LineService {
         }
     }
 
-    public List<Line> listLines() {
-        return lineRepository.findAll();
+    public List<LineDto> listLines() {
+        return lineRepository.findAll().stream()
+            .map(LineDto::from)
+            .collect(Collectors.toList());
     }
 
-    public Line findOne(Long id) {
-        return lineRepository.findById(id);
+    public LineDto findOne(Long id) {
+        return LineDto.from(lineRepository.findById(id));
     }
 
     @Transactional
-    public Line update(Line line) {
+    public LineDto update(Line line) {
         lineRepository.update(line);
         return findOne(line.getId());
     }
@@ -90,8 +97,12 @@ public class LineService {
     }
 
     private Section getSection(SectionRequest sectionRequest) {
-        Station upStation = stationService.findOne(sectionRequest.getUpStationId());
-        Station downStation = stationService.findOne(sectionRequest.getDownStationId());
+        Station upStation = getStation(stationService.findOne(sectionRequest.getUpStationId()));
+        Station downStation = getStation(stationService.findOne(sectionRequest.getDownStationId()));
         return new Section(upStation, downStation, sectionRequest.getDistance());
+    }
+
+    private Station getStation(StationDto stationDto) {
+        return new Station(stationDto.getId(), stationDto.getName());
     }
 }
