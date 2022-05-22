@@ -43,44 +43,9 @@ public class JGraphtSubwayGraphTest {
         graph = new JGraphtSubwayGraph(stations, sections);
     }
 
-    @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
+    @DisplayName("환승없는 구간 지하철 경로 찾기")
     @Test
-    void searchTransferLinePath() {
-        Path path = graph.search(stations.get(0), stations.get(3));
-
-        assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
-        assertThat(path.getSections()).containsExactly(sections.get(0), sections.get(2));
-        assertThat(path.getDistance()).isEqualTo(8);
-    }
-
-    @DisplayName("10km이상일 경우 100원 추가 요금")
-    @Test
-    void searchOnceOverFarePath() {
-        Path path = graph.search(stations.get(4), stations.get(0));
-
-        assertThat(path.getStations())
-            .containsExactly(stations.get(4), stations.get(2), stations.get(1), stations.get(0));
-        assertThat(path.getSections())
-            .containsExactly(sections.get(3), sections.get(1), sections.get(0));
-        assertThat(path.getDistance()).isEqualTo(15);
-    }
-
-    @DisplayName("21km일 경우 3번의 100원 추가 요금")
-    @Test
-    void searchMultiOverFarePath() {
-        Path path = graph.search(stations.get(0), stations.get(5));
-
-        assertThat(path.getStations())
-            .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
-                stations.get(5));
-        assertThat(path.getSections())
-            .containsExactly(sections.get(0), sections.get(1), sections.get(3), sections.get(4));
-        assertThat(path.getDistance()).isEqualTo(21);
-    }
-
-    @DisplayName("58km일 경우 3번의 100원 추가 요금")
-    @Test
-    void searchSuperMultiOverFarePath() {
+    void searchNotTransferLinePath() {
         Path path = graph.search(stations.get(0), stations.get(6));
 
         assertThat(path.getStations())
@@ -90,6 +55,16 @@ public class JGraphtSubwayGraphTest {
             .containsExactly(sections.get(0), sections.get(1), sections.get(3), sections.get(4),
                 sections.get(5));
         assertThat(path.getDistance()).isEqualTo(58);
+    }
+
+    @DisplayName("환승 구간이 있는 지하철역 경로 찾기")
+    @Test
+    void searchTransferLinePath() {
+        Path path = graph.search(stations.get(0), stations.get(3));
+
+        assertThat(path.getStations()).containsExactly(stations.get(0), stations.get(1), stations.get(3));
+        assertThat(path.getSections()).containsExactly(sections.get(0), sections.get(2));
+        assertThat(path.getDistance()).isEqualTo(8);
     }
 
     @DisplayName("경로를 찾을 수 없는 경우 빈 리스트 반환")
