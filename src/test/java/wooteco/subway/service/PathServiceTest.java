@@ -14,7 +14,6 @@ import wooteco.subway.domain.section.SectionEntity;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.repository.PathRepository;
 
 import javax.sql.DataSource;
 
@@ -26,7 +25,6 @@ public class PathServiceTest {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
     private final LineDao lineDao;
-    private final PathRepository pathRepository;
     private final PathService pathService;
 
     private Station 강남역;
@@ -38,8 +36,7 @@ public class PathServiceTest {
         stationDao = new StationDao(dataSource);
         sectionDao = new SectionDao(dataSource);
         lineDao = new LineDao(dataSource);
-        pathRepository = new PathRepository(stationDao, sectionDao, lineDao);
-        pathService = new PathService(pathRepository);
+        pathService = new PathService(stationDao, sectionDao, lineDao);
     }
 
     @BeforeEach

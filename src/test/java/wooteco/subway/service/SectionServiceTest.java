@@ -13,7 +13,6 @@ import wooteco.subway.domain.line.LineEntity;
 import wooteco.subway.domain.section.SectionEntity;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.repository.SectionRepository;
 
 import javax.sql.DataSource;
 
@@ -25,7 +24,6 @@ public class SectionServiceTest {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
     private final LineDao lineDao;
-    private final SectionRepository sectionRepository;
     private final SectionService sectionService;
 
     private Station 강남역;
@@ -38,8 +36,7 @@ public class SectionServiceTest {
         stationDao = new StationDao(dataSource);
         sectionDao = new SectionDao(dataSource);
         lineDao = new LineDao(dataSource);
-        sectionRepository = new SectionRepository(stationDao, sectionDao);
-        sectionService = new SectionService(sectionRepository);
+        sectionService = new SectionService(stationDao, sectionDao);
     }
 
     @BeforeEach
@@ -62,7 +59,7 @@ public class SectionServiceTest {
     @Test
     @DisplayName("구간을 하나 저장한다.")
     void saveSection() {
-        sectionService.save(1L, new SectionRequest(3L, 4L, 10));
+        sectionService.saveSection(1L, new SectionRequest(3L, 4L, 10));
 
         assertThat(sectionDao.findByLineId(1L)).hasSize(3);
     }
