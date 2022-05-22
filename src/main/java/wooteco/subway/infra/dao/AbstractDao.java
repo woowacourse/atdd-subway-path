@@ -185,7 +185,7 @@ public abstract class AbstractDao<T, ID> {
 
         String sql = "UPDATE " + table + " SET ";
         sql += fields.stream()
-                .map(field -> field + " = :" + field)
+                .map(field -> toSnakeCase(field) + " = :" + toSnakeCase(field))
                 .collect(Collectors.joining(", "));
         sql += " WHERE id = :id";
 
