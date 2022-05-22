@@ -44,7 +44,7 @@ class StationServiceTest {
         given(stationRepository.findById(id)).willReturn(savedStation);
 
         // when
-        final StationResponse response = stationService.createStation(request);
+        final StationResponse response = stationService.create(request);
 
         // then
         assertThat(response.getName()).isEqualTo(name);
@@ -61,7 +61,7 @@ class StationServiceTest {
         given(stationRepository.findAll()).willReturn(Arrays.asList(savedStation1, savedStation2));
 
         // when
-        final List<StationResponse> responses = stationService.showStations();
+        final List<StationResponse> responses = stationService.findAll();
 
         // then
         assertThat(responses).hasSize(2);
@@ -74,7 +74,7 @@ class StationServiceTest {
         given(stationRepository.findById(any(Long.class))).willReturn(new Station(1L, HYEHWA));
 
         // when
-        final Station station = stationService.show(1L);
+        final Station station = stationService.find(1L);
 
         // then
         assertThat(station.getName()).isEqualTo(HYEHWA);
@@ -87,7 +87,7 @@ class StationServiceTest {
         given(stationRepository.findById(any(Long.class))).willThrow(NotFoundStationException.class);
 
         // when & then
-        assertThatThrownBy(() -> stationService.show(1L))
+        assertThatThrownBy(() -> stationService.find(1L))
                 .isInstanceOf(NotFoundStationException.class);
     }
 
@@ -101,7 +101,7 @@ class StationServiceTest {
         given(stationRepository.existsById(id)).willReturn(true);
 
         // when
-        stationService.deleteStation(id);
+        stationService.delete(id);
 
         // then
         verify(stationRepository).deleteById(id);
@@ -114,7 +114,7 @@ class StationServiceTest {
         given(stationRepository.existsById(any(Long.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> stationService.deleteStation(any(Long.class)))
+        assertThatThrownBy(() -> stationService.delete(any(Long.class)))
                 .isInstanceOf(NotFoundStationException.class);
     }
 }

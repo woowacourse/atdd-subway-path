@@ -67,8 +67,8 @@ class LineServiceTest {
 
         // mocking
         given(lineRepository.save(any(Line.class))).willReturn(1L);
-        given(stationService.show(1L)).willReturn(new Station(1L, HYEHWA));
-        given(stationService.show(2L)).willReturn(new Station(2L, SINSA));
+        given(stationService.find(1L)).willReturn(new Station(1L, HYEHWA));
+        given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
         given(lineRepository.find(any(Long.class))).willReturn(savedLine);
 
         // when
@@ -111,7 +111,7 @@ class LineServiceTest {
         given(lineRepository.findAll()).willReturn(lines);
 
         // when
-        final List<LineResponse> responses = lineService.showAll();
+        final List<LineResponse> responses = lineService.findAll();
 
         // then
         assertThat(responses).hasSize(2);
@@ -123,7 +123,7 @@ class LineServiceTest {
         // mocking
         given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_2, RED, new Sections(SECTION_1_2)));
         // when
-        final LineResponse response = lineService.show(1L);
+        final LineResponse response = lineService.find(1L);
         final StationResponse stationResponse1 = response.getStations().get(0);
         final StationResponse stationResponse2 = response.getStations().get(1);
 
@@ -146,7 +146,7 @@ class LineServiceTest {
         given(lineRepository.find(1L)).willThrow(NotFoundLineException.class);
 
         // when & then
-        assertThatThrownBy(() -> lineService.show(1L))
+        assertThatThrownBy(() -> lineService.find(1L))
                 .isInstanceOf(NotFoundLineException.class);
     }
 
@@ -165,7 +165,7 @@ class LineServiceTest {
         lineService.updateLine(id, new UpdateLineRequest(name, color));
 
         // then
-        verify(lineRepository).update(any(Line.class));
+        verify(lineRepository).updateById(any(Line.class));
     }
 
     @Test
@@ -218,8 +218,8 @@ class LineServiceTest {
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(sectionRepository.findAllByLineId(lineId)).willReturn(
                 new Sections(List.of(SECTION_1_2)));
-        given(stationService.show(2L)).willReturn(new Station(2L, SINSA));
-        given(stationService.show(3L)).willReturn(new Station(3L, GANGNAM));
+        given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
+        given(stationService.find(3L)).willReturn(new Station(3L, GANGNAM));
 
         // when
         lineService.createSection(lineId, new CreateSectionRequest(2L, 3L, 10));
@@ -236,8 +236,8 @@ class LineServiceTest {
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(
                 new Sections(List.of(SECTION_2_3)));
-        given(stationService.show(1L)).willReturn(new Station(1L, HYEHWA));
-        given(stationService.show(2L)).willReturn(new Station(2L, SINSA));
+        given(stationService.find(1L)).willReturn(new Station(1L, HYEHWA));
+        given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
 
         // when
         lineService.createSection(1L, new CreateSectionRequest(1L, 2L, 10));
@@ -257,14 +257,14 @@ class LineServiceTest {
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(sectionRepository.findAllByLineId(lineId)).willReturn(
                 new Sections(List.of(SECTION_1_3)));
-        given(stationService.show(1L)).willReturn(new Station(1L, HYEHWA));
-        given(stationService.show(2L)).willReturn(new Station(2L, SINSA));
+        given(stationService.find(1L)).willReturn(new Station(1L, HYEHWA));
+        given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
 
         // when
         lineService.createSection(lineId, new CreateSectionRequest(1L, 2L, 5));
 
         // then
-        verify(sectionRepository).batchDelete(1L, List.of(SECTION_1_3));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3));
         verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2_SHORT, SECTION_2_3_SHORT));
     }
 
@@ -275,14 +275,14 @@ class LineServiceTest {
         given(lineRepository.existsById(any(Long.class))).willReturn(true);
         given(sectionRepository.findAllByLineId(any(Long.class))).willReturn(
                 new Sections(List.of(SECTION_1_3)));
-        given(stationService.show(2L)).willReturn(new Station(2L, SINSA));
-        given(stationService.show(3L)).willReturn(new Station(3L, GANGNAM));
+        given(stationService.find(2L)).willReturn(new Station(2L, SINSA));
+        given(stationService.find(3L)).willReturn(new Station(3L, GANGNAM));
 
         // when
         lineService.createSection(1L, new CreateSectionRequest(2L, 3L, 5));
 
         // then
-        verify(sectionRepository).batchDelete(1L, List.of(SECTION_1_3));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3));
         verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3_SHORT, SECTION_1_2_SHORT));
     }
 
@@ -335,7 +335,7 @@ class LineServiceTest {
 
         // then
         verify(sectionRepository).batchSave(1L, List.of());
-        verify(sectionRepository).batchDelete(1L, List.of(SECTION_1_2));
+        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_2));
     }
 
     @Test

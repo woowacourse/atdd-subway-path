@@ -23,7 +23,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId) {
+    public PathResponse find(final Long sourceId, final Long targetId) {
         final PathFinder pathFinder = createPathFinder();
         final Station source = stationRepository.findById(sourceId);
         final Station target = stationRepository.findById(targetId);

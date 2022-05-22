@@ -19,8 +19,10 @@ public class PathFinder {
 
     private void addEdge(final List<Section> sections, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (final Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-            graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()), section.getDistance());
+            final DefaultWeightedEdge upToDownEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            final DefaultWeightedEdge downToUpEdge = graph.addEdge(section.getDownStation(), section.getUpStation());
+            graph.setEdgeWeight(upToDownEdge, section.getDistance());
+            graph.setEdgeWeight(downToUpEdge, section.getDistance());
         }
     }
 

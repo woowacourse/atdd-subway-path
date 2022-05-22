@@ -75,7 +75,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, Map.of("id", id));
     }
 
-    public void batchDelete(final List<SectionEntity> sections) {
+    public void batchDeleteById(final List<SectionEntity> sections) {
         final String sql = "DELETE FROM SECTION WHERE id = :id";
         jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sections));
     }

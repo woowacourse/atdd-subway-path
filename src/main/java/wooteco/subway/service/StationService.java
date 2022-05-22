@@ -20,7 +20,7 @@ public class StationService {
         this.repository = repository;
     }
 
-    public StationResponse createStation(final CreateStationRequest request) {
+    public StationResponse create(final CreateStationRequest request) {
         try {
             final Station station = new Station(request.getName());
             final Long id = repository.save(station);
@@ -31,18 +31,18 @@ public class StationService {
         }
     }
 
-    public List<StationResponse> showStations() {
+    public List<StationResponse> findAll() {
         final List<Station> stations = repository.findAll();
         return stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public Station show(final Long id) {
+    public Station find(final Long id) {
         return repository.findById(id);
     }
 
-    public void deleteStation(final Long id) {
+    public void delete(final Long id) {
         validateNotExistStation(id);
         repository.deleteById(id);
     }

@@ -24,7 +24,6 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
-
     private final StationService stationService;
 
     public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository,
@@ -37,17 +36,17 @@ public class LineService {
     public LineResponse create(final CreateLineRequest request) {
         try {
             final Long lineId = lineRepository.save(request.toLine());
-            final Station upStation = stationService.show(request.getUpStationId());
-            final Station downStation = stationService.show(request.getDownStationId());
+            final Station upStation = stationService.find(request.getUpStationId());
+            final Station downStation = stationService.find(request.getDownStationId());
             sectionRepository.save(lineId, new Section(upStation, downStation, request.getDistance()));
-            return show(lineId);
+            return find(lineId);
         } catch (final DuplicateKeyException e) {
             throw new DuplicateLineException();
         }
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> showAll() {
+    public List<LineResponse> findAll() {
         final List<Line> lines = lineRepository.findAll();
         return lines.stream()
                 .map(l -> {
@@ -57,7 +56,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse show(final Long id) {
+    public LineResponse find(final Long id) {
         final Line line = lineRepository.find(id);
         final List<Station> stations = line.getSortedStations();
         return LineResponse.of(line, stations);
@@ -65,7 +64,7 @@ public class LineService {
 
     public void updateLine(final Long id, final UpdateLineRequest request) {
         validateNotExistLine(id);
-        lineRepository.update(request.toLine(id));
+        lineRepository.updateById(request.toLine(id));
     }
 
     public void deleteLine(final Long id) {
@@ -77,8 +76,8 @@ public class LineService {
         validateCreateSection(lineId, request);
         final Sections originSections = sectionRepository.findAllByLineId(lineId);
         final Sections newSections = new Sections(originSections.getValues());
-        final Station upStation = stationService.show(request.getUpStationId());
-        final Station downStation = stationService.show(request.getDownStationId());
+        final Station upStation = stationService.find(request.getUpStationId());
+        final Station downStation = stationService.find(request.getDownStationId());
         newSections.add(new Section(upStation, downStation, request.getDistance()));
 
         deleteOldSections(lineId, originSections, newSections);
@@ -93,7 +92,7 @@ public class LineService {
 
     private void deleteOldSections(final Long lineId, final Sections originSections, final Sections newSections) {
         final List<Section> differentSections = originSections.findDifferentSections(newSections);
-        sectionRepository.batchDelete(lineId, differentSections);
+        sectionRepository.batchDeleteById(lineId, differentSections);
     }
 
     private void saveNewSections(final Long lineId, final Sections originSections, final Sections newSections) {

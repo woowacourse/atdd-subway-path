@@ -30,32 +30,32 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody final CreateLineRequest request) {
+    public ResponseEntity<LineResponse> create(@Valid @RequestBody final CreateLineRequest request) {
         final LineResponse lineResponse = lineService.create(request);
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLines() {
-        final List<LineResponse> responses = lineService.showAll();
+    public ResponseEntity<List<LineResponse>> findAll() {
+        final List<LineResponse> responses = lineService.findAll();
         return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> show(@PathVariable final Long id) {
-        final LineResponse response = lineService.show(id);
+    public ResponseEntity<LineResponse> find(@PathVariable final Long id) {
+        final LineResponse response = lineService.find(id);
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable final Long id,
-                                           @Valid @RequestBody final UpdateLineRequest lineRequest) {
+    public ResponseEntity<Void> update(@PathVariable final Long id,
+                                       @Valid @RequestBody final UpdateLineRequest lineRequest) {
         lineService.updateLine(id, lineRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
+    public ResponseEntity<Void> delete(@PathVariable final Long id) {
         lineService.deleteLine(id);
         return ResponseEntity.noContent().build();
     }

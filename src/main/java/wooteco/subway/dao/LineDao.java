@@ -41,7 +41,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public LineEntity find(final Long id) {
+    public LineEntity findById(final Long id) {
         try {
             final String sql = "SELECT * FROM LINE WHERE id = :id";
             return jdbcTemplate.queryForObject(sql, Map.of("id", id), ROW_MAPPER);
@@ -50,12 +50,12 @@ public class LineDao {
         }
     }
 
-    public void update(final LineEntity line) {
+    public void updateById(final LineEntity line) {
         final String sql = "UPDATE LINE SET name = :name, color = :color WHERE id = :id";
         jdbcTemplate.update(sql, Map.of("id", line.getId(), "name", line.getName(), "color", line.getColor()));
     }
 
-    public void delete(final Long id) {
+    public void deleteById(final Long id) {
         final String sql = "DELETE FROM LINE WHERE id = :id";
         jdbcTemplate.update(sql, Map.of("id", id));
     }

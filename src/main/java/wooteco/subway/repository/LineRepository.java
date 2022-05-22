@@ -34,17 +34,17 @@ public class LineRepository {
     }
 
     public Line find(final Long id) {
-        final LineEntity entity = lineDao.find(id);
+        final LineEntity entity = lineDao.findById(id);
         final Sections sections = sectionRepository.findAllByLineId(id);
         return entity.toLine(sections);
     }
 
-    public void update(final Line line) {
-        lineDao.update(LineEntity.from(line));
+    public void updateById(final Line line) {
+        lineDao.updateById(LineEntity.from(line));
     }
 
     public void deleteById(final Long id) {
-        lineDao.delete(id);
+        lineDao.deleteById(id);
     }
 
     public boolean existsById(final Long id) {

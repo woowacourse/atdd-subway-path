@@ -63,10 +63,10 @@ public class SectionRepository {
         sectionDao.deleteById(id);
     }
 
-    public void batchDelete(final Long lineId, final List<Section> sections) {
+    public void batchDeleteById(final Long lineId, final List<Section> sections) {
         final List<SectionEntity> entities = sections.stream()
                 .map(s -> SectionEntity.of(lineId, s))
                 .collect(Collectors.toList());
-        sectionDao.batchDelete(entities);
+        sectionDao.batchDeleteById(entities);
     }
 }

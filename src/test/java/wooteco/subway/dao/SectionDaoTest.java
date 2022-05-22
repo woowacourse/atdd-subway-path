@@ -142,7 +142,7 @@ public class SectionDaoTest {
                 new SectionEntity(lineId, stationId2, stationId3, 10));
 
         // when
-        sectionDao.batchDelete(sections);
+        sectionDao.batchDeleteById(sections);
         final List<SectionEntity> savedSections = sectionDao.findAllByLineId(lineId);
 
         // then
