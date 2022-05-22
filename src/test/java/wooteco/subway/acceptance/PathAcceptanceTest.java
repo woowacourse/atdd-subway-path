@@ -85,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
                 .containsExactly("강남역", "양재역"),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
-                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1750)
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
         );
     }
 
@@ -113,7 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
                         .containsExactly("교대역", "강남역", "양재역"),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
-                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1750)
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
         );
     }
 }

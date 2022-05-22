@@ -1,5 +1,7 @@
 package wooteco.subway.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +47,7 @@ public class LineDao {
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
         try {
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper()));
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameters, lineRowMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -92,7 +94,7 @@ public class LineDao {
         return namedParameterJdbcTemplate.update(sql, parameters);
     }
 
-    private RowMapper<Line> rowMapper() {
+    private RowMapper<Line> lineRowMapper() {
         return (resultSet, rowNum) -> {
             Long lineId = resultSet.getLong("id");
             String name = resultSet.getString("name");
@@ -122,6 +124,18 @@ public class LineDao {
                     distance);
             return new LineSection(line, section);
         };
+    }
+
+    public List<Integer> findLinePricesByIds(List<Long> lineIds) {
+        String sql = "SELECT extraFare FROM line WHERE id IN (:lineIds)";
+        SqlParameterSource nameParameters = new MapSqlParameterSource("lineIds", lineIds);
+
+        return namedParameterJdbcTemplate.query(sql, nameParameters, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
     }
 
     static class LineSection {

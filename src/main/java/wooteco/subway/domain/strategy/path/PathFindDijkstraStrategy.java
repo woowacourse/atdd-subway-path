@@ -31,7 +31,7 @@ public class PathFindDijkstraStrategy implements PathFindStrategy {
 
     private List<Long> createDistinctLineIds(GraphPath<Station, CustomWeightedEdge> shortPath) {
         return shortPath.getEdgeList().stream()
-                .map(edge -> edge.getLineId())
+                .map(CustomWeightedEdge::getLineId)
                 .distinct()
                 .collect(Collectors.toList());
     }
