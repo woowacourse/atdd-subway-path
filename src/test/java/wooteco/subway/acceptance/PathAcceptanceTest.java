@@ -1,6 +1,6 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -17,6 +17,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("역과 노선을 등록하고 최단 거리를 계산한다")
     @Test
     void findShortestPath() {
+        /*
+        given
+        강남역, 홍대입구역, 선릉역, 잠실역을 등록한다
+        노선과 구간을 차례로 등록해 아래와 같은 세 노선이 된다
+        1호선 : 강남-선릉-홍대입구
+        2호선 : 강남-홍대입구
+        3호선 : 강남-잠실-홍대입구
+
+        when
+        출발역, 도착역 : 강남역, 홍대입구역
+        나이 : 10살
+
+        then
+        최적 경로 : 강남-선릉-홍대입구
+        거리 : 178
+        요금 : 2000원
+        */
         Station 강남역 = createStation("강남역").as(Station.class);
         Station 홍대입구역 = createStation("홍대입구역").as(Station.class);
         Station 선릉역 = createStation("선릉역").as(Station.class);
@@ -29,14 +46,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         addSection(일호선.getId(), 선릉역.getId(), 홍대입구역.getId(), 78);
         addSection(삼호선.getId(), 잠실역.getId(), 홍대입구역.getId(), 5);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .queryParams(Map.of("source", 강남역.getId(), "target", 홍대입구역.getId(), "age", 10))
                 .when()
                 .get("/paths")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("stations[0].name", equalTo("강남역"))
+                .body("stations[1].name", equalTo("선릉역"))
+                .body("stations[2].name", equalTo("홍대입구역"))
+                .body("distance", equalTo(178))
+                .body("fare", equalTo(2000));
     }
 
     public ExtractableResponse<Response> createStation(String name) {
