@@ -118,7 +118,8 @@ class PathControllerTest extends ControllerTest {
                 majang,
                 dapsimni
         );
-        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69), new Fare(expectedFare));
+        final PathResponse expected = PathResponse.of(expectedStations, new Distance(69),
+                Fare.from(expectedFare - 1250));
 
         // when
         final PathResponse actual = pathController.showPath(request)

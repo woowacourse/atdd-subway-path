@@ -86,7 +86,8 @@ class PathServiceTest extends ServiceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(20);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(expectedFare));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance,
+                Fare.from(expectedFare - 1250));
 
         // when
         final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId(), age);
