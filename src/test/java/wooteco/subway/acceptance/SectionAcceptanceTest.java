@@ -102,7 +102,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     Long saveLine(Long station1, Long station2) {
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(lineRequest)

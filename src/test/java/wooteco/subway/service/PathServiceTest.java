@@ -30,7 +30,7 @@ public class PathServiceTest {
         stationDao = new StationDaoImpl(jdbcTemplate);
         sectionDao = new SectionDaoImpl(jdbcTemplate);
         lineDao = new LineDaoImpl(jdbcTemplate);
-        pathService = new PathService(sectionDao, stationDao);
+        pathService = new PathService(sectionDao, stationDao, lineDao);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class PathServiceTest {
         stationDao.save(new Station("역삼역"));
         stationDao.save(new Station("선릉역"));
 
-        lineDao.save(new Line("1호선", "red"));
+        lineDao.save(new Line("1호선", "red", 0));
 
         sectionDao.save(new Section(1L, 1L, 2L, 3));
         sectionDao.save(new Section(1L, 2L, 3L, 4));

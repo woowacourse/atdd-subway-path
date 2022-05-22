@@ -99,7 +99,7 @@ class LineDaoImplTest {
         Long savedId = lineDaoImpl.save(originLine);
 
         // when
-        Line newline = new Line(savedId, "2호선", "bg-green-600");
+        Line newline = new Line(savedId, "2호선", "bg-green-600", 0);
         lineDaoImpl.updateById(newline);
         Line line = lineDaoImpl.findById(savedId).get();
 

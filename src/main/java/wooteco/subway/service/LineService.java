@@ -35,12 +35,12 @@ public class LineService {
     @Transactional
     public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
         validateDuplicationName(lineServiceRequest.getName());
-        Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor());
+        Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
         Long savedId = lineDao.save(line);
         sectionDao.save(new Section(savedId, lineServiceRequest.getUpStationId(),
                 lineServiceRequest.getDownStationId(), lineServiceRequest.getDistance()));
 
-        return new LineServiceResponse(savedId, line.getName(), line.getColor(), List.of(
+        return new LineServiceResponse(savedId, line.getName(), line.getColor(), line.getExtraFare(), List.of(
                 findStationByLineId(lineServiceRequest.getUpStationId()),
                 findStationByLineId(lineServiceRequest.getDownStationId())
         ));
@@ -55,7 +55,7 @@ public class LineService {
     public List<LineServiceResponse> findAll() {
         Map<Long, Station> stations = findAllStations();
         return lineDao.findAll().stream()
-                .map(i -> new LineServiceResponse(i.getId(), i.getName(), i.getColor(),
+                .map(i -> new LineServiceResponse(i.getId(), i.getName(), i.getColor(), i.getExtraFare(),
                         getSortedStationsByLineId(i.getId(), stations)))
                 .collect(Collectors.toList());
     }
@@ -95,7 +95,7 @@ public class LineService {
     }
 
     public boolean updateById(Long id, LineServiceRequest lineServiceRequest) {
-        Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor());
+        Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
         return lineDao.updateById(line);
     }
 
@@ -106,7 +106,7 @@ public class LineService {
         }
         Line line = maybeLine.get();
         List<Station> stations = findSortedStationByLineId(line.getId());
-        return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
+        return new LineServiceResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
                 toStationResponse(stations));
     }
 
