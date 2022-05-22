@@ -1,30 +1,83 @@
 package wooteco.subway.dao;
 
+import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.sql.DataSource;
+
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
+
 import wooteco.subway.domain.Station;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
+@Component
 public class StationDao {
-    private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
 
-    public static Station save(Station station) {
-        Station persistStation = createNewObject(station);
-        stations.add(persistStation);
-        return persistStation;
+    private final SimpleJdbcInsert jdbcInsert;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    public StationDao(DataSource dataSource) {
+        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public static List<Station> findAll() {
-        return stations;
+    public Station save(Station station) {
+        SqlParameterSource param = new BeanPropertySqlParameterSource(station);
+        Long id = jdbcInsert.executeAndReturnKey(param).longValue();
+        return createNewObject(station, id);
     }
 
-    private static Station createNewObject(Station station) {
+    private Station createNewObject(Station station, Long id) {
         Field field = ReflectionUtils.findField(Station.class, "id");
         field.setAccessible(true);
-        ReflectionUtils.setField(field, station, ++seq);
+        ReflectionUtils.setField(field, station, id);
         return station;
+    }
+
+    private Station mapToStation(ResultSet resultSet) throws SQLException {
+        return new Station(
+                resultSet.getLong("id"),
+                resultSet.getString("name"));
+    }
+
+    public List<Station> findAll() {
+        String sql = "SELECT * FROM station";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToStation(resultSet));
+    }
+
+    public Optional<Station> findById(Long id) {
+        String sql = "SELECT * FROM station WHERE id = :id";
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sql, paramSource, (resultSet, rowNum) -> mapToStation(resultSet)));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM station WHERE id = :id";
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
+        int deletedCount = jdbcTemplate.update(sql, paramSource);
+        validateRemoved(deletedCount);
+        return deletedCount;
+    }
+
+    private void validateRemoved(int deletedCount) {
+        if (deletedCount == 0) {
+            throw new IllegalStateException("삭제하고자 하는 역이 존재하지 않습니다.");
+        }
     }
 }
