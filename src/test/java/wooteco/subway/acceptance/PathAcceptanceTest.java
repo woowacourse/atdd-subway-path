@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -57,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -80,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10);
+        createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = getPath(stationId1, stationId3, 29);
@@ -118,13 +118,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) {
+                            final int distance, final int extraFare) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", distance);
+        params.put("extraFare", extraFare);
 
         return Long.parseLong(RestAssured.given().log().all()
                 .body(params)

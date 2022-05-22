@@ -18,7 +18,8 @@ class PathTest {
     void calculateFare(final int distance) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
         final Path path = new Path(routeStations, distance);
-        assertThat(path.calculateFare()).isEqualTo(1250);
+
+        assertThat(path.calculateFare(20)).isEqualTo(1250);
     }
 
     @ParameterizedTest(name = "[{index}] 거리 = {0}, 요금 = {1}")
@@ -27,7 +28,8 @@ class PathTest {
     void calculateFare_Over10Under50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
         final Path path = new Path(routeStations, distance);
-        assertThat(path.calculateFare()).isEqualTo(fare);
+
+        assertThat(path.calculateFare(20)).isEqualTo(fare);
     }
 
     @ParameterizedTest(name = "[{index}] 거리 = {0}, 요금 = {1}")
@@ -36,6 +38,37 @@ class PathTest {
     void calculateFare_Over50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
         final Path path = new Path(routeStations, distance);
-        assertThat(path.calculateFare()).isEqualTo(fare);
+
+        assertThat(path.calculateFare(20)).isEqualTo(fare);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {13, 15, 18})
+    @DisplayName("청소년(13세 이상, 19세 미만) : 운임에서 350원을 공제한 금액의 20% 할인")
+    void calculateFare_teenager(final int age) {
+        final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
+        final Path path = new Path(routeStations, 25);
+
+        assertThat(path.calculateFare(age)).isEqualTo(1310);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {6, 9, 12})
+    @DisplayName("어린이(6세 이상, 13세 미만) : 운임에서 350원을 공제한 금액의 50% 할인")
+    void calculateFare_child(final int age) {
+        final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
+        final Path path = new Path(routeStations, 25);
+
+        assertThat(path.calculateFare(age)).isEqualTo(950);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 3, 5})
+    @DisplayName("아기(6세 미만) : 운임을 부과하지 않음")
+    void calculateFare_baby(final int age) {
+        final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
+        final Path path = new Path(routeStations, 25);
+
+        assertThat(path.calculateFare(age)).isEqualTo(0);
     }
 }

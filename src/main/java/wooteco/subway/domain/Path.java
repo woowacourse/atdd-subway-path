@@ -14,7 +14,12 @@ public class Path {
         this.distance = distance;
     }
 
-    public int calculateFare() {
+    public int calculateFare(final int age) {
+        final int fare = calculateBasicFare();
+        return calculateAgeDiscount(fare, age);
+    }
+
+    private int calculateBasicFare() {
         int tempDistance = distance;
         int fare = BASIC_FARE;
         if (tempDistance > 50) {
@@ -29,6 +34,19 @@ public class Path {
 
     private int calculateOverFare(int distance, int kilo) {
         return (int) ((Math.ceil((distance - 1) / kilo) + 1) * 100);
+    }
+
+    private int calculateAgeDiscount(final int fare, final int age) {
+        if (age < 6) {
+            return 0;
+        }
+        if (age < 13) {
+            return fare - (int) ((fare - 350) * 0.5);
+        }
+        if (age < 19) {
+            return fare - (int) ((fare - 350) * 0.2);
+        }
+        return fare;
     }
 
     public List<Station> getRouteStations() {
