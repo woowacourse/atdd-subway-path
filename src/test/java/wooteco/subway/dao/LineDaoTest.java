@@ -2,6 +2,15 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.Fixtures.COLOR1;
+import static wooteco.subway.Fixtures.COLOR2;
+import static wooteco.subway.Fixtures.COLOR3;
+import static wooteco.subway.Fixtures.강남역;
+import static wooteco.subway.Fixtures.부개역;
+import static wooteco.subway.Fixtures.부평역;
+import static wooteco.subway.Fixtures.삼호선;
+import static wooteco.subway.Fixtures.선릉_삼성_구간;
+import static wooteco.subway.Fixtures.역삼역;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,8 +21,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.section.Distance;
-import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -27,11 +34,6 @@ class LineDaoTest {
 
     private LineDao lineDao;
 
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-
     private LineResponse savedLine;
 
     @BeforeEach
@@ -40,27 +42,18 @@ class LineDaoTest {
         StationDao stationDao = new StationDao(jdbcTemplate);
         LineService lineService = new LineService(lineDao, stationDao, new SectionDao(jdbcTemplate));
 
-        station1 = new Station("역일역");
-        station2 = new Station("역이역");
-        station3 = new Station("역삼역");
-        station4 = new Station("역사역");
+        Station 저장된_강남역 = stationDao.save(강남역);
+        Station 저장된_역삼역 = stationDao.save(역삼역);
+        Station 저장된_부평역 = stationDao.save(부평역);
+        Station 저장된_부개역 = stationDao.save(부개역);
 
-        Station savedStation1 = stationDao.save(station1);
-        Station savedStation2 = stationDao.save(station2);
-        Station savedStation3 = stationDao.save(station3);
-        Station savedStation4 = stationDao.save(station4);
-
-        savedLine = lineService.createLine(
-                new LineRequest("1호선", "bg-blue-600", 600, savedStation1.getId(), savedStation2.getId(), 10));
-        lineService.createLine(
-                new LineRequest("2호선", "bg-green-600", 500, savedStation3.getId(), savedStation4.getId(), 10));
+        savedLine = lineService.createLine(new LineRequest("1호선", COLOR1, 500, 저장된_부평역.getId(), 저장된_부개역.getId(), 10));
+        lineService.createLine(new LineRequest("2호선", COLOR2, 500, 저장된_강남역.getId(), 저장된_역삼역.getId(), 10));
     }
 
     @Test
     void save() {
-        Line line = new Line("신분당선", "bg-red-600", new Fare(400), new Section(station1, station2, new Distance(10)));
-        Line savedLine = lineDao.save(line);
-
+        Line savedLine = lineDao.save(삼호선);
         assertThat(savedLine).isNotNull();
     }
 
@@ -94,15 +87,12 @@ class LineDaoTest {
     void update() {
         Long targetLineId = savedLine.getId();
 
-        String newLineName = "새로운 노선";
-        String newLineColor = "bg-red-500";
-        Line newLine = new Line(newLineName, newLineColor, new Fare(600),
-                new Section(station2, station4, new Distance(10)));
+        Line newLine = new Line("새로운 호선", COLOR3, new Fare(500), 선릉_삼성_구간);
         lineDao.update(targetLineId, newLine);
 
         assertAll(
-                () -> assertThat(lineDao.findById(targetLineId).get().getName()).isEqualTo(newLineName),
-                () -> assertThat(lineDao.findById(targetLineId).get().getColor()).isEqualTo(newLineColor)
+                () -> assertThat(lineDao.findById(targetLineId).get().getName()).isEqualTo("새로운 호선"),
+                () -> assertThat(lineDao.findById(targetLineId).get().getColor()).isEqualTo(COLOR3)
         );
     }
 

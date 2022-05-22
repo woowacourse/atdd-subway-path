@@ -2,6 +2,11 @@ package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wooteco.subway.Fixtures.강남역;
+import static wooteco.subway.Fixtures.삼성역;
+import static wooteco.subway.Fixtures.선릉역;
+import static wooteco.subway.Fixtures.잠실새내역;
+import static wooteco.subway.Fixtures.잠실역;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,19 +24,10 @@ class SectionsTest {
 
     private Section initialSection;
     private Sections sections;
-
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
-
+    
     @BeforeEach
     void setUp() {
-        station1 = new Station(1L, "잠실역");
-        station2 = new Station(2L, "선릉역");
-        station3 = new Station(3L, "몽촌토성역");
-        station4 = new Station(4L, "삼성역");
-        initialSection = new Section(station1, station2, new Distance(10));
+        initialSection = new Section(잠실역, 선릉역, new Distance(10));
         sections = new Sections(List.of(initialSection));
     }
 
@@ -39,8 +35,8 @@ class SectionsTest {
     @Test
     void constructor() {
         // given
-        Station upStation = station1;
-        Station downStation = station2;
+        Station upStation = 강남역;
+        Station downStation = 선릉역;
         Distance distance = new Distance(10);
         Section section = new Section(upStation, downStation, distance);
 
@@ -55,7 +51,7 @@ class SectionsTest {
     @Test
     void addSection_withNewUpStation() {
         // given
-        Section newSection = new Section(station3, station1, new Distance(5));
+        Section newSection = new Section(잠실새내역, 잠실역, new Distance(5));
 
         // when
         sections.addSection(newSection);
@@ -68,7 +64,7 @@ class SectionsTest {
     @Test
     void addSection_withNewDownStation() {
         // given
-        Section newSection = new Section(station2, station4, new Distance(5));
+        Section newSection = new Section(선릉역, 삼성역, new Distance(5));
 
         // when
         sections.addSection(newSection);
@@ -81,15 +77,15 @@ class SectionsTest {
     @Test
     void addSection_insertingUpStation() {
         // given
-        Section newSection = new Section(station1, station3, new Distance(5));
+        Section newSection = new Section(잠실역, 잠실새내역, new Distance(5));
 
         // when
         sections.addSection(newSection);
         List<Section> actual = sections.getValue();
 
         // then
-        List<Section> expected = List.of(new Section(station1, station3, new Distance(5)),
-                new Section(station3, station2, new Distance(5)));
+        List<Section> expected = List.of(new Section(잠실역, 잠실새내역, new Distance(5)),
+                new Section(잠실새내역, 선릉역, new Distance(5)));
         assertThat(actual).containsAll(expected);
     }
 
@@ -97,15 +93,15 @@ class SectionsTest {
     @Test
     void addSection_insertingDownStation() {
         // given
-        Section newSection = new Section(station3, station2, new Distance(5));
+        Section newSection = new Section(잠실새내역, 선릉역, new Distance(5));
 
         // when
         sections.addSection(newSection);
         List<Section> actual = sections.getValue();
 
         // then
-        List<Section> expected = List.of(new Section(station1, station3, new Distance(5)),
-                new Section(station3, station2, new Distance(5)));
+        List<Section> expected = List.of(new Section(잠실역, 잠실새내역, new Distance(5)),
+                new Section(잠실새내역, 선릉역, new Distance(5)));
         assertThat(actual).containsAll(expected);
     }
 
@@ -114,7 +110,7 @@ class SectionsTest {
     @ValueSource(ints = {10, 15, 100})
     void addSection_throwsExceptionOnTryingToInsertLongerSection(int distance) {
         // given
-        Section newSection = new Section(station3, station2, new Distance(distance));
+        Section newSection = new Section(잠실새내역, 선릉역, new Distance(distance));
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(newSection))
@@ -125,7 +121,7 @@ class SectionsTest {
     @Test
     void addSection_throwsExceptionIfBothUpAndDownStationAlreadyExistsInSections() {
         // given
-        Section newSection = new Section(station1, station2, new Distance(5));
+        Section newSection = new Section(잠실역, 선릉역, new Distance(5));
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(newSection))
@@ -136,7 +132,7 @@ class SectionsTest {
     @Test
     void addSection_throwsExceptionIfBothUpAndDownStationDoNotExistInSections() {
         // given
-        Section newSection = new Section(station3, station4, new Distance(5));
+        Section newSection = new Section(잠실새내역, 삼성역, new Distance(5));
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(newSection))
@@ -147,16 +143,16 @@ class SectionsTest {
     @Test
     void deleteStation_upStation() {
         // given
-        sections.addSection(new Section(station2, station3, new Distance(10)));
-        sections.addSection(new Section(station3, station4, new Distance(10)));
+        sections.addSection(new Section(선릉역, 잠실새내역, new Distance(10)));
+        sections.addSection(new Section(잠실새내역, 삼성역, new Distance(10)));
 
         // when
-        sections.deleteStation(station1);
+        sections.deleteStation(잠실역);
 
         // then
         assertThat(sections.getValue()).containsAll(List.of(
-                new Section(station2, station3, new Distance(10)),
-                new Section(station3, station4, new Distance(10))
+                new Section(선릉역, 잠실새내역, new Distance(10)),
+                new Section(잠실새내역, 삼성역, new Distance(10))
         ));
     }
 
@@ -165,16 +161,16 @@ class SectionsTest {
     @Test
     void deleteStation_downStation() {
         // given
-        sections.addSection(new Section(station2, station3, new Distance(10)));
-        sections.addSection(new Section(station3, station4, new Distance(10)));
+        sections.addSection(new Section(선릉역, 잠실새내역, new Distance(10)));
+        sections.addSection(new Section(잠실새내역, 삼성역, new Distance(10)));
 
         // when
-        sections.deleteStation(station4);
+        sections.deleteStation(삼성역);
 
         // then
         assertThat(sections.getValue()).containsAll(List.of(
-                new Section(station1, station2, new Distance(10)),
-                new Section(station2, station3, new Distance(10))
+                new Section(잠실역, 선릉역, new Distance(10)),
+                new Section(선릉역, 잠실새내역, new Distance(10))
         ));
     }
 
@@ -182,23 +178,23 @@ class SectionsTest {
     @Test
     void deleteStation_betweenStation() {
         // given
-        sections.addSection(new Section(station2, station3, new Distance(10)));
-        sections.addSection(new Section(station3, station4, new Distance(10)));
+        sections.addSection(new Section(선릉역, 잠실새내역, new Distance(10)));
+        sections.addSection(new Section(잠실새내역, 삼성역, new Distance(10)));
 
         // when
-        sections.deleteStation(station3);
+        sections.deleteStation(잠실새내역);
 
         // then
         assertThat(sections.getValue()).containsAll(List.of(
-                new Section(station1, station2, new Distance(10)),
-                new Section(station2, station4, new Distance(20))
+                new Section(잠실역, 선릉역, new Distance(10)),
+                new Section(선릉역, 삼성역, new Distance(20))
         ));
     }
 
     @DisplayName("구간이 단 하나인 구간 목록에서 구간 제거를 하면 예외가 발생한다.")
     @Test
     void deleteStation_throwsExceptionIfSectionsSizeIsOne() {
-        assertThatThrownBy(() -> sections.deleteStation(station1))
+        assertThatThrownBy(() -> sections.deleteStation(잠실역))
                 .isInstanceOf(OnlyOneSectionException.class);
     }
 }
