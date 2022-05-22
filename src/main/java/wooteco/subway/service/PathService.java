@@ -7,6 +7,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.SubwayFare;
 import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.fare.vo.Age;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
@@ -28,7 +29,7 @@ public class PathService {
         List<Section> sections = sectionRepository.findAll();
         Station source = stationRepository.findById(pathsRequest.getSource());
         Station target = stationRepository.findById(pathsRequest.getTarget());
-        int age = pathsRequest.getAge();
+        Age age = new Age(pathsRequest.getAge());
 
         SubwayGraph subwayGraph = new SubwayGraph(sections);
         List<Station> route = subwayGraph.getShortestRoute(source, target);

@@ -4,6 +4,7 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import wooteco.subway.domain.LineWeightedEdge;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.vo.Age;
 
 public class SubwayFare {
 
@@ -22,7 +23,7 @@ public class SubwayFare {
         this.path = path;
     }
 
-    public int calculate(int age) {
+    public int calculate(Age age) {
         AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.find(age);
         int basicFare = calculateOverFare((int) path.getWeight());
         int extraFare = getExtraFare(path.getEdgeList());
