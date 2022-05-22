@@ -2,9 +2,12 @@ package wooteco.subway.dao;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -57,10 +60,14 @@ public class JdbcStationDao implements StationDao {
     @Override
     public Station findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        ), id);
+        try {
+            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name")
+            ), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 역이 존재하지 않습니다.");
+        }
     }
 
     @Override

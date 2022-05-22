@@ -23,13 +23,13 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse getPath(int source, int target) {
+    public PathResponse getPath(Long source, Long target) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
         PathSearcher pathSearcher = PathSearcher.from(stations, sections);
 
-        Station sourceStation = stationDao.findById((long)source);
-        Station targetStation = stationDao.findById((long)target);
+        Station sourceStation = stationDao.findById(source);
+        Station targetStation = stationDao.findById(target);
         List<Station> path = pathSearcher.searchShortestPath(sourceStation, targetStation);
 
         Distance distance = pathSearcher.calculateShortestDistance(sourceStation, targetStation);
