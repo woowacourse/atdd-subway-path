@@ -17,6 +17,13 @@ public class Path {
         this.distance = distance;
     }
 
+    public int getMostExpensiveExtraFare() {
+        return lines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
+    }
+
     public List<Station> getStations() {
         return stations;
     }
