@@ -38,7 +38,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
         createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
 
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 20);
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
 
@@ -54,6 +54,258 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 운임비용을 반환한다.")
+    @Test
+    void findShortestPathWithExtraFare() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 900));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 20);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 어린이 운임비용을 반환한다.")
+    @Test
+    void findChildrenPolicyShortestPath() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 10);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(450)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 어린이 운임비용을 반환한다.")
+    @Test
+    void findChildrenPolicyShortestPathWithExtraFare() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 900));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 10);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(900)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 청소년 운임비용을 반환한다.")
+    @Test
+    void findTeenagerPolicyShortestPath() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 15);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(720)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 청소년 운임비용을 반환한다.")
+    @Test
+    void findTeenagerPolicyShortestPathWithExtraFare() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 900));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 15);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1440)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 우대 운임비용을 반환한다.")
+    @Test
+    void findPreferentialPolicyShortestPath() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 65);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(0)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 우대 운임비용을 반환한다.")
+    @Test
+    void findPreferentialPolicyShortestPathWithExtraFare() {
+        Long stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+                .getId();
+        Long stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+                .getId();
+        Long stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+                .getId();
+        Long stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+                .getId();
+
+        Long lineId = createLine(new LineRequest("2호선", "green", stationId1, stationId2, 2, 0))
+                .as(LineResponse.class).getId();
+        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 900));
+
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 5);
+        PathResponse pathResponse = response.jsonPath()
+                .getObject(".", PathResponse.class);
+
+        List<StationResponse> stationResponses = pathResponse.getStations();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationId1),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("강남역"),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationId2),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("선릉역"),
+                () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
+                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(0)
         );
     }
 
@@ -76,7 +328,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
         createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 0));
 
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 20);
 
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
@@ -105,7 +357,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
         createLine(new LineRequest("3호선", "orange", stationId4, stationId5, 2, 0));
 
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 20);
 
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
@@ -115,11 +367,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId) {
+    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId, int age) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=15")
+                .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=" + age)
                 .then().log().all()
                 .extract();
     }
