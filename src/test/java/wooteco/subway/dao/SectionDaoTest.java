@@ -85,7 +85,20 @@ class SectionDaoTest {
         );
     }
 
+    @DisplayName("지하철역 리스트가 주어지면 해당 지하철역을 가진 구간 리스트를 반환한다.")
+    @Test
+    void 특정_지하철역을_가진_구간_리스트_조회() {
+        Line line = generateLine("2호선", "bg-green-600", 0);
+        Station 선릉역 = generateStation("선릉역");
+        Station 잠실역 = generateStation("잠실역");
+        sectionDao.save(new Section(line, 선릉역, 잠실역, 10));
+        Station 신대방역 = generateStation("신대방역");
+        sectionDao.save(new Section(line, 신대방역, 선릉역, 7));
 
+        List<Section> sections = sectionDao.findAllIn(List.of(선릉역));
+
+        assertThat(sections.size()).isEqualTo(2);
+    }
 
     private Line generateLine(String name, String color, int extraFare) {
         return lineDao.save(new Line(name, color, extraFare));
