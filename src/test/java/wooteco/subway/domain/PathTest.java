@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,12 +18,14 @@ public class PathTest {
     private Section sectionThreeToFourInLine2;
     private Section sectionTwoToSixInLine2;
     private Section sectionSevenToTwoInLine2;
+    private Section sectionTwoToThreeInLine2;
 
     @BeforeEach
     void init() {
         sectionOneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
         sectionTwoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
         sectionThreeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        sectionTwoToThreeInLine2 = new Section(2L, 3L, 4L, 3);
         sectionThreeToFourInLine2 = new Section(2L, 3L, 4L, 8);
         sectionTwoToSixInLine2 = new Section(2L, 2L, 6L, 16);
         sectionSevenToTwoInLine2 = new Section(2L, 7L, 2L, 32);
@@ -106,5 +109,15 @@ public class PathTest {
                 Path.of(new Dijkstra(sections), 1L, 3L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동할 수 없는 경로입니다.");
+    }
+
+    @DisplayName("최단 경로의 노선 아이디를 올바르게 반환하는 지 확인한다.")
+    @Test
+    void findLines() {
+        final Sections sections = new Sections(List.of(sectionOneToTwoInLine1, sectionTwoToThreeInLine1, sectionThreeToFourInLine2));
+        final Path path = Path.of(new Dijkstra(sections), 1L, 4L);
+        final Set<Long> lineIds = path.getLineIds();
+
+        assertThat(lineIds).contains(1L, 2L);
     }
 }
