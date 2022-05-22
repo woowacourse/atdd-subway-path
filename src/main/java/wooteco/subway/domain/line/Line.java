@@ -75,13 +75,4 @@ public class Line {
         return sectionSeries;
     }
 
-    @Override
-    public String toString() {
-        return "Line{" +
-                "id=" + id +
-                ", name=" + name +
-                ", color=" + color +
-                ", sectionSeries=" + sectionSeries +
-                '}';
-    }
 }

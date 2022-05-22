@@ -64,10 +64,6 @@ public class JdbcStationDao implements StationDao {
         return id;
     }
 
-    private boolean isUpdated(int updatedCount) {
-        return updatedCount != 0;
-    }
-
     @Override
     public Optional<StationEntity> findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
@@ -76,5 +72,9 @@ public class JdbcStationDao implements StationDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    private boolean isUpdated(int updatedCount) {
+        return updatedCount != 0;
     }
 }
