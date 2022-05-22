@@ -24,6 +24,7 @@ public class TestFixtures {
     public static final Section 강남_삼성 = new Section(10L, 이호선, 강남, 삼성, 10);
     public static final Section 삼성_건대 = new Section(20L, 이호선, 삼성, 건대, 15);
     public static final Section 건대_성수 = new Section(30L, 이호선, 건대, 성수, 20);
+    public static final Section 합정_왕십리 = new Section(30L, 이호선, 합정, 왕십리, 50);
 
 
     public static final Section 왕십리_합정 = new Section(40L, 분당선, 왕십리, 합정, 50);
