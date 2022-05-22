@@ -24,7 +24,6 @@ import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
-@DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철역과 길이를 활용하여 노선을 생성한다.")

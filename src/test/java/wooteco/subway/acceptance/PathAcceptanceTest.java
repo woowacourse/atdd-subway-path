@@ -17,7 +17,6 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 
-@DisplayName("경로 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("경로 조회 관련 기능을 확인한다.")
