@@ -10,9 +10,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.PathFindStrategy;
 
-public class MinimumDistanceStrategy implements PathStrategy {
+public class MinimumDistanceFindStrategy implements PathFindStrategy {
 
     private static final String UNCONNECTED_STATION_EXCEPTION = "연결되지 않은 두 역입니다.";
 

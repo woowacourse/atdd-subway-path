@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -24,12 +24,12 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPaths(PathStrategy pathStrategy, PricingStrategy pricingStrategy, Long sourceId, Long targetId) {
+    public PathResponse searchPaths(PathFindStrategy pathFindStrategy, PricingStrategy pricingStrategy, Long sourceId, Long targetId) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
         Station from = findById(stations, sourceId);
         Station to = findById(stations, targetId);
-        Path path = pathStrategy.findPath(stations, sections, from, to);
+        Path path = pathFindStrategy.findPath(stations, sections, from, to);
 
         return new PathResponse(
                 path.getDistance(),

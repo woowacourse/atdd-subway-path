@@ -5,7 +5,7 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
-public interface PathStrategy {
+public interface PathFindStrategy {
 
     Path findPath(List<Station> stations, List<Section> sections, Station from, Station to);
 }

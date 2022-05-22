@@ -12,8 +12,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.domain.path.implement.MinimumDistanceStrategy;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.implement.MinimumDistanceFindStrategy;
+import wooteco.subway.domain.path.PathFindStrategy;
 
 class MinimumDistanceStrategyTest {
 
@@ -56,7 +56,7 @@ class MinimumDistanceStrategyTest {
     @CsvSource(value = {"1, 2, 5", "1, 3, 10", "1, 4, 9", "2, 4, 4", "3, 5, 7"})
     void calculateMinimumDistance(Long fromId, Long toId, int distance) {
         // given
-        PathStrategy strategy = new MinimumDistanceStrategy();
+        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -73,7 +73,7 @@ class MinimumDistanceStrategyTest {
     @MethodSource("provideStationsInPath")
     void getStationsInPath(Long fromId, Long toId, List<Station> expectedStations) {
         // given
-        PathStrategy strategy = new MinimumDistanceStrategy();
+        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -99,7 +99,7 @@ class MinimumDistanceStrategyTest {
     @MethodSource("provideSectionsInPath")
     void getSectionsInPath(Long fromId, Long toId, List<Section> expectedSections) {
         // given
-        PathStrategy strategy = new MinimumDistanceStrategy();
+        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
         Station from = stationMap.get(fromId);
         Station to = stationMap.get(toId);
 
@@ -124,7 +124,7 @@ class MinimumDistanceStrategyTest {
     @Test
     void getPath_Fail() {
         // given
-        PathStrategy strategy = new MinimumDistanceStrategy();
+        PathFindStrategy strategy = new MinimumDistanceFindStrategy();
         Station from = stationMap.get(1L);
         Station to = stationMap.get(7L);
 
