@@ -6,8 +6,8 @@ import static wooteco.subway.Fixtures.BLUE;
 import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
 import static wooteco.subway.Fixtures.LEFT;
+import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
 import static wooteco.subway.Fixtures.RIGHT;
 import static wooteco.subway.Fixtures.UP;
@@ -60,8 +60,8 @@ public class PathServiceTest {
         right = stationRepository.findById(rightId);
         down = stationRepository.findById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_2, RED));
-        final Long line4Id = lineRepository.save(new Line(LINE_4, BLUE));
+        final Long line2Id = lineRepository.save(new Line(LINE_1, RED));
+        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));
@@ -77,7 +77,6 @@ public class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(down)),
-
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(11),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
 
@@ -92,10 +91,8 @@ public class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(left)),
-
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
-
         );
     }
 }

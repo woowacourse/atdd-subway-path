@@ -5,11 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.Fixtures.GANGNAM;
-import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.LINE_2;
+import static wooteco.subway.Fixtures.STATION_3;
+import static wooteco.subway.Fixtures.STATION_1;
+import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.STATION_2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
@@ -41,10 +41,10 @@ public class PathControllerIntegrationTest {
     @DisplayName("경로 조회를 요청한다.")
     void find() throws Exception {
         // given
-        final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
-        final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -55,11 +55,11 @@ public class PathControllerIntegrationTest {
         // then
         response.andExpect(status().isOk())
                 .andExpect(jsonPath("stations[0].id").value(stationId1))
-                .andExpect(jsonPath("stations[0].name").value(HYEHWA))
+                .andExpect(jsonPath("stations[0].name").value(STATION_1))
                 .andExpect(jsonPath("stations[1].id").value(stationId2))
-                .andExpect(jsonPath("stations[1].name").value(SINSA))
+                .andExpect(jsonPath("stations[1].name").value(STATION_2))
                 .andExpect(jsonPath("stations[2].id").value(stationId3))
-                .andExpect(jsonPath("stations[2].name").value(GANGNAM))
+                .andExpect(jsonPath("stations[2].name").value(STATION_3))
                 .andExpect(jsonPath("distance").value(20))
                 .andExpect(jsonPath("fare").value(1450));
     }
@@ -68,10 +68,10 @@ public class PathControllerIntegrationTest {
     @DisplayName("경로 조회를 실패한다.")
     void find_fail() throws Exception {
         // given
-        final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
-        final Long stationId3 = createStation(GANGNAM);
-        createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        createLine(LINE_1, RED, stationId1, stationId2, 10);
 
         // when
         final ResultActions response = mockMvc.perform(

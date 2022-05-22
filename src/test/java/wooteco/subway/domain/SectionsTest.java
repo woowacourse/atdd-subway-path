@@ -2,14 +2,14 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.Fixtures.GANGNAM;
-import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.JAMSIL;
+import static wooteco.subway.Fixtures.STATION_3;
+import static wooteco.subway.Fixtures.STATION_1;
+import static wooteco.subway.Fixtures.STATION_4;
 import static wooteco.subway.Fixtures.SECTION_1_2;
 import static wooteco.subway.Fixtures.SECTION_1_3;
 import static wooteco.subway.Fixtures.SECTION_2_3;
 import static wooteco.subway.Fixtures.SECTION_3_4;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.STATION_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +22,13 @@ public class SectionsTest {
     @Test
     @DisplayName("구간들에서 역들을 추출한다.")
     void toStationIds() {
-        final Sections sections = new Sections(new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 10),
-                new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 10));
+        final Sections sections = new Sections(new Section(new Station(1L, STATION_1), new Station(2L, STATION_2), 10),
+                new Section(new Station(2L, STATION_2), new Station(3L, STATION_3), 10));
 
         final List<Station> stations = sections.toSortedStations();
 
-        assertThat(stations).containsExactly(new Station(1L, HYEHWA), new Station(2L, SINSA), new Station(3L, GANGNAM));
+        assertThat(stations).containsExactly(new Station(1L, STATION_1), new Station(2L, STATION_2), new Station(3L,
+                STATION_3));
     }
 
     @Nested
@@ -67,7 +68,7 @@ public class SectionsTest {
             final Sections sections = new Sections(List.of(SECTION_1_3));
 
             // when
-            sections.add(new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 5));
+            sections.add(new Section(new Station(1L, STATION_1), new Station(2L, STATION_2), 5));
 
             // then
             assertThat(sections.getValues()).containsOnly(SECTION_1_2, SECTION_2_3);
@@ -80,7 +81,7 @@ public class SectionsTest {
             final Sections sections = new Sections(List.of(SECTION_1_3));
 
             // when
-            sections.add(new Section(new Station(2L, SINSA), new Station(3L, GANGNAM), 5));
+            sections.add(new Section(new Station(2L, STATION_2), new Station(3L, STATION_3), 5));
 
             // then
             assertThat(sections.getValues()).containsOnly(SECTION_1_2, SECTION_2_3);
@@ -103,7 +104,7 @@ public class SectionsTest {
         void exceptionAddDifferentLineIdSection() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_3));
-            sections.add(new Section(new Station(1L, HYEHWA), new Station(2L, SINSA), 5));
+            sections.add(new Section(new Station(1L, STATION_1), new Station(2L, STATION_2), 5));
 
             // when & then
             assertThatThrownBy(() -> sections.add(SECTION_2_3))
@@ -154,7 +155,7 @@ public class SectionsTest {
 
             // then
             assertThat(sections.getValues()).containsOnly(
-                    new Section(new Station(1L, HYEHWA), new Station(3L, GANGNAM), 20), SECTION_3_4);
+                    new Section(new Station(1L, STATION_1), new Station(3L, STATION_3), 20), SECTION_3_4);
             assertThat(sections.getValues().get(1).getDistance()).isEqualTo(20);
         }
 
@@ -169,7 +170,7 @@ public class SectionsTest {
 
             // then
             assertThat(sections.getValues()).containsOnly(
-                    new Section(new Station(2L, SINSA), new Station(4L, JAMSIL), 20), SECTION_1_2);
+                    new Section(new Station(2L, STATION_2), new Station(4L, STATION_4), 20), SECTION_1_2);
             assertThat(sections.getValues().get(1).getDistance()).isEqualTo(20);
         }
 
