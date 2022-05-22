@@ -113,7 +113,7 @@ public class LineService {
 
         Path path = subwayMap.calculatePath(sourceStation, targetStation);
 
-        List<Line> passingLines = mapLineIdToLine(path.getPassingLineIds());
+        List<Line> passingLines = mapLineIdsToLines(path.getPassingLineIds());
         int extraFare = calculateMostExpensiveExtraFare(passingLines);
 
         return PathResponse.from(path.getStations(), path.getDistance(),
@@ -127,7 +127,7 @@ public class LineService {
                 .orElse(0);
     }
 
-    private List<Line> mapLineIdToLine(final Set<Long> passingLineIds) {
+    private List<Line> mapLineIdsToLines(final Set<Long> passingLineIds) {
         List<Line> passingLines = new ArrayList<>();
         for (Long passingLineId : passingLineIds) {
             Line line = lineDao.findById(passingLineId).orElseThrow(() -> new NoSuchLineException(passingLineId));
