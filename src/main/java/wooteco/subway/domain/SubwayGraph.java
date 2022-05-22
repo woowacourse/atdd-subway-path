@@ -30,11 +30,11 @@ public class SubwayGraph implements ShortestPath {
     }
 
     @Override
-    public Path getPath(final Station source, final Station target, final Fare fare, final int age) {
+    public Path getPath(final Station source, final Station target, final int fare, final int age) {
         validateExistsPath(source, target);
         List<Station> stations = graph.getPath(source, target).getVertexList();
         int distance = (int) graph.getPathWeight(source, target);
-        double price = fare.calculateFare(distance, age);
+        double price = AgeFare.valueOf(age, DistanceFare.valueOf(fare, distance));
         return new Path(stations, distance, price);
     }
 

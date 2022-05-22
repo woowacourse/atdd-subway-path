@@ -27,7 +27,7 @@ public class Path implements Shortest {
     }
 
     @Override
-    public Path getShortestPath(final Station source, final Station target, final Fare fare, final int age) {
+    public Path getShortestPath(final Station source, final Station target, final int fare, final int age) {
         throw new UnsupportedOperationException();
     }
 

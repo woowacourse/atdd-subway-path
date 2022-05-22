@@ -34,7 +34,7 @@ public class PathService {
 
         Long lineId = pathAdapter.getExpensiveLineId(sourceStation, targetStation);
         Line line = lineDao.findById(lineId).orElseThrow(() -> new NoSuchLineException(lineId));
-        Path path = pathAdapter.getShortestPath(sourceStation, targetStation, new Fare(line.getExtraFare()), age);
+        Path path = pathAdapter.getShortestPath(sourceStation, targetStation, line.getExtraFare(), age);
 
         return PathResponse.from(path);
     }

@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-public class PathAdapter implements Shortest{
+public class PathAdapter implements Shortest {
     private final ShortestPath shortestPath;
 
     public PathAdapter(final ShortestPath shortestPath) {
@@ -8,7 +8,7 @@ public class PathAdapter implements Shortest{
     }
 
     @Override
-    public Path getShortestPath(final Station source, final Station target, final Fare fare, final int age) {
+    public Path getShortestPath(final Station source, final Station target, final int fare, final int age) {
         return shortestPath.getPath(source, target, fare, age);
     }
 
