@@ -1,9 +1,6 @@
 package wooteco.subway.dto.request;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.websocket.OnMessage;
 
 public class StationRequest {
 

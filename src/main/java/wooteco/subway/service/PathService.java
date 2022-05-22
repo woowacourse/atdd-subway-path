@@ -9,7 +9,6 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.discountpolicy.AgeDiscountFactory;
-import wooteco.subway.domain.discountpolicy.AgeDiscountPolicy;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
