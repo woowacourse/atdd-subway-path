@@ -111,7 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains("거리")
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NUMBER_POSITIVE_ERROR_MESSAGE)
         );
     }
 
@@ -192,7 +192,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
-                        LINE_NOT_BLANK_ERROR_MESSAGE)
+                        NAME_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -211,7 +211,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
-                        LINE_NOT_BLANK_ERROR_MESSAGE)
+                        NAME_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -230,7 +230,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
-                        LINE_NOT_BLANK_ERROR_MESSAGE)
+                        COLOR_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -249,7 +249,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
-                        LINE_NOT_BLANK_ERROR_MESSAGE)
+                        COLOR_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -269,7 +269,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
-                        NEGATIVE_EXTRA_FARE_ERROR_MESSAGE)
+                        EXTRA_FARE_POSITIVE_OR_ZERO_ERROR_MESSAGE)
         );
     }
 
@@ -415,8 +415,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         LineResponse originLine = createLine("노선", "색깔", id1, id2, 10, 100);
 
         // when
-        String changedName = "changedName";
-        String changedColor = "changedColor";
+        String changedName = "바뀐이름";
+        String changedColor = "바뀐색깔";
         int extraFare = 50;
 
         LineUpdateRequest updateRequest = new LineUpdateRequest(changedName, changedColor, extraFare);

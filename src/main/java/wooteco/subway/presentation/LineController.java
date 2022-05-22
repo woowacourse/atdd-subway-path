@@ -2,6 +2,7 @@ package wooteco.subway.presentation;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineSaveRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineSaveRequest lineRequest) {
         LineResponse response = lineService.createLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + response.getId())).body(response);
     }
@@ -44,7 +45,7 @@ public class LineController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineUpdateRequest updateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody @Valid LineUpdateRequest updateRequest) {
         lineService.updateLine(id, updateRequest);
         return ResponseEntity.ok().build();
     }
@@ -56,7 +57,7 @@ public class LineController {
     }
 
     @PostMapping("/{id}/sections")
-    public ResponseEntity<Void> addSection(@PathVariable Long id, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addSection(@PathVariable Long id, @RequestBody @Valid SectionRequest sectionRequest) {
         lineService.addSection(id, sectionRequest);
         return ResponseEntity.ok().build();
     }

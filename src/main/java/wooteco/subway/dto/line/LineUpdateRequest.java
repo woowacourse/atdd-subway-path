@@ -1,8 +1,20 @@
 package wooteco.subway.dto.line;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+
 public class LineUpdateRequest {
+
+    @NotBlank(message = "{name.notBlank}")
+    @Size(max = 10, message = "{name.tooLong}")
     private String name;
+
+    @NotBlank(message = "{color.notBlank}")
+    @Size(max = 255, message = "{string.tooLong}")
     private String color;
+
+    @PositiveOrZero(message = "{extraFare.positiveOrZero}")
     private int extraFare;
 
     public LineUpdateRequest() {
