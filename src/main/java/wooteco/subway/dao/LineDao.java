@@ -74,6 +74,12 @@ public class LineDao {
         return jdbcTemplate.query(sql, eventRowMapper);
     }
 
+    public List<Line> findByIds(List<Long> ids) {
+        String sql = "select * from LINE where id in (:ids)";
+        SqlParameterSource source = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, source, eventRowMapper);
+    }
+
     public void update(Long id, LineRequest lineRequest) {
         String sql = "update LINE set name=:name, color=:color where id=:id";
         MapSqlParameterSource source = new MapSqlParameterSource();

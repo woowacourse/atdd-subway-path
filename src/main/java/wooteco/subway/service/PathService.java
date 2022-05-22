@@ -53,7 +53,7 @@ public class PathService {
     }
 
     private int findMaxExtraFare(List<Long> lineIds) {
-        Map<Long, Integer> extraFareMap = lineDao.findAll()
+        Map<Long, Integer> extraFareMap = lineDao.findByIds(lineIds)
                 .stream()
                 .collect(Collectors.toMap(Line::getId, Line::getExtraFare));
 
