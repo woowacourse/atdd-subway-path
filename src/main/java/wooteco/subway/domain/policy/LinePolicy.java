@@ -7,7 +7,6 @@ import wooteco.subway.domain.element.Line;
 import wooteco.subway.domain.fare.FarePolicy;
 
 public class LinePolicy implements FarePolicy {
-
     private final List<Line> lines;
 
     public LinePolicy(List<Line> lines) {

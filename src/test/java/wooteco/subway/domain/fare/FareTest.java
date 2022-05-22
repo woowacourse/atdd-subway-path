@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.policy.AgePolicy;
+import wooteco.subway.domain.policy.PolicyFactory;
 
 class FareTest {
     private final Fare fare = new Fare();
@@ -38,9 +38,9 @@ class FareTest {
     @Test
     @DisplayName("연령별 요금을 계산한다.")
     void getFare_addAge() {
-        assertThat(new Fare(List.of(new AgePolicy(3))).getFare(9)).isEqualTo(0);
-        assertThat(new Fare(List.of(new AgePolicy(12))).getFare(9)).isEqualTo(450);
-        assertThat(new Fare(List.of(new AgePolicy(15))).getFare(9)).isEqualTo(720);
-        assertThat(new Fare(List.of(new AgePolicy(22))).getFare(9)).isEqualTo(1250);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(3))).getFare(9)).isEqualTo(0);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(12))).getFare(9)).isEqualTo(450);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(15))).getFare(9)).isEqualTo(720);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(22))).getFare(9)).isEqualTo(1250);
     }
 }

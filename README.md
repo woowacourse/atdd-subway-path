@@ -151,7 +151,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 어린이: 운임에서 350원을 공제한 금액의 50%할인
     - 어린이: 6세 이상~13세 미만
 - [x] 아기: 공짜
-  - 아기: 6세 미만
+    - 아기: 6세 미만
 
 ## TODO
 
@@ -159,8 +159,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 
 - [ ] service 단의 for/if문 -> dao 안에서 새 메소드(...all) 생성, batch... 사용해 한번에 처리
 - [ ] repository 중 메인 repository 설정 -> sectionEntity를 바로 section으로 변경
-- [ ] 요금 정책 인터페이스,이후 정책별로 클래스 분리
-    - [ ] miro로 미리 설계
+- [ ] 요금 정책 인터페이스, 이후 정책 별로 클래스 분리
+    - [x] miro로 미리 설계
 
 ### 질문사항
 
