@@ -9,6 +9,7 @@ public class Line {
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 3;
     private static final int MIN_EXTRA_FARE = 0;
+    private static final int DEFAULT_EXTRA_FARE = 0;
 
     private final Long id;
     private String name;
@@ -24,11 +25,11 @@ public class Line {
     }
 
     public Line(long id, String color, String green) {
-        this(id, color, green, 0);
+        this(id, color, green, DEFAULT_EXTRA_FARE);
     }
 
     public Line(String name, String color) {
-        this(null, name, color, 0);
+        this(null, name, color, DEFAULT_EXTRA_FARE);
     }
 
     public Line(String name, String color, int extraFare) {
