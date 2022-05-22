@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
