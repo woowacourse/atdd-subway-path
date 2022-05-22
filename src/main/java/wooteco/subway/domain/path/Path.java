@@ -1,6 +1,7 @@
 package wooteco.subway.domain.path;
 
 import wooteco.subway.domain.path.factory.PathFactory;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 import java.util.List;
@@ -8,11 +9,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class Path {
-    private final List<PathEdge> pathEdges;
+    private final List<Section> sections;
     private final List<Station> stations;
 
-    public Path(List<PathEdge> pathEdges, List<Station> stations) {
-        this.pathEdges = pathEdges;
+    public Path(List<Section> sections, List<Station> stations) {
+        this.sections = sections;
         this.stations = stations;
     }
 
@@ -25,14 +26,14 @@ public class Path {
     }
 
     public int calculateDistance() {
-        return (int) pathEdges.stream()
-                .mapToDouble(PathEdge::getWeight)
+        return sections.stream()
+                .mapToInt(Section::getDistance)
                 .sum();
     }
 
     public int getPathExtraFare(Map<Long, Integer> lineExtraFares) {
-        return pathEdges.stream()
-                .map(PathEdge::getLineId)
+        return sections.stream()
+                .map(Section::getLineId)
                 .mapToInt(lineExtraFares::get)
                 .max()
                 .orElseThrow(() -> new NoSuchElementException("경로가 존재하지 않습니다."));
