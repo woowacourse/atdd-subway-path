@@ -2,6 +2,7 @@ package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.common.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.common.TestFixtures.동묘앞역;
 import static wooteco.subway.common.TestFixtures.보문역;
@@ -67,7 +68,10 @@ public class ShortestPathCalculatorTest {
 
         List<ShortestPathEdge> edges = shortestPathCalculator.findPassedEdges(sections, new Path(신당역, 보문역));
 
-        assertThat(edges).hasSize(3);
+        assertAll(
+                () -> assertThat(edges).extracting("lineId").containsExactly(1L, 1L, 2L),
+                () -> assertThat(edges).hasSize(3)
+        );
     }
 
     private Sections createSections() {
