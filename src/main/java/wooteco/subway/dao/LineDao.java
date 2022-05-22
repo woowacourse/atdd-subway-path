@@ -16,8 +16,8 @@ import wooteco.subway.domain.Line;
 @Repository
 public class LineDao {
 
-    public static final String TABLE_NAME = "LINE";
-    public static final String KEY_NAME = "id";
+    private static final String TABLE_NAME = "LINE";
+    private static final String KEY_NAME = "id";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
@@ -71,8 +71,14 @@ public class LineDao {
 
     public void update(Long id, Line updateLine) {
         String sql = "update LINE set name = :name, color = :color where id = :id";
-        jdbcTemplate.update(sql,
-                Map.of("id", id, "name", updateLine.getName(), "color", updateLine.getColor()));
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("name", updateLine.getName())
+                .addValue("color", updateLine.getColor())
+                .addValue("extra_fare", updateLine.getExtraFare());
+
+        jdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public void deleteById(Long id) {
