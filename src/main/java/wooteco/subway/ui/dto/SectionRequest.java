@@ -1,11 +1,18 @@
 package wooteco.subway.ui.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import wooteco.subway.service.dto.SectionServiceRequest;
 
 public class SectionRequest {
 
+    @NotNull(message = "상행종점 id기 필요합니다.")
     private Long upStationId;
+
+    @NotNull(message = "하행종점 id기 필요합니다.")
     private Long downStationId;
+
+    @Positive(message = "거리는 1 이상이어야 합니다.")
     private int distance;
 
     private SectionRequest() {
