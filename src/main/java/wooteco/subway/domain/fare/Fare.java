@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 public class Fare {
     static final int BASE_FEE = 1250;
