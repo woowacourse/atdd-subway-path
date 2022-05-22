@@ -1,8 +1,6 @@
 package wooteco.subway.acceptance.util;
 
-import static io.restassured.RestAssured.get;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -18,12 +16,6 @@ public class RestAssuredUtils {
     public static void checkProperResponseStatus(ExtractableResponse<Response> response,
             HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
-    }
-
-    public static void checkProperErrorMessage(String url, String message) {
-        get(url).then()
-                .assertThat()
-                .body("message", equalTo(message));
     }
 
     public static void checkSameResponseIds(ExtractableResponse<Response> response,

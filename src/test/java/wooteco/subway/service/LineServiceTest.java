@@ -18,6 +18,8 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundStationException;
 import wooteco.subway.service.fakeDao.LineDaoImpl;
 import wooteco.subway.service.fakeDao.SectionDaoImpl;
 import wooteco.subway.service.fakeDao.StationDaoImpl;
@@ -49,7 +51,7 @@ public class LineServiceTest {
         lineService.saveLine(lineRequest1);
 
         assertThatThrownBy(() -> lineService.saveLine(lineRequest2))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DuplicateLineException.class)
                 .hasMessage("같은 이름의 노선이 존재합니다.");
     }
 
@@ -150,7 +152,7 @@ public class LineServiceTest {
 
         // when and then
         assertThatThrownBy(() -> lineService.saveSection(lineResponse.getId(), sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundStationException.class);
     }
 
     @Test

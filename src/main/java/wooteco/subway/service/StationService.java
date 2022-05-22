@@ -8,6 +8,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Transactional
 @Service
@@ -38,20 +39,20 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationResponse findStation(Long id) {
-        checkExistStation(id);
+        checkNotFoundStation(id);
         final Station station = stationDao.findById(id);
         return new StationResponse(station.getId(), station.getName());
     }
 
     public void deleteStation(Long id) {
-        checkExistStation(id);
+        checkNotFoundStation(id);
         stationDao.deleteById(id);
     }
 
-    private void checkExistStation(Long id) {
+    private void checkNotFoundStation(Long id) {
         final Station station = stationDao.findById(id);
         if (station == null) {
-            throw new IllegalArgumentException("해당하는 역이 존재하지 않습니다.");
+            throw new NotFoundStationException("해당하는 역이 존재하지 않습니다.");
         }
     }
 }

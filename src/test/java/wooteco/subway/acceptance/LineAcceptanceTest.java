@@ -2,7 +2,6 @@ package wooteco.subway.acceptance;
 
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.equalTo;
-import static wooteco.subway.acceptance.util.RestAssuredUtils.checkProperErrorMessage;
 import static wooteco.subway.acceptance.util.RestAssuredUtils.checkProperResponseStatus;
 import static wooteco.subway.acceptance.util.RestAssuredUtils.checkSameResponseIds;
 import static wooteco.subway.acceptance.util.RestAssuredUtils.createData;
@@ -62,7 +61,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = createData("/lines", line);
 
         // then
-        checkProperResponseStatus(createResponse, HttpStatus.BAD_REQUEST);
+        checkProperResponseStatus(createResponse, HttpStatus.NOT_FOUND);
     }
 
     @DisplayName("지하철노선 목록을 조회한다.")
@@ -154,7 +153,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         checkProperResponseStatus(deleteResponse, HttpStatus.NO_CONTENT);
-        checkProperErrorMessage("/lines/" + getLocationId(createResponse), "해당하는 노선이 존재하지 않습니다.");
     }
 
     private void checkProperData(String url, Line line, Station upStation, Station downStation) {

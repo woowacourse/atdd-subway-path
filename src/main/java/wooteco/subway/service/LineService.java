@@ -15,6 +15,9 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundLineException;
+import wooteco.subway.exception.NotFoundStationException;
 
 @Transactional
 @Service
@@ -35,8 +38,8 @@ public class LineService {
         final Station upStation = stationDao.findById(lineRequest.getUpStationId());
         final Station downStation = stationDao.findById(lineRequest.getDownStationId());
 
-        checkExistStation(upStation);
-        checkExistStation(downStation);
+        checkNotFoundStation(upStation);
+        checkNotFoundStation(downStation);
         checkDuplicateLine(lineRequest);
 
         final Line savedLine = lineDao.save(line);
@@ -62,7 +65,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLine(Long id) {
-        checkExistLine(id);
+        checkNotFoundLine(id);
         final Line line = lineDao.findById(id);
         final Sections sections = getSections(line);
 
@@ -70,17 +73,17 @@ public class LineService {
     }
 
     public void updateLine(Long id, String name, String color) {
-        checkExistLine(id);
+        checkNotFoundLine(id);
         lineDao.updateById(id, name, color);
     }
 
     public void deleteLine(Long id) {
-        checkExistLine(id);
+        checkNotFoundLine(id);
         lineDao.deleteById(id);
     }
 
     public void saveSection(Long lineId, SectionRequest sectionRequest) {
-        checkExistLine(lineId);
+        checkNotFoundLine(lineId);
 
         final Line line = lineDao.findById(lineId);
         final Sections sections = getSections(line);
@@ -101,7 +104,7 @@ public class LineService {
     }
 
     public void deleteSection(Long lineId, Long stationId) {
-        checkExistLine(lineId);
+        checkNotFoundLine(lineId);
 
         final Line line = lineDao.findById(lineId);
         final Station station = stationDao.findById(stationId);
@@ -135,22 +138,22 @@ public class LineService {
         }
     }
 
-    private void checkExistLine(Long id) {
+    private void checkNotFoundLine(Long id) {
         final Line line = lineDao.findById(id);
         if (line == null) {
-            throw new IllegalArgumentException("해당하는 노선이 존재하지 않습니다.");
+            throw new NotFoundLineException("해당하는 노선이 존재하지 않습니다.");
         }
     }
 
-    private void checkExistStation(Station station) {
+    private void checkNotFoundStation(Station station) {
         if (station == null) {
-            throw new IllegalArgumentException("해당하는 역이 존재하지 않습니다.");
+            throw new NotFoundStationException("해당하는 역이 존재하지 않습니다.");
         }
     }
 
     private void checkDuplicateLine(LineRequest lineRequest) {
         if (lineDao.hasLine(lineRequest.getName())) {
-            throw new IllegalArgumentException("같은 이름의 노선이 존재합니다.");
+            throw new DuplicateLineException("같은 이름의 노선이 존재합니다.");
         }
     }
 
@@ -161,14 +164,14 @@ public class LineService {
 
     private void checkNotContainStation(Sections sections, Station station) {
         if (!sections.hasStation(station)) {
-            throw new IllegalArgumentException("역이 노선에 등록되어 있지 않다면 삭제할 수 없습니다.");
+            throw new NotFoundStationException("역이 노선에 등록되어 있지 않다면 삭제할 수 없습니다.");
         }
     }
 
     private void checkSectionHasNotAnyStation(Sections sections, Station upStation,
             Station downStation) {
         if (!sections.hasStation(upStation) && !sections.hasStation(downStation)) {
-            throw new IllegalArgumentException("등록하려는 구간 중 하나 이상의 역은 무조건 노선에 등록되어 있어야 합니다.");
+            throw new NotFoundStationException("등록하려는 구간 중 하나 이상의 역은 무조건 노선에 등록되어 있어야 합니다.");
         }
     }
 
