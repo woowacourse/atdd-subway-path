@@ -71,8 +71,4 @@ public class FakeStationDao implements StationDao {
         return 0;
     }
 
-    @Override
-    public void deleteByExistName(String name) {
-        stations.removeIf(station -> station.getName().equals(name));
-    }
 }

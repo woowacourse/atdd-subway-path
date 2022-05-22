@@ -21,7 +21,7 @@ public class StationService {
     public StationResponse createStation(final StationRequest stationRequest) {
         validateDuplicateName(stationRequest.getName());
         Station station = new Station(stationRequest.getName());
-        Station newStation = save(station);
+        Station newStation = stationDao.save(station);
         return StationResponse.from(newStation);
     }
 
@@ -29,11 +29,6 @@ public class StationService {
         if (stationDao.existByName(name)) {
             throw new StationDuplicateException("이미 등록된 지하철역 이름입니다.");
         }
-    }
-
-    private Station save(final Station station) {
-        stationDao.deleteByExistName(station.getName());
-        return stationDao.save(station);
     }
 
     public List<StationResponse> findAll() {

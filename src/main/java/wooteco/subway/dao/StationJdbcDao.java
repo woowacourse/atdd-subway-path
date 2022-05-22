@@ -67,9 +67,4 @@ public class StationJdbcDao implements StationDao {
         return jdbcTemplate.update(sql, true, id);
     }
 
-    @Override
-    public void deleteByExistName(final String name) {
-        final String sql = "DELETE FROM station WHERE name = (?)";
-        jdbcTemplate.update(sql, name);
-    }
 }

@@ -77,9 +77,4 @@ public class FakeLineDao implements LineDao {
         }
         return 0;
     }
-
-    @Override
-    public void deleteByExistName(String name) {
-        lines.removeIf(line -> line.getName().equals(name));
-    }
 }

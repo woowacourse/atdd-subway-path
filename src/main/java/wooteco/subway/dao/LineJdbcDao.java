@@ -77,9 +77,4 @@ public class LineJdbcDao implements LineDao {
         return jdbcTemplate.update(sql, true, id);
     }
 
-    @Override
-    public void deleteByExistName(final String name) {
-        final String sql = "DELETE FROM line WHERE  name = (?)";
-        jdbcTemplate.update(sql, name);
-    }
 }

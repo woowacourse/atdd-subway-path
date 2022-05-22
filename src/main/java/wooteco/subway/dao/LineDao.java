@@ -17,5 +17,4 @@ public interface LineDao {
 
     int delete(Long id);
 
-    void deleteByExistName(String name);
 }

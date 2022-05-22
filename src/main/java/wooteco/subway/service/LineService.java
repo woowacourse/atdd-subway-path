@@ -33,7 +33,7 @@ public class LineService {
     public LineResponse save(final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        final Line newLine = save(line);
+        final Line newLine = lineDao.save(line);
         saveSection(newLine.getId(), lineRequest);
         return LineResponse.of(newLine, getStationsFromSection(newLine.getId()));
     }
@@ -46,11 +46,6 @@ public class LineService {
 
     private boolean hasDuplicateLine(final LineRequest lineRequest) {
         return lineDao.existByName(lineRequest.getName());
-    }
-
-    private Line save(final Line line) {
-        lineDao.deleteByExistName(line.getName());
-        return lineDao.save(line);
     }
 
     private void saveSection(final Long lineId, final LineRequest lineRequest) {
