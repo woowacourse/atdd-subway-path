@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.PositiveDigitException;
+
 public class Line {
 
     private final Long id;
@@ -12,11 +14,19 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, int extraFare) {
+        validatePositiveExtraFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
+
+    private void validatePositiveExtraFare(final int extraFare) {
+        if (extraFare <= 0) {
+            throw new PositiveDigitException("추가 요금이 양수가 아닙니다.");
+        }
+    }
+
 
     public Long getId() {
         return id;

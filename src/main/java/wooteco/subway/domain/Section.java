@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import wooteco.subway.exception.AddSectionException;
+import wooteco.subway.exception.PositiveDigitException;
 
 public class Section {
 
@@ -15,11 +16,18 @@ public class Section {
     }
 
     public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
+        validatePositiveDistance(distance);
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    private void validatePositiveDistance(int distance) {
+        if (distance <= 0) {
+            throw new PositiveDigitException("구간의 길이가 양수가 아닙니다.");
+        }
     }
 
     public Long getId() {
