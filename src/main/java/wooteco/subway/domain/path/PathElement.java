@@ -6,7 +6,7 @@ public class PathElement implements Comparable<PathElement> {
     private final Station station;
     private final int distance;
 
-    public PathElement(Station station, int distance) {
+    PathElement(Station station, int distance) {
         this.station = station;
         this.distance = distance;
     }
