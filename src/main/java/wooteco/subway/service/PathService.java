@@ -13,35 +13,38 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.service.path.PathFindable;
 
 @Transactional(readOnly = true)
 @Service
 public class PathService {
 
     private static final int DEFAULT_EXTRA_FARE = 0;
+
     private final SectionDao sectionDao;
     private final StationService stationService;
+    private final PathFindable pathFindable;
 
-    public PathService(SectionDao sectionDao, StationService stationService) {
+    public PathService(SectionDao sectionDao, StationService stationService, PathFindable pathFindable) {
         this.sectionDao = sectionDao;
         this.stationService = stationService;
+        this.pathFindable = pathFindable;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId, int age) {
         Station source = stationService.findById(sourceId).toStation();
         Station target = stationService.findById(targetId).toStation();
 
-        Path shortestPath = new Path(sectionDao.findAll());
-        List<StationResponse> stationResponses = convertToStationResponse(source, target, shortestPath);
-
-        int shortestDistance = shortestPath.getDistance(source, target);
-        Fare fare = new Fare(shortestDistance, age, getMaxExtraFare(source, target, shortestPath));
+        Path shortestPath = pathFindable.findPath(sectionDao.findAll(), source, target);
+        List<StationResponse> stationResponses = convertToStationResponse(shortestPath);
+        int shortestDistance = shortestPath.getDistance();
+        Fare fare = new Fare(shortestDistance, age, getMaxExtraFare(shortestPath));
 
         return new PathResponse(stationResponses, shortestDistance, fare.calculateFare());
     }
 
-    private int getMaxExtraFare(Station source, Station target, Path shortestPath) {
-        List<Section> sections = shortestPath.getSections(source, target);
+    private int getMaxExtraFare(Path shortestPath) {
+        List<Section> sections = shortestPath.getSections();
         return sections.stream()
                 .map(Section::getLine)
                 .mapToInt(Line::getExtraFare)
@@ -49,8 +52,8 @@ public class PathService {
                 .orElse(DEFAULT_EXTRA_FARE);
     }
 
-    private List<StationResponse> convertToStationResponse(Station source, Station target, Path shortestPath) {
-        return shortestPath.getStations(source, target)
+    private List<StationResponse> convertToStationResponse(Path shortestPath) {
+        return shortestPath.getStations()
                 .stream()
                 .map(StationResponse::new)
                 .collect(toList());
