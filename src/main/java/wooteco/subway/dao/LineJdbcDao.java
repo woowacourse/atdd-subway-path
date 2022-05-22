@@ -24,7 +24,7 @@ public class LineJdbcDao implements LineDao {
             resultSet.getString("name"),
             resultSet.getString("color"),
             resultSet.getInt("extraFare")
-            );
+    );
 
     private final JdbcTemplate jdbcTemplate;
 

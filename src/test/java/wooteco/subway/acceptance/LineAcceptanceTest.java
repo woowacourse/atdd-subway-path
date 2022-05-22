@@ -103,7 +103,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", upStationId,
-                downStationId, 10, 0);
+                downStationId, 0, 0);
 
         // then
         assertAll(
