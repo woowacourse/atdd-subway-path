@@ -6,13 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.domain.fixture.StationFixture;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.PathResponse;
-import wooteco.subway.dto.response.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

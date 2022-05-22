@@ -18,12 +18,14 @@ public class FareCalculator {
     private static final int DISCOUNT_RATIO_OF_CHILDREN = 50;
     private static final int DISCOUNT_DEDUCTION = 350;
 
-    public static int calculate(Distance distance, Age age) {
+    public static int calculate(Distance distance, Age age, int extraFare) {
         int amount = BASIC_FARE;
 
         amount += calculateBasicExtra(distance);
         amount += calculateHighExtra(distance);
         amount -= calculateDiscount(amount, age);
+
+        amount += extraFare;
 
         return amount;
     }

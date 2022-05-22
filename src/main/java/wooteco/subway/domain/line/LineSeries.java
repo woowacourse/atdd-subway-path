@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import wooteco.subway.exception.IdMissingException;
 import wooteco.subway.exception.RowDuplicatedException;
@@ -47,14 +48,22 @@ public class LineSeries {
         lines.set(lines.indexOf(foundLine), foundLine.update(updateLine));
     }
 
+    public int findMaxExtraFare(Set<Long> lineIds) {
+        return lines.stream()
+                .filter(line -> line.isIncluded(lineIds))
+                .mapToInt(line -> line.getExtraFare())
+                .max()
+                .orElse(0);
+    }
+
+    public List<Line> getLines() {
+        return lines;
+    }
+
     private Line findLine(Line updateLine) {
         return lines.stream()
                 .filter(line -> line.getId().equals(updateLine.getId()))
                 .findAny()
                 .orElseThrow(() -> new RowNotFoundException("해당하는 노선을 찾을 수 없습니다."));
-    }
-
-    public List<Line> getLines() {
-        return lines;
     }
 }

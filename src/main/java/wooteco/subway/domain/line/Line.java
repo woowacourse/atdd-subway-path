@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import wooteco.subway.domain.property.Color;
 import wooteco.subway.domain.property.Name;
@@ -50,6 +51,10 @@ public class Line {
         return this.name.equals(otherLine.name);
     }
 
+    public boolean isIncluded(Set<Long> lineIds) {
+        return lineIds.contains(id);
+    }
+
     public Long getId() {
         return id;
     }
@@ -79,5 +84,4 @@ public class Line {
                 ", sectionSeries=" + sectionSeries +
                 '}';
     }
-
 }
