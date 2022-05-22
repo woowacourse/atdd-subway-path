@@ -25,19 +25,19 @@ public class Fare {
             return MINIMUM_FARE_PRICE;
         }
 
-        return MINIMUM_FARE_PRICE + calculateFarePrice(distance);
+        return MINIMUM_FARE_PRICE + calculateOverFare(distance);
     }
 
-    private static int calculateFarePrice(final double distance) {
+    private static int calculateOverFare(final double distance) {
         if (distance <= MAXIMUM_DISTANCE_BOUNDARY) {
-            return calculateFareFeeByPolicy(distance - MINIMUM_DISTANCE_BOUNDARY, BELOW_FIFTY_KM_POLICY);
+            return calculateByPolicy(distance - MINIMUM_DISTANCE_BOUNDARY, BELOW_FIFTY_KM_POLICY);
         }
 
         return MAXIMUM_ADDITIONAL_FAIR_PRICE_BELOW_FIFTY_KM_POLICY +
-                calculateFareFeeByPolicy(distance - MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
+                calculateByPolicy(distance - MAXIMUM_DISTANCE_BOUNDARY, ABOVE_FIFTY_KM_POLICY);
     }
 
-    private static int calculateFareFeeByPolicy(final double overFaredDistance, final int policy) {
+    private static int calculateByPolicy(final double overFaredDistance, final int policy) {
         return (int) ((Math.ceil((overFaredDistance) / policy)) * OVER_FARE_PRICE);
     }
 
