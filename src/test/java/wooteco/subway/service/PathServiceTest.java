@@ -47,7 +47,7 @@ class PathServiceTest extends ServiceTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
         lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
 
-        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 20);
 
         PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
 
@@ -55,6 +55,174 @@ class PathServiceTest extends ServiceTest {
                 () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
                 () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
                 () -> assertThat(pathServiceResponse.getFare()).isEqualTo(1250)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 운임비용을 반환한다.")
+    @Test
+    void findShortestPathWithExtraFare() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 900));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 20);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(2150)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 어린이 운임비용을 반환한다.")
+    @Test
+    void findChildrenPolicyShortestPath() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(450)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 어린이 운임비용을 반환한다.")
+    @Test
+    void findChildrenPolicyShortestPathWithExtraFare() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 900));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(900)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 청소년 운임비용을 반환한다.")
+    @Test
+    void findTeenagerPolicyShortestPath() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 15);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(720)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 청소년 운임비용을 반환한다.")
+    @Test
+    void findTeenagerPolicyShortestPathWithExtraFare() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 900));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 15);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(1440)
+        );
+    }
+
+    @DisplayName("최단 경로의 경유역들과 거리, 우대 운임비용을 반환한다.")
+    @Test
+    void findPreferentialPolicyShortestPath() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 0));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 65);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(0)
+        );
+    }
+
+    @DisplayName("추가 요금이 존재하는 최단 경로의 경유역들과 거리, 우대 운임비용을 반환한다.")
+    @Test
+    void findPreferentialPolicyShortestPathWithExtraFare() {
+        Station station1 = stationDao.save(new Station("강남역"));
+        Station station2 = stationDao.save(new Station("선릉역"));
+        Station station3 = stationDao.save(new Station("수서역"));
+        Station station4 = stationDao.save(new Station("가락시장역"));
+
+        LineServiceResponse line = lineService.save(
+                new LineServiceRequest("2호선", "green", station1.getId(), station2.getId(), 2, 0));
+        sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
+        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4, 900));
+
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 5);
+
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
+
+        assertAll(
+                () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
+                () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(0)
         );
     }
 
