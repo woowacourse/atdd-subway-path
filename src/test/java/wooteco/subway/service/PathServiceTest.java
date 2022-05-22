@@ -61,7 +61,7 @@ class PathServiceTest {
         SectionRequest sectionRequest2 = new SectionRequest(양재.getId(), 판교.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest2);
 
-        PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 15));
+        PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 20));
 
         assertThat(actual.getStations())
                 .extracting("name")

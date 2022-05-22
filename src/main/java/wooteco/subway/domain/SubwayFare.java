@@ -20,10 +20,11 @@ public class SubwayFare {
         this.path = path;
     }
 
-    public int calculate() {
+    public int calculate(int age) {
+        AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.find(age);
         int basicFare = calculateOverFare((int) path.getWeight());
         int extraFare = getExtraFare(path.getEdgeList());
-        return basicFare + extraFare;
+        return discountPolicy.calculate(basicFare + extraFare);
     }
 
     private int getExtraFare(List<LineWeightedEdge> edges) {

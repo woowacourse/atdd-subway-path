@@ -28,12 +28,13 @@ public class PathService {
         List<Section> sections = sectionRepository.findAll();
         Station source = stationRepository.findById(pathsRequest.getSource());
         Station target = stationRepository.findById(pathsRequest.getTarget());
+        int age = pathsRequest.getAge();
 
         SubwayGraph subwayGraph = new SubwayGraph(sections);
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
         SubwayFare fare = subwayGraph.getFare(source, target);
-        return new PathResponse(toStationResponse(route), distance, fare.calculate());
+        return new PathResponse(toStationResponse(route), distance, fare.calculate(age));
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {

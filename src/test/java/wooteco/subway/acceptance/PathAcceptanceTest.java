@@ -91,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("source", 출발역);
         params.put("target", 도착역);
-        params.put("age", 15);
+        params.put("age", 20);
         return params;
     }
 
