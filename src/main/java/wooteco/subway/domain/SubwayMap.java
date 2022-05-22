@@ -1,9 +1,10 @@
 package wooteco.subway.domain;
 
 import org.jgrapht.GraphPath;
+import wooteco.subway.exception.EmptyResultException;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 
@@ -37,7 +38,6 @@ public class SubwayMap {
     private static void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
         for (Section section : sections) {
             graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
-            graph.addEdge(section.getDownStation(), section.getUpStation(), new CustomEdge(lineId, section.getDistance()));
         }
     }
 
