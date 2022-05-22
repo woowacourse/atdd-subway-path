@@ -64,7 +64,7 @@ class SubwayGraphTest {
     @Test
     @DisplayName("출발지부터 도착지까지 연결된 경로가 없을 경우 반환값이 존재하지 않는다")
     void ifRouteDoesNotExistResultShouldBeNull() {
-        final SubwayGraph subwayGraph = new SubwayGraph(List.of(교대_강남, 역삼_선릉));
+        SubwayGraph subwayGraph = new SubwayGraph(List.of(교대_강남, 역삼_선릉));
         assertThatThrownBy(() -> subwayGraph.calculateShortestRoute(교대역, 선릉역))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("출발지부터 도착지까지 구간이 연결되어 있지 않습니다.");

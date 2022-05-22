@@ -25,17 +25,17 @@ public class RouteService {
     }
 
     public RouteResponse findRoute(Long sourceStationId, Long targetStationId, int age) {
-        final List<Section> sections = sectionRepository.findSections();
+        List<Section> sections = sectionRepository.findSections();
         SubwayGraph subwayGraph = new SubwayGraph(sections);
 
         Route shortestRoute = findShortestRoute(subwayGraph, sourceStationId, targetStationId);
-        final Long fare = cashier.calculateFare(shortestRoute.getDistance());
+        Long fare = cashier.calculateFare(shortestRoute.getDistance());
         return DtoAssembler.routeResponse(shortestRoute, fare);
     }
 
     private Route findShortestRoute(SubwayGraph subwayGraph, Long sourceStationId, Long targetStationId) {
-        final Station sourceStation = sectionRepository.findStationById(sourceStationId);
-        final Station targetStation = sectionRepository.findStationById(targetStationId);
+        Station sourceStation = sectionRepository.findStationById(sourceStationId);
+        Station targetStation = sectionRepository.findStationById(targetStationId);
         return subwayGraph.calculateShortestRoute(sourceStation, targetStation);
     }
 }
