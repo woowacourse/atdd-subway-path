@@ -21,7 +21,6 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> showPath(@ModelAttribute PathRequest pathRequest) {
-        System.out.println(pathRequest);
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
