@@ -15,7 +15,7 @@ import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+public class AcceptanceTest extends DBTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

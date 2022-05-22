@@ -1,9 +1,23 @@
 package wooteco.subway.domain;
 
 public class Line {
-    private final Long id;
+    private Long id;
     private final String name;
     private final String color;
+    private Integer extraFare;
+
+    public Line(String name, String color, Integer extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(final Long id, final String name, final String color, final Integer extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
 
     public Line(Long id, String name, String color) {
         this.id = id;
@@ -25,5 +39,9 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 }

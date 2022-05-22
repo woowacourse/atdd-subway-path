@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import wooteco.subway.acceptance.DBTest;
 import wooteco.subway.domain.Station;
 
 @JdbcTest
-class StationDaoTest {
+class StationDaoTest extends DBTest {
 
     private final StationDao stationDao;
 

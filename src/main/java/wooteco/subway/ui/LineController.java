@@ -52,7 +52,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
-        lineService.update(id, lineRequest.getName(), lineRequest.getColor());
+        lineService.update(id, lineRequest.toServiceRequest());
         return ResponseEntity.ok().build();
     }
 

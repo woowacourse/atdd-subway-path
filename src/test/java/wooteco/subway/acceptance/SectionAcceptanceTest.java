@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,22 +19,24 @@ import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
-public class SectionAcceptanceTest extends AcceptanceTest {
+class SectionAcceptanceTest extends AcceptanceTest {
+
+    private StationResponse station1;
+    private StationResponse station2;
+    private StationResponse station3;
+
+    @BeforeEach
+    void createStation() {
+        station1 = createStation(new StationRequest("강남역")).as(StationResponse.class);
+        station2 = createStation(new StationRequest("역삼역")).as(StationResponse.class);
+        station3 = createStation(new StationRequest("잠실역")).as(StationResponse.class);
+    }
 
     @DisplayName("상행 종점이 같은 구간을 추가한다.")
     @Test
     void createUpperMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 5);
@@ -47,16 +50,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLowerMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 5);
@@ -70,16 +64,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createUpperSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station2.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station2.getId(), station3.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
@@ -93,16 +78,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLowerSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
@@ -116,16 +92,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLongerMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
@@ -144,23 +111,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createNotMatchingSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-        StationRequest stationRequest4 = new StationRequest("성수역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-        Station station4 = createStation(stationRequest4).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Station station4 = createStation(new StationRequest("성수역")).as(Station.class);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station4.getId(), 10);
         ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
-
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -175,14 +131,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createAllMatchingSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
@@ -201,14 +150,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createSectionWhereUpStationsIsSameAsDownStation() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station1.getId(), station1.getId(), 10);
@@ -227,16 +169,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createSectionWithInvalidDistance() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("교대역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 0);
@@ -255,17 +188,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteUpperSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
         createSection(lineId, sectionRequest);
 
@@ -289,17 +212,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
         createSection(lineId, sectionRequest);
 
@@ -324,16 +237,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLowerSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
         createSection(lineId, sectionRequest);
@@ -358,14 +262,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMinimumSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
         ExtractableResponse<Response> response = deleteSection(station2, lineId);
@@ -383,19 +280,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteNotExistingSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-        StationRequest stationRequest4 = new StationRequest("성수역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-        Station station4 = createStation(stationRequest4).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
+        StationResponse station4 = createStation(new StationRequest("성수역")).as(StationResponse.class);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
         createSection(lineId, sectionRequest);
 
@@ -406,17 +292,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    private ExtractableResponse<Response> deleteSection(Station station1, long lineId) {
+    private ExtractableResponse<Response> deleteSection(StationResponse stationResponse, long lineId) {
         return RestAssured.given().log().all()
-                .queryParam("stationId", station1.getId())
+                .queryParam("stationId", stationResponse.getId())
                 .when()
                 .delete("/lines/" + lineId + "/sections")
                 .then().log().all()
                 .extract();
     }
 
-    private void assertSectionConnection(Station station1, Station station2, Station station3, long lineId,
-                                         ExtractableResponse<Response> response) {
+    private void assertSectionConnection(StationResponse station1, StationResponse station2, StationResponse station3,
+                                         long lineId, ExtractableResponse<Response> response) {
         LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
         StationResponse stationResponse1 = stationResponses.get(0);
@@ -434,5 +320,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stationResponse3.getId()).isEqualTo(station3.getId()),
                 () -> assertThat(stationResponse3.getName()).isEqualTo(station3.getName())
         );
+    }
+
+    private Long getCreatedLineId(Long upStationId, Long downStationId) {
+        LineRequest lineRequest = new LineRequest(
+                "2호선", "green", upStationId, downStationId, 10, 200);
+        return Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
     }
 }
