@@ -5,14 +5,14 @@ import java.util.regex.Pattern;
 
 public class Line {
 
-    private static final Pattern pattern = Pattern.compile("^[ㄱ-ㅎ|가-힣|0-9]+");
+    private static final Pattern pattern = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]+");
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 3;
 
     private final Long id;
     private String name;
     private String color;
-    private final int extraFare;
+    private int extraFare;
 
     public Line(Long id, String name, String color, int extraFare) {
         validate(name, color);
@@ -26,10 +26,11 @@ public class Line {
         this(null, name, color, extraFare);
     }
 
-    public void update(String name, String color) {
+    public void update(String name, String color, int extraFare) {
         validate(name, color);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     private void validate(String name, String color) {
@@ -99,6 +100,7 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 '}';
     }
 }

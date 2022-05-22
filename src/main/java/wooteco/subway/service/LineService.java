@@ -58,12 +58,13 @@ public class LineService {
 
     private void validateDuplicateNameAndColor(String name, String color) {
         if (lineRepository.existByNameAndColor(name, color)) {
-            throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
+            throw new BadRequestException("노선의 이름과 색상은 중복될 수 없습니다.");
         }
     }
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
+                toResponse(stations));
     }
 
     public LineResponse showById(Long lineId) {
@@ -90,7 +91,7 @@ public class LineService {
     public void updateById(LineUpdateRequest request) {
         validateDuplicateNameAndColor(request.getName(), request.getColor());
         Line line = findLine(request.getId());
-        line.update(request.getName(), request.getColor());
+        line.update(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.save(line);
     }
 

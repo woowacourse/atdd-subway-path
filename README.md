@@ -127,6 +127,15 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 
 ## 2단계 : 추가된 요금 정책
 
+### DB 테이블 변경
+
+- [x] LINE 테이블에 추가 요금 컬럼 추가
+- [x] LineRequest에 추가 요금 필드 추가
+- [x] LineUpdateRequest에 추가 요금 필드 추가
+- [x] LineResponse에 추가 요금 필드 추가
+- [x] Line에 추가 요금 필드 추가
+- [x] LineEntity에 추가 요금 필드 추가
+
 ### 노선별 추가요금
 
 - [ ] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가

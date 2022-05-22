@@ -18,7 +18,8 @@ public class LineDao {
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extraFare")
             );
 
     private final JdbcTemplate jdbcTemplate;
@@ -34,9 +35,10 @@ public class LineDao {
     public LineEntity save(LineEntity line) {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+                .addValue("color", line.getColor())
+                .addValue("extraFare", line.getExtraFare());
         long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        return new LineEntity(id, line.getName(), line.getColor());
+        return new LineEntity(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Optional<LineEntity> findById(Long id) {
@@ -50,8 +52,8 @@ public class LineDao {
     }
 
     public void modifyById(LineEntity line) {
-        String sql = "update line set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        String sql = "update line set name = ?, color = ?, extraFare = ? where id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
     public void deleteById(Long id) {

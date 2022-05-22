@@ -14,12 +14,8 @@ public class LineEntity {
         this.extraFare = extraFare;
     }
 
-    public LineEntity(Long id, String name, String color) {
-        this(id,name,color,0);
-    }
-
-    public LineEntity(String name, String color) {
-        this(null, name, color, 0);
+    public LineEntity(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public Long getId() {
