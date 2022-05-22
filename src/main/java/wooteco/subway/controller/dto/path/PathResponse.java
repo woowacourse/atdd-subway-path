@@ -5,9 +5,12 @@ import wooteco.subway.controller.dto.station.StationResponse;
 
 public class PathResponse {
 
-    private final List<StationResponse> stations;
-    private final int distance;
-    private final int fare;
+    private List<StationResponse> stations;
+    private int distance;
+    private int fare;
+
+    public PathResponse() {
+    }
 
     public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;

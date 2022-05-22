@@ -97,7 +97,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void FindPathWithNotExistsStationId() {
         //given
         //when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(-1L, 4L, 15));
+        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(30000L, 40000L, 15));
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),

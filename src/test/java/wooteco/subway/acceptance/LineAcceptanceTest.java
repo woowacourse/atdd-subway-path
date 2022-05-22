@@ -1,29 +1,19 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.일호선;
-import static wooteco.subway.acceptance.ResponseCreator.createDeleteLineResponseById;
-import static wooteco.subway.acceptance.ResponseCreator.createGetLineResponseById;
-import static wooteco.subway.acceptance.ResponseCreator.createGetLinesResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPutLineResponse;
-import static wooteco.subway.acceptance.ResponseCreator.postIds;
-import static wooteco.subway.acceptance.ResponseCreator.responseIds;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.controller.dto.line.LineResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
+import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -150,4 +140,3 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
-

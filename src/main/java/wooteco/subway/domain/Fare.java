@@ -31,5 +31,4 @@ public class Fare {
     private int calculateOverFiftyDistance(int distance) {
         return (int) ((Math.ceil((distance - SECOND_RESTRICTION_DISTANCE) / SECOND_RESTRICTION_DIVIDE)) * ADDITIONAL_FARE);
     }
-
 }

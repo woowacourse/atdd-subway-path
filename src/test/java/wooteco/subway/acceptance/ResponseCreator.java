@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class ResponseCreator {
 
-    protected static ExtractableResponse<Response> createPostStationResponse(StationRequest stationRequest) {
+    public static ExtractableResponse<Response> createPostStationResponse(StationRequest stationRequest) {
         return RestAssured.given().log().all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -26,7 +26,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createPostLineResponse(LineRequest lineRequest) {
+    public static ExtractableResponse<Response> createPostLineResponse(LineRequest lineRequest) {
         return RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +36,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createGetLineResponseById(String id) {
+    public static ExtractableResponse<Response> createGetLineResponseById(String id) {
         return RestAssured.given().log().all()
                 .when()
                 .get("/lines/" + id)
@@ -44,7 +44,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createGetLinesResponse() {
+    public static ExtractableResponse<Response> createGetLinesResponse() {
         return RestAssured.given().log().all()
                 .when()
                 .get("/lines")
@@ -52,19 +52,19 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static List<Long> postIds(ExtractableResponse<Response>... createResponse) {
+    public static List<Long> postIds(ExtractableResponse<Response>... createResponse) {
         return Arrays.asList(createResponse).stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
     }
 
-    protected static List<Long> responseIds(ExtractableResponse<Response> response) {
+    public static List<Long> responseIds(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
     }
 
-    protected static ExtractableResponse<Response> createPutLineResponse(String id, LineRequest lineRequest) {
+    public static ExtractableResponse<Response> createPutLineResponse(String id, LineRequest lineRequest) {
         return RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -74,7 +74,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createDeleteLineResponseById(Long id) {
+    public static ExtractableResponse<Response> createDeleteLineResponseById(Long id) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -83,7 +83,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createDeleteLineResponseById(String id) {
+    public static ExtractableResponse<Response> createDeleteLineResponseById(String id) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -92,7 +92,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> deleteSectionResponse(Long lineId, Long stationId) {
+    public static ExtractableResponse<Response> deleteSectionResponse(Long lineId, Long stationId) {
         return RestAssured.given().log().all()
                 .when()
                 .queryParam("stationId", stationId)
@@ -101,7 +101,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createPostSectionResponse(Long lineId, SectionRequest sectionRequest) {
+    public static ExtractableResponse<Response> createPostSectionResponse(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +111,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createGetStationResponse() {
+    public static ExtractableResponse<Response> createGetStationResponse() {
         return RestAssured.given().log().all()
                 .when()
                 .get("/stations")
@@ -119,7 +119,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createDeleteStationResponseById(String id) {
+    public static ExtractableResponse<Response> createDeleteStationResponseById(String id) {
         return RestAssured.given().log().all()
                 .when()
                 .delete("/stations/" + id)
@@ -127,7 +127,7 @@ public class ResponseCreator {
                 .extract();
     }
 
-    protected static ExtractableResponse<Response> createGetPathResponse(PathRequest pathRequest) {
+    public static ExtractableResponse<Response> createGetPathResponse(PathRequest pathRequest) {
         return RestAssured.given().log().all()
                 .when()
                 .param("source", pathRequest.getSource())

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -16,6 +17,7 @@ import wooteco.subway.domain.Station;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
+@Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class JdbcSectionDaoTest {
 
     private LineDao lineDao;
@@ -55,7 +57,7 @@ class JdbcSectionDaoTest {
     void deleteSection(){
         //given
         Section section1 = sectionDao.create(new Section(1L, 1L, 2L, 10));
-        Section section2 = sectionDao.create(new Section(1L, 2L, 3L, 20));
+        sectionDao.create(new Section(1L, 2L, 3L, 20));
         //when
         sectionDao.delete(section1.getId());
         //then
