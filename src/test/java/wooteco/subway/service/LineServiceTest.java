@@ -33,7 +33,7 @@ class LineServiceTest {
         // given
         setUpLine();
 
-        LineRequest lineRequest = new LineRequest("노오서언", "새액까알", 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("노오서언", "새액까알", 1L, 2L, 10, 0);
         // when
         final LineResponse save = lineService.save(lineRequest);
 
@@ -71,7 +71,7 @@ class LineServiceTest {
         // given
         setUpLine();
         // when
-        lineService.update(lineId, new LineRequest("새분당", "새색", 1L, 2L, 10));
+        lineService.update(lineId, new LineRequest("새분당", "새색", 1L, 2L, 10, 500));
         // then
         assertThat(lineService.findOne(lineId).getName()).isEqualTo("새분당");
     }
@@ -91,7 +91,7 @@ class LineServiceTest {
         final StationResponse stationA = stationService.save(new StationRequest("역1"));
         final StationResponse stationB = stationService.save(new StationRequest("역2"));
 
-        final LineResponse save = lineService.save(new LineRequest("분당", "색", stationA.getId(), stationB.getId(), 10));
+        final LineResponse save = lineService.save(new LineRequest("분당", "색", stationA.getId(), stationB.getId(), 10, 0));
         lineId = save.getId();
     }
 }

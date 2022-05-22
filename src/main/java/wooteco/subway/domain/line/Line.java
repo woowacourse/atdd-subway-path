@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wooteco.subway.domain.property.Color;
+import wooteco.subway.domain.property.Fare;
 import wooteco.subway.domain.property.Name;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.SectionSeries;
@@ -15,29 +16,31 @@ public class Line {
     private final Long id;
     private final Name name;
     private final Color color;
+    private final Fare extraFare;
     private final SectionSeries sectionSeries;
 
-    public Line(Long id, Name name, Color color, SectionSeries sectionSeries) {
+    public Line(Long id, Name name, Color color, Fare extraFare, SectionSeries sectionSeries) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sectionSeries = sectionSeries;
     }
 
-    public Line(Long id, String name, String color, List<Section> sections) {
-        this(id, new Name(name), new Color(color), new SectionSeries(sections));
+    public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
+        this(id, new Name(name), new Color(color), new Fare(extraFare), new SectionSeries(sections));
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new ArrayList<>());
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new ArrayList<>());
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public Line update(Line updateLine) {
-        return new Line(id, updateLine.name, updateLine.color, sectionSeries);
+        return new Line(id, updateLine.name, updateLine.color, updateLine.extraFare, sectionSeries);
     }
 
     public void addSection(Section section) {
@@ -62,6 +65,10 @@ public class Line {
 
     public SectionSeries getSectionSeries() {
         return sectionSeries;
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     @Override
