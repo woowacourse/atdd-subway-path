@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.request.LineRequest;
-import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.exception.DuplicateLineException;
 
@@ -32,7 +32,8 @@ public class LineService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public LineResponse save(final LineRequest lineRequest) {
-        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getExtraFare());
         validateCreateRequest(newLine);
         final Long lineId = lineDao.save(newLine);
         final SectionRequest sectionRequest = extractSectionRequest(lineRequest);
@@ -90,7 +91,8 @@ public class LineService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void update(final Long lineId, final LineRequest lineRequest) {
-        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        final Line newLine = Line.createWithoutId(lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getExtraFare());
         validateUpdateRequest(lineId, newLine);
         lineDao.update(lineId, newLine);
     }

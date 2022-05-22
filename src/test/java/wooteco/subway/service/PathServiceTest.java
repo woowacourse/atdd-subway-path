@@ -24,7 +24,8 @@ class PathServiceTest {
     @Autowired
     private PathService pathService;
 
-    @Autowired SectionService sectionService;
+    @Autowired
+    SectionService sectionService;
 
     @Test
     @DisplayName("출발지와 도착지가 주어질 때 경로와 요금을 계산한다. - 일반 요금")

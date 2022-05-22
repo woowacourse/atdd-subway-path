@@ -91,7 +91,7 @@ public class SectionService {
                         lineId,
                         upsideSection.getUpStationId(),
                         downsideSection.getDownStationId(),
-                upsideSection.getDistance() + downsideSection.getDistance(),
+                        upsideSection.getDistance() + downsideSection.getDistance(),
                         upsideSection.getLineOrder()
                 )
         );

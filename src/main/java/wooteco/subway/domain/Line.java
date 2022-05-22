@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Line {
 
-    private Long id;
+    private final Long id;
     private final String name;
     private final String color;
     private final int extraFare;

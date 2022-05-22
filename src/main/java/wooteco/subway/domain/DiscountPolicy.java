@@ -8,8 +8,7 @@ import wooteco.subway.exception.InvalidAgeException;
 public enum DiscountPolicy {
     CHILDREN(DiscountPolicy::isChildrenAge, DiscountPolicy::applyDiscountChildren),
     TEENAGER(DiscountPolicy::isTeenagerAge, DiscountPolicy::applyDiscountTeenager),
-    OTHER(age -> !isChildrenAge(age) && !isTeenagerAge(age), money -> money)
-    ;
+    OTHER(age -> !isChildrenAge(age) && !isTeenagerAge(age), money -> money);
 
     private static final int DEDUCTIBLE = 350;
     private static final double CHILDREN_DISCOUNT_RATE = 0.5;
@@ -35,7 +34,7 @@ public enum DiscountPolicy {
     }
 
     private static int applyDiscountChildren(final int money) {
-        final int discountedMoney = (int)(((money - DEDUCTIBLE) * CHILDREN_DISCOUNT_RATE));
+        final int discountedMoney = (int) (((money - DEDUCTIBLE) * CHILDREN_DISCOUNT_RATE));
         return money - discountedMoney;
     }
 
@@ -44,7 +43,7 @@ public enum DiscountPolicy {
     }
 
     private static int applyDiscountTeenager(final int money) {
-        final int discountedMoney = (int)(((money - DEDUCTIBLE) * TEENAGER_DISCOUNT_RATE));
+        final int discountedMoney = (int) (((money - DEDUCTIBLE) * TEENAGER_DISCOUNT_RATE));
         return money - discountedMoney;
     }
 
