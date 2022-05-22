@@ -33,9 +33,7 @@ public class SectionDao {
 
     public Section save(Section section) {
         SqlParameterSource sqlParameterSource = generateParameter(section);
-
         Long id = insertActor.executeAndReturnKey(sqlParameterSource).longValue();
-
         return findById(id).get();
     }
 
@@ -53,7 +51,7 @@ public class SectionDao {
                 .toArray(MapSqlParameterSource[]::new);
     }
 
-    private MapSqlParameterSource generateParameter(Section section) {
+    private SqlParameterSource generateParameter(Section section) {
         return new MapSqlParameterSource("lineId", section.getLine().getId())
                 .addValue("upStationId", section.getUpStation().getId())
                 .addValue("downStationId", section.getDownStation().getId())
@@ -62,7 +60,7 @@ public class SectionDao {
 
     public Optional<Section> findById(Long id) {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extra_fare as line_extra_fare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -80,7 +78,7 @@ public class SectionDao {
 
     public List<Section> findByLineId(Long lineId) {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extra_fare as line_extra_fare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -95,7 +93,7 @@ public class SectionDao {
 
     public List<Section> findAll() {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extra_fare as line_extra_fare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -114,7 +112,8 @@ public class SectionDao {
             Long lineId = resultSet.getLong("line_id");
             String lineName = resultSet.getString("line_name");
             String lineColor = resultSet.getString("line_color");
-            Line line = new Line(lineId, lineName, lineColor);
+            int extraFare = resultSet.getInt("line_extra_fare");
+            Line line = new Line(lineId, lineName, lineColor, extraFare);
 
             Long upStationId = resultSet.getLong("up_station_id");
             String upStationName = resultSet.getString("up_station_name");

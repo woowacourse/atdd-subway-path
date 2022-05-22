@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
@@ -28,9 +30,14 @@ public class LineDao {
     }
 
     public Line save(Line line) {
-        Long id = insertActor.executeAndReturnKey(
-                Map.of("name", line.getName(), "color", line.getColor())).longValue();
+        Long id = insertActor.executeAndReturnKey(generateParameter(line)).longValue();
         return findById(id).get();
+    }
+
+    private SqlParameterSource generateParameter(Line line) {
+        return new MapSqlParameterSource("name", line.getName())
+                .addValue("color", line.getColor())
+                .addValue("extra_fare", line.getExtraFare());
     }
 
     public boolean existsByName(String name) {
@@ -57,7 +64,8 @@ public class LineDao {
                 new Line(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("color")
+                        resultSet.getString("color"),
+                        resultSet.getInt("extra_fare")
                 );
     }
 
