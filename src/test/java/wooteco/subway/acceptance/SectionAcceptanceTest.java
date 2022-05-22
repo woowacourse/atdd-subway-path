@@ -28,7 +28,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 추가로 등록한다.")
     @Test
     void createSection() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> lineCreateResponse = requestPostLine(lineCreateRequest);
         Long lineId = Long.parseLong(lineCreateResponse.header("Location").split("/")[2]);
         SectionRequest sectionRequest = new SectionRequest(yeoksamId, seolleungId, 1);
@@ -41,7 +41,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록된 구간을 삭제한다.")
     @Test
     void deleteSection() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> lineCreateResponse = requestPostLine(lineCreateRequest);
         Long lineId = Long.parseLong(lineCreateResponse.header("Location").split("/")[2]);
 

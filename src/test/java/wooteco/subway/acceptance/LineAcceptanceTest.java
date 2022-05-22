@@ -35,7 +35,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
@@ -46,10 +46,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         requestPostLine(lineCreateRequest);
 
-        LineCreateRequest invalidRequest = new LineCreateRequest("2호선", "분홍색", gangnamId, yeoksamId, 1);
+        LineCreateRequest invalidRequest = new LineCreateRequest("2호선", "분홍색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> response = requestPostLine(invalidRequest);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -59,10 +59,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 색상으로 노선을 생성한다.")
     @Test
     void createLineWithDuplicateColor() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         requestPostLine(lineCreateRequest);
 
-        LineCreateRequest invalidRequest = new LineCreateRequest("성수지선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest invalidRequest = new LineCreateRequest("성수지선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> response = requestPostLine(invalidRequest);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -72,11 +72,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 지하철 노선을 조회한다.")
     @Test
     void getLines() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
         Long id1 = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
-        lineCreateRequest = new LineCreateRequest("3호선", "주황색", gangnamId, yeoksamId, 1);
+        lineCreateRequest = new LineCreateRequest("3호선", "주황색", gangnamId, yeoksamId, 1, 0);
         createResponse = requestPostLine(lineCreateRequest);
         Long id2 = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
@@ -95,7 +95,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 id로 조회한다.")
     @Test
     void getLine() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
         Long id = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -119,12 +119,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 id를 가지는 노선을 수정한다.")
     @Test
     void updateLine() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
         Long id = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("1호선", "군청색");
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("1호선", "군청색", 0);
         RestAssured.given().log().all()
                 .body(lineUpdateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -138,7 +138,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("stations")
-                .isEqualTo(new LineResponse(id, "1호선", "군청색", null));
+                .isEqualTo(new LineResponse(id, "1호선", "군청색", 0, null));
         assertThat(actual.getStations())
                 .extracting(StationResponse::getId, StationResponse::getName)
                 .containsOnly(
@@ -150,7 +150,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 id의 노선을 삭제한다.")
     @Test
     void deleteLine() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> createResponse = requestPostLine(lineCreateRequest);
 
         long id = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -171,7 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @CsvSource(value = {",", "'',''", "' ',' '"})
     void notAllowNullOrBlankNameAndColor(String name, String color) {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest(name, color, gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest(name, color, gangnamId, yeoksamId, 1, 0);
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -181,7 +181,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("시점 또는 종점 id로 null이 올 수 없다.")
     @Test
     void notAllowNullStationId() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", null, null, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", null, null, 1, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
@@ -192,7 +192,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("시점 또는 종점 id로 1보다 작은 값이 올 수 없다.")
     @Test
     void notAllowLessThan1StationId() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", 0L, 0L, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", 0L, 0L, 1, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
@@ -202,13 +202,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("노선 거리로 1보다 작은 값이 올 수 없다.")
     @Test
-    void notAllowLessThan1distance() {
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0);
+    void notAllowLessThan1Distance() {
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString()).contains("노선 거리는 1보다 작을 수 없습니다.");
+    }
+
+    @DisplayName("추가 요금으로 음수가 올 수 없다.")
+    @Test
+    void notAllowLessThan0ExtraFare() {
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, -1);
+
+        ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).contains("추가 요금은 음수일 수 없습니다.");
     }
 
     @DisplayName("노선 요청 시 인수 타입이 맞지 않으면 400 Bad Request를 돌려받는다.")

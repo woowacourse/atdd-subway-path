@@ -19,7 +19,7 @@ class DijkstraPathStrategyTest {
     private final Station gangnam = new Station("강남역");
     private final Station yeoksam = new Station("역삼역");
     private final Station seolleung = new Station("선릉역");
-    private final Line line = new Line("2호선", "초록색");
+    private final Line line = new Line("2호선", "초록색", 0);
 
     @DisplayName("각 구간 리스트들을 통해서 최단 경로를 조회한다.")
     @Test

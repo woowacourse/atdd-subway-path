@@ -31,21 +31,21 @@ class LineDaoTest {
     @DisplayName("노선 저장 기능을 테스트한다.")
     @Test
     void saveLine() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
 
-        Line persistLine = lineDao.save(line);
-        Line expected = new Line(persistLine.getId(), line.getName(), line.getColor());
+        Line actual = lineDao.save(line);
+        Line expected = new Line(actual.getId(), line.getName(), line.getColor(), line.getExtraFare());
 
-        assertEquals(expected, persistLine);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("중복된 이름이나 색상의 노선을 저장할 경우 예외가 발생한다.")
     @ParameterizedTest
     @CsvSource(value = {"2호선,검은색", "성수지선,초록색"})
     void saveDuplicateNameLine(String name, String color) {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         lineDao.save(line);
-        Line duplicateLine = new Line(name, color);
+        Line duplicateLine = new Line(name, color, 0);
 
         assertThatThrownBy(() -> lineDao.save(duplicateLine))
                 .isInstanceOf(DuplicateKeyException.class);
@@ -54,8 +54,8 @@ class LineDaoTest {
     @DisplayName("전체 노선의 개수가 맞는지 확인한다.")
     @Test
     void findAllLine() {
-        Line lineTwo = new Line("2호선", "초록색");
-        Line lineEight = new Line("8호선", "분홍색");
+        Line lineTwo = new Line("2호선", "초록색", 0);
+        Line lineEight = new Line("8호선", "분홍색", 0);
         lineDao.save(lineTwo);
         lineDao.save(lineEight);
 
@@ -65,37 +65,37 @@ class LineDaoTest {
     @DisplayName("특정 id를 가지는 노선을 조회한다.")
     @Test
     void findById() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
 
         Line actual = lineDao.findById(id)
                 .orElseGet(() -> fail("존재하지 않는 노선입니다."));
-        Line expected = new Line(id, line.getName(), line.getColor());
+        Line expected = new Line(id, line.getName(), line.getColor(), line.getExtraFare());
 
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("특정 id를 가지는 노선의 이름과 색을 변경한다.")
     @Test
     void updateById() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
-        Line updateLine = new Line("8호선", "분홍색");
+        Line updateLine = new Line("8호선", "분홍색", 200);
         lineDao.updateById(id, updateLine);
 
         Line actual = lineDao.findById(id)
                 .orElseGet(() -> fail("존재하지 않는 노선입니다."));
-        Line expected = new Line(id, updateLine.getName(), updateLine.getColor());
+        Line expected = new Line(id, updateLine.getName(), updateLine.getColor(), updateLine.getExtraFare());
 
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("이미 저장된 노선의 이름 또는 색상으로는 변경할 수 없다.")
     @Test
     void invalidUpdate() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
-        Line updateLine = new Line("8호선", "분홍색");
+        Line updateLine = new Line("8호선", "분홍색", 0);
         lineDao.save(updateLine);
 
         assertThatThrownBy(() -> lineDao.updateById(id, updateLine))
@@ -105,7 +105,7 @@ class LineDaoTest {
     @DisplayName("특정 id를 가지는 노선을 삭제한다.")
     @Test
     void deleteById() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
 
         lineDao.deleteById(id);
@@ -116,7 +116,7 @@ class LineDaoTest {
     @DisplayName("id 값이 저장되어 있는지 확인한다.")
     @Test
     void checkExistsId() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
 
         boolean actual = lineDao.existsId(id);
@@ -127,7 +127,7 @@ class LineDaoTest {
     @DisplayName("이름이 저장되어 있는지 확인한다.")
     @Test
     void checkExistsName() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         lineDao.save(line);
 
         boolean actual = lineDao.existsName(line);
@@ -138,7 +138,7 @@ class LineDaoTest {
     @DisplayName("색상이 저장되어 있는지 확인한다.")
     @Test
     void checkExistsColor() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         lineDao.save(line);
 
         boolean actual = lineDao.existsColor(line);
@@ -149,18 +149,12 @@ class LineDaoTest {
     @DisplayName("id가 같은 값에 대해서는 저장되어 있는지 검사를 하지 않는다.")
     @Test
     void notCheckExists() {
-        Line line = new Line("2호선", "초록색");
+        Line line = new Line("2호선", "초록색", 0);
         Long id = lineDao.save(line).getId();
-        Line checkLine = new Line(id, line.getName(), line.getColor());
+        Line checkLine = new Line(id, line.getName(), line.getColor(), line.getExtraFare());
 
         assertThat(lineDao.existsName(checkLine)).isFalse();
         assertThat(lineDao.existsColor(checkLine)).isFalse();
-    }
-
-    private void assertEquals(Line expected, Line actual) {
-        assertThat(expected.getId()).isEqualTo(actual.getId());
-        assertThat(expected.getName()).isEqualTo(actual.getName());
-        assertThat(expected.getColor()).isEqualTo(actual.getColor());
     }
 
 }

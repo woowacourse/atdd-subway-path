@@ -42,7 +42,8 @@ public class LineService {
     }
 
     private Line saveLine(LineCreateRequest lineCreateRequest) {
-        Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor());
+        Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor(),
+                lineCreateRequest.getExtraFare());
         validateUnique(line);
         return lineDao.save(line);
     }
@@ -130,7 +131,8 @@ public class LineService {
     @Transactional
     public void update(Long id, LineUpdateRequest lineUpdateRequest) {
         validateExist(id);
-        Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+                lineUpdateRequest.getExtraFare());
         validateUnique(line);
         lineDao.updateById(id, line);
     }

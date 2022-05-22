@@ -18,7 +18,8 @@ public class LineDao {
     private static final RowMapper<Line> LINE_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -34,7 +35,7 @@ public class LineDao {
     public Line save(Line line) {
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
         Long id = simpleInsert.executeAndReturnKey(parameters).longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public List<Line> findAll() {
@@ -51,10 +52,11 @@ public class LineDao {
     }
 
     public void updateById(Long id, Line line) {
-        String sql = "UPDATE LINE SET name = :name, color = :color WHERE id = :id";
+        String sql = "UPDATE LINE SET name = :name, color = :color, extra_fare = :extra_fare WHERE id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id)
                 .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+                .addValue("color", line.getColor())
+                .addValue("extra_fare", line.getExtraFare());
         jdbcTemplate.update(sql, parameters);
     }
 
@@ -84,7 +86,8 @@ public class LineDao {
 
     private SqlParameterSource decideParametersForExists(Line line) {
         if (line.getId() == null) {
-            return new BeanPropertySqlParameterSource(new Line(0L, line.getName(), line.getColor()));
+            return new BeanPropertySqlParameterSource(
+                    new Line(0L, line.getName(), line.getColor(), line.getExtraFare()));
         }
         return new BeanPropertySqlParameterSource(line);
     }

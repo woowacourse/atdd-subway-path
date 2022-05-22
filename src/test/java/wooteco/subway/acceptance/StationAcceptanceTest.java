@@ -88,7 +88,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void notAllowDeleteStation() {
         Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
         Long yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
         requestPostLine(lineCreateRequest);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()

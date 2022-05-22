@@ -11,7 +11,7 @@ class SectionTest {
     @Test
     void sameEndpoint() {
         Station station = new Station("강남역");
-        assertThatThrownBy(() -> new Section(new Line("2호선", "초록색"), station, station, 1));
+        assertThatThrownBy(() -> new Section(new Line("2호선", "초록색", 0), station, station, 1));
     }
 
 }

@@ -17,7 +17,7 @@ class SectionsTest {
     private final Station gangnam = new Station("강남역");
     private final Station yeoksam = new Station("역삼역");
     private final Station seolleung = new Station("선릉역");
-    private final Line line = new Line("2호선", "초록색");
+    private final Line line = new Line("2호선", "초록색", 0);
 
     @DisplayName("구간 순서대로 역들을 정렬해서 반환한다.")
     @Test
