@@ -13,7 +13,11 @@ public class BasicFareStrategy implements FareStrategy {
     private static final double STEP_TWO_CHARGE_DISTANCE = 8.0;
 
     @Override
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, int extraFare, int age) {
+        return calculateFareByDistance(distance) + extraFare;
+    }
+
+    private int calculateFareByDistance(int distance) {
         if (distance < BASIC_DISTANCE) {
             return BASIC_FARE;
         }

@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
     }
 
-    @DisplayName("총 거리가 10km 초과 50km 이하인 경우 5km마다 100원씩 추가되어 계산된다.")
+    @DisplayName("총 거리가 10km 초과 50km 이하인 경우 5km마다 100원씩 추가되어 계산한다.")
     @Test
     void showFareUnder50km() {
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 40, 0));
@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(2050);
     }
 
-    @DisplayName("총 거리가 50km 초과인 경우 8km마다 100원씩 추가되어 계산된다.")
+    @DisplayName("총 거리가 50km 초과인 경우 8km마다 100원씩 추가되어 계산한다.")
     @Test
     void showFareOver50km() {
         requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 50, 0));
@@ -107,6 +107,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .containsExactly("선릉역", "종합운동장역", "삼전역");
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(59);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(2250);
+    }
+
+    @DisplayName("추가 요금이 붙은 노선을 이용할 경우 운임에 합산해서 계산한다.")
+    @Test
+    void showFareWithExtraFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 500));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 0));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
+
+        assertThat(response.jsonPath().getList("stations")).extracting("name")
+                .containsExactly("선릉역", "종합운동장역", "삼전역");
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1750);
+    }
+
+    @DisplayName("추가 요금이 붙은 노선을 여러 개 이용할 경우 가장 비싼 추가 요금을 운임에 합산해서 계산한다.")
+    @Test
+    void showFareWithMostExpensiveExtraFare() {
+        requestPostLine(new LineCreateRequest("2호선", "초록색", seolleungId, sportscomplexId, 5, 500));
+        requestPostLine(new LineCreateRequest("9호선", "금색", sportscomplexId, samjeonId, 5, 900));
+
+        ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 20);
+
+        assertThat(response.jsonPath().getList("stations")).extracting("name")
+                .containsExactly("선릉역", "종합운동장역", "삼전역");
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(10);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150);
     }
 
 }

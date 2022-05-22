@@ -32,16 +32,18 @@ public class PathService {
     public PathResponse findShortestPath(PathRequest pathRequest) {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
-
         Sections sections = new Sections(sectionDao.findAll());
 
         Path path = pathStrategy.calculatePath(source, target, sections);
+
         int distance = path.getDistance();
+        int extraFare = path.getMostExpensiveExtraFare();
+        int age = pathRequest.getAge();
 
         return new PathResponse(
                 toResponses(path.getStations()),
                 distance,
-                fareStrategy.calculateFare(distance)
+                fareStrategy.calculateFare(distance, extraFare, age)
         );
     }
 
