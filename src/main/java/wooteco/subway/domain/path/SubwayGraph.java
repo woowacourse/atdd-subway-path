@@ -1,7 +1,9 @@
 package wooteco.subway.domain.path;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -46,15 +48,11 @@ public class SubwayGraph {
         return (int) path.getPath(source, target).getWeight();
     }
 
-    private static class LineWeightEdge extends DefaultWeightedEdge {
-        private final Line line;
-
-        public LineWeightEdge(Line line) {
-            this.line = line;
+    public List<Line> getLines(Station source, Station target) {
+        Set<Line> lines = new HashSet<>();
+        for (DefaultWeightedEdge edge : path.getPath(source, target).getEdgeList()) {
+            lines.add(((LineWeightEdge) edge).getLine());
         }
-
-        public Line getLine() {
-            return line;
-        }
+        return new ArrayList<>(lines);
     }
 }

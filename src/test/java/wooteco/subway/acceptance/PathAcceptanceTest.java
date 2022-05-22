@@ -39,18 +39,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 경로_조회(long source, long target) {
         return RestAssured.given().log().all()
-                .queryParams(경로조회_파라미터(source, target))
+                .queryParams(경로조회_파라미터(source, target, 20))
                 .when()
                 .get("/paths")
                 .then().log().all()
                 .extract();
     }
 
-    private Map<String, Object> 경로조회_파라미터(long 출발역, long 도착역) {
+    private Map<String, Object> 경로조회_파라미터(long 출발역, long 도착역, int age) {
         Map<String, Object> params = new HashMap<>();
         params.put("source", 출발역);
         params.put("target", 도착역);
-        params.put("age", 15);
+        params.put("age", age);
         return params;
     }
 

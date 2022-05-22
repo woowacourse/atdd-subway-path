@@ -1,7 +1,6 @@
 package wooteco.subway.domain.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static wooteco.subway.domain.fixtures.TestFixtures.분당선;
 import static wooteco.subway.domain.fixtures.TestFixtures.이호선;
 

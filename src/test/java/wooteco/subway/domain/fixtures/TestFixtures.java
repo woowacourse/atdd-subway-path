@@ -15,6 +15,7 @@ public class TestFixtures {
     public static final Station 합정 = new Station(7L, "합정");
     public static final Station 창동 = new Station(8L, "창동");
     public static final Station 당고개 = new Station(9L, "당고개");
+    public static final Station 신촌 = new Station(10L, "신촌");
 
     public static final Line 이호선 = new Line(1L, "2호선", "green", 100);
     public static final Line 분당선 = new Line(1L, "분당선", "yellow", 200);

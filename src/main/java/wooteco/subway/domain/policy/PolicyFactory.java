@@ -1,5 +1,7 @@
 package wooteco.subway.domain.policy;
 
+import java.util.List;
+import wooteco.subway.domain.element.Line;
 import wooteco.subway.domain.policy.age.BabyDiscountPolicy;
 import wooteco.subway.domain.policy.age.ChildDiscountPolicy;
 import wooteco.subway.domain.policy.age.DefaultDiscountPolicy;
@@ -21,5 +23,9 @@ public class PolicyFactory {
             return new TeenagerDiscountPolicy();
         }
         return new DefaultDiscountPolicy();
+    }
+
+    public static LinePolicy createLineFee(List<Line> lines) {
+        return new LinePolicy(lines);
     }
 }
