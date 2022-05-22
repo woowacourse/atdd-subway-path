@@ -1,5 +1,6 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class PathResponse {
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
         final int distance = path.getDistance();
-        final int price = path.getFare().getPrice();
+        final int price = Fare.of(path.getDistance(), path.getLines().getHighestOverFare()).getPrice();
 
         return new PathResponse(stationResponses, distance, price);
     }

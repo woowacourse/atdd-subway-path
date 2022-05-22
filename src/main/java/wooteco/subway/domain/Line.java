@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.Objects;
+
 public class Line {
 
     private Long id;
@@ -42,6 +44,19 @@ public class Line {
 
     public int getExtraFare() {
         return extraFare;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Line)) return false;
+        final Line line = (Line) o;
+        return extraFare == line.extraFare && Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, extraFare);
     }
 
     @Override

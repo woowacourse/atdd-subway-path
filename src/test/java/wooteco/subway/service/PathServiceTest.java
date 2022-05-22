@@ -37,11 +37,12 @@ class PathServiceTest {
     private Station station1;
     private Station station2;
     private Station station3;
+    private Line savedLine;
 
 
     @BeforeEach
     void setUp() {
-        final Line savedLine = lineDao.save(new Line("2호선", "bg-green-600"));
+        savedLine = lineDao.save(new Line("2호선", "bg-green-600"));
         station1 = stationDao.save(new Station("강남역"));
         station2 = stationDao.save(new Station("역삼역"));
         station3 = stationDao.save(new Station("선릉역"));
@@ -53,7 +54,7 @@ class PathServiceTest {
     @Test
     void createPath() {
         assertThat(pathService.createPath(station1.getId(), station3.getId(), 15)).usingRecursiveComparison()
-                .isEqualTo(new Path(List.of(station1, station2, station3), 20, Fare.from(20)));
+                .isEqualTo(new Path(List.of(station1, station2, station3), List.of(savedLine), 20));
     }
 
     @DisplayName("출발지와 도착지가 같은 경우 예외를 발생한다.")

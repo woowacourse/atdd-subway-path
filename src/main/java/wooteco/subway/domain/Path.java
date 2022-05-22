@@ -6,24 +6,24 @@ import java.util.List;
 public class Path {
 
     private final List<Station> stations;
+    private final Lines lines;
     private final int distance;
-    private final Fare fare;
 
-    public Path(final List<Station> stations, final int distance, final Fare fare) {
+    public Path(final List<Station> stations, final List<Line> lines, final int distance) {
         this.stations = stations;
+        this.lines = new Lines(lines);
         this.distance = distance;
-        this.fare = fare;
     }
 
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
     }
 
-    public int getDistance() {
-        return distance;
+    public Lines getLines() {
+        return lines;
     }
 
-    public Fare getFare() {
-        return fare;
+    public int getDistance() {
+        return distance;
     }
 }

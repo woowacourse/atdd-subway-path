@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import java.util.Collections;
 
 class FareTest {
 
@@ -13,7 +14,7 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 6, 10})
     void getFare(final int distance) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.of(distance, 0);
         assertThat(fare.getPrice()).isEqualTo(1250);
     }
 
@@ -28,7 +29,7 @@ class FareTest {
             "50, 2050"
     })
     void calculateOverFare_below50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.of(distance, 0);
         assertThat(fare.getPrice()).isEqualTo(price);
     }
 
@@ -40,7 +41,15 @@ class FareTest {
             "100, 2750"
     })
     void calculateOverFare_over50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.of(distance, 0);
         assertThat(fare.getPrice()).isEqualTo(price);
+    }
+
+    @DisplayName("노선의 추가 요금에 따라 추가운임을 부과한다")
+    @ParameterizedTest
+    @ValueSource(ints = {100, 200, 300, 400, 500, 1000})
+    void calculateOverFareByLine(final int overFareByLine) {
+        final Fare fare = Fare.of(1, overFareByLine);
+        assertThat(fare.getPrice()).isEqualTo(1250 + overFareByLine);
     }
 }

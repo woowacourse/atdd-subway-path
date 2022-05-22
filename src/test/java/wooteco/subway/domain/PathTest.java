@@ -16,15 +16,16 @@ class PathTest {
     private Station station2;
     private Station station3;
     private Sections sections;
+    private Line line;
 
     @BeforeEach
     void setUp() {
         station1 = new Station(1L, "선릉역");
         station2 = new Station(2L, "역삼역");
         station3 = new Station(3L, "강남역");
-        Line line = new Line(1L, "2호선", "bg-green-600", 0);
+        line = new Line(1L, "2호선", "bg-green-600", 0);
         Section section1 = new Section(1L, station1, station2, 5, line);
-        Section section2 = new Section(1L, station2, station3, 5, line);
+        Section section2 = new Section(2L, station2, station3, 5, line);
         sections = new Sections(List.of(section1, section2));
     }
 
@@ -56,5 +57,21 @@ class PathTest {
         assert (path.isPresent());
 
         assertThat(path.get().getDistance()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("경로가 거쳐가는 노선들을 반환한다.")
+    void getCrossedLines() {
+        ShortestPathStrategy strategy = new DijkstraStrategy();
+        Station station4 = new Station(4L, "양재역");
+        Line newLine = new Line(2L, "신분당선", "bg-red-600", 0);
+        Section section = new Section(3L, station3, station4, 5, newLine);
+        final List<Section> rawSections = this.sections.getSections();
+        rawSections.add(section);
+
+        final Optional<Path> path = strategy.findPath(station1, station4, new Sections(rawSections));
+        assert (path.isPresent());
+
+        assertThat(path.get().getLines().getValues()).containsAll(List.of(line, newLine));
     }
 }
