@@ -24,6 +24,12 @@ public class PathService {
         Sections sections = sectionService.findAll();
         Long departureId = pathServiceRequest.getDepartureId();
         Long arrivalId = pathServiceRequest.getArrivalId();
+
+//        Path path = Path.of(sections);
+//        List<Long> shortestPathStationIds = path.getShortestPathStationIds(departureId, arrivalId);
+//        int distance = path.getShortestPathDistance(departureId, arrivalId);
+//        int fare = path.calculateFare(new FarePolicy(pathServiceRequest.getAge()));
+
         List<Long> shortestPathStationIds = sections.getShortestPathStationIds(departureId, arrivalId);
         List<Station> stations = shortestPathStationIds.stream()
                 .map(stationService::findById)
