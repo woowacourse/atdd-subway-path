@@ -7,10 +7,12 @@ import java.util.Objects;
 public class Line {
 
 	private static final long TEMPORARY_ID = 0L;
+	private static final int DEFAULT_FARE = 0;
 
 	private final Long id;
 	private final Name name;
 	private final String color;
+	private final int extraFare;
 	private final Sections sections;
 
 	public Line(Long id, String name, String color) {
@@ -22,10 +24,22 @@ public class Line {
 	}
 
 	public Line(Long id, String name, String color, List<Section> sections) {
+		this(id, name, color, DEFAULT_FARE,  sections);
+	}
+
+	public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
+		validateFareAmount(extraFare);
 		this.id = id;
 		this.name = new Name(name);
 		this.color = color;
+		this.extraFare = extraFare;
 		this.sections = new Sections(sections);
+	}
+
+	private void validateFareAmount(int extraFare) {
+		if (extraFare < DEFAULT_FARE) {
+			throw new IllegalArgumentException("추가 요금은 0언 이상이어야 합니다.");
+		}
 	}
 
 	public Line createWithSection(List<Section> sections) {
@@ -73,6 +87,10 @@ public class Line {
 
 	public List<Station> findOrderedStations() {
 		return sections.sortStations();
+	}
+
+	public int getExtraFare() {
+		return extraFare;
 	}
 
 	public List<Section> getSections() {

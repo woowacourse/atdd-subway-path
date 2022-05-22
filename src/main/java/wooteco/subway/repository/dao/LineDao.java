@@ -44,8 +44,8 @@ public class LineDao {
 		return ((rs, rowNum) -> new LineTable(
 			rs.getLong(1),
 			rs.getString(2),
-			rs.getString(3)
-		));
+			rs.getString(3),
+			rs.getInt(4)));
 	}
 
 	public LineTable findById(Long id) {
