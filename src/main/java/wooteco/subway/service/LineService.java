@@ -12,6 +12,7 @@ import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.exception.BadRequestException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
@@ -126,11 +127,11 @@ public class LineService {
     }
 
     private Line findLine(Long id) {
-        return lineRepository.findById(id, NOT_FOUNT_ID_ERROR_MESSAGE);
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUNT_ID_ERROR_MESSAGE));
     }
 
     private Station findStation(Long stationId, String errorMessage) {
-        return stationRepository.findById(stationId, errorMessage);
+        return stationRepository.findById(stationId).orElseThrow(() -> new NotFoundException(errorMessage));
     }
 
     private List<Station> getStations(Long lineId) {

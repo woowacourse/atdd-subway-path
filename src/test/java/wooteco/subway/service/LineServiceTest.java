@@ -14,8 +14,9 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.respones.LineResponse;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
@@ -123,9 +124,11 @@ class LineServiceTest {
         Long 광교 = stationRepository.save(new Station("광교"));
         Long 판교 = stationRepository.save(new Station("판교"));
         Long 신분당선 = lineRepository.save(new Line("신분당선", "red"));
-        sectionRepository.save(
-                new Section(lineRepository.findById(신분당선, "노선 못찾음"), stationRepository.findById(강남, "역 못찾음"),
-                        stationRepository.findById(광교, "역 못찾음"), 10));
+        Line 신분당선노선 = lineRepository.findById(신분당선).orElseThrow(() -> new NotFoundException("노선 못찾음"));
+        Station 강남역 = stationRepository.findById(강남).orElseThrow(() -> new NotFoundException("역 못찾음"));
+        Station 광교역 = stationRepository.findById(광교).orElseThrow(() -> new NotFoundException("역 못찾음"));
+
+        sectionRepository.save(new Section(신분당선노선, 강남역, 광교역, 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남, 양재, 4);
         lineService.createSection(신분당선, sectionRequest1);
 
@@ -133,8 +136,11 @@ class LineServiceTest {
         lineService.createSection(신분당선, sectionRequest2);
 
         List<Section> sections = sectionRepository.findByLineId(신분당선);
-        Section 구간2 = findSectionEntity(stationRepository.findById(양재, "역 못찾음"), sections);
-        Section 구간3 = findSectionEntity(stationRepository.findById(판교, "역 못찾음"), sections);
+        Station 양재역 = stationRepository.findById(양재).orElseThrow(() -> new NotFoundException("역 못찾음"));
+        Station 판교역 = stationRepository.findById(판교).orElseThrow(() -> new NotFoundException("역 못찾음"));
+
+        Section 구간2 = findSectionEntity(양재역, sections);
+        Section 구간3 = findSectionEntity(판교역, sections);
         assertThat(구간2.getDownStation().getId()).isEqualTo(판교);
         assertThat(구간2.getDistance()).isEqualTo(4);
         assertThat(구간3.getDownStation().getId()).isEqualTo(광교);

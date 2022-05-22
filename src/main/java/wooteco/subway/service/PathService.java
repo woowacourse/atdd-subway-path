@@ -11,6 +11,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.strategy.BasicFareStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.respones.PathResponse;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
 
@@ -26,8 +27,12 @@ public class PathService {
     }
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
-        Station source = stationRepository.findById(pathRequest.getSource(), "최단 경로의 상행역을 찾을 수 없습니다.");
-        Station target = stationRepository.findById(pathRequest.getTarget(), "최단 경로의 하행역을 찾을 수 없습니다.");
+        Station source = stationRepository
+                .findById(pathRequest.getSource())
+                .orElseThrow(() -> new NotFoundException("최단 경로의 상행역을 찾을 수 없습니다."));
+        Station target = stationRepository
+                .findById(pathRequest.getTarget())
+                .orElseThrow(() -> new NotFoundException("최단 경로의 하행역을 찾을 수 없습니다."));
 
         List<Section> sections = sectionRepository.findAll();
 

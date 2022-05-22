@@ -3,6 +3,7 @@ package wooteco.subway.reopository;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.reopository.dao.LineDao;
@@ -21,9 +22,12 @@ public class LineRepository {
         return lineDao.save(new LineEntity(line.getName(), line.getColor()));
     }
 
-    public Line findById(Long id, String message) {
-        LineEntity lineEntity = lineDao.findById(id).orElseThrow(() -> new IllegalArgumentException(message));
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+    public Optional<Line> findById(Long id) {
+        LineEntity lineEntity = lineDao.findById(id).orElse(null);
+        if (lineEntity.equals(null)) {
+           return Optional.ofNullable(null);
+        }
+        return Optional.ofNullable(new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor()));
     }
 
     public List<Line> findAll() {

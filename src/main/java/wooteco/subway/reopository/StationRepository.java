@@ -3,10 +3,13 @@ package wooteco.subway.reopository;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.dao.StationDao;
+import wooteco.subway.reopository.entity.LineEntity;
 import wooteco.subway.reopository.entity.StationEntity;
 
 @Repository
@@ -22,10 +25,13 @@ public class StationRepository {
         return stationDao.save(new StationEntity(station.getName()));
     }
 
-    public Station findById(Long id, String errorMessage) {
-        StationEntity stationEntity = stationDao.findById(id)
-                .orElseThrow(() -> new NotFoundException(errorMessage));
-        return new Station(stationEntity.getId(), stationEntity.getName());
+    public Optional<Station> findById(Long id) {
+        StationEntity stationEntity = stationDao.findById(id).orElse(null);
+        if (stationEntity.equals(null)) {
+           return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(new Station(stationEntity.getId(), stationEntity.getName()));
     }
 
     public List<Station> findAll() {

@@ -39,7 +39,8 @@ public class LineDaoTest {
     @DisplayName("id로 노선 조회")
     void findById() {
         Long lineId = lineRepository.save(new Line("1호선", "blue"));
-        Line findLine = lineRepository.findById(lineId, LineService.NOT_FOUNT_ID_ERROR_MESSAGE);
+        Line findLine = lineRepository.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException(LineService.NOT_FOUNT_ID_ERROR_MESSAGE));
         assertThat(findLine.getId()).isNotNull();
         assertThat(findLine.getName()).isEqualTo("1호선");
     }
@@ -60,7 +61,7 @@ public class LineDaoTest {
     void modifyById() {
         Long id = lineRepository.save(new Line("1호선", "blue"));
         lineRepository.modifyById(id, new Line("2호선", "red"));
-        Line updateLine = lineRepository.findById(id, LineService.NOT_FOUNT_ID_ERROR_MESSAGE);
+        Line updateLine = lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("노선 못찾음"));
         assertThat(updateLine.getName()).isEqualTo("2호선");
         assertThat(updateLine.getColor()).isEqualTo("red");
     }
