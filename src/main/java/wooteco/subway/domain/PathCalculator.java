@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -32,12 +33,7 @@ public class PathCalculator {
         }
     }
 
-    public List<Station> findShortestPath(final Station source, final Station target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
-    }
-
-    public int findShortestDistance(final Station source, final Station target) {
-        final double shortestDistance = dijkstraShortestPath.getPath(source, target).getWeight();
-        return (int) shortestDistance;
+    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(final Station source, final Station target) {
+        return dijkstraShortestPath.getPath(source, target);
     }
 }

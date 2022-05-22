@@ -5,6 +5,8 @@ import static wooteco.subway.domain.factory.SectionFactory.AB3;
 import static wooteco.subway.domain.factory.SectionFactory.BC3;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,14 +32,16 @@ class PathCalculatorTest {
     @DisplayName("지하철 최단 경로 목록을 조회한다.")
     @Test
     void findShortestPath() {
-        assertThat(pathCalculator.findShortestPath(STATION_A, STATION_C))
+        GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(STATION_A, STATION_C);
+        assertThat(path.getVertexList())
                 .isEqualTo(List.of(STATION_A, STATION_B, STATION_C));
     }
 
     @DisplayName("지하철 최단 경로 거리를 구한다.")
     @Test
     void findShortestDistance() {
-        assertThat(pathCalculator.findShortestDistance(STATION_A, STATION_C))
+        GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(STATION_A, STATION_C);
+        assertThat((int) path.getWeight())
                 .isEqualTo(6);
     }
 }
