@@ -15,10 +15,10 @@ import wooteco.subway.test_utils.HttpMethod;
 import wooteco.subway.test_utils.HttpUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
-@DisplayName("인수테스트 - /paths")
+@DisplayName("경로 인수테스트")
 public class PathAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("GET /paths?source={source}&target={target}&age={age} - 경로 조회 테스트")
+    @DisplayName("경로 조회 테스트")
     @Nested
     class SearchTest {
 
