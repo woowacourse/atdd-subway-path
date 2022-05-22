@@ -14,7 +14,7 @@ public class Fare {
         return calculateOverFare(distance);
     }
 
-    int calculateOverFare(int distance) {
+    private int calculateOverFare(int distance) {
         if (distance <= OVER_TEN_DISTANCE) {
             return BASE_FEE;
         }
