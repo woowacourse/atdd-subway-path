@@ -29,10 +29,8 @@ public class PathService {
 
     public Path createPath(final long sourceId, final long targetId, final int age) {
         validateDuplicatedSourceAndTarget(sourceId, targetId);
-        final Station source = stationDao.findById(sourceId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station target = stationDao.findById(targetId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
+        final Station source = findStationById(sourceId);
+        final Station target = findStationById(targetId);
         final List<Section> rawSections = sectionDao.findAll();
         final Sections sections = new Sections(rawSections);
 
@@ -53,5 +51,10 @@ public class PathService {
         if (sourceId == targetId) {
             throw new DuplicatedSourceAndTargetException();
         }
+    }
+
+    private Station findStationById(final long stationId) {
+        return stationDao.findById(stationId)
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
     }
 }
