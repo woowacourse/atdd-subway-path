@@ -10,13 +10,19 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final Long extraFare;
     private final Sections sections;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, Long extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
+    }
+
+    public Line(Long id, String name, String color, Sections sections) {
+        this(id, name, color, null, sections);
     }
 
     public Line(Long id, String name, String color) {
@@ -28,7 +34,7 @@ public class Line {
     }
 
     public static Line of(Line line, Sections sections) {
-        return new Line(line.getId(), line.getName(), line.getColor(), sections);
+        return new Line(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), sections);
     }
 
     public List<Station> getStations() {
@@ -57,6 +63,10 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Long getExtraFare() {
+        return extraFare;
     }
 
     @Override

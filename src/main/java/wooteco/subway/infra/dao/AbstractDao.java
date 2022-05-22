@@ -105,7 +105,7 @@ public abstract class AbstractDao<T, ID> {
                     .orElseThrow(NoSuchElementException::new);
 
             try {
-                params.put(replaceField(field), method.invoke(t));
+                params.put(toSnakeCase(field), method.invoke(t));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
@@ -113,7 +113,7 @@ public abstract class AbstractDao<T, ID> {
         return params;
     }
 
-    private String replaceField(String field) {
+    private String toSnakeCase(String field) {
         StringBuilder stringBuilder = new StringBuilder();
 
         final char[] chars = field.toCharArray();
@@ -141,7 +141,7 @@ public abstract class AbstractDao<T, ID> {
             for (String field : fields) {
                 final Field found = ReflectionUtils.findField(clazz, field);
                 found.setAccessible(true);
-                ReflectionUtils.setField(found, tEntity, rs.getObject(field));
+                ReflectionUtils.setField(found, tEntity, rs.getObject(toSnakeCase(field)));
             }
             return tEntity;
         });
@@ -162,7 +162,7 @@ public abstract class AbstractDao<T, ID> {
                 for (String field : fields) {
                     final Field found = ReflectionUtils.findField(clazz, field);
                     found.setAccessible(true);
-                    ReflectionUtils.setField(found, tEntity, rs.getObject(field));
+                    ReflectionUtils.setField(found, tEntity, rs.getObject(toSnakeCase(field)));
                 }
                 return tEntity;
             }, id);

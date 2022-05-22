@@ -7,9 +7,10 @@ CREATE TABLE IF NOT EXISTS Station
 
 CREATE TABLE IF NOT EXISTS Line
 (
-    id    bigint       not null auto_increment,
-    name  varchar(255) not null unique,
-    color varchar(20)  not null unique,
+    id         bigint       not null auto_increment,
+    name       varchar(255) not null unique,
+    color      varchar(20)  not null,
+    extra_fare bigint,
     primary key (id)
 );
 
@@ -25,30 +26,10 @@ CREATE TABLE IF NOT EXISTS Section
         on update cascade on delete cascade
 );
 
-insert into station(name)
-values ('선릉역');
-insert into station(name)
-values ('대림역');
-insert into station(name)
-values ('잠실역');
-insert into station(name)
-values ('서초역');
-insert into station(name)
-values ('강남역');
-
-insert into station(name)
-values ('중곡역');
-insert into station(name)
-values ('청담역');
-insert into station(name)
-values ('숭실대입구역');
-insert into station(name)
-values ('구로디지털단지역');
-
-insert into line(name, color)
-values ('2호선', 'bg-200-green');
-insert into line(name, color)
-values ('3호선', 'bg-300-orange');
+insert into line(name, color, extra_fare)
+values ('2호선', 'bg-200-green', 900);
+insert into line(name, color, extra_fare)
+values ('3호선', 'bg-300-orange', 800);
 
 
 insert into section(line_id, up_station_id, down_station_id, distance)
