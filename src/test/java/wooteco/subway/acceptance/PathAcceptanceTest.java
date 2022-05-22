@@ -52,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest{
         Long 양재시민의숲역_id = httpPost("/stations", new StationRequest("양재시민의숲역")).jsonPath().getLong("id");
 
         Long 이호선_id = httpPost("/lines", new LineRequest("2호선", "초록색", 교대역_id, 역삼역_id, 15, 1000)).jsonPath().getLong("id");
-        Long 신분당선_id = httpPost("/lines", new LineRequest("신분당선", "빨간색", 강남역_id, 양재시민의숲역_id, 20, 1000)).jsonPath().getLong("id");
+        Long 신분당선_id = httpPost("/lines", new LineRequest("신분당선", "빨간색", 강남역_id, 양재시민의숲역_id, 20, 2000)).jsonPath().getLong("id");
 
         httpPost("/lines/" + 이호선_id + "/sections", new SectionRequest(교대역_id, 강남역_id, 5));
 
@@ -66,7 +66,8 @@ public class PathAcceptanceTest extends AcceptanceTest{
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
-                        .containsExactly("교대역", "강남역", "양재역", "양재시민의숲역")
+                        .containsExactly("교대역", "강남역", "양재역", "양재시민의숲역"),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2910)
         );
     }
 
@@ -88,7 +89,10 @@ public class PathAcceptanceTest extends AcceptanceTest{
                 "/paths?source=" + 교대역_id + "&target=" + 역삼역_id + "&age=" + 16);
 
         // then
-        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1950);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1950)
+        );
     }
 
     @Test
@@ -108,7 +112,10 @@ public class PathAcceptanceTest extends AcceptanceTest{
                 "/paths?source=" + 교대역_id + "&target=" + 역삼역_id + "&age=" + 8);
 
         // then
-        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1350);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1350)
+        );
     }
 
     @Test
@@ -128,6 +135,9 @@ public class PathAcceptanceTest extends AcceptanceTest{
                 "/paths?source=" + 교대역_id + "&target=" + 역삼역_id + "&age=" + 4);
 
         // then
-        assertThat(response.jsonPath().getInt("fare")).isEqualTo(0);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(0)
+        );
     }
 }

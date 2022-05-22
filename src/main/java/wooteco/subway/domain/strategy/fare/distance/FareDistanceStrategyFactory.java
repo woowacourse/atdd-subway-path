@@ -10,7 +10,8 @@ public enum FareDistanceStrategyFactory {
     OVER_10_KM(FareDistanceStrategyFactory::isOver10Km, new Over10KmStrategy()),
     OVER_50_KM(FareDistanceStrategyFactory::isOver50Km, new Over50KmStrategy());
 
-    private static final int DEFAULT_DISTANCE = 10;
+    private static final int DEFAULT_DISTANCE_MINIMUM = 1;
+    private static final int DEFAULT_DISTANCE_MAXIMUM = 10;
     private static final int OVER_STEP_ONE_DISTANCE = 50;
 
     private final Predicate<Integer> predicate;
@@ -22,11 +23,11 @@ public enum FareDistanceStrategyFactory {
     }
 
     private static boolean isDefault(Integer distance) {
-        return distance >= 1 && distance <= DEFAULT_DISTANCE;
+        return distance >= DEFAULT_DISTANCE_MINIMUM && distance <= DEFAULT_DISTANCE_MAXIMUM;
     }
 
     private static boolean isOver10Km(Integer distance) {
-        return distance > DEFAULT_DISTANCE && distance <= OVER_STEP_ONE_DISTANCE;
+        return distance > DEFAULT_DISTANCE_MAXIMUM && distance <= OVER_STEP_ONE_DISTANCE;
     }
 
     private static boolean isOver50Km(Integer distance) {

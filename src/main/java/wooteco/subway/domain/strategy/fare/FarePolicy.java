@@ -11,6 +11,7 @@ public class FarePolicy {
     public static final int STEP_ONE_DISTANCE = 50;
     public static final double STEP_ONE_CHARGE_DISTANCE = 5.0;
     public static final double STEP_TWO_CHARGE_DISTANCE = 8.0;
+    public static final int DEDUCT_FARE = 350;
 
     private final FareDistanceStrategy fareDistanceStrategy;
     private final FareDiscountAgeStrategy fareAgeStrategyFactory;
