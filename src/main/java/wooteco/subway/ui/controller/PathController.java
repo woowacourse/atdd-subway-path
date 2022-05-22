@@ -20,6 +20,6 @@ public class PathController {
     public ResponseEntity<PathResponse> getPath(
             @RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
         PathResponse pathResponse = pathService.getPath(source, target);
-        return ResponseEntity.ok().body(pathResponse);
+        return ResponseEntity.ok(pathResponse);
     }
 }
