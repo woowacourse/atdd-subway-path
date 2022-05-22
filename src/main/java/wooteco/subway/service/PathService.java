@@ -35,10 +35,10 @@ public class PathService {
         Station source = stationService.findById(sourceId).toStation();
         Station target = stationService.findById(targetId).toStation();
 
-        Path shortestPath = pathFindable.findPath(sectionDao.findAll(), source, target);
-        List<StationResponse> stationResponses = convertToStationResponse(shortestPath);
-        int shortestDistance = shortestPath.getDistance();
-        Fare fare = new Fare(shortestDistance, age, getMaxExtraFare(shortestPath));
+        Path path = pathFindable.findPath(sectionDao.findAll(), source, target);
+        List<StationResponse> stationResponses = convertToStationResponse(path);
+        int shortestDistance = path.getDistance();
+        Fare fare = new Fare(shortestDistance, age, getMaxExtraFare(path));
 
         return new PathResponse(stationResponses, shortestDistance, fare.calculateFare());
     }
