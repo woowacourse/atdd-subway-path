@@ -19,25 +19,23 @@ public class StationService {
     }
 
     public StationResponse createStation(String name) {
-        var station = stationDao.save(name);
-
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(stationDao.save(name));
     }
 
-    public void deleteStation(Long id) {
-        checkValidation(id);
-        stationDao.deleteById(id);
+    public void deleteStation(Long stationId) {
+        checkValidation(stationId);
+        stationDao.deleteById(stationId);
     }
 
-    private void checkValidation(Long id) {
-        if (!sectionDao.findByStationId(id).isEmpty()) {
+    private void checkValidation(Long stationId) {
+        if (!sectionDao.findByStationId(stationId).isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 구간에 추가돼 있는 역은 삭제할 수 없습니다.");
         }
     }
 
     public List<StationResponse> findAll() {
         return stationDao.findAll().stream()
-                .map(it -> new StationResponse(it.getId(), it.getName()))
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
     }
 }
