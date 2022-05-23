@@ -1,9 +1,7 @@
 package wooteco.subway.dto;
 
+import java.util.Objects;
 import wooteco.subway.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class StationResponse {
     private Long id;
@@ -12,9 +10,9 @@ public class StationResponse {
     public StationResponse() {
     }
 
-    public StationResponse(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public StationResponse(Station station) {
+        this.id = station.getId();
+        this.name = station.getName();
     }
 
     public Long getId() {
@@ -23,5 +21,18 @@ public class StationResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
