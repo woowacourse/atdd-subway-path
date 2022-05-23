@@ -4,9 +4,9 @@ public class PathRequest {
 
     private final Long source;
     private final Long target;
-    private final Long age;
+    private final int age;
 
-    public PathRequest(Long source, Long target, Long age) {
+    public PathRequest(Long source, Long target, int age) {
         this.source = source;
         this.target = target;
         this.age = age;
@@ -20,7 +20,7 @@ public class PathRequest {
         return target;
     }
 
-    public Long getAge() {
+    public int getAge() {
         return age;
     }
 }

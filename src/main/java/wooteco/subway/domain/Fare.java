@@ -2,8 +2,8 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import wooteco.subway.domain.strategy.DiscountStrategy;
 import wooteco.subway.domain.strategy.FareStrategy;
+import wooteco.subway.domain.strategy.discount.DiscountStrategy;
 
 public class Fare {
 
@@ -18,9 +18,9 @@ public class Fare {
     }
 
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, int extraFare) {
         int fare = BASIC_FARE + fareStrategy.calculate(distance);
-        return discountStrategy.calculate(fare);
+        return discountStrategy.calculate(fare + extraFare);
     }
 
     public int calculateMaxLineExtraFare(List<Line> lines) {

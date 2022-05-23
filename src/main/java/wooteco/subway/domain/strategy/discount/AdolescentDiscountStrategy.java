@@ -1,6 +1,6 @@
-package wooteco.subway.domain.strategy;
+package wooteco.subway.domain.strategy.discount;
 
-import static wooteco.subway.domain.strategy.KidDiscountStrategy.DEDUCTION;
+import static wooteco.subway.domain.strategy.discount.KidDiscountStrategy.DEDUCTION;
 
 public class AdolescentDiscountStrategy implements DiscountStrategy {
 

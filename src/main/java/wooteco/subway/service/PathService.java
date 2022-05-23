@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.DiscountRole;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
@@ -33,12 +34,8 @@ public class PathService {
     }
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
-        Station source = stationRepository
-                .findById(pathRequest.getSource())
-                .orElseThrow(() -> new NotFoundException("최단 경로의 상행역을 찾을 수 없습니다."));
-        Station target = stationRepository
-                .findById(pathRequest.getTarget())
-                .orElseThrow(() -> new NotFoundException("최단 경로의 하행역을 찾을 수 없습니다."));
+        Station source = findStation(pathRequest.getSource(), "최단 경로의 상행역을 찾을 수 없습니다.");
+        Station target = findStation(pathRequest.getTarget(), "최단 경로의 하행역을 찾을 수 없습니다.");
 
         List<Section> sections = sectionRepository.findAll();
 
@@ -46,10 +43,17 @@ public class PathService {
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(source, target);
 
         int distance = (int) shortestPath.getWeight();
-        Fare fare = new Fare(new BasicFareStrategy());
+        Fare fare = new Fare(new BasicFareStrategy(), DiscountRole.findDiscountStrategy(pathRequest.getAge()));
+
         int lineExtraFare = fare.calculateMaxLineExtraFare(findLine(shortestPath.getEdgeList()));
         return new PathResponse(shortestPath.getVertexList(), distance,
-                fare.calculateFare(distance) + lineExtraFare);
+                fare.calculateFare(distance, lineExtraFare));
+    }
+
+    private Station findStation(Long id, String message) {
+        return stationRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(message));
     }
 
     private List<Line> findLine(List<ShortestPathEdge> edges) {

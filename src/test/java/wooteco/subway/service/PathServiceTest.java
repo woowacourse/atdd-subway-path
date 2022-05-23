@@ -58,7 +58,7 @@ class PathServiceTest {
         sectionRepository.save(new Section(우테코노선, 미르역, 호호역, 10));
         sectionRepository.save(new Section(우테코노선, 호호역, 수달역, 10));
 
-        PathResponse shortestPath = pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 10L));
+        PathResponse shortestPath = pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 20));
 
         assertThat(shortestPath.getStations()).hasSize(3);
     }
@@ -83,7 +83,7 @@ class PathServiceTest {
         sectionRepository.save(new Section(우테코노선, 미르역, 호호역, 10));
 
         assertThatThrownBy(() ->
-                pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 10L)))
+                pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }
@@ -107,7 +107,7 @@ class PathServiceTest {
         sectionRepository.save(new Section(우테코노선, 수달역, 호호역, 10));
 
         assertThatThrownBy(() ->
-                pathService.createShortestPath(new PathRequest(수달역_id, 미르역_id, 10L)))
+                pathService.createShortestPath(new PathRequest(수달역_id, 미르역_id, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }
