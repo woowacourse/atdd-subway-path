@@ -1,9 +1,11 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -22,6 +24,14 @@ public class Lines implements Iterable<Line> {
             stations.addAll(line.getStations());
         }
         return new ArrayList<>(stations);
+    }
+
+    public Map<Long, Integer> getExtraFareByIds() {
+        Map<Long, Integer> extraFareById = new HashMap<>();
+        for (Line line : lines) {
+            extraFareById.put(line.getId(), line.getExtraFare());
+        }
+        return extraFareById;
     }
 
     private class LinesIterator implements Iterator<Line> {

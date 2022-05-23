@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 public class DistanceFareStrategy implements FareStrategy {
 

@@ -7,4 +7,5 @@ public interface PathFindingStrategy {
 
     List<Station> getShortestPath(Station source, Station target, Lines lines);
 
+    List<Long> getLineIds(Station source, Station target, Lines lines);
 }

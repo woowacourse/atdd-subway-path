@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.DistanceFareStrategy;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.AgeDiscountStrategy;
+import wooteco.subway.domain.fare.DistanceFareStrategy;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.dto.info.PathServiceRequest;
 import wooteco.subway.dto.info.PathServiceResponse;
 import wooteco.subway.dto.info.StationDto;
@@ -43,9 +44,9 @@ public class PathService {
             .map(station -> new StationDto(station.getId(), station.getName()))
             .collect(Collectors.toList());
         int distance = path.getShortestDistance();
-        Fare fare = new Fare(new DistanceFareStrategy());
+        Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
 
-        return new PathServiceResponse(stationDtos, distance, fare.calculate(path));
+        return new PathServiceResponse(stationDtos, distance, fare.calculate(path, pathServiceRequest.getAge()));
     }
 
     private void validateNotExists(Long id) {

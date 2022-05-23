@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -20,6 +21,15 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
+    @Override
+    public List<Long> getLineIds(Station source, Station target, Lines lines) {
+        DijkstraShortestPath<Station, WeightEdgeWithLineId> dijkstraShortestPath = getDijkstraShortestPath(lines);
+        List<WeightEdgeWithLineId> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
+        return edges.stream()
+            .map(edge -> edge.getLineId())
+            .collect(Collectors.toList());
+    }
+
     private DijkstraShortestPath<Station, WeightEdgeWithLineId> getDijkstraShortestPath(Lines lines) {
         WeightedMultigraph<Station, WeightEdgeWithLineId> graph = new WeightedMultigraph<>(WeightEdgeWithLineId.class);
         for (Station station : lines.getStations()) {
@@ -27,9 +37,8 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
         }
         lines.forEach(line -> {
             line.getSections().forEach(section -> {
-                WeightEdgeWithLineId weightEdgeWithLineId = new WeightEdgeWithLineId(line.getId(),
-                    section.getDistance());
-                graph.addEdge(section.getUpStation(), section.getDownStation(), weightEdgeWithLineId);
+                graph.addEdge(section.getUpStation(), section.getDownStation(),
+                    new WeightEdgeWithLineId(line.getId(), section.getDistance()));
             });
         });
         return new DijkstraShortestPath<>(graph);
