@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wooteco.subway.domain.property.Color;
-import wooteco.subway.domain.property.Fare;
+import wooteco.subway.domain.property.fare.Fare;
 import wooteco.subway.domain.property.Name;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.SectionSeries;

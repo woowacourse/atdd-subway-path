@@ -24,7 +24,7 @@ class PathFinderTest {
         final PathFinder pathFinder = PathFinder.from(lineSeries);
 
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationD()).getRoute();
+        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationD()).getStations();
         // then
         Assertions.assertAll(
             () -> assertThat(shortestPath).hasSize(3),
@@ -39,7 +39,7 @@ class PathFinderTest {
         final LineSeries lineSeries = new LineSeries(List.of(LineFixture.getLineAbc(), LineFixture.getLineAc()));
         final PathFinder pathFinder = PathFinder.from(lineSeries);
         // when
-        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationC()).getRoute();
+        final List<Station> shortestPath = pathFinder.findShortestPath(getStationA(), getStationC()).getStations();
         // then
         Assertions.assertAll(
             () -> assertThat(shortestPath).hasSize(2),

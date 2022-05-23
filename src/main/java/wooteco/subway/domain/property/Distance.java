@@ -35,6 +35,10 @@ public class Distance {
         return this.value > other.value;
     }
 
+    public boolean isShorterOrEqualThan(Distance other) {
+        return this.value <= other.value;
+    }
+
     public int getValue() {
         return value;
     }
