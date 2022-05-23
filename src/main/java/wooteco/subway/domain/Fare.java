@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.List;
+
 public class Fare {
 
     private static final int STANDARD_DISTANCE = 10;
@@ -15,17 +17,25 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(final int distance, final int lineExtraFare, final DiscountPolicy discountPolicy) {
+    public static Fare of(final int distance, final int lineExtraFare, final List<DiscountPolicy> discountPolicies) {
         if (distance <= STANDARD_DISTANCE) {
-            return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare));
+            return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare));
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare)
+            return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare)
                     + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
         }
-        return new Fare(discountPolicy.applyDiscount(STANDARD_FARE + lineExtraFare)
+        return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare)
                 + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
                 + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
+    }
+
+    private static int applyDiscounts(final List<DiscountPolicy> discountPolicies, int money) {
+        for (DiscountPolicy discountPolicy : discountPolicies) {
+            money = discountPolicy.applyDiscount(money);
+        }
+
+        return money;
     }
 
     private static int calculateOverFare(final int distance, final int unit) {

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.DiscountPolicy;
+import wooteco.subway.domain.AgeDiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
@@ -35,8 +35,8 @@ public class PathService {
         validateExistStations(pathRequest);
         final Path shortestPath = createPath(pathRequest);
         final int maxExtraFare = getMaxExtraFare(shortestPath.getSections());
-        final DiscountPolicy discountPolicy = DiscountPolicy.createByAge(pathRequest.getAge());
-        final Fare fare = Fare.of(shortestPath.getTotalDistance(), maxExtraFare, discountPolicy);
+        final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.createByAge(pathRequest.getAge());
+        final Fare fare = Fare.of(shortestPath.getTotalDistance(), maxExtraFare, List.of(ageDiscountPolicy));
 
         final List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
         final List<StationResponse> stations = stationService.findByStationIds(stationIds);
