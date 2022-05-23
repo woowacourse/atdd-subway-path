@@ -6,6 +6,8 @@
     - 현재 객체가 아닌 함수처럼 사용되는 것으로 보임
     - 거리를 전달하여 실제 계산은 객체가 수행하도록 수정
     - `new Fare(distance).longValue();`
+- [x] `FareTest`
+    - 경계값에 대한 테스트
 - [x] `JGraphPathFinder`
     - 정적팩터리 메서드의 반환 타입을 인터페이스로 수정
 - [ ] `Sections`
@@ -15,7 +17,7 @@
     - `getPath()`
         - 구현체가 변경된다면 내부 구현을 수정해야함.
         - 코드의 변경없이 확장 가능하도록 구조 변경
-    - `FactoryBean`을 사용하여 빈으로 주입받아 사용할 수 있도록 수정 
+    - `FactoryBean`을 사용하여 빈으로 주입받아 사용할 수 있도록 수정
 - [x] `PathServiceTest`
     - 경로 조회 테스트 시 다양한 케이스에 대해 테스트
 - [ ] `AcceptanceTest`

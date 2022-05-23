@@ -23,6 +23,15 @@ public class FareTest {
     }
 
     @Test
+    @DisplayName("이동 거리가 10km 이내라면 기본 요금 1,250원이 부과된다.")
+    void defaultFare_10km() {
+        Fare fare = fareFactory.getFare(10, 0);
+
+        // then
+        assertThat(fare.calculateFare()).isEqualTo(1250);
+    }
+
+    @Test
     @DisplayName("이동 거리가 10km ~ 50km 사이라면 기본 요금에 5km 마다 100원 추가된 요금이 부과된다.")
     void additionalFare() {
         // given
