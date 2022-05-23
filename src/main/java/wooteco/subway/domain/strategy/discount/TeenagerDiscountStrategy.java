@@ -15,7 +15,7 @@ public class TeenagerDiscountStrategy implements DiscountStrategy {
     }
 
     @Override
-    public int calculateDiscountedAmount(final int fare) {
+    public int calculate(final int fare) {
         return (int) ((fare - DEDUCTIBLE_AMOUNT) * DISCOUNT_RATE);
     }
 }

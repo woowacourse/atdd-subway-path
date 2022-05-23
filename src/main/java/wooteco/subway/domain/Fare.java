@@ -28,7 +28,7 @@ public class Fare {
 
     public Fare discountByAge(final int age) {
         final DiscountStrategy strategy = DiscountStrategyMapper.findStrategyBy(age);
-        final int discountAmount = strategy.calculateDiscountedAmount(value);
+        final int discountAmount = strategy.calculate(value);
         return new Fare(discountAmount);
     }
 

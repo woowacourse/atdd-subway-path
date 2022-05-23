@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 
 public enum DiscountStrategyMapper {
 
-    DEFAULT_DISCOUNT(it -> it < 6 || it >= 19, DefaultDiscountStrategy.getInstance()),
-    CHILD_DISCOUNT(it -> 6 <= it && it < 13, ChildDiscountStrategy.getInstance()),
-    TEENAGER_DISCOUNT(it -> 13 <= it && it < 19, TeenagerDiscountStrategy.getInstance()),
+    DEFAULT_STRATEGY(it -> it < 6 || it >= 19, DefaultDiscountStrategy.getInstance()),
+    CHILD_STRATEGY(it -> 6 <= it && it < 13, ChildDiscountStrategy.getInstance()),
+    TEENAGER_STRATEGY(it -> 13 <= it && it < 19, TeenagerDiscountStrategy.getInstance()),
     ;
 
     private final Predicate<Integer> predicate;
