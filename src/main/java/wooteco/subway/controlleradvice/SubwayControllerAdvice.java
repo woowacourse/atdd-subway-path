@@ -10,6 +10,6 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("[ERROR] " + illegalArgumentException.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(illegalArgumentException.getMessage());
     }
 }
