@@ -27,21 +27,18 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        LineEntity savedLine = lineDao.save(LineEntity.from(line));
+        LineEntity lineEntity = lineDao.save(LineEntity.from(line));
         List<SectionEntity> sectionEntities = line.getSections().stream()
-                .map(section -> SectionEntity.of(section, savedLine.getId()))
+                .map(section -> SectionEntity.of(section, lineEntity.getId()))
                 .collect(Collectors.toList());
         sectionDao.saveAll(sectionEntities);
-        Sections sections = new Sections(Collections.emptyList());
-        return new Line(savedLine.getId(), savedLine.getName(), savedLine.getColor(), sections);
+        return toLine(lineEntity, sectionEntities);
     }
 
     public Line findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id);
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
-        List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
-        Sections sections = toSections(sectionEntities, stations);
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return toLine(lineEntity, sectionEntities);
     }
 
     public List<Line> findAll() {
@@ -58,9 +55,16 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
+    private Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntities) {
+        List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
+        Sections sections = toSections(sectionEntities, stations);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+
     private Sections toSections(List<SectionEntity> sectionEntities, List<Station> stations) {
-        Map<Long, Station> allStations = new HashMap<>();
-        stations.forEach(station -> allStations.put(station.getId(), station));
+        Map<Long, Station> allStations = stations.stream()
+                .collect(Collectors.toMap(Station::getId, station -> station));
+
         List<Section> sections = sectionEntities.stream()
                 .map(sectionDto -> new Section(sectionDto.getId(),
                         allStations.get(sectionDto.getUpStationId()),

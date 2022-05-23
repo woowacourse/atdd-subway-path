@@ -48,12 +48,11 @@ public class LineRepositoryTest {
         Section section = new Section(A, B, 10);
         Line line = new Line("A호선", "yellow", new Sections(section));
 
-        Long lineId = lineRepository.save(line);
-        LineEntity result = lineDao.findById(lineId);
+        Line savedLine = lineRepository.save(line);
 
         assertAll(
-                () -> assertThat(result.getName()).isEqualTo("A호선"),
-                () -> assertThat(result.getColor()).isEqualTo("yellow")
+                () -> assertThat(savedLine.getName()).isEqualTo("A호선"),
+                () -> assertThat(savedLine.getColor()).isEqualTo("yellow")
         );
     }
 

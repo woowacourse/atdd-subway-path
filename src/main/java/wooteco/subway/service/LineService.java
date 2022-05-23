@@ -34,15 +34,14 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
-    // return 값을 Line -> LineResponse로 수정 필요
     @Transactional
-    public Line save(LineRequest lineRequest) {
+    public LineResponse save(LineRequest lineRequest) {
         Section section = new Section(stationRepository.findById(lineRequest.getUpStationId()),
                 stationRepository.findById(lineRequest.getDownStationId()), lineRequest.getDistance());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Sections(section));
         try {
-            Long lindId = lineRepository.save(line);
-            return lineRepository.findById(lindId);
+            Line savedLine = lineRepository.save(line);
+            return LineResponse.from(savedLine);
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("이미 존재하는 노선 이름입니다.");
         }

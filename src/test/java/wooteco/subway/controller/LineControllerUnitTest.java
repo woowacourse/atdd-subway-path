@@ -49,8 +49,9 @@ class LineControllerUnitTest {
         Section section = new Section(
                 new Station(1L, "서울역"),
                 new Station(2L, "용산역"), 10);
-        Line mockLine = new Line(1L, "1호선", "bg-darkblue-600", new Sections(section));
-        given(lineService.save(any(LineRequest.class))).willReturn(mockLine);
+        Line line = new Line(1L, "1호선", "bg-darkblue-600", new Sections(section));
+        LineResponse mockLineResponse = LineResponse.from(line);
+        given(lineService.save(any(LineRequest.class))).willReturn(mockLineResponse);
 
         LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10);
 
