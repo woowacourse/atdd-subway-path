@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.dto.PathRequest;
-import wooteco.subway.controller.dto.PathResponse;
 import wooteco.subway.service.PathService;
+import wooteco.subway.service.dto.PathResponse;
 
 @RestController
 public class PathController {
@@ -21,7 +21,7 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@Valid PathRequest pathRequest) {
-        return ResponseEntity.ok().body(PathResponse.from(
-            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge())));
+        return ResponseEntity.ok().body(
+            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge()));
     }
 }

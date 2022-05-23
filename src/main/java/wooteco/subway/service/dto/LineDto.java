@@ -11,9 +11,9 @@ public class LineDto {
     private final String name;
     private final String color;
     private final int extraFare;
-    private final List<StationDto> stations;
+    private final List<StationResponse> stations;
 
-    private LineDto(Long id, String name, String color, int extraFare, List<StationDto> stations) {
+    private LineDto(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -24,7 +24,7 @@ public class LineDto {
     public static LineDto from(Line line) {
         return new LineDto(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
             line.findOrderedStations()
-                .stream().map(StationDto::from)
+                .stream().map(StationResponse::from)
                 .collect(Collectors.toList()));
     }
 
@@ -44,7 +44,7 @@ public class LineDto {
         return extraFare;
     }
 
-    public List<StationDto> getStations() {
+    public List<StationResponse> getStations() {
         return List.copyOf(stations);
     }
 }

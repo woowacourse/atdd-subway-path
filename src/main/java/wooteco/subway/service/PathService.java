@@ -7,8 +7,8 @@ import wooteco.subway.dao.repository.LineRepository;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.service.dto.PathDto;
-import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,14 +22,14 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathDto findPath(Long sourceStationId, Long targetStationId, int age) {
+    public PathResponse findPath(Long sourceStationId, Long targetStationId, int age) {
         Path path = new Path(lineRepository.findAll(), getStation(stationService.findOne(sourceStationId)),
             getStation(stationService.findOne(targetStationId)));
         int distance = path.getDistance();
-        return new PathDto(path.getStations(), distance, Fare.of(distance, path.getExtraFare(), age).calculate());
+        return new PathResponse(path.getStations(), distance, Fare.of(distance, path.getExtraFare(), age).calculate());
     }
 
-    private Station getStation(StationDto stationDto) {
-        return new Station(stationDto.getId(), stationDto.getName());
+    private Station getStation(StationResponse stationResponse) {
+        return new Station(stationResponse.getId(), stationResponse.getName());
     }
 }

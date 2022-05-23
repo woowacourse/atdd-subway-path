@@ -22,7 +22,7 @@ import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 인수 테스트")
 @SpringBootAcceptanceTest

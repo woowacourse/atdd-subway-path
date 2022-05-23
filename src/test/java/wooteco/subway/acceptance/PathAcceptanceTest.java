@@ -20,11 +20,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
-import wooteco.subway.controller.dto.PathResponse;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @DisplayName("경로 조회 인수 테스트")
 @SpringBootAcceptanceTest

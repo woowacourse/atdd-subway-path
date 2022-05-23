@@ -13,7 +13,7 @@ import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 class RestUtil {
 

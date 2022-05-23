@@ -16,7 +16,7 @@ import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineUpdateRequest;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.service.dto.LineDto;
-import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -27,8 +27,8 @@ class LineServiceTest {
     @Autowired
     private StationService stationService;
 
-    private StationDto upStation;
-    private StationDto downStation;
+    private StationResponse upStation;
+    private StationResponse downStation;
 
     @BeforeEach
     void init() {
@@ -118,14 +118,14 @@ class LineServiceTest {
     void addSectionLeft() {
         LineDto line = lineService.create(
             new LineRequest("2호선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 200));
-        StationDto newStation = stationService.create("교대역");
+        StationResponse newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
 
         LineDto updatedLine = lineService.findOne(line.getId());
 
         assertThat(updatedLine.getStations())
-            .map(StationDto::getName)
+            .map(StationResponse::getName)
             .containsExactly("강남역", "역삼역", "교대역");
     }
 
@@ -134,7 +134,7 @@ class LineServiceTest {
     void addSectionRight() {
         LineDto line = lineService.create(
             new LineRequest("2호선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 200));
-        StationDto newStation = stationService.create("교대역");
+        StationResponse newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(
             newStation.getId(), upStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
@@ -142,7 +142,7 @@ class LineServiceTest {
         LineDto updatedLine = lineService.findOne(line.getId());
 
         assertThat(updatedLine.getStations())
-            .map(StationDto::getName)
+            .map(StationResponse::getName)
             .containsExactly("교대역", "강남역", "역삼역");
     }
 
@@ -151,7 +151,7 @@ class LineServiceTest {
     void addSectionLeftToRight() {
         LineDto line = lineService.create(
             new LineRequest("2호선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 200));
-        StationDto newStation = stationService.create("교대역");
+        StationResponse newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(
             upStation.getId(), newStation.getId(), 5);
 
@@ -159,7 +159,7 @@ class LineServiceTest {
 
         LineDto updatedLine = lineService.findOne(line.getId());
         assertThat(updatedLine.getStations())
-            .map(StationDto::getName)
+            .map(StationResponse::getName)
             .containsExactly("강남역", "교대역", "역삼역");
     }
 
@@ -168,13 +168,13 @@ class LineServiceTest {
     void addSectionRightToLeft() {
         LineDto line = lineService.create(
             new LineRequest("2호선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 200));
-        StationDto newStation = stationService.create("교대역");
+        StationResponse newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(newStation.getId(), downStation.getId(), 5);
         lineService.addSection(line.getId(), newSection);
 
         LineDto updatedLine = lineService.findOne(line.getId());
         assertThat(updatedLine.getStations())
-            .map(StationDto::getName)
+            .map(StationResponse::getName)
             .containsExactly("강남역", "교대역", "역삼역");
     }
 
@@ -183,7 +183,7 @@ class LineServiceTest {
     void deleteSection() {
         LineDto line = lineService.create(
             new LineRequest("2호선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 200));
-        StationDto newStation = stationService.create("교대역");
+        StationResponse newStation = stationService.create("교대역");
         SectionRequest newSection = new SectionRequest(downStation.getId(), newStation.getId(), 10);
         lineService.addSection(line.getId(), newSection);
 
@@ -192,7 +192,7 @@ class LineServiceTest {
         LineDto updatedLine = lineService.findOne(line.getId());
         assertAll(
             () -> assertThat(updatedLine.getStations())
-                .map(StationDto::getName)
+                .map(StationResponse::getName)
                 .containsExactly("강남역", "교대역")
         );
     }

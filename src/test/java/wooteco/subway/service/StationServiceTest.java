@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.controller.dto.LineRequest;
-import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -26,7 +26,7 @@ class StationServiceTest {
     @DisplayName("이름으로 지하철 역을 저장한다.")
     @Test
     void create() {
-        StationDto station = stationService.create("강남역");
+        StationResponse station = stationService.create("강남역");
         assertThat(station.getId()).isGreaterThan(0);
         assertThat(station.getName()).isEqualTo("강남역");
     }
@@ -43,8 +43,8 @@ class StationServiceTest {
     @DisplayName("지하철 역 하나를 조회한다.")
     @Test
     void findOne() {
-        StationDto station = stationService.create("강남역");
-        StationDto findStation = stationService.findOne(station.getId());
+        StationResponse station = stationService.create("강남역");
+        StationResponse findStation = stationService.findOne(station.getId());
         assertThat(findStation.getName()).isEqualTo("강남역");
     }
 
@@ -54,14 +54,14 @@ class StationServiceTest {
         List<String> names = List.of("강남역", "역삼역", "선릉역");
         names.forEach(stationService::create);
 
-        List<StationDto> stations = stationService.findAllStations();
+        List<StationResponse> stations = stationService.findAllStations();
         assertThat(stations).hasSize(3);
     }
 
     @DisplayName("지하철 역을 삭제한다.")
     @Test
     void delete() {
-        StationDto station = stationService.create("강남역");
+        StationResponse station = stationService.create("강남역");
         stationService.remove(station.getId());
 
         assertThat(stationService.findAllStations()).isEmpty();
@@ -70,8 +70,8 @@ class StationServiceTest {
     @DisplayName("구간으로 등록된 역은 삭제면 예외가 발생한다.")
     @Test
     void deleteExceptionBySection() {
-        StationDto upStation = stationService.create("강남역");
-        StationDto downStation = stationService.create("역삼역");
+        StationResponse upStation = stationService.create("강남역");
+        StationResponse downStation = stationService.create("역삼역");
 
         lineService.create(new LineRequest("2호선", "red", upStation.getId(), downStation.getId(), 10, 200));
 

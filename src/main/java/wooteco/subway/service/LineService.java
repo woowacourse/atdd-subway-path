@@ -15,7 +15,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionsDirtyChecker;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineDto;
-import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -102,7 +102,7 @@ public class LineService {
         return new Section(upStation, downStation, sectionRequest.getDistance());
     }
 
-    private Station getStation(StationDto stationDto) {
-        return new Station(stationDto.getId(), stationDto.getName());
+    private Station getStation(StationResponse stationResponse) {
+        return new Station(stationResponse.getId(), stationResponse.getName());
     }
 }
