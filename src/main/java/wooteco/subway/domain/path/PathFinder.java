@@ -1,10 +1,12 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 
 public class PathFinder {
 
@@ -40,8 +42,7 @@ public class PathFinder {
     public Path find(final Station source, final Station target) {
         validateSameStation(source, target);
         final GraphPath<Station, SubwayWeightEdge> graphPath = getShortestPath(source, target);
-        final int extraFare = getMaxExtraFare(graphPath);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight(), extraFare);
+        return new Path(graphPath.getVertexList(), graphPath.getEdgeList(), (int) graphPath.getWeight());
     }
 
     private void validateSameStation(final Station source, final Station target) {
@@ -60,13 +61,5 @@ public class PathFinder {
         if (null == graphPath) {
             throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
         }
-    }
-
-    private int getMaxExtraFare(final GraphPath<Station, SubwayWeightEdge> graphPath) {
-        return graphPath.getEdgeList()
-                .stream()
-                .mapToInt(SubwayWeightEdge::getExtraFare)
-                .max()
-                .orElseThrow(() -> new NoSuchElementException("가장 높은 금액의 추가 요금을 찾는 도중 오류가 발생했습니다."));
     }
 }
