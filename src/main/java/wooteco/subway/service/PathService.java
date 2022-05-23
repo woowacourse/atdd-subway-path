@@ -34,9 +34,7 @@ public class PathService {
     public PathResponse findShortestPath(final PathRequest pathRequest) {
         validateExistStations(pathRequest);
         final Path shortestPath = createPath(pathRequest);
-        final int maxExtraFare = getMaxExtraFare(shortestPath.getSections());
-        final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.createByAge(pathRequest.getAge());
-        final Fare fare = Fare.of(shortestPath.getTotalDistance(), maxExtraFare, List.of(ageDiscountPolicy));
+        final Fare fare = calculateFare(pathRequest, shortestPath);
 
         final List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
         final List<StationResponse> stations = stationService.findByStationIds(stationIds);
@@ -51,6 +49,12 @@ public class PathService {
     private Path createPath(final PathRequest pathRequest) {
         final List<Section> allSections = sectionDao.findAll();
         return Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget());
+    }
+
+    private Fare calculateFare(final PathRequest pathRequest, final Path shortestPath) {
+        final int maxExtraFare = getMaxExtraFare(shortestPath.getSections());
+        final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.createByAge(pathRequest.getAge());
+        return Fare.of(shortestPath.getTotalDistance(), maxExtraFare, List.of(ageDiscountPolicy));
     }
 
     private int getMaxExtraFare(final List<Section> sections) {
