@@ -20,8 +20,11 @@ class PathTest {
         Path path = new Path(sections);
         List<Station> stations = path.calculateShortestPath(new Station(1L, "잠실역"), new Station(4L, "건대역"));
 
-        assertThat(stations).isEqualTo(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역")
-                , new Station(3L, "강남역"), new Station(4L, "건대역")));
+        assertThat(stations).containsExactly(
+                new Station(1L, "잠실역"),
+                new Station(2L, "선릉역"),
+                new Station(3L, "강남역"),
+                new Station(4L, "건대역"));
     }
 
     @DisplayName("최단 경로의 거리를 구한다.")

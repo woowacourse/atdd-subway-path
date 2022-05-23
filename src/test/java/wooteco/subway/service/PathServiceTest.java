@@ -57,9 +57,12 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.createPath(sourceStationId, targetStationId, age);
 
         assertAll(
-                () -> assertThat(createStation(pathResponse)).isEqualTo(
-                        List.of(new Station(4L, "이대역"), new Station(5L, "학동역")
-                                , new Station(6L, "이수역"), new Station(7L, "건대역"))
+                () -> assertThat(createStation(pathResponse))
+                        .containsExactly(
+                                new Station(4L, "이대역"),
+                                new Station(5L, "학동역"),
+                                new Station(6L, "이수역"),
+                                new Station(7L, "건대역")
                 ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)

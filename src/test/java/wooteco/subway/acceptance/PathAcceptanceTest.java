@@ -52,13 +52,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Float distance = response.body().jsonPath().get("distance");
         Integer fare = response.body().jsonPath().get("fare");
 
-        List<Station> expectedStations = List.of(
-                new Station(4L, "이대역"),
-                new Station(5L, "학동역"),
-                new Station(6L, "이수역"),
-                new Station(7L, "건대역"));
-
-        assertAll(() -> assertThat(stations).isEqualTo(expectedStations),
+        assertAll(() -> assertThat(stations).containsExactly(
+                        new Station(4L, "이대역"),
+                        new Station(5L, "학동역"),
+                        new Station(6L, "이수역"),
+                        new Station(7L, "건대역")),
                 () -> assertThat(distance).isEqualTo(10),
                 () -> assertThat(fare).isEqualTo(1250));
     }
