@@ -56,6 +56,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("중복된 지하철 노선 이름입니다.");
     }
 
     @DisplayName("지하철 노선 전체를 조회한다.")
@@ -124,6 +125,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -156,6 +158,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 수정한다.(400에러)")
@@ -181,6 +184,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("중복된 지하철 노선 이름입니다.");
     }
 
     @DisplayName("지하철 노선을 제거한다.")
