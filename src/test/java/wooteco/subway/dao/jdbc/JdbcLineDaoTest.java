@@ -64,7 +64,7 @@ class JdbcLineDaoTest {
         Line savedLine = lineDao.create(new Line("1호선", "bg-blue-200"));
         Long id = savedLine.getId();
 
-        lineDao.update(id, "2호선", "bg-green-300");
+        lineDao.update(id, new Line("2호선", "bg-green-300"));
 
         assertThat(lineDao.findById(id)).isEqualTo(new Line(id, "2호선", "bg-green-300"));
     }

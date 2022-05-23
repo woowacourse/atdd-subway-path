@@ -17,7 +17,8 @@ public class JdbcLineDao implements LineDao {
     private static final RowMapper<Line> Line_ROW_MAPPER = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extra_fare")
     );
     private final JdbcTemplate jdbcTemplate;
 
@@ -27,15 +28,16 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public Line create(Line line) {
-        String sql = "INSERT INTO line (name, color) VALUES(?, ?)";
+        String sql = "INSERT INTO line (name, color, extra_fare) VALUES(?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
             statement.setString(1, line.getName());
             statement.setString(2, line.getColor());
+            statement.setInt(3, line.getExtraFare());
             return statement;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
@@ -51,9 +53,9 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public void update(Long id, String name, String color) {
-        String sql = "UPDATE line SET name=?, color=? WHERE id=?";
-        jdbcTemplate.update(sql, name, color, id);
+    public void update(Long id, Line line) {
+        String sql = "UPDATE line SET name=?, color=?, extra_fare=? WHERE id=?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
     @Override

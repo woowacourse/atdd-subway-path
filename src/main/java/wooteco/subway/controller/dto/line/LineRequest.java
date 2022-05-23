@@ -5,6 +5,7 @@ import wooteco.subway.service.dto.line.LineRequestDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 public class LineRequest {
 
@@ -20,16 +21,23 @@ public class LineRequest {
     private Long downStationId;
     @Positive
     private int distance;
+    @PositiveOrZero
+    private int extraFare;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+        this(name, color, upStationId, downStationId, distance, 0);
     }
 
     public String getName() {
@@ -52,7 +60,11 @@ public class LineRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public LineRequestDto toServiceRequest() {
-        return new LineRequestDto(name, color, upStationId, downStationId, distance);
+        return new LineRequestDto(name, color, upStationId, downStationId, distance, extraFare);
     }
 }
