@@ -11,11 +11,11 @@ public enum DiscountByAgePolicy {
             (age) -> 1 <= age && age < 6
     ),
     KIDS_POLICY(
-            (fare) -> (int) Math.ceil((fare - 350) * 0.8),
+            (fare) -> (int) Math.ceil((fare - 350) * 0.5),
             (age) -> 6 <= age && age < 13
     ),
     TEENAGER_POLICY(
-            (fare) -> (int) Math.ceil((fare - 350) * 0.5),
+            (fare) -> (int) Math.ceil((fare - 350) * 0.8),
             (age) -> 13 <= age && age < 19
     ),
     ADULT_POLICY(
@@ -36,5 +36,9 @@ public enum DiscountByAgePolicy {
                 .filter(it -> it.rangePredicate.test(age))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public int applyDiscount(int fare) {
+        return discountFunction.apply(fare);
     }
 }
