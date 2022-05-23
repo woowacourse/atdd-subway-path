@@ -71,7 +71,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(상계_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         });
     }
-    
+
     @Test
     @DisplayName("추가 요금이 존재하는 노선을 등록한다")
     void createLine_extraFare() {
@@ -171,7 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String lineName = "7호선";
         String lineColor = "bg-green-600";
 
-       하계역_상계역_등록();
+        하계역_상계역_등록();
 
         // when 노선 등록한다.
         LineRequest 칠호선_요청 = new LineRequest("7호선", "bg-green-600", 상계_id, 하계_id, 10);
@@ -230,7 +230,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then 조회된 노선의 이름이 수정하려한 내용과 같다.
         // and 조회된 노선의 색깔이 수정하려한 내용과 같다.
-        LineResponse 수정_역_조회 = get("/lines/"+ id).body().as(LineResponse.class);
+        LineResponse 수정_역_조회 = get("/lines/" + id).body().as(LineResponse.class);
         assertAll(() -> {
             assertThat(수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(수정_역_조회.getName()).isEqualTo(수정_요청_바디.getName());

@@ -25,7 +25,8 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public LineEntity save(LineEntity line) {
-        Map<String, Object> params = Map.of("name", line.getName(), "color", line.getColor(), "extra_fare", line.getExtraFare());
+        Map<String, Object> params = Map.of("name", line.getName(), "color", line.getColor(), "extra_fare",
+                line.getExtraFare());
         long insertedId = simpleInserter.executeAndReturnKey(params).longValue();
         return new LineEntity(insertedId, line.getName(), line.getColor(), line.getExtraFare());
     }

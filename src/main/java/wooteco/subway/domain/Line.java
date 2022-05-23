@@ -1,9 +1,8 @@
 package wooteco.subway.domain;
 
-import java.util.List;
 import java.util.Objects;
-import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.DomainException;
+import wooteco.subway.exception.ExceptionMessage;
 
 public class Line {
 

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Station;
 
 public class PathResponse {
     private final List<StationResponse> stations;

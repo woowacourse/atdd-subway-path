@@ -3,16 +3,13 @@ package wooteco.subway.domain;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.DomainException;
+import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.NotFoundException;
 
 public class Sections {

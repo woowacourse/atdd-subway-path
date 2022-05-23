@@ -2,7 +2,6 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.repository.dao.LineDao;
-import wooteco.subway.repository.dao.SectionDao;
-import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.entity.LineEntity;
-import wooteco.subway.repository.entity.SectionEntity;
-import wooteco.subway.repository.entity.StationEntity;
 
 @SpringBootTest
 @Transactional
