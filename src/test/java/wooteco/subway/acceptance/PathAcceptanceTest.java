@@ -77,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("10km 이하의 최단경로를 찾는다.")
     void findShortestPath10KM() {
-        ExtractableResponse<Response> response = createPathResponse(4L, 6L, 10);
+        ExtractableResponse<Response> response = createPathResponse(4L, 6L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(석촌, 석촌고분, 삼전), 2, 1250);
@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("50km 이하의 최단경로를 찾는다.")
     void findShortestPath50KM() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(잠실, 잠실새내), 50, 2050);
@@ -99,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("50km 초과의 최단경로를 찾는다.")
     void findShortestPathGreaterThan50KM() {
-        ExtractableResponse<Response> response = createPathResponse(2L, 3L, 10);
+        ExtractableResponse<Response> response = createPathResponse(2L, 3L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(잠실새내, 종합운동장), 53, 2150);
@@ -108,9 +108,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("어린이인 경우 350원을 제한 금액의 50%를 할인한다.")
+    void findShortestPath50KMChild() {
+        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 8);
+
+        final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
+        final PathResponse expected = new PathResponse(List.of(잠실, 잠실새내), 50, 1200);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("청소년인 경우 350원을 제한 금액의 20%를 할인한다.")
+    void findShortestPath50KMTeenager() {
+        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 17);
+
+        final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
+        final PathResponse expected = new PathResponse(List.of(잠실, 잠실새내), 50, 1710);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("초과 운임이 있을 경우 그 운임만큼 추가한다.")
     void findShortestPathWithExtraFare() {
-        ExtractableResponse<Response> response = createPathResponse(7L, 8L, 10);
+        ExtractableResponse<Response> response = createPathResponse(7L, 8L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(선릉, 선정릉), 7, 1750);
@@ -122,7 +144,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("초과 운임이 겹치는 경우 가장 높은 초과운임만큼 추가한다.")
     void findShortestPathWithExpensiveExtraFare() {
-        ExtractableResponse<Response> response = createPathResponse(7L, 9L, 10);
+        ExtractableResponse<Response> response = createPathResponse(7L, 9L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(선릉, 선정릉, 강남구청), 14, 2050);
@@ -133,7 +155,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("여러 노선의 환승을 고려하여 최단경로를 찾는다.")
     void findShortestPathWhenMultiLines() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 3L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 3L, 20);
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(잠실, 석촌, 석촌고분, 삼전, 종합운동장), 13, 1350);
@@ -144,7 +166,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발역과 도착역이 같은 경우 예외를 발생시킨다.")
     void sameSourceAndTarget() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 1L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 1L, 20);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -152,7 +174,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("요청에 해당하는 역이 존재하지 않는 경우 예외를 발생시킨다.")
     void stationNotExistByRequest() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 13231L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 13231L, 20);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }

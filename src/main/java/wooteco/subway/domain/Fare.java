@@ -17,8 +17,22 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(int distance, int extraFare) {
-        return new Fare(calculateFare(distance) + extraFare);
+    public static Fare from(int distance, int extraFare, int age) {
+        int fare = calculateFare(distance) + extraFare;
+        return getFare(age, fare);
+    }
+
+    private static Fare getFare(int age, int fare) {
+        if (6 <= age && age < 13) {
+            int discountFare = (int) ((fare - 350) * 0.5);
+            return new Fare(fare - discountFare);
+        }
+        if (age < 19) {
+            int discountFare = (int) ((fare - 350) * 0.2);
+            return new Fare(fare - discountFare);
+        }
+
+        return new Fare(fare);
     }
 
     private static int calculateFare(int distance) {
@@ -37,8 +51,12 @@ public class Fare {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Fare fare = (Fare) o;
         return value == fare.value;
     }

@@ -27,7 +27,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long upStationId, Long downStationId) {
+    public PathResponse findShortestPath(Long upStationId, Long downStationId, int age) {
         validateNotSameStations(upStationId, downStationId);
         Path path = getPath();
 
@@ -38,7 +38,7 @@ public class PathService {
         final int shortestDistance = path.getShortestDistance(upStation, downStation);
 
         final int extraFare = getExtraFare(path, upStation, downStation);
-        final Fare fare = Fare.from(shortestDistance, extraFare);
+        final Fare fare = Fare.from(shortestDistance, extraFare, age);
 
         return new PathResponse(stations, shortestDistance, fare.getValue());
     }
