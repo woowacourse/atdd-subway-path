@@ -11,19 +11,19 @@ public enum AgeFare {
     NORMAL(Double::valueOf, ignore -> true),
     ;
 
-    private final Function<Integer, Double> function;
+    private final Function<Double, Double> function;
     private final Predicate<Integer> predicate;
 
-    private static int deduct(final Integer price) {
+    private static double deduct(final double price) {
         return price - 350;
     }
 
-    AgeFare(final Function<Integer, Double> function, final Predicate<Integer> predicate) {
+    AgeFare(final Function<Double, Double> function, final Predicate<Integer> predicate) {
         this.function = function;
         this.predicate = predicate;
     }
 
-    public static double valueOf(int age, int price) {
+    public static double valueOf(int age, double price) {
         return Arrays.stream(values())
                 .filter(ageFare -> ageFare.predicate.test(age))
                 .map(ageFare -> ageFare.function.apply(price))

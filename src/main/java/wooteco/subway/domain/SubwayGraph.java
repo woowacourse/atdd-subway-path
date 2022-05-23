@@ -2,6 +2,10 @@ package wooteco.subway.domain;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.fare.AgeDecorator;
+import wooteco.subway.domain.fare.BaseFare;
+import wooteco.subway.domain.fare.DistanceDecorator;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.exception.NoSuchPathException;
 import wooteco.subway.utils.DefaultWeightedEdgeCustom;
 
@@ -34,7 +38,8 @@ public class SubwayGraph implements ShortestPath {
         validateExistsPath(source, target);
         List<Station> stations = graph.getPath(source, target).getVertexList();
         int distance = (int) graph.getPathWeight(source, target);
-        double price = AgeFare.valueOf(age, DistanceFare.valueOf(fare, distance));
+        Fare fare1 = new AgeDecorator(new DistanceDecorator(new BaseFare(fare), distance), age);
+        double price = fare1.calculateExtraFare();
         return new Path(stations, distance, price);
     }
 

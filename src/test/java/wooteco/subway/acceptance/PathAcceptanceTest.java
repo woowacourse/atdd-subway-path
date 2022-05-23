@@ -231,8 +231,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 7, 11, 12})
     @DisplayName("6세 이상 13세 미만 어린이가 이용하면 350원 공제후 50% 할인이 적용되고 200-ok를 반환한다.")
-    void getPathFareWithChildern(int age) {
-
+    void getPathFareWithChildren(int age) {
         //given
         StationResponse station1 = createStation("station1");
         StationResponse station2 = createStation("station2");
@@ -241,15 +240,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse station5 = createStation("station5");
 
         LineResponse createdLine = createLine("line1", "color1", station1.getId(),
-                station2.getId(), 10, 500);
+                station2.getId(), 2, 500);
 
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
+        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 2);
         createSection(sectionRequest, createdLine);
 
         LineResponse createdLine2 = createLine("line2", "color2", station2.getId(),
-                station4.getId(), 10, 900);
+                station4.getId(), 2, 900);
 
-        SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 5);
+        SectionRequest sectionRequest2 = new SectionRequest(station4.getId(), station5.getId(), 2);
         createSection(sectionRequest2, createdLine2);
 
         //when
@@ -265,7 +264,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         //then
-        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 25, 1050);
+        PathResponse expected = new PathResponse(List.of(station1, station2, station4, station5), 6, 900);
         PathResponse response = pathResponse.as(PathResponse.class);
 
         assertThat(response).usingRecursiveComparison().isEqualTo(expected);
