@@ -45,7 +45,7 @@ public class PathService {
 
         final Fare fare = Fare.of(distance, extraFare);
 
-        return new PathResponse(stations, distance, fare.getDiscountValue(AgeGroup.from(age)));
+        return new PathResponse(stations, distance, fare.getDiscountedValue(AgeGroup.from(age)));
     }
 
     private List<StationResponse> getStationResponses(List<Long> shortestPath) {

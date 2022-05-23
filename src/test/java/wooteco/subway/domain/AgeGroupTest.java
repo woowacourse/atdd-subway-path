@@ -54,10 +54,10 @@ public class AgeGroupTest {
 
         // then
         assertAll(
-                () -> assertEquals(baby.getDiscountValue(fare), 0),
-                () -> assertEquals(children.getDiscountValue(fare), 1350),
-                () -> assertEquals(teenager.getDiscountValue(fare), 1950),
-                () -> assertEquals(adult.getDiscountValue(fare), 2350)
+                () -> assertEquals(baby.getDiscountedValue(fare), 0),
+                () -> assertEquals(children.getDiscountedValue(fare), 1350),
+                () -> assertEquals(teenager.getDiscountedValue(fare), 1950),
+                () -> assertEquals(adult.getDiscountedValue(fare), 2350)
         );
     }
 

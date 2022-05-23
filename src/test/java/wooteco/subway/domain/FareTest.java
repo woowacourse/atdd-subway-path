@@ -116,10 +116,10 @@ class FareTest {
         final Fare fare = Fare.of(50, 500);
 
         // when
-        final int resultBaby = fare.getDiscountValue(AgeGroup.BABY);
-        final int resultChildren = fare.getDiscountValue(AgeGroup.CHILDREN);
-        final int resultTeenAger = fare.getDiscountValue(AgeGroup.TEENAGER);
-        final int resultAdult = fare.getDiscountValue(AgeGroup.ADULT);
+        final int resultBaby = fare.getDiscountedValue(AgeGroup.BABY);
+        final int resultChildren = fare.getDiscountedValue(AgeGroup.CHILDREN);
+        final int resultTeenAger = fare.getDiscountedValue(AgeGroup.TEENAGER);
+        final int resultAdult = fare.getDiscountedValue(AgeGroup.ADULT);
 
         // then
         assertAll(

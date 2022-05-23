@@ -10,19 +10,19 @@ public enum AgeGroup {
     BABY(age -> BABY_MIN_AGE <= age && age < CHILD_MIN_AGE, value -> FREE),
 
     CHILDREN(age -> CHILD_MIN_AGE <= age && age < TEENAGE_MIN_AGE,
-            value -> value - (value - COMMON_DC_FARE) / CHILD_DC_RATE),
+            value -> (int) (value - (value - COMMON_DC_FARE) * CHILD_DC_RATE)),
 
     TEENAGER(age -> TEENAGE_MIN_AGE <= age && age < ADULT_MIN_AGE,
-            value -> value - (value - COMMON_DC_FARE) / TEENAGER_DC_RATE),
+            value -> (int) (value - (value - COMMON_DC_FARE) * TEENAGER_DC_RATE)),
 
     ADULT(age -> ADULT_MIN_AGE <= age, value -> value);
 
     private final Predicate<Integer> grouping;
-    private final IntUnaryOperator discountValue;
+    private final IntUnaryOperator discountedValue;
 
     AgeGroup(Predicate<Integer> grouping, IntUnaryOperator discountValue) {
         this.grouping = grouping;
-        this.discountValue = discountValue;
+        this.discountedValue = discountValue;
     }
 
     public static AgeGroup from(int age) {
@@ -32,8 +32,8 @@ public enum AgeGroup {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 연령대가 존재하지 않습니다."));
     }
 
-    public int getDiscountValue(int value) {
-        return discountValue.applyAsInt(value);
+    public int getDiscountedValue(int value) {
+        return discountedValue.applyAsInt(value);
     }
 
     public static class Constants {
@@ -43,7 +43,7 @@ public enum AgeGroup {
         public static final int TEENAGE_MIN_AGE = 13;
         public static final int ADULT_MIN_AGE = 19;
         public static final int COMMON_DC_FARE = 350;
-        public static final int CHILD_DC_RATE = 2;
-        public static final int TEENAGER_DC_RATE = 5;
+        public static final double CHILD_DC_RATE = 0.5;
+        public static final double TEENAGER_DC_RATE = 0.2;
     }
 }

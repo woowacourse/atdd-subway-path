@@ -51,7 +51,7 @@ public class Fare {
         return value;
     }
 
-    public int getDiscountValue(AgeGroup ageGroup) {
-        return ageGroup.getDiscountValue(value);
+    public int getDiscountedValue(AgeGroup ageGroup) {
+        return ageGroup.getDiscountedValue(value);
     }
 }
