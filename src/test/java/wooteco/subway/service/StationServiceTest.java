@@ -13,7 +13,7 @@ import wooteco.subway.dto.StationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Sql("classpath:truncate.sql")
+@Sql("/truncate.sql")
 public class StationServiceTest {
     @Autowired
     private StationDao stationDao;

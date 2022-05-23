@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);
@@ -176,13 +176,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 200);
 
         createLineResponseOf(params);
 
         // when
-        Map<String, String> editParams = new HashMap<>();
+        Map<String, Object> editParams = new HashMap<>();
         editParams.put("name", "2호선");
         editParams.put("color", "blue");
+        editParams.put("upStationId", 1L);
+        editParams.put("downStationId", 2L);
+        editParams.put("distance", 10);
+        editParams.put("extraFare", 500);
 
         ExtractableResponse<Response> editResponse = RestAssured.given().log().all()
                 .body(editParams)

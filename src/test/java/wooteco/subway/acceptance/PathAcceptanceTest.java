@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);
@@ -36,6 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params4.put("upStationId", 1L);
         params4.put("downStationId", 3L);
         params4.put("distance", 10);
+        params4.put("extraFare", 500);
 
         createLineResponseOf(params4);
 
@@ -60,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().asString()).contains("20");
-        assertThat(response.body().asString()).contains("1450");
+        assertThat(response.body().asString()).contains("1950");
     }
 
     private void createStationResponseOf(Map<String, String> params) {
@@ -83,8 +84,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> createSectionResponseOf(Map<String, Object> params) {
-        return RestAssured.given().log().all()
+    private void createSectionResponseOf(Map<String, Object> params) {
+        RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

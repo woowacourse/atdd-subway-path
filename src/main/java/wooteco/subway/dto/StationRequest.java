@@ -1,14 +1,15 @@
 package wooteco.subway.dto;
 
-import org.jetbrains.annotations.NotNull;
 import wooteco.subway.domain.station.Station;
+
+import javax.validation.constraints.NotNull;
 
 public class StationRequest {
 
     @NotNull
     private String name;
 
-    public StationRequest() {
+    private StationRequest() {
     }
 
     public StationRequest(String name) {

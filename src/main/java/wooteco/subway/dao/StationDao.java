@@ -6,13 +6,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import wooteco.subway.domain.station.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-@Repository
+@Component
 public class StationDao {
     private static final RowMapper<Station> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
             new Station(resultSet.getLong("id"), resultSet.getString("name"));
@@ -38,22 +38,16 @@ public class StationDao {
         return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = :id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
-        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
-    }
-
     public Station findById(Long id) {
         String sql = "select * from STATION where id = :id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
     }
 
-    public List<Station> findByIdIn(List<Long> ids) {
-        String sql = "select * from STATION where id in (:ids)";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("ids", ids);
-        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
+    public void deleteById(Long id) {
+        String sql = "delete from STATION where id = :id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public boolean existByName(String name) {

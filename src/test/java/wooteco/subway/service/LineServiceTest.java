@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.LineRequest;
@@ -14,13 +13,10 @@ import wooteco.subway.dto.LineRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Sql("classpath:truncate.sql")
+@Sql("/truncate.sql")
 public class LineServiceTest {
     @Autowired
     private StationDao stationDao;
-
-    @Autowired
-    private LineDao lineDao;
 
     @Autowired
     private LineService lineService;
@@ -64,7 +60,7 @@ public class LineServiceTest {
     @Test
     @DisplayName("노선을 수정한다.")
     void editLine() {
-        lineService.edit(1L, "4호선", "green");
+        lineService.edit(1L, "4호선", "green", 0);
         assertThat(lineService.findById(1L).getName()).isEqualTo("4호선");
     }
 }
