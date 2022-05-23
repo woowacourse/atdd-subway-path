@@ -33,7 +33,6 @@ public class ShortestPathStrategy implements PathStrategy {
             SectionEdge sectionEdge = new SectionEdge(section.getLineId(), section.getDistance());
 
             graph.addEdge(downStation, upStation, sectionEdge);
-            graph.setEdgeWeight(sectionEdge, section.getDistance());
         }
     }
 
@@ -75,7 +74,8 @@ public class ShortestPathStrategy implements PathStrategy {
             return lineId;
         }
 
-        public int getDistance() {
+        @Override
+        protected double getWeight() {
             return distance;
         }
     }
