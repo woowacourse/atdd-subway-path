@@ -2,7 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.Optional;
 
-public enum FareStandard {
+public enum FarePolicy {
     DEFAULT(0, 10, 1, 0, 1250),
     SECOND(10, 50, 5, 100, 0),
     THIRD(50, Integer.MAX_VALUE, 8, 100, 0);
@@ -18,12 +18,12 @@ public enum FareStandard {
             return 0;
         }
         if (distance - upperDistance > 0) {
-            return (int) (Math.ceil(((double)upperDistance - lowerDistance) / perKm) * perFare) + basicFare;
+            return (int) (Math.ceil(((double) upperDistance - lowerDistance) / perKm) * perFare) + basicFare;
         }
         return (int) (Math.ceil((distance - lowerDistance) / perKm) * perFare) + basicFare;
     }
 
-    public Optional<FareStandard> update() {
+    public Optional<FarePolicy> update() {
         if (this.equals(DEFAULT)) {
             return Optional.of(SECOND);
         }
@@ -33,7 +33,7 @@ public enum FareStandard {
         return Optional.empty();
     }
 
-    FareStandard(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
+    FarePolicy(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
         this.lowerDistance = lowerDistance;
         this.upperDistance = upperDistance;
         this.perKm = perKm;
