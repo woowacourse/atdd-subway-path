@@ -8,9 +8,7 @@ public class Line {
     private final int extraFare;
 
     public Line(String name, String color, int extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+        this(0L, name, color, extraFare);
     }
 
     public Line(Long id, String name, String color, int extraFare) {

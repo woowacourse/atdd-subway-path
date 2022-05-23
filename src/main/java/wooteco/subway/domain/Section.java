@@ -10,7 +10,7 @@ public class Section {
     private int distance;
 
     public Section(Long lineId, Station upStation, Station downStation, int distance) {
-        new Section(0L, lineId, upStation, downStation, distance);
+        this(0L, lineId, upStation, downStation, distance);
     }
 
     public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
