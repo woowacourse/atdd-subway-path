@@ -58,6 +58,10 @@ public class Section {
         return distance >= section.getDistance();
     }
 
+    public boolean isConnectedTo(Section section) {
+        return isOnSameLine(section) && hasCommonStationWith(section);
+    }
+
     private boolean isOnSameLine(Section section) {
         return lineId.equals(section.getLineId());
     }
@@ -65,10 +69,6 @@ public class Section {
     private boolean hasCommonStationWith(Section section) {
         return !Collections.disjoint(List.of(upStationId, downStationId),
                 List.of(section.getUpStationId(), section.getDownStationId()));
-    }
-
-    public boolean isConnectedTo(Section section) {
-        return isOnSameLine(section) && hasCommonStationWith(section);
     }
 
     public boolean isOverLappedWith(Section section) {
